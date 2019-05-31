@@ -81,7 +81,7 @@ void Generator::generateH(OD *od) const
  */
 void Generator::generateC(OD *od) const
 {
-    QFile cFile("/home/alexis/Documents/code/uCANopen/OD.c");
+    QFile cFile(_dir + "/OD.c");
 
     if (!cFile.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
@@ -270,7 +270,7 @@ void Generator::writeRecordLineH(Index *index, QTextStream &out) const
         subIndexes = index->subIndexes();
         foreach (const SubIndex *subIndex, subIndexes)
         {
-            out << "\t" << typeToString(subIndex->dataType()) << "\t"<< varNameToString(subIndex->parameterName()) << "\n";
+            out << "\t" << typeToString(subIndex->dataType()) << "\t"<< varNameToString(subIndex->parameterName()) << ";" << "\n";
         }
          out << "} " << structNameToString(index->parameterName()) << ";\n";
     }
