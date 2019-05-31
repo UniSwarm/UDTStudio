@@ -20,7 +20,7 @@ int main()
 
     parsor.parse(od);
     generator.generateH(od);
-    generator.generateC(od);
+    //generator.generateC(od);
     delete od;
 
     return 0;
