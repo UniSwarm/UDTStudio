@@ -15,12 +15,12 @@ int main()
 {
     OD *od;
     od = new OD;
-    EdsParsor parsor;
-    Generator generator;
+    EdsParsor parsor("../../eds/301.eds");
+    Generator generator("../../");
 
     parsor.parse(od);
     generator.generateH(od);
-    //generator.generateC(od);
+    generator.generateC(od);
     delete od;
 
     return 0;

@@ -1,13 +1,12 @@
 
 #include <QSettings>
 #include <QRegularExpression>
-#include <QString>
 
 #include "edsparsor.h"
 
-EdsParsor::EdsParsor()
+EdsParsor::EdsParsor(QString path)
 {
-
+    _edsFile = path;
 }
 
 void EdsParsor::parse(OD *od)
@@ -26,8 +25,7 @@ void EdsParsor::parse(OD *od)
     SubIndex *subIndex;
     DataType *data;
 
-    QString edsFile = "/home/alexis/Documents/doc/CANOpen/eds/301.eds";
-    QSettings eds(edsFile, QSettings::IniFormat);
+    QSettings eds(_edsFile, QSettings::IniFormat);
     QRegularExpression reSub("([0-9]+)(sub[0-9]+)");
     QRegularExpression reIndex("([0-9]+)");
 

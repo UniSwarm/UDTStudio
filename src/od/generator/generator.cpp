@@ -10,9 +10,9 @@
 /**
  * @brief Generator::Generator
  */
-Generator::Generator()
+Generator::Generator(QString path)
 {
-
+    _dir = path;
 }
 
 /**
@@ -21,7 +21,7 @@ Generator::Generator()
  */
 void Generator::generateH(OD *od) const
 {
-    QFile hFile("/home/alexis/Documents/code/uCANopen/OD.h");
+    QFile hFile(_dir + "/OD.h");
 
     if (!hFile.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
@@ -42,7 +42,7 @@ void Generator::generateH(OD *od) const
 
     foreach (Index *index, indexes)
     {
-        out << writeRecordLineH(index);
+        writeRecordLineH(index, out);
     }
 
     out << "\n";
@@ -54,7 +54,7 @@ void Generator::generateH(OD *od) const
 
     foreach (Index *index, indexes)
     {
-        out << writeRamLineH(index);
+        writeRamLineH(index, out);
     }
 
     out << "};" << "\n";
@@ -73,6 +73,56 @@ void Generator::generateH(OD *od) const
     out << "#endif // OD_H" << "\n";
 
     hFile.close();
+}
+
+/**
+ * @brief Generator::generateC
+ * @param od
+ */
+void Generator::generateC(OD *od) const
+{
+    QFile cFile("/home/alexis/Documents/code/uCANopen/OD.c");
+
+    if (!cFile.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QTextStream out(&cFile);
+    out << "\n";
+    out << "#include \"OD.h\"" << "\n";
+    out << "\n";
+    out << "// ==================== initialization =====================" << "\n";
+    out << "// struct sOD_RAM OD_RAM;" << "\n";
+    out << "struct sOD_RAM OD_RAM;" << "\n";
+    out << "\n";
+    out << "void OD_initRam()" << "\n";
+    out << "{" << "\n";
+
+    QMap<uint16_t, Index*> indexes = od->indexes();
+    QList<SubIndex*> subIndexes;
+
+    foreach (Index *index, indexes)
+    {
+        writeRamLineC(index, out);
+    }
+
+    out << "}" << "\n";
+    out << "\n";
+
+    //TODO initialize struct for FLASH memory
+    out << "// ==================== record completion =================" << "\n";
+
+    foreach (Index *index, indexes)
+    {
+        writeRecordCompletion(index, out);
+    }
+
+    out << "\n";
+    out << "// ============ object dicitonary completion ==============" << "\n";
+    out << "const OD_entry_t OD[OD_NB_ELEMENTS] = " << "\n";
+    out << "{" << "\n";
+    out << "};" << "\n";
+
+    cFile.close();
 }
 
 /**
@@ -155,49 +205,130 @@ QString Generator::structNameToString(const QString &name) const
     return modified;
 }
 
-QString Generator::writeRecordLineH(Index *index) const
+QString Generator::dataToString(const SubIndex *index) const
 {
-    QString line;
+    QString data;
+
+    //TODO change data parameters to handle arrays
+    switch (index->dataType())
+    {
+    case OD_TYPE_INTEGER8:
+        data = "0x" + QString::number(index->data(0)->toInt8());
+        break;
+
+    case OD_TYPE_INTEGER16:
+        data = "0x" + QString::number(index->data(0)->toInt16());
+        break;
+
+    case OD_TYPE_INTEGER32:
+        data = "0x" + QString::number(index->data(0)->toInt32());
+        break;
+
+    case OD_TYPE_INTEGER64:
+        data = "0x" + QString::number(index->data(0)->toInt64());
+        break;
+
+    case OD_TYPE_UNSIGNED8:
+        data = "0x" + QString::number(index->data(0)->toUInt8());
+        break;
+
+    case OD_TYPE_UNSIGNED16:
+        data = "0x" + QString::number(index->data(0)->toUInt16());
+        break;
+
+    case OD_TYPE_UNSIGNED32:
+        data = "0x" + QString::number(index->data(0)->toUInt32());
+        break;
+
+    case OD_TYPE_UNSIGNED64:
+        data = "0x" + QString::number(index->data(0)->toUInt64());
+        break;
+
+    case OD_TYPE_REAL32:
+        data = "0x" + QString::number(index->data(0)->toFloat32());
+        break;
+
+    case OD_TYPE_REAL64:
+        data = "0x" + QString::number(index->data(0)->toFloat64());
+        break;
+
+    default:
+        data = "";
+    }
+
+    return data;
+}
+
+void Generator::writeRecordLineH(Index *index, QTextStream &out) const
+{
     QList<SubIndex*> subIndexes;
 
     if ( index->objectType() == OD_OBJECT_RECORD)
     {
-        line.append("typedef struct\n");
-        line.append("{\n");
+        out << "typedef struct\n" << "{\n";
 
         subIndexes = index->subIndexes();
         foreach (const SubIndex *subIndex, subIndexes)
         {
-            line.append("\t");
-            line.append(typeToString(subIndex->dataType()));
-            line.append("\t");
-            line.append(varNameToString(subIndex->parameterName()));
-            line.append(";\n");
+            out << "\t" << typeToString(subIndex->dataType()) << "\t"<< varNameToString(subIndex->parameterName()) << "\n";
         }
-        line.append("} ");
-        line.append(structNameToString(index->parameterName()));
-        line.append(";\n");
+         out << "} " << structNameToString(index->parameterName()) << ";\n";
     }
-
-    return line;
 }
 
-QString Generator::writeRamLineH(Index *index) const
+void Generator::writeRamLineH(Index *index, QTextStream &out) const
 {
-    QString line;
+    switch(index->objectType())
+    {
+    case OD_OBJECT_VAR:
+        out << "\t" << typeToString(index->dataType()) << "\t" << varNameToString(index->parameterName()) << ";" << "\n";
+        break;
+
+    case OD_OBJECT_RECORD:
+        out << "\t" << structNameToString(index->parameterName()) << "\t" << varNameToString(index->parameterName()) << ";" << "\n";
+        break;
+    }
+}
+
+void Generator::writeRamLineC(Index *index, QTextStream &out) const
+{
+    QList<SubIndex*> subIndexes;
+    int cpt = 0;
 
     switch(index->objectType())
     {
     case OD_OBJECT_VAR:
-        line.append("\t").append(typeToString(index->dataType())).append("\t").append(varNameToString(index->parameterName()));
-        line.append(";").append("\n");
+        out << "\t" << "OD_RAM." << varNameToString(index->parameterName()) << " = ";
+
+        out << dataToString(index);
+
+        out << ";\n";
         break;
 
     case OD_OBJECT_RECORD:
-        line.append("\t").append(structNameToString(index->parameterName())).append("\t");
-        line.append(varNameToString(index->parameterName())).append(";").append("\n");
+
+        subIndexes = index->subIndexes();
+        foreach (SubIndex *subIndex, subIndexes)
+        {
+            out << "\t" << "OD_RAM." << varNameToString(index->parameterName()) << "." << varNameToString(subIndex->parameterName()) << " = ";
+
+            out << dataToString(subIndex);
+
+            out << ";\n";
+            cpt++;
+        }
+
         break;
     }
-
-    return line;
 }
+
+void Generator::writeRecordCompletion(Index *index, QTextStream &out) const
+{
+    if ( index->objectType() == OD_OBJECT_RECORD)
+    {
+        out << "const OD_entrySubIndex_t OD_Record" << QString::number(index->index()) << "[" << index->nbSubIndex() << "] =\n";
+        out << "{\n";
+        out << "};\n";
+    }
+}
+

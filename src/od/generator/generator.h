@@ -9,16 +9,22 @@
 class Generator
 {
 public:
-    Generator();
+    Generator(QString path);
     void generateH(OD *od) const;
+    void generateC(OD *od) const;
 
 private:
     QString typeToString(const uint16_t &type) const;
     QString varNameToString(const QString &name) const;
     QString structNameToString(const QString &name) const;
+    QString dataToString(const SubIndex *index) const;
 
-    QString writeRecordLineH(Index *index) const;
-    QString writeRamLineH(Index *index) const;
+    void writeRecordLineH(Index *index, QTextStream &out) const;
+    void writeRamLineH(Index *index, QTextStream &out) const;
+    void writeRamLineC(Index *index, QTextStream &out) const;
+    void writeRecordCompletion(Index *index, QTextStream &out) const;
+
+    QString _dir;
 };
 
 #endif // GENERATOR_H
