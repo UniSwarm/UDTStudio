@@ -31,6 +31,8 @@ public:
     QString parameterName() const;
     void setParameterName(const QString &parameterName);
 
+    uint8_t length() const;
+
 private:
 
     uint16_t        _dataType;

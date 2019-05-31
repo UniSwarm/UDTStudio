@@ -113,13 +113,19 @@ void Generator::generateC(OD *od) const
 
     foreach (Index *index, indexes)
     {
-        writeRecordCompletion(index, out);
+        writeRecordCompletionC(index, out);
     }
 
     out << "\n";
     out << "// ============ object dicitonary completion ==============" << "\n";
     out << "const OD_entry_t OD[OD_NB_ELEMENTS] = " << "\n";
     out << "{" << "\n";
+
+    foreach (Index *index, indexes)
+    {
+        writeOdCompletionC(index, out);
+    }
+
     out << "};" << "\n";
 
     cFile.close();
@@ -259,6 +265,23 @@ QString Generator::dataToString(const SubIndex *index) const
     return data;
 }
 
+QString Generator::typeObjectToString(const SubIndex *subIndex) const
+{
+    QString typeObject;
+
+    typeObject = "0x" + QString::number(subIndex->objectType());
+
+    if (subIndex->dataType() <= 0x000F)
+        typeObject += "00";
+
+    else if (subIndex->dataType() <= 0x00FF)
+        typeObject += "0";
+
+    typeObject += QString::number(subIndex->dataType());
+
+    return typeObject;
+}
+
 void Generator::writeRecordLineH(Index *index, QTextStream &out) const
 {
     QList<SubIndex*> subIndexes;
@@ -322,13 +345,63 @@ void Generator::writeRamLineC(Index *index, QTextStream &out) const
     }
 }
 
-void Generator::writeRecordCompletion(Index *index, QTextStream &out) const
+void Generator::writeRecordCompletionC(Index *index, QTextStream &out) const
 {
     if ( index->objectType() == OD_OBJECT_RECORD)
     {
         out << "const OD_entrySubIndex_t OD_Record" << QString::number(index->index()) << "[" << index->nbSubIndex() << "] =\n";
         out << "{\n";
+
+        foreach (SubIndex *subIndex, index->subIndexes())
+        {
+            out << "\t" << "{(void*)&OD_RAM." << varNameToString(index->parameterName());
+            out << "." << varNameToString(subIndex->parameterName());
+            //TODO PDOmapping
+            out << ", " << subIndex->length() << ", " << typeObjectToString(subIndex) << ", " << "0x" <<  subIndex->accessType() << "},";
+            out << "\n";
+        }
+
         out << "};\n";
     }
+}
+
+void Generator::writeOdCompletionC(Index *index, QTextStream &out) const
+{
+    out << "\t" << "{";
+    //TODO PDOmapping
+    out << "0x" << index->index() << ", " << "0x";
+
+    switch (index->objectType())
+    {
+    case OD_OBJECT_VAR:
+        out << "0";
+        break;
+
+    case OD_OBJECT_RECORD:
+        out << index->nbSubIndex()-1;
+        break;
+
+    case OD_OBJECT_ARRAY:
+        out << index->nbSubIndex();
+        break;
+    }
+
+    out << ", ";
+
+    switch (index->objectType())
+    {
+    case OD_OBJECT_VAR:
+        out << "(void*)&OD_RAM." << varNameToString(index->parameterName());
+        break;
+
+    case OD_OBJECT_RECORD:
+        out << "(void*)OD_Record" << index->index();
+        break;
+    }
+
+    out << ", ";
+    out << index->length() << ", " << typeObjectToString(index) << ", " << "0x" << index->accessType();
+    out << "},";
+    out << "\n";
 }
 

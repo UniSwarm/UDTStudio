@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "subindex.h"
+#include "od.h"
 
 using namespace std;
 
@@ -115,4 +116,40 @@ QString SubIndex::parameterName() const
 void SubIndex::setParameterName(const QString &parameterName)
 {
     _parameterName = parameterName;
+}
+
+uint8_t SubIndex::length() const
+{
+    if (_objectType == OD_OBJECT_RECORD)
+        return 0;
+
+    switch (_dataType)
+    {
+    case OD_TYPE_INTEGER8:
+        return 1;
+
+    case OD_TYPE_INTEGER16:
+        return 2;
+
+    case OD_TYPE_INTEGER32:
+        return 4;
+
+    case OD_TYPE_INTEGER64:
+        return 8;
+
+    case OD_TYPE_UNSIGNED8:
+        return 1;
+
+    case OD_TYPE_UNSIGNED16:
+        return 2;
+
+    case OD_TYPE_UNSIGNED32:
+        return 4;
+
+    case OD_TYPE_REAL32:
+        return 4;
+
+    case OD_TYPE_REAL64:
+        return 8;
+    }
 }
