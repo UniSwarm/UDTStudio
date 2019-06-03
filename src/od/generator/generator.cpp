@@ -272,7 +272,7 @@ QString Generator::dataToString(const SubIndex *index) const
 }
 
 /**
- * @brief convert data type and object type
+ * @brief converts data type and object type
  * @param sub-index
  * @return a C hexadecimal value coded on 16 bits
  */
@@ -294,7 +294,7 @@ QString Generator::typeObjectToString(const SubIndex *subIndex) const
 }
 
 /**
- * @brief write a record's structure in a .h file
+ * @brief writes a record's structure in a .h file
  * @param record
  * @param .h file
  */
@@ -316,7 +316,7 @@ void Generator::writeRecordDefinitionH(Index *index, QTextStream &hFile) const
 }
 
 /**
- * @brief write an index definition in a .h file
+ * @brief writes an index definition in a .h file
  * @param index
  * @param .h file
  */
@@ -335,7 +335,7 @@ void Generator::writeIndexH(Index *index, QTextStream &hFile) const
 }
 
 /**
- * @brief write an index initialization in RAM in a .c file
+ * @brief writes an index initialization in RAM in a .c file
  * @param index
  * @param .c file
  */
@@ -371,7 +371,7 @@ void Generator::writeRamLineC(Index *index, QTextStream &cFile) const
     }
 }
 /**
- * @brief write a record initialization in ram in a .c file
+ * @brief writes a record initialization in ram in a .c file
  * @param index
  * @param .c file
  */
@@ -396,7 +396,7 @@ void Generator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
 }
 
 /**
- * @brief write an object dictionary entry initialisation in a .c file
+ * @brief writes an object dictionary entry initialisation in a .c file
  * @param index
  * @param .c file
  */

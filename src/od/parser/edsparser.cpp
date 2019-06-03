@@ -9,6 +9,10 @@ EdsParser::EdsParser(QString path)
     _edsFile = path;
 }
 
+/**
+ * @brief parses an eds file and completes an object dictionary
+ * @param object dictionary
+ */
 void EdsParser::parse(OD *od)
 {
     bool ok;
