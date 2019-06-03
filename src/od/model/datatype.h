@@ -29,7 +29,6 @@ class OD_EXPORT DataType
 {
 public:
 
-    DataType();
     DataType(const bool &val);
     DataType(const int8_t &val);
     DataType(const int16_t &val);

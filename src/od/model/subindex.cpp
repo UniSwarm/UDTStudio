@@ -7,17 +7,11 @@
 using namespace std;
 
 /**
- * @brief SubIndex::SubIndex
- */
-SubIndex::SubIndex()
-{
-
-}
-/**
- * @brief SubIndex::SubIndex
- * @param dataType
- * @param objectType
- * @param accessType
+ * @brief constructor
+ * @param data type
+ * @param object type
+ * @param access type
+ * @param parameter name
  */
 SubIndex::SubIndex(const uint16_t &dataType, const uint8_t &objectType, const uint8_t &accessType, const QString &parameterName)
 {
@@ -26,81 +20,91 @@ SubIndex::SubIndex(const uint16_t &dataType, const uint8_t &objectType, const ui
     _accessType = accessType;
     _parameterName = parameterName;
 }
+
 /**
- * @brief SubIndex::~SubIndex
+ * @brief destructor
  */
 SubIndex::~SubIndex()
 {
     qDeleteAll(_datas);
 }
+
 /**
- * @brief SubIndex::dataType
- * @return
+ * @brief _dataType getter
+ * @return data type
  */
 uint16_t SubIndex::dataType() const
 {
     return _dataType;
 }
+
 /**
- * @brief SubIndex::setDataType
- * @param dataType
+ * @brief _dataType setter
+ * @param data type
  */
 void SubIndex::setDataType(const uint16_t &dataType)
 {
     _dataType = dataType;
 }
+
 /**
- * @brief SubIndex::objectType
- * @return
+ * @brief _objectType getter
+ * @return object type
  */
 uint8_t SubIndex::objectType() const
 {
     return _objectType;
 }
+
 /**
- * @brief SubIndex::setObjectType
- * @param objectType
+ * @brief _objectType setter
+ * @param object type
  */
 void SubIndex::setObjectType(const uint8_t &objectType)
 {
     _objectType = objectType;
 }
+
 /**
- * @brief SubIndex::accessType
- * @return
+ * @brief _accessType getter
+ * @return access type
  */
 uint8_t SubIndex::accessType() const
 {
     return _accessType;
 }
+
 /**
- * @brief SubIndex::setAccessType
- * @param accessType
+ * @brief accessType setter
+ * @param access type
  */
 void SubIndex::setAccessType(const uint8_t &accessType)
 {
     _accessType = accessType;
 }
+
 /**
- * @brief SubIndex::datas
- * @return
+ * @brief _datas getter
+ * @return data list
  */
 QList<DataType*> &SubIndex::datas()
 {
     return _datas;
 }
+
 /**
- * @brief SubIndex::data
- * @param dataKey
- * @return
+ * @brief find a sub-index data
+ * @param sub index number
+ * @return data or wrong value u=if sub-index number does not exist
  */
 DataType *SubIndex::data(const uint16_t &dataKey) const
 {
     DataType *data = _datas.value(dataKey);
     return data;
 }
+
 /**
- * @brief SubIndex::addData
+ * @brief adds data to the data list
  * @param data
  */
 void SubIndex::addData(DataType *data)
@@ -108,16 +112,28 @@ void SubIndex::addData(DataType *data)
     _datas.append(data);
 }
 
+/**
+ * @brief _parameterName getter
+ * @return parameter name
+ */
 QString SubIndex::parameterName() const
 {
     return _parameterName;
 }
 
+/**
+ * @brief _parameterName setter
+ * @param parameter name
+ */
 void SubIndex::setParameterName(const QString &parameterName)
 {
     _parameterName = parameterName;
 }
 
+/**
+ * @brief returns the length of data
+ * @return 0 for records or data size in octets
+ */
 uint8_t SubIndex::length() const
 {
     if (_objectType == OD_OBJECT_RECORD)
@@ -152,4 +168,6 @@ uint8_t SubIndex::length() const
     case OD_TYPE_REAL64:
         return 8;
     }
+
+    return  0;
 }

@@ -12,7 +12,6 @@ class OD_EXPORT SubIndex
 {
 public:
 
-    SubIndex();
     SubIndex(const uint16_t &dataType, const uint8_t &objectType, const uint8_t &accessType, const QString &parameterName);
     ~SubIndex();
 
