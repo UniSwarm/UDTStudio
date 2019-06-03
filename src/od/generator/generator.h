@@ -20,14 +20,13 @@ private:
     QString varNameToString(const QString &name) const;
     QString structNameToString(const QString &name) const;
     QString dataToString(const SubIndex *index) const;
-    //return string de objectType + dataType sur 16 bits;
     QString typeObjectToString(const SubIndex *subIndex) const;
 
-    void writeRecordLineH(Index *index, QTextStream &out) const;
-    void writeRamLineH(Index *index, QTextStream &out) const;
-    void writeRamLineC(Index *index, QTextStream &out) const;
-    void writeRecordCompletionC(Index *index, QTextStream &out) const;
-    void writeOdCompletionC(Index *index, QTextStream &out) const;
+    void writeRecordDefinitionH(Index *index, QTextStream &hFile) const;
+    void writeIndexH(Index *index, QTextStream &hFile) const;
+    void writeRamLineC(Index *index, QTextStream &cFile) const;
+    void writeRecordCompletionC(Index *index, QTextStream &cFile) const;
+    void writeOdCompletionC(Index *index, QTextStream &cFile) const;
 
     QString _dir;
 };

@@ -8,7 +8,8 @@
 #include "generator.h"
 
 /**
- * @brief Generator::Generator
+ * @brief constructor: set where files will be generated
+ * @param directory path
  */
 Generator::Generator(QString path)
 {
@@ -16,8 +17,8 @@ Generator::Generator(QString path)
 }
 
 /**
- * @brief Generator::generateH
- * @param od
+ * @brief Generate OD.h file
+ * @param object dictionary
  */
 void Generator::generateH(OD *od) const
 {
@@ -42,7 +43,7 @@ void Generator::generateH(OD *od) const
 
     foreach (Index *index, indexes)
     {
-        writeRecordLineH(index, out);
+        writeRecordDefinitionH(index, out);
     }
 
     out << "\n";
@@ -54,7 +55,7 @@ void Generator::generateH(OD *od) const
 
     foreach (Index *index, indexes)
     {
-        writeRamLineH(index, out);
+        writeIndexH(index, out);
     }
 
     out << "};" << "\n";
@@ -76,8 +77,8 @@ void Generator::generateH(OD *od) const
 }
 
 /**
- * @brief Generator::generateC
- * @param od
+ * @brief Generate OD.c file
+ * @param object dictionary
  */
 void Generator::generateC(OD *od) const
 {
@@ -132,9 +133,9 @@ void Generator::generateC(OD *od) const
 }
 
 /**
- * @brief Generator::typeToString
- * @param type
- * @return
+ * @brief converts a data type to a string
+ * @param data type
+ * @return data type to C format
  */
 QString Generator::typeToString(const uint16_t &type) const
 {
@@ -176,9 +177,9 @@ QString Generator::typeToString(const uint16_t &type) const
 }
 
 /**
- * @brief Generator::varNameToString
- * @param name
- * @return
+ * @brief modifies variable name
+ * @param variable name
+ * @return variable name to C format
  */
 QString Generator::varNameToString(const QString &name) const
 {
@@ -197,9 +198,9 @@ QString Generator::varNameToString(const QString &name) const
 }
 
 /**
- * @brief Generator::structNameToString
- * @param name
- * @return
+ * @brief modifies structure name
+ * @param structure name
+ * @return structure name to C format
  */
 QString Generator::structNameToString(const QString &name) const
 {
@@ -211,6 +212,11 @@ QString Generator::structNameToString(const QString &name) const
     return modified;
 }
 
+/**
+ * @brief converts a sub-index's data
+ * @param sub-index which contains data
+ * @return data to C hexadecimal format
+ */
 QString Generator::dataToString(const SubIndex *index) const
 {
     QString data;
@@ -265,6 +271,11 @@ QString Generator::dataToString(const SubIndex *index) const
     return data;
 }
 
+/**
+ * @brief convert data type and object type
+ * @param sub-index
+ * @return a C hexadecimal value coded on 16 bits
+ */
 QString Generator::typeObjectToString(const SubIndex *subIndex) const
 {
     QString typeObject;
@@ -282,38 +293,53 @@ QString Generator::typeObjectToString(const SubIndex *subIndex) const
     return typeObject;
 }
 
-void Generator::writeRecordLineH(Index *index, QTextStream &out) const
+/**
+ * @brief write a record's structure in a .h file
+ * @param record
+ * @param .h file
+ */
+void Generator::writeRecordDefinitionH(Index *index, QTextStream &hFile) const
 {
     QList<SubIndex*> subIndexes;
 
     if ( index->objectType() == OD_OBJECT_RECORD)
     {
-        out << "typedef struct\n" << "{\n";
+        hFile << "typedef struct\n" << "{\n";
 
         subIndexes = index->subIndexes();
         foreach (const SubIndex *subIndex, subIndexes)
         {
-            out << "\t" << typeToString(subIndex->dataType()) << "\t"<< varNameToString(subIndex->parameterName()) << ";" << "\n";
+            hFile << "\t" << typeToString(subIndex->dataType()) << "\t"<< varNameToString(subIndex->parameterName()) << ";" << "\n";
         }
-         out << "} " << structNameToString(index->parameterName()) << ";\n";
+         hFile << "} " << structNameToString(index->parameterName()) << ";\n";
     }
 }
 
-void Generator::writeRamLineH(Index *index, QTextStream &out) const
+/**
+ * @brief write an index definition in a .h file
+ * @param index
+ * @param .h file
+ */
+void Generator::writeIndexH(Index *index, QTextStream &hFile) const
 {
     switch(index->objectType())
     {
     case OD_OBJECT_VAR:
-        out << "\t" << typeToString(index->dataType()) << "\t" << varNameToString(index->parameterName()) << ";" << "\n";
+        hFile << "\t" << typeToString(index->dataType()) << "\t" << varNameToString(index->parameterName()) << ";" << "\n";
         break;
 
     case OD_OBJECT_RECORD:
-        out << "\t" << structNameToString(index->parameterName()) << "\t" << varNameToString(index->parameterName()) << ";" << "\n";
+        hFile << "\t" << structNameToString(index->parameterName()) << "\t" << varNameToString(index->parameterName()) << ";" << "\n";
         break;
     }
 }
 
-void Generator::writeRamLineC(Index *index, QTextStream &out) const
+/**
+ * @brief write an index initialization in RAM in a .c file
+ * @param index
+ * @param .c file
+ */
+void Generator::writeRamLineC(Index *index, QTextStream &cFile) const
 {
     QList<SubIndex*> subIndexes;
     int cpt = 0;
@@ -321,11 +347,11 @@ void Generator::writeRamLineC(Index *index, QTextStream &out) const
     switch(index->objectType())
     {
     case OD_OBJECT_VAR:
-        out << "\t" << "OD_RAM." << varNameToString(index->parameterName()) << " = ";
+        cFile << "\t" << "OD_RAM." << varNameToString(index->parameterName()) << " = ";
 
-        out << dataToString(index);
+        cFile << dataToString(index);
 
-        out << ";\n";
+        cFile << ";\n";
         break;
 
     case OD_OBJECT_RECORD:
@@ -333,75 +359,84 @@ void Generator::writeRamLineC(Index *index, QTextStream &out) const
         subIndexes = index->subIndexes();
         foreach (SubIndex *subIndex, subIndexes)
         {
-            out << "\t" << "OD_RAM." << varNameToString(index->parameterName()) << "." << varNameToString(subIndex->parameterName()) << " = ";
+            cFile << "\t" << "OD_RAM." << varNameToString(index->parameterName()) << "." << varNameToString(subIndex->parameterName()) << " = ";
 
-            out << dataToString(subIndex);
+            cFile << dataToString(subIndex);
 
-            out << ";\n";
+            cFile << ";\n";
             cpt++;
         }
 
         break;
     }
 }
-
-void Generator::writeRecordCompletionC(Index *index, QTextStream &out) const
+/**
+ * @brief write a record initialization in ram in a .c file
+ * @param index
+ * @param .c file
+ */
+void Generator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
 {
     if ( index->objectType() == OD_OBJECT_RECORD)
     {
-        out << "const OD_entrySubIndex_t OD_Record" << QString::number(index->index()) << "[" << index->nbSubIndex() << "] =\n";
-        out << "{\n";
+        cFile << "const OD_entrySubIndex_t OD_Record" << QString::number(index->index()) << "[" << index->nbSubIndex() << "] =\n";
+        cFile << "{\n";
 
         foreach (SubIndex *subIndex, index->subIndexes())
         {
-            out << "\t" << "{(void*)&OD_RAM." << varNameToString(index->parameterName());
-            out << "." << varNameToString(subIndex->parameterName());
+            cFile << "\t" << "{(void*)&OD_RAM." << varNameToString(index->parameterName());
+            cFile << "." << varNameToString(subIndex->parameterName());
             //TODO PDOmapping
-            out << ", " << subIndex->length() << ", " << typeObjectToString(subIndex) << ", " << "0x" <<  subIndex->accessType() << "},";
-            out << "\n";
+            cFile << ", " << subIndex->length() << ", " << typeObjectToString(subIndex) << ", " << "0x" <<  subIndex->accessType() << "},";
+            cFile << "\n";
         }
 
-        out << "};\n";
+        cFile << "};\n";
     }
 }
 
-void Generator::writeOdCompletionC(Index *index, QTextStream &out) const
+/**
+ * @brief write an object dictionary entry initialisation in a .c file
+ * @param index
+ * @param .c file
+ */
+void Generator::writeOdCompletionC(Index *index, QTextStream &cFile) const
 {
-    out << "\t" << "{";
+    cFile << "\t" << "{";
     //TODO PDOmapping
-    out << "0x" << index->index() << ", " << "0x";
+    cFile << "0x" << index->index() << ", " << "0x";
 
     switch (index->objectType())
     {
     case OD_OBJECT_VAR:
-        out << "0";
+        cFile << "0";
         break;
 
     case OD_OBJECT_RECORD:
-        out << index->nbSubIndex()-1;
+        cFile << index->nbSubIndex()-1;
         break;
 
     case OD_OBJECT_ARRAY:
-        out << index->nbSubIndex();
+        cFile << index->nbSubIndex();
         break;
     }
 
-    out << ", ";
+    cFile << ", ";
 
     switch (index->objectType())
     {
     case OD_OBJECT_VAR:
-        out << "(void*)&OD_RAM." << varNameToString(index->parameterName());
+        cFile << "(void*)&OD_RAM." << varNameToString(index->parameterName());
         break;
 
     case OD_OBJECT_RECORD:
-        out << "(void*)OD_Record" << index->index();
+        cFile << "(void*)OD_Record" << index->index();
         break;
     }
 
-    out << ", ";
-    out << index->length() << ", " << typeObjectToString(index) << ", " << "0x" << index->accessType();
-    out << "},";
-    out << "\n";
+    cFile << ", ";
+    cFile << index->length() << ", " << typeObjectToString(index) << ", " << "0x" << index->accessType();
+    cFile << "},";
+    cFile << "\n";
 }
 
