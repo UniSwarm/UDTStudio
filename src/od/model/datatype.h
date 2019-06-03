@@ -2,6 +2,7 @@
 #define DATATYPE_H
 
 #include <QString>
+
 #include <stdint.h>
 
 typedef float       float32_t;

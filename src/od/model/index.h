@@ -4,9 +4,10 @@
 #include <QList>
 #include <QString>
 
-#include <stdint.h>
 #include "subindex.h"
 #include "datatype.h"
+
+#include <stdint.h>
 
 class Index : public SubIndex
 {

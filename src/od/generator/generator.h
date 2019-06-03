@@ -4,7 +4,7 @@
 #include <QString>
 #include <QTextStream>
 
-#include "../model/od.h"
+#include "model/od.h"
 
 class Generator
 {

@@ -4,8 +4,7 @@
 #include<QList>
 #include<QString>
 
-#include<stdint.h>
-#include"datatype.h"
+#include "datatype.h"
 
 class SubIndex
 {

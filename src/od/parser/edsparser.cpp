@@ -2,14 +2,14 @@
 #include <QSettings>
 #include <QRegularExpression>
 
-#include "edsparsor.h"
+#include "edsparser.h"
 
-EdsParsor::EdsParsor(QString path)
+EdsParser::EdsParser(QString path)
 {
     _edsFile = path;
 }
 
-void EdsParsor::parse(OD *od)
+void EdsParser::parse(OD *od)
 {
     bool ok;
     bool isSubIndex;

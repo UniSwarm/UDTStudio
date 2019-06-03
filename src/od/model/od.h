@@ -3,8 +3,9 @@
 
 #include <QMap>
 
-#include <stdint.h>
 #include "index.h"
+
+#include <stdint.h>
 
 // =============== Data type ==================
 #define OD_TYPE_BOOLEAN       	0x0001
