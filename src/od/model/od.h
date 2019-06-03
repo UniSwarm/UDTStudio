@@ -1,6 +1,8 @@
 #ifndef OD_H
 #define OD_H
 
+#include "od_global.h"
+
 #include <QMap>
 
 #include "index.h"
@@ -49,7 +51,7 @@
 #define OD_ACCESS_READ_ONLY		0x03
 #define OD_ACCESS_CONST			0x04
 
-class OD
+class OD_EXPORT OD
 {
 public:
     OD();

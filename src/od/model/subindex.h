@@ -1,12 +1,14 @@
 #ifndef SUBINDEX_H
 #define SUBINDEX_H
 
+#include "od_global.h"
+
 #include<QList>
 #include<QString>
 
 #include "datatype.h"
 
-class SubIndex
+class OD_EXPORT SubIndex
 {
 public:
 

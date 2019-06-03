@@ -1,12 +1,14 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
+#include "od_global.h"
+
 #include <QString>
 #include <QTextStream>
 
 #include "model/od.h"
 
-class Generator
+class OD_EXPORT Generator
 {
 public:
     Generator(QString path);

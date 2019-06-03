@@ -1,6 +1,8 @@
 #ifndef DATATYPE_H
 #define DATATYPE_H
 
+#include "od_global.h"
+
 #include <QString>
 
 #include <stdint.h>
@@ -23,7 +25,7 @@ typedef union
     float64_t   _float64;
 }type;
 
-class DataType
+class OD_EXPORT DataType
 {
 public:
 

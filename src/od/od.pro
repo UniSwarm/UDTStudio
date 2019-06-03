@@ -1,4 +1,6 @@
 
+DEFINES += OD_EXPORT_LIB
+
 HEADERS += \
     $$PWD/model/index.h \
     $$PWD/model/subindex.h \
@@ -6,6 +8,7 @@ HEADERS += \
     $$PWD/model/datatype.h \
     $$PWD/parser/edsparser.h \
     $$PWD/generator/generator.h \
+    $$PWD/od_global.h
 
 SOURCES += \
     $$PWD/main.cpp \

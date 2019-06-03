@@ -1,6 +1,8 @@
 #ifndef INDEX_H
 #define INDEX_H
 
+#include "od_global.h"
+
 #include <QList>
 #include <QString>
 
@@ -9,7 +11,7 @@
 
 #include <stdint.h>
 
-class Index : public SubIndex
+class OD_EXPORT Index : public SubIndex
 {
 public:
 

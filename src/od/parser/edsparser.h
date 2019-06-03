@@ -1,11 +1,13 @@
 #ifndef EDSPARSER_H
 #define EDSPARSER_H
 
+#include "od_global.h"
+
 #include <QString>
 
 #include "model/od.h"
 
-class EdsParser
+class OD_EXPORT EdsParser
 {
 public:
     EdsParser(QString path);
