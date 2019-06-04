@@ -2,4 +2,4 @@
 build*
 OD.c
 OD.h
-
+bin/

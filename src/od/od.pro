@@ -1,4 +1,10 @@
 
+QT += core
+
+TARGET = od
+TEMPLATE = app
+DESTDIR = "$$PWD/../../bin"
+
 DEFINES += OD_EXPORT_LIB
 
 HEADERS += \
