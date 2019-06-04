@@ -171,6 +171,9 @@ QString Generator::typeToString(const uint16_t &type) const
     case OD_TYPE_REAL64:
         return QLatin1String("float64_t");
 
+    case OD_TYPE_VISIBLE_STRING:
+        return QLatin1String("vstring_t");
+
     default:
         return QLatin1String("");
     }

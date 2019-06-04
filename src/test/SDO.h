@@ -7,6 +7,8 @@
 // ===== Datatype definitions =================
 typedef float       float32_t;
 typedef double      float64_t;
+typedef uint8_t     vchar_t;
+typedef vchar_t*    vstring_t;
 
 // =============== Data type ==================
 #define OD_TYPE_BOOLEAN			0x0001
