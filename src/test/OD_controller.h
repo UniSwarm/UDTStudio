@@ -2,7 +2,6 @@
 #ifndef OD_CONTROLLER_H
 #define OD_CONTROLLER_H
 
-
 #include "OD.h"
 
 // ============ sdo abort codes =============

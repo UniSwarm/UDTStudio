@@ -9,6 +9,8 @@
 
 typedef float       float32_t;
 typedef double      float64_t;
+typedef uint8_t     vchar_t;
+typedef vchar_t*    vstring_t;
 
 typedef union
 {
@@ -23,6 +25,7 @@ typedef union
     uint64_t    _uint64;
     float32_t   _float32;
     float64_t   _float64;
+    vstring_t   _vstring;
 }type;
 
 class OD_EXPORT DataType
@@ -40,6 +43,7 @@ public:
     DataType(const uint64_t &val);
     DataType(const float32_t &val);
     DataType(const float64_t &val);
+    DataType(const vstring_t &val);
 
     bool toBool() const;
     int8_t toInt8() const;
@@ -52,6 +56,7 @@ public:
     uint64_t toUInt64() const;
     float32_t toFloat32() const;
     float64_t toFloat64() const;
+    vstring_t toVString() const;
 
 private:
     type _type;

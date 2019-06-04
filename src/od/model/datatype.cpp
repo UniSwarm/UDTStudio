@@ -101,6 +101,15 @@ DataType::DataType(const float64_t &val)
 }
 
 /**
+ * @brief vstring_t constructor
+ * @param value
+ */
+DataType::DataType(const vstring_t &val)
+{
+    _type._vstring = val;
+}
+
+/**
  * @brief returns value to specific format
  * @return a boolean
  */
@@ -197,5 +206,14 @@ float32_t DataType::toFloat32() const
 float64_t DataType::toFloat64() const
 {
     return _type._float64;
+}
+
+/**
+ * @brief returns value to specific format
+ * @return a visible string
+ */
+vstring_t DataType::toVString() const
+{
+    return _type._vstring;
 }
 
