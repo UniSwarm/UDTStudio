@@ -4,6 +4,7 @@
 #include "od_global.h"
 
 #include <QString>
+#include <QSettings>
 
 #include "model/od.h"
 
@@ -14,6 +15,8 @@ public:
     void parse(OD *od);
 
 private:
+    DataType *readData(const QSettings &eds) const;
+
     QString _edsFile;
 };
 

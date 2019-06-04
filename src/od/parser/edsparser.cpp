@@ -1,5 +1,4 @@
 
-#include <QSettings>
 #include <QRegularExpression>
 
 #include "edsparser.h"
@@ -83,21 +82,7 @@ void EdsParser::parse(OD *od)
             }
 
             else if (key == "DataType")
-            {
                 dataType = eds.value(key).toString().toInt(&ok, 16);
-
-                switch(dataType)
-                {
-                case OD_TYPE_REAL32:
-                    data = new DataType(eds.value("DefaultValue").toString().toFloat(&ok));
-
-                case OD_TYPE_REAL64:
-                    data = new DataType(eds.value("DefaultValue").toString().toDouble(&ok));
-
-                default:
-                    data = new DataType(eds.value("DefaultValue").toString().toInt(&ok, 16));
-                }
-            }
 
             else if (key == "ObjectType")
                 objectType = eds.value(key).toString().toInt(&ok, 16);
@@ -110,6 +95,7 @@ void EdsParser::parse(OD *od)
 
         }
 
+        data = readData(eds);
         eds.endGroup();
 
         if (isSubIndex)
@@ -128,4 +114,59 @@ void EdsParser::parse(OD *od)
             od->addIndex(index);
         }
     }
+}
+
+DataType* EdsParser::readData(const QSettings &eds) const
+{
+    bool ok;
+    uint16_t dataType = eds.value("DataType").toString().toInt(&ok, 16);
+    DataType *data = nullptr;
+
+    switch(dataType)
+    {
+    case OD_TYPE_INTEGER8:
+        data = new DataType(eds.value("DefaultValue").toString().toShort(&ok));
+        break;
+
+    case OD_TYPE_INTEGER16:
+        data = new DataType(eds.value("DefaultValue").toString().toShort(&ok));
+        break;
+
+    case OD_TYPE_INTEGER32:
+        data = new DataType(eds.value("DefaultValue").toString().toInt(&ok));
+        break;
+
+    case OD_TYPE_INTEGER64:
+        data = new DataType(eds.value("DefaultValue").toString().toLong(&ok));
+        break;
+    case OD_TYPE_UNSIGNED8:
+        data = new DataType(eds.value("DefaultValue").toString().toUShort(&ok));
+        break;
+
+    case OD_TYPE_UNSIGNED16:
+        data = new DataType(eds.value("DefaultValue").toString().toUShort(&ok));
+        break;
+
+    case OD_TYPE_UNSIGNED32:
+        data = new DataType(eds.value("DefaultValue").toString().toUInt(&ok));
+        break;
+
+    case OD_TYPE_UNSIGNED64:
+        data = new DataType(eds.value("DefaultValue").toString().toULong(&ok));
+        break;
+
+    case OD_TYPE_REAL32:
+        data = new DataType(eds.value("DefaultValue").toString().toFloat(&ok));
+        break;
+
+    case OD_TYPE_REAL64:
+        data = new DataType(eds.value("DefaultValue").toString().toDouble(&ok));
+        break;
+
+    case OD_TYPE_VISIBLE_STRING:
+        data = new DataType(0);
+        break;
+    }
+
+    return data;
 }
