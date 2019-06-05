@@ -19,7 +19,7 @@ private:
     QString typeToString(const uint16_t &type) const;
     QString varNameToString(const QString &name) const;
     QString structNameToString(const QString &name) const;
-    QString dataToString(const SubIndex *index) const;
+    QString dataToString(const SubIndex *index, uint8_t subNumber) const;
     QString typeObjectToString(const SubIndex *subIndex) const;
 
     void writeRecordDefinitionH(Index *index, QTextStream &hFile) const;
