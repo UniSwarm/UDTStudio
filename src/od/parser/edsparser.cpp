@@ -24,7 +24,6 @@ void EdsParser::parse(OD *od)
     QString accessString;
     QString parameterName;
     Index *index;
-    Index *record;
     SubIndex *subIndex;
     DataType *data;
 
@@ -46,18 +45,18 @@ void EdsParser::parse(OD *od)
         if (matchSub.hasMatch())
         {
             QString matchedSub = matchSub.captured(1);
-            record = od->index(matchedSub.toInt(&ok));
+            index = od->index(matchedSub.toInt(&ok));
             isSubIndex = true;
         }
+
         else if (matchIndex.hasMatch())
         {
             QString matchedIndex = matchIndex.captured(0);
             indexNumber = matchedIndex.toInt(&ok);
         }
+
         else
-        {
             continue;
-        }
 
         eds.beginGroup(group);
 
@@ -100,9 +99,20 @@ void EdsParser::parse(OD *od)
 
         if (isSubIndex)
         {
-            subIndex = new SubIndex(dataType, objectType, accessType, parameterName);
-            subIndex->addData(data);
-            record->addSubIndex(subIndex);
+            switch (index->objectType())
+            {
+            case OD_OBJECT_RECORD:
+                subIndex = new SubIndex(dataType, objectType, accessType, parameterName);
+                subIndex->addData(data);
+                index->addSubIndex(subIndex);
+                break;
+
+            case OD_OBJECT_ARRAY:
+                index->setDataType(dataType);
+                index->setAccessType(accessType);
+                index->addData(data);
+                break;
+            }
         }
         else
         {

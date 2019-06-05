@@ -61,3 +61,30 @@ ObjectType=0x07
 DataType=0x0007
 AccessType=ro
 PDOMapping=0
+
+[6046]
+SubNumber=3
+ParameterName=Vl Velocity Min Max Amount
+ObjectType=0x08
+
+[6046sub0]
+ParameterName=Number of Entries
+ObjectType=0x07
+DataType=0x0005
+AccessType=ro
+DefaultValue=0x00000002
+PDOMapping=0
+
+[6046sub1]
+ParameterName=Vl_Velocity_Min_Amount
+ObjectType=0x07
+DataType=0x0007
+AccessType=rw
+PDOMapping=0
+
+[6046sub2]
+ParameterName=Vl_Velocity_Max_Amount
+ObjectType=0x07
+DataType=0x0007
+AccessType=rw
+PDOMapping=0

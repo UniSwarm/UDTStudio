@@ -409,6 +409,10 @@ void Generator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
  */
 void Generator::writeOdCompletionC(Index *index, QTextStream &cFile) const
 {
+
+    if ( index->objectType() == OD_OBJECT_ARRAY)
+        return;
+
     cFile << "\t" << "{";
     //TODO PDOmapping
     cFile << "0x" << index->index() << ", " << "0x";
@@ -424,7 +428,7 @@ void Generator::writeOdCompletionC(Index *index, QTextStream &cFile) const
         break;
 
     case OD_OBJECT_ARRAY:
-        cFile << index->nbSubIndex();
+        cFile << index->nbSubIndex()-1;
         break;
     }
 
