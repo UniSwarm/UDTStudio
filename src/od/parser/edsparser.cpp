@@ -28,8 +28,8 @@ void EdsParser::parse(OD *od)
     DataType *data;
 
     QSettings eds(_edsFile, QSettings::IniFormat);
-    QRegularExpression reSub("([0-9]+)(sub[0-9]+)");
-    QRegularExpression reIndex("([0-9]+)");
+    QRegularExpression reSub("([0-Z]{4})(sub[0-9]+)");
+    QRegularExpression reIndex("([0-Z]{4})");
 
     foreach (const QString &group, eds.childGroups())
     {
@@ -45,14 +45,14 @@ void EdsParser::parse(OD *od)
         if (matchSub.hasMatch())
         {
             QString matchedSub = matchSub.captured(1);
-            index = od->index(matchedSub.toInt(&ok));
+            index = od->index(matchedSub.toInt(&ok, 16));
             isSubIndex = true;
         }
 
         else if (matchIndex.hasMatch())
         {
             QString matchedIndex = matchIndex.captured(0);
-            indexNumber = matchedIndex.toInt(&ok);
+            indexNumber = matchedIndex.toInt(&ok, 16);
         }
 
         else

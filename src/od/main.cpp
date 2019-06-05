@@ -15,7 +15,7 @@ int main()
     OD *od;
     od = new OD;
 
-    QString path("../eds/custom.eds");
+    QString path("../eds/402.eds");
 
     EdsParser parser(path);
     Generator generator("../src/test");

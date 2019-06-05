@@ -46,7 +46,6 @@ void Generator::generateH(OD *od) const
         writeRecordDefinitionH(index, out);
     }
 
-    out << "\n";
     out << "// === struct definitions for memory types ===" << "\n";
 
     //TODO test read access to know wich memory to use (FLASH/RAM)
@@ -117,7 +116,6 @@ void Generator::generateC(OD *od) const
         writeRecordCompletionC(index, out);
     }
 
-    out << "\n";
     out << "// ============ object dicitonary completion ==============" << "\n";
     out << "const OD_entry_t OD[OD_NB_ELEMENTS] = " << "\n";
     out << "{" << "\n";
@@ -191,7 +189,10 @@ QString Generator::varNameToString(const QString &name) const
 
     for (int i=0; i < modified.count(); i++)
     {
-        if(modified[i] == QChar(' '))
+        if (modified[i] == QChar('-'))
+            modified[i] = QChar(' ');
+
+        if (modified[i] == QChar(' '))
             modified[i+1] = modified[i+1].toUpper();
     }
 
@@ -318,7 +319,7 @@ void Generator::writeRecordDefinitionH(Index *index, QTextStream &hFile) const
         {
             hFile << "\t" << typeToString(subIndex->dataType()) << "\t"<< varNameToString(subIndex->parameterName()) << ";" << "\n";
         }
-         hFile << "} " << structNameToString(index->parameterName()) << ";\n";
+         hFile << "} " << structNameToString(index->parameterName()) << ";\n\n";
     }
 }
 
@@ -403,7 +404,7 @@ void Generator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
 {
     if ( index->objectType() == OD_OBJECT_RECORD)
     {
-        cFile << "const OD_entrySubIndex_t OD_Record" << QString::number(index->index()) << "[" << index->nbSubIndex() << "] =\n";
+        cFile << "const OD_entrySubIndex_t OD_Record" << QString::number(index->index(), 16).toUpper() << "[" << index->nbSubIndex() << "] =\n";
         cFile << "{\n";
 
         foreach (SubIndex *subIndex, index->subIndexes())
@@ -415,7 +416,7 @@ void Generator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
             cFile << "\n";
         }
 
-        cFile << "};\n";
+        cFile << "};\n\n";
     }
 }
 
@@ -428,7 +429,7 @@ void Generator::writeOdCompletionC(Index *index, QTextStream &cFile) const
 {
     cFile << "\t" << "{";
     //TODO PDOmapping
-    cFile << "0x" << index->index() << ", " << "0x";
+    cFile << "0x" << QString::number(index->index(), 16).toUpper() << ", " << "0x";
 
     switch (index->objectType())
     {
@@ -454,7 +455,7 @@ void Generator::writeOdCompletionC(Index *index, QTextStream &cFile) const
         break;
 
     case OD_OBJECT_RECORD:
-        cFile << "(void*)OD_Record" << index->index();
+        cFile << "(void*)OD_Record" << QString::number(index->index(), 16).toUpper();
         break;
 
     case OD_OBJECT_ARRAY:
