@@ -338,6 +338,11 @@ void Generator::writeIndexH(Index *index, QTextStream &hFile) const
     case OD_OBJECT_RECORD:
         hFile << "\t" << structNameToString(index->parameterName()) << "\t" << varNameToString(index->parameterName()) << ";" << "\n";
         break;
+
+    case OD_OBJECT_ARRAY:
+        hFile << "\t" << typeToString(index->dataType()) << "\t" << varNameToString(index->parameterName());
+        hFile << "[" << index->nbSubIndex()-1 << "]" << ";" << "\n";
+        break;
     }
 }
 
