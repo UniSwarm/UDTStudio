@@ -9,8 +9,7 @@
 
 typedef float       float32_t;
 typedef double      float64_t;
-typedef uint8_t     vchar_t;
-typedef vchar_t*    vstring_t;
+typedef char*       vstring_t;
 
 typedef union
 {
@@ -56,7 +55,7 @@ public:
     uint64_t toUInt64() const;
     float32_t toFloat32() const;
     float64_t toFloat64() const;
-    vstring_t toVString() const;
+    QString toVString() const;
 
 private:
     type _type;

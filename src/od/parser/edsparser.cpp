@@ -164,7 +164,7 @@ DataType* EdsParser::readData(const QSettings &eds) const
         break;
 
     case OD_TYPE_VISIBLE_STRING:
-        data = new DataType(0);
+        data = new DataType("");
         break;
     }
 

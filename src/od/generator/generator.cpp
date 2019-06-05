@@ -267,8 +267,12 @@ QString Generator::dataToString(const SubIndex *index) const
         data = "0x" + QString::number(index->data(0)->toFloat64());
         break;
 
+    case OD_TYPE_VISIBLE_STRING:
+        data = "\"" + index->data(0)->toVString() + "\"";
+        break;
+
     default:
-        data = "";
+        data = "0x0";
     }
 
     return data;

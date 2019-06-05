@@ -212,8 +212,8 @@ float64_t DataType::toFloat64() const
  * @brief returns value to specific format
  * @return a visible string
  */
-vstring_t DataType::toVString() const
+QString DataType::toVString() const
 {
-    return _type._vstring;
+    return QString(_type._vstring);
 }
 

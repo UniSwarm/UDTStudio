@@ -15,7 +15,7 @@ int main()
     OD *od;
     od = new OD;
 
-    QString path("../eds/301.eds");
+    QString path("../eds/custom.eds");
 
     EdsParser parser(path);
     Generator generator("../src/test");
