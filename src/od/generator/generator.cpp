@@ -224,40 +224,44 @@ QString Generator::structNameToString(const QString &name) const
 QString Generator::dataToString(const SubIndex *index, uint8_t subNumber) const
 {
     QString data;
+    bool ok;
 
     //TODO change data parameters to handle arrays
     switch (index->dataType())
     {
     case OD_TYPE_INTEGER8:
-        data = "0x" + QString::number(index->data(subNumber)->toInt8());
+        data += QString::number(index->data(subNumber)->toInt8(), 16);
+        data = data.right(2);
+        data = data.toUpper();
+        data.prepend("0x");
         break;
 
     case OD_TYPE_INTEGER16:
-        data = "0x" + QString::number(index->data(subNumber)->toInt16());
+        data = "0x" + QString::number(index->data(subNumber)->toInt16(), 16).toUpper();
         break;
 
     case OD_TYPE_INTEGER32:
-        data = "0x" + QString::number(index->data(subNumber)->toInt32());
+        data = "0x" + QString::number(index->data(subNumber)->toInt32(), 16).toUpper();
         break;
 
     case OD_TYPE_INTEGER64:
-        data = "0x" + QString::number(index->data(subNumber)->toInt64());
+        data = "0x" + QString::number(index->data(subNumber)->toInt64(), 16).toUpper();
         break;
 
     case OD_TYPE_UNSIGNED8:
-        data = "0x" + QString::number(index->data(subNumber)->toUInt8());
+        data = "0x" + QString::number(index->data(subNumber)->toUInt8(), 16).toUpper();
         break;
 
     case OD_TYPE_UNSIGNED16:
-        data = "0x" + QString::number(index->data(subNumber)->toUInt16());
+        data = "0x" + QString::number(index->data(subNumber)->toUInt16(), 16).toUpper();
         break;
 
     case OD_TYPE_UNSIGNED32:
-        data = "0x" + QString::number(index->data(subNumber)->toUInt32());
+        data = "0x" + QString::number(index->data(subNumber)->toUInt32(), 16).toUpper();
         break;
 
     case OD_TYPE_UNSIGNED64:
-        data = "0x" + QString::number(index->data(subNumber)->toUInt64());
+        data = "0x" + QString::number(index->data(subNumber)->toUInt64(), 16).toUpper();
         break;
 
     case OD_TYPE_REAL32:

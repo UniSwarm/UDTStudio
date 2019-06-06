@@ -38,6 +38,7 @@ void EdsParser::parse(OD *od)
         dataType = 0;
         objectType = 0;
         subNumber = 0;
+        data = nullptr;
 
         QRegularExpressionMatch matchSub = reSub.match(group);
         QRegularExpressionMatch matchIndex = reIndex.match(group);
@@ -91,7 +92,6 @@ void EdsParser::parse(OD *od)
 
             else if (key == "SubNumber")
                 subNumber = eds.value(key).toString().toInt(&ok, 10);
-
         }
 
         data = readData(eds);
@@ -135,34 +135,35 @@ DataType* EdsParser::readData(const QSettings &eds) const
     switch(dataType)
     {
     case OD_TYPE_INTEGER8:
-        data = new DataType(eds.value("DefaultValue").toString().toShort(&ok));
+        data = new DataType(eds.value("DefaultValue").toString().toShort(&ok, 16));
         break;
 
     case OD_TYPE_INTEGER16:
-        data = new DataType(eds.value("DefaultValue").toString().toShort(&ok));
+        data = new DataType(eds.value("DefaultValue").toString().toShort(&ok, 16));
         break;
 
     case OD_TYPE_INTEGER32:
-        data = new DataType(eds.value("DefaultValue").toString().toInt(&ok));
+        data = new DataType(eds.value("DefaultValue").toString().toInt(&ok, 16));
         break;
 
     case OD_TYPE_INTEGER64:
-        data = new DataType(eds.value("DefaultValue").toString().toLong(&ok));
+        data = new DataType(eds.value("DefaultValue").toString().toLong(&ok, 16));
         break;
+
     case OD_TYPE_UNSIGNED8:
-        data = new DataType(eds.value("DefaultValue").toString().toUShort(&ok));
+        data = new DataType(eds.value("DefaultValue").toString().toInt(&ok, 16));
         break;
 
     case OD_TYPE_UNSIGNED16:
-        data = new DataType(eds.value("DefaultValue").toString().toUShort(&ok));
+        data = new DataType(eds.value("DefaultValue").toString().toUShort(&ok, 16));
         break;
 
     case OD_TYPE_UNSIGNED32:
-        data = new DataType(eds.value("DefaultValue").toString().toUInt(&ok));
+        data = new DataType(eds.value("DefaultValue").toString().toUInt(&ok, 16));
         break;
 
     case OD_TYPE_UNSIGNED64:
-        data = new DataType(eds.value("DefaultValue").toString().toULong(&ok));
+        data = new DataType(eds.value("DefaultValue").toString().toULong(&ok, 16));
         break;
 
     case OD_TYPE_REAL32:
