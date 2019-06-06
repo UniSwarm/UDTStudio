@@ -224,7 +224,6 @@ QString Generator::structNameToString(const QString &name) const
 QString Generator::dataToString(const SubIndex *index, uint8_t subNumber) const
 {
     QString data;
-    bool ok;
 
     //TODO change data parameters to handle arrays
     switch (index->dataType())
@@ -273,7 +272,7 @@ QString Generator::dataToString(const SubIndex *index, uint8_t subNumber) const
         break;
 
     case OD_TYPE_VISIBLE_STRING:
-        data = "\"" + index->data(subNumber)->toVString() + "\"";
+        data = "0x" + QString::number(index->data(subNumber)->toUInt8(), 16);
         break;
 
     default:
