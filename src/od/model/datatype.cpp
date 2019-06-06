@@ -104,9 +104,9 @@ DataType::DataType(const float64_t &val)
  * @brief vstring_t constructor
  * @param value
  */
-DataType::DataType(const vstring_t &val)
+DataType::DataType(const QString &val)
 {
-    _type._vstring = val;
+   _string = val;
 }
 
 /**
@@ -214,6 +214,6 @@ float64_t DataType::toFloat64() const
  */
 QString DataType::toVString() const
 {
-    return QString(_type._vstring);
+    return _string;
 }
 

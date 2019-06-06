@@ -272,7 +272,14 @@ QString Generator::dataToString(const SubIndex *index, uint8_t subNumber) const
         break;
 
     case OD_TYPE_VISIBLE_STRING:
-        data = "0x" + QString::number(index->data(subNumber)->toUInt8(), 16);
+        data = index->data(subNumber)->toVString();
+
+        if (data.left(2) != "0x")
+        {
+            data.prepend("\"");
+            data.append("\"");
+        }
+
         break;
 
     default:
