@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     QString path(file);
 
     EdsParser parser(path);
-    Generator generator("../src/test");
+    Generator generator("../src/od/test");
 
     parser.parse(od);
     generator.generateH(od);

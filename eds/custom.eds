@@ -1,40 +1,40 @@
-[6403]
-ParameterName=Motor Catalogue Number
+[1018]
+SubNumber=5
+ParameterName=Identity Object
+ObjectType=0x09
+
+[1018sub0]
+ParameterName=number of entries
 ObjectType=0x07
-DataType=0x0009
-AccessType=rw
-DefaultValue=0x0
+DataType=0x0005
+AccessType=ro
+DefaultValue=0x4
 PDOMapping=0
 
-[6404]
-ParameterName=Motor Manufacturer
+[1018sub1]
+ParameterName=Vendor Id
 ObjectType=0x07
-DataType=0x0009
-AccessType=rw
-DefaultValue=0x0
+DataType=0x0007
+AccessType=ro
 PDOMapping=0
 
-[6405]
-ParameterName=Http Motor Catalog Address
+[1018sub2]
+ParameterName=Product Code
 ObjectType=0x07
-DataType=0x0009
-AccessType=rw
+DataType=0x0007
+AccessType=ro
 PDOMapping=0
 
-[1008]
-ParameterName=Manufacturer Device Name
-ObjectType=0x7
-DataType=0x0009
-AccessType=const
-DefaultValue=PD2-C411L18-E-65-08
+[1018sub3]
+ParameterName=Revision number
+ObjectType=0x07
+DataType=0x0007
+AccessType=ro
 PDOMapping=0
-ObjFlags=1
 
-[1009]
-ParameterName=Manufacturer Hardware Version
-ObjectType=0x7
-DataType=0x0009
-AccessType=const
-DefaultValue=
+[1018sub4]
+ParameterName=Serial number
+ObjectType=0x07
+DataType=0x0007
+AccessType=ro
 PDOMapping=0
-ObjFlags=1
