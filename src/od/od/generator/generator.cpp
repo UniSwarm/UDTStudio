@@ -393,7 +393,7 @@ void Generator::writeRamLineC(Index *index, QTextStream &cFile) const
     case OD_OBJECT_ARRAY:
         datas = index->datas();
         datas.removeFirst();
-        cpt = 1;
+        cpt = 0;
         foreach(DataType *data, datas)
         {
             cFile << "\t" << "OD_RAM." << varNameToString(index->parameterName()) << "[" << cpt << "]";
