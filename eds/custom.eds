@@ -1,3 +1,27 @@
+[1001]
+ParameterName=Error Register
+ObjectType=0x07
+DataType=0x0005
+AccessType=ro
+DefaultValue=0x01
+PDOMapping=0
+
+[1008]
+ParameterName=Manufacturer Device Name
+ObjectType=0x7
+DataType=0x0009
+AccessType=const
+DefaultValue=test
+PDOMapping=0
+
+[1017]
+ParameterName=Producer Heartbeat Time
+ObjectType=0x07
+DataType=0x0006
+AccessType=rw
+DefaultValue=0x17
+PDOMapping=0
+
 [1018]
 SubNumber=5
 ParameterName=Identity Object
@@ -16,6 +40,7 @@ ParameterName=Vendor Id
 ObjectType=0x07
 DataType=0x0007
 AccessType=ro
+DefaultValue=0x1
 PDOMapping=0
 
 [1018sub2]
@@ -23,6 +48,7 @@ ParameterName=Product Code
 ObjectType=0x07
 DataType=0x0007
 AccessType=ro
+DefaultValue=0x2
 PDOMapping=0
 
 [1018sub3]
@@ -30,6 +56,7 @@ ParameterName=Revision number
 ObjectType=0x07
 DataType=0x0007
 AccessType=ro
+DefaultValue=0x3
 PDOMapping=0
 
 [1018sub4]
@@ -37,4 +64,5 @@ ParameterName=Serial number
 ObjectType=0x07
 DataType=0x0007
 AccessType=ro
+DefaultValue=0x4
 PDOMapping=0

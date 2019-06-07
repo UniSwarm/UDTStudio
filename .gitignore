@@ -3,3 +3,4 @@ build*
 OD.c
 OD.h
 bin/
+src/od/test/test

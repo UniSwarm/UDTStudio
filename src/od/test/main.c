@@ -1,132 +1,75 @@
 
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
+#include <assert.h>
 #include "OD_controller.h"
 
 //==========test on OD_OBJECT_VAR =============
-int testReadObjectVar()
+void testReadObjectVar()
 {
-	void *ptData;
     int32_t code;
     uint16_t *value;
 
-    code = OD_read(0x1017, 0x00, &ptData);
-	
-    value = (uint16_t*)ptData;
-
-	if (code >= 0)
-	{
-        printf("1017 value: %x\n", *value);
-        return 0;
-	}
-	else
-	{
-		printf("code retour: %x\n", -code);
-		exit(-1);
-	}
+    assert(OD_read(0x1017, 0x00, &value) == 6);
+    assert(*value == 0x17);
 }
 
-int testReadObjectVarRO()
+void testReadObjectVarRO()
 {
-	void *ptData;
-    int32_t code;
-    uint32_t *value;
-
-	code = OD_read(0x1001, 0x00, &ptData);
-	
-    value = (uint32_t*)ptData;
-
-	if (code >= 0)
-	{
-        printf("1001 value: %x\n", *value);
-        return 0;
-	}
-	else
-	{
-		printf("code retour: %x\n", -code);
-		exit(-1);
-	}
-}
-
-int testReadObjectVarNoObject()
-{
-	void *ptData;
-    int32_t code;
-    uint32_t *value;
-
-	code = OD_read(0x1002, 0x00, &ptData);
-	
-    value = (uint32_t*)ptData;
-
-	if (code >= 0)
-	{
-        printf("1001 value: %x\n", *value);
-		exit(-1);
-	}
-	else
-	{
-		printf("code retour: %x\n", -code);
-		return 0;
-	}
-}
-
-int testReadObjectVarNoSub()
-{
-	void *ptData;
-    int32_t code;
-    uint32_t *value;
-
-	code = OD_read(0x1001, 0x01, &ptData);
-	
-    value = (uint32_t*)ptData;
-
-	if (code >= 0)
-	{
-        printf("1001 value: %x\n", *value);
-		exit(-1);
-	}
-	else
-	{
-		printf("code retour: %x\n", -code);
-		return 0;
-	}
-}
-
-//==========test on OD_OBJECT_RECORD ==========
-int testReadObjectRecord()
-{
-	void *ptData;
     int32_t code;
     uint8_t *value;
 
-	code = OD_read(0x1018, 0x00, &ptData);
-	
-    value = (uint8_t*)ptData;
-
-	if (code >= 0)
-	{
-        printf("1018sub0 value: %x\n", *value);
-        return 0;
-	}
-	else
-	{
-		printf("code retour: %x\n", -code);
-		exit(-1);
-	}
+    assert(OD_read(0x1001, 0x00, &value) == 5);
+    assert(*value == 0x1);
 }
 
+void testReadObjectVarNoObject()
+{
+	int32_t code;
+    uint8_t *value;
 
+    assert(OD_read(0x10, 0x00, &value) == -OD_ABORT_CODE_NO_OBJECT);
+}
+
+void testReadObjectVarNoSub()
+{
+	int32_t code;
+    uint8_t *value;
+
+    assert(OD_read(0x1001, 0x01, &value) == -OD_ABORT_CODE_NO_SUBINDEX);
+}
+
+//==========test on OD_OBJECT_RECORD ==========
+void testReadObjectRecord()
+{
+    int32_t code;
+    uint32_t *value;
+
+    assert(OD_read(0x1018, 0x01, &value) == 7);
+    assert(*value == 0x1);
+}
+
+//=========test on OD_TYPE_VISIBLE_STRING=========
+void testVisibleString()
+{
+	int32_t 	code;
+	vstring_t*	value;
+
+	assert(OD_read(0x1008, 0x00, &value) == 9);
+	assert(strcmp(*value, "test") == 0);
+}
 
 int main()
 {
 	OD_reset();
-	printf("==========test on OD_OBJECT_VAR =============\n");
+
 	testReadObjectVar();
     testReadObjectVarRO();
     testReadObjectVarNoObject();
     testReadObjectVarNoSub();
-    printf("==========test on OD_OBJECT_RECORD ==========\n");
     testReadObjectRecord();
+	testVisibleString();
 
 	return 0;
 }
