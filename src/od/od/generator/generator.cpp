@@ -391,11 +391,11 @@ void Generator::writeRamLineC(Index *index, QTextStream &cFile) const
         datas = index->datas();
         datas.removeFirst();
         cpt = 0;
-        foreach(DataType *data, datas)
+        foreach (DataType *data, datas)
         {
             cFile << "    " << "OD_RAM." << varNameToString(index->parameterName()) << "[" << cpt << "]";
             cFile << " = ";
-            cFile << dataToString(index, cpt);
+            cFile << dataToString(index, cpt+1);
             cFile << ";\n";
             cpt++;
         }
