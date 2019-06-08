@@ -229,22 +229,19 @@ QString Generator::dataToString(const SubIndex *index, uint8_t subNumber) const
     switch (index->dataType())
     {
     case OD_TYPE_INTEGER8:
-        data += QString::number(index->data(subNumber)->toInt8(), 16);
-        data = data.right(2);
-        data = data.toUpper();
-        data.prepend("0x");
+        data += "0x" + QString::number(index->data(subNumber)->toInt8(), 16).right(2).toUpper();
         break;
 
     case OD_TYPE_INTEGER16:
-        data = "0x" + QString::number(index->data(subNumber)->toInt16(), 16).toUpper();
+        data = "0x" + QString::number(index->data(subNumber)->toInt16(), 16).right(4).toUpper();
         break;
 
     case OD_TYPE_INTEGER32:
-        data = "0x" + QString::number(index->data(subNumber)->toInt32(), 16).toUpper();
+        data = "0x" + QString::number(index->data(subNumber)->toInt32(), 16).right(8).toUpper();
         break;
 
     case OD_TYPE_INTEGER64:
-        data = "0x" + QString::number(index->data(subNumber)->toInt64(), 16).toUpper();
+        data = "0x" + QString::number(index->data(subNumber)->toInt64(), 16).right(16).toUpper();
         break;
 
     case OD_TYPE_UNSIGNED8:
