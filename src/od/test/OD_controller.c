@@ -115,8 +115,16 @@ int32_t OD_read(uint16_t index, uint8_t subIndex, void **ptData)
 
     if ((entry->typeObject & OD_OBJECT_MASK) == OD_OBJECT_ARRAY)
     {
-        *ptData = (void*)entry->ptData + ((entry->length) * subIndex - 1);
-        return entry->typeObject & OD_TYPE_MASK;
+        if (subIndex == 0)
+        {
+            *ptData = (void*)(&entry->nbSubIndex);
+            return OD_TYPE_UNSIGNED8;
+        }
+        else
+        {
+            *ptData = (void*)entry->ptData + (entry->length * (subIndex - 1));
+            return entry->typeObject & OD_TYPE_MASK;
+        }
     }
 
     *ptData = (void *)entry->ptData;
