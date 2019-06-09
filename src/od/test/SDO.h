@@ -67,7 +67,7 @@ typedef struct {
 
 // OD entry
 // !!! length at 0 when object is a record
-typedef    struct {
+typedef struct {
     uint16_t   index;
     uint8_t    nbSubIndex;
     void*      ptData;

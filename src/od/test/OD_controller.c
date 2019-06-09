@@ -175,50 +175,50 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint16_t dataTy
 
         if ((sub->typeObject & OD_TYPE_MASK) != dataType)
         {
-           return -OD_ABORT_CODE_LENGTH_DOESNT_MATCH;
+            return -OD_ABORT_CODE_LENGTH_DOESNT_MATCH;
         }
 
         switch (dataType)
         {
         case OD_TYPE_UNSIGNED8:
-           *((uint8_t*)sub->ptData) = *(uint8_t*)ptData;
-           break;
+            *((uint8_t*)sub->ptData) = *(uint8_t*)ptData;
+            break;
 
         case OD_TYPE_UNSIGNED16:
-           *((uint16_t*)sub->ptData) = *(uint16_t*)ptData;
-           break;
+            *((uint16_t*)sub->ptData) = *(uint16_t*)ptData;
+            break;
 
         case OD_TYPE_UNSIGNED32:
             *((uint32_t*)sub->ptData) = *((uint32_t*)ptData);
-           break;
+            break;
 
         case OD_TYPE_UNSIGNED64:
             *((uint64_t*)sub->ptData) = *((uint64_t*)ptData);
-           break;
+            break;
 
         case OD_TYPE_INTEGER8:
-           *((int8_t*)sub->ptData) = *(int8_t*)ptData;
-           break;
+            *((int8_t*)sub->ptData) = *(int8_t*)ptData;
+            break;
 
         case OD_TYPE_INTEGER16:
-           *((int16_t*)sub->ptData) = *(int16_t*)ptData;
-           break;
+            *((int16_t*)sub->ptData) = *(int16_t*)ptData;
+            break;
 
         case OD_TYPE_INTEGER32:
             *((int32_t*)sub->ptData) = *((int32_t*)ptData);
-           break;
+            break;
 
         case OD_TYPE_INTEGER64:
             *((int64_t*)sub->ptData) = *((int64_t*)ptData);
-           break;
+            break;
 
         case OD_TYPE_REAL32:
             *((float32_t*)sub->ptData) = *((float32_t*)ptData);
-           break;
+            break;
 
         case OD_TYPE_REAL64:
             *((float64_t*)sub->ptData) = *((float64_t*)ptData);
-           break;
+            break;
         }
 
         return sub->typeObject & OD_TYPE_MASK;
@@ -226,7 +226,7 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint16_t dataTy
 
     if ((entry->typeObject & OD_TYPE_MASK) != dataType)
     {
-       return -OD_ABORT_CODE_LENGTH_DOESNT_MATCH;
+        return -OD_ABORT_CODE_LENGTH_DOESNT_MATCH;
     }
 
     if ((entry->typeObject & OD_OBJECT_MASK) == OD_OBJECT_ARRAY)
@@ -234,44 +234,44 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint16_t dataTy
         switch (dataType)
         {
         case OD_TYPE_UNSIGNED8:
-           *((uint8_t*)entry->ptData + ((entry->length) * (subIndex - 1))) = *(uint8_t*)ptData;
-           break;
+            *((uint8_t*)entry->ptData + ((entry->length) * (subIndex - 1))) = *(uint8_t*)ptData;
+            break;
 
         case OD_TYPE_UNSIGNED16:
-           *((uint16_t*)entry->ptData + ((entry->length) * (subIndex - 1))) = *(uint16_t*)ptData;
-           break;
+            *((uint16_t*)entry->ptData + ((entry->length) * (subIndex - 1))) = *(uint16_t*)ptData;
+            break;
 
         case OD_TYPE_UNSIGNED32:
             *((uint32_t*)entry->ptData + ((entry->length) * (subIndex - 1))) = *((uint32_t*)ptData);
-           break;
+            break;
 
         case OD_TYPE_UNSIGNED64:
             *((uint64_t*)entry->ptData + ((entry->length) * (subIndex - 1))) = *((uint64_t*)ptData);
-           break;
+            break;
 
         case OD_TYPE_INTEGER8:
-           *((int8_t*)entry->ptData + ((entry->length) * (subIndex - 1))) = *(int8_t*)ptData;
-           break;
+            *((int8_t*)entry->ptData + ((entry->length) * (subIndex - 1))) = *(int8_t*)ptData;
+            break;
 
         case OD_TYPE_INTEGER16:
-           *((int16_t*)entry->ptData + ((entry->length) * (subIndex - 1))) = *(int16_t*)ptData;
-           break;
+            *((int16_t*)entry->ptData + ((entry->length) * (subIndex - 1))) = *(int16_t*)ptData;
+            break;
 
         case OD_TYPE_INTEGER32:
             *((int32_t*)entry->ptData + ((entry->length) * (subIndex - 1))) = *((int32_t*)ptData);
-           break;
+            break;
 
         case OD_TYPE_INTEGER64:
             *((int64_t*)entry->ptData + ((entry->length) * (subIndex - 1))) = *((int64_t*)ptData);
-           break;
+            break;
 
         case OD_TYPE_REAL32:
             *((float32_t*)entry->ptData + ((entry->length) * (subIndex - 1))) = *((float32_t*)ptData);
-           break;
+            break;
 
         case OD_TYPE_REAL64:
             *((float64_t*)entry->ptData + ((entry->length) * (subIndex - 1))) = *((float64_t*)ptData);
-           break;
+            break;
         }
 
         return entry->typeObject & OD_TYPE_MASK;
