@@ -1,7 +1,6 @@
+#include "edsparser.h"
 
 #include <QRegularExpression>
-
-#include "edsparser.h"
 
 EdsParser::EdsParser(QString path)
 {
@@ -49,13 +48,11 @@ void EdsParser::parse(OD *od)
             index = od->index(matchedSub.toInt(&ok, 16));
             isSubIndex = true;
         }
-
         else if (matchIndex.hasMatch())
         {
             QString matchedIndex = matchIndex.captured(0);
             indexNumber = matchedIndex.toInt(&ok, 16);
         }
-
         else
             continue;
 
@@ -152,7 +149,7 @@ DataType* EdsParser::readData(const QSettings &eds) const
         break;
 
     case OD_TYPE_INTEGER64:
-        data = new DataType(dataString.toLong(&ok, base));
+        data = new DataType((int64_t)dataString.toLong(&ok, base));
         break;
 
     case OD_TYPE_UNSIGNED8:
@@ -168,7 +165,7 @@ DataType* EdsParser::readData(const QSettings &eds) const
         break;
 
     case OD_TYPE_UNSIGNED64:
-        data = new DataType(dataString.toULong(&ok, base));
+        data = new DataType((uint64_t)dataString.toULong(&ok, base));
         break;
 
     case OD_TYPE_REAL32:

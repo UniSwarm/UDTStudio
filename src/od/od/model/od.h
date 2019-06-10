@@ -9,6 +9,7 @@
 
 #include <stdint.h>
 
+// TODO transforms this defines into OD internal union
 // =============== Data type ==================
 #define OD_TYPE_BOOLEAN       	0x0001
 #define OD_TYPE_INTEGER8      	0x0002

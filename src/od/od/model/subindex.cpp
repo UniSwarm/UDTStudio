@@ -1,8 +1,5 @@
-
 #include "subindex.h"
 #include "od.h"
-
-using namespace std;
 
 /**
  * @brief constructor

@@ -1,6 +1,4 @@
-
 #include "index.h"
-
 
 /**
  * @brief constructor
@@ -11,7 +9,8 @@
  * @param index
  * @param sub-index number
  */
-Index::Index(const uint16_t &dataType, const uint8_t &objectType, const uint8_t &accessType, const QString &parameterName, const uint16_t &index, const uint8_t &nbSubIndex) : SubIndex(dataType, objectType, accessType, parameterName)
+Index::Index(const uint16_t &dataType, const uint8_t &objectType, const uint8_t &accessType, const QString &parameterName, const uint16_t &index, const uint8_t &nbSubIndex)
+    : SubIndex(dataType, objectType, accessType, parameterName)
 {
     _index = index;
     _nbSubIndex = nbSubIndex;

@@ -14,7 +14,6 @@
 class OD_EXPORT Index : public SubIndex
 {
 public:
-
     Index(const uint16_t &dataType, const uint8_t &objectType, const uint8_t &accessType, const QString &parameterName, const uint16_t &index, const uint8_t &nbSubIndex);
     ~Index();
 
@@ -29,10 +28,9 @@ public:
     void addSubIndex(SubIndex *subIndex);
 
 private:
-
-    uint16_t            _index;
-    uint8_t             _nbSubIndex;
-    QList<SubIndex*>    _subIndexes;
+    uint16_t _index;
+    uint8_t _nbSubIndex;
+    QList<SubIndex*> _subIndexes;
 };
 
 #endif // INDEX_H

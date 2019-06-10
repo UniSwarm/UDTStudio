@@ -11,7 +11,6 @@
 class OD_EXPORT SubIndex
 {
 public:
-
     SubIndex(const uint16_t &dataType, const uint8_t &objectType, const uint8_t &accessType, const QString &parameterName);
     ~SubIndex();
 
@@ -33,12 +32,11 @@ public:
 
     uint8_t length() const;
 
-private:
-
-    uint16_t        _dataType;
-    uint8_t         _objectType;
-    uint8_t         _accessType;
-    QString         _parameterName;
+protected:
+    uint16_t _dataType;
+    uint8_t _objectType;
+    uint8_t _accessType;
+    QString _parameterName;
     QList<DataType*> _datas;
 };
 

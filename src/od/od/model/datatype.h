@@ -10,25 +10,9 @@
 typedef float       float32_t;
 typedef double      float64_t;
 
-typedef union
-{
-    bool        _bool;
-    int8_t      _int8;
-    int16_t     _int16;
-    int32_t     _int32;
-    int64_t     _int64;
-    uint8_t     _uint8;
-    uint16_t    _uint16;
-    uint32_t    _uint32;
-    uint64_t    _uint64;
-    float32_t   _float32;
-    float64_t   _float64;
-}type;
-
 class OD_EXPORT DataType
 {
 public:
-
     DataType(const bool &val);
     DataType(const int8_t &val);
     DataType(const int16_t &val);
@@ -56,6 +40,21 @@ public:
     QString toVString() const;
 
 private:
+    typedef union
+    {
+        bool _bool;
+        int8_t _int8;
+        int16_t _int16;
+        int32_t _int32;
+        int64_t _int64;
+        uint8_t _uint8;
+        uint16_t _uint16;
+        uint32_t _uint32;
+        uint64_t _uint64;
+        float32_t _float32;
+        float64_t _float64;
+    } type;
+
     type _type;
     QString _string;
 };
