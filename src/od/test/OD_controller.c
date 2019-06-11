@@ -162,31 +162,23 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint16_t dataTy
     entry = OD_getIndexDicho(index);
 
     if (entry == NULL)
-    {
         return -OD_ABORT_CODE_NO_OBJECT;
-    }
 
     if ((entry->accessPDOmapping & OD_ACCESS_MASK) == OD_ACCESS_READ_ONLY
      || (entry->accessPDOmapping & OD_ACCESS_MASK) == OD_ACCESS_CONST)
-    {
         return -OD_ABORT_CODE_READ_ONLY;
-    }
-    
+
     if ((entry->typeObject & OD_OBJECT_MASK) == OD_OBJECT_RECORD)
     {
         record = entry->ptData;
-        sub = &record[subIndex];
+        sub = OD_getSubIndex(entry, subIndex);
 
         if ((sub->accessPDOmapping & OD_ACCESS_MASK) == OD_ACCESS_READ_ONLY
          || (sub->accessPDOmapping & OD_ACCESS_MASK) == OD_ACCESS_CONST)
-        {
             return -OD_ABORT_CODE_READ_ONLY;
-        }
 
         if ((sub->typeObject & OD_TYPE_MASK) != dataType)
-        {
             //return -OD_ABORT_CODE_LENGTH_DOESNT_MATCH;
-        }
 
         dataType = sub->typeObject & OD_TYPE_MASK;
         switch (dataType)
@@ -235,10 +227,11 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint16_t dataTy
         return sub->typeObject & OD_TYPE_MASK;
     }
 
+    if (subIndex > entry->nbSubIndex)
+        return -OD_ABORT_CODE_NO_SUBINDEX;
+
     if ((entry->typeObject & OD_TYPE_MASK) != dataType)
-    {
         //return -OD_ABORT_CODE_LENGTH_DOESNT_MATCH;
-    }
 
     dataType = entry->typeObject & OD_TYPE_MASK;
     if ((entry->typeObject & OD_OBJECT_MASK) == OD_OBJECT_ARRAY)

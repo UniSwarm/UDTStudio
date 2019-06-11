@@ -8,7 +8,6 @@
 //==========test on OD_OBJECT_VAR =============
 void testReadObjectVar()
 {
-    int32_t code;
     uint16_t *value;
 
     assert(OD_read(0x1017, 0x00, (void**)&value) == 6);
@@ -17,7 +16,6 @@ void testReadObjectVar()
 
 void testReadObjectVarRO()
 {
-    int32_t code;
     uint8_t *value;
 
     assert(OD_read(0x1001, 0x00, (void**)&value) == 5);
@@ -26,7 +24,6 @@ void testReadObjectVarRO()
 
 void testReadObjectVarNoObject()
 {
-	int32_t code;
     uint8_t *value;
 
     assert(OD_read(0x10, 0x00, (void**)&value) == -OD_ABORT_CODE_NO_OBJECT);
@@ -43,7 +40,6 @@ void testReadObjectVarNoSub()
 //==========test on OD_OBJECT_RECORD ==========
 void testReadObjectRecord()
 {
-    int32_t code;
     uint32_t *value;
 
     assert(OD_read(0x1018, 0x01, (void**)&value) == 7);
@@ -52,7 +48,6 @@ void testReadObjectRecord()
 
 void testReadObjectRecordNonConituous()
 {
-    int32_t code;
     uint32_t *value;
 
     assert(OD_read(0x1601, 0x08, (void**)&value) == 7);
@@ -60,13 +55,23 @@ void testReadObjectRecordNonConituous()
 }
 
 //=========test on OD_TYPE_VISIBLE_STRING=========
-void testVisibleString()
+void testReadVisibleString()
 {
 	int32_t 	code;
 	vstring_t*	value;
 
 	assert(OD_read(0x1008, 0x00, (void**)&value) == 9);
 	assert(strcmp(*value, "test") == 0);
+}
+
+void testWriteObjectRecordNonConituous()
+{
+    uint32_t data = 4;
+    uint32_t *value;
+
+    assert(OD_write(0x1601, 0x08, (void*)&data, 0x7) == 7);
+    assert(OD_read(0x1601, 0x08, (void**)&value) == 7);
+    assert(*value == 4);
 }
 
 int main()
@@ -79,7 +84,8 @@ int main()
     testReadObjectVarNoSub();
     testReadObjectRecord();
     testReadObjectRecordNonConituous();
-	testVisibleString();
+	testReadVisibleString();
+    testWriteObjectRecordNonConituous();
 
 	return 0;
 }
