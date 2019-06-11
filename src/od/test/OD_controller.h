@@ -14,7 +14,7 @@
 void OD_reset();
 
 int32_t OD_read(uint16_t index, uint8_t subIndex, void **ptData);
-int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint16_t dataType);
+int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size);
 
 uint8_t OD_sizeFromType(uint16_t dataType);
 

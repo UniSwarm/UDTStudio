@@ -69,7 +69,7 @@ void testWriteObjectRecordNonConituous()
     uint32_t data = 4;
     uint32_t *value;
 
-    assert(OD_write(0x1601, 0x08, (void*)&data, 0x7) == 7);
+    assert(OD_write(0x1601, 0x08, (void*)&data, 4) == 7);
     assert(OD_read(0x1601, 0x08, (void**)&value) == 7);
     assert(*value == 4);
 }

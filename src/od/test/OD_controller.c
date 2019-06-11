@@ -153,11 +153,12 @@ int32_t OD_read(uint16_t index, uint8_t subIndex, void **ptData)
  * @param dataType variable type of data
  * @return negative sdo abort code or data type code
  */
-int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint16_t dataType)
+int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size)
 {
     OD_entry_t *entry;
     OD_entrySubIndex_t *record, *sub;
     uint8_t nbSubIndex;
+    uint16_t dataType;
 
     entry = OD_getIndexDicho(index);
 
@@ -177,8 +178,8 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint16_t dataTy
          || (sub->accessPDOmapping & OD_ACCESS_MASK) == OD_ACCESS_CONST)
             return -OD_ABORT_CODE_READ_ONLY;
 
-        if ((sub->typeObject & OD_TYPE_MASK) != dataType)
-            //return -OD_ABORT_CODE_LENGTH_DOESNT_MATCH;
+        if (OD_sizeFromType(sub->typeObject & OD_TYPE_MASK) != size)
+            return -OD_ABORT_CODE_LENGTH_DOESNT_MATCH;
 
         dataType = sub->typeObject & OD_TYPE_MASK;
         switch (dataType)
@@ -230,8 +231,8 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint16_t dataTy
     if (subIndex > entry->nbSubIndex)
         return -OD_ABORT_CODE_NO_SUBINDEX;
 
-    if ((entry->typeObject & OD_TYPE_MASK) != dataType)
-        //return -OD_ABORT_CODE_LENGTH_DOESNT_MATCH;
+    if ( OD_sizeFromType(entry->typeObject & OD_TYPE_MASK) != size)
+        return -OD_ABORT_CODE_LENGTH_DOESNT_MATCH;
 
     dataType = entry->typeObject & OD_TYPE_MASK;
     if ((entry->typeObject & OD_OBJECT_MASK) == OD_OBJECT_ARRAY)
