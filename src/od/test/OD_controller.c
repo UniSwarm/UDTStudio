@@ -34,7 +34,7 @@ OD_entry_t* OD_getIndex(uint16_t index)
 
 /**
  * @brief Find an OD's entry by index with dichotomy
- * @param index eds index number
+ * @param eds index number
  * @return adress of OD's entry
  */
 OD_entry_t* OD_getIndexDicho(uint16_t index)
@@ -71,6 +71,10 @@ OD_entry_t* OD_getIndexDicho(uint16_t index)
 }
 
 /**
+ * @brief Find an sub-index's entry by sub-index number with dichotomy
+ * @param index adress
+ * @param eds sub-index number
+ * @return adress of sub_index's entry
  */
 OD_entrySubIndex_t* OD_getSubIndex(OD_entry_t *record, uint8_t subIndex)
 {
@@ -150,7 +154,7 @@ int32_t OD_read(uint16_t index, uint8_t subIndex, void **ptData)
  * @param index eds index number
  * @param subIndex eds sub-index number
  * @param *ptData pointer to data
- * @param dataType variable type of data
+ * @param data size in octet
  * @return negative sdo abort code or data type code
  */
 int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size)
