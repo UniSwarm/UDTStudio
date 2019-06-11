@@ -184,3 +184,13 @@ uint8_t SubIndex::length() const
 
     return  0;
 }
+
+uint8_t SubIndex::subNumber() const
+{
+    return _subNumber;
+}
+
+void SubIndex::setSubNumber(const uint8_t &subNumber)
+{
+    _subNumber = subNumber;
+}

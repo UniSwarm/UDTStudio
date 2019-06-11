@@ -45,7 +45,7 @@ void EdsParser::parse(OD *od)
     DataType *data;
 
     QSettings eds(_edsFile, QSettings::IniFormat);
-    QRegularExpression reSub("([0-Z]{4})(sub[0-9]+)");
+    QRegularExpression reSub("([0-Z]{4})(sub)([0-9]+)");
     QRegularExpression reIndex("([0-Z]{4})");
 
     foreach (const QString &group, eds.childGroups())
@@ -65,6 +65,7 @@ void EdsParser::parse(OD *od)
             QString matchedSub = matchSub.captured(1);
             index = od->index(matchedSub.toInt(&ok, 16));
             isSubIndex = true;
+            subNumber = matchSub.captured(3).toShort(&ok, 10);
         }
         else if (matchIndex.hasMatch())
         {
@@ -118,6 +119,7 @@ void EdsParser::parse(OD *od)
             {
             case OD_OBJECT_RECORD:
                 subIndex = new SubIndex(dataType, objectType, accessType, parameterName);
+                subIndex->setSubNumber(subNumber);
                 subIndex->addData(data);
                 index->addSubIndex(subIndex);
                 break;

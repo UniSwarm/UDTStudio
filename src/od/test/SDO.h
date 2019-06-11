@@ -63,6 +63,7 @@ typedef struct {
     uint8_t     length;
     uint16_t    typeObject;
     uint8_t     accessPDOmapping;
+    uint8_t     subNumber;
 } OD_entrySubIndex_t;
 
 // OD entry

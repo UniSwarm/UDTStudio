@@ -436,8 +436,8 @@ void Generator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
             cFile << "    " << "{(void*)&OD_RAM." << varNameToString(index->parameterName());
             cFile << "." << varNameToString(subIndex->parameterName());
             //TODO PDOmapping
-            cFile << ", " << subIndex->length() << ", " << typeObjectToString(subIndex) << ", " << "0x" <<  subIndex->accessType() << "},";
-            cFile << "\n";
+            cFile << ", " << subIndex->length() << ", " << typeObjectToString(subIndex) << ", " << "0x" <<  subIndex->accessType() << ", " << subIndex->subNumber();
+            cFile << "}," << "\n";
         }
 
         cFile << "};\n\n";

@@ -50,10 +50,14 @@ public:
 
     uint8_t length() const;
 
+    uint8_t subNumber() const;
+    void setSubNumber(const uint8_t &subNumber);
+
 protected:
     uint16_t _dataType;
     uint8_t _objectType;
     uint8_t _accessType;
+    uint8_t _subNumber;
     QString _parameterName;
     QList<DataType*> _datas;
 };
