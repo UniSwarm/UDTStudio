@@ -74,6 +74,42 @@ void testWriteObjectRecordNonConituous()
     assert(*value == 4);
 }
 
+void testWriteObjectVar()
+{
+    uint32_t data = 4;
+    uint16_t *value;
+
+    assert(OD_write(0x1017, 0x00, (void*)&data, 2) == 6);
+    assert(OD_read(0x1017, 0x00, (void**)&value) == 6);
+    assert(*value == 4);
+}
+
+void testWriteObjectVarRO()
+{
+    uint32_t data = 4;
+    uint8_t *value;
+
+    assert(OD_write(0x1001, 0x00, (void*)&data, 1) == -OD_ABORT_CODE_READ_ONLY);
+    assert(OD_read(0x1001, 0x00, (void**)&value) == 5);
+    assert(*value == 0x1);
+}
+
+void testWriteObjectVarNoObject()
+{
+    uint32_t data = 4;
+    uint8_t *value;
+
+    assert(OD_write(0x10, 0x00, (void**)&value, 1) == -OD_ABORT_CODE_NO_OBJECT);
+}
+
+void testWriteObjectVarNoSub()
+{
+    int32_t code;
+    uint8_t *value;
+
+    assert(OD_write(0x1017, 0x06, (void**)&value, 1) == -OD_ABORT_CODE_NO_SUBINDEX);
+}
+
 int main()
 {
 	OD_reset();
@@ -86,6 +122,10 @@ int main()
     testReadObjectRecordNonConituous();
 	testReadVisibleString();
     testWriteObjectRecordNonConituous();
+    testWriteObjectVar();
+    testWriteObjectVarRO();
+    testWriteObjectVarNoObject();
+    testWriteObjectVarNoSub();
 
 	return 0;
 }

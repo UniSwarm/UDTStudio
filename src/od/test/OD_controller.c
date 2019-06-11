@@ -174,6 +174,9 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size)
         record = entry->ptData;
         sub = OD_getSubIndex(entry, subIndex);
 
+        if (sub == NULL)
+            return -OD_ABORT_CODE_NO_SUBINDEX;
+
         if ((sub->accessPDOmapping & OD_ACCESS_MASK) == OD_ACCESS_READ_ONLY
          || (sub->accessPDOmapping & OD_ACCESS_MASK) == OD_ACCESS_CONST)
             return -OD_ABORT_CODE_READ_ONLY;
