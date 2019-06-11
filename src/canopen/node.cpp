@@ -16,26 +16,19 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef EDSPARSER_H
-#define EDSPARSER_H
+#include "node.h"
 
-#include "od_global.h"
-
-#include <QString>
-#include <QSettings>
-
-#include "model/od.h"
-
-class OD_EXPORT EdsParser
+Node::Node()
 {
-public:
-    EdsParser(QString path);
-    void parse(OD *od);
 
-private:
-    DataType *readData(const QSettings &eds) const;
+}
 
-    QString _edsFile;
-};
+uint32_t Node::nodeId() const
+{
+    return _nodeId;
+}
 
-#endif // EDSPARSER_H
+void Node::setNodeId(const uint32_t &nodeId)
+{
+    _nodeId = nodeId;
+}

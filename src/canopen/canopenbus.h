@@ -16,26 +16,24 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef EDSPARSER_H
-#define EDSPARSER_H
+#ifndef CANOPENBUS_H
+#define CANOPENBUS_H
 
-#include "od_global.h"
+#include "canopen_global.h"
 
-#include <QString>
-#include <QSettings>
+#include "node.h"
 
-#include "model/od.h"
+#include <QList>
 
-class OD_EXPORT EdsParser
+class CANOPEN_EXPORT CanOpenBus
 {
 public:
-    EdsParser(QString path);
-    void parse(OD *od);
+    CanOpenBus();
 
-private:
-    DataType *readData(const QSettings &eds) const;
+    const QList<Node *> &nodes() const;
 
-    QString _edsFile;
+protected:
+    QList<Node *> _nodes;
 };
 
-#endif // EDSPARSER_H
+#endif // CANOPENBUS_H

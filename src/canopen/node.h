@@ -16,26 +16,21 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef EDSPARSER_H
-#define EDSPARSER_H
+#ifndef NODE_H
+#define NODE_H
 
-#include "od_global.h"
+#include "canopen_global.h"
 
-#include <QString>
-#include <QSettings>
-
-#include "model/od.h"
-
-class OD_EXPORT EdsParser
+class CANOPEN_EXPORT Node
 {
 public:
-    EdsParser(QString path);
-    void parse(OD *od);
+    Node();
 
-private:
-    DataType *readData(const QSettings &eds) const;
+    uint32_t nodeId() const;
+    void setNodeId(const uint32_t &nodeId);
 
-    QString _edsFile;
+protected:
+    uint32_t _nodeId;
 };
 
-#endif // EDSPARSER_H
+#endif // NODE_H

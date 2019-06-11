@@ -16,26 +16,15 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef EDSPARSER_H
-#define EDSPARSER_H
+#ifndef CANOPEN_GLOBAL_H
+#define CANOPEN_GLOBAL_H
 
-#include "od_global.h"
+#include <QtCore/qglobal.h>
 
-#include <QString>
-#include <QSettings>
+#if defined(CANOPEN_EXPORT_LIB)
+ #define CANOPEN_EXPORT Q_DECL_EXPORT
+#else
+ #define CANOPEN_EXPORT Q_DECL_IMPORT
+#endif
 
-#include "model/od.h"
-
-class OD_EXPORT EdsParser
-{
-public:
-    EdsParser(QString path);
-    void parse(OD *od);
-
-private:
-    DataType *readData(const QSettings &eds) const;
-
-    QString _edsFile;
-};
-
-#endif // EDSPARSER_H
+#endif // CANOPEN_GLOBAL_H

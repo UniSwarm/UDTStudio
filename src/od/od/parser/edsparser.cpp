@@ -1,7 +1,24 @@
-
-#include <QRegularExpression>
+/**
+ ** This file is part of the UDTStudio project.
+ ** Copyright 2019 UniSwarm sebastien.caux@uniswarm.eu
+ **
+ ** This program is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU General Public License as published by
+ ** the Free Software Foundation, either version 3 of the License, or
+ ** (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ ** GNU General Public License for more details.
+ **
+ ** You should have received a copy of the GNU General Public License
+ ** along with this program. If not, see <http://www.gnu.org/licenses/>.
+ **/
 
 #include "edsparser.h"
+
+#include <QRegularExpression>
 
 EdsParser::EdsParser(QString path)
 {
@@ -49,13 +66,11 @@ void EdsParser::parse(OD *od)
             index = od->index(matchedSub.toInt(&ok, 16));
             isSubIndex = true;
         }
-
         else if (matchIndex.hasMatch())
         {
             QString matchedIndex = matchIndex.captured(0);
             indexNumber = matchedIndex.toInt(&ok, 16);
         }
-
         else
             continue;
 
@@ -129,53 +144,58 @@ void EdsParser::parse(OD *od)
 DataType* EdsParser::readData(const QSettings &eds) const
 {
     bool ok;
-    uint16_t dataType = eds.value("DataType").toString().toInt(&ok, 16);
-    DataType *data = nullptr;
+    int16_t dataType = eds.value("DataType").toString().toShort(&ok, 16);
 
+    QString dataString = eds.value("DefaultValue").toString();
+    uint8_t base = 10;
+    if (dataString.startsWith("0x", Qt::CaseInsensitive))
+        base = 16;
+
+    DataType *data = nullptr;
     switch(dataType)
     {
     case OD_TYPE_INTEGER8:
-        data = new DataType(eds.value("DefaultValue").toString().toShort(&ok, 16));
+        data = new DataType(dataString.toShort(&ok, base));
         break;
 
     case OD_TYPE_INTEGER16:
-        data = new DataType(eds.value("DefaultValue").toString().toShort(&ok, 16));
+        data = new DataType(dataString.toShort(&ok, base));
         break;
 
     case OD_TYPE_INTEGER32:
-        data = new DataType(eds.value("DefaultValue").toString().toInt(&ok, 16));
+        data = new DataType(dataString.toInt(&ok, base));
         break;
 
     case OD_TYPE_INTEGER64:
-        data = new DataType(eds.value("DefaultValue").toString().toLong(&ok, 16));
+        data = new DataType((int64_t)dataString.toLong(&ok, base));
         break;
 
     case OD_TYPE_UNSIGNED8:
-        data = new DataType(eds.value("DefaultValue").toString().toInt(&ok, 16));
+        data = new DataType(dataString.toInt(&ok, base));
         break;
 
     case OD_TYPE_UNSIGNED16:
-        data = new DataType(eds.value("DefaultValue").toString().toUShort(&ok, 16));
+        data = new DataType(dataString.toUShort(&ok, base));
         break;
 
     case OD_TYPE_UNSIGNED32:
-        data = new DataType(eds.value("DefaultValue").toString().toUInt(&ok, 16));
+        data = new DataType(dataString.toUInt(&ok, base));
         break;
 
     case OD_TYPE_UNSIGNED64:
-        data = new DataType(eds.value("DefaultValue").toString().toULong(&ok, 16));
+        data = new DataType((uint64_t)dataString.toULong(&ok, base));
         break;
 
     case OD_TYPE_REAL32:
-        data = new DataType(eds.value("DefaultValue").toString().toFloat(&ok));
+        data = new DataType(dataString.toFloat(&ok));
         break;
 
     case OD_TYPE_REAL64:
-        data = new DataType(eds.value("DefaultValue").toString().toDouble(&ok));
+        data = new DataType(dataString.toDouble(&ok));
         break;
 
     case OD_TYPE_VISIBLE_STRING:
-        data = new DataType(eds.value("DefaultValue").toString());
+        data = new DataType(dataString);
         break;
     }
 

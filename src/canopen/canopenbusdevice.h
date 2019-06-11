@@ -16,26 +16,39 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef EDSPARSER_H
-#define EDSPARSER_H
+#ifndef CANOPENBUSDEVICE_H
+#define CANOPENBUSDEVICE_H
 
-#include "od_global.h"
+#include "canopen_global.h"
 
-#include <QString>
-#include <QSettings>
+#include <QCanBusDevice>
 
-#include "model/od.h"
-
-class OD_EXPORT EdsParser
+class CANOPEN_EXPORT CanOpenBusDevice : public QObject
 {
+    Q_OBJECT
 public:
-    EdsParser(QString path);
-    void parse(OD *od);
+    CanOpenBusDevice(QCanBusDevice *canDevice);
 
-private:
-    DataType *readData(const QSettings &eds) const;
+    void sendSync();
+    void sendNmt(uint8_t node_id, uint8_t cmd);
+    void sendStart(uint8_t node_id);
+    void sendStop(uint8_t node_id);
 
-    QString _edsFile;
+    void sendPDO(uint8_t nodeId, uint8_t pdoNum, QByteArray data);
+
+    void sendSdoReadReq(uint8_t nodeId, uint16_t index, uint8_t subindex);
+
+    QCanBusDevice *canDevice() const;
+
+protected slots:
+    void canFrameRec();
+    void canState(QCanBusDevice::CanBusDeviceState state);
+
+signals:
+    void sdoReceived();
+
+protected:
+    QCanBusDevice *_canDevice;
 };
 
-#endif // EDSPARSER_H
+#endif // CANOPENBUSDEVICE_H
