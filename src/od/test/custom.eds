@@ -85,7 +85,7 @@ ParameterName=Mapping Entry 1
 ObjectType=0x07
 DataType=0x0007
 AccessType=rw
-DefaultValue=
+DefaultValue=0x1
 PDOMapping=0
 
 [1601sub2]
@@ -93,7 +93,7 @@ ParameterName=Mapping Entry 2
 ObjectType=0x07
 DataType=0x0007
 AccessType=rw
-DefaultValue=
+DefaultValue=0x2
 PDOMapping=0
 
 [1601sub3]
@@ -101,7 +101,7 @@ ParameterName=Mapping Entry 3
 ObjectType=0x07
 DataType=0x0007
 AccessType=rw
-DefaultValue=
+DefaultValue=0x3
 PDOMapping=0
 
 [1601sub8]
@@ -109,5 +109,5 @@ ParameterName=Mapping Entry 8
 ObjectType=0x07
 DataType=0x0007
 AccessType=rw
-DefaultValue=
+DefaultValue=0x8
 PDOMapping=0

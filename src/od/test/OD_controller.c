@@ -71,6 +71,24 @@ OD_entry_t* OD_getIndexDicho(uint16_t index)
 }
 
 /**
+ */
+OD_entrySubIndex_t* OD_getSubIndex(OD_entry_t *record, uint8_t subIndex)
+{
+    int i;
+    OD_entrySubIndex_t *subIndexes = (OD_entrySubIndex_t*)record->ptData;
+
+    for (i=0; i<=record->nbSubIndex; i++)
+    {
+        if (subIndexes[i].subNumber == subIndex)
+        {
+            return (OD_entrySubIndex_t*)&subIndexes[i];
+        }
+    }
+
+    return NULL;
+}
+
+/**
  * @brief Read an index or sub-index at index number 'index' and sub-index number "subIndex"
  * @param index eds index number
  * @param subIndex eds sub-index number
@@ -80,38 +98,34 @@ OD_entry_t* OD_getIndexDicho(uint16_t index)
 int32_t OD_read(uint16_t index, uint8_t subIndex, void **ptData)
 {
     OD_entry_t *entry;
-    OD_entrySubIndex_t *record;
+    OD_entrySubIndex_t *record, *subIndexData;
 
     entry = OD_getIndexDicho(index);
 
     if (entry == NULL)
-    {
         return -OD_ABORT_CODE_NO_OBJECT;
-    }
 
     if ((entry->accessPDOmapping & OD_ACCESS_MASK) == OD_ACCESS_WRITE_ONLY)
-    {
         return -OD_ABORT_CODE_WRITE_ONLY;
-    }
-
-    if (subIndex > entry->nbSubIndex)
-    {
-        return -OD_ABORT_CODE_NO_SUBINDEX;
-    }
 
     if ((entry->typeObject & OD_OBJECT_MASK) == OD_OBJECT_RECORD)
     {
         record = entry->ptData;
 
-        if ((record[subIndex].accessPDOmapping & OD_ACCESS_MASK) == OD_ACCESS_WRITE_ONLY)
-        {
-            return -OD_ABORT_CODE_WRITE_ONLY;
-        }
+        subIndexData = OD_getSubIndex(entry, subIndex);
+        
+        if (subIndexData == NULL)
+            return -OD_ABORT_CODE_NO_SUBINDEX;
 
-        record = &record[subIndex];
-        *ptData = (void*)record->ptData;
-        return record->typeObject & OD_TYPE_MASK;
+        if ((subIndexData->accessPDOmapping & OD_ACCESS_MASK) == OD_ACCESS_WRITE_ONLY)
+            return -OD_ABORT_CODE_WRITE_ONLY;
+
+        *ptData = (void*)subIndexData->ptData;
+        return subIndexData->typeObject & OD_TYPE_MASK;
     }
+
+    if (subIndex > entry->nbSubIndex)
+        return -OD_ABORT_CODE_NO_SUBINDEX;
 
     if ((entry->typeObject & OD_OBJECT_MASK) == OD_OBJECT_ARRAY)
     {
@@ -143,6 +157,7 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint16_t dataTy
 {
     OD_entry_t *entry;
     OD_entrySubIndex_t *record, *sub;
+    uint8_t nbSubIndex;
 
     entry = OD_getIndexDicho(index);
 
@@ -156,12 +171,7 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint16_t dataTy
     {
         return -OD_ABORT_CODE_READ_ONLY;
     }
-
-    if (subIndex > entry->nbSubIndex)
-    {
-        return -OD_ABORT_CODE_NO_SUBINDEX;
-    }
-
+    
     if ((entry->typeObject & OD_OBJECT_MASK) == OD_OBJECT_RECORD)
     {
         record = entry->ptData;
