@@ -21,7 +21,7 @@ typedef char*       vstring_t;
 #define OD_TYPE_OCTET_STRING    0x000A
 #define OD_TYPE_UNICODE_STRING  0x000B
 #define OD_TYPE_TIME_OF_DAY     0x000C
-#define OD_TIME_DIFFERENCE      0x000D
+#define OD_TYPE_TIME_DIFFERENCE 0x000D
 #define OD_TYPE_DOMAIN          0x000F
 #define OD_TYPE_INTEGER24       0x0010
 #define OD_TYPE_REAL64          0x0011

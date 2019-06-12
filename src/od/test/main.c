@@ -54,16 +54,6 @@ void testReadObjectRecordNonConituous()
     assert(*value == 0x8);
 }
 
-//=========test on OD_TYPE_VISIBLE_STRING=========
-void testReadVisibleString()
-{
-	int32_t 	code;
-	vstring_t*	value;
-
-	assert(OD_read(0x1008, 0x00, (void**)&value) == 9);
-	assert(strcmp(*value, "test") == 0);
-}
-
 void testWriteObjectRecordNonConituous()
 {
     uint32_t data = 4;
@@ -111,6 +101,7 @@ void testWriteObjectVarNoSub()
     assert(OD_write(0x1601, 0x06, (void*)&data, 1) == -OD_ABORT_CODE_NO_SUBINDEX);
 }
 
+//============= test on array ==============
 void testWriteArray()
 {
     uint32_t data = 4;
@@ -159,6 +150,15 @@ void testWriteBadSize()
 
     assert(OD_write(0x6047, 0x4, (void*)&data, 2) == -OD_ABORT_CODE_LENGTH_DOESNT_MATCH);
     assert(OD_write(0x1017, 0x0, (void*)&data, 4) == -OD_ABORT_CODE_LENGTH_DOESNT_MATCH);
+}
+
+//=========test on OD_TYPE_VISIBLE_STRING=========
+void testReadVisibleString()
+{
+    vstring_t*  value;
+
+    assert(OD_read(0x1008, 0x00, (void**)&value) == 9);
+    assert(strcmp(*value, "test") == 0);
 }
 
 int main()
