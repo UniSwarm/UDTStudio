@@ -111,3 +111,74 @@ DataType=0x0007
 AccessType=rw
 DefaultValue=0x8
 PDOMapping=0
+
+[6047]
+SubNumber=5
+ParameterName=Vl Velocity Min Max
+ObjectType=0x08
+
+[6047sub0]
+ParameterName=Number of Entries
+ObjectType=0x07
+DataType=0x0005
+AccessType=ro
+DefaultValue=0x00000004
+PDOMapping=0
+
+[6047sub1]
+ParameterName=Vl Velocity Min Pos
+ObjectType=0x07
+DataType=0x0007
+AccessType=rw
+PDOMapping=0
+
+[6047sub2]
+ParameterName=Vl Velocity Max Pos
+ObjectType=0x07
+DataType=0x0007
+AccessType=rw
+DefaultValue=0x2
+PDOMapping=0
+
+[6047sub3]
+ParameterName=Vl Velocity Min Neg
+ObjectType=0x07
+DataType=0x0007
+AccessType=rw
+PDOMapping=0
+
+[6047sub4]
+ParameterName=Vl Velocity Max Neg
+ObjectType=0x07
+DataType=0x0007
+AccessType=rw
+PDOMapping=0
+
+[604B]
+SubNumber=3
+ParameterName=Vl Setpoint Factor
+ObjectType=0x08
+
+[604Bsub0]
+ParameterName=Number of Entries
+ObjectType=0x07
+DataType=0x0005
+AccessType=ro
+DefaultValue=0x0002
+PDOMapping=0
+
+[604Bsub1]
+ParameterName=Vl Setpoint Factor Numerator
+ObjectType=0x07
+DataType=0x0003
+AccessType=ro
+DefaultValue=0x0001
+PDOMapping=0
+
+[604Bsub2]
+ParameterName=Vl Setpoint Factor Denominator
+ObjectType=0x07
+DataType=0x0003
+AccessType=ro
+DefaultValue=0x0001
+PDOMapping=0

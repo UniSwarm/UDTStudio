@@ -99,15 +99,66 @@ void testWriteObjectVarNoObject()
     uint32_t data = 4;
     uint8_t *value;
 
-    assert(OD_write(0x10, 0x00, (void**)&value, 1) == -OD_ABORT_CODE_NO_OBJECT);
+    assert(OD_write(0x10, 0x00, (void*)&data, 1) == -OD_ABORT_CODE_NO_OBJECT);
 }
 
 void testWriteObjectVarNoSub()
 {
-    int32_t code;
+    uint32_t data = 4;
     uint8_t *value;
 
-    assert(OD_write(0x1017, 0x06, (void**)&value, 1) == -OD_ABORT_CODE_NO_SUBINDEX);
+    assert(OD_write(0x1017, 0x06, (void*)&data, 1) == -OD_ABORT_CODE_NO_SUBINDEX);
+    assert(OD_write(0x1601, 0x06, (void*)&data, 1) == -OD_ABORT_CODE_NO_SUBINDEX);
+}
+
+void testWriteArray()
+{
+    uint32_t data = 4;
+    uint8_t *value;
+
+    assert(OD_write(0x6047, 0x1, (void*)&data, 4) == 7);
+    assert(OD_read(0x6047, 0x01, (void**)&value) == 7);
+    assert(*value == 4);
+}
+
+void testWriteArrayRO()
+{
+    int16_t data = 4;
+    uint8_t *value;
+
+    assert(OD_write(0x604B, 0x2, (void*)&data, 2) == -OD_ABORT_CODE_READ_ONLY);
+    assert(OD_read(0x604B, 0x02, (void**)&value) == 3);
+    assert(*value == 1);
+}
+
+void testWriteArrayNoObject()
+{
+    int16_t data = 4;
+    uint8_t *value;
+
+    assert(OD_write(0x604, 0x0, (void*)&data, 2) == -OD_ABORT_CODE_NO_OBJECT);
+    assert(OD_read(0x604, 0x0, (void**)&value) == -OD_ABORT_CODE_NO_OBJECT);
+}
+
+void testWriteArrayNoSub()
+{
+    int16_t data = 4;
+    uint8_t *value;
+
+    assert(OD_write(0x6047, 0x7, (void*)&data, 2) == -OD_ABORT_CODE_NO_SUBINDEX);
+    assert(OD_read(0x6047, 0x7, (void**)&value) == -OD_ABORT_CODE_NO_SUBINDEX);
+
+    assert(OD_write(0x1017, 0x7, (void*)&data, 2) == -OD_ABORT_CODE_NO_SUBINDEX);
+    assert(OD_read(0x1017, 0x7, (void**)&value) == -OD_ABORT_CODE_NO_SUBINDEX);
+}
+
+void testWriteBadSize()
+{
+    int16_t data = 4;
+    uint8_t *value;
+
+    assert(OD_write(0x6047, 0x4, (void*)&data, 2) == -OD_ABORT_CODE_LENGTH_DOESNT_MATCH);
+    assert(OD_write(0x1017, 0x0, (void*)&data, 4) == -OD_ABORT_CODE_LENGTH_DOESNT_MATCH);
 }
 
 int main()
@@ -126,6 +177,11 @@ int main()
     testWriteObjectVarRO();
     testWriteObjectVarNoObject();
     testWriteObjectVarNoSub();
+    testWriteArray();
+    testWriteArrayRO();
+    testWriteArrayNoObject();
+    testWriteArrayNoSub();
+    testWriteBadSize();
 
 	return 0;
 }
