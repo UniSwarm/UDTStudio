@@ -85,16 +85,16 @@ void EdsParser::parse(OD *od)
                 accessString = eds.value(key).toString();
 
                 if (accessString == "rw")
-                    accessType = OD_ACCESS_READ_WRITE;
+                    accessType = OD::_Access::READ_WRITE;
 
                 else if (accessString == "wo")
-                    accessType = OD_ACCESS_WRITE_ONLY;
+                    accessType = OD::_Access::WRITE_ONLY;
 
                 else if (accessString == "ro")
-                    accessType = OD_ACCESS_READ_ONLY;
+                    accessType = OD::_Access::READ_ONLY;
 
                 else if (accessString == "const")
-                    accessType = OD_ACCESS_CONST;
+                    accessType = OD::_Access::CONST;
             }
 
             else if (key == "DataType")
@@ -117,14 +117,14 @@ void EdsParser::parse(OD *od)
         {
             switch (index->objectType())
             {
-            case OD_OBJECT_RECORD:
+            case OD::_Object::RECORD:
                 subIndex = new SubIndex(dataType, objectType, accessType, parameterName);
                 subIndex->setSubNumber(subNumber);
                 subIndex->addData(data);
                 index->addSubIndex(subIndex);
                 break;
 
-            case OD_OBJECT_ARRAY:
+            case OD::_Object::ARRAY:
                 index->setDataType(dataType);
                 index->setAccessType(accessType);
                 index->addData(data);
@@ -135,7 +135,7 @@ void EdsParser::parse(OD *od)
         {
             index = new Index(dataType, objectType, accessType, parameterName, indexNumber, subNumber);
 
-            if (objectType == OD_OBJECT_VAR)
+            if (objectType == OD::_Object::VAR)
                 index->addData(data);
 
             od->addIndex(index);
@@ -156,47 +156,47 @@ DataType* EdsParser::readData(const QSettings &eds) const
     DataType *data = nullptr;
     switch(dataType)
     {
-    case OD_TYPE_INTEGER8:
+    case OD::_Type::INTEGER8:
         data = new DataType(dataString.toShort(&ok, base));
         break;
 
-    case OD_TYPE_INTEGER16:
+    case OD::_Type::INTEGER16:
         data = new DataType(dataString.toShort(&ok, base));
         break;
 
-    case OD_TYPE_INTEGER32:
+    case OD::_Type::INTEGER32:
         data = new DataType(dataString.toInt(&ok, base));
         break;
 
-    case OD_TYPE_INTEGER64:
+    case OD::_Type::INTEGER64:
         data = new DataType((int64_t)dataString.toLong(&ok, base));
         break;
 
-    case OD_TYPE_UNSIGNED8:
+    case OD::_Type::UNSIGNED8:
         data = new DataType(dataString.toInt(&ok, base));
         break;
 
-    case OD_TYPE_UNSIGNED16:
+    case OD::_Type::UNSIGNED16:
         data = new DataType(dataString.toUShort(&ok, base));
         break;
 
-    case OD_TYPE_UNSIGNED32:
+    case OD::_Type::UNSIGNED32:
         data = new DataType(dataString.toUInt(&ok, base));
         break;
 
-    case OD_TYPE_UNSIGNED64:
+    case OD::_Type::UNSIGNED64:
         data = new DataType((uint64_t)dataString.toULong(&ok, base));
         break;
 
-    case OD_TYPE_REAL32:
+    case OD::_Type::REAL32:
         data = new DataType(dataString.toFloat(&ok));
         break;
 
-    case OD_TYPE_REAL64:
+    case OD::_Type::REAL64:
         data = new DataType(dataString.toDouble(&ok));
         break;
 
-    case OD_TYPE_VISIBLE_STRING:
+    case OD::_Type::VISIBLE_STRING:
         data = new DataType(dataString);
         break;
     }
