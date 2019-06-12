@@ -168,6 +168,7 @@ QString Generator::typeToString(const uint16_t &type) const
     case OD::_Type::INTEGER64:
         return QLatin1String("int64_t");
 
+    case OD::_Type::BOOLEAN:
     case OD::_Type::UNSIGNED8:
        return QLatin1String("uint8_t");
 
@@ -188,6 +189,9 @@ QString Generator::typeToString(const uint16_t &type) const
 
     case OD::_Type::VISIBLE_STRING:
         return QLatin1String("vstring_t");
+
+    case OD::_Type::OCTET_STRING:
+        return QLatin1String("ostring_t");
 
     default:
         return QLatin1String("");
@@ -286,7 +290,18 @@ QString Generator::dataToString(const SubIndex *index, uint8_t subNumber) const
         break;
 
     case OD::_Type::VISIBLE_STRING:
-        data = index->data(subNumber)->toVString();
+        data = index->data(subNumber)->toString();
+
+        if (data.left(2) != "0x")
+        {
+            data.prepend("\"");
+            data.append("\"");
+        }
+
+        break;
+
+    case OD::_Type::OCTET_STRING:
+        data = index->data(subNumber)->toString();
 
         if (data.left(2) != "0x")
         {
@@ -320,7 +335,7 @@ QString Generator::typeObjectToString(const SubIndex *subIndex) const
     else if (subIndex->dataType() <= 0x00FF)
         typeObject += "0";
 
-    typeObject += QString::number(subIndex->dataType());
+    typeObject += QString::number(subIndex->dataType(), 16).toUpper();
 
     return typeObject;
 }
@@ -343,7 +358,7 @@ void Generator::writeRecordDefinitionH(Index *index, QTextStream &hFile) const
         {
             hFile << "    " << typeToString(subIndex->dataType()) << " "<< varNameToString(subIndex->parameterName()) << ";" << "\n";
         }
-         hFile << "} " << structNameToString(index->parameterName()) << ";\n\n";
+        hFile << "} " << structNameToString(index->parameterName()) << ";\n\n";
     }
 }
 

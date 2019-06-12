@@ -40,7 +40,7 @@ void EdsParser::parse(OD *od)
     uint8_t subNumber;
     QString accessString;
     QString parameterName;
-    Index *index;
+    Index *index = nullptr;
     SubIndex *subIndex;
     DataType *data;
 
@@ -156,6 +156,13 @@ DataType* EdsParser::readData(const QSettings &eds) const
     DataType *data = nullptr;
     switch(dataType)
     {
+    case OD::_Type::BOOLEAN:
+        if (dataString.toShort(&ok, base))
+            data = new DataType(true);
+        else
+            data = new DataType(false);
+        break;
+
     case OD::_Type::INTEGER8:
         data = new DataType(dataString.toShort(&ok, base));
         break;
@@ -197,6 +204,10 @@ DataType* EdsParser::readData(const QSettings &eds) const
         break;
 
     case OD::_Type::VISIBLE_STRING:
+        data = new DataType(dataString);
+        break;
+
+    case OD::_Type::OCTET_STRING:
         data = new DataType(dataString);
         break;
     }

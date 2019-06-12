@@ -55,7 +55,7 @@ public:
     uint64_t toUInt64() const;
     float32_t toFloat32() const;
     float64_t toFloat64() const;
-    QString toVString() const;
+    QString toString() const;
 
 private:
     typedef union

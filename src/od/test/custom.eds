@@ -112,6 +112,15 @@ AccessType=rw
 DefaultValue=0x8
 PDOMapping=0
 
+[4041]
+ParameterName=Device Id
+ObjectType=0x7
+DataType=0x000A
+AccessType=ro
+DefaultValue="test"
+PDOMapping=0
+ObjFlags=1
+
 [6047]
 SubNumber=5
 ParameterName=Vl Velocity Min Max
@@ -181,4 +190,12 @@ ObjectType=0x07
 DataType=0x0003
 AccessType=ro
 DefaultValue=0x0001
+PDOMapping=0
+
+[6423]
+ParameterName=Global Analog Interrupt Enable
+ObjectType=0x07
+DataType=0x0001
+AccessType=rw
+DefaultValue=0
 PDOMapping=0

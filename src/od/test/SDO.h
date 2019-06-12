@@ -7,6 +7,7 @@
 typedef float       float32_t;
 typedef double      float64_t;
 typedef char*       vstring_t;
+typedef char*       ostring_t;
 
 // =============== Data type ==================
 #define OD_TYPE_BOOLEAN         0x0001
