@@ -441,8 +441,6 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
     QList<SubIndex*> subIndexes;
     QList<DataType*> datas;
 
-    uint8_t cpt = 0;
-
     switch(index->objectType())
     {
     case OD::Object::VAR:
@@ -460,21 +458,19 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
             cFile << " = ";
             cFile << dataToString(subIndex, 0);
             cFile << ";\n";
-            cpt++;
         }
         break;
 
     case OD::Object::ARRAY:
         datas = index->datas();
         datas.removeFirst();
-        cpt = 0;
-        foreach (DataType *data, datas)
+        for (int i=0; i<datas.count(); i++)
         {
-            cFile << "    " << "OD_RAM." << varNameToString(index->parameterName()) << "[" << cpt << "]";
+
+            cFile << "    " << "OD_RAM." << varNameToString(index->parameterName()) << "[" << i << "]";
             cFile << " = ";
-            cFile << dataToString(index, cpt+1);
+            cFile << dataToString(index, i + 1);
             cFile << ";\n";
-            cpt++;
         }
         break;
     }
