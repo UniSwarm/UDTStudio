@@ -29,13 +29,11 @@
 class OD_EXPORT EdsParser
 {
 public:
-    EdsParser(QString path);
-    void parse(OD *od);
+    EdsParser();
+    OD* parse(QString path);
 
 private:
     DataType *readData(const QSettings &eds) const;
-
-    QString _edsFile;
 };
 
 #endif // EDSPARSER_H

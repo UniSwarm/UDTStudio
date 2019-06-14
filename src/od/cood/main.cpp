@@ -46,14 +46,12 @@ int main(int argc, char *argv[])
         outDirectory = QFileInfo(file).path() + ".lib";
 
     OD *od;
-    od = new OD;
-
     QString path(file);
 
-    EdsParser parser(path);
+    EdsParser parser;
     Generator generator(outDirectory);
 
-    parser.parse(od);
+    od = parser.parse(path);
     generator.generateH(od);
     generator.generateC(od);
     delete od;

@@ -20,16 +20,16 @@
 
 #include <QRegularExpression>
 
-EdsParser::EdsParser(QString path)
+EdsParser::EdsParser()
 {
-    _edsFile = path;
+
 }
 
 /**
  * @brief parses an eds file and completes an object dictionary
  * @param object dictionary
  */
-void EdsParser::parse(OD *od)
+OD* EdsParser::parse(QString path)
 {
     bool ok;
     bool isSubIndex;
@@ -44,7 +44,10 @@ void EdsParser::parse(OD *od)
     SubIndex *subIndex;
     DataType *data;
 
-    QSettings eds(_edsFile, QSettings::IniFormat);
+    OD *od;
+    od = new OD;
+
+    QSettings eds(path, QSettings::IniFormat);
     QRegularExpression reSub("([0-Z]{4})(sub)([0-9]+)");
     QRegularExpression reIndex("([0-Z]{4})");
 
@@ -141,6 +144,7 @@ void EdsParser::parse(OD *od)
             od->addIndex(index);
         }
     }
+    return od;
 }
 
 /**
