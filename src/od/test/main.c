@@ -31,7 +31,6 @@ void testReadObjectVarNoObject()
 
 void testReadObjectVarNoSub()
 {
-	int32_t code;
     uint8_t *value;
 
     assert(OD_read(0x1001, 0x01, (void**)&value) == -OD_ABORT_CODE_NO_SUBINDEX);
@@ -87,7 +86,6 @@ void testWriteObjectVarRO()
 void testWriteObjectVarNoObject()
 {
     uint32_t data = 4;
-    uint8_t *value;
 
     assert(OD_write(0x10, 0x00, (void*)&data, 1) == -OD_ABORT_CODE_NO_OBJECT);
 }
@@ -95,7 +93,6 @@ void testWriteObjectVarNoObject()
 void testWriteObjectVarNoSub()
 {
     uint32_t data = 4;
-    uint8_t *value;
 
     assert(OD_write(0x1017, 0x06, (void*)&data, 1) == -OD_ABORT_CODE_NO_SUBINDEX);
     assert(OD_write(0x1601, 0x06, (void*)&data, 1) == -OD_ABORT_CODE_NO_SUBINDEX);
@@ -146,7 +143,6 @@ void testWriteArrayNoSub()
 void testWriteBadSize()
 {
     int16_t data = 4;
-    uint8_t *value;
 
     assert(OD_write(0x6047, 0x4, (void*)&data, 2) == -OD_ABORT_CODE_LENGTH_DOESNT_MATCH);
     assert(OD_write(0x1017, 0x0, (void*)&data, 4) == -OD_ABORT_CODE_LENGTH_DOESNT_MATCH);
@@ -155,10 +151,14 @@ void testWriteBadSize()
 //=========test on OD_TYPE_VISIBLE_STRING=========
 void testReadVisibleString()
 {
-    vstring_t*  value;
+    vstring_t* value1;
+    ostring_t* value2;
 
-    assert(OD_read(0x1008, 0x00, (void**)&value) == 9);
-    assert(strcmp(*value, "test") == 0);
+    assert(OD_read(0x1008, 0x00, (void**)&value1) == 9);
+    assert(strcmp(*value1, "test1") == 0);
+
+    assert(OD_read(0x4041, 0x00, (void**)&value2) == 0xA);
+    assert(strcmp(*value2, "test2") == 0);
 }
 
 int main()
@@ -171,7 +171,6 @@ int main()
     testReadObjectVarNoSub();
     testReadObjectRecord();
     testReadObjectRecordNonConituous();
-	testReadVisibleString();
     testWriteObjectRecordNonConituous();
     testWriteObjectVar();
     testWriteObjectVarRO();
@@ -182,6 +181,7 @@ int main()
     testWriteArrayNoObject();
     testWriteArrayNoSub();
     testWriteBadSize();
+    testReadVisibleString();
 
 	return 0;
 }

@@ -155,6 +155,7 @@ uint8_t SubIndex::length() const
     switch (_dataType)
     {
     case OD::_Type::BOOLEAN:
+    case OD::_Type::INTEGER8:
         return 1;
 
     case OD::_Type::INTEGER16:

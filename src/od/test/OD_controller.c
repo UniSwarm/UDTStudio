@@ -1,6 +1,7 @@
 #include "OD_controller.h"
 
 #include <stdio.h>
+#include <string.h>
 
 /**
  * @brief Reset the RAM memory
@@ -102,7 +103,7 @@ OD_entrySubIndex_t* OD_getSubIndex(OD_entry_t *record, uint8_t subIndex)
 int32_t OD_read(uint16_t index, uint8_t subIndex, void **ptData)
 {
     OD_entry_t *entry;
-    OD_entrySubIndex_t *record, *subIndexData;
+    OD_entrySubIndex_t *subIndexData;
 
     entry = OD_getIndexDicho(index);
 
@@ -114,8 +115,6 @@ int32_t OD_read(uint16_t index, uint8_t subIndex, void **ptData)
 
     if ((entry->typeObject & OD_OBJECT_MASK) == OD_OBJECT_RECORD)
     {
-        record = entry->ptData;
-
         subIndexData = OD_getSubIndex(entry, subIndex);
         
         if (subIndexData == NULL)
@@ -160,8 +159,7 @@ int32_t OD_read(uint16_t index, uint8_t subIndex, void **ptData)
 int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size)
 {
     OD_entry_t *entry;
-    OD_entrySubIndex_t *record, *sub;
-    uint8_t nbSubIndex;
+    OD_entrySubIndex_t *sub;
     uint16_t dataType;
 
     entry = OD_getIndexDicho(index);
@@ -175,7 +173,6 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size)
 
     if ((entry->typeObject & OD_OBJECT_MASK) == OD_OBJECT_RECORD)
     {
-        record = entry->ptData;
         sub = OD_getSubIndex(entry, subIndex);
 
         if (sub == NULL)

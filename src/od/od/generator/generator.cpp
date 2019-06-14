@@ -111,11 +111,35 @@ void Generator::generateC(OD *od) const
     out << "// struct sOD_RAM OD_RAM;" << "\n";
     out << "struct sOD_RAM OD_RAM;" << "\n";
     out << "\n";
-    out << "void OD_initRam()" << "\n";
-    out << "{" << "\n";
 
     QMap<uint16_t, Index*> indexes = od->indexes();
-    QList<SubIndex*> subIndexes;
+
+    foreach (Index *index, indexes)
+    {
+        if (index->nbSubIndex() > 0)
+        {
+            if (index->objectType() == OD::_Object::ARRAY)
+            {
+                for (uint8_t i=1; i<index->datas().size(); i++)
+                {
+                    writeCharLineC(index, out, i);
+                }
+                continue;
+            }
+
+            foreach (SubIndex* subIndex, index->subIndexes())
+            {
+                writeCharLineC(subIndex, out, 0);
+            }
+            continue;
+        }
+
+        writeCharLineC(index, out, 0);
+    }
+
+    out << "\n";
+    out << "void OD_initRam()" << "\n";
+    out << "{" << "\n";
 
     foreach (Index *index, indexes)
     {
@@ -289,26 +313,9 @@ QString Generator::dataToString(const SubIndex *index, uint8_t subNumber) const
         data = "0x" + QString::number(index->data(subNumber)->toFloat64());
         break;
 
-    case OD::_Type::VISIBLE_STRING:
-        data = index->data(subNumber)->toString();
-
-        if (data.left(2) != "0x")
-        {
-            data.prepend("\"");
-            data.append("\"");
-        }
-
-        break;
-
     case OD::_Type::OCTET_STRING:
-        data = index->data(subNumber)->toString();
-
-        if (data.left(2) != "0x")
-        {
-            data.prepend("\"");
-            data.append("\"");
-        }
-
+    case OD::_Type::VISIBLE_STRING:
+        data = stringNameToString(index, subNumber);
         break;
 
     default:
@@ -338,6 +345,18 @@ QString Generator::typeObjectToString(const SubIndex *subIndex) const
     typeObject += QString::number(subIndex->dataType(), 16).toUpper();
 
     return typeObject;
+}
+
+QString Generator::stringNameToString(const SubIndex *subIndex, uint8_t arrayKey) const
+{
+    QString string;
+
+    if (arrayKey == 0)
+        string = varNameToString(subIndex->parameterName()) + "Str";
+    else
+        string = varNameToString(subIndex->parameterName()) + "Str" + QString::number(arrayKey);
+
+    return string;
 }
 
 /**
@@ -396,7 +415,7 @@ void Generator::writeRamLineC(Index *index, QTextStream &cFile) const
     QList<SubIndex*> subIndexes;
     QList<DataType*> datas;
 
-    int cpt = 0;
+    uint8_t cpt = 0;
 
     switch(index->objectType())
     {
@@ -506,5 +525,16 @@ void Generator::writeOdCompletionC(Index *index, QTextStream &cFile) const
     cFile << index->length() << ", " << typeObjectToString(index) << ", " << "0x" << index->accessType();
     cFile << "},";
     cFile << "\n";
+}
+
+void Generator::writeCharLineC(SubIndex *subIndex, QTextStream &cFile, uint8_t arrayKey) const
+{
+    switch (subIndex->dataType())
+    {
+    case OD::_Type::VISIBLE_STRING:
+    case OD::_Type::OCTET_STRING:
+        cFile << "char " << stringNameToString(subIndex, arrayKey) << "[]" << " = " << "\"" << subIndex->data(arrayKey)->toString() << "\"" << ";\n";
+        break;
+    }
 }
 

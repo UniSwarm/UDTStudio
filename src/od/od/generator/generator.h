@@ -39,12 +39,14 @@ private:
     QString structNameToString(const QString &name) const;
     QString dataToString(const SubIndex *index, uint8_t subNumber) const;
     QString typeObjectToString(const SubIndex *subIndex) const;
+    QString stringNameToString(const SubIndex *subIndex, uint8_t arrayKey) const;
 
     void writeRecordDefinitionH(Index *index, QTextStream &hFile) const;
     void writeIndexH(Index *index, QTextStream &hFile) const;
     void writeRamLineC(Index *index, QTextStream &cFile) const;
     void writeRecordCompletionC(Index *index, QTextStream &cFile) const;
     void writeOdCompletionC(Index *index, QTextStream &cFile) const;
+    void writeCharLineC(SubIndex *subIndex, QTextStream &cFile, uint8_t arrayKey) const;
 
     QString _dir;
 };
