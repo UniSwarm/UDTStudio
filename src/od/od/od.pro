@@ -12,7 +12,7 @@ HEADERS += \
     $$PWD/model/subindex.h \
     $$PWD/model/od.h \
     $$PWD/model/datatype.h \
-    $$PWD/parser/edsparser.h \
+    $$PWD/parser/cdfparser.h \
     $$PWD/generator/generator.h \
     $$PWD/od_global.h
 
@@ -21,6 +21,6 @@ SOURCES += \
     $$PWD/model/subindex.cpp \
     $$PWD/model/od.cpp \
     $$PWD/model/datatype.cpp \
-    $$PWD/parser/edsparser.cpp \
+    $$PWD/parser/cdfparser.cpp \
     $$PWD/generator/generator.cpp
 

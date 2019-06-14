@@ -16,24 +16,24 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "edsparser.h"
+#include "cdfparser.h"
 
 #include <QRegularExpression>
 
 /**
  * @brief default constructor
  */
-EdsParser::EdsParser()
+CdfParser::CdfParser()
 {
 
 }
 
 /**
- * @brief parses an eds file and completes an object dictionary
+ * @brief parses an cdf file and completes an object dictionary
  * @param input file path
  * @return object dictionary
  */
-OD* EdsParser::parse(QString path)
+OD* CdfParser::parse(QString path)
 {
     bool ok;
     bool isSubIndex;
@@ -51,11 +51,11 @@ OD* EdsParser::parse(QString path)
     OD *od;
     od = new OD;
 
-    QSettings eds(path, QSettings::IniFormat);
+    QSettings cdf(path, QSettings::IniFormat);
     QRegularExpression reSub("([0-Z]{4})(sub)([0-9]+)");
     QRegularExpression reIndex("([0-Z]{4})");
 
-    foreach (const QString &group, eds.childGroups())
+    foreach (const QString &group, cdf.childGroups())
     {
         isSubIndex = false;
         accessType = 0;
@@ -82,14 +82,14 @@ OD* EdsParser::parse(QString path)
         else
             continue;
 
-        eds.beginGroup(group);
+        cdf.beginGroup(group);
 
-        foreach (const QString &key, eds.allKeys())
+        foreach (const QString &key, cdf.allKeys())
         {
             // TODO check if start with 0x
             if (key == "AccessType")
             {
-                accessString = eds.value(key).toString();
+                accessString = cdf.value(key).toString();
 
                 if (accessString == "rw")
                     accessType = OD::_Access::READ_WRITE;
@@ -105,20 +105,20 @@ OD* EdsParser::parse(QString path)
             }
 
             else if (key == "DataType")
-                dataType = eds.value(key).toString().toInt(&ok, 16);
+                dataType = cdf.value(key).toString().toInt(&ok, 16);
 
             else if (key == "ObjectType")
-                objectType = eds.value(key).toString().toInt(&ok, 16);
+                objectType = cdf.value(key).toString().toInt(&ok, 16);
 
             else if (key == "ParameterName")
-                parameterName = eds.value(key).toString();
+                parameterName = cdf.value(key).toString();
 
             else if (key == "SubNumber")
-                subNumber = eds.value(key).toString().toInt(&ok, 10);
+                subNumber = cdf.value(key).toString().toInt(&ok, 10);
         }
 
-        data = readData(eds);
-        eds.endGroup();
+        data = readData(cdf);
+        cdf.endGroup();
 
         if (isSubIndex)
         {
@@ -152,16 +152,16 @@ OD* EdsParser::parse(QString path)
 }
 
 /**
- * @brief read data to correct format from eds file
- * @param eds file
+ * @brief read data to correct format from cdf file
+ * @param cdf file
  * @return data
  */
-DataType* EdsParser::readData(const QSettings &eds) const
+DataType* CdfParser::readData(const QSettings &cdf) const
 {
     bool ok;
-    int16_t dataType = eds.value("DataType").toString().toShort(&ok, 16);
+    int16_t dataType = cdf.value("DataType").toString().toShort(&ok, 16);
 
-    QString dataString = eds.value("DefaultValue").toString();
+    QString dataString = cdf.value("DefaultValue").toString();
     uint8_t base = 10;
     if (dataString.startsWith("0x", Qt::CaseInsensitive))
         base = 16;

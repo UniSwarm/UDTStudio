@@ -16,8 +16,8 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef EDSPARSER_H
-#define EDSPARSER_H
+#ifndef CDFPARSER_H
+#define CDFPARSER_H
 
 #include "od_global.h"
 
@@ -26,14 +26,14 @@
 
 #include "model/od.h"
 
-class OD_EXPORT EdsParser
+class OD_EXPORT CdfParser
 {
 public:
-    EdsParser();
+    CdfParser();
     OD* parse(QString path);
 
 private:
-    DataType *readData(const QSettings &eds) const;
+    DataType *readData(const QSettings &cdf) const;
 };
 
-#endif // EDSPARSER_H
+#endif // CDFPARSER_H

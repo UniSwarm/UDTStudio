@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 #include "model/od.h"
-#include "parser/edsparser.h"
+#include "parser/cdfparser.h"
 #include "generator/generator.h"
 
 /**
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     cliParser.setApplicationDescription(QCoreApplication::translate("main", "Object Dicitonary command line interface."));
     cliParser.addHelpOption();
     cliParser.addVersionOption();
-    cliParser.addPositionalArgument("file", QCoreApplication::translate("main", "Object dictionary file (eds)."), "file");
+    cliParser.addPositionalArgument("file", QCoreApplication::translate("main", "Object dictionary file (cdf)."), "file");
 
     QCommandLineOption outOption(QStringList() << "o" << "out",
                                      QCoreApplication::translate("main", "Output directory."),
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     OD *od;
     QString path(file);
 
-    EdsParser parser;
+    CdfParser parser;
     Generator generator;
 
     od = parser.parse(path);
