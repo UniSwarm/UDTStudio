@@ -25,21 +25,31 @@
 #include "generator.h"
 
 /**
- * @brief constructor: set where files will be generated
- * @param directory path
+ * @brief default constructor
  */
-Generator::Generator(QString path)
+Generator::Generator()
 {
-    _dir = path;
+
+}
+
+/**
+ * @brief generate OD.h and OD.c files
+ * @param object dictionary
+ * @param output directory path
+ */
+void Generator::generate(OD *od, QString dir) const
+{
+    generateH(od, dir);
+    generateC(od, dir);
 }
 
 /**
  * @brief Generate OD.h file
  * @param object dictionary
  */
-void Generator::generateH(OD *od) const
+void Generator::generateH(OD *od, QString dir) const
 {
-    QFile hFile(_dir + "/OD.h");
+    QFile hFile(dir + "/OD.h");
 
     if (!hFile.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
@@ -102,9 +112,9 @@ void Generator::generateH(OD *od) const
  * @brief Generate OD.c file
  * @param object dictionary
  */
-void Generator::generateC(OD *od) const
+void Generator::generateC(OD *od, QString dir) const
 {
-    QFile cFile(_dir + "/OD.c");
+    QFile cFile(dir + "/OD.c");
 
     if (!cFile.open(QIODevice::WriteOnly | QIODevice::Text))
         return;

@@ -29,11 +29,14 @@
 class OD_EXPORT Generator
 {
 public:
-    Generator(QString path);
-    void generateH(OD *od) const;
-    void generateC(OD *od) const;
+    Generator();
+
+    void generate(OD *od, QString dir) const;
 
 private:
+    void generateH(OD *od, QString dir) const;
+    void generateC(OD *od, QString dir) const;
+
     QString typeToString(const uint16_t &type) const;
     QString varNameToString(const QString &name) const;
     QString structNameToString(const QString &name) const;
@@ -47,8 +50,6 @@ private:
     void writeRecordCompletionC(Index *index, QTextStream &cFile) const;
     void writeOdCompletionC(Index *index, QTextStream &cFile) const;
     void writeCharLineC(SubIndex *subIndex, QTextStream &cFile, uint8_t arrayKey) const;
-
-    QString _dir;
 };
 
 #endif // GENERATOR_H

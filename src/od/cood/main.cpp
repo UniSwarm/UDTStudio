@@ -49,11 +49,10 @@ int main(int argc, char *argv[])
     QString path(file);
 
     EdsParser parser;
-    Generator generator(outDirectory);
+    Generator generator;
 
     od = parser.parse(path);
-    generator.generateH(od);
-    generator.generateC(od);
+    generator.generate(od, outDirectory);
     delete od;
 
     return 0;

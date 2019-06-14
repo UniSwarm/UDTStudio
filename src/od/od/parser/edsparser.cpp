@@ -20,6 +20,9 @@
 
 #include <QRegularExpression>
 
+/**
+ * @brief default constructor
+ */
 EdsParser::EdsParser()
 {
 
@@ -27,7 +30,8 @@ EdsParser::EdsParser()
 
 /**
  * @brief parses an eds file and completes an object dictionary
- * @param object dictionary
+ * @param input file path
+ * @return object dictionary
  */
 OD* EdsParser::parse(QString path)
 {
