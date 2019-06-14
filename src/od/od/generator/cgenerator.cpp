@@ -138,7 +138,7 @@ void CGenerator::generateC(OD *od, const QString &dir) const
     {
         if (index->nbSubIndex() > 0)
         {
-            if (index->objectType() == OD::_Object::ARRAY)
+            if (index->objectType() == OD::Object::ARRAY)
             {
                 for (uint8_t i=1; i<index->datas().size(); i++)
                 {
@@ -201,41 +201,41 @@ QString CGenerator::typeToString(const uint16_t &type) const
 {
     switch(type)
     {
-    case OD::_Type::INTEGER8:
+    case OD::Type::INTEGER8:
        return QLatin1String("int8_t");
 
-    case OD::_Type::INTEGER16:
+    case OD::Type::INTEGER16:
         return QLatin1String("int16_t");
 
-    case OD::_Type::INTEGER32:
+    case OD::Type::INTEGER32:
         return QLatin1String("int32_t");
 
-    case OD::_Type::INTEGER64:
+    case OD::Type::INTEGER64:
         return QLatin1String("int64_t");
 
-    case OD::_Type::BOOLEAN:
-    case OD::_Type::UNSIGNED8:
+    case OD::Type::BOOLEAN:
+    case OD::Type::UNSIGNED8:
        return QLatin1String("uint8_t");
 
-    case OD::_Type::UNSIGNED16:
+    case OD::Type::UNSIGNED16:
         return QLatin1String("uint16_t");
 
-    case OD::_Type::UNSIGNED32:
+    case OD::Type::UNSIGNED32:
         return QLatin1String("uint32_t");
 
-    case OD::_Type::UNSIGNED64:
+    case OD::Type::UNSIGNED64:
         return QLatin1String("uint64_t");
 
-    case OD::_Type::REAL32:
+    case OD::Type::REAL32:
         return QLatin1String("float32_t");
 
-    case OD::_Type::REAL64:
+    case OD::Type::REAL64:
         return QLatin1String("float64_t");
 
-    case OD::_Type::VISIBLE_STRING:
+    case OD::Type::VISIBLE_STRING:
         return QLatin1String("vstring_t");
 
-    case OD::_Type::OCTET_STRING:
+    case OD::Type::OCTET_STRING:
         return QLatin1String("ostring_t");
 
     default:
@@ -293,48 +293,48 @@ QString CGenerator::dataToString(const SubIndex *index, uint8_t subNumber) const
 
     switch (index->dataType())
     {
-    case OD::_Type::INTEGER8:
+    case OD::Type::INTEGER8:
         data += "0x" + QString::number(index->data(subNumber)->toInt8(), 16).right(2).toUpper();
         break;
 
-    case OD::_Type::INTEGER16:
+    case OD::Type::INTEGER16:
         data = "0x" + QString::number(index->data(subNumber)->toInt16(), 16).right(4).toUpper();
         break;
 
-    case OD::_Type::INTEGER32:
+    case OD::Type::INTEGER32:
         data = "0x" + QString::number(index->data(subNumber)->toInt32(), 16).right(8).toUpper();
         break;
 
-    case OD::_Type::INTEGER64:
+    case OD::Type::INTEGER64:
         data = "0x" + QString::number(index->data(subNumber)->toInt64(), 16).right(16).toUpper();
         break;
 
-    case OD::_Type::UNSIGNED8:
+    case OD::Type::UNSIGNED8:
         data = "0x" + QString::number(index->data(subNumber)->toUInt8(), 16).toUpper();
         break;
 
-    case OD::_Type::UNSIGNED16:
+    case OD::Type::UNSIGNED16:
         data = "0x" + QString::number(index->data(subNumber)->toUInt16(), 16).toUpper();
         break;
 
-    case OD::_Type::UNSIGNED32:
+    case OD::Type::UNSIGNED32:
         data = "0x" + QString::number(index->data(subNumber)->toUInt32(), 16).toUpper();
         break;
 
-    case OD::_Type::UNSIGNED64:
+    case OD::Type::UNSIGNED64:
         data = "0x" + QString::number(index->data(subNumber)->toUInt64(), 16).toUpper();
         break;
 
-    case OD::_Type::REAL32:
+    case OD::Type::REAL32:
         data = "0x" + QString::number(index->data(subNumber)->toFloat32());
         break;
 
-    case OD::_Type::REAL64:
+    case OD::Type::REAL64:
         data = "0x" + QString::number(index->data(subNumber)->toFloat64());
         break;
 
-    case OD::_Type::OCTET_STRING:
-    case OD::_Type::VISIBLE_STRING:
+    case OD::Type::OCTET_STRING:
+    case OD::Type::VISIBLE_STRING:
         data = stringNameToString(index, subNumber);
         break;
 
@@ -394,7 +394,7 @@ void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile) const
 {
     QList<SubIndex*> subIndexes;
 
-    if ( index->objectType() == OD::_Object::RECORD)
+    if ( index->objectType() == OD::Object::RECORD)
     {
         hFile << "typedef struct\n" << "{\n";
 
@@ -416,15 +416,15 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile) const
 {
     switch(index->objectType())
     {
-    case OD::_Object::VAR:
+    case OD::Object::VAR:
         hFile << "    " << typeToString(index->dataType()) << " " << varNameToString(index->parameterName()) << ";" << "\n";
         break;
 
-    case OD::_Object::RECORD:
+    case OD::Object::RECORD:
         hFile << "    " << structNameToString(index->parameterName()) << " " << varNameToString(index->parameterName()) << ";" << "\n";
         break;
 
-    case OD::_Object::ARRAY:
+    case OD::Object::ARRAY:
         hFile << "    " << typeToString(index->dataType()) << " " << varNameToString(index->parameterName());
         hFile << "[" << index->nbSubIndex()-1 << "]" << ";" << "\n";
         break;
@@ -445,14 +445,14 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
 
     switch(index->objectType())
     {
-    case OD::_Object::VAR:
+    case OD::Object::VAR:
         cFile << "    " << "OD_RAM." << varNameToString(index->parameterName());
         cFile << " = ";
         cFile << dataToString(index, 0);
         cFile << ";\n";
         break;
 
-    case OD::_Object::RECORD:
+    case OD::Object::RECORD:
         subIndexes = index->subIndexes();
         foreach (SubIndex *subIndex, subIndexes)
         {
@@ -464,7 +464,7 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
         }
         break;
 
-    case OD::_Object::ARRAY:
+    case OD::Object::ARRAY:
         datas = index->datas();
         datas.removeFirst();
         cpt = 0;
@@ -486,7 +486,7 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
  */
 void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
 {
-    if ( index->objectType() == OD::_Object::RECORD)
+    if ( index->objectType() == OD::Object::RECORD)
     {
         cFile << "const OD_entrySubIndex_t OD_Record" << QString::number(index->index(), 16).toUpper() << "[" << index->nbSubIndex() << "] =\n";
         cFile << "{\n";
@@ -517,15 +517,15 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
 
     switch (index->objectType())
     {
-    case OD::_Object::VAR:
+    case OD::Object::VAR:
         cFile << "0";
         break;
 
-    case OD::_Object::RECORD:
+    case OD::Object::RECORD:
         cFile << index->nbSubIndex()-1;
         break;
 
-    case OD::_Object::ARRAY:
+    case OD::Object::ARRAY:
         cFile << index->nbSubIndex()-1;
         break;
     }
@@ -534,15 +534,15 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
 
     switch (index->objectType())
     {
-    case OD::_Object::VAR:
+    case OD::Object::VAR:
         cFile << "(void*)&OD_RAM." << varNameToString(index->parameterName());
         break;
 
-    case OD::_Object::RECORD:
+    case OD::Object::RECORD:
         cFile << "(void*)OD_Record" << QString::number(index->index(), 16).toUpper();
         break;
 
-    case OD::_Object::ARRAY:
+    case OD::Object::ARRAY:
         cFile << "(void*)OD_RAM." << varNameToString(index->parameterName());
         break;
     }
@@ -564,8 +564,8 @@ void CGenerator::writeCharLineC(SubIndex *subIndex, QTextStream &cFile, uint8_t 
 {
     switch (subIndex->dataType())
     {
-    case OD::_Type::VISIBLE_STRING:
-    case OD::_Type::OCTET_STRING:
+    case OD::Type::VISIBLE_STRING:
+    case OD::Type::OCTET_STRING:
         cFile << "const char " << stringNameToString(subIndex, arrayKey) << "[]" << " = " << "\"" << subIndex->data(arrayKey)->toString() << "\"" << ";\n";
         break;
     }

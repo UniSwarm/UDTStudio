@@ -40,7 +40,7 @@ public:
     QMap<uint16_t, Index *> &indexes();
 
     // =============== Data type ==================
-    enum _Type
+    enum Type
     {
         BOOLEAN = 0x0001,
         INTEGER8 = 0x0002,
@@ -70,7 +70,7 @@ public:
     };
 
     // =========== Object type ====================
-    enum _Object
+    enum Object
     {
         OBJECT_NULL = 0x00,
         OBJECT_DOMAIN = 0x02,
@@ -82,7 +82,7 @@ public:
     };
 
     // ============== Access type =================
-     enum _Access
+     enum Access
      {
          READ_WRITE = 0x01,
          WRITE_ONLY	= 0x02,
