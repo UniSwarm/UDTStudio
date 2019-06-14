@@ -45,6 +45,11 @@ void Generator::generateH(OD *od) const
         return;
 
     QTextStream out(&hFile);
+
+    out << "\n";
+    out << "/**\n";
+    out << " * Generated .h file\n";
+    out << " */\n";
     out << "\n";
     out << "#ifndef OD_H" << "\n";
     out << "#define OD_H" << "\n";
@@ -88,6 +93,7 @@ void Generator::generateH(OD *od) const
     out << "void OD_initRam();" << "\n";
     out << "\n";
     out << "#endif // OD_H";
+    out << "\n";
 
     hFile.close();
 }
@@ -104,6 +110,10 @@ void Generator::generateC(OD *od) const
         return;
 
     QTextStream out(&cFile);
+    out << "\n";
+    out << "/**\n";
+    out << " * Generated .c file\n";
+    out << " */\n";
     out << "\n";
     out << "#include \"OD.h\"" << "\n";
     out << "\n";
@@ -167,6 +177,7 @@ void Generator::generateC(OD *od) const
     }
 
     out << "};";
+    out << "\n";
 
     cFile.close();
 }
