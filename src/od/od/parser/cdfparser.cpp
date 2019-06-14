@@ -29,7 +29,7 @@ CdfParser::CdfParser()
 }
 
 /**
- * @brief parses an cdf file and completes an object dictionary
+ * @brief parses a cdf file and completes an object dictionary
  * @param input file path
  * @return object dictionary
  */

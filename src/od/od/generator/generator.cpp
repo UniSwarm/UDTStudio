@@ -291,7 +291,6 @@ QString Generator::dataToString(const SubIndex *index, uint8_t subNumber) const
 {
     QString data;
 
-    //TODO change data parameters to handle arrays
     switch (index->dataType())
     {
     case OD::_Type::INTEGER8:
