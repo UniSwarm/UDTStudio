@@ -22,7 +22,6 @@
 #include "od_global.h"
 
 #include <QString>
-#include <QTextStream>
 
 #include "model/od.h"
 
@@ -31,25 +30,9 @@ class OD_EXPORT Generator
 public:
     Generator();
 
-    void generate(OD *od, QString dir) const;
+    virtual void generate(OD *od, const QString &dir) const = 0;
 
-private:
-    void generateH(OD *od, QString dir) const;
-    void generateC(OD *od, QString dir) const;
-
-    QString typeToString(const uint16_t &type) const;
-    QString varNameToString(const QString &name) const;
-    QString structNameToString(const QString &name) const;
-    QString dataToString(const SubIndex *index, uint8_t subNumber) const;
-    QString typeObjectToString(const SubIndex *subIndex) const;
-    QString stringNameToString(const SubIndex *subIndex, uint8_t arrayKey) const;
-
-    void writeRecordDefinitionH(Index *index, QTextStream &hFile) const;
-    void writeIndexH(Index *index, QTextStream &hFile) const;
-    void writeRamLineC(Index *index, QTextStream &cFile) const;
-    void writeRecordCompletionC(Index *index, QTextStream &cFile) const;
-    void writeOdCompletionC(Index *index, QTextStream &cFile) const;
-    void writeCharLineC(SubIndex *subIndex, QTextStream &cFile, uint8_t arrayKey) const;
+    static Generator *getGenerator(const QString &type);
 };
 
 #endif // GENERATOR_H

@@ -14,6 +14,7 @@ HEADERS += \
     $$PWD/model/datatype.h \
     $$PWD/parser/cdfparser.h \
     $$PWD/generator/generator.h \
+    $$PWD/generator/cgenerator.h \
     $$PWD/od_global.h
 
 SOURCES += \
@@ -22,5 +23,6 @@ SOURCES += \
     $$PWD/model/od.cpp \
     $$PWD/model/datatype.cpp \
     $$PWD/parser/cdfparser.cpp \
-    $$PWD/generator/generator.cpp
+    $$PWD/generator/generator.cpp \
+    $$PWD/generator/cgenerator.cpp
 

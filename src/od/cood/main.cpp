@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include "model/od.h"
 #include "parser/cdfparser.h"
-#include "generator/generator.h"
+#include "generator/cgenerator.h"
 
 /**
  * @brief main
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     QString path(file);
 
     CdfParser parser;
-    Generator generator;
+    CGenerator generator;
 
     od = parser.parse(path);
     generator.generate(od, outDirectory);
