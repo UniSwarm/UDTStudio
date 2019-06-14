@@ -51,7 +51,7 @@ void CGenerator::generateH(OD *od, const QString &dir) const
 {
     QFile hFile(dir + "/OD.h");
 
-    if (!hFile.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!hFile.open(QIODevice::WriteOnly))
         return;
 
     QTextStream out(&hFile);
@@ -116,7 +116,7 @@ void CGenerator::generateC(OD *od, const QString &dir) const
 {
     QFile cFile(dir + "/OD.c");
 
-    if (!cFile.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!cFile.open(QIODevice::WriteOnly))
         return;
 
     QTextStream out(&cFile);
