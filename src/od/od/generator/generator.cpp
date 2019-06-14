@@ -358,6 +358,12 @@ QString Generator::typeObjectToString(const SubIndex *subIndex) const
     return typeObject;
 }
 
+/**
+ * @brief convert a string name
+ * @param sub-index
+ * @param sub-index number for arrays
+ * @return string name for C file
+ */
 QString Generator::stringNameToString(const SubIndex *subIndex, uint8_t arrayKey) const
 {
     QString string;
@@ -538,6 +544,13 @@ void Generator::writeOdCompletionC(Index *index, QTextStream &cFile) const
     cFile << "\n";
 }
 
+
+/**
+ * @brief write char[] initialization in a C file
+ * @param sub-index
+ * @param C file
+ * @param sub-index-number for arrays
+ */
 void Generator::writeCharLineC(SubIndex *subIndex, QTextStream &cFile, uint8_t arrayKey) const
 {
     switch (subIndex->dataType())

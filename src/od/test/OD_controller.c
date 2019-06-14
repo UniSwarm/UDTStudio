@@ -345,6 +345,11 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size)
     return entry->typeObject & OD_TYPE_MASK;
 }
 
+/**
+ * @brief return size of data type
+ * @param data type code
+ * @return size
+ */
 uint8_t OD_sizeFromType(uint16_t dataType)
 {
     switch (dataType)

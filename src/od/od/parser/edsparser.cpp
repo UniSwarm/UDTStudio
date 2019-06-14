@@ -143,6 +143,11 @@ void EdsParser::parse(OD *od)
     }
 }
 
+/**
+ * @brief read data to correct format from eds file
+ * @param eds file
+ * @return data
+ */
 DataType* EdsParser::readData(const QSettings &eds) const
 {
     bool ok;

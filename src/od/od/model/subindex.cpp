@@ -186,11 +186,19 @@ uint8_t SubIndex::length() const
     return  0;
 }
 
+/**
+ * @brief _subNumber getter
+ * @return sub-index number
+ */
 uint8_t SubIndex::subNumber() const
 {
     return _subNumber;
 }
 
+/**
+ * @brief _subNumber setter
+ * @param sub-index number
+ */
 void SubIndex::setSubNumber(const uint8_t &subNumber)
 {
     _subNumber = subNumber;
