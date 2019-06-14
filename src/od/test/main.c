@@ -161,6 +161,19 @@ void testReadVisibleString()
     assert(strcmp(*value2, "test2") == 0);
 }
 
+void testWriteObjectBool()
+{
+    uint8_t *value;
+    uint8_t data = 1;
+
+    assert(OD_write(0x6423, 0x00, (void*)&data, 1) == 1);
+    assert(OD_read(0x6423, 0x00, (void**)&value) == 1);
+    assert(*value == 1);
+
+    data = 2;
+    assert(OD_write(0x6423, 0x00, (void*)&data, 1) == -OD_ABORT_CODE_LENGTH_DOESNT_MATCH);
+}
+
 int main()
 {
 	OD_reset();
@@ -182,6 +195,7 @@ int main()
     testWriteArrayNoSub();
     testWriteBadSize();
     testReadVisibleString();
+    testWriteObjectBool();
 
 	return 0;
 }

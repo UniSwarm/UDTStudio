@@ -188,6 +188,10 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size)
         dataType = sub->typeObject & OD_TYPE_MASK;
         switch (dataType)
         {
+        case OD_TYPE_BOOLEAN:
+            if (*(uint8_t*)ptData > 1 )
+                return -OD_ABORT_CODE_LENGTH_DOESNT_MATCH;
+
         case OD_TYPE_UNSIGNED8:
             *((uint8_t*)sub->ptData) = *(uint8_t*)ptData;
             break;
@@ -243,6 +247,10 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size)
     {
         switch (dataType)
         {
+        case OD_TYPE_BOOLEAN:
+            if (*(uint8_t*)ptData > 1 )
+                return -OD_ABORT_CODE_LENGTH_DOESNT_MATCH;
+
         case OD_TYPE_UNSIGNED8:
             *((uint8_t*)entry->ptData + (entry->length * (subIndex - 1))) = *(uint8_t*)ptData;
             break;
@@ -289,6 +297,10 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size)
 
     switch (dataType)
     {
+    case OD_TYPE_BOOLEAN:
+        if (*(uint8_t*)ptData > 1 )
+            return -OD_ABORT_CODE_LENGTH_DOESNT_MATCH;
+        
     case OD_TYPE_UNSIGNED8:
         *((uint8_t*)entry->ptData) = *(uint8_t*)ptData;
         break;
@@ -337,6 +349,7 @@ uint8_t OD_sizeFromType(uint16_t dataType)
 {
     switch (dataType)
     {
+    case OD_TYPE_BOOLEAN:
     case OD_TYPE_UNSIGNED8:
     case OD_TYPE_INTEGER8:
         return 1;
