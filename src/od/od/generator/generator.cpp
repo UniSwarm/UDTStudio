@@ -567,7 +567,7 @@ void Generator::writeCharLineC(SubIndex *subIndex, QTextStream &cFile, uint8_t a
     {
     case OD::_Type::VISIBLE_STRING:
     case OD::_Type::OCTET_STRING:
-        cFile << "char " << stringNameToString(subIndex, arrayKey) << "[]" << " = " << "\"" << subIndex->data(arrayKey)->toString() << "\"" << ";\n";
+        cFile << "const char " << stringNameToString(subIndex, arrayKey) << "[]" << " = " << "\"" << subIndex->data(arrayKey)->toString() << "\"" << ";\n";
         break;
     }
 }
