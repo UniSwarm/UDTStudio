@@ -155,10 +155,10 @@ void testReadVisibleString()
     ostring_t* value2;
 
     assert(OD_read(0x1008, 0x00, (void**)&value1) == 9);
-    assert(strcmp(*value1, "test1") == 0);
+    assert(strcmp((char*)*value1, "test1") == 0);
 
     assert(OD_read(0x4041, 0x00, (void**)&value2) == 0xA);
-    assert(strcmp(*value2, "test2") == 0);
+    assert(strcmp((char*)*value2, "test2") == 0);
 }
 
 void testWriteObjectBool()
@@ -174,11 +174,9 @@ void testWriteObjectBool()
     assert(OD_write(0x6423, 0x00, (void*)&data, 1) == -OD_ABORT_CODE_LENGTH_DOESNT_MATCH);
 }
 
-int main()
-{
-	OD_reset();
-
-	testReadObjectVar();
+void testCustomEds()
+{  
+    testReadObjectVar();
     testReadObjectVarRO();
     testReadObjectVarNoObject();
     testReadObjectVarNoSub();
@@ -196,6 +194,27 @@ int main()
     testWriteBadSize();
     testReadVisibleString();
     testWriteObjectBool();
+}
+
+void testUmcEds()
+{
+    vstring_t *value;
+
+    assert(OD_read(0x1008, 0x0, (void*)&value) == 9);
+    assert(strcmp((char *)*value, "") == 0);
+
+    assert(OD_read(0x1009, 0x0, (void*)&value) == 9);
+    assert(strcmp((char *)*value, "") == 0);
+
+    assert(OD_read(0x100A, 0x0, (void*)&value) == 9);
+    assert(strcmp((char *)*value, "3150.69D") == 0);
+}
+
+int main()
+{
+	OD_reset();
+
+    testUmcEds();
 
 	return 0;
 }
