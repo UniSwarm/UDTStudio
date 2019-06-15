@@ -56,7 +56,6 @@ void CGenerator::generateH(OD *od, const QString &dir) const
 
     QTextStream out(&hFile);
 
-    out << "\n";
     out << "/**\n";
     out << " * Generated .h file\n";
     out << " */\n";
@@ -121,7 +120,7 @@ void CGenerator::generateC(OD *od, const QString &dir) const
         return;
 
     QTextStream out(&cFile);
-    out << "\n";
+
     out << "/**\n";
     out << " * Generated .c file\n";
     out << " */\n";
@@ -159,11 +158,17 @@ void CGenerator::generateC(OD *od, const QString &dir) const
 
     out << "\n";
     out << "void OD_initRam()" << "\n";
-    out << "{" << "\n";
+    out << "{";
 
+    uint8_t lastOT = 0;
     foreach (Index *index, indexes)
     {
+        if (index->objectType() != lastOT
+                || index->objectType() == OD::Object::RECORD
+                || index->objectType() == OD::Object::ARRAY)
+            out << "\n";
         writeRamLineC(index, out);
+        lastOT = index->objectType();
     }
 
     out << "}" << "\n";
@@ -447,7 +452,9 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
         cFile << "    " << "OD_RAM." << varNameToString(index->parameterName());
         cFile << " = ";
         cFile << dataToString(index, 0);
-        cFile << ";\n";
+        cFile << ";";
+        cFile << "  // 0x" << QString::number(index->index(), 16);
+        cFile << "\n";
         break;
 
     case OD::Object::RECORD:
@@ -457,24 +464,26 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
             cFile << "    " << "OD_RAM." << varNameToString(index->parameterName()) << "." << varNameToString(subIndex->parameterName());
             cFile << " = ";
             cFile << dataToString(subIndex, 0);
-            cFile << ";\n";
+            cFile << ";";
+            cFile << "  // 0x" << QString::number(index->index(), 16) << "." << subIndex->subNumber();
+            cFile << "\n";
         }
         break;
 
     case OD::Object::ARRAY:
-        datas = index->datas();
-        datas.removeFirst();
-        for (int i=0; i<datas.count(); i++)
+        for (uint8_t i = 1; i<index->datas().count(); i++)
         {
-
-            cFile << "    " << "OD_RAM." << varNameToString(index->parameterName()) << "[" << i << "]";
+            cFile << "    " << "OD_RAM." << varNameToString(index->parameterName()) << "[" << i - 1 << "]";
             cFile << " = ";
-            cFile << dataToString(index, i + 1);
-            cFile << ";\n";
+            cFile << dataToString(index, i);
+            cFile << ";";
+            cFile << "  // 0x" << QString::number(index->index(), 16) << "." << i-1;
+            cFile << "\n";
         }
         break;
     }
 }
+
 /**
  * @brief writes a record initialization in ram in a .c file
  * @param index
@@ -549,7 +558,6 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
     cFile << "\n";
 }
 
-
 /**
  * @brief write char[] initialization in a C file
  * @param sub-index
@@ -566,4 +574,3 @@ void CGenerator::writeCharLineC(SubIndex *subIndex, QTextStream &cFile, uint8_t 
         break;
     }
 }
-
