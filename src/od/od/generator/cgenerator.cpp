@@ -98,6 +98,7 @@ void CGenerator::generateH(OD *od, const QString &dir) const
     out << "\n";
     out << "// ======== extern declaration of OD ========" << "\n";
     out << "extern const OD_entry_t OD[OD_NB_ELEMENTS];" << "\n";
+    out << "extern struct sOD_RAM OD_RAM;" << "\n";
     out << "\n";
     out << "// ============== function ==================" << "\n";
     out << "void OD_initRam();" << "\n";
@@ -128,7 +129,6 @@ void CGenerator::generateC(OD *od, const QString &dir) const
     out << "#include \"OD.h\"" << "\n";
     out << "\n";
     out << "// ==================== initialization =====================" << "\n";
-    out << "// struct sOD_RAM OD_RAM;" << "\n";
     out << "struct sOD_RAM OD_RAM;" << "\n";
     out << "\n";
 
