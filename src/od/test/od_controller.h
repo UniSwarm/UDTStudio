@@ -1,7 +1,7 @@
 #ifndef OD_CONTROLLER_H
 #define OD_CONTROLLER_H
 
-#include "OD.h"
+#include "od.h"
 
 // ============ sdo abort codes =============
 #define OD_ABORT_CODE_WRITE_ONLY            0x06010001
@@ -11,11 +11,11 @@
 #define OD_ABORT_CODE_LENGTH_DOESNT_MATCH   0x06070010
 
 // =============== functions ================
-void OD_reset();
+void od_reset(void);
 
-int32_t OD_read(uint16_t index, uint8_t subIndex, void **ptData);
-int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size);
+int32_t od_read(uint16_t index, uint8_t subIndex, void **ptData);
+int32_t od_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size);
 
-uint8_t OD_sizeFromType(uint16_t dataType);
+uint8_t od_sizeFromType(uint16_t dataType);
 
 #endif // OD_CONTROLLER_H

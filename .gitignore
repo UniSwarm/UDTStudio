@@ -1,7 +1,11 @@
 *.pro.user
 build*
-OD.c
-OD.h
+od.c
+od.h
 bin/
 src/od/test/test
 src/od/test/test.pro
+pdo.h
+pdo.c
+umc1bds32fr.eds
+

@@ -1,4 +1,4 @@
-#include "OD_controller.h"
+#include "od_controller.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -6,9 +6,9 @@
 /**
  * @brief Reset the RAM memory
  */
-void OD_reset()
+void od_reset()
 {
-    OD_initRam();
+    od_initRam();
 }
 
 /**
@@ -16,7 +16,7 @@ void OD_reset()
  * @param index eds index number
  * @return adress of OD's entry
  */
-OD_entry_t* OD_getIndex(uint16_t index)
+OD_entry_t* od_getIndex(uint16_t index)
 {
     int i;
     OD_entry_t *entry;
@@ -38,7 +38,7 @@ OD_entry_t* OD_getIndex(uint16_t index)
  * @param eds index number
  * @return adress of OD's entry
  */
-OD_entry_t* OD_getIndexDicho(uint16_t index)
+OD_entry_t* od_getIndexDicho(uint16_t index)
 {
     int middle;
     int start = 0;
@@ -77,7 +77,7 @@ OD_entry_t* OD_getIndexDicho(uint16_t index)
  * @param eds sub-index number
  * @return adress of sub_index's entry
  */
-OD_entrySubIndex_t* OD_getSubIndex(OD_entry_t *record, uint8_t subIndex)
+OD_entrySubIndex_t* od_getSubIndex(OD_entry_t *record, uint8_t subIndex)
 {
     int i;
     OD_entrySubIndex_t *subIndexes = (OD_entrySubIndex_t*)record->ptData;
@@ -100,12 +100,12 @@ OD_entrySubIndex_t* OD_getSubIndex(OD_entry_t *record, uint8_t subIndex)
  * @param **ptData pointer to returned index OD's entry
  * @return negative sdo abort code or data type code;
  */
-int32_t OD_read(uint16_t index, uint8_t subIndex, void **ptData)
+int32_t od_read(uint16_t index, uint8_t subIndex, void **ptData)
 {
     OD_entry_t *entry;
     OD_entrySubIndex_t *subIndexData;
 
-    entry = OD_getIndexDicho(index);
+    entry = od_getIndexDicho(index);
 
     if (entry == NULL)
         return -OD_ABORT_CODE_NO_OBJECT;
@@ -115,7 +115,7 @@ int32_t OD_read(uint16_t index, uint8_t subIndex, void **ptData)
 
     if ((entry->typeObject & OD_OBJECT_MASK) == OD_OBJECT_RECORD)
     {
-        subIndexData = OD_getSubIndex(entry, subIndex);
+        subIndexData = od_getSubIndex(entry, subIndex);
         
         if (subIndexData == NULL)
             return -OD_ABORT_CODE_NO_SUBINDEX;
@@ -156,13 +156,13 @@ int32_t OD_read(uint16_t index, uint8_t subIndex, void **ptData)
  * @param data size in octet
  * @return negative sdo abort code or data type code
  */
-int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size)
+int32_t od_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size)
 {
     OD_entry_t *entry;
     OD_entrySubIndex_t *sub;
     uint16_t dataType;
 
-    entry = OD_getIndexDicho(index);
+    entry = od_getIndexDicho(index);
 
     if (entry == NULL)
         return -OD_ABORT_CODE_NO_OBJECT;
@@ -173,7 +173,7 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size)
 
     if ((entry->typeObject & OD_OBJECT_MASK) == OD_OBJECT_RECORD)
     {
-        sub = OD_getSubIndex(entry, subIndex);
+        sub = od_getSubIndex(entry, subIndex);
 
         if (sub == NULL)
             return -OD_ABORT_CODE_NO_SUBINDEX;
@@ -182,7 +182,7 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size)
          || (sub->accessPDOmapping & OD_ACCESS_MASK) == OD_ACCESS_CONST)
             return -OD_ABORT_CODE_READ_ONLY;
 
-        if (OD_sizeFromType(sub->typeObject & OD_TYPE_MASK) != size)
+        if (od_sizeFromType(sub->typeObject & OD_TYPE_MASK) != size)
             return -OD_ABORT_CODE_LENGTH_DOESNT_MATCH;
 
         dataType = sub->typeObject & OD_TYPE_MASK;
@@ -239,7 +239,7 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size)
     if (subIndex > entry->nbSubIndex)
         return -OD_ABORT_CODE_NO_SUBINDEX;
 
-    if ( OD_sizeFromType(entry->typeObject & OD_TYPE_MASK) != size)
+    if ( od_sizeFromType(entry->typeObject & OD_TYPE_MASK) != size)
         return -OD_ABORT_CODE_LENGTH_DOESNT_MATCH;
 
     dataType = entry->typeObject & OD_TYPE_MASK;
@@ -350,7 +350,7 @@ int32_t OD_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size)
  * @param data type code
  * @return size
  */
-uint8_t OD_sizeFromType(uint16_t dataType)
+uint8_t od_sizeFromType(uint16_t dataType)
 {
     switch (dataType)
     {
