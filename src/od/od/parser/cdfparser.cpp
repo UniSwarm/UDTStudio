@@ -86,7 +86,12 @@ OD* CdfParser::parse(QString path)
 
         foreach (const QString &key, cdf.allKeys())
         {
-            // TODO check if start with 0x
+            QString value = cdf.value(key).toString();
+
+            uint8_t base = 10;
+            if (value.startsWith("0x", Qt::CaseInsensitive))
+                base = 16;
+
             if (key == "AccessType")
             {
                 accessString = cdf.value(key).toString();
@@ -105,16 +110,16 @@ OD* CdfParser::parse(QString path)
             }
 
             else if (key == "DataType")
-                dataType = cdf.value(key).toString().toInt(&ok, 16);
+                dataType = value.toInt(&ok, base);
 
             else if (key == "ObjectType")
-                objectType = cdf.value(key).toString().toInt(&ok, 16);
+                objectType = value.toInt(&ok, base);
 
             else if (key == "ParameterName")
-                parameterName = cdf.value(key).toString();
+                parameterName = value;
 
             else if (key == "SubNumber")
-                subNumber = cdf.value(key).toString().toInt(&ok, 10);
+                subNumber = value.toInt(&ok, base);
         }
 
         data = readData(cdf);
