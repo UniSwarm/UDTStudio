@@ -33,7 +33,7 @@ CdfParser::CdfParser()
  * @param input file path
  * @return object dictionary
  */
-OD* CdfParser::parse(QString path)
+OD *CdfParser::parse(QString path)
 {
     bool ok;
     bool isSubIndex;
@@ -152,7 +152,7 @@ OD* CdfParser::parse(QString path)
             index->setObjectType(objectType);
             index->setAccessType(accessType);
             index->setParameterName(parameterName);
-            index->setSubNumber(subNumber);
+            index->setNbSubIndex(subNumber);
 
 
             if (objectType == SubIndex::Object::VAR)
