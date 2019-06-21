@@ -401,7 +401,7 @@ void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile) const
 
     if ( index->objectType() == SubIndex::Object::RECORD)
     {
-        hFile << "typedef struct\n" << "{\n";
+        hFile << "typedef struct" << "  // 0x" << QString::number(index->index(), 16) << "\n{\n";
 
         subIndexes = index->subIndexes();
         foreach (const SubIndex *subIndex, subIndexes)
@@ -422,18 +422,20 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile) const
     switch(index->objectType())
     {
     case SubIndex::Object::VAR:
-        hFile << "    " << typeToString(index->dataType()) << " " << varNameToString(index->parameterName()) << ";" << "\n";
+        hFile << "    " << typeToString(index->dataType()) << " " << varNameToString(index->parameterName()) << ";";
         break;
 
     case SubIndex::Object::RECORD:
-        hFile << "    " << structNameToString(index->parameterName()) << " " << varNameToString(index->parameterName()) << ";" << "\n";
+        hFile << "    " << structNameToString(index->parameterName()) << " " << varNameToString(index->parameterName()) << ";";
         break;
 
     case SubIndex::Object::ARRAY:
         hFile << "    " << typeToString(index->dataType()) << " " << varNameToString(index->parameterName());
-        hFile << "[" << index->nbSubIndex()-1 << "]" << ";" << "\n";
+        hFile << "[" << index->nbSubIndex()-1 << "]" << ";";
         break;
     }
+
+    hFile << "  // 0x" << QString::number(index->index(), 16) << "\n";
 }
 
 /**
