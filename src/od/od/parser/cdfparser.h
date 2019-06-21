@@ -24,13 +24,15 @@
 #include <QString>
 #include <QSettings>
 
+#include "parser.h"
 #include "model/od.h"
 
-class OD_EXPORT CdfParser
+class OD_EXPORT CdfParser : public Parser
 {
 public:
     CdfParser();
-    OD* parse(QString path);
+
+    OD* parse(const QString &path) const;
 
 private:
     DataType *readData(const QSettings &cdf) const;

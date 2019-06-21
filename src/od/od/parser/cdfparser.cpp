@@ -33,7 +33,7 @@ CdfParser::CdfParser()
  * @param input file path
  * @return object dictionary
  */
-OD *CdfParser::parse(QString path)
+OD *CdfParser::parse(const QString &path) const
 {
     bool ok;
     bool isSubIndex;
