@@ -50,7 +50,7 @@ public:
          CONST = 0x04
      };
 
-    SubIndex(const uint16_t &dataType, const uint8_t &objectType, const uint8_t &accessType, const QString &parameterName);
+    SubIndex(const uint16_t &dataType);
     ~SubIndex();
 
     uint16_t dataType() const;

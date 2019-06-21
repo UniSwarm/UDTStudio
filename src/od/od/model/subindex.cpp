@@ -26,12 +26,11 @@
  * @param access type
  * @param parameter name
  */
-SubIndex::SubIndex(const uint16_t &dataType, const uint8_t &objectType, const uint8_t &accessType, const QString &parameterName)
+SubIndex::SubIndex(const uint16_t &dataType)
 {
     _dataType   = dataType;
-    _objectType = objectType;
-    _accessType = accessType;
-    _parameterName = parameterName;
+    _objectType = VAR;
+    _accessType = READ_WRITE;
 }
 
 /**

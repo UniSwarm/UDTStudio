@@ -130,7 +130,10 @@ OD* CdfParser::parse(QString path)
             switch (index->objectType())
             {
             case SubIndex::Object::RECORD:
-                subIndex = new SubIndex(dataType, objectType, accessType, parameterName);
+                subIndex = new SubIndex(dataType);
+                subIndex->setObjectType(objectType);
+                subIndex->setAccessType(accessType);
+                subIndex->setParameterName(parameterName);
                 subIndex->setSubNumber(subNumber);
                 subIndex->addData(data);
                 index->addSubIndex(subIndex);
@@ -145,7 +148,12 @@ OD* CdfParser::parse(QString path)
         }
         else
         {
-            index = new Index(dataType, objectType, accessType, parameterName, indexNumber, subNumber);
+            index = new Index(dataType, indexNumber);
+            index->setObjectType(objectType);
+            index->setAccessType(accessType);
+            index->setParameterName(parameterName);
+            index->setSubNumber(subNumber);
+
 
             if (objectType == SubIndex::Object::VAR)
                 index->addData(data);
