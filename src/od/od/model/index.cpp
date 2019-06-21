@@ -53,15 +53,6 @@ uint16_t Index::index() const
 }
 
 /**
- * @brief _index setter
- * @param index number
- */
-void Index::setIndex(const uint16_t &index)
-{
-    _index = index;
-}
-
-/**
  * @brief _nbSubIndex setter
  * @return number of sub-indexes
  */

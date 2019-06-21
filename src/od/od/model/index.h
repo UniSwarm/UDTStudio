@@ -36,7 +36,6 @@ public:
     ~Index();
 
     uint16_t index() const;
-    void setIndex(const uint16_t &index);
 
     uint8_t nbSubIndex() const;
     void setNbSubIndex(const uint8_t &nbSubIndex);
