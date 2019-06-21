@@ -149,37 +149,37 @@ void SubIndex::setParameterName(const QString &parameterName)
  */
 uint8_t SubIndex::length() const
 {
-    if (_objectType == OD::Object::RECORD)
+    if (_objectType == SubIndex::Object::RECORD)
         return 0;
 
     switch (_dataType)
     {
-    case OD::Type::BOOLEAN:
-    case OD::Type::INTEGER8:
+    case DataType::Type::BOOLEAN:
+    case DataType::Type::INTEGER8:
         return 1;
 
-    case OD::Type::INTEGER16:
+    case DataType::Type::INTEGER16:
         return 2;
 
-    case OD::Type::INTEGER32:
+    case DataType::Type::INTEGER32:
         return 4;
 
-    case OD::Type::INTEGER64:
+    case DataType::Type::INTEGER64:
         return 8;
 
-    case OD::Type::UNSIGNED8:
+    case DataType::Type::UNSIGNED8:
         return 1;
 
-    case OD::Type::UNSIGNED16:
+    case DataType::Type::UNSIGNED16:
         return 2;
 
-    case OD::Type::UNSIGNED32:
+    case DataType::Type::UNSIGNED32:
         return 4;
 
-    case OD::Type::REAL32:
+    case DataType::Type::REAL32:
         return 4;
 
-    case OD::Type::REAL64:
+    case DataType::Type::REAL64:
         return 8;
     }
 

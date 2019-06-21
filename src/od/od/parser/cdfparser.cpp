@@ -97,16 +97,16 @@ OD* CdfParser::parse(QString path)
                 accessString = cdf.value(key).toString();
 
                 if (accessString == "rw")
-                    accessType = OD::Access::READ_WRITE;
+                    accessType = SubIndex::Access::READ_WRITE;
 
                 else if (accessString == "wo")
-                    accessType = OD::Access::WRITE_ONLY;
+                    accessType = SubIndex::Access::WRITE_ONLY;
 
                 else if (accessString == "ro")
-                    accessType = OD::Access::READ_ONLY;
+                    accessType = SubIndex::Access::READ_ONLY;
 
                 else if (accessString == "const")
-                    accessType = OD::Access::CONST;
+                    accessType = SubIndex::Access::CONST;
             }
 
             else if (key == "DataType")
@@ -129,14 +129,14 @@ OD* CdfParser::parse(QString path)
         {
             switch (index->objectType())
             {
-            case OD::Object::RECORD:
+            case SubIndex::Object::RECORD:
                 subIndex = new SubIndex(dataType, objectType, accessType, parameterName);
                 subIndex->setSubNumber(subNumber);
                 subIndex->addData(data);
                 index->addSubIndex(subIndex);
                 break;
 
-            case OD::Object::ARRAY:
+            case SubIndex::Object::ARRAY:
                 index->setDataType(dataType);
                 index->setAccessType(accessType);
                 index->addData(data);
@@ -147,7 +147,7 @@ OD* CdfParser::parse(QString path)
         {
             index = new Index(dataType, objectType, accessType, parameterName, indexNumber, subNumber);
 
-            if (objectType == OD::Object::VAR)
+            if (objectType == SubIndex::Object::VAR)
                 index->addData(data);
 
             od->addIndex(index);
@@ -174,58 +174,58 @@ DataType* CdfParser::readData(const QSettings &cdf) const
     DataType *data = nullptr;
     switch(dataType)
     {
-    case OD::Type::BOOLEAN:
+    case DataType::Type::BOOLEAN:
         if (dataString.toShort(&ok, base))
             data = new DataType(true);
         else
             data = new DataType(false);
         break;
 
-    case OD::Type::INTEGER8:
+    case DataType::Type::INTEGER8:
         data = new DataType(dataString.toShort(&ok, base));
         break;
 
-    case OD::Type::INTEGER16:
+    case DataType::Type::INTEGER16:
         data = new DataType(dataString.toShort(&ok, base));
         break;
 
-    case OD::Type::INTEGER32:
+    case DataType::Type::INTEGER32:
         data = new DataType(dataString.toInt(&ok, base));
         break;
 
-    case OD::Type::INTEGER64:
+    case DataType::Type::INTEGER64:
         data = new DataType((int64_t)dataString.toLong(&ok, base));
         break;
 
-    case OD::Type::UNSIGNED8:
+    case DataType::Type::UNSIGNED8:
         data = new DataType(dataString.toInt(&ok, base));
         break;
 
-    case OD::Type::UNSIGNED16:
+    case DataType::Type::UNSIGNED16:
         data = new DataType(dataString.toUShort(&ok, base));
         break;
 
-    case OD::Type::UNSIGNED32:
+    case DataType::Type::UNSIGNED32:
         data = new DataType(dataString.toUInt(&ok, base));
         break;
 
-    case OD::Type::UNSIGNED64:
+    case DataType::Type::UNSIGNED64:
         data = new DataType((uint64_t)dataString.toULong(&ok, base));
         break;
 
-    case OD::Type::REAL32:
+    case DataType::Type::REAL32:
         data = new DataType(dataString.toFloat(&ok));
         break;
 
-    case OD::Type::REAL64:
+    case DataType::Type::REAL64:
         data = new DataType(dataString.toDouble(&ok));
         break;
 
-    case OD::Type::VISIBLE_STRING:
+    case DataType::Type::VISIBLE_STRING:
         data = new DataType(dataString);
         break;
 
-    case OD::Type::OCTET_STRING:
+    case DataType::Type::OCTET_STRING:
         data = new DataType(dataString);
         break;
     }

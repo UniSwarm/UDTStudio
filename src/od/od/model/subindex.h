@@ -29,6 +29,27 @@
 class OD_EXPORT SubIndex
 {
 public:
+    // =========== Object type ====================
+    enum Object
+    {
+        OBJECT_NULL = 0x00,
+        OBJECT_DOMAIN = 0x02,
+        DEFTYPE = 0x05,
+        DEFSTRUCT = 0x06,
+        VAR = 0x07,
+        ARRAY = 0x08,
+        RECORD = 0x09
+    };
+
+    // ============== Access type =================
+     enum Access
+     {
+         READ_WRITE = 0x01,
+         WRITE_ONLY	= 0x02,
+         READ_ONLY = 0x03,
+         CONST = 0x04
+     };
+
     SubIndex(const uint16_t &dataType, const uint8_t &objectType, const uint8_t &accessType, const QString &parameterName);
     ~SubIndex();
 
