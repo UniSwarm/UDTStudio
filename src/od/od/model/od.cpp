@@ -39,10 +39,10 @@ OD::~OD()
  * @param index number
  * @return index or wrong value if index number does not exist
  */
-Index* OD::index(const uint16_t &indexKey) const
+Index* OD::index(const uint16_t &index) const
 {
-    Index *index = _indexes.value(indexKey);
-    return index;
+    Index *value = _indexes.value(index);
+    return value;
 }
 
 /**
