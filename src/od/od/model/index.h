@@ -41,7 +41,7 @@ public:
     void setNbSubIndex(const uint8_t &nbSubIndex);
 
     QList<SubIndex *> &subIndexes();
-    SubIndex* subIndex(const uint8_t &subIndexKey) const;
+    SubIndex *subIndex(const uint8_t &subIndexKey) const;
     void addSubIndex(SubIndex *subIndex);
 
 private:

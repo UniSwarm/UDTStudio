@@ -32,7 +32,7 @@ class OD_EXPORT CdfParser : public Parser
 public:
     CdfParser();
 
-    OD* parse(const QString &path) const;
+    OD *parse(const QString &path) const;
 
 private:
     DataType *readData(const QSettings &cdf) const;

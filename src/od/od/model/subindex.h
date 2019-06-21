@@ -63,7 +63,7 @@ public:
     void setAccessType(const uint8_t &accessType);
 
     QList<DataType*> &datas();
-    DataType* data(const uint16_t &dataKey) const;
+    DataType *data(const uint16_t &dataKey) const;
     void addData(DataType *data);
 
     QString parameterName() const;

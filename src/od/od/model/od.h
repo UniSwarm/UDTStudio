@@ -33,7 +33,7 @@ public:
     OD();
     ~OD();
 
-    Index* index(const uint16_t &index) const;
+    Index *index(const uint16_t &index) const;
     void addIndex(Index *index);
     int indexCount() const;
 

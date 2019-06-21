@@ -169,7 +169,7 @@ OD *CdfParser::parse(const QString &path) const
  * @param cdf file
  * @return data
  */
-DataType* CdfParser::readData(const QSettings &cdf) const
+DataType *CdfParser::readData(const QSettings &cdf) const
 {
     bool ok;
     int16_t dataType = cdf.value("DataType").toString().toShort(&ok, 16);
