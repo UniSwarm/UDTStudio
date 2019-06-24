@@ -1,4 +1,4 @@
-/**
+﻿/**
  ** This file is part of the UDTStudio project.
  ** Copyright 2019 UniSwarm sebastien.caux@uniswarm.eu
  **
@@ -24,22 +24,13 @@
 #include<QList>
 #include<QString>
 
-#include "datatype.h"
+#include "datastorage.h"
 
 class OD_EXPORT SubIndex
 {
 public:
-    // =========== Object type ====================
-    enum Object
-    {
-        OBJECT_NULL = 0x00,
-        OBJECT_DOMAIN = 0x02,
-        DEFTYPE = 0x05,
-        DEFSTRUCT = 0x06,
-        VAR = 0x07,
-        ARRAY = 0x08,
-        RECORD = 0x09
-    };
+    SubIndex(const uint8_t &subIndex);
+    ~SubIndex();
 
     // ============== Access type =================
      enum Access
@@ -50,37 +41,23 @@ public:
          CONST = 0x04
      };
 
-    SubIndex(const uint16_t &dataType);
-    ~SubIndex();
-
-    uint16_t dataType() const;
-    void setDataType(const uint16_t &dataType);
-
-    uint8_t objectType() const;
-    void setObjectType(const uint8_t &objectType);
-
     uint8_t accessType() const;
     void setAccessType(const uint8_t &accessType);
 
-    QList<DataType*> &datas();
-    DataType *data(const uint16_t &dataKey) const;
-    void addData(DataType *data);
+    uint8_t subIndex() const;
+    void setSubIndex(const uint8_t &subIndex);
 
-    QString parameterName() const;
-    void setParameterName(const QString &parameterName);
+    QString name() const;
+    void setName(const QString &name);
 
-    uint8_t length() const;
-
-    uint8_t subNumber() const;
-    void setSubNumber(const uint8_t &subNumber);
+    DataStorage data() const;
+    void setData(const DataStorage &data);
 
 protected:
-    uint16_t _dataType;
-    uint8_t _objectType;
     uint8_t _accessType;
-    uint8_t _subNumber;
-    QString _parameterName;
-    QList<DataType*> _datas;
+    uint8_t _subIndex;
+    QString _name;
+    DataStorage _data;
 };
 
 #endif // SUBINDEX_H

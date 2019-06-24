@@ -40,7 +40,7 @@ public:
     QMap<uint16_t, Index *> &indexes();
 
 private:
-    QMap<uint16_t, Index*> _indexes;
+    QMap<uint16_t, Index *> _indexes;
 };
 
 #endif // OD_H

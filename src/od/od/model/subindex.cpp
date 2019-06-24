@@ -26,179 +26,48 @@
  * @param access type
  * @param parameter name
  */
-SubIndex::SubIndex(const uint16_t &dataType)
+SubIndex::SubIndex(const uint8_t &subIndex)
+    : _data(0)
 {
-    _dataType   = dataType;
-    _objectType = VAR;
-    _accessType = READ_WRITE;
+    _subIndex = subIndex;
 }
 
-/**
- * @brief destructor
- */
-SubIndex::~SubIndex()
-{
-    qDeleteAll(_datas);
-}
-
-/**
- * @brief _dataType getter
- * @return data type
- */
-uint16_t SubIndex::dataType() const
-{
-    return _dataType;
-}
-
-/**
- * @brief _dataType setter
- * @param data type
- */
-void SubIndex::setDataType(const uint16_t &dataType)
-{
-    _dataType = dataType;
-}
-
-/**
- * @brief _objectType getter
- * @return object type
- */
-uint8_t SubIndex::objectType() const
-{
-    return _objectType;
-}
-
-/**
- * @brief _objectType setter
- * @param object type
- */
-void SubIndex::setObjectType(const uint8_t &objectType)
-{
-    _objectType = objectType;
-}
-
-/**
- * @brief _accessType getter
- * @return access type
- */
 uint8_t SubIndex::accessType() const
 {
     return _accessType;
 }
 
-/**
- * @brief accessType setter
- * @param access type
- */
 void SubIndex::setAccessType(const uint8_t &accessType)
 {
     _accessType = accessType;
 }
 
-/**
- * @brief _datas getter
- * @return data list
- */
-QList<DataType*> &SubIndex::datas()
+uint8_t SubIndex::subIndex() const
 {
-    return _datas;
+    return _subIndex;
 }
 
-/**
- * @brief find a sub-index data
- * @param sub index number
- * @return data or wrong value u=if sub-index number does not exist
- */
-DataType *SubIndex::data(const uint16_t &dataKey) const
+void SubIndex::setSubIndex(const uint8_t &subIndex)
 {
-    DataType *data = _datas.value(dataKey);
-    return data;
+    _subIndex = subIndex;
 }
 
-/**
- * @brief adds data to the data list
- * @param data
- */
-void SubIndex::addData(DataType *data)
+QString SubIndex::name() const
 {
-    _datas.append(data);
+    return _name;
 }
 
-/**
- * @brief _parameterName getter
- * @return parameter name
- */
-QString SubIndex::parameterName() const
+void SubIndex::setName(const QString &name)
 {
-    return _parameterName;
+    _name = name;
 }
 
-/**
- * @brief _parameterName setter
- * @param parameter name
- */
-void SubIndex::setParameterName(const QString &parameterName)
+DataStorage SubIndex::data() const
 {
-    _parameterName = parameterName;
+    return _data;
 }
 
-/**
- * @brief returns the length of data
- * @return 0 for records or data size in octets
- */
-uint8_t SubIndex::length() const
+void SubIndex::setData(const DataStorage &data)
 {
-    if (_objectType == SubIndex::Object::RECORD)
-        return 0;
-
-    switch (_dataType)
-    {
-    case DataType::Type::BOOLEAN:
-    case DataType::Type::INTEGER8:
-        return 1;
-
-    case DataType::Type::INTEGER16:
-        return 2;
-
-    case DataType::Type::INTEGER32:
-        return 4;
-
-    case DataType::Type::INTEGER64:
-        return 8;
-
-    case DataType::Type::UNSIGNED8:
-        return 1;
-
-    case DataType::Type::UNSIGNED16:
-        return 2;
-
-    case DataType::Type::UNSIGNED32:
-        return 4;
-
-    case DataType::Type::REAL32:
-        return 4;
-
-    case DataType::Type::REAL64:
-        return 8;
-    }
-
-    return  0;
-}
-
-/**
- * @brief _subNumber getter
- * @return sub-index number
- */
-uint8_t SubIndex::subNumber() const
-{
-    return _subNumber;
-}
-
-/**
- * @brief _subNumber setter
- * @param sub-index number
- */
-void SubIndex::setSubNumber(const uint8_t &subNumber)
-{
-    _subNumber = subNumber;
+    _data = data;
 }

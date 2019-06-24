@@ -27,11 +27,10 @@
  * @param index
  * @param sub-index number
  */
-Index::Index(const uint16_t &dataType, const uint16_t &index)
-    : SubIndex(dataType)
+Index::Index(const uint16_t &index)
 {
     _index = index;
-    _nbSubIndex = 0;
+    _maxSubIndex = 0;
 }
 
 /**
@@ -43,58 +42,62 @@ Index::~Index()
     _subIndexes.clear();
 }
 
-/**
- * @brief _index getter
- * @return index number
- */
 uint16_t Index::index() const
 {
     return _index;
 }
 
-/**
- * @brief _nbSubIndex setter
- * @return number of sub-indexes
- */
-uint8_t Index::nbSubIndex() const
+void Index::setIndex(const uint16_t &index)
 {
-    return _nbSubIndex;
+    _index = index;
 }
 
-/**
- * @brief _nbSubIndex setter
- * @param number of sub-indexes
- */
-void Index::setNbSubIndex(const uint8_t &nbSubIndex)
+uint8_t Index::maxSubIndex() const
 {
-    _nbSubIndex = nbSubIndex;
+    return _maxSubIndex;
 }
 
-/**
- * @brief _subIndexes getter
- * @return list of sub-index
- */
-QList<SubIndex*> &Index::subIndexes()
+void Index::setMaxSubIndex(const uint8_t &maxSubIndex)
+{
+    _maxSubIndex = maxSubIndex;
+}
+
+QMap<uint8_t, SubIndex *> &Index::subIndexes()
 {
     return _subIndexes;
 }
 
-/**
- * @brief finds a sub-index
- * @param sub-index number
- * @return sub-index
- */
-SubIndex* Index::subIndex(const uint8_t &subIndexKey) const
+SubIndex *Index::subIndex(uint8_t subIndex)
 {
-     SubIndex *subIndex = _subIndexes.value(subIndexKey);
-     return subIndex;
+    return _subIndexes.value(subIndex);
 }
 
-/**
- * @brief adds a sub-index
- * @param sub-index
- */
 void Index::addSubIndex(SubIndex *subIndex)
 {
-    _subIndexes.append(subIndex);
+    _subIndexes.insert(subIndex->subIndex(), subIndex);
+}
+
+int Index::subIndexesCount()
+{
+    return _subIndexes.count();
+}
+
+uint8_t Index::objectType() const
+{
+    return _objectType;
+}
+
+void Index::setObjectType(const uint8_t &objectType)
+{
+    _objectType = objectType;
+}
+
+QString Index::name() const
+{
+    return _name;
+}
+
+void Index::setName(const QString &name)
+{
+    _name = name;
 }

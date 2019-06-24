@@ -32,6 +32,7 @@ OD::OD()
 OD::~OD()
 {
     qDeleteAll(_indexes);
+    _indexes.clear();
 }
 
 /**
@@ -41,8 +42,7 @@ OD::~OD()
  */
 Index* OD::index(const uint16_t &index) const
 {
-    Index *value = _indexes.value(index);
-    return value;
+    return _indexes.value(index);
 }
 
 /**

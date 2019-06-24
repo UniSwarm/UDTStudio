@@ -46,7 +46,6 @@ OD *CdfParser::parse(const QString &path) const
     QString parameterName;
     Index *index = nullptr;
     SubIndex *subIndex;
-    DataType *data;
 
     OD *od;
     od = new OD;
@@ -62,7 +61,6 @@ OD *CdfParser::parse(const QString &path) const
         dataType = 0;
         objectType = 0;
         subNumber = 0;
-        data = nullptr;
 
         QRegularExpressionMatch matchSub = reSub.match(group);
         QRegularExpressionMatch matchIndex = reIndex.match(group);
@@ -70,14 +68,14 @@ OD *CdfParser::parse(const QString &path) const
         if (matchSub.hasMatch())
         {
             QString matchedSub = matchSub.captured(1);
-            index = od->index(matchedSub.toInt(&ok, 16));
+            index = od->index((uint16_t)matchedSub.toUInt(&ok, 16));
             isSubIndex = true;
-            subNumber = matchSub.captured(3).toShort(&ok, 10);
+            subNumber = (uint8_t)matchSub.captured(3).toShort(&ok, 10);
         }
         else if (matchIndex.hasMatch())
         {
             QString matchedIndex = matchIndex.captured(0);
-            indexNumber = matchedIndex.toInt(&ok, 16);
+            indexNumber = (uint16_t)matchedIndex.toInt(&ok, 16);
         }
         else
             continue;
@@ -109,19 +107,20 @@ OD *CdfParser::parse(const QString &path) const
                     accessType = SubIndex::Access::CONST;
             }
 
-            else if (key == "DataType")
-                dataType = value.toInt(&ok, base);
+            else if (key == "DataStorage")
+                dataType = (uint16_t)value.toInt(&ok, base);
 
             else if (key == "ObjectType")
-                objectType = value.toInt(&ok, base);
+                objectType = (uint8_t)value.toInt(&ok, base);
 
             else if (key == "ParameterName")
                 parameterName = value;
 
             else if (key == "SubNumber")
-                subNumber = value.toInt(&ok, base);
+                subNumber = (uint8_t)value.toInt(&ok, base);
         }
 
+        DataStorage *data;
         data = readData(cdf);
         cdf.endGroup();
 
@@ -129,34 +128,31 @@ OD *CdfParser::parse(const QString &path) const
         {
             switch (index->objectType())
             {
-            case SubIndex::Object::RECORD:
-                subIndex = new SubIndex(dataType);
-                subIndex->setObjectType(objectType);
+            case Index::Object::RECORD:
+            case Index::Object::ARRAY:
+                subIndex = new SubIndex(subNumber);
                 subIndex->setAccessType(accessType);
-                subIndex->setParameterName(parameterName);
-                subIndex->setSubNumber(subNumber);
-                subIndex->addData(data);
+                subIndex->setName(parameterName);
+                subIndex->setData(*data);
                 index->addSubIndex(subIndex);
-                break;
-
-            case SubIndex::Object::ARRAY:
-                index->setDataType(dataType);
-                index->setAccessType(accessType);
-                index->addData(data);
                 break;
             }
         }
         else
         {
-            index = new Index(dataType, indexNumber);
+            index = new Index(indexNumber);
             index->setObjectType(objectType);
-            index->setAccessType(accessType);
-            index->setParameterName(parameterName);
-            index->setNbSubIndex(subNumber);
+            index->setName(parameterName);
+            index->setMaxSubIndex(subNumber);
 
-
-            if (objectType == SubIndex::Object::VAR)
-                index->addData(data);
+            if (objectType == Index::Object::VAR)
+            {
+                subIndex = new SubIndex(0);
+                subIndex->setAccessType(accessType);
+                subIndex->setName(parameterName);
+                subIndex->setData(*data);
+                index->addSubIndex(subIndex);
+            }
 
             od->addIndex(index);
         }
@@ -169,72 +165,72 @@ OD *CdfParser::parse(const QString &path) const
  * @param cdf file
  * @return data
  */
-DataType *CdfParser::readData(const QSettings &cdf) const
+DataStorage *CdfParser::readData(const QSettings &cdf) const
 {
     bool ok;
-    int16_t dataType = cdf.value("DataType").toString().toShort(&ok, 16);
+    int16_t dataType = cdf.value("DataStorage").toString().toShort(&ok, 16);
 
     QString dataString = cdf.value("DefaultValue").toString();
     uint8_t base = 10;
     if (dataString.startsWith("0x", Qt::CaseInsensitive))
         base = 16;
 
-    DataType *data = nullptr;
+    DataStorage *data = nullptr;
     switch(dataType)
     {
-    case DataType::Type::BOOLEAN:
+    case DataStorage::Type::BOOLEAN:
         if (dataString.toShort(&ok, base))
-            data = new DataType(true);
+            data = new DataStorage(DataStorage::Type::BOOLEAN, true);
         else
-            data = new DataType(false);
+            data = new DataStorage(false);
         break;
 
-    case DataType::Type::INTEGER8:
-        data = new DataType(dataString.toShort(&ok, base));
+    case DataStorage::Type::INTEGER8:
+        data = new DataStorage(DataStorage::Type::INTEGER8, dataString.toShort(&ok, base));
         break;
 
-    case DataType::Type::INTEGER16:
-        data = new DataType(dataString.toShort(&ok, base));
+    case DataStorage::Type::INTEGER16:
+        data = new DataStorage(DataStorage::Type::INTEGER16, dataString.toShort(&ok, base));
         break;
 
-    case DataType::Type::INTEGER32:
-        data = new DataType(dataString.toInt(&ok, base));
+    case DataStorage::Type::INTEGER32:
+        data = new DataStorage(DataStorage::Type::INTEGER32, dataString.toInt(&ok, base));
         break;
 
-    case DataType::Type::INTEGER64:
-        data = new DataType((int64_t)dataString.toLong(&ok, base));
+    case DataStorage::Type::INTEGER64:
+        data = new DataStorage(DataStorage::Type::INTEGER64, dataString.toInt(&ok, base));
         break;
 
-    case DataType::Type::UNSIGNED8:
-        data = new DataType(dataString.toInt(&ok, base));
+    case DataStorage::Type::UNSIGNED8:
+        data = new DataStorage(DataStorage::Type::UNSIGNED8, dataString.toInt(&ok, base));
         break;
 
-    case DataType::Type::UNSIGNED16:
-        data = new DataType(dataString.toUShort(&ok, base));
+    case DataStorage::Type::UNSIGNED16:
+        data = new DataStorage(DataStorage::Type::UNSIGNED16, dataString.toUShort(&ok, base));
         break;
 
-    case DataType::Type::UNSIGNED32:
-        data = new DataType(dataString.toUInt(&ok, base));
+    case DataStorage::Type::UNSIGNED32:
+        data = new DataStorage(DataStorage::Type::UNSIGNED32, dataString.toUInt(&ok, base));
         break;
 
-    case DataType::Type::UNSIGNED64:
-        data = new DataType((uint64_t)dataString.toULong(&ok, base));
+    case DataStorage::Type::UNSIGNED64:
+        data = new DataStorage(DataStorage::Type::UNSIGNED64, dataString.toUInt(&ok, base));
         break;
 
-    case DataType::Type::REAL32:
-        data = new DataType(dataString.toFloat(&ok));
+    case DataStorage::Type::REAL32:
+        data = new DataStorage(DataStorage::Type::REAL32, dataString.toFloat(&ok));
         break;
 
-    case DataType::Type::REAL64:
-        data = new DataType(dataString.toDouble(&ok));
+    case DataStorage::Type::REAL64:
+        data = new DataStorage(DataStorage::Type::REAL32, dataString.toDouble(&ok));
         break;
 
-    case DataType::Type::VISIBLE_STRING:
-        data = new DataType(dataString);
+    case DataStorage::Type::VISIBLE_STRING:
+        data = new DataStorage(DataStorage::Type::VISIBLE_STRING, dataString);
         break;
 
-    case DataType::Type::OCTET_STRING:
-        data = new DataType(dataString);
+    case DataStorage::Type::OCTET_STRING:
+        data = new DataStorage(DataStorage::Type::OCTET_STRING, dataString);
         break;
     }
 

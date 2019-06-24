@@ -35,7 +35,7 @@ public:
     OD *parse(const QString &path) const;
 
 private:
-    DataType *readData(const QSettings &cdf) const;
+    DataStorage *readData(const QSettings &cdf) const;
 };
 
 #endif // CDFPARSER_H

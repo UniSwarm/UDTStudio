@@ -21,33 +21,56 @@
 
 #include "od_global.h"
 
-#include <QList>
+#include <QMap>
 #include <QString>
 
 #include "subindex.h"
-#include "datatype.h"
+#include "datastorage.h"
 
 #include <stdint.h>
 
-class OD_EXPORT Index : public SubIndex
+class OD_EXPORT Index
 {
 public:
-    Index(const uint16_t &dataType, const uint16_t &index);
+    Index(const uint16_t &index);
     ~Index();
 
     uint16_t index() const;
+    void setIndex(const uint16_t &index);
 
-    uint8_t nbSubIndex() const;
-    void setNbSubIndex(const uint8_t &nbSubIndex);
+    uint8_t maxSubIndex() const;
+    void setMaxSubIndex(const uint8_t &maxSubIndex);
 
-    QList<SubIndex *> &subIndexes();
-    SubIndex *subIndex(const uint8_t &subIndexKey) const;
+    QMap<uint8_t, SubIndex *> &subIndexes();
+
+    SubIndex *subIndex(uint8_t subIndex);
     void addSubIndex(SubIndex *subIndex);
+    int subIndexesCount();
+
+    // =========== Object type ====================
+    enum Object
+    {
+        OBJECT_NULL = 0x00,
+        OBJECT_DOMAIN = 0x02,
+        DEFTYPE = 0x05,
+        DEFSTRUCT = 0x06,
+        VAR = 0x07,
+        ARRAY = 0x08,
+        RECORD = 0x09
+    };
+
+    uint8_t objectType() const;
+    void setObjectType(const uint8_t &objectType);
+
+    QString name() const;
+    void setName(const QString &name);
 
 private:
     uint16_t _index;
-    uint8_t _nbSubIndex;
-    QList<SubIndex*> _subIndexes;
+    uint8_t _maxSubIndex;
+    uint8_t _objectType;
+    QString _name;
+    QMap<uint8_t, SubIndex *> _subIndexes;
 };
 
 #endif // INDEX_H
