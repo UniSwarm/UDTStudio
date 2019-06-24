@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <assert.h>
 #include "od_controller.h"
-#include "pdo.h"
 
 //==========test on OD_OBJECT_VAR =============
 void testReadObjectVar()
@@ -211,22 +210,11 @@ void testUmcEds()
     assert(strcmp((char *)*value, "3150.69D") == 0);
 }
 
-void testTPDO()
-{
-    TPDO tpdo;
-
-    mapTpdo(&tpdo, 1);
-
-    assert(tpdo.cob_id.can_id == 0x282);
-    assert(tpdo.dataSize == 6);
-    printf("%s\n", tpdo.dataToTransmit);
-}
-
 int main()
 {
     od_reset();
 
-    testTPDO();
+    testCustomEds();
 
 	return 0;
 }

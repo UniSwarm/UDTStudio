@@ -11,7 +11,7 @@ ParameterName=Manufacturer Device Name
 ObjectType=0x7
 DataType=0x0009
 AccessType=const
-DefaultValue=test
+DefaultValue=test1
 PDOMapping=0
 
 [1017]
@@ -117,7 +117,7 @@ ParameterName=Device Id
 ObjectType=0x7
 DataType=0x000A
 AccessType=ro
-DefaultValue="test"
+DefaultValue=test2
 PDOMapping=0
 ObjFlags=1
 
@@ -165,7 +165,7 @@ PDOMapping=0
 
 [604B]
 SubNumber=3
-ParameterName=Vl Setpoint Factor
+ParameterName=Vl Setpoint Fac
 ObjectType=0x08
 
 [604Bsub0]
@@ -190,6 +190,64 @@ ObjectType=0x07
 DataType=0x0003
 AccessType=ro
 DefaultValue=0x0001
+PDOMapping=0
+
+[604C]
+SubNumber=3
+ParameterName=Vl Setpoint Factor
+ObjectType=0x09
+
+[604Csub0]
+ParameterName=Number of Entries
+ObjectType=0x07
+DataType=0x0005
+AccessType=ro
+DefaultValue=0x0002
+PDOMapping=0
+
+[604Csub1]
+ParameterName=Vl Setpoint Factor Numerator
+ObjectType=0x07
+DataType=0x0009
+AccessType=ro
+DefaultValue=test record 1
+PDOMapping=0
+
+[604Csub2]
+ParameterName=Vl Setpoint Factor Denominator
+ObjectType=0x07
+DataType=0x0009
+AccessType=ro
+DefaultValue=test record 2
+PDOMapping=0
+
+[604D]
+SubNumber=3
+ParameterName=Vl Setpoint
+ObjectType=0x08
+
+[604Dsub0]
+ParameterName=Number of Entries
+ObjectType=0x07
+DataType=0x0005
+AccessType=ro
+DefaultValue=0x0002
+PDOMapping=0
+
+[604Dsub1]
+ParameterName=Vl Setpoint Factor Numerator
+ObjectType=0x07
+DataType=0x0009
+AccessType=ro
+DefaultValue=test array 1
+PDOMapping=0
+
+[604Dsub2]
+ParameterName=Vl Setpoint Factor Denominator
+ObjectType=0x07
+DataType=0x0009
+AccessType=ro
+DefaultValue=test array 2
 PDOMapping=0
 
 [6423]
