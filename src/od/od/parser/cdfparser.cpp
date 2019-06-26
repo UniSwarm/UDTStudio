@@ -120,8 +120,7 @@ OD *CdfParser::parse(const QString &path) const
                 subNumber = (uint8_t)value.toInt(&ok, base);
         }
 
-        DataStorage *data;
-        data = readData(cdf);
+        DataStorage data = readData(cdf);
         cdf.endGroup();
 
         if (isSubIndex)
@@ -133,7 +132,7 @@ OD *CdfParser::parse(const QString &path) const
                 subIndex = new SubIndex(subNumber);
                 subIndex->setAccessType(accessType);
                 subIndex->setName(parameterName);
-                subIndex->setData(*data);
+                subIndex->setData(data);
                 index->addSubIndex(subIndex);
                 break;
             }
@@ -150,7 +149,7 @@ OD *CdfParser::parse(const QString &path) const
                 subIndex = new SubIndex(0);
                 subIndex->setAccessType(accessType);
                 subIndex->setName(parameterName);
-                subIndex->setData(*data);
+                subIndex->setData(data);
                 index->addSubIndex(subIndex);
             }
 
@@ -165,72 +164,73 @@ OD *CdfParser::parse(const QString &path) const
  * @param cdf file
  * @return data
  */
-DataStorage *CdfParser::readData(const QSettings &cdf) const
+DataStorage CdfParser::readData(const QSettings &cdf) const
 {
     bool ok;
-    int16_t dataType = cdf.value("DataStorage").toString().toShort(&ok, 16);
+    uint16_t dataType = cdf.value("DataType").toString().toShort(&ok, 16);
 
     QString dataString = cdf.value("DefaultValue").toString();
     uint8_t base = 10;
     if (dataString.startsWith("0x", Qt::CaseInsensitive))
         base = 16;
 
-    DataStorage *data = nullptr;
+    DataStorage data;
+    data.setDataType(dataType);
     switch(dataType)
     {
     case DataStorage::Type::BOOLEAN:
         if (dataString.toShort(&ok, base))
-            data = new DataStorage(DataStorage::Type::BOOLEAN, true);
+            data.setValue(true);
         else
-            data = new DataStorage(false);
+            data.setValue(false);
         break;
 
     case DataStorage::Type::INTEGER8:
-        data = new DataStorage(DataStorage::Type::INTEGER8, dataString.toShort(&ok, base));
+        data.setValue(dataString.toShort(&ok, base));
         break;
 
     case DataStorage::Type::INTEGER16:
-        data = new DataStorage(DataStorage::Type::INTEGER16, dataString.toShort(&ok, base));
+        data.setValue(dataString.toShort(&ok, base));
         break;
 
     case DataStorage::Type::INTEGER32:
-        data = new DataStorage(DataStorage::Type::INTEGER32, dataString.toInt(&ok, base));
+        data.setValue(dataString.toInt(&ok, base));
         break;
 
     case DataStorage::Type::INTEGER64:
-        data = new DataStorage(DataStorage::Type::INTEGER64, dataString.toInt(&ok, base));
+        data.setValue(dataString.toInt(&ok, base));
         break;
 
     case DataStorage::Type::UNSIGNED8:
-        data = new DataStorage(DataStorage::Type::UNSIGNED8, dataString.toInt(&ok, base));
+        data.setValue(dataString.toInt(&ok, base));
         break;
 
     case DataStorage::Type::UNSIGNED16:
-        data = new DataStorage(DataStorage::Type::UNSIGNED16, dataString.toUShort(&ok, base));
+        data.setValue(dataString.toUShort(&ok, base));
         break;
 
     case DataStorage::Type::UNSIGNED32:
-        data = new DataStorage(DataStorage::Type::UNSIGNED32, dataString.toUInt(&ok, base));
+        data.setValue(dataString.toUInt(&ok, base));
         break;
 
     case DataStorage::Type::UNSIGNED64:
-        data = new DataStorage(DataStorage::Type::UNSIGNED64, dataString.toUInt(&ok, base));
+        data.setValue(dataString.toUInt(&ok, base));
         break;
 
     case DataStorage::Type::REAL32:
-        data = new DataStorage(DataStorage::Type::REAL32, dataString.toFloat(&ok));
+        data.setValue(dataString.toFloat(&ok));
         break;
 
     case DataStorage::Type::REAL64:
-        data = new DataStorage(DataStorage::Type::REAL32, dataString.toDouble(&ok));
+        data.setValue(dataString.toDouble(&ok));
         break;
 
     case DataStorage::Type::VISIBLE_STRING:
-        data = new DataStorage(DataStorage::Type::VISIBLE_STRING, dataString);
+        data.setValue(dataString);
         break;
 
     case DataStorage::Type::OCTET_STRING:
-        data = new DataStorage(DataStorage::Type::OCTET_STRING, dataString);
+        data.setValue(dataString);
         break;
     }
 

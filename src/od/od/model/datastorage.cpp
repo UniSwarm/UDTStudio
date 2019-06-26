@@ -18,14 +18,16 @@
 
 #include "datastorage.h"
 
-/**
- * @brief returns value to specific format
- * @return a boolean
- */
 DataStorage::DataStorage(const uint16_t dataType, const QVariant &value)
 {
     _dataType = dataType;
     _value = value;
+}
+
+DataStorage::DataStorage(const DataStorage &other)
+{
+    _dataType = other._dataType;
+    _value = other._value;
 }
 
 bool DataStorage::toBool() const
@@ -130,6 +132,16 @@ float64_t DataStorage::toFloat64() const
 QString DataStorage::toString() const
 {
     return _value.toString();
+}
+
+const QVariant &DataStorage::value() const
+{
+    return _value;
+}
+
+void DataStorage::setValue(const QVariant &value)
+{
+    _value.setValue(value);
 }
 
 uint16_t DataStorage::dataType() const

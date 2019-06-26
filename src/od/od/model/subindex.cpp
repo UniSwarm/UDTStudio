@@ -32,6 +32,11 @@ SubIndex::SubIndex(const uint8_t &subIndex)
     _subIndex = subIndex;
 }
 
+SubIndex::~SubIndex()
+{
+
+}
+
 uint8_t SubIndex::accessType() const
 {
     return _accessType;

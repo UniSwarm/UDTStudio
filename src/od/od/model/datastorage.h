@@ -32,7 +32,8 @@ typedef double      float64_t;
 class OD_EXPORT DataStorage
 {
 public:
-    DataStorage(const uint16_t dataType, const QVariant &value = QVariant());
+    DataStorage(const uint16_t dataType = 0, const QVariant &value = QVariant());
+    DataStorage(const DataStorage &other);
 
     bool toBool() const;
     int8_t toInt8() const;
