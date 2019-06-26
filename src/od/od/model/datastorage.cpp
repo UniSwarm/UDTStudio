@@ -153,3 +153,29 @@ void DataStorage::setDataType(const uint16_t &dataType)
 {
     _dataType = dataType;
 }
+
+int DataStorage::length() const
+{
+    switch (_dataType)
+    {
+    case BOOLEAN:
+    case UNSIGNED8:
+    case INTEGER8:
+        return 1;
+
+    case UNSIGNED16:
+    case INTEGER16:
+        return 2;
+
+    case UNSIGNED32:
+    case INTEGER32:
+    case REAL32:
+        return 4;
+
+    case UNSIGNED64:
+    case INTEGER64:
+    case REAL64:
+        return 8;
+    }
+    return 0;
+}

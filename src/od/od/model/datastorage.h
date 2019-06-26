@@ -84,6 +84,8 @@ public:
     uint16_t dataType() const;
     void setDataType(const uint16_t &dataType);
 
+    int length() const;
+
 private:
     QVariant _value;
     uint16_t _dataType;
