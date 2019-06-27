@@ -69,7 +69,10 @@ QMap<uint8_t, SubIndex *> &Index::subIndexes()
 
 SubIndex *Index::subIndex(uint8_t subIndex)
 {
-    return _subIndexes.value(subIndex);
+    if (_subIndexes.contains(subIndex))
+        return _subIndexes.value(subIndex);
+
+   return nullptr;
 }
 
 void Index::addSubIndex(SubIndex *subIndex)
