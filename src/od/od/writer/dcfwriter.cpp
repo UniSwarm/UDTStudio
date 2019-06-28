@@ -128,7 +128,7 @@ void DcfWriter::writeIndex(Index *index, QTextStream &file) const
     file << "ObjectType=" << valueToString(index->objectType(), base) << "\n";
     file << "DataType=" << valueToString(subIndex->data().dataType(), base) << "\n";
     file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
-    file << "DefautValue=" << dataToString(subIndex->data(), base) << "\n";
+    file << "DefaultValue=" << dataToString(subIndex->data(), base) << "\n";
     file << "\n";
 }
 
@@ -145,11 +145,11 @@ void DcfWriter::writeRecord(Index *index, QTextStream &file) const
     foreach (SubIndex *subIndex, index->subIndexes())
     {
         file << "[" << QString::number(index->index(), base).toUpper() << "sub" << subIndex->subIndex() << "]\n";
-        file << "ParameterName=" << index->name() << "\n";
+        file << "ParameterName=" << subIndex->name() << "\n";
         file << "ObjectType=" << valueToString(Index::Object::VAR, base) << "\n";
         file << "DataType=" << valueToString(subIndex->data().dataType(), base) << "\n";
         file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
-        file << "DefautValue=" << dataToString(subIndex->data(), base) << "\n";
+        file << "DefaultValue=" << dataToString(subIndex->data(), base) << "\n";
         file << "\n";
     }
 }
@@ -195,14 +195,79 @@ QString DcfWriter::accessToString(int access) const
 
 QString DcfWriter::dataToString(DataStorage data, int base) const
 {
+    QString string;
+
+    switch (base)
+    {
+    case 8:
+        string += "0";
+        break;
+
+    case 16:
+        string += "0x";
+        break;
+    }
+
     switch (data.dataType())
     {
+    case DataStorage::Type::INTEGER8:
+        if (data.toInt8() < 0)
+            return QString::number(data.toInt8());
+
+        string += QString::number(data.toInt8(), base).toUpper();
+        break;
+
+
+    case DataStorage::Type::INTEGER16:
+        if (data.toInt16() < 0)
+            return QString::number(data.toInt16());
+
+        string += QString::number(data.toInt16(), base).toUpper();
+        break;
+
+    case DataStorage::Type::INTEGER32:
+        if (data.toInt32() < 0)
+            return QString::number(data.toInt32());
+
+        string += QString::number(data.toInt32(), base).toUpper();
+        break;
+
+    case DataStorage::Type::INTEGER64:
+        if (data.toInt64() < 0)
+            return QString::number(data.toInt64());
+
+        string += QString::number(data.toInt64(), base).toUpper();
+        break;
+
+    case DataStorage::Type::UNSIGNED8:
+        string += QString::number(data.toUInt8(), base).toUpper();
+        break;
+
+    case DataStorage::Type::UNSIGNED16:
+        string += QString::number(data.toUInt16(), base).toUpper();
+        break;
+
+    case DataStorage::Type::UNSIGNED32:
+        string += QString::number(data.toUInt32(), base).toUpper();
+        break;
+
+    case DataStorage::Type::UNSIGNED64:
+        string += QString::number(data.toUInt64(), base).toUpper();
+        break;
+
+    case DataStorage::Type::REAL32:
+        string += QString::number(data.toFloat32());
+        break;
+
+    case DataStorage::Type::REAL64:
+        string += QString::number(data.toFloat64());
+        break;
+
     case DataStorage::Type::OCTET_STRING:
     case DataStorage::Type::VISIBLE_STRING:
         return data.value().toString();
-
-    default:
-        return valueToString(data.value().toInt(), base);
     }
+
+    return string;
 }
 
