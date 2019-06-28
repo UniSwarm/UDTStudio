@@ -2,4 +2,9 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     od \
-    canopen
+    canopen \
+    udtgui \
+    udtstudio
+
+udtgui.depends = od canopen
+udtstudio.depends = od canopen udtgui
