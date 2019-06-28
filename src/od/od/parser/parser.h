@@ -1,9 +1,9 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include <QString>
-
 #include "od_global.h"
+
+#include <QString>
 
 #include "model/od.h"
 

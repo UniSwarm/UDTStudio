@@ -1,6 +1,8 @@
 #ifndef WRITER_H
 #define WRITER_H
 
+#include "od_global.h"
+
 #include <QString>
 
 #include "model/od.h"

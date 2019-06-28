@@ -1,7 +1,6 @@
 #ifndef OD_GLOBAL_H
 #define OD_GLOBAL_H
 
-
 #include <QtCore/qglobal.h>
 
 #if defined(OD_EXPORT_LIB)

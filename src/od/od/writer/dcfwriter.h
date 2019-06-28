@@ -1,6 +1,8 @@
 #ifndef DCFWRITER_H
 #define DCFWRITER_H
 
+#include "od_global.h"
+
 #include <QTextStream>
 #include <QString>
 #include <QList>
