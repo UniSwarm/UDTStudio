@@ -36,6 +36,9 @@ public:
 
     void setOd(OD *od);
 
+    bool editable() const;
+    void setEditable(bool editable);
+
     enum Column {
         OdIndex,
         Name,
@@ -49,7 +52,7 @@ public:
     int columnCount(const QModelIndex &parent) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     QVariant data(const QModelIndex &index, int role) const;
-    //bool setData(const QModelIndex &index, const QVariant &value, int role);
+    bool setData(const QModelIndex &index, const QVariant &value, int role);
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     QModelIndex parent(const QModelIndex &child) const;
     int rowCount(const QModelIndex &parent) const;
@@ -57,6 +60,7 @@ public:
 
 private:
     ODItem *_root;
+    bool _editable;
 };
 
 #endif // ODITEMMODEL_H

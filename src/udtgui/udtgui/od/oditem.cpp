@@ -94,6 +94,7 @@ QVariant ODItem::data(int column, int role) const
     {
     case ODItem::TOD:
         break;
+
     case ODItem::TIndex:
         switch (role)
         {
@@ -117,8 +118,26 @@ QVariant ODItem::data(int column, int role) const
             default:
                 return QVariant();
             }
+        case Qt::EditRole:
+            switch (column)
+            {
+            case ODItemModel::OdIndex:
+                return index()->index();
+            case ODItemModel::Name:
+                return index()->name();
+            case ODItemModel::Type:
+                return index()->objectType();
+            case ODItemModel::Value:
+                if (_index->objectType() == Index::VAR && index()->subIndexesCount() == 1)
+                    return index()->subIndex(0)->data().value();
+                else
+                    return QVariant();
+            default:
+                return QVariant();
+            }
         }
         break;
+
     case ODItem::TSubIndex:
         switch (role)
         {
@@ -136,11 +155,92 @@ QVariant ODItem::data(int column, int role) const
             default:
                 return QVariant();
             }
+        case Qt::EditRole:
+            switch (column)
+            {
+            case ODItemModel::OdIndex:
+                return subIndex()->subIndex();
+            case ODItemModel::Name:
+                return subIndex()->name();
+            case ODItemModel::Type:
+                return subIndex()->data().dataType();
+            case ODItemModel::Value:
+                return subIndex()->data().value();
+            default:
+                return QVariant();
+            }
         }
         break;
 
     }
     return QVariant();
+}
+
+bool ODItem::setData(int column, const QVariant &value, int role)
+{
+    switch (_type)
+    {
+    case ODItem::TOD:
+        break;
+
+    case ODItem::TIndex:
+        switch (role)
+        {
+        case Qt::EditRole:
+            switch (column)
+            {
+            case ODItemModel::OdIndex:
+                index()->setIndex(value.toInt());
+                return true;
+            case ODItemModel::Name:
+                index()->setName(value.toString());
+                return true;
+            case ODItemModel::Type:
+                if (_index->objectType() == Index::VAR && index()->subIndexesCount() == 1)
+                    index()->subIndex(0)->data().setDataType(value.toInt());
+                else
+                    index()->setObjectType(value.toInt());
+                return true;
+            case ODItemModel::Value:
+                if (_index->objectType() == Index::VAR && index()->subIndexesCount() == 1)
+                {
+                    index()->subIndex(0)->data().setValue(value);
+                    return true;
+                }
+                else
+                    return false;
+            default:
+                return false;
+            }
+        }
+        break;
+
+    case ODItem::TSubIndex:
+        switch (role)
+        {
+        case Qt::EditRole:
+            switch (column)
+            {
+            case ODItemModel::OdIndex:
+                subIndex()->setSubIndex(value.toInt());
+                return true;
+            case ODItemModel::Name:
+                subIndex()->setName(value.toString());
+                return true;
+            case ODItemModel::Type:
+                subIndex()->data().setDataType(value.toInt());
+                return true;
+            case ODItemModel::Value:
+                subIndex()->data().setValue(value);
+                return true;
+            default:
+                return false;
+            }
+        }
+        break;
+
+    }
+    return false;
 }
 
 ODItem *ODItem::parent() const

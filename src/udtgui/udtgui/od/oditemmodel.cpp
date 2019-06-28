@@ -23,6 +23,7 @@
 ODItemModel::ODItemModel()
 {
     _root = nullptr;
+    _editable = false;
 }
 
 ODItemModel::~ODItemModel()
@@ -35,6 +36,16 @@ void ODItemModel::setOd(OD *od)
     beginResetModel();
     _root = new ODItem(od);
     endResetModel();
+}
+
+bool ODItemModel::editable() const
+{
+    return _editable;
+}
+
+void ODItemModel::setEditable(bool editable)
+{
+    _editable = editable;
 }
 
 int ODItemModel::columnCount(const QModelIndex &parent) const
@@ -78,6 +89,15 @@ QVariant ODItemModel::data(const QModelIndex &index, int role) const
     return item->data(index.column(), role);
 }
 
+bool ODItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (!_root || !index.isValid())
+        return false;
+
+    ODItem *item = static_cast<ODItem*>(index.internalPointer());
+    return item->setData(index.column(), value, role);
+}
+
 QModelIndex ODItemModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (!_root)
@@ -119,6 +139,19 @@ int ODItemModel::rowCount(const QModelIndex &parent) const
 
 Qt::ItemFlags ODItemModel::flags(const QModelIndex &index) const
 {
-    Q_UNUSED(index)
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    if (!_root || !index.isValid())
+        return Qt::NoItemFlags;
+
+    ODItem *item = static_cast<ODItem*>(index.internalPointer());
+    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    if (_editable)
+    {
+        flags.setFlag(Qt::ItemIsEditable, true);
+
+        if (item->type() == ODItem::Type::TIndex)
+            if (item->index()->objectType() != Index::VAR)
+                if (index.column() == Value)
+                    flags.setFlag(Qt::ItemIsEditable, false);
+    }
+    return flags;
 }

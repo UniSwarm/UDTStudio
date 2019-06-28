@@ -50,7 +50,8 @@ public:
     QString name() const;
     void setName(const QString &name);
 
-    DataStorage data() const;
+    const DataStorage &data() const;
+    DataStorage &data();
     void setData(const DataStorage &data);
 
 protected:

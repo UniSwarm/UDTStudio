@@ -35,6 +35,9 @@ public:
 
     void setOd(OD *od);
 
+    bool editable() const;
+    void setEditable(bool editable);
+
 protected:
     ODItemModel *_odModel;
     QSortFilterProxyModel *_odModelSorter;

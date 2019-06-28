@@ -44,6 +44,7 @@ public:
 
     int rowCount() const;
     QVariant data(int column, int role) const;
+    bool setData(int column, const QVariant &value, int role);
 
     ODItem *parent() const;
     ODItem *child(int id) const;

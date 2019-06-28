@@ -26,6 +26,7 @@ ODTreeView::ODTreeView()
     setModel(_odModelSorter);
 
     setSortingEnabled(true);
+    sortByColumn(0, Qt::SortOrder::AscendingOrder);
 }
 
 ODTreeView::~ODTreeView()
@@ -43,4 +44,14 @@ void ODTreeView::setOd(OD *od)
     expandToDepth(1);
     expandToDepth(2);
     collapseAll();
+}
+
+bool ODTreeView::editable() const
+{
+    return _odModel->editable();
+}
+
+void ODTreeView::setEditable(bool editable)
+{
+    _odModel->setEditable(editable);
 }

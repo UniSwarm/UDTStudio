@@ -67,7 +67,12 @@ void SubIndex::setName(const QString &name)
     _name = name;
 }
 
-DataStorage SubIndex::data() const
+const DataStorage &SubIndex::data() const
+{
+    return _data;
+}
+
+DataStorage &SubIndex::data()
 {
     return _data;
 }

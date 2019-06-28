@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     _odView = new ODTreeView();
     _odView->setOd(od);
+    _odView->setEditable(true);
     setCentralWidget(_odView);
 
     resize(QApplication::screens()[0]->size() / 2);
