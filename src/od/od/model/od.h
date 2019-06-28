@@ -24,6 +24,7 @@
 #include <QMap>
 
 #include "index.h"
+#include "fileinfo.h"
 
 #include <stdint.h>
 
@@ -39,8 +40,13 @@ public:
 
     QMap<uint16_t, Index *> &indexes();
 
+    FileInfo getFileInfo() const;
+    void setFileInfo(const FileInfo &value);
+
 private:
     QMap<uint16_t, Index *> _indexes;
+
+    FileInfo fileInfo;
 };
 
 #endif // OD_H

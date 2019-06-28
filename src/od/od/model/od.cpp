@@ -71,3 +71,13 @@ QMap<uint16_t, Index*> &OD::indexes()
 {
     return _indexes;
 }
+
+FileInfo OD::getFileInfo() const
+{
+    return fileInfo;
+}
+
+void OD::setFileInfo(const FileInfo &value)
+{
+    fileInfo = value;
+}
