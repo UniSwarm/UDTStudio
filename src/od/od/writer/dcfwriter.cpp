@@ -128,7 +128,7 @@ void DcfWriter::writeIndex(Index *index, QTextStream &file) const
     file << "ObjectType=" << valueToString(index->objectType(), base) << "\n";
     file << "DataType=" << valueToString(subIndex->data().dataType(), base) << "\n";
     file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
-    file << "DefautValue=" << valueToString(subIndex->data().value().toInt(), base) << "\n";
+    file << "DefautValue=" << dataToString(subIndex->data(), base) << "\n";
     file << "\n";
 }
 
@@ -149,7 +149,7 @@ void DcfWriter::writeRecord(Index *index, QTextStream &file) const
         file << "ObjectType=" << valueToString(Index::Object::VAR, base) << "\n";
         file << "DataType=" << valueToString(subIndex->data().dataType(), base) << "\n";
         file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
-        file << "DefautValue=" << valueToString(subIndex->data().value().toInt(), base) << "\n";
+        file << "DefautValue=" << dataToString(subIndex->data(), base) << "\n";
         file << "\n";
     }
 }
@@ -191,5 +191,18 @@ QString DcfWriter::accessToString(int access) const
     }
 
     return "";
+}
+
+QString DcfWriter::dataToString(DataStorage data, int base) const
+{
+    switch (data.dataType())
+    {
+    case DataStorage::Type::OCTET_STRING:
+    case DataStorage::Type::VISIBLE_STRING:
+        return data.value().toString();
+
+    default:
+        return valueToString(data.value().toInt(), base);
+    }
 }
 
