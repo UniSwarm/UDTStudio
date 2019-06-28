@@ -58,9 +58,9 @@ public:
         ARRAY = 0x08,
         RECORD = 0x09
     };
-
     uint8_t objectType() const;
     void setObjectType(const uint8_t &objectType);
+    static QString objectTypeStr(const uint8_t &objectType);
 
     QString name() const;
     void setName(const QString &name);

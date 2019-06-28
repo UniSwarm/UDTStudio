@@ -80,9 +80,9 @@ public:
         UNSIGNED56 = 0x001A,
         UNSIGNED64 = 0x001B
     };
-
     uint16_t dataType() const;
     void setDataType(const uint16_t &dataType);
+    static QString dataTypeStr(const uint16_t &dataType);
 
     int length() const;
 

@@ -154,6 +154,65 @@ void DataStorage::setDataType(const uint16_t &dataType)
     _dataType = dataType;
 }
 
+QString DataStorage::dataTypeStr(const uint16_t &dataType)
+{
+    switch (dataType)
+    {
+    case BOOLEAN:
+        return QString("BOOLEAN");
+    case INTEGER8:
+        return QString("INT8");
+    case INTEGER16:
+        return QString("INT16");
+    case INTEGER32:
+        return QString("INT32");
+    case UNSIGNED8:
+        return QString("UINT8");
+    case UNSIGNED16:
+        return QString("UINT16");
+    case UNSIGNED32:
+        return QString("UINT32");
+    case REAL32:
+        return QString("REAL32");
+    case VISIBLE_STRING:
+        return QString("VSTRING");
+    case OCTET_STRING:
+        return QString("OSTRING");
+    case UNICODE_STRING:
+        return QString("USTRING");
+    case TIME_OF_DAY:
+        return QString("DAYTIME");
+    case TIME_DIFFERENCE:
+        return QString("TIMEDIFF");
+    case DOMAIN:
+        return QString("DOMAIN");
+    case INTEGER24:
+        return QString("INT24");
+    case REAL64:
+        return QString("REAL64");
+    case INTEGER40:
+        return QString("INT40");
+    case INTEGER48:
+        return QString("INT48");
+    case INTEGER56:
+        return QString("INT56");
+    case INTEGER64:
+        return QString("INT64");
+    case UNSIGNED24:
+        return QString("UINT24");
+    case UNSIGNED40:
+        return QString("UINT40");
+    case UNSIGNED48:
+        return QString("UINT48");
+    case UNSIGNED56:
+        return QString("UINT56");
+    case UNSIGNED64:
+        return QString("UINT64");
+    }
+    return QString();
+
+}
+
 int DataStorage::length() const
 {
     switch (_dataType)
