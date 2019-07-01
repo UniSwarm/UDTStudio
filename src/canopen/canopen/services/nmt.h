@@ -16,20 +16,23 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "node.h"
+#ifndef NMT_H
+#define NMT_H
 
-Node::Node(CanOpenBus *bus)
-    : _bus(bus)
+#include "canopen_global.h"
+
+#include "service.h"
+
+class CANOPEN_EXPORT NMT : public Service
 {
+public:
+    NMT(CanOpenBus *bus);
 
-}
+    void sendNmt(uint8_t node_id, uint8_t cmd);
+    void sendStart(uint8_t node_id);
+    void sendStop(uint8_t node_id);
 
-uint32_t Node::nodeId() const
-{
-    return _nodeId;
-}
+    virtual void parseFrame(const QCanBusFrame &frame);
+};
 
-void Node::setNodeId(const uint32_t &nodeId)
-{
-    _nodeId = nodeId;
-}
+#endif // NMT_H

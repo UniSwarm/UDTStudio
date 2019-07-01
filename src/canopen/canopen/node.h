@@ -21,16 +21,29 @@
 
 #include "canopen_global.h"
 
+#include "model/od.h"
+
+class CanOpenBus;
+
 class CANOPEN_EXPORT Node
 {
 public:
-    Node();
+    Node(CanOpenBus *bus = Q_NULLPTR);
 
     uint32_t nodeId() const;
     void setNodeId(const uint32_t &nodeId);
 
+    enum Status {
+        PREOP,
+        STARTED
+    };
+
 protected:
     uint32_t _nodeId;
+    Status _status;
+
+    OD *_od;
+    CanOpenBus *_bus;
 };
 
 #endif // NODE_H

@@ -16,20 +16,19 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "node.h"
+#ifndef EMERGENCY_H
+#define EMERGENCY_H
 
-Node::Node(CanOpenBus *bus)
-    : _bus(bus)
+#include "canopen_global.h"
+
+#include "service.h"
+
+class CANOPEN_EXPORT Emergency : public Service
 {
+public:
+    Emergency(CanOpenBus *bus);
 
-}
+    virtual void parseFrame(const QCanBusFrame &frame);
+};
 
-uint32_t Node::nodeId() const
-{
-    return _nodeId;
-}
-
-void Node::setNodeId(const uint32_t &nodeId)
-{
-    _nodeId = nodeId;
-}
+#endif // EMERGENCY_H

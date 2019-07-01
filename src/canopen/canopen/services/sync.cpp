@@ -16,20 +16,15 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "node.h"
+#include "sync.h"
 
-Node::Node(CanOpenBus *bus)
-    : _bus(bus)
+Sync::Sync(CanOpenBus *bus)
+    : Service (bus)
 {
 
 }
 
-uint32_t Node::nodeId() const
+void Sync::parseFrame(const QCanBusFrame &frame)
 {
-    return _nodeId;
-}
 
-void Node::setNodeId(const uint32_t &nodeId)
-{
-    _nodeId = nodeId;
 }

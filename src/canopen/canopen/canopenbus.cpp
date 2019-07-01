@@ -18,12 +18,65 @@
 
 #include "canopenbus.h"
 
-CanOpenBus::CanOpenBus()
-{
+#include <QDebug>
 
+CanOpenBus::CanOpenBus(QCanBusDevice *canDevice)
+{
+    _canDevice = canDevice;
+    if (_canDevice)
+    {
+        if (_canDevice->state() == QCanBusDevice::UnconnectedState)
+            _canDevice->connectDevice();
+        connect(_canDevice, &QCanBusDevice::framesReceived, this, &CanOpenBus::canFrameRec);
+        connect(_canDevice, &QCanBusDevice::stateChanged, this, &CanOpenBus::canState);
+    }
+
+    _emergency = new Emergency(this);
+    _nmt = new NMT(this);
+    _pdo = new PDO(this);
+    _sdos.append(new SDO(this));
+    _sync = new Sync(this);
+    _timestamp = new TimeStamp(this);
 }
 
 const QList<Node *> &CanOpenBus::nodes() const
 {
     return _nodes;
+}
+
+void CanOpenBus::addNode(Node *node)
+{
+    _nodes.append(node);
+}
+
+void CanOpenBus::exploreBus()
+{
+    //_canDevice->sendSdoReadReq(2, 0x1000, 0);
+}
+
+QCanBusDevice *CanOpenBus::canDevice() const
+{
+    return _canDevice;
+}
+
+void CanOpenBus::canFrameRec()
+{
+    while (_canDevice->framesAvailable() > 0)
+    {
+        QCanBusFrame frame = _canDevice->readFrame();
+        if ((frame.frameId() & 0x780) == 0x580) // SDO response
+        {
+        }
+        else if (frame.frameId() > 0x180 && frame.frameId() < 0x580)    // PDO receive
+        {
+
+        }
+        else
+            qDebug()<<frame.frameId()<<frame.payload().toHex();
+    }
+}
+
+void CanOpenBus::canState(QCanBusDevice::CanBusDeviceState state)
+{
+
 }

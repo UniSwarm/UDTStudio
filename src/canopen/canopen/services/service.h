@@ -16,39 +16,25 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef CANOPENBUSDEVICE_H
-#define CANOPENBUSDEVICE_H
+#ifndef SERVICE_H
+#define SERVICE_H
 
 #include "canopen_global.h"
 
-#include <QCanBusDevice>
+#include <QCanBusFrame>
 
-class CANOPEN_EXPORT CanOpenBusDevice : public QObject
+class CanOpenBus;
+
+class CANOPEN_EXPORT Service
 {
-    Q_OBJECT
 public:
-    CanOpenBusDevice(QCanBusDevice *canDevice);
+    Service(CanOpenBus *bus);
+    virtual ~Service();
 
-    void sendSync();
-    void sendNmt(uint8_t node_id, uint8_t cmd);
-    void sendStart(uint8_t node_id);
-    void sendStop(uint8_t node_id);
-
-    void sendPDO(uint8_t nodeId, uint8_t pdoNum, QByteArray data);
-
-    void sendSdoReadReq(uint8_t nodeId, uint16_t index, uint8_t subindex);
-
-    QCanBusDevice *canDevice() const;
-
-protected slots:
-    void canFrameRec();
-    void canState(QCanBusDevice::CanBusDeviceState state);
-
-signals:
-    void sdoReceived();
+    virtual void parseFrame(const QCanBusFrame &frame) = 0;
 
 protected:
-    QCanBusDevice *_canDevice;
+    CanOpenBus *_bus;
 };
 
-#endif // CANOPENBUSDEVICE_H
+#endif // SERVICE_H

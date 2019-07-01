@@ -16,20 +16,22 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "node.h"
+#ifndef SDO_H
+#define SDO_H
 
-Node::Node(CanOpenBus *bus)
-    : _bus(bus)
+#include "canopen_global.h"
+
+#include "service.h"
+
+class CANOPEN_EXPORT SDO : public Service
 {
+public:
+    SDO(CanOpenBus *bus);
 
-}
+    virtual void parseFrame(const QCanBusFrame &frame);
 
-uint32_t Node::nodeId() const
-{
-    return _nodeId;
-}
+protected:
+    void sendSdoReadReq(uint8_t nodeId, uint16_t index, uint8_t subindex);
+};
 
-void Node::setNodeId(const uint32_t &nodeId)
-{
-    _nodeId = nodeId;
-}
+#endif // SDO_H

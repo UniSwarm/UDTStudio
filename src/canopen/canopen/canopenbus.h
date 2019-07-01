@@ -21,19 +21,43 @@
 
 #include "canopen_global.h"
 
+#include <QCanBusDevice>
 #include "node.h"
+#include "services/services.h"
 
 #include <QList>
+#include <QMap>
 
-class CANOPEN_EXPORT CanOpenBus
+class CANOPEN_EXPORT CanOpenBus : public QObject
 {
+    Q_OBJECT
 public:
-    CanOpenBus();
+    CanOpenBus(QCanBusDevice *canDevice = Q_NULLPTR);
 
     const QList<Node *> &nodes() const;
+    void addNode(Node *node);
+
+    QCanBusDevice *canDevice() const;
+
+protected slots:
+    void canFrameRec();
+    void canState(QCanBusDevice::CanBusDeviceState state);
+
+public slots:
+    void exploreBus();
 
 protected:
     QList<Node *> _nodes;
+    QCanBusDevice *_canDevice;
+
+    // services
+    QMap<uint32_t, Service *> _serviceId;
+    Emergency *_emergency;
+    NMT *_nmt;
+    PDO *_pdo;
+    QList<SDO *> _sdos;
+    Sync *_sync;
+    TimeStamp *_timestamp;
 };
 
 #endif // CANOPENBUS_H

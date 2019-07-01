@@ -16,20 +16,38 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "node.h"
+#include "nmt.h"
 
-Node::Node(CanOpenBus *bus)
-    : _bus(bus)
+#include "canopenbus.h"
+
+NMT::NMT(CanOpenBus *bus)
+    : Service (bus)
 {
 
 }
 
-uint32_t Node::nodeId() const
+void NMT::sendNmt(uint8_t node_id, uint8_t cmd)
 {
-    return _nodeId;
+    QByteArray nmtStopPayload;
+    nmtStopPayload.append(static_cast<char>(cmd));
+    nmtStopPayload.append(static_cast<char>(node_id));
+    QCanBusFrame frameNmt;
+    frameNmt.setFrameId(0x000);
+    frameNmt.setPayload(nmtStopPayload);
+    _bus->canDevice()->writeFrame(frameNmt);
 }
 
-void Node::setNodeId(const uint32_t &nodeId)
+void NMT::sendStart(uint8_t node_id)
 {
-    _nodeId = nodeId;
+    sendNmt(node_id, 0x01);
+}
+
+void NMT::sendStop(uint8_t node_id)
+{
+    sendNmt(node_id, 0x02);
+}
+
+void NMT::parseFrame(const QCanBusFrame &frame)
+{
+
 }

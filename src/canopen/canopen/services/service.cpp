@@ -16,20 +16,13 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "node.h"
+#include "service.h"
 
-Node::Node(CanOpenBus *bus)
+Service::Service(CanOpenBus *bus)
     : _bus(bus)
 {
-
 }
 
-uint32_t Node::nodeId() const
+Service::~Service()
 {
-    return _nodeId;
-}
-
-void Node::setNodeId(const uint32_t &nodeId)
-{
-    _nodeId = nodeId;
 }
