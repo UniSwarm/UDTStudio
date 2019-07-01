@@ -25,7 +25,6 @@
 #include <QMap>
 
 #include "index.h"
-#include "fileinfo.h"
 
 #include <stdint.h>
 
