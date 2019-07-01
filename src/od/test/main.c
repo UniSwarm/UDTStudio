@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <assert.h>
-#include "od_controller.h"
+#include "od.h"
 
 //==========test on OD_OBJECT_VAR =============
 void testReadObjectVar()
