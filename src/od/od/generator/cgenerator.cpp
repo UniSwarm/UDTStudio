@@ -49,7 +49,7 @@ void CGenerator::generate(OD *od, const QString &dir) const
  */
 void CGenerator::generateH(OD *od, const QString &dir) const
 {
-    QFile hFile(dir + "/od.h");
+    QFile hFile(dir + "/od_data.h");
 
     if (!hFile.open(QIODevice::WriteOnly))
         return;
@@ -60,8 +60,8 @@ void CGenerator::generateH(OD *od, const QString &dir) const
     out << " * Generated .h file\n";
     out << " */\n";
     out << "\n";
-    out << "#ifndef OD_H" << "\n";
-    out << "#define OD_H" << "\n";
+    out << "#ifndef OD_DATA_H" << "\n";
+    out << "#define OD_DATA_H" << "\n";
     out << "\n";
     out << "#include \"sdo.h\"" << "\n";
     out << "\n";
@@ -102,7 +102,7 @@ void CGenerator::generateH(OD *od, const QString &dir) const
     out << "// ============== function ==================" << "\n";
     out << "void od_initRam(void);" << "\n";
     out << "\n";
-    out << "#endif // OD_H";
+    out << "#endif // OD_DATA_H";
     out << "\n";
 
     hFile.close();
@@ -114,7 +114,7 @@ void CGenerator::generateH(OD *od, const QString &dir) const
  */
 void CGenerator::generateC(OD *od, const QString &dir) const
 {
-    QFile cFile(dir + "/od.c");
+    QFile cFile(dir + "/od_data.c");
 
     if (!cFile.open(QIODevice::WriteOnly))
         return;
@@ -125,7 +125,7 @@ void CGenerator::generateC(OD *od, const QString &dir) const
     out << " * Generated .c file\n";
     out << " */\n";
     out << "\n";
-    out << "#include \"od.h\"" << "\n";
+    out << "#include \"od_data.h\"" << "\n";
     out << "\n";
     out << "// ==================== initialization =====================" << "\n";
     out << "struct sOD_RAM OD_RAM;" << "\n";

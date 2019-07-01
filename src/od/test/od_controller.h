@@ -1,7 +1,7 @@
 #ifndef OD_CONTROLLER_H
 #define OD_CONTROLLER_H
 
-#include "od.h"
+#include "od_data.h"
 
 // ============ sdo abort codes =============
 #define OD_ABORT_CODE_WRITE_ONLY            0x06010001

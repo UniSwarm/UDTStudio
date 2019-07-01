@@ -50,12 +50,12 @@ int main(int argc, char *argv[])
     QString path(file);
 
     DcfParser parser;
-//    CGenerator generator;
+    CGenerator generator;
     DcfWriter writer;
 
 
     od = parser.parse(path);
-//    generator.generate(od, outDirectory);
+    generator.generate(od, outDirectory);
     writer.write(od, outDirectory);
     delete od;
 
