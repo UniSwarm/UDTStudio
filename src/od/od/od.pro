@@ -18,8 +18,7 @@ HEADERS += \
     $$PWD/od_global.h \
     $$PWD/parser/parser.h \
     $$PWD/writer/dcfwriter.h \
-    $$PWD/writer/writer.h \
-    model/fileinfo.h
+    $$PWD/writer/writer.h
 
 SOURCES += \
     $$PWD/model/index.cpp \
@@ -31,6 +30,5 @@ SOURCES += \
     $$PWD/generator/cgenerator.cpp \
     $$PWD/parser/parser.cpp \
     $$PWD/writer/dcfwriter.cpp \
-    $$PWD/writer/writer.cpp \
-    model/fileinfo.cpp
+    $$PWD/writer/writer.cpp
 
