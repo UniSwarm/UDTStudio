@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 #include "model/od.h"
-#include "parser/cdfparser.h"
+#include "parser/dcfparser.h"
 #include "generator/cgenerator.h"
 #include "writer/dcfwriter.h"
 
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     cliParser.setApplicationDescription(QCoreApplication::translate("main", "Object Dicitonary command line interface."));
     cliParser.addHelpOption();
     cliParser.addVersionOption();
-    cliParser.addPositionalArgument("file", QCoreApplication::translate("main", "Object dictionary file (cdf)."), "file");
+    cliParser.addPositionalArgument("file", QCoreApplication::translate("main", "Object dictionary file (dcf)."), "file");
 
     QCommandLineOption outOption(QStringList() << "o" << "out",
                                      QCoreApplication::translate("main", "Output directory."),
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     OD *od;
     QString path(file);
 
-    CdfParser parser;
+    DcfParser parser;
 //    CGenerator generator;
     DcfWriter writer;
 

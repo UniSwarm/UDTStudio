@@ -16,8 +16,8 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef CDFPARSER_H
-#define CDFPARSER_H
+#ifndef DCFPARSER_H
+#define DCFPARSER_H
 
 #include "od_global.h"
 
@@ -28,16 +28,16 @@
 #include "parser.h"
 #include "model/od.h"
 
-class OD_EXPORT CdfParser : public Parser
+class OD_EXPORT DcfParser : public Parser
 {
 public:
-    CdfParser();
+    DcfParser();
 
     OD *parse(const QString &path) const;
 
 private:
-    DataStorage readData(const QSettings &cdf) const;
-    QMap<QString, QString> readFileInfo(const QSettings &cdf) const;
+    DataStorage readData(const QSettings &dcf) const;
+    QMap<QString, QString> readFileInfo(const QSettings &dcf) const;
 };
 
-#endif // CDFPARSER_H
+#endif // DCFPARSER_H

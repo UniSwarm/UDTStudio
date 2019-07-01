@@ -18,7 +18,7 @@
 
 #include "parser.h"
 
-#include "cdfparser.h"
+#include "dcfparser.h"
 
 Parser::Parser()
 {
@@ -28,6 +28,6 @@ Parser::Parser()
 Parser *Parser::getParser(const QString &type)
 {
     if (type == "dcf")
-        return new CdfParser;
+        return new DcfParser;
     return nullptr;
 }

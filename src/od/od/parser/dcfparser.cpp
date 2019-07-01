@@ -16,24 +16,24 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "cdfparser.h"
+#include "dcfparser.h"
 
 #include <QRegularExpression>
 
 /**
  * @brief default constructor
  */
-CdfParser::CdfParser()
+DcfParser::DcfParser()
 {
 
 }
 
 /**
- * @brief parses a cdf file and completes an object dictionary
+ * @brief parses a dcf file and completes an object dictionary
  * @param input file path
  * @return object dictionary
  */
-OD *CdfParser::parse(const QString &path) const
+OD *DcfParser::parse(const QString &path) const
 {
     bool ok;
     bool isSubIndex;
@@ -50,11 +50,11 @@ OD *CdfParser::parse(const QString &path) const
     OD *od;
     od = new OD;
 
-    QSettings cdf(path, QSettings::IniFormat);
+    QSettings dcf(path, QSettings::IniFormat);
     QRegularExpression reSub("([0-Z]{4})(sub)([0-9]+)");
     QRegularExpression reIndex("([0-Z]{4})");
 
-    foreach (const QString &group, cdf.childGroups())
+    foreach (const QString &group, dcf.childGroups())
     {
         isSubIndex = false;
         accessType = 0;
@@ -79,19 +79,19 @@ OD *CdfParser::parse(const QString &path) const
         }
         else if (group == "FileInfo")
         {
-            cdf.beginGroup(group);
-            od->setFileInfos(readFileInfo(cdf));
-            cdf.endGroup();
+            dcf.beginGroup(group);
+            od->setFileInfos(readFileInfo(dcf));
+            dcf.endGroup();
             continue;
         }
         else
             continue;
 
-        cdf.beginGroup(group);
+        dcf.beginGroup(group);
 
-        foreach (const QString &key, cdf.allKeys())
+        foreach (const QString &key, dcf.allKeys())
         {
-            QString value = cdf.value(key).toString();
+            QString value = dcf.value(key).toString();
 
             uint8_t base = 10;
             if (value.startsWith("0x", Qt::CaseInsensitive))
@@ -99,7 +99,7 @@ OD *CdfParser::parse(const QString &path) const
 
             if (key == "AccessType")
             {
-                accessString = cdf.value(key).toString();
+                accessString = dcf.value(key).toString();
 
                 if (accessString == "rw")
                     accessType = SubIndex::Access::READ_WRITE;
@@ -127,8 +127,8 @@ OD *CdfParser::parse(const QString &path) const
                 subNumber = (uint8_t)value.toInt(&ok, base);
         }
 
-        DataStorage data = readData(cdf);
-        cdf.endGroup();
+        DataStorage data = readData(dcf);
+        dcf.endGroup();
 
         if (isSubIndex)
         {
@@ -167,16 +167,16 @@ OD *CdfParser::parse(const QString &path) const
 }
 
 /**
- * @brief read data to correct format from cdf file
- * @param cdf file
+ * @brief read data to correct format from dcf file
+ * @param dcf file
  * @return data
  */
-DataStorage CdfParser::readData(const QSettings &cdf) const
+DataStorage DcfParser::readData(const QSettings &dcf) const
 {
     bool ok;
-    uint16_t dataType = cdf.value("DataType").toString().toShort(&ok, 16);
+    uint16_t dataType = dcf.value("DataType").toString().toShort(&ok, 16);
 
-    QString dataString = cdf.value("DefaultValue").toString();
+    QString dataString = dcf.value("DefaultValue").toString();
     uint8_t base = 10;
     if (dataString.startsWith("0x", Qt::CaseInsensitive))
         base = 16;
@@ -244,13 +244,13 @@ DataStorage CdfParser::readData(const QSettings &cdf) const
     return data;
 }
 
-QMap<QString, QString> CdfParser::readFileInfo(const QSettings &cdf) const
+QMap<QString, QString> DcfParser::readFileInfo(const QSettings &dcf) const
 {
     QMap<QString, QString> fileInfos;
 
-    foreach (const QString &key, cdf.allKeys())
+    foreach (const QString &key, dcf.allKeys())
     {
-        fileInfos.insert(key, cdf.value(key).toString());
+        fileInfos.insert(key, dcf.value(key).toString());
     }
 
 
