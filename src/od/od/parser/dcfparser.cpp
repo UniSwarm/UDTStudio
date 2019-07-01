@@ -80,7 +80,7 @@ OD *DcfParser::parse(const QString &path) const
         else if (group == "FileInfo")
         {
             dcf.beginGroup(group);
-            od->setFileInfos(readFileInfo(dcf));
+            readFileInfo(od, dcf);
             dcf.endGroup();
             continue;
         }
@@ -244,15 +244,12 @@ DataStorage DcfParser::readData(const QSettings &dcf) const
     return data;
 }
 
-QMap<QString, QString> DcfParser::readFileInfo(const QSettings &dcf) const
+void DcfParser::readFileInfo(OD *od, const QSettings &dcf) const
 {
     QMap<QString, QString> fileInfos;
 
     foreach (const QString &key, dcf.allKeys())
     {
-        fileInfos.insert(key, dcf.value(key).toString());
+        od->setFileInfo(key, dcf.value(key).toString());
     }
-
-
-    return fileInfos;
 }

@@ -37,7 +37,7 @@ public:
 
 private:
     DataStorage readData(const QSettings &dcf) const;
-    QMap<QString, QString> readFileInfo(const QSettings &dcf) const;
+    void readFileInfo(OD *od, const QSettings &dcf) const;
 };
 
 #endif // DCFPARSER_H

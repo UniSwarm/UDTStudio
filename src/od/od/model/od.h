@@ -40,9 +40,9 @@ public:
 
     QMap<uint16_t, Index *> &indexes();
 
-    QMap<QString, QString> fileInfos() const;
-    void setFileInfos(const QMap<QString, QString> &fileInfos);
-    void addFileInfo(const QString &key, const QString &value);
+    const QMap<QString, QString> &fileInfos() const;
+    void setFileInfo(const QString &key, const QString &value);
+    QString fileInfo(const QString &key) const;
 
 private:
     QMap<uint16_t, Index *> _indexes;
