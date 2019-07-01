@@ -1,5 +1,5 @@
-#ifndef OD_CONTROLLER_H
-#define OD_CONTROLLER_H
+#ifndef OD_H
+#define OD_H
 
 #include "od_data.h"
 
@@ -18,4 +18,4 @@ int32_t od_write(uint16_t index, uint8_t subIndex, void *ptData, uint8_t size);
 
 uint8_t od_sizeFromType(uint16_t dataType);
 
-#endif // OD_CONTROLLER_H
+#endif // OD_H
