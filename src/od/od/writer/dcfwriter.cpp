@@ -41,6 +41,8 @@ void DcfWriter::write(OD *od, const QString &dir) const
 
     QTextStream out(&dcfFile);
 
+    writeFileInfo(od->fileInfos(), out);
+
     QList<Index *> mandatories;
     QList<Index *> optionals;
     QList<Index *> manufacturers;
@@ -77,6 +79,18 @@ void DcfWriter::write(OD *od, const QString &dir) const
     writeSupportedIndexes(manufacturers, out);
     out << "\n";
     writeListIndex(manufacturers, out);
+}
+
+void DcfWriter::writeFileInfo(QMap<QString, QString> fileInfos, QTextStream &file) const
+{
+    file << "[FileInfo]" << "\n";
+
+    foreach (const QString &key, fileInfos.keys())
+    {
+        file << key << "=" << fileInfos.value(key) << "\n";
+    }
+
+    file << "\n";
 }
 
 void DcfWriter::writeSupportedIndexes(QList<Index *> indexes, QTextStream &file) const

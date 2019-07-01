@@ -22,6 +22,7 @@
 #include "od_global.h"
 
 #include <QString>
+#include <QMap>
 #include <QSettings>
 
 #include "parser.h"
@@ -36,6 +37,7 @@ public:
 
 private:
     DataStorage readData(const QSettings &cdf) const;
+    QMap<QString, QString> readFileInfo(const QSettings &cdf) const;
 };
 
 #endif // CDFPARSER_H

@@ -24,6 +24,7 @@
 #include <QTextStream>
 #include <QString>
 #include <QList>
+#include <QMap>
 
 #include "writer.h"
 
@@ -35,6 +36,7 @@ public:
     void write(OD *od, const QString &dir) const;
 
 protected:
+    void writeFileInfo(QMap <QString, QString> fileInfos, QTextStream &file) const;
     void writeSupportedIndexes(QList<Index *> indexes, QTextStream &file) const;
     void writeListIndex(QList<Index *> indexes, QTextStream &file) const;
     void writeIndex(Index *index, QTextStream &file) const;

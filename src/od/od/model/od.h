@@ -21,6 +21,7 @@
 
 #include "od_global.h"
 
+#include <QString>
 #include <QMap>
 
 #include "index.h"
@@ -40,13 +41,13 @@ public:
 
     QMap<uint16_t, Index *> &indexes();
 
-    FileInfo getFileInfo() const;
-    void setFileInfo(const FileInfo &value);
+    QMap<QString, QString> fileInfos() const;
+    void setFileInfos(const QMap<QString, QString> &fileInfos);
+    void addFileInfo(const QString &key, const QString &value);
 
 private:
     QMap<uint16_t, Index *> _indexes;
-
-    FileInfo fileInfo;
+    QMap<QString, QString> _fileInfos;
 };
 
 #endif // OD_H

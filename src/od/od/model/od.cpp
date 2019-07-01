@@ -72,12 +72,18 @@ QMap<uint16_t, Index*> &OD::indexes()
     return _indexes;
 }
 
-FileInfo OD::getFileInfo() const
+QMap<QString, QString> OD::fileInfos() const
 {
-    return fileInfo;
+    return _fileInfos;
 }
 
-void OD::setFileInfo(const FileInfo &value)
+void OD::setFileInfos(const QMap<QString, QString> &fileInfos)
 {
-    fileInfo = value;
+    _fileInfos = fileInfos;
 }
+
+void OD::addFileInfo(const QString &key, const QString &value)
+{
+    _fileInfos.insert(key, value);
+}
+

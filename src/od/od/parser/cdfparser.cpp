@@ -77,6 +77,13 @@ OD *CdfParser::parse(const QString &path) const
             QString matchedIndex = matchIndex.captured(0);
             indexNumber = (uint16_t)matchedIndex.toInt(&ok, 16);
         }
+        else if (group == "FileInfo")
+        {
+            cdf.beginGroup(group);
+            od->setFileInfos(readFileInfo(cdf));
+            cdf.endGroup();
+            continue;
+        }
         else
             continue;
 
@@ -235,4 +242,17 @@ DataStorage CdfParser::readData(const QSettings &cdf) const
     }
 
     return data;
+}
+
+QMap<QString, QString> CdfParser::readFileInfo(const QSettings &cdf) const
+{
+    QMap<QString, QString> fileInfos;
+
+    foreach (const QString &key, cdf.allKeys())
+    {
+        fileInfos.insert(key, cdf.value(key).toString());
+    }
+
+
+    return fileInfos;
 }
