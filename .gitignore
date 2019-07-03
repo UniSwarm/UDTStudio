@@ -5,7 +5,5 @@ od_data.h
 bin/
 src/od/test/test
 src/od/test/test.pro
-pdo.h
-pdo.c
 umc1bds32fr.eds
 
