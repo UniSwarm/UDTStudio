@@ -31,6 +31,7 @@ Index::Index(const uint16_t &index)
 {
     _index = index;
     _maxSubIndex = 0;
+    _objectType = VAR;
 }
 
 /**

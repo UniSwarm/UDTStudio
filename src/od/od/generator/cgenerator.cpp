@@ -162,14 +162,12 @@ void CGenerator::generateC(OD *od, const QString &dir) const
             appIndexes.append(index);
     }
 
-    out << "\n";
     out << "void od_initCommIndexes()" << "\n";
     out << "{";
     writeInitRamC(commIndexes, out);
     out << "}" << "\n";
     out << "\n";
 
-    out << "\n";
     out << "void od_initAppIndexes()" << "\n";
     out << "{";
     writeInitRamC(appIndexes, out);
