@@ -191,9 +191,6 @@ QString DcfWriter::accessToString(int access) const
 {
     switch (access)
     {
-    case SubIndex::Access::CONST:
-        return QString("const");
-
     case SubIndex::Access::READ_ONLY:
         return QString("ro");
 

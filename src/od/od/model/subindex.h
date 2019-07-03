@@ -35,10 +35,9 @@ public:
     // ============== Access type =================
      enum Access
      {
-         READ_WRITE = 0x01,
+         READ_ONLY = 0x01,
          WRITE_ONLY	= 0x02,
-         READ_ONLY = 0x03,
-         CONST = 0x04
+         READ_WRITE = 0x03,
      };
 
     uint8_t accessType() const;

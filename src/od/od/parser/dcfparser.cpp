@@ -111,7 +111,7 @@ OD *DcfParser::parse(const QString &path) const
                     accessType = SubIndex::Access::READ_ONLY;
 
                 else if (accessString == "const")
-                    accessType = SubIndex::Access::CONST;
+                    accessType = SubIndex::Access::READ_ONLY;
             }
 
             else if (key == "DataStorage")
