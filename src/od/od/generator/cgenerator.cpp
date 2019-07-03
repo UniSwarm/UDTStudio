@@ -100,7 +100,8 @@ void CGenerator::generateH(OD *od, const QString &dir) const
     out << "extern struct sOD_RAM OD_RAM;" << "\n";
     out << "\n";
     out << "// ============== function ==================" << "\n";
-    out << "void od_initRam(void);" << "\n";
+    out << "void od_initCommIndexes(void);" << "\n";
+    out << "void od_initAppIndexes(void);" << "\n";
     out << "\n";
     out << "#endif // OD_DATA_H";
     out << "\n";
@@ -131,7 +132,7 @@ void CGenerator::generateC(OD *od, const QString &dir) const
     out << "struct sOD_RAM OD_RAM;" << "\n";
     out << "\n";
 
-    QMap<uint16_t, Index*> indexes = od->indexes();
+    QMap<uint16_t, Index *> indexes = od->indexes();
 
     foreach (Index *index, indexes)
     {
@@ -147,21 +148,31 @@ void CGenerator::generateC(OD *od, const QString &dir) const
         writeCharLineC(index->subIndex(0), out);
     }
 
-    out << "\n";
-    out << "void od_initRam()" << "\n";
-    out << "{";
+    QList<Index *> appIndexes;
+    QList<Index *> commIndexes;
 
-    uint8_t lastOT = 0;
     foreach (Index *index, indexes)
     {
-        if (index->objectType() != lastOT
-                || index->objectType() == Index::Object::RECORD
-                || index->objectType() == Index::Object::ARRAY)
-            out << "\n";
-        writeRamLineC(index, out);
-        lastOT = index->objectType();
+        if (index->index() < 0x1000);
+
+        else if (index->index() < 0x2000)
+            commIndexes.append(index);
+
+        else
+            appIndexes.append(index);
     }
 
+    out << "\n";
+    out << "void od_initCommIndexes()" << "\n";
+    out << "{";
+    writeInitRamC(commIndexes, out);
+    out << "}" << "\n";
+    out << "\n";
+
+    out << "\n";
+    out << "void od_initAppIndexes()" << "\n";
+    out << "{";
+    writeInitRamC(appIndexes, out);
     out << "}" << "\n";
     out << "\n";
 
@@ -566,5 +577,19 @@ void CGenerator::writeCharLineC(SubIndex *subIndex, QTextStream &cFile) const
     case DataStorage::Type::OCTET_STRING:
         cFile << "const char " << stringNameToString(subIndex) << "[]" << " = " << "\"" << subIndex->data().toString() << "\"" << ";\n";
         break;
+    }
+}
+
+void CGenerator::writeInitRamC(QList<Index *> indexes, QTextStream &cFile) const
+{
+    uint8_t lastOT = 0;
+    foreach (Index *index, indexes)
+    {
+        if (index->objectType() != lastOT
+                || index->objectType() == Index::Object::RECORD
+                || index->objectType() == Index::Object::ARRAY)
+        cFile << "\n";
+        writeRamLineC(index, cFile);
+        lastOT = index->objectType();
     }
 }
