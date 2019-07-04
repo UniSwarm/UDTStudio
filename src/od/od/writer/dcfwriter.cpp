@@ -42,6 +42,7 @@ void DcfWriter::write(OD *od, const QString &dir) const
     QTextStream out(&dcfFile);
 
     writeFileInfo(od->fileInfos(), out);
+    writeDummyUsage(out);
 
     QList<Index *> mandatories;
     QList<Index *> optionals;
@@ -90,6 +91,19 @@ void DcfWriter::writeFileInfo(QMap<QString, QString> fileInfos, QTextStream &fil
         file << key << "=" << fileInfos.value(key) << "\n";
     }
 
+    file << "\n";
+}
+
+void DcfWriter::writeDummyUsage(QTextStream &file) const
+{
+    file << "[DummyUsage]\n";
+    file << "Dummy0001=0\n";
+    file << "Dummy0002=1\n";
+    file << "Dummy0003=1\n";
+    file << "Dummy0004=1\n";
+    file << "Dummy0005=1\n";
+    file << "Dummy0006=1\n";
+    file << "Dummy0007=1\n";
     file << "\n";
 }
 
