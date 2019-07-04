@@ -47,6 +47,7 @@ private:
     QString valueToString(int value, int base = 10) const;
     QString accessToString(int access) const;
     QString dataToString(DataStorage data, int base = 10) const;
+    QString pdoToString(uint8_t accessType) const;
 };
 
 #endif // DCFWRITER_H

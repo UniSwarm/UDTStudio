@@ -38,6 +38,7 @@ public:
 private:
     DataStorage readData(const QSettings &dcf) const;
     void readFileInfo(OD *od, const QSettings &dcf) const;
+    uint8_t readPdoMapping(const QSettings &dcf) const;
 };
 
 #endif // DCFPARSER_H

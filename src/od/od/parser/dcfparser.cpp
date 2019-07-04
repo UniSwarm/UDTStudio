@@ -20,6 +20,9 @@
 
 #include <QRegularExpression>
 
+//TODO handle fields CompactSubObj and ObjFlags (see 306_1)
+//TODO handle octal format (0) (see 306_1)
+
 /**
  * @brief default constructor
  */
@@ -101,17 +104,14 @@ OD *DcfParser::parse(const QString &path) const
             {
                 accessString = dcf.value(key).toString();
 
-                if (accessString == "rw")
-                    accessType = SubIndex::Access::READ_WRITE;
+                if (accessString == "rw" || accessString == "rwr" || accessString == "rww")
+                    accessType += SubIndex::Access::READ + SubIndex::Access::WRITE;
 
                 else if (accessString == "wo")
-                    accessType = SubIndex::Access::WRITE_ONLY;
+                    accessType += SubIndex::Access::WRITE;
 
-                else if (accessString == "ro")
-                    accessType = SubIndex::Access::READ_ONLY;
-
-                else if (accessString == "const")
-                    accessType = SubIndex::Access::READ_ONLY;
+                else if (accessString == "ro" || accessString == "const")
+                    accessType += SubIndex::Access::READ;
             }
 
             else if (key == "DataStorage")
@@ -125,6 +125,9 @@ OD *DcfParser::parse(const QString &path) const
 
             else if (key == "SubNumber")
                 subNumber = (uint8_t)value.toInt(&ok, base);
+
+            else if (key == "PDOMapping")
+                accessType += readPdoMapping(dcf);
         }
 
         DataStorage data = readData(dcf);
@@ -174,7 +177,7 @@ OD *DcfParser::parse(const QString &path) const
 DataStorage DcfParser::readData(const QSettings &dcf) const
 {
     bool ok;
-    uint16_t dataType = dcf.value("DataType").toString().toShort(&ok, 16);
+    uint16_t dataType = (uint16_t)dcf.value("DataType").toString().toShort(&ok, 16);
 
     QString dataString = dcf.value("DefaultValue").toString();
     uint8_t base = 10;
@@ -252,4 +255,20 @@ void DcfParser::readFileInfo(OD *od, const QSettings &dcf) const
     {
         od->setFileInfo(key, dcf.value(key).toString());
     }
+}
+
+uint8_t DcfParser::readPdoMapping(const QSettings &dcf) const
+{
+    if (dcf.value("PDOMapping") == 0)
+        return 0;
+
+    QString accessString = dcf.value("AccessType").toString();
+
+    if (accessString == "rwr" || accessString == "ro" || accessString == "const")
+        return SubIndex::Access::TPDO;
+
+    if (accessString == "rww" || accessString == "wo")
+        return SubIndex::Access::RPDO;
+
+    return SubIndex::Access::TPDO + SubIndex::Access::RPDO;
 }

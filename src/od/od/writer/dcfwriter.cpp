@@ -143,6 +143,7 @@ void DcfWriter::writeIndex(Index *index, QTextStream &file) const
     file << "DataType=" << valueToString(subIndex->data().dataType(), base) << "\n";
     file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
     file << "DefaultValue=" << dataToString(subIndex->data(), base) << "\n";
+    file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\n";
     file << "\n";
 }
 
@@ -164,6 +165,7 @@ void DcfWriter::writeRecord(Index *index, QTextStream &file) const
         file << "DataType=" << valueToString(subIndex->data().dataType(), base) << "\n";
         file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
         file << "DefaultValue=" << dataToString(subIndex->data(), base) << "\n";
+        file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\n";
         file << "\n";
     }
 }
@@ -191,14 +193,23 @@ QString DcfWriter::accessToString(int access) const
 {
     switch (access)
     {
-    case SubIndex::Access::READ_ONLY:
+    case SubIndex::Access::READ:
+    case SubIndex::Access::READ + SubIndex::Access::TPDO:
         return QString("ro");
 
-    case SubIndex::Access::WRITE_ONLY:
+    case SubIndex::Access::WRITE:
+    case SubIndex::Access::WRITE + SubIndex::Access::RPDO:
         return QString("ro");
 
-     case SubIndex::Access::READ_WRITE:
+    case SubIndex::Access::READ + SubIndex::Access::WRITE:
+    case SubIndex::Access::READ + SubIndex::Access::WRITE + SubIndex::Access::TPDO + SubIndex::Access::RPDO:
         return QString("rw");
+
+    case SubIndex::Access::READ + SubIndex::Access::WRITE + SubIndex::Access::TPDO:
+        return QString("rwr");
+
+    case SubIndex::Access::READ + SubIndex::Access::WRITE + SubIndex::Access::RPDO:
+        return QString("rww");
     }
 
     return "";
@@ -282,3 +293,10 @@ QString DcfWriter::dataToString(DataStorage data, int base) const
     return string;
 }
 
+QString DcfWriter::pdoToString(uint8_t accessType) const
+{
+    if ((accessType & SubIndex::Access::TPDO) == SubIndex::Access::TPDO || (accessType & SubIndex::Access::RPDO) == SubIndex::Access::RPDO)
+        return QString::number(1);
+
+    return QString::number(0);
+}

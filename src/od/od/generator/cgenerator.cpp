@@ -503,7 +503,8 @@ void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
             cFile << "    " << "{(void*)&OD_RAM." << varNameToString(index->name());
             cFile << "." << varNameToString(subIndex->name());
             //TODO PDOmapping
-            cFile << ", " << subIndex->data().length() << ", " << typeObjectToString(index, subIndex->subIndex(), true) << ", " << "0x" <<  subIndex->accessType() << ", " << subIndex->subIndex();
+            cFile << ", " << subIndex->data().length() << ", " << typeObjectToString(index, subIndex->subIndex(), true) << ", ";
+            cFile << "0x" << QString::number(subIndex->accessType(), 16).toUpper() << ", " << subIndex->subIndex();
             cFile << "}," << "\n";
         }
 
@@ -543,7 +544,7 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
     {
     case Index::Object::VAR:
         cFile << "(void*)&OD_RAM." << varNameToString(index->name()) << ", ";
-        cFile << index->subIndex(0)->data().length() <<  ", " << typeObjectToString(index, 0) << ", " << "0x" << index->subIndex(0)->accessType();
+        cFile << index->subIndex(0)->data().length() <<  ", " << typeObjectToString(index, 0) << ", " << "0x" << QString::number(index->subIndex(0)->accessType(), 16).toUpper();
         break;
 
     case Index::Object::RECORD:
@@ -553,7 +554,7 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
 
     case Index::Object::ARRAY:
         cFile << "(void*)OD_RAM." << varNameToString(index->name()) << ", ";
-        cFile << index->subIndex(1)->data().length() <<  ", " << typeObjectToString(index, 1) << ", " << "0x" << index->subIndex(1)->accessType();
+        cFile << index->subIndex(1)->data().length() <<  ", " << typeObjectToString(index, 1) << ", " << "0x" << QString::number(index->subIndex(1)->accessType(), 16).toUpper();
         break;
     }
 
