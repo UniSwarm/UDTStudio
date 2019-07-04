@@ -114,7 +114,7 @@ OD *DcfParser::parse(const QString &path) const
                     accessType += SubIndex::Access::READ;
             }
 
-            else if (key == "DataStorage")
+            else if (key == "DataType")
                 dataType = (uint16_t)value.toInt(&ok, base);
 
             else if (key == "ObjectType")
