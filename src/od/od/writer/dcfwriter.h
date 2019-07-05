@@ -43,6 +43,7 @@ protected:
     void writeIndex(Index *index, QTextStream &file) const;
     void writeRecord(Index *index, QTextStream &file) const;
     void writeArray(Index *index, QTextStream &file) const;
+    void writeLimit(SubIndex *subIndex, QTextStream &file) const;
 
 private:
     QString valueToString(int value, int base = 10) const;

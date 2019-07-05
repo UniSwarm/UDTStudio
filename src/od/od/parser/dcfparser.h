@@ -24,6 +24,7 @@
 #include <QString>
 #include <QMap>
 #include <QSettings>
+#include <QVariant>
 
 #include "parser.h"
 #include "model/od.h"
@@ -39,6 +40,9 @@ private:
     DataStorage readData(const QSettings &dcf) const;
     void readFileInfo(OD *od, const QSettings &dcf) const;
     uint8_t readPdoMapping(const QSettings &dcf) const;
+    QVariant readLowLimit(const QSettings &dcf) const;
+    QVariant readHighLimit(const QSettings &dcf) const;
+
 };
 
 #endif // DCFPARSER_H

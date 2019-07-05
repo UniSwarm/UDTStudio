@@ -30,6 +30,8 @@ SubIndex::SubIndex(const uint8_t &subIndex)
     : _data(0)
 {
     _subIndex = subIndex;
+    _flagLimit = 0;
+    _accessType = 0;
 }
 
 SubIndex::~SubIndex()
@@ -80,4 +82,34 @@ DataStorage &SubIndex::data()
 void SubIndex::setData(const DataStorage &data)
 {
     _data = data;
+}
+
+QVariant SubIndex::lowLimit() const
+{
+    return _lowLimit;
+}
+
+void SubIndex::setLowLimit(const QVariant &lowLimit)
+{
+    _lowLimit = lowLimit;
+}
+
+QVariant SubIndex::highLimit() const
+{
+    return _highLimit;
+}
+
+void SubIndex::setHighLimit(const QVariant &highLimit)
+{
+    _highLimit = highLimit;
+}
+
+uint8_t SubIndex::flagLimit() const
+{
+    return _flagLimit;
+}
+
+void SubIndex::setFlagLimit(const uint8_t &flagLimit)
+{
+    _flagLimit = flagLimit;
 }

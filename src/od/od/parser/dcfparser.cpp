@@ -42,13 +42,15 @@ OD *DcfParser::parse(const QString &path) const
     bool isSubIndex;
     uint16_t indexNumber;
     uint8_t accessType;
-    uint16_t dataType;
     uint8_t objectType;
     uint8_t subNumber;
     QString accessString;
     QString parameterName;
     Index *index = nullptr;
     SubIndex *subIndex;
+    QVariant lowLimit;
+    QVariant highLimit;
+    uint8_t flagLimit;
 
     OD *od;
     od = new OD;
@@ -61,9 +63,9 @@ OD *DcfParser::parse(const QString &path) const
     {
         isSubIndex = false;
         accessType = 0;
-        dataType = 0;
         objectType = 0;
         subNumber = 0;
+        flagLimit = 0;
 
         QRegularExpressionMatch matchSub = reSub.match(group);
         QRegularExpressionMatch matchIndex = reIndex.match(group);
@@ -114,9 +116,6 @@ OD *DcfParser::parse(const QString &path) const
                     accessType += SubIndex::Access::READ;
             }
 
-            else if (key == "DataType")
-                dataType = (uint16_t)value.toInt(&ok, base);
-
             else if (key == "ObjectType")
                 objectType = (uint8_t)value.toInt(&ok, base);
 
@@ -128,6 +127,18 @@ OD *DcfParser::parse(const QString &path) const
 
             else if (key == "PDOMapping")
                 accessType += readPdoMapping(dcf);
+
+            else if (key == "LowLimit")
+            {
+                lowLimit = readLowLimit(dcf);
+                flagLimit += SubIndex::Limit::LOW;
+            }
+
+            else if (key == "HighLimit")
+            {
+                highLimit = readHighLimit(dcf);
+                flagLimit += SubIndex::Limit::HIGH;
+            }
         }
 
         DataStorage data = readData(dcf);
@@ -143,6 +154,14 @@ OD *DcfParser::parse(const QString &path) const
                 subIndex->setAccessType(accessType);
                 subIndex->setName(parameterName);
                 subIndex->setData(data);
+                subIndex->setFlagLimit(flagLimit);
+
+                if (flagLimit & SubIndex::Limit::LOW)
+                    subIndex->setLowLimit(lowLimit);
+
+                if (flagLimit & SubIndex::Limit::HIGH)
+                    subIndex->setHighLimit(highLimit);
+
                 index->addSubIndex(subIndex);
                 break;
             }
@@ -160,9 +179,16 @@ OD *DcfParser::parse(const QString &path) const
                 subIndex->setAccessType(accessType);
                 subIndex->setName(parameterName);
                 subIndex->setData(data);
+                subIndex->setFlagLimit(flagLimit);
+
+                if (flagLimit & SubIndex::Limit::LOW)
+                    subIndex->setLowLimit(lowLimit);
+
+                if (flagLimit & SubIndex::Limit::HIGH)
+                    subIndex->setHighLimit(highLimit);
+
                 index->addSubIndex(subIndex);
             }
-
             od->addIndex(index);
         }
     }
@@ -271,4 +297,14 @@ uint8_t DcfParser::readPdoMapping(const QSettings &dcf) const
         return SubIndex::Access::RPDO;
 
     return SubIndex::Access::TPDO + SubIndex::Access::RPDO;
+}
+
+QVariant DcfParser::readLowLimit(const QSettings &dcf) const
+{
+    return QVariant(dcf.value("LowLimit"));
+}
+
+QVariant DcfParser::readHighLimit(const QSettings &dcf) const
+{
+    return QVariant(dcf.value("HighLimit"));
 }

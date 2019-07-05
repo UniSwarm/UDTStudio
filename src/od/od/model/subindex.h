@@ -41,6 +41,12 @@ public:
          RPDO = 0x08
      };
 
+     enum Limit
+     {
+         LOW = 0x01,
+         HIGH = 0x02
+     };
+
     uint8_t accessType() const;
     void setAccessType(const uint8_t &accessType);
 
@@ -54,11 +60,24 @@ public:
     DataStorage &data();
     void setData(const DataStorage &data);
 
+    QVariant lowLimit() const;
+    void setLowLimit(const QVariant &lowLimit);
+
+    QVariant highLimit() const;
+    void setHighLimit(const QVariant &highLimit);
+
+    uint8_t flagLimit() const;
+    void setFlagLimit(const uint8_t &flagLimit);
+
 protected:
     uint8_t _accessType;
     uint8_t _subIndex;
     QString _name;
     DataStorage _data;
+
+    uint8_t _flagLimit;
+    QVariant _lowLimit;
+    QVariant _highLimit;
 };
 
 #endif // SUBINDEX_H

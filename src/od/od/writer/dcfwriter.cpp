@@ -158,6 +158,7 @@ void DcfWriter::writeIndex(Index *index, QTextStream &file) const
     file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
     file << "DefaultValue=" << dataToString(subIndex->data(), base) << "\n";
     file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\n";
+    writeLimit(subIndex, file);
     file << "\n";
 }
 
@@ -180,6 +181,7 @@ void DcfWriter::writeRecord(Index *index, QTextStream &file) const
         file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
         file << "DefaultValue=" << dataToString(subIndex->data(), base) << "\n";
         file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\n";
+        writeLimit(subIndex, file);
         file << "\n";
     }
 }
@@ -187,6 +189,17 @@ void DcfWriter::writeRecord(Index *index, QTextStream &file) const
 void DcfWriter::writeArray(Index *index, QTextStream &file) const
 {
     writeRecord(index, file);
+}
+
+void DcfWriter::writeLimit(SubIndex *subIndex, QTextStream &file) const
+{
+    uint8_t flagLimit = subIndex->flagLimit();
+
+    if ((flagLimit & SubIndex::Limit::LOW) == SubIndex::Limit::LOW)
+        file << "LowLimit=" << subIndex->lowLimit().toString() << "\n";
+
+    if ((flagLimit & SubIndex::Limit::HIGH) == SubIndex::Limit::HIGH)
+        file << "HighLimit=" << subIndex->highLimit().toString() << "\n";
 }
 
 QString DcfWriter::valueToString(int value, int base) const
