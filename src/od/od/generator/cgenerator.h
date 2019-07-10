@@ -53,6 +53,7 @@ private:
     void writeOdCompletionC(Index *index, QTextStream &cFile) const;
     void writeCharLineC(SubIndex *subIndex, QTextStream &cFile) const;
     void writeInitRamC(QList<Index *> indexes, QTextStream &cFile) const;
+    void writeDefineH(Index *index, QTextStream &hFile) const;
 };
 
 #endif // CGENERATOR_H

@@ -99,6 +99,12 @@ void CGenerator::generateH(OD *od, const QString &dir) const
     out << "extern const OD_entry_t OD[OD_NB_ELEMENTS];" << "\n";
     out << "extern struct sOD_RAM OD_RAM;" << "\n";
     out << "\n";
+
+    foreach (Index *index, indexes)
+    {
+        writeDefineH(index, out);
+    }
+
     out << "// ============== function ==================" << "\n";
     out << "void od_initCommIndexes(void);" << "\n";
     out << "void od_initAppIndexes(void);" << "\n";
@@ -592,3 +598,9 @@ void CGenerator::writeInitRamC(QList<Index *> indexes, QTextStream &cFile) const
         lastOT = index->objectType();
     }
 }
+
+void CGenerator::writeDefineH(Index *index, QTextStream &hFile) const
+{
+    hFile << "#define " << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
+    hFile << "#define " << "OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
+    hFile << "\n";}
