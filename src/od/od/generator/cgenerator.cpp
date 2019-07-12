@@ -63,7 +63,7 @@ void CGenerator::generateH(OD *od, const QString &dir) const
     out << "#ifndef OD_DATA_H" << "\n";
     out << "#define OD_DATA_H" << "\n";
     out << "\n";
-    out << "#include \"sdo.h\"" << "\n";
+    out << "#include \"od.h\"" << "\n";
     out << "\n";
     out << "// == Number of entries in object dictionary ==" << "\n";
     out << "#define OD_NB_ELEMENTS " << od->indexCount() << "\n";
