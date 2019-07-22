@@ -23,14 +23,14 @@
 
 #include <QString>
 
-#include "model/od.h"
+#include "model/devicemodel.h"
 
 class OD_EXPORT Parser
 {
 public:
     Parser();
 
-    virtual OD *parse(const QString &path) const = 0;
+    virtual DeviceModel *parse(const QString &path) const = 0;
 
     static Parser *getParser(const QString &type);
 };

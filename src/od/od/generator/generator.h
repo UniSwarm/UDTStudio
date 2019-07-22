@@ -23,14 +23,14 @@
 
 #include <QString>
 
-#include "model/od.h"
+#include "model/deviceconfiguration.h"
 
 class OD_EXPORT Generator
 {
 public:
     Generator();
 
-    virtual void generate(OD *od, const QString &dir) const = 0;
+    virtual void generate(DeviceModel *od, const QString &dir) const = 0;
 
     static Generator *getGenerator(const QString &type);
 };

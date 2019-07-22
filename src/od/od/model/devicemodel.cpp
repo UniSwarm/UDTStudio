@@ -7,32 +7,31 @@ DeviceModel::DeviceModel()
 
 DeviceModel::~DeviceModel()
 {
-    qDeleteAll(_fileInfos);
-    _fileInfos.clear();
-
-    qDeleteAll(_dummyUsages);
-    _dummyUsages.clear();
-
     qDeleteAll(_indexes);
     _indexes.clear();
 }
 
-QMap<QString, QString *> DeviceModel::fileInfos() const
+QMap<QString, QString> DeviceModel::fileInfos() const
 {
     return _fileInfos;
 }
 
-void DeviceModel::setFileInfos(const QMap<QString, QString *> &fileInfos)
+void DeviceModel::setFileInfos(const QMap<QString, QString> &fileInfos)
 {
     _fileInfos = fileInfos;
 }
 
-QMap<QString, QString *> DeviceModel::dummyUsages() const
+void DeviceModel::setFileInfo(const QString &key, const QString &value)
+{
+    _fileInfos.insert(key, value);
+}
+
+QMap<QString, QString> DeviceModel::dummyUsages() const
 {
     return _dummyUsages;
 }
 
-void DeviceModel::setDummyUsages(const QMap<QString, QString *> &dummyUsages)
+void DeviceModel::setDummyUsages(const QMap<QString, QString> &dummyUsages)
 {
     _dummyUsages = dummyUsages;
 }
@@ -42,7 +41,17 @@ QMap<uint16_t, Index *> DeviceModel::indexes() const
     return _indexes;
 }
 
-void DeviceModel::setIndexes(const QMap<uint16_t, Index *> &indexes)
+Index *DeviceModel::index(const uint16_t &index) const
 {
-    _indexes = indexes;
+    return _indexes.value(index);
+}
+
+void DeviceModel::addIndex(Index *index)
+{
+    _indexes.insert(index->index(), index);
+}
+
+int DeviceModel::indexCount() const
+{
+    return _indexes.count();
 }

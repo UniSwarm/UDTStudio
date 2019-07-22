@@ -3,7 +3,7 @@
 #include <QFileInfo>
 
 #include <stdint.h>
-#include "model/od.h"
+#include "model/devicemodel.h"
 #include "parser/dcfparser.h"
 #include "generator/cgenerator.h"
 #include "writer/dcfwriter.h"
@@ -46,17 +46,17 @@ int main(int argc, char *argv[])
     if (outDirectory.isEmpty())
         outDirectory = QFileInfo(file).path() + ".lib";
 
-    OD *od;
+    DeviceModel *od;
     QString path(file);
 
     DcfParser parser;
     CGenerator generator;
-    DcfWriter writer;
+//    DcfWriter writer;
 
 
     od = parser.parse(path);
     generator.generate(od, outDirectory);
-    writer.write(od, outDirectory);
+//    writer.write(od, outDirectory);
     delete od;
 
     return 0;

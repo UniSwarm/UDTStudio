@@ -13,18 +13,21 @@ public:
     DeviceModel();
     ~DeviceModel();
 
-    QMap<QString, QString *> fileInfos() const;
-    void setFileInfos(const QMap<QString, QString *> &fileInfos);
+    QMap<QString, QString> fileInfos() const;
+    void setFileInfos(const QMap<QString, QString> &fileInfos);
+    void setFileInfo(const QString &key, const QString &value);
 
-    QMap<QString, QString *> dummyUsages() const;
-    void setDummyUsages(const QMap<QString, QString *> &dummyUsages);
+    QMap<QString, QString> dummyUsages() const;
+    void setDummyUsages(const QMap<QString, QString> &dummyUsages);
 
     QMap<uint16_t, Index *> indexes() const;
-    void setIndexes(const QMap<uint16_t, Index *> &indexes);
+    Index *index(const uint16_t &index) const;
+    void addIndex(Index *index);
+    int indexCount() const;
 
 private:
-    QMap<QString, QString *> _fileInfos;
-    QMap<QString, QString *> _dummyUsages;
+    QMap<QString, QString> _fileInfos;
+    QMap<QString, QString> _dummyUsages;
     QMap<uint16_t, Index *> _indexes;
 };
 

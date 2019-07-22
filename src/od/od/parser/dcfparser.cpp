@@ -36,7 +36,7 @@ DcfParser::DcfParser()
  * @param input file path
  * @return object dictionary
  */
-OD *DcfParser::parse(const QString &path) const
+DeviceModel *DcfParser::parse(const QString &path) const
 {
     bool ok;
     bool isSubIndex;
@@ -52,8 +52,8 @@ OD *DcfParser::parse(const QString &path) const
     QVariant highLimit;
     uint8_t flagLimit;
 
-    OD *od;
-    od = new OD;
+    DeviceModel *od;
+    od = new DeviceConfiguration;
 
     QSettings dcf(path, QSettings::IniFormat);
     QRegularExpression reSub("([0-Z]{4})(sub)([0-9]+)");
@@ -273,13 +273,11 @@ DataStorage DcfParser::readData(const QSettings &dcf) const
     return data;
 }
 
-void DcfParser::readFileInfo(OD *od, const QSettings &dcf) const
+void DcfParser::readFileInfo(DeviceModel *od, const QSettings &dcf) const
 {
-    QMap<QString, QString> fileInfos;
-
     foreach (const QString &key, dcf.allKeys())
     {
-        od->setFileInfo(key, dcf.value(key).toString());
+       od->setFileInfo(key, dcf.value(key).toString());
     }
 }
 

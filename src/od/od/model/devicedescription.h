@@ -13,11 +13,11 @@ public:
     DeviceDescription();
     ~DeviceDescription();
 
-    QMap<QString, QString *> deviceInfos() const;
-    void setDeviceInfos(const QMap<QString, QString *> &deviceInfos);
+    QMap<QString, QString> deviceInfos() const;
+    void setDeviceInfos(const QMap<QString, QString> &deviceInfos);
 
 private:
-    QMap<QString, QString *> _deviceInfos;
+    QMap<QString, QString> _deviceInfos;
 };
 
 #endif // DEVICEDESCRIPTION_H
