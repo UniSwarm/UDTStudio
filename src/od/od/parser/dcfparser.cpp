@@ -192,6 +192,7 @@ DeviceModel *DcfParser::parse(const QString &path) const
             od->addIndex(index);
         }
     }
+
     return od;
 }
 
@@ -205,70 +206,9 @@ DataStorage DcfParser::readData(const QSettings &dcf) const
     bool ok;
     uint16_t dataType = (uint16_t)dcf.value("DataType").toString().toShort(&ok, 16);
 
-    QString dataString = dcf.value("DefaultValue").toString();
-    uint8_t base = 10;
-    if (dataString.startsWith("0x", Qt::CaseInsensitive))
-        base = 16;
-
     DataStorage data;
     data.setDataType(dataType);
-    switch(dataType)
-    {
-    case DataStorage::Type::BOOLEAN:
-        if (dataString.toShort(&ok, base))
-            data.setValue(true);
-        else
-            data.setValue(false);
-        break;
-
-    case DataStorage::Type::INTEGER8:
-        data.setValue(dataString.toShort(&ok, base));
-        break;
-
-    case DataStorage::Type::INTEGER16:
-        data.setValue(dataString.toShort(&ok, base));
-        break;
-
-    case DataStorage::Type::INTEGER32:
-        data.setValue(dataString.toInt(&ok, base));
-        break;
-
-    case DataStorage::Type::INTEGER64:
-        data.setValue(dataString.toInt(&ok, base));
-        break;
-
-    case DataStorage::Type::UNSIGNED8:
-        data.setValue(dataString.toInt(&ok, base));
-        break;
-
-    case DataStorage::Type::UNSIGNED16:
-        data.setValue(dataString.toUShort(&ok, base));
-        break;
-
-    case DataStorage::Type::UNSIGNED32:
-        data.setValue(dataString.toUInt(&ok, base));
-        break;
-
-    case DataStorage::Type::UNSIGNED64:
-        data.setValue(dataString.toUInt(&ok, base));
-        break;
-
-    case DataStorage::Type::REAL32:
-        data.setValue(dataString.toFloat(&ok));
-        break;
-
-    case DataStorage::Type::REAL64:
-        data.setValue(dataString.toDouble(&ok));
-        break;
-
-    case DataStorage::Type::VISIBLE_STRING:
-        data.setValue(dataString);
-        break;
-
-    case DataStorage::Type::OCTET_STRING:
-        data.setValue(dataString);
-        break;
-    }
+    data.setValue(dcf.value("DefaultValue"));
 
     return data;
 }

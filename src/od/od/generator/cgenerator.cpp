@@ -304,53 +304,13 @@ QString CGenerator::dataToString(const SubIndex *subIndex) const
 
     switch (subIndex->data().dataType())
     {
-    case DataStorage::Type::INTEGER8:
-        data += "0x" + QString::number(subIndex->data().toInt8(), 16).right(2).toUpper();
-        break;
-
-    case DataStorage::Type::INTEGER16:
-        data = "0x" + QString::number(subIndex->data().toInt16(), 16).right(4).toUpper();
-        break;
-
-    case DataStorage::Type::INTEGER32:
-        data = "0x" + QString::number(subIndex->data().toInt32(), 16).right(8).toUpper();
-        break;
-
-    case DataStorage::Type::INTEGER64:
-        data = "0x" + QString::number(subIndex->data().toInt64(), 16).right(16).toUpper();
-        break;
-
-    case DataStorage::Type::UNSIGNED8:
-        data = "0x" + QString::number(subIndex->data().toUInt8(), 16).toUpper();
-        break;
-
-    case DataStorage::Type::UNSIGNED16:
-        data = "0x" + QString::number(subIndex->data().toUInt16(), 16).toUpper();
-        break;
-
-    case DataStorage::Type::UNSIGNED32:
-        data = "0x" + QString::number(subIndex->data().toUInt32(), 16).toUpper();
-        break;
-
-    case DataStorage::Type::UNSIGNED64:
-        data = "0x" + QString::number(subIndex->data().toUInt64(), 16).toUpper();
-        break;
-
-    case DataStorage::Type::REAL32:
-        data = "0x" + QString::number(subIndex->data().toFloat32());
-        break;
-
-    case DataStorage::Type::REAL64:
-        data = "0x" + QString::number(subIndex->data().toFloat64());
-        break;
-
     case DataStorage::Type::OCTET_STRING:
     case DataStorage::Type::VISIBLE_STRING:
         data = stringNameToString(subIndex);
         break;
 
     default:
-        data = "0x0";
+        data = subIndex->data().value().toString();
     }
 
     return data;
