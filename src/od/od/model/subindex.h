@@ -69,6 +69,9 @@ public:
     uint8_t flagLimit() const;
     void setFlagLimit(const uint8_t &flagLimit);
 
+    bool hasNodeId() const;
+    void setHasNodeId(bool hasNodeId);
+
 protected:
     uint8_t _accessType;
     uint8_t _subIndex;
@@ -78,6 +81,8 @@ protected:
     uint8_t _flagLimit;
     QVariant _lowLimit;
     QVariant _highLimit;
+
+    bool _hasNodeId;
 };
 
 #endif // SUBINDEX_H

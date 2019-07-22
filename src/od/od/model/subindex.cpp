@@ -32,6 +32,7 @@ SubIndex::SubIndex(const uint8_t &subIndex)
     _subIndex = subIndex;
     _flagLimit = 0;
     _accessType = 0;
+    _hasNodeId = false;
 }
 
 SubIndex::~SubIndex()
@@ -112,4 +113,14 @@ uint8_t SubIndex::flagLimit() const
 void SubIndex::setFlagLimit(const uint8_t &flagLimit)
 {
     _flagLimit = flagLimit;
+}
+
+bool SubIndex::hasNodeId() const
+{
+    return _hasNodeId;
+}
+
+void SubIndex::setHasNodeId(bool hasNodeId)
+{
+    _hasNodeId = hasNodeId;
 }
