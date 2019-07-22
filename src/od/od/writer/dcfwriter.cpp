@@ -32,7 +32,7 @@ bool indexLessThan(const Index *i1, const Index *i2)
 }
 
 
-void DcfWriter::write(OD *od, const QString &dir) const
+void DcfWriter::write(DeviceModel *od, const QString &dir) const
 {
     QFile dcfFile(dir + "/out.dcf");
 

@@ -23,14 +23,14 @@
 
 #include <QString>
 
-#include "model/od.h"
+#include "model/devicemodel.h"
 
 class OD_EXPORT Writer
 {
 public:
     Writer();
 
-    virtual void write(OD *od, const QString &dir) const = 0;
+    virtual void write(DeviceModel *od, const QString &dir) const = 0;
 
     static Writer *getWriter(const QString &type);
 };

@@ -33,7 +33,7 @@ class OD_EXPORT DcfWriter : public Writer
 public:
     DcfWriter();
 
-    void write(OD *od, const QString &dir) const;
+    void write(DeviceModel *od, const QString &dir) const;
 
 protected:
     void writeFileInfo(QMap <QString, QString> fileInfos, QTextStream &file) const;

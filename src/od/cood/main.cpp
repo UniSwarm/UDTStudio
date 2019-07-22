@@ -51,12 +51,12 @@ int main(int argc, char *argv[])
 
     DcfParser parser;
     CGenerator generator;
-//    DcfWriter writer;
+    DcfWriter writer;
 
 
     od = parser.parse(path);
     generator.generate(od, outDirectory);
-//    writer.write(od, outDirectory);
+    writer.write(od, outDirectory);
     delete od;
 
     return 0;
