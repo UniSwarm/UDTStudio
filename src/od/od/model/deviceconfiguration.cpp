@@ -29,7 +29,11 @@ DeviceConfiguration *DeviceConfiguration::fromDeviceDescription(const DeviceDesc
     deviceConfiguration->setFileInfo("LastEDS", lastName);
     deviceConfiguration->setFileInfo("FileName", lastName.replace(".eds", ".dcf"));
 
+    deviceConfiguration->setDeviceComissioning("NodeID", QString::number(nodeId));
+    deviceConfiguration->setDeviceComissioning("NodeName", lastName.remove(".dcf"));
+
     deviceConfiguration->setDummyUsages(deviceDescription->dummyUsages());
+
 
     deviceConfiguration->setIndexes(deviceDescription->indexes());
     foreach (Index *index, deviceConfiguration->indexes())
