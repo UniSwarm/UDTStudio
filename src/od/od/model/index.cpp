@@ -34,6 +34,17 @@ Index::Index(const uint16_t &index)
     _objectType = VAR;
 }
 
+Index::Index(const Index *other)
+{
+    _index = other->index();
+    _maxSubIndex = other->maxSubIndex();
+    _objectType = other->objectType();
+    _name = other->name();
+
+    foreach (SubIndex *subIndex, other->_subIndexes)
+        _subIndexes.insert(subIndex->subIndex(), new SubIndex(subIndex));
+}
+
 /**
  * @brief destuctor
  */

@@ -30,6 +30,7 @@ class OD_EXPORT SubIndex
 {
 public:
     SubIndex(const uint8_t &subIndex);
+    SubIndex(const SubIndex *subIndex);
     ~SubIndex();
 
     // ============== Access type =================

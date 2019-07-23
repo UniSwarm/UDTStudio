@@ -62,7 +62,9 @@ DeviceConfiguration *DeviceConfiguration::fromDeviceDescription(const DeviceDesc
     deviceConfiguration->setNodeId(QString::number(nodeId));
     deviceConfiguration->setDummyUsages(deviceDescription->dummyUsages());
 
-    deviceConfiguration->setIndexes(deviceDescription->indexes());
+    foreach (Index *index, deviceDescription->indexes())
+        deviceConfiguration->addIndex(new Index(index));
+
     foreach (Index *index, deviceConfiguration->indexes())
     {
         foreach (SubIndex *subIndex, index->subIndexes())

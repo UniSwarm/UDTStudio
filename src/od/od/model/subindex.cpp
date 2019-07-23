@@ -35,6 +35,20 @@ SubIndex::SubIndex(const uint8_t &subIndex)
     _hasNodeId = false;
 }
 
+SubIndex::SubIndex(const SubIndex *subIndex)
+{
+    _accessType = subIndex->accessType();
+    _subIndex = subIndex->subIndex();
+    _name = subIndex->name();
+    _data = subIndex->data();
+
+    _flagLimit = subIndex->flagLimit();
+    _lowLimit = subIndex->lowLimit();
+    _highLimit = subIndex->highLimit();
+
+    _hasNodeId = subIndex->hasNodeId();
+}
+
 SubIndex::~SubIndex()
 {
 

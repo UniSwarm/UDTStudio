@@ -209,7 +209,7 @@ DeviceModel *DeviceModelParser::parse(const QString &path, const QString &type) 
 
             if (objectType == Index::Object::VAR)
             {
-                subIndex = new SubIndex(0);
+                subIndex = new SubIndex(static_cast<uint8_t>(0));
                 subIndex->setAccessType(accessType);
                 subIndex->setName(parameterName);
                 subIndex->setData(data);
