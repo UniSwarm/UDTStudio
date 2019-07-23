@@ -26,7 +26,7 @@
 #include <QString>
 #include <QTextStream>
 
-#include "model/deviceconfiguration.h"
+#include "model/devicemodel.h"
 
 class OD_EXPORT CGenerator : public Generator
 {

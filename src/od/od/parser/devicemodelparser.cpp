@@ -249,7 +249,10 @@ DataStorage DeviceModelParser::readData(const QSettings &file, bool *nodeId) con
     DataStorage data;
     data.setDataType(dataType);
 
-    if (file.value("DefaultValue").toString().startsWith("$NODEID+"))
+    if (file.value("DefaultValue").isNull())
+        data.setValue(0);
+
+    else if (file.value("DefaultValue").toString().startsWith("$NODEID+"))
     {
         data.setValue(file.value("DefaultValue").toString().mid(8));
         *nodeId = true;
