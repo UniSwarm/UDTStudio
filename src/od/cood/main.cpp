@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 #include "model/devicemodel.h"
-#include "parser/dcfparser.h"
+#include "parser/devicemodelparser.h"
 #include "generator/cgenerator.h"
 #include "writer/dcfwriter.h"
 
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 
     QString path(file);
 
-    DcfParser parser;
+    DeviceModelParser parser;
     CGenerator generator;
     DcfWriter writer;
 

@@ -12,7 +12,7 @@ HEADERS += \
     $$PWD/model/subindex.h \
     $$PWD/model/od.h \
     $$PWD/model/datastorage.h \
-    $$PWD/parser/dcfparser.h \
+    $$PWD/parser/devicemodelparser.h \
     $$PWD/generator/generator.h \
     $$PWD/generator/cgenerator.h \
     $$PWD/od_global.h \
@@ -28,7 +28,7 @@ SOURCES += \
     $$PWD/model/subindex.cpp \
     $$PWD/model/od.cpp \
     $$PWD/model/datastorage.cpp \
-    $$PWD/parser/dcfparser.cpp \
+    $$PWD/parser/devicemodelparser.cpp \
     $$PWD/generator/generator.cpp \
     $$PWD/generator/cgenerator.cpp \
     $$PWD/parser/parser.cpp \

@@ -16,8 +16,8 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef DCFPARSER_H
-#define DCFPARSER_H
+#ifndef DEVICEMODELPARSER_H
+#define DEVICEMODELPARSER_H
 
 #include "od_global.h"
 
@@ -30,22 +30,22 @@
 #include "model/devicedescription.h"
 #include "model/deviceconfiguration.h"
 
-class OD_EXPORT DcfParser : public Parser
+class OD_EXPORT DeviceModelParser : public Parser
 {
 public:
-    DcfParser();
+    DeviceModelParser();
 
     DeviceModel *parse(const QString &path, const QString &type) const;
 
 private:
-    DataStorage readData(const QSettings &dcf, bool *nodeId) const;
-    void readFileInfo(DeviceModel *od, const QSettings &dcf) const;
-    void readDeviceInfo(DeviceDescription *od, const QSettings &dcf) const;
-    void readDeviceComissioning(DeviceConfiguration *od, const QSettings &dcf) const;
-    uint8_t readPdoMapping(const QSettings &dcf) const;
-    QVariant readLowLimit(const QSettings &dcf) const;
-    QVariant readHighLimit(const QSettings &dcf) const;
+    DataStorage readData(const QSettings &file, bool *nodeId) const;
+    void readFileInfo(DeviceModel *od, const QSettings &file) const;
+    void readDeviceInfo(DeviceDescription *od, const QSettings &file) const;
+    void readDeviceComissioning(DeviceConfiguration *od, const QSettings &file) const;
+    uint8_t readPdoMapping(const QSettings &file) const;
+    QVariant readLowLimit(const QSettings &file) const;
+    QVariant readHighLimit(const QSettings &file) const;
 
 };
 
-#endif // DCFPARSER_H
+#endif // DEVICEMODELPARSER_H

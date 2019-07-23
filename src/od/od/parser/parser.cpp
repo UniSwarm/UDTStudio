@@ -18,7 +18,7 @@
 
 #include "parser.h"
 
-#include "dcfparser.h"
+#include "devicemodelparser.h"
 
 Parser::Parser()
 {
@@ -27,7 +27,7 @@ Parser::Parser()
 
 Parser *Parser::getParser(const QString &type)
 {
-    if (type == "dcf")
-        return new DcfParser;
+    if (type == "dcf" || type == "eds")
+        return new DeviceModelParser;
     return nullptr;
 }
