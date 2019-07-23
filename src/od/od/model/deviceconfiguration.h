@@ -13,11 +13,11 @@ public:
     DeviceConfiguration();
     ~DeviceConfiguration();
 
-    QMap<QString, QString> deviceCommissioning() const;
-    void setDeviceCommissioning(const QMap<QString, QString> &deviceCommissioning);
+    QMap<QString, QString> deviceComissionings() const;
+    void setDeviceComissioning(const QString &key, const QString &value);
 
 private:
-    QMap<QString, QString> _deviceCommissioning;
+    QMap<QString, QString> _deviceComissionings;
 };
 
 #endif // DEVICECONFIGURATION_H

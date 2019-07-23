@@ -27,6 +27,7 @@
 #include <QVariant>
 
 #include "parser.h"
+#include "model/devicedescription.h"
 #include "model/deviceconfiguration.h"
 
 class OD_EXPORT DcfParser : public Parser
@@ -34,11 +35,13 @@ class OD_EXPORT DcfParser : public Parser
 public:
     DcfParser();
 
-    DeviceModel *parse(const QString &path) const;
+    DeviceModel *parse(const QString &path, const QString &type) const;
 
 private:
-    DataStorage readData(const QSettings &dcf) const;
+    DataStorage readData(const QSettings &dcf, bool *nodeId) const;
     void readFileInfo(DeviceModel *od, const QSettings &dcf) const;
+    void readDeviceInfo(DeviceDescription *od, const QSettings &dcf) const;
+    void readDeviceComissioning(DeviceConfiguration *od, const QSettings &dcf) const;
     uint8_t readPdoMapping(const QSettings &dcf) const;
     QVariant readLowLimit(const QSettings &dcf) const;
     QVariant readHighLimit(const QSettings &dcf) const;

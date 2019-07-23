@@ -10,12 +10,12 @@ DeviceConfiguration::~DeviceConfiguration()
 
 }
 
-QMap<QString, QString> DeviceConfiguration::deviceCommissioning() const
+QMap<QString, QString> DeviceConfiguration::deviceComissionings() const
 {
-    return _deviceCommissioning;
+    return _deviceComissionings;
 }
 
-void DeviceConfiguration::setDeviceCommissioning(const QMap<QString, QString> &deviceCommissioning)
+void DeviceConfiguration::setDeviceComissioning(const QString &key, const QString &value)
 {
-    _deviceCommissioning = deviceCommissioning;
+    _deviceComissionings.insert(key, value);
 }

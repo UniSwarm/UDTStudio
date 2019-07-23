@@ -19,3 +19,8 @@ void DeviceDescription::setDeviceInfos(const QMap<QString, QString> &deviceInfos
 {
     _deviceInfos = deviceInfos;
 }
+
+void DeviceDescription::setDeviceInfo(const QString &key, const QString &value)
+{
+    _deviceInfos.insert(key, value);
+}

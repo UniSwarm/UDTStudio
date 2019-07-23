@@ -30,7 +30,7 @@ class OD_EXPORT Parser
 public:
     Parser();
 
-    virtual DeviceModel *parse(const QString &path) const = 0;
+    virtual DeviceModel *parse(const QString &path, const QString &type) const = 0;
 
     static Parser *getParser(const QString &type);
 };

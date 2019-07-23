@@ -20,6 +20,9 @@
 
 #include <QRegularExpression>
 
+#include "model/deviceconfiguration.h"
+#include "model/devicedescription.h"
+
 //TODO handle fields CompactSubObj and ObjFlags (see 306_1)
 //TODO handle octal format (0) (see 306_1)
 
@@ -36,10 +39,11 @@ DcfParser::DcfParser()
  * @param input file path
  * @return object dictionary
  */
-DeviceModel *DcfParser::parse(const QString &path) const
+DeviceModel *DcfParser::parse(const QString &path, const QString &type) const
 {
     bool ok;
     bool isSubIndex;
+    bool hasNodeId;
     uint16_t indexNumber;
     uint8_t accessType;
     uint8_t objectType;
@@ -53,7 +57,14 @@ DeviceModel *DcfParser::parse(const QString &path) const
     uint8_t flagLimit;
 
     DeviceModel *od;
-    od = new DeviceConfiguration;
+    if (type == "dcf")
+        od = new DeviceConfiguration;
+
+    else if (type == "eds")
+        od = new DeviceDescription;
+
+    else
+        return nullptr;
 
     QSettings dcf(path, QSettings::IniFormat);
     QRegularExpression reSub("([0-Z]{4})(sub)([0-9]+)");
@@ -62,6 +73,7 @@ DeviceModel *DcfParser::parse(const QString &path) const
     foreach (const QString &group, dcf.childGroups())
     {
         isSubIndex = false;
+        hasNodeId = false;
         accessType = 0;
         objectType = 0;
         subNumber = 0;
@@ -77,11 +89,13 @@ DeviceModel *DcfParser::parse(const QString &path) const
             isSubIndex = true;
             subNumber = (uint8_t)matchSub.captured(3).toShort(&ok, 10);
         }
+
         else if (matchIndex.hasMatch())
         {
             QString matchedIndex = matchIndex.captured(0);
             indexNumber = (uint16_t)matchedIndex.toInt(&ok, 16);
         }
+
         else if (group == "FileInfo")
         {
             dcf.beginGroup(group);
@@ -89,6 +103,25 @@ DeviceModel *DcfParser::parse(const QString &path) const
             dcf.endGroup();
             continue;
         }
+
+        // field only in .eds files
+        else if (group == "DeviceInfo" && type == "eds")
+        {
+            dcf.beginGroup(group);
+            readDeviceInfo((DeviceDescription*)od, dcf);
+            dcf.endGroup();
+            continue;
+        }
+
+        // field only in .dcf files
+        else if (group == "DeviceComissioning" && type == "dcf")
+        {
+            dcf.beginGroup(group);
+            readDeviceComissioning((DeviceConfiguration*)od, dcf);
+            dcf.endGroup();
+            continue;
+        }
+
         else
             continue;
 
@@ -141,7 +174,7 @@ DeviceModel *DcfParser::parse(const QString &path) const
             }
         }
 
-        DataStorage data = readData(dcf);
+        DataStorage data = readData(dcf, &hasNodeId);
         dcf.endGroup();
 
         if (isSubIndex)
@@ -155,6 +188,7 @@ DeviceModel *DcfParser::parse(const QString &path) const
                 subIndex->setName(parameterName);
                 subIndex->setData(data);
                 subIndex->setFlagLimit(flagLimit);
+                subIndex->setHasNodeId(hasNodeId);
 
                 if (flagLimit & SubIndex::Limit::LOW)
                     subIndex->setLowLimit(lowLimit);
@@ -180,6 +214,7 @@ DeviceModel *DcfParser::parse(const QString &path) const
                 subIndex->setName(parameterName);
                 subIndex->setData(data);
                 subIndex->setFlagLimit(flagLimit);
+                subIndex->setHasNodeId(hasNodeId);
 
                 if (flagLimit & SubIndex::Limit::LOW)
                     subIndex->setLowLimit(lowLimit);
@@ -201,14 +236,29 @@ DeviceModel *DcfParser::parse(const QString &path) const
  * @param dcf file
  * @return data
  */
-DataStorage DcfParser::readData(const QSettings &dcf) const
+DataStorage DcfParser::readData(const QSettings &dcf, bool *nodeId) const
 {
+    uint8_t base = 10;
+    QString value = dcf.value("DataType").toString();
+    if ( value.startsWith("0x"))
+        base = 16;
+
     bool ok;
-    uint16_t dataType = (uint16_t)dcf.value("DataType").toString().toShort(&ok, 16);
+    uint8_t dataType = (uint8_t)value.toUInt(&ok, base);
 
     DataStorage data;
     data.setDataType(dataType);
-    data.setValue(dcf.value("DefaultValue"));
+
+    if (dcf.value("DefaultValue").toString().startsWith("$NODEID+"))
+    {
+        data.setValue(dcf.value("DefaultValue").toString().mid(8));
+        *nodeId = true;
+    }
+
+    else
+    {
+        data.setValue(dcf.value("DefaultValue"));
+    }
 
     return data;
 }
@@ -218,6 +268,22 @@ void DcfParser::readFileInfo(DeviceModel *od, const QSettings &dcf) const
     foreach (const QString &key, dcf.allKeys())
     {
        od->setFileInfo(key, dcf.value(key).toString());
+    }
+}
+
+void DcfParser::readDeviceInfo(DeviceDescription *od, const QSettings &dcf) const
+{
+    foreach (const QString &key, dcf.allKeys())
+    {
+       od->setDeviceInfo(key, dcf.value(key).toString());
+    }
+}
+
+void DcfParser::readDeviceComissioning(DeviceConfiguration *od, const QSettings &dcf) const
+{
+    foreach (const QString &key, dcf.allKeys())
+    {
+       od->setDeviceComissioning(key, dcf.value(key).toString());
     }
 }
 

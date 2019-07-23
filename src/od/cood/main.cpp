@@ -46,15 +46,17 @@ int main(int argc, char *argv[])
     if (outDirectory.isEmpty())
         outDirectory = QFileInfo(file).path() + ".lib";
 
-    DeviceModel *od;
     QString path(file);
 
     DcfParser parser;
     CGenerator generator;
     DcfWriter writer;
 
+//    DeviceDescription *od;
+//    od = (DeviceDescription*)parser.parse(path, "eds");
 
-    od = parser.parse(path);
+    DeviceConfiguration *od;
+    od = (DeviceConfiguration*)parser.parse(path, "dcf");
     generator.generate(od, outDirectory);
     writer.write(od, outDirectory);
     delete od;
