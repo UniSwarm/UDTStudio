@@ -20,6 +20,36 @@ void DeviceConfiguration::setDeviceComissioning(const QString &key, const QStrin
     _deviceComissionings.insert(key, value);
 }
 
+void DeviceConfiguration::setNodeId(const QString &nodeName)
+{
+    _deviceComissionings.insert("NodeID", nodeName);
+}
+
+void DeviceConfiguration::setNodeName(const QString &nodeName)
+{
+    _deviceComissionings.insert("NodeName", nodeName);
+}
+
+void DeviceConfiguration::setBaudrate(const QString &baudrate)
+{
+    _deviceComissionings.insert("Baudrate", baudrate);
+}
+
+void DeviceConfiguration::setNetNumber(const QString &netNumber)
+{
+    _deviceComissionings.insert("NetNumber", netNumber);
+}
+
+void DeviceConfiguration::setNetworkName(const QString &networkName)
+{
+    _deviceComissionings.insert("NetworkName", networkName);
+}
+
+void DeviceConfiguration::setLssSerialNumber(const QString &lssSerialNumber)
+{
+    _deviceComissionings.insert("LssSerialNumber", lssSerialNumber);
+}
+
 DeviceConfiguration *DeviceConfiguration::fromDeviceDescription(const DeviceDescription *deviceDescription, uint8_t nodeId)
 {
     DeviceConfiguration *deviceConfiguration = new DeviceConfiguration();
@@ -29,11 +59,8 @@ DeviceConfiguration *DeviceConfiguration::fromDeviceDescription(const DeviceDesc
     deviceConfiguration->setFileInfo("LastEDS", lastName);
     deviceConfiguration->setFileInfo("FileName", lastName.replace(".eds", ".dcf"));
 
-    deviceConfiguration->setDeviceComissioning("NodeID", QString::number(nodeId));
-    deviceConfiguration->setDeviceComissioning("NodeName", lastName.remove(".dcf"));
-
+    deviceConfiguration->setNodeId(QString::number(nodeId));
     deviceConfiguration->setDummyUsages(deviceDescription->dummyUsages());
-
 
     deviceConfiguration->setIndexes(deviceDescription->indexes());
     foreach (Index *index, deviceConfiguration->indexes())

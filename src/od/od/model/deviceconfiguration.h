@@ -15,7 +15,14 @@ public:
     ~DeviceConfiguration();
 
     QMap<QString, QString> deviceComissionings() const;
+
     void setDeviceComissioning(const QString &key, const QString &value);
+    void setNodeId(const QString &nodeName);
+    void setNodeName(const QString &nodeName);
+    void setBaudrate(const QString &baudrate);
+    void setNetNumber(const QString &netNumber);
+    void setNetworkName(const QString &networkName);
+    void setLssSerialNumber(const QString &lssSerialNumber);
 
     static DeviceConfiguration *fromDeviceDescription(const DeviceDescription *deviceDescription, uint8_t nodeId);
 
