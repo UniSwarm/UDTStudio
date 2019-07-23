@@ -30,7 +30,7 @@ class OD_EXPORT Generator
 public:
     Generator();
 
-    virtual void generate(DeviceModel *od, const QString &dir) const = 0;
+    virtual void generate(DeviceConfiguration *od, const QString &dir) const = 0;
 
     static Generator *getGenerator(const QString &type);
 };

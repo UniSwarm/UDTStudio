@@ -52,13 +52,15 @@ int main(int argc, char *argv[])
     CGenerator generator;
     DcfWriter writer;
 
-//    DeviceDescription *od;
-//    od = (DeviceDescription*)parser.parse(path, "eds");
+    DeviceDescription *od;
+    od = (DeviceDescription*)parser.parse(path, "eds");
+    generator.generate(od, outDirectory, 2);
 
-    DeviceConfiguration *od;
-    od = (DeviceConfiguration*)parser.parse(path, "dcf");
-    generator.generate(od, outDirectory);
-    writer.write(od, outDirectory);
+//    DeviceConfiguration *od;
+//    od = (DeviceConfiguration*)parser.parse(path, "dcf");
+//    generator.generate(od, outDirectory);
+
+//    writer.write(od, outDirectory);
     delete od;
 
     return 0;

@@ -55,3 +55,8 @@ int DeviceModel::indexCount() const
 {
     return _indexes.count();
 }
+
+void DeviceModel::setIndexes(const QMap<uint16_t, Index *> &indexes)
+{
+    _indexes = indexes;
+}

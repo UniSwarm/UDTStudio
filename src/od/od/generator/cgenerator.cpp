@@ -37,17 +37,24 @@ CGenerator::CGenerator()
  * @param object dictionary
  * @param output directory path
  */
-void CGenerator::generate(DeviceModel *od, const QString &dir) const
+void CGenerator::generate(DeviceConfiguration *od, const QString &dir) const
 {
     generateH(od, dir);
     generateC(od, dir);
+}
+
+void CGenerator::generate(DeviceDescription *od, const QString &dir, uint8_t nodeId) const
+{
+    DeviceConfiguration *deviceConfiguration;
+    deviceConfiguration = DeviceConfiguration::fromDeviceDescription(od, nodeId);
+    generate(deviceConfiguration, dir);
 }
 
 /**
  * @brief Generate OD.h file
  * @param object dictionary
  */
-void CGenerator::generateH(DeviceModel *od, const QString &dir) const
+void CGenerator::generateH(DeviceConfiguration *od, const QString &dir) const
 {
     QFile hFile(dir + "/od_data.h");
 
@@ -119,7 +126,7 @@ void CGenerator::generateH(DeviceModel *od, const QString &dir) const
  * @brief Generate OD.c file
  * @param object dictionary
  */
-void CGenerator::generateC(DeviceModel *od, const QString &dir) const
+void CGenerator::generateC(DeviceConfiguration *od, const QString &dir) const
 {
     QFile cFile(dir + "/od_data.c");
 

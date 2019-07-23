@@ -24,6 +24,7 @@ public:
     Index *index(const uint16_t &index) const;
     void addIndex(Index *index);
     int indexCount() const;
+    void setIndexes(const QMap<uint16_t, Index *> &indexes);
 
 private:
     QMap<QString, QString> _fileInfos;

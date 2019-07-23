@@ -26,18 +26,20 @@
 #include <QString>
 #include <QTextStream>
 
-#include "model/devicemodel.h"
+#include "model/deviceconfiguration.h"
+#include "model/devicedescription.h"
 
 class OD_EXPORT CGenerator : public Generator
 {
 public:
     CGenerator();
 
-    void generate(DeviceModel *od, const QString &dir) const;
+    void generate(DeviceConfiguration *od, const QString &dir) const;
+    void generate(DeviceDescription *od, const QString &dir, uint8_t nodeId) const;
 
 private:
-    void generateH(DeviceModel *od, const QString &dir) const;
-    void generateC(DeviceModel *od, const QString &dir) const;
+    void generateH(DeviceConfiguration *od, const QString &dir) const;
+    void generateC(DeviceConfiguration *od, const QString &dir) const;
 
     QString typeToString(const uint16_t &type) const;
     QString varNameToString(const QString &name) const;
