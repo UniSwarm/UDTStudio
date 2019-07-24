@@ -23,7 +23,7 @@
 
 #include <QAbstractItemModel>
 
-#include "model/od.h"
+#include "model/devicemodel.h"
 
 class ODItem;
 
@@ -34,7 +34,8 @@ public:
     ODItemModel();
     ~ODItemModel();
 
-    void setOd(OD *od);
+    void setDeviceModel(DeviceModel *deviceModel);
+    DeviceModel *deviceModel() const;
 
     bool editable() const;
     void setEditable(bool editable);
@@ -60,6 +61,7 @@ public:
 
 private:
     ODItem *_root;
+    DeviceModel *_deviceModel;
     bool _editable;
 };
 

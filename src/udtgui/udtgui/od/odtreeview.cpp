@@ -35,9 +35,9 @@ ODTreeView::~ODTreeView()
     delete _odModel;
 }
 
-void ODTreeView::setOd(OD *od)
+void ODTreeView::setDeviceModel(DeviceModel *deviceModel)
 {
-    _odModel->setOd(od);
+    _odModel->setDeviceModel(deviceModel);
     _odModelSorter->setSourceModel(_odModel);
 
     expandToDepth(0);

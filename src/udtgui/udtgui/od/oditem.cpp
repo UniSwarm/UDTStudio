@@ -20,9 +20,9 @@
 
 #include "oditemmodel.h"
 
-ODItem::ODItem(OD *od, ODItem *parent)
+ODItem::ODItem(DeviceModel *od, ODItem *parent)
 {
-    _od = od;
+    _deviceModel = od;
     _index = nullptr;
     _subIndex = nullptr;
     _type = TOD;
@@ -32,7 +32,10 @@ ODItem::ODItem(OD *od, ODItem *parent)
 
 ODItem::ODItem(Index *index, ODItem *parent)
 {
-    _od = nullptr;
+    if (parent->_deviceModel)
+        _deviceModel = parent->_deviceModel;
+    else
+        _deviceModel = nullptr;
     _index = index;
     _subIndex = nullptr;
     _type = TIndex;
@@ -42,7 +45,10 @@ ODItem::ODItem(Index *index, ODItem *parent)
 
 ODItem::ODItem(SubIndex *subIndex, ODItem *parent)
 {
-    _od = nullptr;
+    if (parent->_deviceModel)
+        _deviceModel = parent->_deviceModel;
+    else
+        _deviceModel = nullptr;
     _index = nullptr;
     _subIndex = subIndex;
     _type = TSubIndex;
@@ -60,6 +66,11 @@ ODItem::Type ODItem::type() const
     return _type;
 }
 
+DeviceModel *ODItem::deviceModel() const
+{
+    return _deviceModel;
+}
+
 Index *ODItem::index() const
 {
     return _index;
@@ -75,7 +86,7 @@ int ODItem::rowCount() const
     switch (_type)
     {
     case ODItem::TOD:
-        return _od->indexCount();
+        return _deviceModel->indexCount();
 
     case ODItem::TIndex:
         if (_index->objectType() == Index::VAR)
@@ -102,19 +113,26 @@ QVariant ODItem::data(int column, int role) const
             switch (column)
             {
             case ODItemModel::OdIndex:
-                return QVariant(QLatin1String("0x") + QString::number(index()->index(), 16).toUpper());
+                return QVariant(QLatin1String("0x") + QString::number(_index->index(), 16).toUpper());
             case ODItemModel::Name:
-                return QVariant(index()->name());
+                return QVariant(_index->name());
             case ODItemModel::Type:
-                if (_index->objectType() == Index::VAR && index()->subIndexesCount() == 1)
-                    return QVariant(DataStorage::dataTypeStr(index()->subIndex(0)->data().dataType()));
+                if (_index->objectType() == Index::VAR && _index->subIndexesCount() == 1)
+                    return QVariant(DataStorage::dataTypeStr(_index->subIndex(0)->data().dataType()));
                 else
-                    return QVariant(Index::objectTypeStr(index()->objectType()));
+                    return QVariant(Index::objectTypeStr(_index->objectType()));
             case ODItemModel::Value:
-                if (_index->objectType() == Index::VAR && index()->subIndexesCount() == 1)
-                    return index()->subIndex(0)->data().value();
+                if (_index->objectType() == Index::VAR && _index->subIndexesCount() == 1)
+                {
+                    if (_index->subIndex(0)->hasNodeId() && _deviceModel->type() == DeviceModel::Description)
+                        return QString("$NODEID+%1").arg(_index->subIndex(0)->data().value().toString());
+                    else
+                        return _index->subIndex(0)->data().value();
+                }
                 else
-                    return QVariant(QString("%1 items").arg(index()->subIndexesCount()));
+                {
+                    return QVariant(QString("%1 items").arg(_index->subIndexesCount()));
+                }
             default:
                 return QVariant();
             }
@@ -122,14 +140,14 @@ QVariant ODItem::data(int column, int role) const
             switch (column)
             {
             case ODItemModel::OdIndex:
-                return index()->index();
+                return _index->index();
             case ODItemModel::Name:
-                return index()->name();
+                return _index->name();
             case ODItemModel::Type:
-                return index()->objectType();
+                return _index->objectType();
             case ODItemModel::Value:
-                if (_index->objectType() == Index::VAR && index()->subIndexesCount() == 1)
-                    return index()->subIndex(0)->data().value();
+                if (_index->objectType() == Index::VAR && _index->subIndexesCount() == 1)
+                    return _index->subIndex(0)->data().value();
                 else
                     return QVariant();
             default:
@@ -145,13 +163,16 @@ QVariant ODItem::data(int column, int role) const
             switch (column)
             {
             case ODItemModel::OdIndex:
-                return QVariant(QLatin1String("0x") + QString::number(subIndex()->subIndex(), 16).toUpper());
+                return QVariant(QLatin1String("0x") + QString::number(_subIndex->subIndex(), 16).toUpper());
             case ODItemModel::Name:
-                return QVariant(subIndex()->name());
+                return QVariant(_subIndex->name());
             case ODItemModel::Type:
-                return QVariant(DataStorage::dataTypeStr(subIndex()->data().dataType()));
+                return QVariant(DataStorage::dataTypeStr(_subIndex->data().dataType()));
             case ODItemModel::Value:
-                return subIndex()->data().value();
+                if (_subIndex->hasNodeId() && _deviceModel->type() == DeviceModel::Description)
+                    return QString("$NODEID+%1").arg(_subIndex->data().value().toString());
+                else
+                    return _subIndex->data().value();
             default:
                 return QVariant();
             }
@@ -159,13 +180,13 @@ QVariant ODItem::data(int column, int role) const
             switch (column)
             {
             case ODItemModel::OdIndex:
-                return subIndex()->subIndex();
+                return _subIndex->subIndex();
             case ODItemModel::Name:
-                return subIndex()->name();
+                return _subIndex->name();
             case ODItemModel::Type:
-                return subIndex()->data().dataType();
+                return _subIndex->data().dataType();
             case ODItemModel::Value:
-                return subIndex()->data().value();
+                return _subIndex->data().value();
             default:
                 return QVariant();
             }
@@ -222,16 +243,16 @@ bool ODItem::setData(int column, const QVariant &value, int role)
             switch (column)
             {
             case ODItemModel::OdIndex:
-                subIndex()->setSubIndex(value.toInt());
+                _subIndex->setSubIndex(value.toInt());
                 return true;
             case ODItemModel::Name:
-                subIndex()->setName(value.toString());
+                _subIndex->setName(value.toString());
                 return true;
             case ODItemModel::Type:
-                subIndex()->data().setDataType(value.toInt());
+                _subIndex->data().setDataType(value.toInt());
                 return true;
             case ODItemModel::Value:
-                subIndex()->data().setValue(value);
+                _subIndex->data().setValue(value);
                 return true;
             default:
                 return false;
@@ -271,18 +292,13 @@ void ODItem::createChildren()
         switch (_type)
         {
         case ODItem::TOD:
-            _children.append(new ODItem(od()->indexes().values()[i], this));
+            _children.append(new ODItem(_deviceModel->indexes().values()[i], this));
             break;
         case ODItem::TIndex:
-            _children.append(new ODItem(index()->subIndexes().values()[i], this));
+            _children.append(new ODItem(_index->subIndexes().values()[i], this));
             break;
         default:
             break;
         }
     }
-}
-
-OD *ODItem::od() const
-{
-    return _od;
 }

@@ -31,11 +31,16 @@ ODItemModel::~ODItemModel()
     delete _root;
 }
 
-void ODItemModel::setOd(OD *od)
+void ODItemModel::setDeviceModel(DeviceModel *deviceModel)
 {
     beginResetModel();
-    _root = new ODItem(od);
+    _root = new ODItem(deviceModel);
     endResetModel();
+}
+
+DeviceModel *ODItemModel::deviceModel() const
+{
+    return _deviceModel;
 }
 
 bool ODItemModel::editable() const

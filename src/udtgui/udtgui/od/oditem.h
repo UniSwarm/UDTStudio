@@ -21,12 +21,12 @@
 
 #include "udtgui_global.h"
 
-#include "model/od.h"
+#include "model/devicemodel.h"
 
 class UDTGUI_EXPORT ODItem
 {
 public:
-    ODItem(OD *od, ODItem *parent=nullptr);
+    ODItem(DeviceModel *od, ODItem *parent=nullptr);
     ODItem(Index *index, ODItem *parent=nullptr);
     ODItem(SubIndex *subIndex, ODItem *parent=nullptr);
     ~ODItem();
@@ -38,7 +38,7 @@ public:
     };
     Type type() const;
 
-    OD *od() const;
+    DeviceModel *deviceModel() const;
     Index *index() const;
     SubIndex *subIndex() const;
 
@@ -53,7 +53,7 @@ public:
 protected:
     Type _type;
 
-    OD *_od;
+    DeviceModel *_deviceModel;
     Index *_index;
     SubIndex *_subIndex;
 

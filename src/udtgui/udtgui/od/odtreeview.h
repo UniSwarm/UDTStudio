@@ -33,7 +33,7 @@ public:
     ODTreeView();
     ~ODTreeView();
 
-    void setOd(OD *od);
+    void setDeviceModel(DeviceModel *deviceModel);
 
     bool editable() const;
     void setEditable(bool editable);

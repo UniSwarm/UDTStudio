@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 
-#include "parser/dcfparser.h"
+#include "parser/devicemodelparser.h"
 
 #include <QApplication>
 #include <QScreen>
@@ -8,11 +8,13 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    DcfParser parser;
-    OD *od = parser.parse("../../../firmware/UMC1BDS32/umc1bds32fr.eds");
+    DeviceModelParser parser;
+
+    DeviceDescription *deviceDescription = static_cast<DeviceDescription*>(parser.parse("../../../firmware/UMC1BDS32/umc1bds32fr.eds", "eds"));
+    DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, 2);
 
     _odView = new ODTreeView();
-    _odView->setOd(od);
+    _odView->setDeviceModel(deviceConfiguration);
     _odView->setEditable(true);
     setCentralWidget(_odView);
 
