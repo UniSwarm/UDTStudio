@@ -13,6 +13,7 @@ public:
     DeviceIniWriter();
 
     void writeFileInfo(QMap <QString, QString> fileInfos, QTextStream &file) const;
+    void writeDeviceComissioning(QMap <QString, QString> fileComissionings, QTextStream &file) const;
     void writeDummyUsage(QTextStream &file) const;
     void writeSupportedIndexes(QList<Index *> indexes, QTextStream &file) const;
     void writeListIndex(QList<Index *> indexes, QTextStream &file) const;

@@ -16,6 +16,18 @@ void DeviceIniWriter::writeFileInfo(QMap<QString, QString> fileInfos, QTextStrea
     file << "\n";
 }
 
+void DeviceIniWriter::writeDeviceComissioning(QMap<QString, QString> fileComissionings, QTextStream &file) const
+{
+    file << "[DeviceComissioning]" << "\n";
+
+    foreach (const QString &key, fileComissionings.keys())
+    {
+        file << key << "=" << fileComissionings.value(key) << "\n";
+    }
+
+    file << "\n";
+}
+
 void DeviceIniWriter::writeDummyUsage(QTextStream &file) const
 {
     file << "[DummyUsage]\n";

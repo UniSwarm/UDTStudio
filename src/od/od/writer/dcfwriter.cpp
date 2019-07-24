@@ -48,6 +48,7 @@ void DcfWriter::write(const DeviceConfiguration *deviceConfiguration, const QStr
     QTextStream out(&dcfFile);
 
     writer.writeFileInfo(deviceConfiguration->fileInfos(), out);
+    writer.writeDeviceComissioning(deviceConfiguration->deviceComissionings(), out);
     writer.writeDummyUsage(out);
 
     QList<Index *> mandatories;
