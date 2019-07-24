@@ -10,23 +10,25 @@
 class DeviceIniWriter
 {
 public:
-    DeviceIniWriter();
+    DeviceIniWriter(QTextStream *file);
 
-    void writeFileInfo(QMap <QString, QString> fileInfos, QTextStream &file) const;
-    void writeDeviceComissioning(QMap <QString, QString> fileComissionings, QTextStream &file) const;
-    void writeDummyUsage(QTextStream &file) const;
-    void writeSupportedIndexes(QList<Index *> indexes, QTextStream &file) const;
-    void writeListIndex(QList<Index *> indexes, QTextStream &file) const;
-    void writeIndex(Index *index, QTextStream &file) const;
-    void writeRecord(Index *index, QTextStream &file) const;
-    void writeArray(Index *index, QTextStream &file) const;
-    void writeLimit(SubIndex *subIndex, QTextStream &file) const;
+    void writeFileInfo(QMap <QString, QString> fileInfos) const;
+    void writeDeviceComissioning(QMap <QString, QString> fileComissionings) const;
+    void writeDummyUsage() const;
+    void writeSupportedIndexes(QList<Index *> indexes) const;
+    void writeListIndex(QList<Index *> indexes) const;
+    void writeIndex(Index *index) const;
+    void writeRecord(Index *index) const;
+    void writeArray(Index *index) const;
+    void writeLimit(SubIndex *subIndex) const;
 
 private:
     QString valueToString(int value, int base = 10) const;
     QString accessToString(int access) const;
     QString dataToString(DataStorage data) const;
     QString pdoToString(uint8_t accessType) const;
+
+    QTextStream *_file;
 };
 
 #endif // DEVICEINIWRITER_H
