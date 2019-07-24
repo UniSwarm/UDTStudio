@@ -25,7 +25,10 @@
  */
 Generator::Generator()
 {
+}
 
+Generator::~Generator()
+{
 }
 
 Generator *Generator::getGenerator(const QString &type)

@@ -33,14 +33,15 @@ class OD_EXPORT CGenerator : public Generator
 {
 public:
     CGenerator();
+    ~CGenerator();
 
     void generate(DeviceConfiguration *od, const QString &dir) const;
     void generate(DeviceDescription *od, const QString &dir, uint8_t nodeId) const;
 
-private:
     void generateH(DeviceConfiguration *od, const QString &dir) const;
     void generateC(DeviceConfiguration *od, const QString &dir) const;
 
+private:
     QString typeToString(const uint16_t &type) const;
     QString varNameToString(const QString &name) const;
     QString structNameToString(const QString &name) const;

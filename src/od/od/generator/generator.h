@@ -29,6 +29,7 @@ class OD_EXPORT Generator
 {
 public:
     Generator();
+    virtual ~Generator();
 
     virtual void generate(DeviceConfiguration *od, const QString &dir) const = 0;
 

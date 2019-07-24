@@ -29,7 +29,10 @@
  */
 CGenerator::CGenerator()
 {
+}
 
+CGenerator::~CGenerator()
+{
 }
 
 /**
@@ -45,8 +48,7 @@ void CGenerator::generate(DeviceConfiguration *od, const QString &dir) const
 
 void CGenerator::generate(DeviceDescription *od, const QString &dir, uint8_t nodeId) const
 {
-    DeviceConfiguration *deviceConfiguration;
-    deviceConfiguration = DeviceConfiguration::fromDeviceDescription(od, nodeId);
+    DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(od, nodeId);
     generate(deviceConfiguration, dir);
 }
 

@@ -27,9 +27,15 @@ int main(int argc, char *argv[])
     cliParser.addPositionalArgument("file", QCoreApplication::translate("main", "Object dictionary file (dcf)."), "file");
 
     QCommandLineOption outOption(QStringList() << "o" << "out",
-                                     QCoreApplication::translate("main", "Output directory."),
+                                     QCoreApplication::translate("main", "Output directory or file."),
                                      "out");
     cliParser.addOption(outOption);
+
+    QCommandLineOption nodeIdOption(QStringList() << "n" << "nodeid",
+                                     QCoreApplication::translate("main", "CANOpen Node Id."),
+                                     "nodeid");
+    nodeIdOption.setDefaultValue("0");
+    cliParser.addOption(nodeIdOption);
 
     cliParser.process(app);
 
@@ -39,30 +45,60 @@ int main(int argc, char *argv[])
         out << "error (1): input file is needed" << endl;
         cliParser.showHelp(-1);
     }
-    const QString &file = files.at(0);
+    const QString &inputFile = files.at(0);
 
     // output file
-    QString outDirectory = cliParser.value("out");
-    if (outDirectory.isEmpty())
-        outDirectory = QFileInfo(file).path() + ".lib";
+    QString outputFile = cliParser.value("out");
+    if (outputFile.isEmpty())
+        outputFile = QFileInfo(inputFile).path();
 
-    QString path(file);
+    // node Id
+    uint8_t nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
+    if (nodeid == 0 || nodeid >= 126)
+    {
+        out << "error (2): invalid node id, nodeId > 0 && nodeId < 126" << endl;
+        return -2;
+    }
 
-    DeviceModelParser parser;
-    CGenerator generator;
-    DcfWriter writer;
+    // input file opening
+    DeviceDescription *deviceDescription = nullptr;
+    DeviceConfiguration *deviceConfiguration = nullptr;
+    QString inSuffix = QFileInfo(inputFile).suffix();
+    if (inSuffix == "eds")
+    {
+        DeviceModelParser parser;
+        deviceDescription = static_cast<DeviceDescription*>(parser.parse(inputFile, "eds"));
+        deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, nodeid);
+    }
+    else if (inSuffix == "dcf")
+    {
+        DeviceModelParser parser;
+        deviceConfiguration = static_cast<DeviceConfiguration*>(parser.parse(inputFile, "dcf"));
+    }
+    else
+    {
+        out << "error (3): invalid input file format, .eds or .dcf accepted" << endl;
+        return -3;
+    }
 
-    DeviceDescription *od;
-    od = (DeviceDescription*)parser.parse(path, "eds");
-    generator.generate(od, outDirectory, 2);
+    QString outSuffix = QFileInfo(outputFile).suffix();
+    CGenerator cgenerator;
+    DcfWriter dcfWriter;
+    if (outSuffix == "c")
+        cgenerator.generateC(deviceConfiguration, outputFile);
+    if (outSuffix == "h")
+        cgenerator.generateH(deviceConfiguration, outputFile);
+    if (outSuffix == "dcf")
+        dcfWriter.write(deviceConfiguration, outputFile);
+    if (QFileInfo(outputFile).isDir())
+    {
+        cgenerator.generateC(deviceConfiguration, outputFile);
+        cgenerator.generateH(deviceConfiguration, outputFile);
+        dcfWriter.write(deviceConfiguration, outputFile);
+    }
 
-//    DeviceConfiguration *od;
-//    od = (DeviceConfiguration*)parser.parse(path, "dcf");
-//    generator.generate(od, outDirectory);
-
-//    writer.write(od, outDirectory);
-    delete od;
+    delete deviceDescription;
+    delete deviceConfiguration;
 
     return 0;
 }
-
