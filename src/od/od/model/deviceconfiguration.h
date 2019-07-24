@@ -14,6 +14,8 @@ public:
     DeviceConfiguration();
     ~DeviceConfiguration();
 
+    Type type();
+
     QMap<QString, QString> deviceComissionings() const;
 
     void setDeviceComissioning(const QString &key, const QString &value);

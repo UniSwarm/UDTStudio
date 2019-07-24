@@ -10,6 +10,11 @@ DeviceDescription::~DeviceDescription()
 
 }
 
+DeviceModel::Type DeviceDescription::type()
+{
+    return Description;
+}
+
 QMap<QString, QString> DeviceDescription::deviceInfos() const
 {
     return _deviceInfos;

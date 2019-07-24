@@ -10,6 +10,11 @@ DeviceConfiguration::~DeviceConfiguration()
 
 }
 
+DeviceModel::Type DeviceConfiguration::type()
+{
+    return Configuration;
+}
+
 QMap<QString, QString> DeviceConfiguration::deviceComissionings() const
 {
     return _deviceComissionings;

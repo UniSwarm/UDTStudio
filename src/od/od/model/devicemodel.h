@@ -13,6 +13,14 @@ public:
     DeviceModel();
     ~DeviceModel();
 
+    enum Type
+    {
+        Invalid,
+        Description,
+        Configuration
+    };
+    virtual Type type();
+
     QMap<QString, QString> fileInfos() const;
     void setFileInfos(const QMap<QString, QString> &fileInfos);
     void setFileInfo(const QString &key, const QString &value);

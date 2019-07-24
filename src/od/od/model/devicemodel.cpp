@@ -11,6 +11,11 @@ DeviceModel::~DeviceModel()
     _indexes.clear();
 }
 
+DeviceModel::Type DeviceModel::type()
+{
+    return Invalid;
+}
+
 QMap<QString, QString> DeviceModel::fileInfos() const
 {
     return _fileInfos;
