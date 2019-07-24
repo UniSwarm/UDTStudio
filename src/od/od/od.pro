@@ -21,7 +21,8 @@ HEADERS += \
     $$PWD/model/deviceconfiguration.h \
     $$PWD/model/devicedescription.h \
     $$PWD/model/devicemodel.h \
-    $$PWD/ writer/deviceconfigurationwriter.h
+    $$PWD/writer/deviceconfigurationwriter.h \
+    $$PWD/writer/deviceiniwriter.h
 
 SOURCES += \
     $$PWD/model/index.cpp \
@@ -36,4 +37,5 @@ SOURCES += \
     $$PWD/model/deviceconfiguration.cpp \
     $$PWD/model/devicedescription.cpp \
     $$PWD/model/devicemodel.cpp \
-    $$PWD/writer/deviceconfigurationwriter.cpp
+    $$PWD/writer/deviceconfigurationwriter.cpp \
+    $$PWD/writer/deviceiniwriter.cpp
