@@ -26,14 +26,16 @@
 #include <QList>
 #include <QMap>
 
-#include "writer.h"
+#include "deviceconfigurationwriter.h"
+#include "model/deviceconfiguration.h"
 
-class OD_EXPORT DcfWriter : public Writer
+class OD_EXPORT DcfWriter : public DeviceConfigurationWriter
 {
 public:
     DcfWriter();
+    ~DcfWriter();
 
-    void write(DeviceModel *od, const QString &dir) const;
+    void write(const DeviceConfiguration *deviceConfiguration, const QString &dir) const;
 
 protected:
     void writeFileInfo(QMap <QString, QString> fileInfos, QTextStream &file) const;

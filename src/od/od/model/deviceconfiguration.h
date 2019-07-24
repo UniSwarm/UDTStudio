@@ -12,7 +12,7 @@ class OD_EXPORT DeviceConfiguration : public DeviceModel
 {
 public:
     DeviceConfiguration();
-    ~DeviceConfiguration();
+    virtual ~DeviceConfiguration();
 
     Type type();
 

@@ -65,3 +65,8 @@ void DeviceModel::setIndexes(const QMap<uint16_t, Index *> &indexes)
 {
     _indexes = indexes;
 }
+
+QString DeviceModel::getFileName() const
+{
+    return _fileInfos.value("FileName");
+}

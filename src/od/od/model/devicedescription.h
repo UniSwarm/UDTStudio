@@ -11,7 +11,7 @@ class OD_EXPORT DeviceDescription : public DeviceModel
 {
 public:
     DeviceDescription();
-    ~DeviceDescription();
+    virtual ~DeviceDescription();
 
     Type type();
 

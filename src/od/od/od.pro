@@ -18,10 +18,10 @@ HEADERS += \
     $$PWD/od_global.h \
     $$PWD/parser/parser.h \
     $$PWD/writer/dcfwriter.h \
-    $$PWD/writer/writer.h \
-    model/deviceconfiguration.h \
-    model/devicedescription.h \
-    model/devicemodel.h
+    $$PWD/model/deviceconfiguration.h \
+    $$PWD/model/devicedescription.h \
+    $$PWD/model/devicemodel.h \
+    $$PWD/ writer/deviceconfigurationwriter.h
 
 SOURCES += \
     $$PWD/model/index.cpp \
@@ -33,7 +33,7 @@ SOURCES += \
     $$PWD/generator/cgenerator.cpp \
     $$PWD/parser/parser.cpp \
     $$PWD/writer/dcfwriter.cpp \
-    $$PWD/writer/writer.cpp \
-    model/deviceconfiguration.cpp \
-    model/devicedescription.cpp \
-    model/devicemodel.cpp
+    $$PWD/model/deviceconfiguration.cpp \
+    $$PWD/model/devicedescription.cpp \
+    $$PWD/model/devicemodel.cpp \
+    $$PWD/writer/deviceconfigurationwriter.cpp

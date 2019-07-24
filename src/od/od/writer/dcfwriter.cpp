@@ -23,7 +23,10 @@
 
 DcfWriter::DcfWriter()
 {
+}
 
+DcfWriter::~DcfWriter()
+{
 }
 
 bool indexLessThan(const Index *i1, const Index *i2)
@@ -31,24 +34,23 @@ bool indexLessThan(const Index *i1, const Index *i2)
     return i1->index() < i2->index();
 }
 
-
-void DcfWriter::write(DeviceModel *od, const QString &dir) const
+void DcfWriter::write(const DeviceConfiguration *deviceConfiguration, const QString &dir) const
 {
-    QFile dcfFile(dir + "/out.dcf");
+    QFile dcfFile(dir + "/" + deviceConfiguration->getFileName());
 
     if (!dcfFile.open(QIODevice::WriteOnly))
         return;
 
     QTextStream out(&dcfFile);
 
-    writeFileInfo(od->fileInfos(), out);
+    writeFileInfo(deviceConfiguration->fileInfos(), out);
     writeDummyUsage(out);
 
     QList<Index *> mandatories;
     QList<Index *> optionals;
     QList<Index *> manufacturers;
 
-    foreach (Index *index, od->indexes().values())
+    foreach (Index *index, deviceConfiguration->indexes().values())
     {
         uint16_t numIndex = index->index();
 
