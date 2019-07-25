@@ -1,45 +1,19 @@
-/**
- ** This file is part of the UDTStudio project.
- ** Copyright 2019 UniSwarm sebastien.caux@uniswarm.eu
- **
- ** This program is free software: you can redistribute it and/or modify
- ** it under the terms of the GNU General Public License as published by
- ** the Free Software Foundation, either version 3 of the License, or
- ** (at your option) any later version.
- **
- ** This program is distributed in the hope that it will be useful,
- ** but WITHOUT ANY WARRANTY; without even the implied warranty of
- ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- ** GNU General Public License for more details.
- **
- ** You should have received a copy of the GNU General Public License
- ** along with this program. If not, see <http://www.gnu.org/licenses/>.
- **/
-
-#include "devicemodelparser.h"
+#include "edsparser.h"
 
 #include <QRegularExpression>
+#include <QSettings>
 
-#include "model/deviceconfiguration.h"
-#include "model/devicedescription.h"
+#include "deviceiniparser.h"
 
-//TODO handle fields CompactSubObj and ObjFlags (see 306_1)
-//TODO handle octal format (0) (see 306_1)
-
-/**
- * @brief default constructor
- */
-DeviceModelParser::DeviceModelParser()
+EdsParser::EdsParser()
 {
-
 }
 
-/**
- * @brief parses a dcf or an eds file and completes an object dictionary
- * @param input file path
- * @return object dictionary
- */
-DeviceModel *DeviceModelParser::parse(const QString &path, const QString &type) const
+EdsParser::~EdsParser()
+{
+}
+
+DeviceDescription *EdsParser::parse(const QString &path) const
 {
     bool ok;
     bool isSubIndex;
@@ -56,17 +30,11 @@ DeviceModel *DeviceModelParser::parse(const QString &path, const QString &type) 
     QVariant highLimit;
     uint8_t flagLimit;
 
-    DeviceModel *od;
-    if (type == "dcf")
-        od = new DeviceConfiguration;
-
-    else if (type == "eds")
-        od = new DeviceDescription;
-
-    else
-        return nullptr;
+    DeviceDescription *od = new DeviceDescription;
 
     QSettings file(path, QSettings::IniFormat);
+    DeviceIniParser parser(&file);
+
     QRegularExpression reSub("([0-Z]{4})(sub)([0-9]+)");
     QRegularExpression reIndex("([0-Z]{4})");
 
@@ -99,7 +67,7 @@ DeviceModel *DeviceModelParser::parse(const QString &path, const QString &type) 
         else if (group == "FileInfo")
         {
             file.beginGroup(group);
-            readFileInfo(od, file);
+            parser.readFileInfo(od);
             file.endGroup();
             continue;
         }
@@ -107,25 +75,16 @@ DeviceModel *DeviceModelParser::parse(const QString &path, const QString &type) 
         else if (group == "DummyUsage")
         {
             file.beginGroup(group);
-            readDummyUsage(od, file);
+            parser.readDummyUsage(od);
             file.endGroup();
             continue;
         }
 
         // field only in .eds files
-        else if (group == "DeviceInfo" && type == "eds")
+        else if (group == "DeviceInfo")
         {
             file.beginGroup(group);
-            readDeviceInfo((DeviceDescription*)od, file);
-            file.endGroup();
-            continue;
-        }
-
-        // field only in .dcf files
-        else if (group == "DeviceComissioning" && type == "dcf")
-        {
-            file.beginGroup(group);
-            readDeviceComissioning((DeviceConfiguration*)od, file);
+            parser.readDeviceInfo(od);
             file.endGroup();
             continue;
         }
@@ -167,22 +126,22 @@ DeviceModel *DeviceModelParser::parse(const QString &path, const QString &type) 
                 subNumber = (uint8_t)value.toInt(&ok, base);
 
             else if (key == "PDOMapping")
-                accessType += readPdoMapping(file);
+                accessType += parser.readPdoMapping();
 
             else if (key == "LowLimit")
             {
-                lowLimit = readLowLimit(file);
+                lowLimit = parser.readLowLimit();
                 flagLimit += SubIndex::Limit::LOW;
             }
 
             else if (key == "HighLimit")
             {
-                highLimit = readHighLimit(file);
+                highLimit = parser.readHighLimit();
                 flagLimit += SubIndex::Limit::HIGH;
             }
         }
 
-        DataStorage data = readData(file, &hasNodeId);
+        DataStorage data = parser.readData(&hasNodeId);
         file.endGroup();
 
         if (isSubIndex)
@@ -237,97 +196,4 @@ DeviceModel *DeviceModelParser::parse(const QString &path, const QString &type) 
     }
 
     return od;
-}
-
-/**
- * @brief read data to correct format from dcf or eds file
- * @param dcf or eds file
- * @return data
- */
-DataStorage DeviceModelParser::readData(const QSettings &file, bool *nodeId) const
-{
-    uint8_t base = 10;
-    QString value = file.value("DataType").toString();
-    if ( value.startsWith("0x"))
-        base = 16;
-
-    bool ok;
-    uint8_t dataType = (uint8_t)value.toUInt(&ok, base);
-
-    DataStorage data;
-    data.setDataType(dataType);
-
-    if (file.value("DefaultValue").isNull())
-        data.setValue(0);
-
-    else if (file.value("DefaultValue").toString().startsWith("$NODEID+"))
-    {
-        data.setValue(file.value("DefaultValue").toString().mid(8));
-        *nodeId = true;
-    }
-
-    else
-    {
-        data.setValue(file.value("DefaultValue"));
-    }
-
-    return data;
-}
-
-void DeviceModelParser::readFileInfo(DeviceModel *od, const QSettings &file) const
-{
-    foreach (const QString &key, file.allKeys())
-    {
-       od->setFileInfo(key, file.value(key).toString());
-    }
-}
-
-void DeviceModelParser::readDummyUsage(DeviceModel *od, const QSettings &file) const
-{
-    foreach (const QString &key, file.allKeys())
-    {
-       od->setDummyUsage(key, file.value(key).toString());
-    }
-}
-
-void DeviceModelParser::readDeviceInfo(DeviceDescription *od, const QSettings &file) const
-{
-    foreach (const QString &key, file.allKeys())
-    {
-       od->setDeviceInfo(key, file.value(key).toString());
-    }
-}
-
-void DeviceModelParser::readDeviceComissioning(DeviceConfiguration *od, const QSettings &file) const
-{
-    foreach (const QString &key, file.allKeys())
-    {
-       od->setDeviceComissioning(key, file.value(key).toString());
-    }
-}
-
-uint8_t DeviceModelParser::readPdoMapping(const QSettings &file) const
-{
-    if (file.value("PDOMapping") == 0)
-        return 0;
-
-    QString accessString = file.value("AccessType").toString();
-
-    if (accessString == "rwr" || accessString == "ro" || accessString == "const")
-        return SubIndex::Access::TPDO;
-
-    if (accessString == "rww" || accessString == "wo")
-        return SubIndex::Access::RPDO;
-
-    return SubIndex::Access::TPDO + SubIndex::Access::RPDO;
-}
-
-QVariant DeviceModelParser::readLowLimit(const QSettings &file) const
-{
-    return QVariant(file.value("LowLimit"));
-}
-
-QVariant DeviceModelParser::readHighLimit(const QSettings &file) const
-{
-    return QVariant(file.value("HighLimit"));
 }

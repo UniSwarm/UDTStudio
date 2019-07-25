@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 #include "model/devicemodel.h"
-#include "parser/devicemodelparser.h"
+#include "parser/edsparser.h"
 #include "parser/dcfparser.h"
 #include "generator/cgenerator.h"
 #include "writer/dcfwriter.h"
@@ -68,8 +68,8 @@ int main(int argc, char *argv[])
     QString inSuffix = QFileInfo(inputFile).suffix();
     if (inSuffix == "eds")
     {
-        DeviceModelParser parser;
-        deviceDescription = static_cast<DeviceDescription*>(parser.parse(inputFile, "eds"));
+        EdsParser parser;
+        deviceDescription = parser.parse(inputFile);
         deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, nodeid);
     }
     else if (inSuffix == "dcf")
