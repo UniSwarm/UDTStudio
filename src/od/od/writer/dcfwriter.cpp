@@ -31,11 +31,6 @@ DcfWriter::~DcfWriter()
 {
 }
 
-bool indexLessThan(const Index *i1, const Index *i2)
-{
-    return i1->index() < i2->index();
-}
-
 void DcfWriter::write(const DeviceConfiguration *deviceConfiguration, const QString &dir) const
 {
 
@@ -51,42 +46,7 @@ void DcfWriter::write(const DeviceConfiguration *deviceConfiguration, const QStr
     writer.writeDeviceComissioning(deviceConfiguration->deviceComissionings());
     writer.writeDummyUsage(deviceConfiguration->dummyUsages());
 
-    QList<Index *> mandatories;
-    QList<Index *> optionals;
-    QList<Index *> manufacturers;
-
-    foreach (Index *index, deviceConfiguration->indexes().values())
-    {
-        uint16_t numIndex = index->index();
-
-        if (numIndex == 0x1000 || numIndex == 0x1001 || numIndex == 0x1018)
-            mandatories.append(index);
-
-        else if (numIndex >= 0x2000 && numIndex < 0x6000)
-            manufacturers.append(index);
-
-        else
-            optionals.append(index);
-    }
-
-    qSort(mandatories.begin(), mandatories.end(), indexLessThan);
-    qSort(optionals.begin(), optionals.end(), indexLessThan);
-    qSort(manufacturers.begin(), manufacturers.end(), indexLessThan);
-
-    out << "[MandatoryObjects]" << "\n";
-    writer.writeSupportedIndexes(mandatories);
-    out << "\n";
-    writer.writeListIndex(mandatories);
-
-    out << "[OptionalObjects]" << "\n";
-    writer.writeSupportedIndexes(optionals);
-    out << "\n";
-    writer.writeListIndex(optionals);
-
-    out << "[ManufacturerObjects]" << "\n";
-    writer.writeSupportedIndexes(manufacturers);
-    out << "\n";
-    writer.writeListIndex(manufacturers);
+    writer.writeObjects(deviceConfiguration);
 
     dcfFile.close();
 }

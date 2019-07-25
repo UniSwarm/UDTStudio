@@ -5,15 +5,17 @@
 
 #include <QTextStream>
 
-#include "model/index.h"
+#include "model/devicemodel.h"
 
 class DeviceIniWriter
 {
 public:
     DeviceIniWriter(QTextStream *file);
 
+    void writeObjects(const DeviceModel *deviceModel) const;
     void writeFileInfo(QMap <QString, QString> fileInfos) const;
-    void writeDeviceComissioning(QMap <QString, QString> fileComissionings) const;
+    void writeDeviceComissioning(QMap <QString, QString> deviceComissionings) const;
+    void writeDeviceInfo(QMap <QString, QString> deviceInfos) const;
     void writeDummyUsage(QMap <QString, QString> dummyUsages) const;
     void writeSupportedIndexes(QList<Index *> indexes) const;
     void writeListIndex(QList<Index *> indexes) const;

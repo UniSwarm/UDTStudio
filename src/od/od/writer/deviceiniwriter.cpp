@@ -5,6 +5,51 @@ DeviceIniWriter::DeviceIniWriter(QTextStream *file)
     _file = file;
 }
 
+bool indexLessThan(const Index *i1, const Index *i2)
+{
+    return i1->index() < i2->index();
+}
+
+void DeviceIniWriter::writeObjects(const DeviceModel *deviceModel) const
+{
+    QList<Index *> mandatories;
+    QList<Index *> optionals;
+    QList<Index *> manufacturers;
+
+    foreach (Index *index, deviceModel->indexes().values())
+    {
+        uint16_t numIndex = index->index();
+
+        if (numIndex == 0x1000 || numIndex == 0x1001 || numIndex == 0x1018)
+            mandatories.append(index);
+
+        else if (numIndex >= 0x2000 && numIndex < 0x6000)
+            manufacturers.append(index);
+
+        else
+            optionals.append(index);
+    }
+
+    qSort(mandatories.begin(), mandatories.end(), indexLessThan);
+    qSort(optionals.begin(), optionals.end(), indexLessThan);
+    qSort(manufacturers.begin(), manufacturers.end(), indexLessThan);
+
+    *_file  << "[MandatoryObjects]" << "\n";
+    writeSupportedIndexes(mandatories);
+    *_file  << "\n";
+    writeListIndex(mandatories);
+
+    *_file  << "[OptionalObjects]" << "\n";
+    writeSupportedIndexes(optionals);
+    *_file  << "\n";
+    writeListIndex(optionals);
+
+    *_file  << "[ManufacturerObjects]" << "\n";
+    writeSupportedIndexes(manufacturers);
+    *_file  << "\n";
+    writeListIndex(manufacturers);
+}
+
 void DeviceIniWriter::writeFileInfo(QMap<QString, QString> fileInfos) const
 {
     *_file << "[FileInfo]" << "\n";
@@ -17,13 +62,25 @@ void DeviceIniWriter::writeFileInfo(QMap<QString, QString> fileInfos) const
     *_file << "\n";
 }
 
-void DeviceIniWriter::writeDeviceComissioning(QMap<QString, QString> fileComissionings) const
+void DeviceIniWriter::writeDeviceComissioning(QMap<QString, QString> deviceComissionings) const
 {
     *_file << "[DeviceComissioning]" << "\n";
 
-    foreach (const QString &key, fileComissionings.keys())
+    foreach (const QString &key, deviceComissionings.keys())
     {
-        *_file << key << "=" << fileComissionings.value(key) << "\n";
+        *_file << key << "=" << deviceComissionings.value(key) << "\n";
+    }
+
+    *_file << "\n";
+}
+
+void DeviceIniWriter::writeDeviceInfo(QMap<QString, QString> deviceInfos) const
+{
+    *_file << "[DeviceInfo]" << "\n";
+
+    foreach (const QString &key, deviceInfos.keys())
+    {
+        *_file << key << "=" << deviceInfos.value(key) << "\n";
     }
 
     *_file << "\n";
