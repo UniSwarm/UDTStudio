@@ -41,6 +41,11 @@ void DeviceModel::setDummyUsages(const QMap<QString, QString> &dummyUsages)
     _dummyUsages = dummyUsages;
 }
 
+void DeviceModel::setDummyUsage(const QString &key, const QString &value)
+{
+    _dummyUsages.insert(key, value);
+}
+
 QMap<uint16_t, Index *> DeviceModel::indexes() const
 {
     return _indexes;

@@ -14,7 +14,7 @@ public:
 
     void writeFileInfo(QMap <QString, QString> fileInfos) const;
     void writeDeviceComissioning(QMap <QString, QString> fileComissionings) const;
-    void writeDummyUsage() const;
+    void writeDummyUsage(QMap <QString, QString> dummyUsages) const;
     void writeSupportedIndexes(QList<Index *> indexes) const;
     void writeListIndex(QList<Index *> indexes) const;
     void writeIndex(Index *index) const;

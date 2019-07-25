@@ -40,6 +40,7 @@ public:
 private:
     DataStorage readData(const QSettings &file, bool *nodeId) const;
     void readFileInfo(DeviceModel *od, const QSettings &file) const;
+    void readDummyUsage(DeviceModel *od, const QSettings &file) const;
     void readDeviceInfo(DeviceDescription *od, const QSettings &file) const;
     void readDeviceComissioning(DeviceConfiguration *od, const QSettings &file) const;
     uint8_t readPdoMapping(const QSettings &file) const;

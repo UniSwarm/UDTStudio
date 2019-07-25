@@ -104,6 +104,14 @@ DeviceModel *DeviceModelParser::parse(const QString &path, const QString &type) 
             continue;
         }
 
+        else if (group == "DummyUsage")
+        {
+            file.beginGroup(group);
+            readDummyUsage(od, file);
+            file.endGroup();
+            continue;
+        }
+
         // field only in .eds files
         else if (group == "DeviceInfo" && type == "eds")
         {
@@ -271,6 +279,14 @@ void DeviceModelParser::readFileInfo(DeviceModel *od, const QSettings &file) con
     foreach (const QString &key, file.allKeys())
     {
        od->setFileInfo(key, file.value(key).toString());
+    }
+}
+
+void DeviceModelParser::readDummyUsage(DeviceModel *od, const QSettings &file) const
+{
+    foreach (const QString &key, file.allKeys())
+    {
+       od->setDummyUsage(key, file.value(key).toString());
     }
 }
 

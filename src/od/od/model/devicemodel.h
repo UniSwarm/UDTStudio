@@ -27,6 +27,7 @@ public:
 
     QMap<QString, QString> dummyUsages() const;
     void setDummyUsages(const QMap<QString, QString> &dummyUsages);
+    void setDummyUsage(const QString &key, const QString &value);
 
     QMap<uint16_t, Index *> indexes() const;
     Index *index(const uint16_t &index) const;

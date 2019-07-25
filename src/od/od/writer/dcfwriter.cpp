@@ -49,7 +49,7 @@ void DcfWriter::write(const DeviceConfiguration *deviceConfiguration, const QStr
 
     writer.writeFileInfo(deviceConfiguration->fileInfos());
     writer.writeDeviceComissioning(deviceConfiguration->deviceComissionings());
-    writer.writeDummyUsage();
+    writer.writeDummyUsage(deviceConfiguration->dummyUsages());
 
     QList<Index *> mandatories;
     QList<Index *> optionals;

@@ -29,16 +29,15 @@ void DeviceIniWriter::writeDeviceComissioning(QMap<QString, QString> fileComissi
     *_file << "\n";
 }
 
-void DeviceIniWriter::writeDummyUsage() const
+void DeviceIniWriter::writeDummyUsage(QMap <QString, QString> dummyUsages) const
 {
-    *_file << "[DummyUsage]\n";
-    *_file << "Dummy0001=0\n";
-    *_file << "Dummy0002=1\n";
-    *_file << "Dummy0003=1\n";
-    *_file << "Dummy0004=1\n";
-    *_file << "Dummy0005=1\n";
-    *_file << "Dummy0006=1\n";
-    *_file << "Dummy0007=1\n";
+    *_file << "[DummyUsage]" << "\n";
+
+    foreach (const QString &key, dummyUsages.keys())
+    {
+        *_file << key << "=" << dummyUsages.value(key) << "\n";
+    }
+
     *_file << "\n";
 }
 
