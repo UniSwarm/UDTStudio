@@ -10,7 +10,6 @@ DEFINES += OD_EXPORT_LIB
 HEADERS += \
     $$PWD/model/index.h \
     $$PWD/model/subindex.h \
-    $$PWD/model/od.h \
     $$PWD/model/datastorage.h \
     $$PWD/generator/generator.h \
     $$PWD/generator/cgenerator.h \
@@ -32,7 +31,6 @@ HEADERS += \
 SOURCES += \
     $$PWD/model/index.cpp \
     $$PWD/model/subindex.cpp \
-    $$PWD/model/od.cpp \
     $$PWD/model/datastorage.cpp \
     $$PWD/generator/generator.cpp \
     $$PWD/generator/cgenerator.cpp \
