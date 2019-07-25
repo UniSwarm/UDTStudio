@@ -19,7 +19,7 @@
 #include "dcfwriter.h"
 
 #include <QFile>
-#include <QLatin1String>
+#include <QFileInfo>
 
 #include "deviceiniwriter.h"
 
@@ -31,16 +31,19 @@ DcfWriter::~DcfWriter()
 {
 }
 
-void DcfWriter::write(const DeviceConfiguration *deviceConfiguration, const QString &dir) const
+void DcfWriter::write(DeviceConfiguration *deviceConfiguration, const QString &filePath) const
 {
 
-    QFile dcfFile(dir + "/" + deviceConfiguration->getFileName());
+    QFile dcfFile(filePath);
 
     if (!dcfFile.open(QIODevice::WriteOnly))
         return;
 
     QTextStream out(&dcfFile);
     DeviceIniWriter writer(&out);
+
+    QString name = QFileInfo(filePath).fileName();
+    deviceConfiguration->setFileName(name);
 
     writer.writeFileInfo(deviceConfiguration->fileInfos());
     writer.writeDeviceComissioning(deviceConfiguration->deviceComissionings());
@@ -51,8 +54,8 @@ void DcfWriter::write(const DeviceConfiguration *deviceConfiguration, const QStr
     dcfFile.close();
 }
 
-void DcfWriter::write(const DeviceDescription *deviceDescription, const QString &dir, uint8_t nodeId) const
+void DcfWriter::write(DeviceDescription *deviceDescription, const QString &filePath, uint8_t nodeId) const
 {
     DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, nodeId);
-    write(deviceConfiguration, dir);
+    write(deviceConfiguration, filePath);
 }

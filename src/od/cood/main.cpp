@@ -7,6 +7,7 @@
 #include "parser/devicemodelparser.h"
 #include "generator/cgenerator.h"
 #include "writer/dcfwriter.h"
+#include "writer/edswriter.h"
 
 /**
  * @brief main
@@ -94,7 +95,7 @@ int main(int argc, char *argv[])
     {
         cgenerator.generateC(deviceConfiguration, outputFile);
         cgenerator.generateH(deviceConfiguration, outputFile);
-        dcfWriter.write(deviceConfiguration, outputFile);
+        dcfWriter.write(deviceConfiguration, QString(outputFile + "/out.dcf"));
     }
 
     delete deviceDescription;

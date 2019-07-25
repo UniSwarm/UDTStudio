@@ -11,7 +11,7 @@ public:
     EdsWriter();
     ~EdsWriter();
 
-    void write(const DeviceDescription *deviceDescription, const QString &dir) const;
+    void write(const DeviceDescription *deviceDescription, const QString &filePath) const;
 };
 
 #endif // EDSWRITER_H

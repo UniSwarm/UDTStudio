@@ -12,8 +12,8 @@ public:
     DeviceConfigurationWriter();
     virtual ~DeviceConfigurationWriter();
 
-    virtual void write(const DeviceConfiguration *deviceConfiguration, const QString &dir) const = 0;
-    virtual void write(const DeviceDescription *deviceDescription, const QString &dir, uint8_t nodeId) const = 0;
+    virtual void write(DeviceConfiguration *deviceConfiguration, const QString &filePath) const = 0;
+    virtual void write(DeviceDescription *deviceDescription, const QString &filePath, uint8_t nodeId) const = 0;
 };
 
 #endif // DEVICECONFIGURATIONWRITER_H

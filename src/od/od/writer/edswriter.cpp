@@ -10,9 +10,9 @@ EdsWriter::~EdsWriter()
 {
 }
 
-void EdsWriter::write(const DeviceDescription *deviceDescription, const QString &dir) const
+void EdsWriter::write(const DeviceDescription *deviceDescription, const QString &filePath) const
 {
-    QFile dcfFile(dir + "/" + deviceDescription->getFileName());
+    QFile dcfFile(filePath);
 
     if (!dcfFile.open(QIODevice::WriteOnly))
         return;

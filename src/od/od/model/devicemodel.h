@@ -35,7 +35,8 @@ public:
     int indexCount() const;
     void setIndexes(const QMap<uint16_t, Index *> &indexes);
 
-    QString getFileName() const;
+    QString fileName() const;
+    void setFileName(const QString &name);
 
 private:
     QMap<QString, QString> _fileInfos;
