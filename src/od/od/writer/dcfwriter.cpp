@@ -50,3 +50,9 @@ void DcfWriter::write(const DeviceConfiguration *deviceConfiguration, const QStr
 
     dcfFile.close();
 }
+
+void DcfWriter::write(const DeviceDescription *deviceDescription, const QString &dir, uint8_t nodeId) const
+{
+    DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, nodeId);
+    write(deviceConfiguration, dir);
+}

@@ -36,6 +36,7 @@ public:
     ~DcfWriter();
 
     void write(const DeviceConfiguration *deviceConfiguration, const QString &dir) const;
+    void write(const DeviceDescription *deviceDescription, const QString &dir, uint8_t nodeId) const;
 };
 
 #endif // DCFWRITER_H
