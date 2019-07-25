@@ -68,7 +68,7 @@ DeviceConfiguration *DeviceConfiguration::fromDeviceDescription(const DeviceDesc
     deviceConfiguration->setDummyUsages(deviceDescription->dummyUsages());
 
     foreach (Index *index, deviceDescription->indexes())
-        deviceConfiguration->addIndex(new Index(index));
+        deviceConfiguration->addIndex(new Index(*index));
 
     foreach (Index *index, deviceConfiguration->indexes())
     {
