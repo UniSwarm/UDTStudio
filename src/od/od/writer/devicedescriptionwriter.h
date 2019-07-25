@@ -11,7 +11,7 @@ public:
     DeviceDescriptionWriter();
     virtual ~DeviceDescriptionWriter();
 
-    virtual void write(const DeviceDescription *od, const QString &dir) const = 0;
+    virtual void write(const DeviceDescription *deviceDescription, const QString &dir) const = 0;
 };
 
 #endif // DEVICEDESCRIPTIONWRITER_H

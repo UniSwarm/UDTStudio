@@ -50,55 +50,35 @@ void DeviceIniWriter::writeObjects(const DeviceModel *deviceModel) const
     writeListIndex(manufacturers);
 }
 
-void DeviceIniWriter::writeFileInfo(QMap<QString, QString> fileInfos) const
+void DeviceIniWriter::writeFileInfo(const QMap<QString, QString> &fileInfos) const
 {
     *_file << "[FileInfo]" << "\n";
 
-    foreach (const QString &key, fileInfos.keys())
-    {
-        *_file << key << "=" << fileInfos.value(key) << "\n";
-    }
-
-    *_file << "\n";
+    writeStringMap(fileInfos);
 }
 
-void DeviceIniWriter::writeDeviceComissioning(QMap<QString, QString> deviceComissionings) const
+void DeviceIniWriter::writeDeviceComissioning(const QMap<QString, QString> &deviceComissionings) const
 {
     *_file << "[DeviceComissioning]" << "\n";
 
-    foreach (const QString &key, deviceComissionings.keys())
-    {
-        *_file << key << "=" << deviceComissionings.value(key) << "\n";
-    }
-
-    *_file << "\n";
+    writeStringMap(deviceComissionings);
 }
 
-void DeviceIniWriter::writeDeviceInfo(QMap<QString, QString> deviceInfos) const
+void DeviceIniWriter::writeDeviceInfo(const QMap<QString, QString> &deviceInfos) const
 {
     *_file << "[DeviceInfo]" << "\n";
 
-    foreach (const QString &key, deviceInfos.keys())
-    {
-        *_file << key << "=" << deviceInfos.value(key) << "\n";
-    }
-
-    *_file << "\n";
+    writeStringMap(deviceInfos);
 }
 
-void DeviceIniWriter::writeDummyUsage(QMap <QString, QString> dummyUsages) const
+void DeviceIniWriter::writeDummyUsage(const QMap<QString, QString> &dummyUsages) const
 {
     *_file << "[DummyUsage]" << "\n";
 
-    foreach (const QString &key, dummyUsages.keys())
-    {
-        *_file << key << "=" << dummyUsages.value(key) << "\n";
-    }
-
-    *_file << "\n";
+    writeStringMap(dummyUsages);
 }
 
-void DeviceIniWriter::writeSupportedIndexes(QList<Index *> indexes) const
+void DeviceIniWriter::writeSupportedIndexes(const QList<Index *> &indexes) const
 {
     *_file << "SupportedObjects=" << indexes.count() << "\n";
 
@@ -111,7 +91,7 @@ void DeviceIniWriter::writeSupportedIndexes(QList<Index *> indexes) const
     }
 }
 
-void DeviceIniWriter::writeListIndex(QList<Index *> indexes) const
+void DeviceIniWriter::writeListIndex(const QList<Index *> indexes) const
 {
     foreach (Index *index, indexes)
     {
@@ -182,7 +162,7 @@ void DeviceIniWriter::writeArray(Index *index) const
     writeRecord(index);
 }
 
-void DeviceIniWriter::writeLimit(SubIndex *subIndex) const
+void DeviceIniWriter::writeLimit(const SubIndex *subIndex) const
 {
     uint8_t flagLimit = subIndex->flagLimit();
 
@@ -191,6 +171,16 @@ void DeviceIniWriter::writeLimit(SubIndex *subIndex) const
 
     if ((flagLimit & SubIndex::Limit::HIGH) == SubIndex::Limit::HIGH)
         *_file << "HighLimit=" << subIndex->highLimit().toString() << "\n";
+}
+
+void DeviceIniWriter::writeStringMap(const QMap<QString, QString> &map) const
+{
+    foreach (const QString &key, map.keys())
+    {
+        *_file << key << "=" << map.value(key) << "\n";
+    }
+
+    *_file << "\n";
 }
 
 QString DeviceIniWriter::valueToString(int value, int base) const
@@ -233,7 +223,7 @@ QString DeviceIniWriter::accessToString(int access) const
     return "";
 }
 
-QString DeviceIniWriter::dataToString(DataStorage data) const
+QString DeviceIniWriter::dataToString(const DataStorage &data) const
 {
     return data.value().toString();
 }
