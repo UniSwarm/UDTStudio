@@ -53,15 +53,15 @@ DeviceDescription *EdsParser::parse(const QString &path) const
         if (matchSub.hasMatch())
         {
             QString matchedSub = matchSub.captured(1);
-            index = od->index((uint16_t)matchedSub.toUInt(&ok, 16));
+            index = od->index(static_cast<uint16_t>(matchedSub.toUInt(&ok, 16)));
             isSubIndex = true;
-            subNumber = (uint8_t)matchSub.captured(3).toShort(&ok, 10);
+            subNumber = static_cast<uint8_t>(matchSub.captured(3).toShort(&ok, 10));
         }
 
         else if (matchIndex.hasMatch())
         {
             QString matchedIndex = matchIndex.captured(0);
-            indexNumber = (uint16_t)matchedIndex.toInt(&ok, 16);
+            indexNumber = static_cast<uint16_t>(matchedIndex.toInt(&ok, 16));
         }
 
         else if (group == "FileInfo")
@@ -117,13 +117,13 @@ DeviceDescription *EdsParser::parse(const QString &path) const
             }
 
             else if (key == "ObjectType")
-                objectType = (uint8_t)value.toInt(&ok, base);
+                objectType = static_cast<uint8_t>(value.toInt(&ok, base));
 
             else if (key == "ParameterName")
                 parameterName = value;
 
             else if (key == "SubNumber")
-                subNumber = (uint8_t)value.toInt(&ok, base);
+                subNumber = static_cast<uint8_t>(value.toInt(&ok, base));
 
             else if (key == "PDOMapping")
                 accessType += parser.readPdoMapping();
