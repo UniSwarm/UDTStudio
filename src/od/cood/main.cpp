@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include "model/devicemodel.h"
 #include "parser/devicemodelparser.h"
+#include "parser/dcfparser.h"
 #include "generator/cgenerator.h"
 #include "writer/dcfwriter.h"
 #include "writer/edswriter.h"
@@ -73,8 +74,8 @@ int main(int argc, char *argv[])
     }
     else if (inSuffix == "dcf")
     {
-        DeviceModelParser parser;
-        deviceConfiguration = static_cast<DeviceConfiguration*>(parser.parse(inputFile, "dcf"));
+        DcfParser parser;
+        deviceConfiguration = parser.parse(inputFile);
     }
     else
     {
