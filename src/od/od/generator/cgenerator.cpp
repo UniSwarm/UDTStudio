@@ -40,25 +40,32 @@ CGenerator::~CGenerator()
  * @param object dictionary
  * @param output directory path
  */
-void CGenerator::generate(DeviceConfiguration *od, const QString &dir) const
+bool CGenerator::generate(DeviceConfiguration *od, const QString &filePath) const
 {
-    generateH(od, dir);
-    generateC(od, dir);
+    generateH(od, filePath);
+    generateC(od, filePath);
+
+    return true;
 }
 
-void CGenerator::generate(DeviceDescription *od, const QString &dir, uint8_t nodeId) const
+bool CGenerator::generate(DeviceDescription *od, const QString &filePath) const
+{
+    return false;
+}
+
+void CGenerator::generate(DeviceDescription *od, const QString &filePath, uint8_t nodeId) const
 {
     DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(od, nodeId);
-    generate(deviceConfiguration, dir);
+    generate(deviceConfiguration, filePath);
 }
 
 /**
  * @brief Generate OD.h file
  * @param object dictionary
  */
-void CGenerator::generateH(DeviceConfiguration *od, const QString &dir) const
+void CGenerator::generateH(DeviceConfiguration *od, const QString &filePath) const
 {
-    QFile hFile(dir + "/od_data.h");
+    QFile hFile(filePath);
 
     if (!hFile.open(QIODevice::WriteOnly))
         return;
@@ -128,9 +135,9 @@ void CGenerator::generateH(DeviceConfiguration *od, const QString &dir) const
  * @brief Generate OD.c file
  * @param object dictionary
  */
-void CGenerator::generateC(DeviceConfiguration *od, const QString &dir) const
+void CGenerator::generateC(DeviceConfiguration *od, const QString &filePath) const
 {
-    QFile cFile(dir + "/od_data.c");
+    QFile cFile(filePath);
 
     if (!cFile.open(QIODevice::WriteOnly))
         return;

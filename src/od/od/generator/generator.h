@@ -24,6 +24,7 @@
 #include <QString>
 
 #include "model/deviceconfiguration.h"
+#include "model/devicedescription.h"
 
 class OD_EXPORT Generator
 {
@@ -31,7 +32,8 @@ public:
     Generator();
     virtual ~Generator();
 
-    virtual void generate(DeviceConfiguration *od, const QString &dir) const = 0;
+    virtual bool generate(DeviceConfiguration *od, const QString &filePath) const = 0;
+    virtual bool generate(DeviceDescription *od, const QString &filePath) const = 0;
 
     static Generator *getGenerator(const QString &type);
 };

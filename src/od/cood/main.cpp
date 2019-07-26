@@ -94,8 +94,8 @@ int main(int argc, char *argv[])
         dcfWriter.write(deviceConfiguration, outputFile);
     if (QFileInfo(outputFile).isDir())
     {
-        cgenerator.generateC(deviceConfiguration, outputFile);
-        cgenerator.generateH(deviceConfiguration, outputFile);
+        cgenerator.generateC(deviceConfiguration, QString(outputFile + "/od_data.c"));
+        cgenerator.generateH(deviceConfiguration, QString(outputFile + "/od_data.h"));
         dcfWriter.write(deviceConfiguration, QString(outputFile + "/out.dcf"));
     }
 
