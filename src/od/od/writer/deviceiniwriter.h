@@ -31,7 +31,7 @@ public:
     DeviceIniWriter(QTextStream *file);
 
     void writeObjects(const DeviceModel *deviceModel) const;
-    void writeFileInfo(const QMap <QString, QString> &fileInfos) const;
+    void writeFileInfo(QMap<QString, QString> fileInfos) const;
     void writeDeviceComissioning(const QMap <QString, QString> &deviceComissionings) const;
     void writeDeviceInfo(const QMap <QString, QString> &deviceInfos) const;
     void writeDummyUsage(const QMap <QString, QString> &dummyUsages) const;

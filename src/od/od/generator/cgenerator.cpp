@@ -21,6 +21,7 @@
 #include <QList>
 #include <QRegularExpression>
 #include <QDebug>
+#include <QDateTime>
 
 #include "cgenerator.h"
 
@@ -74,6 +75,12 @@ void CGenerator::generateH(DeviceConfiguration *od, const QString &filePath) con
 
     out << "/**\n";
     out << " * Generated .h file\n";
+
+    QString date = QDateTime().currentDateTime().toString("dd-MM-yyyy");
+    QString time = QDateTime().currentDateTime().toString("hh:mm AP");
+    out << " * Creation date: " << date << "\n";
+    out << " * Creation time: " << time << "\n";
+
     out << " */\n";
     out << "\n";
     out << "#ifndef OD_DATA_H" << "\n";
@@ -146,6 +153,12 @@ void CGenerator::generateC(DeviceConfiguration *od, const QString &filePath) con
 
     out << "/**\n";
     out << " * Generated .c file\n";
+
+    QString date = QDateTime().currentDateTime().toString("dd-MM-yyyy");
+    QString time = QDateTime().currentDateTime().toString("hh:mm AP");
+    out << " * Creation date: " << date << "\n";
+    out << " * Creation time: " << time << "\n";
+
     out << " */\n";
     out << "\n";
     out << "#include \"od_data.h\"" << "\n";

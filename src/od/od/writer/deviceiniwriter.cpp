@@ -18,6 +18,8 @@
 
 #include "deviceiniwriter.h"
 
+#include <QDateTime>
+
 DeviceIniWriter::DeviceIniWriter(QTextStream *file)
 {
     _file = file;
@@ -68,9 +70,15 @@ void DeviceIniWriter::writeObjects(const DeviceModel *deviceModel) const
     writeListIndex(manufacturers);
 }
 
-void DeviceIniWriter::writeFileInfo(const QMap<QString, QString> &fileInfos) const
+void DeviceIniWriter::writeFileInfo(QMap<QString, QString> fileInfos) const
 {
     *_file << "[FileInfo]" << "\n";
+
+    QString date = QDateTime().currentDateTime().toString("dd-MM-yyyy");
+    QString time = QDateTime().currentDateTime().toString("hh:mm AP");
+
+    fileInfos.insert("ModificationDate", date);
+    fileInfos.insert("ModificationTime", time);
 
     writeStringMap(fileInfos);
 }
