@@ -125,9 +125,9 @@ void DeviceIniWriter::writeIndex(Index *index) const
     *_file << "[" << QString::number(index->index(), base).toUpper() << "]\n";
     *_file << "ParameterName=" << index->name() << "\n";
     *_file << "ObjectType=" << valueToString(index->objectType(), base) << "\n";
-    *_file << "DataType=" << valueToString(subIndex->data().dataType(), base) << "\n";
+    *_file << "DataType=" << valueToString(subIndex->dataType(), base) << "\n";
     *_file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
-    *_file << "DefaultValue=" << dataToString(subIndex->data()) << "\n";
+    *_file << "DefaultValue=" << dataToString(subIndex->value()) << "\n";
     *_file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\n";
     writeLimit(subIndex);
     *_file << "\n";
@@ -148,9 +148,9 @@ void DeviceIniWriter::writeRecord(Index *index) const
         *_file << "[" << QString::number(index->index(), base).toUpper() << "sub" << subIndex->subIndex() << "]\n";
         *_file << "ParameterName=" << subIndex->name() << "\n";
         *_file << "ObjectType=" << valueToString(Index::Object::VAR, base) << "\n";
-        *_file << "DataType=" << valueToString(subIndex->data().dataType(), base) << "\n";
+        *_file << "DataType=" << valueToString(subIndex->dataType(), base) << "\n";
         *_file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
-        *_file << "DefaultValue=" << dataToString(subIndex->data()) << "\n";
+        *_file << "DefaultValue=" << dataToString(subIndex->value()) << "\n";
         *_file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\n";
         writeLimit(subIndex);
         *_file << "\n";
@@ -223,9 +223,9 @@ QString DeviceIniWriter::accessToString(int access) const
     return "";
 }
 
-QString DeviceIniWriter::dataToString(const DataStorage &data) const
+QString DeviceIniWriter::dataToString(const QVariant &value) const
 {
-    return data.value().toString();
+    return value.toString();
 }
 
 QString DeviceIniWriter::pdoToString(uint8_t accessType) const

@@ -24,8 +24,6 @@
 #include<QList>
 #include<QString>
 
-#include "datastorage.h"
-
 class OD_EXPORT SubIndex
 {
 public:
@@ -57,10 +55,6 @@ public:
     QString name() const;
     void setName(const QString &name);
 
-    const DataStorage &data() const;
-    DataStorage &data();
-    void setData(const DataStorage &data);
-
     QVariant lowLimit() const;
     void setLowLimit(const QVariant &lowLimit);
 
@@ -73,11 +67,52 @@ public:
     bool hasNodeId() const;
     void setHasNodeId(bool hasNodeId);
 
+    const QVariant &value() const;
+    void setValue(const QVariant &value);
+
+    // =============== Data type ==================
+    enum Type
+    {
+        BOOLEAN = 0x0001,
+        INTEGER8 = 0x0002,
+        INTEGER16 = 0x0003,
+        INTEGER32 = 0x0004,
+        UNSIGNED8 = 0x0005,
+        UNSIGNED16 = 0x0006,
+        UNSIGNED32 = 0x0007,
+        REAL32 = 0x0008,
+        VISIBLE_STRING = 0x0009,
+        OCTET_STRING = 0x000A,
+        UNICODE_STRING = 0x000B,
+        TIME_OF_DAY = 0x000C,
+        TIME_DIFFERENCE = 0x000D,
+        DOMAIN = 0x000F,
+        INTEGER24 = 0x0010,
+        REAL64 = 0x0011,
+        INTEGER40 = 0x0012,
+        INTEGER48 = 0x0013,
+        INTEGER56 = 0x0014,
+        INTEGER64 = 0x0015,
+        UNSIGNED24 = 0x0016,
+        UNSIGNED40 = 0x0018,
+        UNSIGNED48 = 0x0019,
+        UNSIGNED56 = 0x001A,
+        UNSIGNED64 = 0x001B
+    };
+
+    uint16_t dataType() const;
+    void setDataType(const uint16_t &dataType);
+    static QString dataTypeStr(const uint16_t &dataType);
+
+    int length() const;
+
 protected:
     uint8_t _accessType;
     uint8_t _subIndex;
     QString _name;
-    DataStorage _data;
+
+    QVariant _value;
+    uint16_t _dataType;
 
     uint8_t _flagLimit;
     QVariant _lowLimit;

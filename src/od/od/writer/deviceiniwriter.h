@@ -28,7 +28,7 @@ public:
 private:
     QString valueToString(int value, int base = 10) const;
     QString accessToString(int access) const;
-    QString dataToString(const DataStorage &data) const;
+    QString dataToString(const QVariant &value) const;
     QString pdoToString(uint8_t accessType) const;
 
     QTextStream *_file;

@@ -118,16 +118,16 @@ QVariant ODItem::data(int column, int role) const
                 return QVariant(_index->name());
             case ODItemModel::Type:
                 if (_index->objectType() == Index::VAR && _index->subIndexesCount() == 1)
-                    return QVariant(DataStorage::dataTypeStr(_index->subIndex(0)->data().dataType()));
+                    return QVariant(SubIndex::dataTypeStr(_index->subIndex(0)->dataType()));
                 else
                     return QVariant(Index::objectTypeStr(_index->objectType()));
             case ODItemModel::Value:
                 if (_index->objectType() == Index::VAR && _index->subIndexesCount() == 1)
                 {
                     if (_index->subIndex(0)->hasNodeId() && _deviceModel->type() == DeviceModel::Description)
-                        return QString("$NODEID+%1").arg(_index->subIndex(0)->data().value().toString());
+                        return QString("$NODEID+%1").arg(_index->subIndex(0)->value().toString());
                     else
-                        return _index->subIndex(0)->data().value();
+                        return _index->subIndex(0)->value();
                 }
                 else
                 {
@@ -147,7 +147,7 @@ QVariant ODItem::data(int column, int role) const
                 return _index->objectType();
             case ODItemModel::Value:
                 if (_index->objectType() == Index::VAR && _index->subIndexesCount() == 1)
-                    return _index->subIndex(0)->data().value();
+                    return _index->subIndex(0)->value();
                 else
                     return QVariant();
             default:
@@ -167,12 +167,12 @@ QVariant ODItem::data(int column, int role) const
             case ODItemModel::Name:
                 return QVariant(_subIndex->name());
             case ODItemModel::Type:
-                return QVariant(DataStorage::dataTypeStr(_subIndex->data().dataType()));
+                return QVariant(SubIndex::dataTypeStr(_subIndex->dataType()));
             case ODItemModel::Value:
                 if (_subIndex->hasNodeId() && _deviceModel->type() == DeviceModel::Description)
-                    return QString("$NODEID+%1").arg(_subIndex->data().value().toString());
+                    return QString("$NODEID+%1").arg(_subIndex->value().toString());
                 else
-                    return _subIndex->data().value();
+                    return _subIndex->value();
             default:
                 return QVariant();
             }
@@ -184,9 +184,9 @@ QVariant ODItem::data(int column, int role) const
             case ODItemModel::Name:
                 return _subIndex->name();
             case ODItemModel::Type:
-                return _subIndex->data().dataType();
+                return _subIndex->dataType();
             case ODItemModel::Value:
-                return _subIndex->data().value();
+                return _subIndex->value();
             default:
                 return QVariant();
             }
@@ -218,14 +218,14 @@ bool ODItem::setData(int column, const QVariant &value, int role)
                 return true;
             case ODItemModel::Type:
                 if (_index->objectType() == Index::VAR && index()->subIndexesCount() == 1)
-                    index()->subIndex(0)->data().setDataType(value.toInt());
+                    index()->subIndex(0)->setDataType(value.toInt());
                 else
                     index()->setObjectType(value.toInt());
                 return true;
             case ODItemModel::Value:
                 if (_index->objectType() == Index::VAR && index()->subIndexesCount() == 1)
                 {
-                    index()->subIndex(0)->data().setValue(value);
+                    index()->subIndex(0)->setValue(value);
                     return true;
                 }
                 else
@@ -249,10 +249,10 @@ bool ODItem::setData(int column, const QVariant &value, int role)
                 _subIndex->setName(value.toString());
                 return true;
             case ODItemModel::Type:
-                _subIndex->data().setDataType(value.toInt());
+                _subIndex->setDataType(value.toInt());
                 return true;
             case ODItemModel::Value:
-                _subIndex->data().setValue(value);
+                _subIndex->setValue(value);
                 return true;
             default:
                 return false;

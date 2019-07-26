@@ -76,14 +76,14 @@ DeviceConfiguration *DeviceConfiguration::fromDeviceDescription(const DeviceDesc
         {
             if (subIndex->hasNodeId())
             {
-                QString value = subIndex->data().value().toString();
+                QString value = subIndex->value().toString();
 
                 uint8_t base = 10;
                 if (value.startsWith("0x"))
                     base = 16;
 
                 bool ok;
-                subIndex->data().setValue(value.toUInt(&ok, base) + nodeId);
+                subIndex->setValue(value.toUInt(&ok, base) + nodeId);
             }
         }
     }

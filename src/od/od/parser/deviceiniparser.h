@@ -14,7 +14,7 @@ class DeviceIniParser
 public:
     DeviceIniParser(QSettings *file);
 
-    DataStorage readData(bool *nodeId) const;
+    QVariant readData(bool *nodeId) const;
     void readFileInfo(DeviceModel *od) const;
     void readDummyUsage(DeviceModel *od) const;
     void readDeviceInfo(DeviceDescription *od) const;
@@ -22,6 +22,7 @@ public:
     uint8_t readPdoMapping() const;
     QVariant readLowLimit() const;
     QVariant readHighLimit() const;
+    uint16_t readDataType() const;
 
     QSettings *_file;
 };

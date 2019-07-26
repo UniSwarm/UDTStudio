@@ -228,41 +228,41 @@ QString CGenerator::typeToString(const uint16_t &type) const
 {
     switch(type)
     {
-    case DataStorage::Type::INTEGER8:
+    case SubIndex::Type::INTEGER8:
        return QLatin1String("int8_t");
 
-    case DataStorage::Type::INTEGER16:
+    case SubIndex::Type::INTEGER16:
         return QLatin1String("int16_t");
 
-    case DataStorage::Type::INTEGER32:
+    case SubIndex::Type::INTEGER32:
         return QLatin1String("int32_t");
 
-    case DataStorage::Type::INTEGER64:
+    case SubIndex::Type::INTEGER64:
         return QLatin1String("int64_t");
 
-    case DataStorage::Type::BOOLEAN:
-    case DataStorage::Type::UNSIGNED8:
+    case SubIndex::Type::BOOLEAN:
+    case SubIndex::Type::UNSIGNED8:
        return QLatin1String("uint8_t");
 
-    case DataStorage::Type::UNSIGNED16:
+    case SubIndex::Type::UNSIGNED16:
         return QLatin1String("uint16_t");
 
-    case DataStorage::Type::UNSIGNED32:
+    case SubIndex::Type::UNSIGNED32:
         return QLatin1String("uint32_t");
 
-    case DataStorage::Type::UNSIGNED64:
+    case SubIndex::Type::UNSIGNED64:
         return QLatin1String("uint64_t");
 
-    case DataStorage::Type::REAL32:
+    case SubIndex::Type::REAL32:
         return QLatin1String("float32_t");
 
-    case DataStorage::Type::REAL64:
+    case SubIndex::Type::REAL64:
         return QLatin1String("float64_t");
 
-    case DataStorage::Type::VISIBLE_STRING:
+    case SubIndex::Type::VISIBLE_STRING:
         return QLatin1String("vstring_t");
 
-    case DataStorage::Type::OCTET_STRING:
+    case SubIndex::Type::OCTET_STRING:
         return QLatin1String("ostring_t");
 
     default:
@@ -318,15 +318,15 @@ QString CGenerator::dataToString(const SubIndex *subIndex) const
 {
     QString data;
 
-    switch (subIndex->data().dataType())
+    switch (subIndex->dataType())
     {
-    case DataStorage::Type::OCTET_STRING:
-    case DataStorage::Type::VISIBLE_STRING:
+    case SubIndex::Type::OCTET_STRING:
+    case SubIndex::Type::VISIBLE_STRING:
         data = stringNameToString(subIndex);
         break;
 
     default:
-        data = subIndex->data().value().toString();
+        data = subIndex->value().toString();
     }
 
     return data;
@@ -347,13 +347,13 @@ QString CGenerator::typeObjectToString(Index *index, uint8_t subIndex, bool isIn
     else
         typeObject = "0x" + QString::number(index->objectType());
 
-    if (index->subIndex(subIndex)->data().dataType() <= 0x000F)
+    if (index->subIndex(subIndex)->dataType() <= 0x000F)
         typeObject += "00";
 
-    else if (index->subIndex(subIndex)->data().dataType() <= 0x00FF)
+    else if (index->subIndex(subIndex)->dataType() <= 0x00FF)
         typeObject += "0";
 
-    typeObject += QString::number(index->subIndex(subIndex)->data().dataType(), 16).toUpper();
+    typeObject += QString::number(index->subIndex(subIndex)->dataType(), 16).toUpper();
 
     return typeObject;
 }
@@ -389,7 +389,7 @@ void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile) const
 
         foreach (const SubIndex *subIndex, index->subIndexes())
         {
-            hFile << "    " << typeToString(subIndex->data().dataType()) << " "<< varNameToString(subIndex->name()) << ";" << "\n";
+            hFile << "    " << typeToString(subIndex->dataType()) << " "<< varNameToString(subIndex->name()) << ";" << "\n";
         }
         hFile << "} " << structNameToString(index->name()) << ";\n\n";
     }
@@ -405,7 +405,7 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile) const
     switch(index->objectType())
     {
     case Index::Object::VAR:
-        hFile << "    " << typeToString(index->subIndex(0)->data().dataType()) << " " << varNameToString(index->name()) << ";";
+        hFile << "    " << typeToString(index->subIndex(0)->dataType()) << " " << varNameToString(index->name()) << ";";
         break;
 
     case Index::Object::RECORD:
@@ -413,7 +413,7 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile) const
         break;
 
     case Index::Object::ARRAY:
-        hFile << "    " << typeToString(index->subIndex(1)->data().dataType()) << " " << varNameToString(index->name());
+        hFile << "    " << typeToString(index->subIndex(1)->dataType()) << " " << varNameToString(index->name());
         hFile << "[" << index->maxSubIndex()-1 << "]" << ";";
         break;
     }
@@ -485,7 +485,7 @@ void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
             cFile << "    " << "{(void*)&OD_RAM." << varNameToString(index->name());
             cFile << "." << varNameToString(subIndex->name());
             //TODO PDOmapping
-            cFile << ", " << subIndex->data().length() << ", " << typeObjectToString(index, subIndex->subIndex(), true) << ", ";
+            cFile << ", " << subIndex->length() << ", " << typeObjectToString(index, subIndex->subIndex(), true) << ", ";
             cFile << "0x" << QString::number(subIndex->accessType(), 16).toUpper() << ", " << subIndex->subIndex();
             cFile << "}," << "\n";
         }
@@ -526,7 +526,7 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
     {
     case Index::Object::VAR:
         cFile << "(void*)&OD_RAM." << varNameToString(index->name()) << ", ";
-        cFile << index->subIndex(0)->data().length() <<  ", " << typeObjectToString(index, 0) << ", " << "0x" << QString::number(index->subIndex(0)->accessType(), 16).toUpper();
+        cFile << index->subIndex(0)->length() <<  ", " << typeObjectToString(index, 0) << ", " << "0x" << QString::number(index->subIndex(0)->accessType(), 16).toUpper();
         break;
 
     case Index::Object::RECORD:
@@ -536,7 +536,7 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
 
     case Index::Object::ARRAY:
         cFile << "(void*)OD_RAM." << varNameToString(index->name()) << ", ";
-        cFile << index->subIndex(1)->data().length() <<  ", " << typeObjectToString(index, 1) << ", " << "0x" << QString::number(index->subIndex(1)->accessType(), 16).toUpper();
+        cFile << index->subIndex(1)->length() <<  ", " << typeObjectToString(index, 1) << ", " << "0x" << QString::number(index->subIndex(1)->accessType(), 16).toUpper();
         break;
     }
 
@@ -552,11 +552,11 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
  */
 void CGenerator::writeCharLineC(SubIndex *subIndex, QTextStream &cFile) const
 {
-    switch (subIndex->data().dataType())
+    switch (subIndex->dataType())
     {
-    case DataStorage::Type::VISIBLE_STRING:
-    case DataStorage::Type::OCTET_STRING:
-        cFile << "const char " << stringNameToString(subIndex) << "[]" << " = " << "\"" << subIndex->data().toString() << "\"" << ";\n";
+    case SubIndex::Type::VISIBLE_STRING:
+    case SubIndex::Type::OCTET_STRING:
+        cFile << "const char " << stringNameToString(subIndex) << "[]" << " = " << "\"" << subIndex->value().toString() << "\"" << ";\n";
         break;
     }
 }

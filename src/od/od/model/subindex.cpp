@@ -26,12 +26,13 @@
  * @param parameter name
  */
 SubIndex::SubIndex(const uint8_t &subIndex)
-    : _data(0)
 {
     _subIndex = subIndex;
     _flagLimit = 0;
     _accessType = 0;
     _hasNodeId = false;
+    _value = QVariant(0);
+    _dataType = 0;
 }
 
 SubIndex::SubIndex(const SubIndex &other)
@@ -39,13 +40,14 @@ SubIndex::SubIndex(const SubIndex &other)
     _accessType = other.accessType();
     _subIndex = other.subIndex();
     _name = other.name();
-    _data = other.data();
+    _value = other.value();
 
     _flagLimit = other.flagLimit();
     _lowLimit = other.lowLimit();
     _highLimit = other.highLimit();
 
     _hasNodeId = other.hasNodeId();
+    _dataType = other.dataType();
 }
 
 SubIndex::~SubIndex()
@@ -81,21 +83,6 @@ QString SubIndex::name() const
 void SubIndex::setName(const QString &name)
 {
     _name = name;
-}
-
-const DataStorage &SubIndex::data() const
-{
-    return _data;
-}
-
-DataStorage &SubIndex::data()
-{
-    return _data;
-}
-
-void SubIndex::setData(const DataStorage &data)
-{
-    _data = data;
 }
 
 QVariant SubIndex::lowLimit() const
@@ -136,4 +123,109 @@ bool SubIndex::hasNodeId() const
 void SubIndex::setHasNodeId(bool hasNodeId)
 {
     _hasNodeId = hasNodeId;
+}
+
+const QVariant &SubIndex::value() const
+{
+    return _value;
+}
+
+void SubIndex::setValue(const QVariant &value)
+{
+    _value.setValue(value);
+}
+
+uint16_t SubIndex::dataType() const
+{
+    return _dataType;
+}
+
+void SubIndex::setDataType(const uint16_t &dataType)
+{
+    _dataType = dataType;
+}
+
+QString SubIndex::dataTypeStr(const uint16_t &dataType)
+{
+    switch (dataType)
+    {
+    case BOOLEAN:
+        return QString("BOOLEAN");
+    case INTEGER8:
+        return QString("INT8");
+    case INTEGER16:
+        return QString("INT16");
+    case INTEGER32:
+        return QString("INT32");
+    case UNSIGNED8:
+        return QString("UINT8");
+    case UNSIGNED16:
+        return QString("UINT16");
+    case UNSIGNED32:
+        return QString("UINT32");
+    case REAL32:
+        return QString("REAL32");
+    case VISIBLE_STRING:
+        return QString("VSTRING");
+    case OCTET_STRING:
+        return QString("OSTRING");
+    case UNICODE_STRING:
+        return QString("USTRING");
+    case TIME_OF_DAY:
+        return QString("DAYTIME");
+    case TIME_DIFFERENCE:
+        return QString("TIMEDIFF");
+    case DOMAIN:
+        return QString("DOMAIN");
+    case INTEGER24:
+        return QString("INT24");
+    case REAL64:
+        return QString("REAL64");
+    case INTEGER40:
+        return QString("INT40");
+    case INTEGER48:
+        return QString("INT48");
+    case INTEGER56:
+        return QString("INT56");
+    case INTEGER64:
+        return QString("INT64");
+    case UNSIGNED24:
+        return QString("UINT24");
+    case UNSIGNED40:
+        return QString("UINT40");
+    case UNSIGNED48:
+        return QString("UINT48");
+    case UNSIGNED56:
+        return QString("UINT56");
+    case UNSIGNED64:
+        return QString("UINT64");
+    }
+    return QString();
+
+}
+
+int SubIndex::length() const
+{
+    switch (_dataType)
+    {
+    case BOOLEAN:
+    case UNSIGNED8:
+    case INTEGER8:
+        return 1;
+
+    case UNSIGNED16:
+    case INTEGER16:
+        return 2;
+
+    case UNSIGNED32:
+    case INTEGER32:
+    case REAL32:
+        return 4;
+
+    case UNSIGNED64:
+    case INTEGER64:
+    case REAL64:
+        return 8;
+    }
+    return 0;
 }

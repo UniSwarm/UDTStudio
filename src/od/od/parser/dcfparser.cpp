@@ -21,6 +21,7 @@ DeviceConfiguration *DcfParser::parse(const QString &path) const
     uint16_t indexNumber;
     uint8_t accessType;
     uint8_t objectType;
+    uint16_t dataType;
     uint8_t subNumber;
     QString accessString;
     QString parameterName;
@@ -47,6 +48,7 @@ DeviceConfiguration *DcfParser::parse(const QString &path) const
         objectType = 0;
         subNumber = 0;
         flagLimit = 0;
+        dataType = 0;
 
         QRegularExpressionMatch matchSub = reSub.match(group);
         QRegularExpressionMatch matchIndex = reIndex.match(group);
@@ -140,9 +142,14 @@ DeviceConfiguration *DcfParser::parse(const QString &path) const
                 highLimit = parser.readHighLimit();
                 flagLimit += SubIndex::Limit::HIGH;
             }
+
+            else if (key == "DataType")
+            {
+                dataType = parser.readDataType();
+            }
         }
 
-        DataStorage data = parser.readData(&hasNodeId);
+        QVariant value= parser.readData(&hasNodeId);
         file.endGroup();
 
         if (isSubIndex)
@@ -154,9 +161,10 @@ DeviceConfiguration *DcfParser::parse(const QString &path) const
                 subIndex = new SubIndex(subNumber);
                 subIndex->setAccessType(accessType);
                 subIndex->setName(parameterName);
-                subIndex->setData(data);
+                subIndex->setValue(value);
                 subIndex->setFlagLimit(flagLimit);
                 subIndex->setHasNodeId(hasNodeId);
+                subIndex->setDataType(dataType);
 
                 if (flagLimit & SubIndex::Limit::LOW)
                     subIndex->setLowLimit(lowLimit);
@@ -180,9 +188,10 @@ DeviceConfiguration *DcfParser::parse(const QString &path) const
                 subIndex = new SubIndex(static_cast<uint8_t>(0));
                 subIndex->setAccessType(accessType);
                 subIndex->setName(parameterName);
-                subIndex->setData(data);
+                subIndex->setValue(value);
                 subIndex->setFlagLimit(flagLimit);
                 subIndex->setHasNodeId(hasNodeId);
+                subIndex->setDataType(dataType);
 
                 if (flagLimit & SubIndex::Limit::LOW)
                     subIndex->setLowLimit(lowLimit);

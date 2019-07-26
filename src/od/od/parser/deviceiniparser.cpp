@@ -10,34 +10,25 @@ DeviceIniParser::DeviceIniParser(QSettings *file)
  * @param dcf or eds file
  * @return data
  */
-DataStorage DeviceIniParser::readData(bool *nodeId) const
+QVariant DeviceIniParser::readData(bool *nodeId) const
 {
-    uint8_t base = 10;
-    QString value = _file->value("DataType").toString();
-    if ( value.startsWith("0x"))
-        base = 16;
-
-    bool ok;
-    uint8_t dataType = (uint8_t)value.toUInt(&ok, base);
-
-    DataStorage data;
-    data.setDataType(dataType);
+    QVariant value;
 
     if (_file->value("DefaultValue").isNull())
-        data.setValue(0);
+        value = QVariant(0);
 
     else if (_file->value("DefaultValue").toString().startsWith("$NODEID+"))
     {
-        data.setValue(_file->value("DefaultValue").toString().mid(8));
+        value = QVariant(_file->value("DefaultValue").toString().mid(8));
         *nodeId = true;
     }
 
     else
     {
-        data.setValue(_file->value("DefaultValue"));
+        value = QVariant(_file->value("DefaultValue"));
     }
 
-    return data;
+    return value;
 }
 
 void DeviceIniParser::readFileInfo(DeviceModel *od) const
@@ -96,4 +87,16 @@ QVariant DeviceIniParser::readLowLimit() const
 QVariant DeviceIniParser::readHighLimit() const
 {
     return QVariant(_file->value("HighLimit"));
+}
+
+uint16_t DeviceIniParser::readDataType() const
+{
+    QString dataType = _file->value("DataType").toString();
+
+    int base = 10;
+    if (dataType.startsWith("0x"))
+        base = 16;
+
+    bool ok;
+    return static_cast<uint16_t>(dataType.toInt(&ok, base));
 }
