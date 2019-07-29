@@ -280,7 +280,7 @@ QString CGenerator::typeToString(const uint16_t &type) const
         return QLatin1String("ostring_t");
 
     default:
-        return QLatin1String("");
+        return nullptr;
     }
 }
 
@@ -403,7 +403,11 @@ void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile) const
 
         foreach (const SubIndex *subIndex, index->subIndexes())
         {
-            hFile << "    " << typeToString(subIndex->dataType()) << " "<< varNameToString(subIndex->name()) << ";" << "\n";
+            QString dataType = typeToString(subIndex->dataType());
+            if (dataType == nullptr)
+                continue;
+
+            hFile << "    " << dataType << " "<< varNameToString(subIndex->name()) << ";" << "\n";
         }
         hFile << "} " << structNameToString(index->name()) << ";\n\n";
     }
@@ -416,13 +420,18 @@ void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile) const
  */
 void CGenerator::writeIndexH(Index *index, QTextStream &hFile) const
 {
+    QString dataType;
     switch(index->objectType())
     {
     case Index::Object::VAR:
-        if (index->subIndexExist(0))
-        {
-            hFile << "    " << typeToString(index->subIndex(0)->dataType()) << " " << varNameToString(index->name()) << ";";
-        }
+        if (!index->subIndexExist(0))
+            break;
+
+        dataType = typeToString(index->subIndex(0)->dataType());
+        if (dataType == nullptr)
+            break;
+
+        hFile << "    " << dataType << " " << varNameToString(index->name()) << ";";
         break;
 
     case Index::Object::RECORD:
@@ -430,11 +439,16 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile) const
         break;
 
     case Index::Object::ARRAY:
-        if (index->subIndexExist(1))
-        {
-            hFile << "    " << typeToString(index->subIndex(1)->dataType()) << " " << varNameToString(index->name());
-            hFile << "[" << index->maxSubIndex()-1 << "]" << ";";
-        }
+        if (!index->subIndexExist(1))
+            break;
+
+        dataType = typeToString(index->subIndex(1)->dataType());
+        if (dataType == nullptr)
+            break;
+
+        hFile << "    " << dataType << " " << varNameToString(index->name());
+        hFile << "[" << index->maxSubIndex()-1 << "]" << ";";
+
         break;
     }
 
