@@ -18,9 +18,186 @@
 
 #include "deviceiniparser.h"
 
+#include <QRegularExpression>
+#include <QDebug>
+
 DeviceIniParser::DeviceIniParser(QSettings *file)
 {
     _file = file;
+}
+
+void DeviceIniParser::readObjects(DeviceModel *deviceModel) const
+{
+    readIndexes(deviceModel);
+    readSubIndexes(deviceModel);
+}
+
+void DeviceIniParser::readIndexes(DeviceModel *deviceModel) const
+{
+    QRegularExpression reIndex("^[0-9A-F]{1,4}$");
+    foreach (const QString &group, _file->childGroups())
+    {
+        bool ok;
+        uint16_t numIndex = 0;
+        QRegularExpressionMatch matchIndex = reIndex.match(group);
+
+        if (matchIndex.hasMatch())
+        {
+            QString matchedIndex = matchIndex.captured(0);
+            numIndex = static_cast<uint16_t>(matchedIndex.toInt(&ok, 16));
+            Index *index = new Index(numIndex);
+
+            _file->beginGroup(group);
+            readIndex(index);
+            _file->endGroup();
+
+            deviceModel->addIndex(index);
+        }
+    }
+}
+
+void DeviceIniParser::readSubIndexes(DeviceModel *deviceModel) const
+{
+    QRegularExpression reSub("^([0-9A-F]{4})sub([0-9]+)");
+    foreach (const QString &group, _file->childGroups())
+    {
+        bool ok;
+        uint8_t numSubIndex = 0;
+        QRegularExpressionMatch matchSub = reSub.match(group);
+
+        if (matchSub.hasMatch())
+        {
+            QString matchedSub = matchSub.captured(2);
+            numSubIndex = static_cast<uint8_t>(matchedSub.toShort(&ok, 16));
+            SubIndex *subIndex = new SubIndex(numSubIndex);
+
+            _file->beginGroup(group);
+            readSubIndex(subIndex);
+            _file->endGroup();
+
+            matchedSub = matchSub.captured(1);
+            uint16_t numIndex = static_cast<uint16_t>(matchedSub.toUInt(&ok, 16));
+
+            if (deviceModel->indexExist(numIndex))
+            {
+                Index *index = deviceModel->index(numIndex);
+                index->addSubIndex(subIndex);
+            }
+        }
+    }
+}
+
+void DeviceIniParser::readIndex(Index* index) const
+{
+    uint8_t objectType;
+    uint8_t maxSubIndex;
+    QString name;
+
+    foreach (const QString &key, _file->allKeys())
+    {
+        bool ok;
+        QString value = _file->value(key).toString();
+
+        uint8_t base = 10;
+        if (value.startsWith("0x", Qt::CaseInsensitive))
+            base = 16;
+
+        if (key == "ObjectType")
+        {
+            objectType = static_cast<uint8_t>(value.toInt(&ok, base));
+        }
+
+        else if (key == "ParameterName")
+        {
+            name = value;
+        }
+
+        else if (key == "SubNumber")
+        {
+            maxSubIndex = static_cast<uint8_t>(value.toInt(&ok, base));
+        }
+    }
+
+    SubIndex *subIndex = new SubIndex(static_cast<uint8_t>(0));
+    readSubIndex(subIndex);
+
+    index->setMaxSubIndex(maxSubIndex);
+    index->setObjectType(objectType);
+    index->setName(name);
+    index->addSubIndex(subIndex);
+}
+
+void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
+{
+    bool hasNodeId = 0;
+    uint8_t accessType = 0;
+    uint8_t flagLimit = 0;
+    uint16_t dataType;
+    QString name;
+    QVariant data;
+    QVariant lowLimit;
+    QVariant highLimit;
+
+    foreach (const QString &key, _file->allKeys())
+     {
+         QString value = _file->value(key).toString();
+
+         uint8_t base = 10;
+         if (value.startsWith("0x", Qt::CaseInsensitive))
+             base = 16;
+
+         if (key == "AccessType")
+         {
+             QString accessString = _file->value(key).toString();
+
+             if (accessString == "rw" || accessString == "rwr" || accessString == "rww")
+                 accessType += SubIndex::Access::READ + SubIndex::Access::WRITE;
+
+             else if (accessString == "wo")
+                 accessType += SubIndex::Access::WRITE;
+
+             else if (accessString == "ro" || accessString == "const")
+                 accessType += SubIndex::Access::READ;
+         }
+
+         else if (key == "PDOMapping")
+         {
+             accessType += readPdoMapping();
+         }
+
+         else if (key == "ParameterName")
+         {
+             name = value;
+         }
+
+         else if (key == "LowLimit")
+         {
+             lowLimit = readLowLimit();
+             flagLimit += SubIndex::Limit::LOW;
+         }
+
+         else if (key == "HighLimit")
+         {
+             highLimit = readHighLimit();
+             flagLimit += SubIndex::Limit::HIGH;
+         }
+
+         else if (key == "DataType")
+         {
+             dataType = readDataType();
+         }
+
+         data = readData(&hasNodeId);
+    }
+
+    subIndex->setAccessType(accessType);
+    subIndex->setName(name);
+    subIndex->setValue(data);
+    subIndex->setDataType(dataType);
+    subIndex->setFlagLimit(flagLimit);
+    subIndex->setLowLimit(lowLimit);
+    subIndex->setHighLimit(highLimit);
+    subIndex->setHasNodeId(hasNodeId);
 }
 
 /**

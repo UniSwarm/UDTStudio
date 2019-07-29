@@ -29,7 +29,7 @@ class OD_EXPORT DeviceModel
 {
 public:
     DeviceModel();
-    ~DeviceModel();
+    virtual ~DeviceModel();
 
     enum Type
     {
@@ -48,10 +48,11 @@ public:
     void setDummyUsage(const QString &key, const QString &value);
 
     QMap<uint16_t, Index *> indexes() const;
-    Index *index(const uint16_t &index) const;
+    Index *index(uint16_t index) const;
     void addIndex(Index *index);
     int indexCount() const;
     void setIndexes(const QMap<uint16_t, Index *> &indexes);
+    bool indexExist(uint16_t key) const;
 
     QString fileName() const;
     void setFileName(const QString &name);

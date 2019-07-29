@@ -69,7 +69,7 @@ QMap<uint16_t, Index *> DeviceModel::indexes() const
     return _indexes;
 }
 
-Index *DeviceModel::index(const uint16_t &index) const
+Index *DeviceModel::index(uint16_t index) const
 {
     return _indexes.value(index);
 }
@@ -87,6 +87,11 @@ int DeviceModel::indexCount() const
 void DeviceModel::setIndexes(const QMap<uint16_t, Index *> &indexes)
 {
     _indexes = indexes;
+}
+
+bool DeviceModel::indexExist(uint16_t key) const
+{
+    return _indexes.contains(key);
 }
 
 QString DeviceModel::fileName() const

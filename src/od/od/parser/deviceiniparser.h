@@ -32,6 +32,11 @@ class DeviceIniParser
 public:
     DeviceIniParser(QSettings *file);
 
+    void readObjects(DeviceModel *deviceModel) const;
+    void readIndexes(DeviceModel *deviceModel) const;
+    void readSubIndexes(DeviceModel *deviceModel) const;
+    void readIndex(Index *index) const;
+    void readSubIndex(SubIndex *subIndex) const;
     QVariant readData(bool *nodeId) const;
     void readFileInfo(DeviceModel *od) const;
     void readDummyUsage(DeviceModel *od) const;

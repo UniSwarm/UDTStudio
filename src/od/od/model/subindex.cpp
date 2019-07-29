@@ -25,7 +25,7 @@
  * @param access type
  * @param parameter name
  */
-SubIndex::SubIndex(const uint8_t &subIndex)
+SubIndex::SubIndex(const uint8_t subIndex)
 {
     _subIndex = subIndex;
     _flagLimit = 0;
