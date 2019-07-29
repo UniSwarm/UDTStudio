@@ -180,7 +180,8 @@ void CGenerator::generateC(DeviceConfiguration *od, const QString &filePath) con
             continue;
         }
 
-        writeCharLineC(index->subIndex(0), out);
+        if (index->subIndexExist(0))
+            writeCharLineC(index->subIndex(0), out);
     }
 
     QList<Index *> appIndexes;
@@ -418,7 +419,10 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile) const
     switch(index->objectType())
     {
     case Index::Object::VAR:
-        hFile << "    " << typeToString(index->subIndex(0)->dataType()) << " " << varNameToString(index->name()) << ";";
+        if (index->subIndexExist(0))
+        {
+            hFile << "    " << typeToString(index->subIndex(0)->dataType()) << " " << varNameToString(index->name()) << ";";
+        }
         break;
 
     case Index::Object::RECORD:
@@ -426,8 +430,11 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile) const
         break;
 
     case Index::Object::ARRAY:
-        hFile << "    " << typeToString(index->subIndex(1)->dataType()) << " " << varNameToString(index->name());
-        hFile << "[" << index->maxSubIndex()-1 << "]" << ";";
+        if (index->subIndexExist(1))
+        {
+            hFile << "    " << typeToString(index->subIndex(1)->dataType()) << " " << varNameToString(index->name());
+            hFile << "[" << index->maxSubIndex()-1 << "]" << ";";
+        }
         break;
     }
 
@@ -446,6 +453,9 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
     switch(index->objectType())
     {
     case Index::Object::VAR:
+        if (!index->subIndexExist(0))
+            break;
+
         cFile << "    " << "OD_RAM." << varNameToString(index->name());
         cFile << " = ";
         cFile << dataToString(index->subIndex(0));
@@ -470,6 +480,9 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
     case Index::Object::ARRAY:
         for (uint8_t i = 1; i<index->subIndexesCount(); i++)
         {
+            if (!index->subIndexExist(i))
+                continue;
+
             cFile << "    " << "OD_RAM." << varNameToString(index->name()) << "[" << i - 1 << "]";
             cFile << " = ";
             cFile << dataToString(index->subIndex(i));
@@ -538,6 +551,9 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
     switch (index->objectType())
     {
     case Index::Object::VAR:
+        if (!index->subIndexExist(0))
+            break;
+
         cFile << "(void*)&OD_RAM." << varNameToString(index->name()) << ", ";
         cFile << index->subIndex(0)->length() <<  ", " << typeObjectToString(index, 0) << ", " << "0x" << QString::number(index->subIndex(0)->accessType(), 16).toUpper();
         break;
@@ -548,6 +564,9 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
         break;
 
     case Index::Object::ARRAY:
+        if (!index->subIndexExist(1))
+            break;
+
         cFile << "(void*)OD_RAM." << varNameToString(index->name()) << ", ";
         cFile << index->subIndex(1)->length() <<  ", " << typeObjectToString(index, 1) << ", " << "0x" << QString::number(index->subIndex(1)->accessType(), 16).toUpper();
         break;

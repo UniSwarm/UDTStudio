@@ -97,6 +97,11 @@ int Index::subIndexesCount()
     return _subIndexes.count();
 }
 
+bool Index::subIndexExist(uint8_t subIndex)
+{
+    return _subIndexes.contains(subIndex);
+}
+
 uint8_t Index::objectType() const
 {
     return _objectType;

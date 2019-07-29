@@ -46,6 +46,7 @@ public:
     SubIndex *subIndex(uint8_t subIndex);
     void addSubIndex(SubIndex *subIndex);
     int subIndexesCount();
+    bool subIndexExist(uint8_t subIndex);
 
     // =========== Object type ====================
     enum Object
