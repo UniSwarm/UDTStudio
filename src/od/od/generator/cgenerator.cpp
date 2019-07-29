@@ -590,6 +590,31 @@ void CGenerator::writeInitRamC(QList<Index *> indexes, QTextStream &cFile) const
 
 void CGenerator::writeDefineH(Index *index, QTextStream &hFile) const
 {
-    hFile << "#define " << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
     hFile << "#define " << "OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
-    hFile << "\n";}
+    hFile << "#define " << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
+
+    if (index->objectType() == Index::Object::RECORD)
+    {
+        foreach (SubIndex *subIndex, index->subIndexes())
+        {
+            hFile << "#define " << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(subIndex->subIndex(), 16);
+            hFile << " OD_RAM." << varNameToString(subIndex->name()) << "\n";
+        }
+    }
+
+    else if (index->objectType() == Index::Object::ARRAY)
+    {
+        foreach (SubIndex *subIndex, index->subIndexes())
+        {
+            uint8_t numSubIndex = subIndex->subIndex();
+
+            if (numSubIndex == 0)
+                continue;
+
+            hFile << "#define " << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(numSubIndex, 16).toUpper();
+            hFile << " OD_RAM." << varNameToString(index->name()) << "[" << QString::number(numSubIndex - 1, 16).toUpper() << "]" << "\n";
+        }
+    }
+
+    hFile << "\n";
+}
