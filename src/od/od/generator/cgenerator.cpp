@@ -32,14 +32,18 @@ CGenerator::CGenerator()
 {
 }
 
+/**
+ * @brief default destructor
+ */
 CGenerator::~CGenerator()
 {
 }
 
 /**
- * @brief generate OD.h and OD.c files
- * @param object dictionary
- * @param output directory path
+ * @brief generates object dictionnary .h and .c files
+ * @param device configuration model based on dcf or xdd files
+ * @param output file name
+ * @return true
  */
 bool CGenerator::generate(DeviceConfiguration *od, const QString &filePath) const
 {
@@ -49,11 +53,23 @@ bool CGenerator::generate(DeviceConfiguration *od, const QString &filePath) cons
     return true;
 }
 
+/**
+ * @brief generates object dictionnary .h and .c files
+ * @param device description model based on eds or xdd files
+ * @param output file name
+ * @return false
+ */
 bool CGenerator::generate(DeviceDescription *od, const QString &filePath) const
 {
     return false;
 }
 
+/**
+ * @brief generates object dictionnary .h and .c files
+ * @param device description model based on eds or xdd files
+ * @param output file name
+ * @param CANopen node-id
+ */
 void CGenerator::generate(DeviceDescription *od, const QString &filePath, uint8_t nodeId) const
 {
     DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(od, nodeId);
@@ -61,8 +77,9 @@ void CGenerator::generate(DeviceDescription *od, const QString &filePath, uint8_
 }
 
 /**
- * @brief Generate OD.h file
- * @param object dictionary
+ * @brief generates object dictionnary .h file
+ * @param device configuration model based on dcf or xdd files
+ * @param output file name
  */
 void CGenerator::generateH(DeviceConfiguration *od, const QString &filePath) const
 {
@@ -139,8 +156,9 @@ void CGenerator::generateH(DeviceConfiguration *od, const QString &filePath) con
 }
 
 /**
- * @brief Generate OD.c file
- * @param object dictionary
+ * @brief generates object dictionnary .c file
+ * @param device configuration model based on dcf or xdd files
+ * @param output file name
  */
 void CGenerator::generateC(DeviceConfiguration *od, const QString &filePath) const
 {
@@ -591,7 +609,7 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
 }
 
 /**
- * @brief write char[] initialization in a C file
+ * @brief writes char[] initialization in a C file
  * @param sub-index
  * @param C file
  * @param sub-index-number for arrays
@@ -607,6 +625,11 @@ void CGenerator::writeCharLineC(SubIndex *subIndex, QTextStream &cFile) const
     }
 }
 
+/**
+ * @brief write ram initialization in c file
+ * @param indexes
+ * @param C file
+ */
 void CGenerator::writeInitRamC(QList<Index *> indexes, QTextStream &cFile) const
 {
     uint8_t lastOT = 0;
@@ -621,6 +644,12 @@ void CGenerator::writeInitRamC(QList<Index *> indexes, QTextStream &cFile) const
     }
 }
 
+
+/**
+ * @brief write custom defines for index and sub-indexes
+ * @param index model
+ * @param .h file
+ */
 void CGenerator::writeDefineH(Index *index, QTextStream &hFile) const
 {
     hFile << "#define " << "OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";

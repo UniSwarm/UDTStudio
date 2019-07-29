@@ -27,10 +27,18 @@ Generator::Generator()
 {
 }
 
+/**
+ * @brief virtual default destructor
+ */
 Generator::~Generator()
 {
 }
 
+/**
+ * @brief returns the generator wich corresponds with the type passed in parameter
+ * @param type of the generator
+ * @return a generator
+ */
 Generator *Generator::getGenerator(const QString &type)
 {
     if (type == "c")
