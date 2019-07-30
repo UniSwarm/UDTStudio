@@ -51,7 +51,6 @@ public:
     Index *index(uint16_t index) const;
     void addIndex(Index *index);
     int indexCount() const;
-    void setIndexes(const QMap<uint16_t, Index *> &indexes);
     bool indexExist(uint16_t key) const;
 
     QString fileName() const;

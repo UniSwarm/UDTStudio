@@ -36,8 +36,8 @@ public:
 
     QMap<QString, QString> deviceComissionings() const;
 
-    void setDeviceComissioning(const QString &key, const QString &value);
-    void setNodeId(const QString &nodeName);
+    void addDeviceComissioning(const QString &key, const QString &value);
+    void setNodeId(const QString &nodeId);
     void setNodeName(const QString &nodeName);
     void setBaudrate(const QString &baudrate);
     void setNetNumber(const QString &netNumber);

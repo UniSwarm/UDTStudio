@@ -34,7 +34,6 @@ public:
     Type type();
 
     QMap<QString, QString> deviceInfos() const;
-    void setDeviceInfos(const QMap<QString, QString> &deviceInfos);
     void setDeviceInfo(const QString &key, const QString &value);
 
 private:

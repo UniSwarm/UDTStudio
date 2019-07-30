@@ -18,61 +18,111 @@
 
 #include "deviceconfiguration.h"
 
+/**
+ * @brief default constructor
+ */
 DeviceConfiguration::DeviceConfiguration()
 {
 
 }
 
+/**
+ * @brief default destructor
+ */
 DeviceConfiguration::~DeviceConfiguration()
 {
 
 }
 
+/**
+ * @brief give the type of the model wich is implemented
+ * @return device model type
+ */
 DeviceModel::Type DeviceConfiguration::type()
 {
     return Configuration;
 }
 
+/**
+ * @brief _deviceCommissionings getter
+ * @return map of string wich contains device comissionings
+ */
 QMap<QString, QString> DeviceConfiguration::deviceComissionings() const
 {
     return _deviceComissionings;
 }
 
-void DeviceConfiguration::setDeviceComissioning(const QString &key, const QString &value)
+/**
+ * @brief inserts a new device comissioning with the key key and a value of value
+ * if there is already an item with the key key, that item's value is replaced with value
+ * @param key
+ * @param value
+ */
+void DeviceConfiguration::addDeviceComissioning(const QString &key, const QString &value)
 {
     _deviceComissionings.insert(key, value);
 }
 
-void DeviceConfiguration::setNodeId(const QString &nodeName)
+/**
+ * @brief sets a new CANopen node-id
+ * @param nodeId
+ */
+void DeviceConfiguration::setNodeId(const QString &nodeId)
 {
-    _deviceComissionings.insert("NodeID", nodeName);
+    _deviceComissionings.insert("NodeID", nodeId);
 }
 
+/**
+ * @brief sets a new node name
+ * @param nodeName
+ */
 void DeviceConfiguration::setNodeName(const QString &nodeName)
 {
     _deviceComissionings.insert("NodeName", nodeName);
 }
 
+/**
+ * @brief sets a new communication baudrate
+ * @param baudrate
+ */
 void DeviceConfiguration::setBaudrate(const QString &baudrate)
 {
     _deviceComissionings.insert("Baudrate", baudrate);
 }
 
+/**
+ * @brief sets a new network number
+ * @param network number
+ */
 void DeviceConfiguration::setNetNumber(const QString &netNumber)
 {
     _deviceComissionings.insert("NetNumber", netNumber);
 }
 
+/**
+ * @brief sets a new network name
+ * @param networkName
+ */
 void DeviceConfiguration::setNetworkName(const QString &networkName)
 {
     _deviceComissionings.insert("NetworkName", networkName);
 }
 
+/**
+ * @brief sets a new lss serila number
+ * @param lssSerialNumber
+ */
 void DeviceConfiguration::setLssSerialNumber(const QString &lssSerialNumber)
 {
     _deviceComissionings.insert("LssSerialNumber", lssSerialNumber);
 }
 
+/**
+ * @brief converts a device descrtiption model to a device configuration model
+ * @param device description model
+ * @param node id to add in the configuration model
+ * @return device configuration model
+ */
 DeviceConfiguration *DeviceConfiguration::fromDeviceDescription(const DeviceDescription *deviceDescription, uint8_t nodeId)
 {
     DeviceConfiguration *deviceConfiguration = new DeviceConfiguration();

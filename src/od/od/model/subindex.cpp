@@ -20,10 +20,7 @@
 
 /**
  * @brief constructor
- * @param data type
- * @param object type
- * @param access type
- * @param parameter name
+ * @param sub-index number
  */
 SubIndex::SubIndex(const uint8_t subIndex)
 {
@@ -35,6 +32,10 @@ SubIndex::SubIndex(const uint8_t subIndex)
     _dataType = 0;
 }
 
+/**
+ * @brief copy constructor
+ * @param other
+ */
 SubIndex::SubIndex(const SubIndex &other)
 {
     _accessType = other.accessType();
@@ -50,101 +51,181 @@ SubIndex::SubIndex(const SubIndex &other)
     _dataType = other.dataType();
 }
 
+/**
+ * @brief destructor
+ */
 SubIndex::~SubIndex()
 {
 
 }
 
+/**
+ * @brief access type getter
+ * @return 8 bits access type code
+ */
 uint8_t SubIndex::accessType() const
 {
     return _accessType;
 }
 
+/**
+ * @brief access type setter
+ * @param 8 bits access type code
+ */
 void SubIndex::setAccessType(const uint8_t &accessType)
 {
     _accessType = accessType;
 }
 
+/**
+ * @brief sub-index number getter
+ * @return 8 bits sub-index number
+ */
 uint8_t SubIndex::subIndex() const
 {
     return _subIndex;
 }
 
+/**
+ * @brief sub-index number setter
+ * @param 8 bits sub-index number
+ */
 void SubIndex::setSubIndex(const uint8_t &subIndex)
 {
     _subIndex = subIndex;
 }
 
+/**
+ * @brief name getter
+ * @return sub-index name
+ */
 QString SubIndex::name() const
 {
     return _name;
 }
 
+/**
+ * @brief name setter
+ * @param new sub-index string name
+ */
 void SubIndex::setName(const QString &name)
 {
     _name = name;
 }
 
+/**
+ * @brief low limit getter
+ * @return low limit value
+ */
 QVariant SubIndex::lowLimit() const
 {
     return _lowLimit;
 }
 
+/**
+ * @brief low limit values
+ * @param new low limit value
+ */
 void SubIndex::setLowLimit(const QVariant &lowLimit)
 {
     _lowLimit = lowLimit;
 }
 
+/**
+ * @brief high limit getter
+ * @return high limit value
+ */
 QVariant SubIndex::highLimit() const
 {
     return _highLimit;
 }
 
+/**
+ * @brief high limit setter
+ * @param new high limit value
+ */
 void SubIndex::setHighLimit(const QVariant &highLimit)
 {
     _highLimit = highLimit;
 }
 
+/**
+ * @brief flag limit getter
+ * @return 0x1 if sub-index has low limit, 0x2 if has high limit and 0x3 if has both. Else 0.
+ */
 uint8_t SubIndex::flagLimit() const
 {
     return _flagLimit;
 }
 
+/**
+ * @brief flag limit setter
+ * @param new flag limit code
+ */
 void SubIndex::setFlagLimit(const uint8_t &flagLimit)
 {
     _flagLimit = flagLimit;
 }
 
+/**
+ * @brief _hasNoddId getter
+ * @return true if the sub-index value depends of a node-id
+ */
 bool SubIndex::hasNodeId() const
 {
     return _hasNodeId;
 }
 
+/**
+ * @brief _hasNodeId setter
+ * @param new bool
+ */
 void SubIndex::setHasNodeId(bool hasNodeId)
 {
     _hasNodeId = hasNodeId;
 }
 
+/**
+ * @brief _value getter
+ * @return return sub-index value
+ */
 const QVariant &SubIndex::value() const
 {
     return _value;
 }
 
+/**
+ * @brief _value setter
+ * @param new sub-index value
+ */
 void SubIndex::setValue(const QVariant &value)
 {
     _value.setValue(value);
 }
 
+/**
+ * @brief _dataType getter
+ * @return 16 bits sub-index data type code
+ */
 uint16_t SubIndex::dataType() const
 {
     return _dataType;
 }
 
+/**
+ * @brief _dataType setter
+ * @param new 16 bits data type code
+ */
 void SubIndex::setDataType(const uint16_t &dataType)
 {
     _dataType = dataType;
 }
 
+/**
+ * @brief converts an data type code to his corresponding string
+ * @param 16 bits data type code
+ * @return data type string
+ */
 QString SubIndex::dataTypeStr(const uint16_t &dataType)
 {
     switch (dataType)
@@ -204,6 +285,10 @@ QString SubIndex::dataTypeStr(const uint16_t &dataType)
 
 }
 
+/**
+ * @brief return the length of the sub-index value
+ * @return octet sub-index value length
+ */
 int SubIndex::length() const
 {
     switch (_dataType)

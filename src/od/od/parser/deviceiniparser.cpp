@@ -254,7 +254,7 @@ void DeviceIniParser::readDeviceComissioning(DeviceConfiguration *od) const
 {
     foreach (const QString &key, _file->allKeys())
     {
-       od->setDeviceComissioning(key, _file->value(key).toString());
+       od->addDeviceComissioning(key, _file->value(key).toString());
     }
 }
 

@@ -20,12 +20,7 @@
 
 /**
  * @brief constructor
- * @param data type
- * @param object type
- * @param access type
- * @param parameter name
- * @param index
- * @param sub-index number
+ * @param 16 bits index number
  */
 Index::Index(const uint16_t &index)
 {
@@ -34,6 +29,10 @@ Index::Index(const uint16_t &index)
     _objectType = VAR;
 }
 
+/**
+ * @brief copy constructor
+ * @param other
+ */
 Index::Index(const Index &other)
 {
     _index = other.index();
@@ -54,16 +53,28 @@ Index::~Index()
     _subIndexes.clear();
 }
 
+/**
+ * @brief index number getter
+ * @return 16 bits index number
+ */
 uint16_t Index::index() const
 {
     return _index;
 }
 
+/**
+ * @brief index number setter
+ * @param 16 bits index number
+ */
 void Index::setIndex(const uint16_t &index)
 {
     _index = index;
 }
 
+/**
+ * @brief max sub-index getter
+ * @return max sub-index
+ */
 uint8_t Index::maxSubIndex() const
 {
     return _maxSubIndex;
@@ -74,11 +85,20 @@ void Index::setMaxSubIndex(const uint8_t &maxSubIndex)
     _maxSubIndex = maxSubIndex;
 }
 
+/**
+ * @brief max sub-index setter
+ * @param max sub-index
+ */
 QMap<uint8_t, SubIndex *> &Index::subIndexes()
 {
     return _subIndexes;
 }
 
+/**
+ * @brief return the subIndex with the number subIndex
+ * @param subi-index number
+ * @return a sub-index
+ */
 SubIndex *Index::subIndex(uint8_t subIndex)
 {
     if (_subIndexes.contains(subIndex))
@@ -87,31 +107,60 @@ SubIndex *Index::subIndex(uint8_t subIndex)
    return nullptr;
 }
 
+/**
+ * @brief inserts a new sub-index, if the sub-index already exists,
+ * replaces it by the new sub-index
+ * @param subIndex
+ */
 void Index::addSubIndex(SubIndex *subIndex)
 {
     _subIndexes.insert(subIndex->subIndex(), subIndex);
 }
 
+/**
+ * @brief returns the number of sub-indexes.
+ * @return nummber of sub-indexes
+ */
 int Index::subIndexesCount()
 {
     return _subIndexes.count();
 }
 
+/**
+ * @brief returns true if the map contains a sub-index with the number subIndex;
+ *  otherwise returns false
+ * @param subIndex
+ * @return true if the map contains a sub-index with the number subIndex,
+ * otherwise returns false
+ */
 bool Index::subIndexExist(uint8_t subIndex)
 {
     return _subIndexes.contains(subIndex);
 }
 
+/**
+ * @brief object type getter
+ * @return 8bits object type code
+ */
 uint8_t Index::objectType() const
 {
     return _objectType;
 }
 
+/**
+ * @brief object type setter
+ * @param 8 bits objects type code
+ */
 void Index::setObjectType(const uint8_t &objectType)
 {
     _objectType = objectType;
 }
 
+/**
+ * @brief converts an object type code to his corresponding string
+ * @param 8 bits object type code
+ * @return object type string
+ */
 QString Index::objectTypeStr(const uint8_t &objectType)
 {
     switch (objectType)
@@ -134,11 +183,19 @@ QString Index::objectTypeStr(const uint8_t &objectType)
     return QString();
 }
 
+/**
+ * @brief name getter
+ * @return the index parameter name
+ */
 QString Index::name() const
 {
     return _name;
 }
 
+/**
+ * @brief name setter
+ * @param new index name string
+ */
 void Index::setName(const QString &name)
 {
     _name = name;

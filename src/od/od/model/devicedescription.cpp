@@ -18,31 +18,45 @@
 
 #include "devicedescription.h"
 
+/**
+ * @brief default constructor
+ */
 DeviceDescription::DeviceDescription()
 {
 
 }
 
+/**
+ * @brief default destructor
+ */
 DeviceDescription::~DeviceDescription()
 {
 
 }
 
+/**
+ * @brief returns the type of the model impletmented
+ * @return device model type
+ */
 DeviceModel::Type DeviceDescription::type()
 {
     return Description;
 }
 
+/**
+ * @brief _deviceInfos getter
+ * @return  a map of strings wich contains some device informations
+ */
 QMap<QString, QString> DeviceDescription::deviceInfos() const
 {
     return _deviceInfos;
 }
 
-void DeviceDescription::setDeviceInfos(const QMap<QString, QString> &deviceInfos)
-{
-    _deviceInfos = deviceInfos;
-}
-
+/**
+ * @brief inserts a new devcie info with the key key and a value of value
+ * @param key
+ * @param value
+ */
 void DeviceDescription::setDeviceInfo(const QString &key, const QString &value)
 {
     _deviceInfos.insert(key, value);
