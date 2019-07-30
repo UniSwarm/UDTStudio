@@ -660,7 +660,7 @@ void CGenerator::writeDefineH(Index *index, QTextStream &hFile) const
         foreach (SubIndex *subIndex, index->subIndexes())
         {
             hFile << "#define " << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(subIndex->subIndex(), 16);
-            hFile << " OD_RAM." << varNameToString(subIndex->name()) << "\n";
+            hFile << " OD_INDEX" << QString::number(index->index(), 16).toUpper() << "." << varNameToString(subIndex->name()) << "\n";
         }
     }
 
@@ -674,7 +674,7 @@ void CGenerator::writeDefineH(Index *index, QTextStream &hFile) const
                 continue;
 
             hFile << "#define " << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(numSubIndex, 16).toUpper();
-            hFile << " OD_RAM." << varNameToString(index->name()) << "[" << QString::number(numSubIndex - 1, 16).toUpper() << "]" << "\n";
+            hFile << " OD_INDEX" << QString::number(index->index(), 16).toUpper() << "[" << QString::number(numSubIndex - 1, 16).toUpper() << "]" << "\n";
         }
     }
 
