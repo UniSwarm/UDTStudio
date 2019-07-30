@@ -45,10 +45,10 @@ CGenerator::~CGenerator()
  * @param output file name
  * @return true
  */
-bool CGenerator::generate(DeviceConfiguration *od, const QString &filePath) const
+bool CGenerator::generate(DeviceConfiguration *deviceDescription, const QString &filePath) const
 {
-    generateH(od, filePath);
-    generateC(od, filePath);
+    generateH(deviceDescription, filePath);
+    generateC(deviceDescription, filePath);
 
     return true;
 }
@@ -59,7 +59,7 @@ bool CGenerator::generate(DeviceConfiguration *od, const QString &filePath) cons
  * @param output file name
  * @return false
  */
-bool CGenerator::generate(DeviceDescription *od, const QString &filePath) const
+bool CGenerator::generate(DeviceDescription *deviceDescription, const QString &filePath) const
 {
     return false;
 }
@@ -70,9 +70,9 @@ bool CGenerator::generate(DeviceDescription *od, const QString &filePath) const
  * @param output file name
  * @param CANopen node-id
  */
-void CGenerator::generate(DeviceDescription *od, const QString &filePath, uint8_t nodeId) const
+void CGenerator::generate(DeviceDescription *deviceDescription, const QString &filePath, uint8_t nodeId) const
 {
-    DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(od, nodeId);
+    DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, nodeId);
     generate(deviceConfiguration, filePath);
 }
 
@@ -81,7 +81,7 @@ void CGenerator::generate(DeviceDescription *od, const QString &filePath, uint8_
  * @param device configuration model based on dcf or xdd files
  * @param output file name
  */
-void CGenerator::generateH(DeviceConfiguration *od, const QString &filePath) const
+void CGenerator::generateH(DeviceConfiguration *deviceDescription, const QString &filePath) const
 {
     QFile hFile(filePath);
 
@@ -106,11 +106,11 @@ void CGenerator::generateH(DeviceConfiguration *od, const QString &filePath) con
     out << "#include \"od.h\"" << "\n";
     out << "\n";
     out << "// == Number of entries in object dictionary ==" << "\n";
-    out << "#define OD_NB_ELEMENTS " << od->indexCount() << "\n";
+    out << "#define OD_NB_ELEMENTS " << deviceDescription->indexCount() << "\n";
     out << "\n";
     out << "// ===== struct definitions for records =======" << "\n";
 
-    QMap<uint16_t, Index*> indexes = od->indexes();
+    QMap<uint16_t, Index*> indexes = deviceDescription->indexes();
 
     foreach (Index *index, indexes)
     {
@@ -160,7 +160,7 @@ void CGenerator::generateH(DeviceConfiguration *od, const QString &filePath) con
  * @param device configuration model based on dcf or xdd files
  * @param output file name
  */
-void CGenerator::generateC(DeviceConfiguration *od, const QString &filePath) const
+void CGenerator::generateC(DeviceConfiguration *deviceDescription, const QString &filePath) const
 {
     QFile cFile(filePath);
 
@@ -185,7 +185,7 @@ void CGenerator::generateC(DeviceConfiguration *od, const QString &filePath) con
     out << "struct sOD_RAM OD_RAM;" << "\n";
     out << "\n";
 
-    QMap<uint16_t, Index *> indexes = od->indexes();
+    QMap<uint16_t, Index *> indexes = deviceDescription->indexes();
 
     foreach (Index *index, indexes)
     {

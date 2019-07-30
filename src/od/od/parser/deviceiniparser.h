@@ -38,10 +38,10 @@ public:
     void readIndex(Index *index) const;
     void readSubIndex(SubIndex *subIndex) const;
     QVariant readData(bool *nodeId) const;
-    void readFileInfo(DeviceModel *od) const;
-    void readDummyUsage(DeviceModel *od) const;
-    void readDeviceInfo(DeviceDescription *od) const;
-    void readDeviceComissioning(DeviceConfiguration *od) const;
+    void readFileInfo(DeviceModel *deviceDescription) const;
+    void readDummyUsage(DeviceModel *deviceDescription) const;
+    void readDeviceInfo(DeviceDescription *deviceDescription) const;
+    void readDeviceComissioning(DeviceConfiguration *deviceDescription) const;
     uint8_t readPdoMapping() const;
     QVariant readLowLimit() const;
     QVariant readHighLimit() const;

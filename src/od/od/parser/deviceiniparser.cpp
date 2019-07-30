@@ -166,10 +166,6 @@ void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
      {
          QString value = _file->value(key).toString();
 
-         uint8_t base = 10;
-         if (value.startsWith("0x", Qt::CaseInsensitive))
-             base = 16;
-
          if (key == "AccessType")
          {
              QString accessString = _file->value(key).toString();
@@ -255,11 +251,11 @@ QVariant DeviceIniParser::readData(bool *nodeId) const
  * @brief parses file infos and completes device model
  * @param device model
  */
-void DeviceIniParser::readFileInfo(DeviceModel *od) const
+void DeviceIniParser::readFileInfo(DeviceModel *deviceDescription) const
 {
     foreach (const QString &key, _file->allKeys())
     {
-       od->setFileInfo(key, _file->value(key).toString());
+       deviceDescription->setFileInfo(key, _file->value(key).toString());
     }
 }
 
@@ -267,11 +263,11 @@ void DeviceIniParser::readFileInfo(DeviceModel *od) const
  * @brief parses dummy usages and completes device model
  * @param device model
  */
-void DeviceIniParser::readDummyUsage(DeviceModel *od) const
+void DeviceIniParser::readDummyUsage(DeviceModel *deviceDescription) const
 {
     foreach (const QString &key, _file->allKeys())
     {
-       od->setDummyUsage(key, _file->value(key).toString());
+       deviceDescription->setDummyUsage(key, _file->value(key).toString());
     }
 }
 
@@ -279,11 +275,11 @@ void DeviceIniParser::readDummyUsage(DeviceModel *od) const
  * @brief parses device infos and completes device description model
  * @param device description model
  */
-void DeviceIniParser::readDeviceInfo(DeviceDescription *od) const
+void DeviceIniParser::readDeviceInfo(DeviceDescription *deviceDescription) const
 {
     foreach (const QString &key, _file->allKeys())
     {
-       od->setDeviceInfo(key, _file->value(key).toString());
+       deviceDescription->setDeviceInfo(key, _file->value(key).toString());
     }
 }
 
@@ -291,11 +287,11 @@ void DeviceIniParser::readDeviceInfo(DeviceDescription *od) const
  * @brief parses device comissioning and completes device configuration
  * @param device configuration model
  */
-void DeviceIniParser::readDeviceComissioning(DeviceConfiguration *od) const
+void DeviceIniParser::readDeviceComissioning(DeviceConfiguration *deviceDescription) const
 {
     foreach (const QString &key, _file->allKeys())
     {
-       od->addDeviceComissioning(key, _file->value(key).toString());
+       deviceDescription->addDeviceComissioning(key, _file->value(key).toString());
     }
 }
 
