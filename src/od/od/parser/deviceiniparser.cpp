@@ -21,17 +21,29 @@
 #include <QRegularExpression>
 #include <QDebug>
 
+/**
+ * @brief constructor
+ * @param file to parse
+ */
 DeviceIniParser::DeviceIniParser(QSettings *file)
 {
     _file = file;
 }
 
+/**
+ * @brief parsesall indexes and sub-indexes fields and completes device model
+ * @param device model
+ */
 void DeviceIniParser::readObjects(DeviceModel *deviceModel) const
 {
     readIndexes(deviceModel);
     readSubIndexes(deviceModel);
 }
 
+/**
+ * @brief parses all indexes fields and completes device model
+ * @param device model
+ */
 void DeviceIniParser::readIndexes(DeviceModel *deviceModel) const
 {
     QRegularExpression reIndex("^[0-9A-F]{1,4}$");
@@ -56,6 +68,10 @@ void DeviceIniParser::readIndexes(DeviceModel *deviceModel) const
     }
 }
 
+/**
+ * @brief parses all sub-indexes fields and completes device model
+ * @param device model
+ */
 void DeviceIniParser::readSubIndexes(DeviceModel *deviceModel) const
 {
     QRegularExpression reSub("^([0-9A-F]{4})sub([0-9]+)");
@@ -87,6 +103,10 @@ void DeviceIniParser::readSubIndexes(DeviceModel *deviceModel) const
     }
 }
 
+/**
+ * @brief parses an index field and completes index model
+ * @param index model
+ */
 void DeviceIniParser::readIndex(Index* index) const
 {
     uint8_t objectType;
@@ -127,6 +147,10 @@ void DeviceIniParser::readIndex(Index* index) const
     index->addSubIndex(subIndex);
 }
 
+/**
+ * @brief parses an index field and completes sub-index model
+ * @param sub-index model
+ */
 void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
 {
     bool hasNodeId = 0;
@@ -226,6 +250,11 @@ QVariant DeviceIniParser::readData(bool *nodeId) const
     return value;
 }
 
+
+/**
+ * @brief parses file infos and completes device model
+ * @param device model
+ */
 void DeviceIniParser::readFileInfo(DeviceModel *od) const
 {
     foreach (const QString &key, _file->allKeys())
@@ -234,6 +263,10 @@ void DeviceIniParser::readFileInfo(DeviceModel *od) const
     }
 }
 
+/**
+ * @brief parses dummy usages and completes device model
+ * @param device model
+ */
 void DeviceIniParser::readDummyUsage(DeviceModel *od) const
 {
     foreach (const QString &key, _file->allKeys())
@@ -242,6 +275,10 @@ void DeviceIniParser::readDummyUsage(DeviceModel *od) const
     }
 }
 
+/**
+ * @brief parses device infos and completes device description model
+ * @param device description model
+ */
 void DeviceIniParser::readDeviceInfo(DeviceDescription *od) const
 {
     foreach (const QString &key, _file->allKeys())
@@ -250,6 +287,10 @@ void DeviceIniParser::readDeviceInfo(DeviceDescription *od) const
     }
 }
 
+/**
+ * @brief parses device comissioning and completes device configuration
+ * @param device configuration model
+ */
 void DeviceIniParser::readDeviceComissioning(DeviceConfiguration *od) const
 {
     foreach (const QString &key, _file->allKeys())
@@ -258,6 +299,10 @@ void DeviceIniParser::readDeviceComissioning(DeviceConfiguration *od) const
     }
 }
 
+/**
+ * @brief parses pdo mapping value and returns it
+ * @return 8 bits pdo mapping code
+ */
 uint8_t DeviceIniParser::readPdoMapping() const
 {
     if (_file->value("PDOMapping") == 0)
@@ -274,16 +319,29 @@ uint8_t DeviceIniParser::readPdoMapping() const
     return SubIndex::Access::TPDO + SubIndex::Access::RPDO;
 }
 
+/**
+ * @brief parses low limit value and returns it
+ * @return low limit value
+ */
 QVariant DeviceIniParser::readLowLimit() const
 {
     return QVariant(_file->value("LowLimit"));
 }
 
+
+/**
+ * @brief parses high limit value and returns it
+ * @return high limit value
+ */
 QVariant DeviceIniParser::readHighLimit() const
 {
     return QVariant(_file->value("HighLimit"));
 }
 
+/**
+ * @brief parses data type value and returns it
+ * @return 16 bits data type code^
+ */
 uint16_t DeviceIniParser::readDataType() const
 {
     QString dataType = _file->value("DataType").toString();

@@ -23,14 +23,25 @@
 
 #include "deviceiniparser.h"
 
+/**
+ * @brief default constructor
+ */
 DcfParser::DcfParser()
 {
 }
 
+/**
+ * @brief destructor
+ */
 DcfParser::~DcfParser()
 {
 }
 
+/**
+ * @brief parse a .dcf file
+ * @param dcf file name
+ * @return device congiguration model completed by parser
+ */
 DeviceConfiguration *DcfParser::parse(const QString &path) const
 {
     DeviceConfiguration *deviceConfiguration = new DeviceConfiguration;

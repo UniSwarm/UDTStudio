@@ -23,14 +23,25 @@
 
 #include "deviceiniparser.h"
 
+/**
+ * @brief default constructor
+ */
 EdsParser::EdsParser()
 {
 }
 
+/**
+ * @brief destructor
+ */
 EdsParser::~EdsParser()
 {
 }
 
+/**
+ * @brief parse a .eds file
+ * @param eds file name
+ * @return device descritpion model completed by parser
+ */
 DeviceDescription *EdsParser::parse(const QString &path) const
 {
     DeviceDescription *deviceDescription = new DeviceDescription;

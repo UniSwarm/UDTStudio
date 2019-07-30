@@ -18,10 +18,16 @@
 
 #include "devicedescriptionparser.h"
 
+/**
+ * @brief default constructor
+ */
 DeviceDescriptionParser::DeviceDescriptionParser()
 {
 }
 
+/**
+ * @brief virtual destructor
+ */
 DeviceDescriptionParser::~DeviceDescriptionParser()
 {
 }
