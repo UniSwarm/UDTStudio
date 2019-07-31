@@ -58,6 +58,7 @@ private:
     void writeCharLineC(const SubIndex *subIndex, QTextStream &cFile) const;
     void writeInitRamC(QList<Index *> indexes, QTextStream &cFile) const;
     void writeDefineH(Index *index, QTextStream &hFile) const;
+    void writeSetNodeId(DeviceConfiguration *deviceConfiguration , QTextStream &cFile) const;
 };
 
 #endif // CGENERATOR_H

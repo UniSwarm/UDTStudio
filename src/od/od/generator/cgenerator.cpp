@@ -148,6 +148,7 @@ void CGenerator::generateH(DeviceConfiguration *deviceDescription, const QString
     out << "// ============== function ==================" << "\n";
     out << "void od_initCommIndexes(void);" << "\n";
     out << "void od_initAppIndexes(void);" << "\n";
+    out << "void od_setNodeId(uint8_t nodeId);" << "\n";
     out << "\n";
     out << "#endif // OD_DATA_H";
     out << "\n";
@@ -247,6 +248,9 @@ void CGenerator::generateC(DeviceConfiguration *deviceDescription, const QString
 
     out << "};";
     out << "\n";
+    out << "\n";
+
+    writeSetNodeId(deviceDescription, out);
 
     cFile.close();
 }
@@ -679,4 +683,11 @@ void CGenerator::writeDefineH(Index *index, QTextStream &hFile) const
     }
 
     hFile << "\n";
+}
+
+void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextStream &cFile) const
+{
+    cFile << "void od_setNodeId(uint8_t nodeId)\n";
+    cFile << "{\n";
+    cFile << "}\n\n";
 }
