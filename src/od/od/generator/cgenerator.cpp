@@ -45,10 +45,10 @@ CGenerator::~CGenerator()
  * @param output file name
  * @return true
  */
-bool CGenerator::generate(DeviceConfiguration *deviceDescription, const QString &filePath) const
+bool CGenerator::generate(DeviceConfiguration *deviceConfiguration, const QString &filePath) const
 {
-    generateH(deviceDescription, filePath);
-    generateC(deviceDescription, filePath);
+    generateH(deviceConfiguration, filePath);
+    generateC(deviceConfiguration, filePath);
 
     return true;
 }
@@ -81,7 +81,7 @@ void CGenerator::generate(DeviceDescription *deviceDescription, const QString &f
  * @param device configuration model based on dcf or xdd files
  * @param output file name
  */
-void CGenerator::generateH(DeviceConfiguration *deviceDescription, const QString &filePath) const
+void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QString &filePath) const
 {
     QFile hFile(filePath);
 
@@ -106,11 +106,11 @@ void CGenerator::generateH(DeviceConfiguration *deviceDescription, const QString
     out << "#include \"od.h\"" << "\n";
     out << "\n";
     out << "// == Number of entries in object dictionary ==" << "\n";
-    out << "#define OD_NB_ELEMENTS " << deviceDescription->indexCount() << "\n";
+    out << "#define OD_NB_ELEMENTS " << deviceConfiguration->indexCount() << "\n";
     out << "\n";
     out << "// ===== struct definitions for records =======" << "\n";
 
-    QMap<uint16_t, Index*> indexes = deviceDescription->indexes();
+    QMap<uint16_t, Index*> indexes = deviceConfiguration->indexes();
 
     foreach (Index *index, indexes)
     {
@@ -161,7 +161,7 @@ void CGenerator::generateH(DeviceConfiguration *deviceDescription, const QString
  * @param device configuration model based on dcf or xdd files
  * @param output file name
  */
-void CGenerator::generateC(DeviceConfiguration *deviceDescription, const QString &filePath) const
+void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QString &filePath) const
 {
     QFile cFile(filePath);
 
@@ -186,7 +186,7 @@ void CGenerator::generateC(DeviceConfiguration *deviceDescription, const QString
     out << "struct sOD_RAM OD_RAM;" << "\n";
     out << "\n";
 
-    QMap<uint16_t, Index *> indexes = deviceDescription->indexes();
+    QMap<uint16_t, Index *> indexes = deviceConfiguration->indexes();
 
     foreach (Index *index, indexes)
     {
@@ -250,7 +250,7 @@ void CGenerator::generateC(DeviceConfiguration *deviceDescription, const QString
     out << "\n";
     out << "\n";
 
-    writeSetNodeId(deviceDescription, out);
+    writeSetNodeId(deviceConfiguration, out);
 
     cFile.close();
 }

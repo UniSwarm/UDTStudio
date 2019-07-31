@@ -251,11 +251,11 @@ QVariant DeviceIniParser::readData(bool *nodeId) const
  * @brief parses file infos and completes device model
  * @param device model
  */
-void DeviceIniParser::readFileInfo(DeviceModel *deviceDescription) const
+void DeviceIniParser::readFileInfo(DeviceModel *deviceModel) const
 {
     foreach (const QString &key, _file->allKeys())
     {
-       deviceDescription->setFileInfo(key, _file->value(key).toString());
+       deviceModel->setFileInfo(key, _file->value(key).toString());
     }
 }
 
@@ -263,11 +263,11 @@ void DeviceIniParser::readFileInfo(DeviceModel *deviceDescription) const
  * @brief parses dummy usages and completes device model
  * @param device model
  */
-void DeviceIniParser::readDummyUsage(DeviceModel *deviceDescription) const
+void DeviceIniParser::readDummyUsage(DeviceModel *deviceModel) const
 {
     foreach (const QString &key, _file->allKeys())
     {
-       deviceDescription->setDummyUsage(key, _file->value(key).toString());
+       deviceModel->setDummyUsage(key, _file->value(key).toString());
     }
 }
 
@@ -287,11 +287,11 @@ void DeviceIniParser::readDeviceInfo(DeviceDescription *deviceDescription) const
  * @brief parses device comissioning and completes device configuration
  * @param device configuration model
  */
-void DeviceIniParser::readDeviceComissioning(DeviceConfiguration *deviceDescription) const
+void DeviceIniParser::readDeviceComissioning(DeviceConfiguration *deviceConfiguration) const
 {
     foreach (const QString &key, _file->allKeys())
     {
-       deviceDescription->addDeviceComissioning(key, _file->value(key).toString());
+       deviceConfiguration->addDeviceComissioning(key, _file->value(key).toString());
     }
 }
 

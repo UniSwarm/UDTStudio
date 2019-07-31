@@ -32,8 +32,8 @@ public:
     Generator();
     virtual ~Generator();
 
-    virtual bool generate(DeviceConfiguration *od, const QString &filePath) const = 0;
-    virtual bool generate(DeviceDescription *od, const QString &filePath) const = 0;
+    virtual bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath) const = 0;
+    virtual bool generate(DeviceDescription *deviceDescription, const QString &filePath) const = 0;
 
     static Generator *getGenerator(const QString &type);
 };

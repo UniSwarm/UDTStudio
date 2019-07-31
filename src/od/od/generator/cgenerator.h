@@ -35,12 +35,12 @@ public:
     CGenerator();
     ~CGenerator();
 
-    bool generate(DeviceConfiguration *deviceDescription, const QString &filePath) const;
+    bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath) const;
     bool generate(DeviceDescription *deviceDescription, const QString &filePath) const;
     void generate(DeviceDescription *deviceDescription, const QString &filePath, uint8_t nodeId) const;
 
-    void generateH(DeviceConfiguration *deviceDescription, const QString &filePath) const;
-    void generateC(DeviceConfiguration *deviceDescription, const QString &filePath) const;
+    void generateH(DeviceConfiguration *deviceConfiguration, const QString &filePath) const;
+    void generateC(DeviceConfiguration *deviceConfiguration, const QString &filePath) const;
 
 private:
     QString typeToString(const uint16_t &type) const;
