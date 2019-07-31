@@ -18,10 +18,17 @@
 
 #include "devicedescriptionwriter.h"
 
+
+/**
+ * @brief default constructor
+ */
 DeviceDescriptionWriter::DeviceDescriptionWriter()
 {
 }
 
+/**
+ * @brief destructor
+ */
 DeviceDescriptionWriter::~DeviceDescriptionWriter()
 {
 }

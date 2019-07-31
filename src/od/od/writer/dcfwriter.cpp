@@ -23,14 +23,25 @@
 
 #include "deviceiniwriter.h"
 
+/**
+ * @brief default constructor
+ */
 DcfWriter::DcfWriter()
 {
 }
 
+/**
+ * @brief destructor
+ */
 DcfWriter::~DcfWriter()
 {
 }
 
+/**
+ * @brief writes a device configuration model to a dcf file
+ * @param device configuration model
+ * @param file name
+ */
 void DcfWriter::write(DeviceConfiguration *deviceConfiguration, const QString &filePath) const
 {
 

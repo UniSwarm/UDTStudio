@@ -18,10 +18,16 @@
 
 #include "deviceconfigurationwriter.h"
 
+/**
+ * @brief default constructor
+ */
 DeviceConfigurationWriter::DeviceConfigurationWriter()
 {   
 }
 
+/**
+ * @brief destructor
+ */
 DeviceConfigurationWriter::~DeviceConfigurationWriter()
 {
 }

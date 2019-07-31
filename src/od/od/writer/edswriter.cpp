@@ -20,14 +20,25 @@
 
 #include "deviceiniwriter.h"
 
+/**
+ * @brief default constructor
+ */
 EdsWriter::EdsWriter()
 {
 }
 
+/**
+ * @brief destructor
+ */
 EdsWriter::~EdsWriter()
 {
 }
 
+/**
+ * @brief writes a device description model to an eds file
+ * @param device description model
+ * @param file name
+ */
 void EdsWriter::write(const DeviceDescription *deviceDescription, const QString &filePath) const
 {
     QFile dcfFile(filePath);
