@@ -52,13 +52,13 @@ public:
     uint8_t subIndex() const;
     void setSubIndex(const uint8_t &subIndex);
 
-    QString name() const;
+    const QString &name() const;
     void setName(const QString &name);
 
-    QVariant lowLimit() const;
+    const QVariant &lowLimit() const;
     void setLowLimit(const QVariant &lowLimit);
 
-    QVariant highLimit() const;
+    const QVariant &highLimit() const;
     void setHighLimit(const QVariant &highLimit);
 
     uint8_t flagLimit() const;

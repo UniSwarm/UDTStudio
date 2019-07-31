@@ -41,9 +41,9 @@ public:
     uint8_t maxSubIndex() const;
     void setMaxSubIndex(const uint8_t &maxSubIndex);
 
-    QMap<uint8_t, SubIndex *> &subIndexes();
+    const QMap<uint8_t, SubIndex *> &subIndexes() const;
 
-    SubIndex *subIndex(uint8_t subIndex);
+    SubIndex *subIndex(uint8_t subIndex) const;
     void addSubIndex(SubIndex *subIndex);
     int subIndexesCount();
     bool subIndexExist(uint8_t subIndex);
@@ -63,7 +63,7 @@ public:
     void setObjectType(const uint8_t &objectType);
     static QString objectTypeStr(const uint8_t &objectType);
 
-    QString name() const;
+    const QString &name() const;
     void setName(const QString &name);
 
 private:

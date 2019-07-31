@@ -39,21 +39,21 @@ public:
     };
     virtual Type type();
 
-    QMap<QString, QString> fileInfos() const;
+    const QMap<QString, QString> &fileInfos() const;
     void setFileInfos(const QMap<QString, QString> &fileInfos);
     void setFileInfo(const QString &key, const QString &value);
 
-    QMap<QString, QString> dummyUsages() const;
+    const QMap<QString, QString> &dummyUsages() const;
     void setDummyUsages(const QMap<QString, QString> &dummyUsages);
     void setDummyUsage(const QString &key, const QString &value);
 
-    QMap<uint16_t, Index *> indexes() const;
+    const QMap<uint16_t, Index *> &indexes() const;
     Index *index(uint16_t index) const;
     void addIndex(Index *index);
     int indexCount() const;
     bool indexExist(uint16_t key) const;
 
-    QString fileName() const;
+    const QString &fileName() const;
     void setFileName(const QString &name);
 
 private:

@@ -89,7 +89,7 @@ void Index::setMaxSubIndex(const uint8_t &maxSubIndex)
  * @brief max sub-index setter
  * @param max sub-index
  */
-QMap<uint8_t, SubIndex *> &Index::subIndexes()
+const QMap<uint8_t, SubIndex *> &Index::subIndexes() const
 {
     return _subIndexes;
 }
@@ -99,7 +99,7 @@ QMap<uint8_t, SubIndex *> &Index::subIndexes()
  * @param subi-index number
  * @return a sub-index
  */
-SubIndex *Index::subIndex(uint8_t subIndex)
+SubIndex *Index::subIndex(uint8_t subIndex) const
 {
     if (_subIndexes.contains(subIndex))
         return _subIndexes.value(subIndex);
@@ -187,7 +187,7 @@ QString Index::objectTypeStr(const uint8_t &objectType)
  * @brief name getter
  * @return the index parameter name
  */
-QString Index::name() const
+const QString &Index::name() const
 {
     return _name;
 }

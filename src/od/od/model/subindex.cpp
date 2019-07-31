@@ -99,7 +99,7 @@ void SubIndex::setSubIndex(const uint8_t &subIndex)
  * @brief name getter
  * @return sub-index name
  */
-QString SubIndex::name() const
+const QString &SubIndex::name() const
 {
     return _name;
 }
@@ -117,7 +117,7 @@ void SubIndex::setName(const QString &name)
  * @brief low limit getter
  * @return low limit value
  */
-QVariant SubIndex::lowLimit() const
+const QVariant &SubIndex::lowLimit() const
 {
     return _lowLimit;
 }
@@ -135,7 +135,7 @@ void SubIndex::setLowLimit(const QVariant &lowLimit)
  * @brief high limit getter
  * @return high limit value
  */
-QVariant SubIndex::highLimit() const
+const QVariant &SubIndex::highLimit() const
 {
     return _highLimit;
 }

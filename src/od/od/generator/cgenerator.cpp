@@ -614,7 +614,7 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
  * @param C file
  * @param sub-index-number for arrays
  */
-void CGenerator::writeCharLineC(SubIndex *subIndex, QTextStream &cFile) const
+void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile) const
 {
     switch (subIndex->dataType())
     {

@@ -48,7 +48,7 @@ DeviceModel::Type DeviceModel::type()
  * @brief _fileInfos getter
  * @return a map of strings wich constains some file informations
  */
-QMap<QString, QString> DeviceModel::fileInfos() const
+const QMap<QString, QString> &DeviceModel::fileInfos() const
 {
     return _fileInfos;
 }
@@ -72,7 +72,7 @@ void DeviceModel::setFileInfo(const QString &key, const QString &value)
  * @brief _dummyUsages getter
  * @return a map of strings wich contains the dummy usages
  */
-QMap<QString, QString> DeviceModel::dummyUsages() const
+const QMap<QString, QString> &DeviceModel::dummyUsages() const
 {
     return _dummyUsages;
 }
@@ -96,7 +96,7 @@ void DeviceModel::setDummyUsage(const QString &key, const QString &value)
  * @brief _indexes getter
  * @return a map of index wich contains the index of the device model
  */
-QMap<uint16_t, Index *> DeviceModel::indexes() const
+const QMap<uint16_t, Index *> &DeviceModel::indexes() const
 {
     return _indexes;
 }
@@ -143,7 +143,7 @@ bool DeviceModel::indexExist(uint16_t key) const
  * @brief return the name of the device file
  * @return string
  */
-QString DeviceModel::fileName() const
+const QString &DeviceModel::fileName() const
 {
     return _fileInfos.value("FileName");
 }

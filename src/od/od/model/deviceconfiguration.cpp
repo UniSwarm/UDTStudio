@@ -47,7 +47,7 @@ DeviceModel::Type DeviceConfiguration::type()
  * @brief _deviceCommissionings getter
  * @return map of string wich contains device comissionings
  */
-QMap<QString, QString> DeviceConfiguration::deviceComissionings() const
+const QMap<QString, QString> &DeviceConfiguration::deviceComissionings() const
 {
     return _deviceComissionings;
 }

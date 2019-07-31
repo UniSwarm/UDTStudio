@@ -47,7 +47,7 @@ DeviceModel::Type DeviceDescription::type()
  * @brief _deviceInfos getter
  * @return  a map of strings wich contains some device informations
  */
-QMap<QString, QString> DeviceDescription::deviceInfos() const
+const QMap<QString, QString> &DeviceDescription::deviceInfos() const
 {
     return _deviceInfos;
 }

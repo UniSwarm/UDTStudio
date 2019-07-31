@@ -34,7 +34,7 @@ public:
 
     Type type();
 
-    QMap<QString, QString> deviceComissionings() const;
+    const QMap<QString, QString> &deviceComissionings() const;
 
     void addDeviceComissioning(const QString &key, const QString &value);
     void setNodeId(const QString &nodeId);
