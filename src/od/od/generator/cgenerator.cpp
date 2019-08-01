@@ -710,9 +710,9 @@ void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextS
                     break;
                 }
 
-                cFile << " = " << subIndex->value().toString() << " + " << "nodeId";
+                cFile << " = " << subIndex->value().toString().toUInt() - deviceConfiguration->nodeId().toUInt() << " + " << "nodeId";
 
-                cFile << ";\n";
+                cFile << ";  // " << index->name() << " : " << subIndex->name() << "\n";
             }
         }
     }
