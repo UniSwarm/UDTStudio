@@ -63,6 +63,11 @@ void DeviceConfiguration::addDeviceComissioning(const QString &key, const QStrin
     _deviceComissionings.insert(key, value);
 }
 
+QString DeviceConfiguration::nodeId() const
+{
+    return _deviceComissionings.value("NodeID");
+}
+
 /**
  * @brief sets a new CANopen node-id
  * @param nodeId

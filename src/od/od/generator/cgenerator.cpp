@@ -663,7 +663,7 @@ void CGenerator::writeDefineH(Index *index, QTextStream &hFile) const
     {
         foreach (SubIndex *subIndex, index->subIndexes())
         {
-            hFile << "#define " << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(subIndex->subIndex(), 16);
+            hFile << "#define " << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(subIndex->subIndex(), 16).toUpper();
             hFile << " OD_INDEX" << QString::number(index->index(), 16).toUpper() << "." << varNameToString(subIndex->name()) << "\n";
         }
     }
@@ -689,5 +689,33 @@ void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextS
 {
     cFile << "void od_setNodeId(uint8_t nodeId)\n";
     cFile << "{\n";
+
+    foreach (Index *index, deviceConfiguration->indexes())
+    {
+        foreach (SubIndex *subIndex, index->subIndexes())
+        {
+            if (subIndex->hasNodeId())
+            {
+                cFile << "    ";
+
+                switch (index->objectType())
+                {
+                case Index::Object::VAR:
+                    cFile << "OD_INDEX" << QString::number(index->index(), 16).toUpper();
+                    break;
+
+                case Index::Object::RECORD:
+                case Index::Object::ARRAY:
+                    cFile << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(subIndex->subIndex(), 16);
+                    break;
+                }
+
+                cFile << " = " << subIndex->value().toString() << " + " << "nodeId";
+
+                cFile << ";\n";
+            }
+        }
+    }
+
     cFile << "}\n\n";
 }

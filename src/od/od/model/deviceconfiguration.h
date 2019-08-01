@@ -37,6 +37,7 @@ public:
     const QMap<QString, QString> &deviceComissionings() const;
 
     void addDeviceComissioning(const QString &key, const QString &value);
+    QString nodeId() const;
     void setNodeId(const QString &nodeId);
     void setNodeName(const QString &nodeName);
     void setBaudrate(const QString &baudrate);
