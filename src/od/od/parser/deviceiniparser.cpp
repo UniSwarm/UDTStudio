@@ -20,6 +20,7 @@
 
 #include <QRegularExpression>
 #include <QDebug>
+#include <QLocale>
 
 /**
  * @brief constructor
@@ -227,23 +228,56 @@ void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
  */
 QVariant DeviceIniParser::readData(bool *nodeId) const
 {
-    QVariant value;
+    QString value;
 
     if (_file->value("DefaultValue").isNull())
-        value = QVariant(0);
+        value = "0";
 
     else if (_file->value("DefaultValue").toString().startsWith("$NODEID+"))
     {
-        value = QVariant(_file->value("DefaultValue").toString().mid(8));
+        value = _file->value("DefaultValue").toString().mid(8);
         *nodeId = true;
     }
 
     else
     {
-        value = QVariant(_file->value("DefaultValue"));
+        value = _file->value("DefaultValue").toString();
     }
 
-    return value;
+    uint16_t dataType = readDataType();
+
+    int base = 10;
+    if (value.startsWith("0x"))
+        base = 16;
+
+    bool ok;
+    switch (dataType)
+    {
+    case SubIndex::Type::BOOLEAN:
+    case SubIndex::Type::INTEGER8:
+    case SubIndex::Type::INTEGER16:
+    case SubIndex::Type::INTEGER32:
+    case SubIndex::Type::INTEGER64:
+        return QVariant(value.toInt(&ok, base));
+
+    case SubIndex::Type::UNSIGNED8:
+    case SubIndex::Type::UNSIGNED16:
+    case SubIndex::Type::UNSIGNED32:
+    case SubIndex::Type::UNSIGNED64:
+        return QVariant(value.toUInt(&ok, base));
+
+    case SubIndex::Type::REAL32:
+        return QVariant(value.toFloat());
+
+    case SubIndex::Type::REAL64:
+        return QVariant(value.toDouble());
+
+    case SubIndex::Type::VISIBLE_STRING:
+    case SubIndex::Type::OCTET_STRING:
+        return QVariant(value);
+    }
+
+    return 0;
 }
 
 
