@@ -257,14 +257,18 @@ QVariant DeviceIniParser::readData(bool *nodeId) const
     case SubIndex::Type::INTEGER8:
     case SubIndex::Type::INTEGER16:
     case SubIndex::Type::INTEGER32:
-    case SubIndex::Type::INTEGER64:
         return QVariant(value.toInt(&ok, base));
+
+    case SubIndex::Type::INTEGER64:
+        return QVariant(value.toLongLong(&ok, base));
 
     case SubIndex::Type::UNSIGNED8:
     case SubIndex::Type::UNSIGNED16:
     case SubIndex::Type::UNSIGNED32:
-    case SubIndex::Type::UNSIGNED64:
         return QVariant(value.toUInt(&ok, base));
+
+    case SubIndex::Type::UNSIGNED64:
+        return QVariant(value.toULongLong(&ok, base));
 
     case SubIndex::Type::REAL32:
         return QVariant(value.toFloat());
