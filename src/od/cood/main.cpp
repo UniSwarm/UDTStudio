@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
         cliParser.showHelp(-1);
     }
     const QString &inputFile = files.at(0);
+    QString inSuffix = QFileInfo(inputFile).suffix();
 
     // output file
     QString outputFile = cliParser.value("out");
@@ -55,17 +56,20 @@ int main(int argc, char *argv[])
         outputFile = QFileInfo(inputFile).path();
 
     // node Id
-    uint8_t nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
-    if (nodeid == 0 || nodeid >= 126)
+    uint8_t nodeid = 0;
+    if (inSuffix == "eds")
     {
-        out << "error (2): invalid node id, nodeId > 0 && nodeId < 126" << endl;
-        return -2;
+        nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
+        if (nodeid == 0 || nodeid >= 126)
+        {
+            out << "error (2): invalid node id, nodeId > 0 && nodeId < 126" << endl;
+            return -2;
+        }
     }
 
     // input file opening
     DeviceDescription *deviceDescription = nullptr;
     DeviceConfiguration *deviceConfiguration = nullptr;
-    QString inSuffix = QFileInfo(inputFile).suffix();
     if (inSuffix == "eds")
     {
         EdsParser parser;
@@ -86,18 +90,29 @@ int main(int argc, char *argv[])
     QString outSuffix = QFileInfo(outputFile).suffix();
     CGenerator cgenerator;
     DcfWriter dcfWriter;
+    EdsWriter edsWriter;
     if (outSuffix == "c")
         cgenerator.generateC(deviceConfiguration, outputFile);
-    if (outSuffix == "h")
+    else if (outSuffix == "h")
         cgenerator.generateH(deviceConfiguration, outputFile);
-    if (outSuffix == "dcf")
+    else if (outSuffix == "dcf")
         dcfWriter.write(deviceConfiguration, outputFile);
-    if (QFileInfo(outputFile).isDir())
+    else if (outSuffix == "eds" && deviceDescription)
+        edsWriter.write(deviceDescription, outputFile);
+    else if (QFileInfo(outputFile).isDir())
     {
         cgenerator.generateC(deviceConfiguration, QString(outputFile + "/od_data.c"));
         cgenerator.generateH(deviceConfiguration, QString(outputFile + "/od_data.h"));
         dcfWriter.write(deviceConfiguration, QString(outputFile + "/out.dcf"));
     }
+    else
+    {
+        delete deviceDescription;
+        delete deviceConfiguration;
+        out << "error (4): invalid output file format, .c, .h, .dcf or .eds accepted" << endl;
+        return -4;
+    }
+    out << "nodeId" << nodeid;
 
     delete deviceDescription;
     delete deviceConfiguration;
