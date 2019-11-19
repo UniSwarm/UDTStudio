@@ -256,7 +256,7 @@ QString SubIndex::dataTypeStr(const uint16_t &dataType)
         return QString("DAYTIME");
     case TIME_DIFFERENCE:
         return QString("TIMEDIFF");
-    case DOMAIN:
+    case DDOMAIN:
         return QString("DOMAIN");
     case INTEGER24:
         return QString("INT24");

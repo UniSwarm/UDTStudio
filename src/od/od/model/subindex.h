@@ -86,7 +86,7 @@ public:
         UNICODE_STRING = 0x000B,
         TIME_OF_DAY = 0x000C,
         TIME_DIFFERENCE = 0x000D,
-        DOMAIN = 0x000F,
+        DDOMAIN = 0x000F,
         INTEGER24 = 0x0010,
         REAL64 = 0x0011,
         INTEGER40 = 0x0012,
