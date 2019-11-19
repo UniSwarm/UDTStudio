@@ -21,12 +21,14 @@
 
 #include "canopen_global.h"
 
+#include <QObject>
 #include <QCanBusFrame>
 
 class CanOpenBus;
 
-class CANOPEN_EXPORT Service
+class CANOPEN_EXPORT Service : public QObject
 {
+    Q_OBJECT
 public:
     Service(CanOpenBus *bus);
     virtual ~Service();

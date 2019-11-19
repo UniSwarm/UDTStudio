@@ -25,6 +25,7 @@
 
 class CANOPEN_EXPORT TimeStamp : public Service
 {
+    Q_OBJECT
 public:
     TimeStamp(CanOpenBus *bus);
 

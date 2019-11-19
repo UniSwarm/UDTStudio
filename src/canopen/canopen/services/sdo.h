@@ -25,13 +25,15 @@
 
 class CANOPEN_EXPORT SDO : public Service
 {
+    Q_OBJECT
 public:
     SDO(CanOpenBus *bus);
 
     virtual void parseFrame(const QCanBusFrame &frame);
 
-protected:
+//protected:
     void sendSdoReadReq(uint8_t nodeId, uint16_t index, uint8_t subindex);
+    void sendSdoWriteReq(uint8_t nodeId, uint16_t index, uint8_t subindex, const QVariant &value);
 };
 
 #endif // SDO_H

@@ -25,6 +25,7 @@
 
 class CANOPEN_EXPORT PDO : public Service
 {
+    Q_OBJECT
 public:
     PDO(CanOpenBus *bus);
 

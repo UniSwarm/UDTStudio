@@ -18,13 +18,34 @@
 
 #include "sync.h"
 
+#include "canopenbus.h"
+
 Sync::Sync(CanOpenBus *bus)
     : Service (bus)
 {
+    _syncTimer = new QTimer();
+    connect(_syncTimer, &QTimer::timeout, this, &Sync::sendSync);
+}
 
+void Sync::startSync(int ms)
+{
+    _syncTimer->start(ms);
+}
+
+void Sync::stopSync()
+{
+    _syncTimer->stop();
+}
+
+void Sync::sendSync()
+{
+    QCanBusFrame frameSync;
+    frameSync.setFrameId(0x080);
+    _bus->canDevice()->writeFrame(frameSync);
 }
 
 void Sync::parseFrame(const QCanBusFrame &frame)
 {
-
+    if (frame.frameId() == _syncCobId && frame.payload().isEmpty())
+        emit syncEmitted();
 }

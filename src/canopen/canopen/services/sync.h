@@ -23,12 +23,28 @@
 
 #include "service.h"
 
+#include <QTimer>
+
 class CANOPEN_EXPORT Sync : public Service
 {
+    Q_OBJECT
 public:
     Sync(CanOpenBus *bus);
 
+    void startSync(int ms);
+    void stopSync();
+
     virtual void parseFrame(const QCanBusFrame &frame);
+
+public slots:
+    void sendSync();
+
+signals:
+    void syncEmitted();
+
+protected:
+    QTimer *_syncTimer;
+    uint32_t _syncCobId;
 };
 
 #endif // SYNC_H

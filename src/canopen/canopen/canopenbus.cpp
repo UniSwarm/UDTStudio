@@ -52,6 +52,7 @@ void CanOpenBus::addNode(Node *node)
 void CanOpenBus::exploreBus()
 {
     //_canDevice->sendSdoReadReq(2, 0x1000, 0);
+    _sdos.first()->sendSdoReadReq(2, 0x1000, 0);
 }
 
 QCanBusDevice *CanOpenBus::canDevice() const

@@ -25,6 +25,7 @@
 
 class CANOPEN_EXPORT NMT : public Service
 {
+    Q_OBJECT
 public:
     NMT(CanOpenBus *bus);
 

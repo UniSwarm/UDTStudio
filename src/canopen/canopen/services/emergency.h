@@ -25,6 +25,7 @@
 
 class CANOPEN_EXPORT Emergency : public Service
 {
+    Q_OBJECT
 public:
     Emergency(CanOpenBus *bus);
 

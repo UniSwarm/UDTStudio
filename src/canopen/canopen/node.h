@@ -21,7 +21,7 @@
 
 #include "canopen_global.h"
 
-#include "model/od.h"
+//#include "model/od.h"
 
 class CanOpenBus;
 
@@ -35,14 +35,15 @@ public:
 
     enum Status {
         PREOP,
-        STARTED
+        STARTED,
+        STOPPED
     };
 
 protected:
     uint32_t _nodeId;
     Status _status;
 
-    OD *_od;
+//    OD *_od;
     CanOpenBus *_bus;
 };
 
