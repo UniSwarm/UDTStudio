@@ -20,7 +20,7 @@ compiler:
 install: true
 
 before_script:
-  - . /opt/qt$QT/bin/qt$QT-env.sh'
+  - . /opt/qt$QT/bin/qt$QT-env.sh
 
 # Build steps
 script:
