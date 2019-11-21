@@ -1,10 +1,14 @@
 sudo: required
-dist: xenial
+dist: bionic
 group: edge
 
+env:
+  - QT=512
+
 before_install:
+  - sudo add-apt-repository ppa:beineri/opt-qt-5.12.0-bionic
   - sudo apt-get update -qq
-  - sudo apt-get install -qq qt5-qmake qtbase5-dev qt5-default qttools5-dev-tools libqt5serialport5-dev libqt5serialbus5-dev libqt5webkit5-dev
+  - sudo apt-get install -qq qt5-qmake qt${QT}base qt${QT}tools qt${QT}serialport qt${QT}serialbus
   - sudo apt-get install -qq zlib1g-dev libudev-dev
 
 language: cpp
@@ -14,6 +18,9 @@ compiler:
   - gcc
 
 install: true
+
+before_script:
+  - . /opt/qt$QT/bin/qt$QT-env.sh'
 
 # Build steps
 script:
