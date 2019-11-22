@@ -3,7 +3,7 @@ QT += core
 
 TARGET = cood
 TEMPLATE = app
-DESTDIR = "$$PWD/../../../bin"
+DESTDIR = "$$PWD/../../bin"
 
 HEADERS += \
 
@@ -12,7 +12,7 @@ SOURCES += \
 
 INCLUDEPATH += $$PWD/../od/
 
-LIBS += -L"$$PWD/../../../bin" -lod
+LIBS += -L"$$PWD/../../bin" -lod
 DEPENDPATH += $$PWD/../od/
 unix:{
     QMAKE_LFLAGS_RPATH=

@@ -9,6 +9,7 @@
 #include "generator/cgenerator.h"
 #include "writer/dcfwriter.h"
 #include "writer/edswriter.h"
+#include "generator/texgenerator.h"
 
 /**
  * @brief main
@@ -90,7 +91,6 @@ int main(int argc, char *argv[])
     QString outSuffix = QFileInfo(outputFile).suffix();
     CGenerator cgenerator;
     DcfWriter dcfWriter;
-    EdsWriter edsWriter;
     if (outSuffix == "c")
         cgenerator.generateC(deviceConfiguration, outputFile);
     else if (outSuffix == "h")
@@ -98,7 +98,15 @@ int main(int argc, char *argv[])
     else if (outSuffix == "dcf")
         dcfWriter.write(deviceConfiguration, outputFile);
     else if (outSuffix == "eds" && deviceDescription)
+    {
+        EdsWriter edsWriter;
         edsWriter.write(deviceDescription, outputFile);
+    }
+    else if (outSuffix == "tex" && deviceDescription)
+    {
+        TexGenerator texGenerator;
+        texGenerator.generate(deviceDescription, outputFile);
+    }
     else if (QFileInfo(outputFile).isDir())
     {
         cgenerator.generateC(deviceConfiguration, QString(outputFile + "/od_data.c"));
@@ -109,7 +117,7 @@ int main(int argc, char *argv[])
     {
         delete deviceDescription;
         delete deviceConfiguration;
-        out << "error (4): invalid output file format, .c, .h, .dcf or .eds accepted" << endl;
+        out << "error (4): invalid output file format, .c, .h, .dcf, .eds or .tex accepted" << endl;
         return -4;
     }
     out << "nodeId" << nodeid;

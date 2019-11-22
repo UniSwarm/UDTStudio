@@ -1,5 +1,5 @@
 
-QT       += core gui widgets
+QT       += core gui widgets serialbus
 
 TARGET = udtstudio
 TEMPLATE = app
@@ -14,7 +14,7 @@ SOURCES += \
 HEADERS += \
     $$PWD/mainwindow.h
 
-INCLUDEPATH += $$PWD/../od/od/ $$PWD/../udtgui/udtgui/
+INCLUDEPATH += $$PWD/../od/ $$PWD/../udtgui/ $$PWD/../canopen/
 
 LIBS += -L"$$PWD/../../bin" -lod -lcanopen -ludtgui
 DEPENDPATH += $$PWD/../od/od/ $$PWD/../udtgui/udtgui/

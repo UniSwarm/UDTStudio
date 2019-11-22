@@ -7,6 +7,7 @@
 #include <QSortFilterProxyModel>
 
 #include "od/odtreeview.h"
+#include "canopenbus.h"
 
 class MainWindow : public QMainWindow
 {
@@ -17,6 +18,7 @@ public:
 
 private:
     ODTreeView *_odView;
+    CanOpenBus *_bus;
 };
 
 #endif // MAINWINDOW_H

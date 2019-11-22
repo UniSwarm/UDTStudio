@@ -4,6 +4,7 @@
 #include "parser/edsparser.h"
 
 #include <QApplication>
+#include <QCanBus>
 #include <QScreen>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -15,9 +16,12 @@ MainWindow::MainWindow(QWidget *parent) :
     DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, 2);
 
     _odView = new ODTreeView();
-    _odView->setDeviceModel(deviceConfiguration);
+    _odView->setDeviceModel(deviceDescription);
     _odView->setEditable(true);
     setCentralWidget(_odView);
+
+    _bus = new CanOpenBus(QCanBus::instance()->createDevice("socketcan", "can0"));
+    _bus->exploreBus();
 
     resize(QApplication::screens()[0]->size() / 2);
 }
