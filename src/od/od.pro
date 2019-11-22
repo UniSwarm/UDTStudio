@@ -12,6 +12,7 @@ HEADERS += \
     $$PWD/model/subindex.h \
     $$PWD/generator/generator.h \
     $$PWD/generator/cgenerator.h \
+    $$PWD/generator/texgenerator.h \
     $$PWD/od_global.h \
     $$PWD/writer/dcfwriter.h \
     $$PWD/model/deviceconfiguration.h \
@@ -32,6 +33,7 @@ SOURCES += \
     $$PWD/model/subindex.cpp \
     $$PWD/generator/generator.cpp \
     $$PWD/generator/cgenerator.cpp \
+    $$PWD/generator/texgenerator.cpp \
     $$PWD/writer/dcfwriter.cpp \
     $$PWD/model/deviceconfiguration.cpp \
     $$PWD/model/devicedescription.cpp \

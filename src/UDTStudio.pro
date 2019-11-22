@@ -10,3 +10,4 @@ SUBDIRS += \
 cood.depends = od
 udtgui.depends = od canopen
 udtstudio.depends = od canopen udtgui
+canopen.depends = od

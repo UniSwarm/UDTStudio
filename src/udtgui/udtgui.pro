@@ -11,12 +11,14 @@ HEADERS += \
     $$PWD/udtgui_global.h \
     $$PWD/od/oditem.h \
     $$PWD/od/oditemmodel.h \
-    $$PWD/od/odtreeview.h
+    $$PWD/od/odtreeview.h \
+    $$PWD/od/odtreeviewdelegate.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
     $$PWD/od/oditemmodel.cpp \
-    $$PWD/od/odtreeview.cpp
+    $$PWD/od/odtreeview.cpp \
+    $$PWD/od/odtreeviewdelegate.cpp
 
 INCLUDEPATH += $$PWD/../od/ $$PWD/../canopen/
 
