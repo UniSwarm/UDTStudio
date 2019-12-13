@@ -358,6 +358,7 @@ QString CGenerator::dataToString(const SubIndex *subIndex) const
     {
     case SubIndex::Type::OCTET_STRING:
     case SubIndex::Type::VISIBLE_STRING:
+    case SubIndex::Type::UNICODE_STRING:
         data = stringNameToString(subIndex);
         break;
 
@@ -447,7 +448,11 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile) const
     {
     case Index::Object::VAR:
         if (!index->subIndexExist(0))
-            break;
+            return;
+        if (index->subIndex(0)->dataType() == SubIndex::VISIBLE_STRING
+            || index->subIndex(0)->dataType() == SubIndex::OCTET_STRING
+            || index->subIndex(0)->dataType() == SubIndex::UNICODE_STRING)
+            return;
 
         dataType = typeToString(index->subIndex(0)->dataType());
         if (dataType == nullptr)
@@ -490,6 +495,10 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
     {
     case Index::Object::VAR:
         if (!index->subIndexExist(0))
+            break;
+        if (index->subIndex(0)->dataType() == SubIndex::VISIBLE_STRING
+            || index->subIndex(0)->dataType() == SubIndex::OCTET_STRING
+            || index->subIndex(0)->dataType() == SubIndex::UNICODE_STRING)
             break;
 
         cFile << "    " << "OD_RAM." << varNameToString(index->name());
@@ -589,8 +598,17 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
     case Index::Object::VAR:
         if (!index->subIndexExist(0))
             break;
+        if (index->subIndex(0)->dataType() == SubIndex::VISIBLE_STRING
+            || index->subIndex(0)->dataType() == SubIndex::OCTET_STRING
+            || index->subIndex(0)->dataType() == SubIndex::UNICODE_STRING)
+        {
+            cFile << "(void*)" << stringNameToString(index->subIndex(0)) << ", ";
+        }
+        else
+        {
+            cFile << "(void*)&OD_RAM." << varNameToString(index->name()) << ", ";
+        }
 
-        cFile << "(void*)&OD_RAM." << varNameToString(index->name()) << ", ";
         cFile << typeObjectToString(index, 0) << ", " << "0x" << QString::number(index->subIndex(0)->accessType(), 16).toUpper();
         break;
 
