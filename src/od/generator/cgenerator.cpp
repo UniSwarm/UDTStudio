@@ -103,7 +103,7 @@ void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
     out << "#ifndef OD_DATA_H" << "\n";
     out << "#define OD_DATA_H" << "\n";
     out << "\n";
-    out << "#include \"od.h\"" << "\n";
+    out << "#include \"co_od.h\"" << "\n";
     out << "\n";
     out << "// == Number of entries in object dictionary ==" << "\n";
     out << "#define OD_NB_ELEMENTS " << deviceConfiguration->indexCount() << "\n";
