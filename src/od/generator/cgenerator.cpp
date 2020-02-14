@@ -370,8 +370,20 @@ QString CGenerator::dataToString(const SubIndex *subIndex) const
         data = QString::number(subIndex->value().toReal(), 'f', 16) + QStringLiteral("F");
         break;
 
+    case SubIndex::Type::UNSIGNED8:
+    case SubIndex::Type::UNSIGNED16:
+    case SubIndex::Type::UNSIGNED24:
+    case SubIndex::Type::UNSIGNED32:
+    case SubIndex::Type::UNSIGNED40:
+    case SubIndex::Type::UNSIGNED48:
+    case SubIndex::Type::UNSIGNED56:
+    case SubIndex::Type::UNSIGNED64:
+        data = subIndex->value().toString() + QStringLiteral("u");
+        break;
+
     default:
         data = subIndex->value().toString();
+        break;
     }
 
     return data;
