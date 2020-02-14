@@ -662,7 +662,7 @@ void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile) co
     {
     case SubIndex::Type::VISIBLE_STRING:
     case SubIndex::Type::OCTET_STRING:
-        cFile << "const char " << stringNameToString(subIndex) << "[]" << " = " << "\"" << subIndex->value().toString() << "\"" << ";\n";
+        cFile << "static const char " << stringNameToString(subIndex) << "[]" << " = " << "\"" << subIndex->value().toString() << "\"" << ";\n";
         break;
     }
 }
