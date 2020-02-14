@@ -362,6 +362,14 @@ QString CGenerator::dataToString(const SubIndex *subIndex) const
         data = stringNameToString(subIndex);
         break;
 
+    case SubIndex::Type::REAL32:
+        data = QString::number(subIndex->value().toReal(), 'f', 7) + QStringLiteral("f");
+        break;
+
+    case SubIndex::Type::REAL64:
+        data = QString::number(subIndex->value().toReal(), 'f', 16) + QStringLiteral("F");
+        break;
+
     default:
         data = subIndex->value().toString();
     }
