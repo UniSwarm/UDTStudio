@@ -47,6 +47,9 @@ private:
     QString varNameToString(const QString &name) const;
     QString structNameToString(const QString &name) const;
     QString dataToString(const SubIndex *index) const;
+    QString objectTypeToEnumString(const uint16_t objectType) const;
+    QString dataTypeToEnumString(const uint16_t dataType) const;
+    QString accessToEnumString(const uint8_t acces) const;
     QString typeObjectToString(Index *index, uint8_t subIndex, bool isInRecord) const;
     QString stringNameToString(const SubIndex *subIndex) const;
 

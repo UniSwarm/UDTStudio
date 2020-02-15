@@ -389,6 +389,194 @@ QString CGenerator::dataToString(const SubIndex *subIndex) const
     return data;
 }
 
+QString CGenerator::objectTypeToEnumString(const uint16_t objectType) const
+{
+    QString typeObject;
+
+    switch (objectType)
+    {
+    case Index::OBJECT_NULL:
+        typeObject = "OD_OBJECT_NULL";
+        break;
+
+    case Index::OBJECT_DOMAIN:
+        typeObject = "OD_OBJECT_DOMAIN";
+        break;
+
+    case Index::DEFTYPE:
+        typeObject = "OD_OBJECT_DEFTYPE";
+        break;
+
+    case Index::DEFSTRUCT:
+        typeObject = "OD_OBJECT_DEFSTRUCT";
+        break;
+
+    case Index::VAR:
+        typeObject = "OD_OBJECT_VAR";
+        break;
+
+    case Index::ARRAY:
+        typeObject = "OD_OBJECT_ARRAY";
+        break;
+
+    case Index::RECORD:
+        typeObject = "OD_OBJECT_RECORD";
+        break;
+
+    default:
+        typeObject = QString::number(objectType, 16);
+        break;
+    }
+
+    return typeObject;
+}
+
+QString CGenerator::dataTypeToEnumString(const uint16_t dataType) const
+{
+    QString dataTypeEnumString;
+
+    switch (dataType)
+    {
+    case SubIndex::BOOLEAN:
+        dataTypeEnumString = "OD_TYPE_BOOLEAN";
+        break;
+
+    case SubIndex::INTEGER8:
+        dataTypeEnumString = "OD_TYPE_INTEGER8";
+        break;
+
+    case SubIndex::INTEGER16:
+        dataTypeEnumString = "OD_TYPE_INTEGER16";
+        break;
+
+    case SubIndex::INTEGER32:
+        dataTypeEnumString = "OD_TYPE_INTEGER32";
+        break;
+
+    case SubIndex::UNSIGNED8:
+        dataTypeEnumString = "OD_TYPE_UNSIGNED8";
+        break;
+
+    case SubIndex::UNSIGNED16:
+        dataTypeEnumString = "OD_TYPE_UNSIGNED16";
+        break;
+
+    case SubIndex::UNSIGNED32:
+        dataTypeEnumString = "OD_TYPE_UNSIGNED32";
+        break;
+
+    case SubIndex::REAL32:
+        dataTypeEnumString = "OD_TYPE_REAL32";
+        break;
+
+    case SubIndex::VISIBLE_STRING:
+        dataTypeEnumString = "OD_TYPE_VISIBLE_STRING";
+        break;
+
+    case SubIndex::OCTET_STRING:
+        dataTypeEnumString = "OD_TYPE_OCTET_STRING";
+        break;
+
+    case SubIndex::UNICODE_STRING:
+        dataTypeEnumString = "OD_TYPE_UNICODE_STRING";
+        break;
+
+    case SubIndex::TIME_OF_DAY:
+        dataTypeEnumString = "OD_TYPE_TIME_OF_DAY";
+        break;
+
+    case SubIndex::TIME_DIFFERENCE:
+        dataTypeEnumString = "OD_TYPE_TIME_DIFFERENCE";
+        break;
+
+    case SubIndex::DDOMAIN:
+        dataTypeEnumString = "OD_TYPE_DOMAIN";
+        break;
+
+    case SubIndex::INTEGER24:
+        dataTypeEnumString = "OD_TYPE_INTEGER24";
+        break;
+
+    case SubIndex::REAL64:
+        dataTypeEnumString = "OD_TYPE_REAL64";
+        break;
+
+    case SubIndex::INTEGER40:
+        dataTypeEnumString = "OD_TYPE_INTEGER40";
+        break;
+
+    case SubIndex::INTEGER48:
+        dataTypeEnumString = "OD_TYPE_INTEGER48";
+        break;
+
+    case SubIndex::INTEGER56:
+        dataTypeEnumString = "OD_TYPE_INTEGER56";
+        break;
+
+    case SubIndex::INTEGER64:
+        dataTypeEnumString = "OD_TYPE_INTEGER64";
+        break;
+
+    case SubIndex::UNSIGNED24:
+        dataTypeEnumString = "OD_TYPE_UNSIGNED24";
+        break;
+
+    case SubIndex::UNSIGNED40:
+        dataTypeEnumString = "OD_TYPE_UNSIGNED40";
+        break;
+
+    case SubIndex::UNSIGNED48:
+        dataTypeEnumString = "OD_TYPE_UNSIGNED48";
+        break;
+
+    case SubIndex::UNSIGNED56:
+        dataTypeEnumString = "OD_TYPE_UNSIGNED56";
+        break;
+
+    case SubIndex::UNSIGNED64:
+        dataTypeEnumString = "OD_TYPE_UNSIGNED64";
+        break;
+    }
+
+    return dataTypeEnumString;
+}
+
+QString CGenerator::accessToEnumString(const uint8_t acces) const
+{
+    QString accessToEnumString;
+
+    if (acces & SubIndex::READ)
+    {
+        accessToEnumString += "OD_ACCESS_READ";
+    }
+    if (acces & SubIndex::WRITE)
+    {
+        if (!accessToEnumString.isEmpty())
+        {
+            accessToEnumString += " | ";
+        }
+        accessToEnumString += "OD_ACCESS_WRITE";
+    }
+    if (acces & SubIndex::TPDO)
+    {
+        if (!accessToEnumString.isEmpty())
+        {
+            accessToEnumString += " | ";
+        }
+        accessToEnumString += "OD_ACCESS_TPDO";
+    }
+    if (acces & SubIndex::RPDO)
+    {
+        if (!accessToEnumString.isEmpty())
+        {
+            accessToEnumString += " | ";
+        }
+        accessToEnumString += "OD_ACCESS_RPDO";
+    }
+
+    return accessToEnumString;
+}
+
 /**
  * @brief converts data type and object type
  * @param sub-index
@@ -399,18 +587,16 @@ QString CGenerator::typeObjectToString(Index *index, uint8_t subIndex, bool isIn
     QString typeObject;
 
     if (isInRecord)
-        typeObject = "0x7";
-
+    {
+        typeObject = objectTypeToEnumString(Index::VAR);
+    }
     else
-        typeObject = "0x" + QString::number(index->objectType());
+    {
+        typeObject = objectTypeToEnumString(index->objectType());
+    }
+    typeObject += " | ";
 
-    if (index->subIndex(subIndex)->dataType() <= 0x000F)
-        typeObject += "00";
-
-    else if (index->subIndex(subIndex)->dataType() <= 0x00FF)
-        typeObject += "0";
-
-    typeObject += QString::number(index->subIndex(subIndex)->dataType(), 16).toUpper();
+    typeObject += dataTypeToEnumString(index->subIndex(subIndex)->dataType());
 
     return typeObject;
 }
@@ -577,7 +763,8 @@ void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
             cFile << "." << varNameToString(subIndex->name());
             //TODO PDOmapping
             cFile << ", " << typeObjectToString(index, subIndex->subIndex(), true) << ", ";
-            cFile << "0x" << QString::number(subIndex->accessType(), 16).toUpper() << ", " << subIndex->subIndex();
+            cFile << accessToEnumString(subIndex->accessType()) << ", ";
+            cFile << subIndex->subIndex();
             cFile << "}," << "\n";
         }
 
@@ -593,9 +780,11 @@ void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
 void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
 {
     cFile << "    " << "{";
-    //TODO PDOmapping
+
+    // OD_entry_t.index
     cFile << "0x" << QString::number(index->index(), 16).toUpper() << ", " << "0x";
 
+    // OD_entry_t.nbSubIndex
     switch (index->objectType())
     {
     case Index::Object::VAR:
@@ -610,14 +799,17 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
         cFile << index->maxSubIndex()-1;
         break;
     }
-
     cFile << ", ";
 
+    // OD_entry_t.ptData, OD_entry_t.typeObject, OD_entry_t.accessPDOmapping
     switch (index->objectType())
     {
     case Index::Object::VAR:
         if (!index->subIndexExist(0))
+        {
             break;
+        }
+        // OD_entry_t.ptData
         if (index->subIndex(0)->dataType() == SubIndex::VISIBLE_STRING
             || index->subIndex(0)->dataType() == SubIndex::OCTET_STRING
             || index->subIndex(0)->dataType() == SubIndex::UNICODE_STRING)
@@ -629,20 +821,38 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
             cFile << "(void*)&OD_RAM." << varNameToString(index->name()) << ", ";
         }
 
-        cFile << typeObjectToString(index, 0) << ", " << "0x" << QString::number(index->subIndex(0)->accessType(), 16).toUpper();
+        // OD_entry_t.typeObject
+        cFile << typeObjectToString(index, 0) << ", ";
+
+        // OD_entry_t.accessPDOmapping
+        cFile << accessToEnumString(index->subIndex(0)->accessType());
         break;
 
     case Index::Object::RECORD:
+        // OD_entry_t.ptData
         cFile << "(void*)OD_Record" << QString::number(index->index(), 16).toUpper() << ", ";
-        cFile << "0x9000" << ", " << "0x0";
+
+        // OD_entry_t.typeObject
+        cFile << objectTypeToEnumString(Index::RECORD) << ", ";
+
+        // OD_entry_t.accessPDOmapping
+        cFile << "0x0";
         break;
 
     case Index::Object::ARRAY:
         if (!index->subIndexExist(1))
+        {
             break;
+        }
 
+        // OD_entry_t.ptData
         cFile << "(void*)OD_RAM." << varNameToString(index->name()) << ", ";
-        cFile << typeObjectToString(index, 1) << ", " << "0x" << QString::number(index->subIndex(1)->accessType(), 16).toUpper();
+
+        // OD_entry_t.typeObject
+        cFile << typeObjectToString(index, 1) << ", ";
+
+        // OD_entry_t.accessPDOmapping
+        cFile << accessToEnumString(index->subIndex(1)->accessType());
         break;
     }
 
