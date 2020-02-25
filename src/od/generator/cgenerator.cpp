@@ -754,7 +754,7 @@ void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
 {
     if ( index->objectType() == Index::Object::RECORD)
     {
-        cFile << "const OD_entrySubIndex_t OD_Record" << QString::number(index->index(), 16).toUpper() << "[" << index->maxSubIndex() << "] =\n";
+        cFile << "static const OD_entrySubIndex_t OD_Record" << QString::number(index->index(), 16).toUpper() << "[" << index->maxSubIndex() << "] =\n";
         cFile << "{\n";
 
         foreach (SubIndex *subIndex, index->subIndexes())
