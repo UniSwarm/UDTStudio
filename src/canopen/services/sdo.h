@@ -33,7 +33,7 @@ public:
 
 //protected:
     void sendSdoReadReq(uint8_t nodeId, uint16_t index, uint8_t subindex);
-    void sendSdoWriteReq(uint8_t nodeId, uint16_t index, uint8_t subindex, const QVariant &value);
+    void sendSdoWriteReq(uint8_t nodeId, uint16_t index, uint8_t subindex, const QVariant &value, uint8_t size);
 };
 
 #endif // SDO_H

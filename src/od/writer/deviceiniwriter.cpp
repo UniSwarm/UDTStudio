@@ -64,9 +64,9 @@ void DeviceIniWriter::writeObjects(const DeviceModel *deviceModel) const
             optionals.append(index);
     }
 
-    qSort(mandatories.begin(), mandatories.end(), indexLessThan);
-    qSort(optionals.begin(), optionals.end(), indexLessThan);
-    qSort(manufacturers.begin(), manufacturers.end(), indexLessThan);
+    std::sort(mandatories.begin(), mandatories.end(), indexLessThan);
+    std::sort(optionals.begin(), optionals.end(), indexLessThan);
+    std::sort(manufacturers.begin(), manufacturers.end(), indexLessThan);
 
     *_file  << "[MandatoryObjects]" << "\n";
     writeSupportedIndexes(mandatories);

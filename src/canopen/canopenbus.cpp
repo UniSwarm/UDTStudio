@@ -67,10 +67,11 @@ void CanOpenBus::canFrameRec()
         QCanBusFrame frame = _canDevice->readFrame();
         if ((frame.frameId() & 0x780) == 0x580) // SDO response
         {
+            _sdos.first()->parseFrame(frame);
         }
         else if (frame.frameId() > 0x180 && frame.frameId() < 0x580)    // PDO receive
         {
-
+            _pdo->parseFrame(frame);
         }
         else
             qDebug()<<frame.frameId()<<frame.payload().toHex();

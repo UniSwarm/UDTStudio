@@ -46,7 +46,7 @@ protected slots:
 public slots:
     void exploreBus();
 
-protected:
+public:
     QList<Node *> _nodes;
     QCanBusDevice *_canDevice;
 

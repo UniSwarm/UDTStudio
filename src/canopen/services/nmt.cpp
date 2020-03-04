@@ -28,6 +28,11 @@ NMT::NMT(CanOpenBus *bus)
 
 void NMT::sendNmt(uint8_t node_id, uint8_t cmd)
 {
+    if (!_bus)
+        return;
+    if (!_bus->canDevice())
+        return;
+
     QByteArray nmtStopPayload;
     nmtStopPayload.append(static_cast<char>(cmd));
     nmtStopPayload.append(static_cast<char>(node_id));

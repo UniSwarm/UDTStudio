@@ -39,6 +39,11 @@ void Sync::stopSync()
 
 void Sync::sendSync()
 {
+    if (!_bus)
+        return;
+    if (!_bus->canDevice())
+        return;
+
     QCanBusFrame frameSync;
     frameSync.setFrameId(0x080);
     _bus->canDevice()->writeFrame(frameSync);

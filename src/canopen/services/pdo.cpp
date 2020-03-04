@@ -18,6 +18,8 @@
 
 #include "pdo.h"
 
+#include <QDebug>
+
 PDO::PDO(CanOpenBus *bus)
     : Service (bus)
 {
@@ -26,5 +28,24 @@ PDO::PDO(CanOpenBus *bus)
 
 void PDO::parseFrame(const QCanBusFrame &frame)
 {
+    uint8_t nodeId = frame.frameId() & 0x0000007F;
+    uint8_t tpdo = (((frame.frameId() & 0x00000380) >> 7) - 3) / 2;
 
+    if (tpdo == 0)
+    {
+        uint16_t status = *((uint16_t*)(&frame.payload().data()[0]));
+        int16_t speed = *((int16_t*)(&frame.payload().data()[2]));
+        int32_t pos = *((int32_t*)(&frame.payload().data()[4]));
+        double angle = pos * 360.0 / 524288.0;
+        qDebug() << "nodeId : " << nodeId << angle << speed << status;
+        //_canopen_pos[nodeId] = pos;
+    }
+    if (tpdo == 1)
+    {
+        int16_t speed = *((int16_t*)(&frame.payload().data()[0]));
+        int16_t out = *((int16_t*)(&frame.payload().data()[2]));
+        int16_t error = *((int16_t*)(&frame.payload().data()[4]));
+        int16_t in = *((int16_t*)(&frame.payload().data()[6]));
+        qDebug() << "> nodeId : " << nodeId << speed << out << error << in;
+    }
 }

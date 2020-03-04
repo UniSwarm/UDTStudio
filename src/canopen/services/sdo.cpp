@@ -25,20 +25,23 @@
 SDO::SDO(CanOpenBus *bus)
     : Service (bus)
 {
-
 }
 
 void SDO::sendSdoReadReq(uint8_t nodeId, uint16_t index, uint8_t subindex)
 {
+    if (!_bus)
+        return;
+    if (!_bus->canDevice())
+        return;
+
     QByteArray sdoReadReqPayload;
-    sdoReadReqPayload.append(0x40);
-    sdoReadReqPayload.append(static_cast<char>(index & 0xFF));
-    sdoReadReqPayload.append(static_cast<char>(index >> 8));
-    sdoReadReqPayload.append(static_cast<char>(subindex));
-    sdoReadReqPayload.append(static_cast<char>(0));
-    sdoReadReqPayload.append(static_cast<char>(0));
-    sdoReadReqPayload.append(static_cast<char>(0));
-    sdoReadReqPayload.append(static_cast<char>(0));
+    uint8_t cmd = 0x40;
+    QDataStream data(&sdoReadReqPayload, QIODevice::WriteOnly);
+    data.setByteOrder(QDataStream::LittleEndian);
+    data << cmd;
+    data << index;
+    data << subindex;
+    data << static_cast<uint32_t>(0);
 
     QCanBusFrame frameNmt;
     frameNmt.setFrameId(0x600 + nodeId);
@@ -46,38 +49,44 @@ void SDO::sendSdoReadReq(uint8_t nodeId, uint16_t index, uint8_t subindex)
     _bus->canDevice()->writeFrame(frameNmt);
 }
 
-void SDO::sendSdoWriteReq(uint8_t nodeId, uint16_t index, uint8_t subindex, const QVariant &value)
+void SDO::sendSdoWriteReq(uint8_t nodeId, uint16_t index, uint8_t subindex, const QVariant &value, uint8_t size)
 {
-    QByteArray sdoWriteReqPayload;
-    sdoWriteReqPayload.append(0x40);
-    sdoWriteReqPayload.append(static_cast<char>(index & 0xFF));
-    sdoWriteReqPayload.append(static_cast<char>(index >> 8));
-    sdoWriteReqPayload.append(static_cast<char>(subindex));
-    sdoWriteReqPayload.append(static_cast<char>(0));
-    sdoWriteReqPayload.append(static_cast<char>(0));
-    sdoWriteReqPayload.append(static_cast<char>(0));
-    sdoWriteReqPayload.append(static_cast<char>(0));
+    if (!_bus)
+        return;
+    if (!_bus->canDevice())
+        return;
 
-    QCanBusFrame frameNmt;
-    frameNmt.setFrameId(0x600 + nodeId);
-    frameNmt.setPayload(sdoWriteReqPayload);
-    _bus->canDevice()->writeFrame(frameNmt);
+    if (size <= 4)
+    {
+        // expedited with size
+        QByteArray sdoWriteReqPayload;
+
+        uint8_t cmd = 0x20 + static_cast<uint8_t>((4 - size) << 2) + 0x03;
+        QDataStream data(&sdoWriteReqPayload, QIODevice::WriteOnly);
+        data.setByteOrder(QDataStream::LittleEndian);
+        data << cmd;
+        data << index;
+        data << subindex;
+        data << value.toUInt();
+
+        QCanBusFrame frameNmt;
+        frameNmt.setFrameId(0x600 + nodeId);
+        frameNmt.setPayload(sdoWriteReqPayload);
+        _bus->canDevice()->writeFrame(frameNmt);
+    }
+
 }
 
 void SDO::parseFrame(const QCanBusFrame &frame)
 {
     uint8_t node_id = frame.frameId() & 0x07F;
-    uint8_t size = 0;
 
     uint8_t sdoCmd = static_cast<uint8_t>(frame.payload().at(0));
+    qDebug() << QString::number(frame.frameId(), 16) << QString::number(sdoCmd, 16);
     if ((sdoCmd & 0xF0) == 0x40)    // SDO read req response
     {
-        if (sdoCmd == 0x4F)
-            size = 8;
-        else if (sdoCmd == 0x4B)
-            size = 16;
-        else if (sdoCmd == 0x43)
-            size = 32;
-        qDebug()<<frame.payload().toHex()<<node_id<<size;
+        uint8_t size = 4 - ((sdoCmd & 0x0C) >> 2);
+        int32_t value = *((int32_t*)(&frame.payload().data()[4]));
+        qDebug() << "rec" << frame.payload().toHex() << node_id << size << value;
     }
 }
