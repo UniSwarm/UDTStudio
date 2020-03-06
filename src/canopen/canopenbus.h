@@ -44,7 +44,13 @@ protected slots:
     void canState(QCanBusDevice::CanBusDeviceState state);
 
 public slots:
-    void exploreBus();
+  void exploreBus();
+
+signals:
+  void frameAvailable(QCanBusFrame frame);
+  void frameErrorOccurred(QCanBusDevice::CanBusError error);
+  void frameTransmit(qint64 framesCount);
+  void stateCanOpenChanged(QCanBusDevice::CanBusDeviceState state);
 
 public:
     QList<Node *> _nodes;

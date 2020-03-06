@@ -26,8 +26,12 @@ CanOpenBus::CanOpenBus(QCanBusDevice *canDevice)
     if (_canDevice)
     {
         if (_canDevice->state() == QCanBusDevice::UnconnectedState)
+        {
             _canDevice->connectDevice();
+        }
         connect(_canDevice, &QCanBusDevice::framesReceived, this, &CanOpenBus::canFrameRec);
+        connect(_canDevice, &QCanBusDevice::errorOccurred, this, &CanOpenBus::frameErrorOccurred);
+        connect(_canDevice, &QCanBusDevice::framesWritten, this, &CanOpenBus::frameTransmit);
         connect(_canDevice, &QCanBusDevice::stateChanged, this, &CanOpenBus::canState);
     }
 
@@ -75,10 +79,12 @@ void CanOpenBus::canFrameRec()
         }
         else
             qDebug()<<frame.frameId()<<frame.payload().toHex();
+
+        emit frameAvailable(frame);
     }
 }
 
 void CanOpenBus::canState(QCanBusDevice::CanBusDeviceState state)
 {
-
+    emit stateCanOpenChanged(state);
 }
