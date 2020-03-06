@@ -3,7 +3,7 @@ QT += core
 
 TARGET = od
 TEMPLATE = lib
-DESTDIR = "$$PWD/../../bin"
+DESTDIR = "$$PWD/../../../bin"
 
 DEFINES += OD_EXPORT_LIB
 

@@ -3,7 +3,7 @@ QT += core gui widgets
 
 TARGET = udtgui
 TEMPLATE = lib
-DESTDIR = "$$PWD/../../bin"
+DESTDIR = "$$PWD/../../../bin"
 
 DEFINES += UDTGUI_EXPORT_LIB
 
@@ -20,11 +20,12 @@ SOURCES += \
     $$PWD/od/odtreeview.cpp \
     $$PWD/od/odtreeviewdelegate.cpp
 
-INCLUDEPATH += $$PWD/../od/ $$PWD/../canopen/
+INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 
-LIBS += -L"$$PWD/../../bin" -lod -lcanopen
-DEPENDPATH += $$PWD/../od/
+LIBS += -L"$$PWD/../../../bin" -lod -lcanopen
+DEPENDPATH += $$PWD/../../lib/od/
 unix:{
     QMAKE_LFLAGS_RPATH=
     QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN\'"
 }
+ls

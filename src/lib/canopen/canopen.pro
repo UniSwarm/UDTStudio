@@ -2,7 +2,7 @@
 QT     += core gui widgets serialbus
 TARGET = canopen
 TEMPLATE = lib
-DESTDIR = "$$PWD/../../bin"
+DESTDIR = "$$PWD/../../../bin"
 
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += CANOPEN_EXPORT_LIB
@@ -35,9 +35,9 @@ HEADERS += \
     $$PWD/services/sync.h \
     $$PWD/services/timestamp.h
 
-INCLUDEPATH += $$PWD/../../od/
+INCLUDEPATH += $$PWD/../od/
 
-LIBS += -L"$$PWD/../../bin" -lod
+LIBS += -L"$$PWD/../../../bin" -lod
 DEPENDPATH += $$PWD/../od/
 unix:{
     QMAKE_LFLAGS_RPATH=
