@@ -61,6 +61,8 @@ bool CGenerator::generate(DeviceConfiguration *deviceConfiguration, const QStrin
  */
 bool CGenerator::generate(DeviceDescription *deviceDescription, const QString &filePath) const
 {
+    Q_UNUSED(deviceDescription);
+    Q_UNUSED(filePath);
     return false;
 }
 
@@ -300,6 +302,9 @@ QString CGenerator::typeToString(const uint16_t &type) const
 
     case SubIndex::Type::OCTET_STRING:
         return QLatin1String("ostring_t");
+
+    case SubIndex::Type::DDOMAIN:
+        return QLatin1String("OD_domain_t");
 
     default:
         return nullptr;
@@ -733,7 +738,8 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
         {
             if (!index->subIndexExist(i))
                 continue;
-
+            if (index->subIndex(i)->dataType() == SubIndex::DDOMAIN)
+                break;
             cFile << "    " << "OD_RAM." << varNameToString(index->name()) << "[" << i - 1 << "]";
             cFile << " = ";
             cFile << dataToString(index->subIndex(i));
