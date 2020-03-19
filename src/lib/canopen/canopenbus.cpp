@@ -1,4 +1,4 @@
-/**
+﻿/**
  ** This file is part of the UDTStudio project.
  ** Copyright 2019 UniSwarm sebastien.caux@uniswarm.eu
  **
@@ -41,6 +41,8 @@ CanOpenBus::CanOpenBus(QCanBusDevice *canDevice)
     _sdos.append(new SDO(this));
     _sync = new Sync(this);
     _timestamp = new TimeStamp(this);
+    connect(_sdos.first(), SIGNAL(dataObjetAvailable()),this, SLOT(dataObjetAvailable()));
+    connect(_sdos.first(), SIGNAL(dataObjetWritten()),this, SLOT(dataObjetWritten()));
 }
 
 const QList<Node *> &CanOpenBus::nodes() const
@@ -56,7 +58,11 @@ void CanOpenBus::addNode(Node *node)
 void CanOpenBus::exploreBus()
 {
     //_canDevice->sendSdoReadReq(2, 0x1000, 0);
-    _sdos.first()->sendSdoReadReq(2, 0x1000, 0);
+    //_sdos.first()->sendSdoReadReq(2, 0x1000, 0);
+//    for (quint8 i = 1; i < 20; i++)
+//    {
+//        _sdos.first()->uploadData(i, 0x1000, 0);
+//    }
 }
 
 QCanBusDevice *CanOpenBus::canDevice() const
@@ -87,4 +93,24 @@ void CanOpenBus::canFrameRec()
 void CanOpenBus::canState(QCanBusDevice::CanBusDeviceState state)
 {
     emit stateCanOpenChanged(state);
+}
+
+void CanOpenBus::readObjet(uint8_t nodeId, Index &index, uint8_t subindex)
+{
+    _sdos.first()->uploadData(nodeId, index, subindex);
+}
+
+void CanOpenBus::writeObjet(uint8_t nodeId, Index &index, uint8_t subindex)
+{
+    _sdos.first()->downloadData(nodeId, index, subindex);
+}
+
+void CanOpenBus::dataObjetAvailable()
+{
+    emit objetAvailable();
+}
+
+void CanOpenBus::dataObjetWritten()
+{
+  emit objetWritten();
 }

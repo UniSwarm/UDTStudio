@@ -24,6 +24,7 @@
 #include <QCanBusDevice>
 #include "node.h"
 #include "services/services.h"
+#include "model/deviceconfiguration.h"
 
 #include <QList>
 #include <QMap>
@@ -37,6 +38,8 @@ public:
     const QList<Node *> &nodes() const;
     void addNode(Node *node);
 
+    void readObjet(uint8_t nodeId, Index &index, uint8_t subindex);
+    void writeObjet(uint8_t nodeId, Index &index, uint8_t subindex);
     QCanBusDevice *canDevice() const;
 
 protected slots:
@@ -45,12 +48,17 @@ protected slots:
 
 public slots:
   void exploreBus();
+  void dataObjetAvailable();
+  void dataObjetWritten();
 
 signals:
   void frameAvailable(QCanBusFrame frame);
   void frameErrorOccurred(QCanBusDevice::CanBusError error);
   void frameTransmit(qint64 framesCount);
   void stateCanOpenChanged(QCanBusDevice::CanBusDeviceState state);
+
+  void objetAvailable();
+  void objetWritten();
 
 public:
     QList<Node *> _nodes;
