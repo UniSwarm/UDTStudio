@@ -69,6 +69,7 @@ public:
 
     const QVariant &value() const;
     void setValue(const QVariant &value);
+    void clearValue();
 
     // =============== Data type ==================
     enum Type
@@ -100,7 +101,7 @@ public:
         UNSIGNED64 = 0x001B
     };
 
-    uint16_t dataType() const;
+    Type dataType() const;
     void setDataType(const uint16_t &dataType);
     static QString dataTypeStr(const uint16_t &dataType);
 

@@ -204,12 +204,73 @@ void SubIndex::setValue(const QVariant &value)
 }
 
 /**
+ * @brief _value setter
+ * @param new sub-index value
+ */
+void SubIndex::clearValue()
+{
+    _value.clear();
+}
+
+/**
  * @brief _dataType getter
  * @return 16 bits sub-index data type code
  */
-uint16_t SubIndex::dataType() const
+SubIndex::Type SubIndex::dataType() const
 {
-    return _dataType;
+    switch (_dataType)
+    {
+    case BOOLEAN:
+        return BOOLEAN;
+    case INTEGER8:
+        return INTEGER8;
+    case INTEGER16:
+        return INTEGER16;
+    case INTEGER32:
+        return INTEGER32;
+    case UNSIGNED8:
+        return UNSIGNED8;
+    case UNSIGNED16:
+        return UNSIGNED16;
+    case UNSIGNED32:
+        return UNSIGNED32;
+    case REAL32:
+        return REAL32;
+    case VISIBLE_STRING:
+        return VISIBLE_STRING;
+    case OCTET_STRING:
+        return OCTET_STRING;
+    case UNICODE_STRING:
+        return UNICODE_STRING;
+    case TIME_OF_DAY:
+        return TIME_OF_DAY;
+    case TIME_DIFFERENCE:
+        return TIME_DIFFERENCE;
+    case DDOMAIN:
+        return DDOMAIN;
+    case INTEGER24:
+        return INTEGER24;
+    case REAL64:
+        return REAL64;
+    case INTEGER40:
+        return INTEGER40;
+    case INTEGER48:
+        return INTEGER48;
+    case INTEGER56:
+        return INTEGER56;
+    case INTEGER64:
+        return INTEGER64;
+    case UNSIGNED24:
+        return UNSIGNED24;
+    case UNSIGNED40:
+        return UNSIGNED40;
+    case UNSIGNED48:
+        return UNSIGNED48;
+    case UNSIGNED56:
+        return UNSIGNED56;
+    case UNSIGNED64:
+        return UNSIGNED64;
+    }
 }
 
 /**
