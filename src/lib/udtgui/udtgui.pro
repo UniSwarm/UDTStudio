@@ -1,5 +1,5 @@
 
-QT += core gui widgets
+QT += core gui widgets serialbus
 
 TARGET = udtgui
 TEMPLATE = lib
@@ -12,13 +12,15 @@ HEADERS += \
     $$PWD/od/oditem.h \
     $$PWD/od/oditemmodel.h \
     $$PWD/od/odtreeview.h \
-    $$PWD/od/odtreeviewdelegate.h
+    $$PWD/od/odtreeviewdelegate.h \
+    $$PWD/can/canSettingDialog/cansettingdialog.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
     $$PWD/od/oditemmodel.cpp \
     $$PWD/od/odtreeview.cpp \
-    $$PWD/od/odtreeviewdelegate.cpp
+    $$PWD/od/odtreeviewdelegate.cpp \
+    $$PWD/can/canSettingDialog/cansettingdialog.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 
@@ -29,3 +31,4 @@ unix:{
     QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN\'"
 }
 ls
+
