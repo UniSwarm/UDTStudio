@@ -16,8 +16,9 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "nmt.h"
+#include <QDebug>
 
+#include "nmt.h"
 #include "canopenbus.h"
 
 NMT::NMT(CanOpenBus *bus)
@@ -54,5 +55,51 @@ void NMT::sendStop(uint8_t node_id)
 
 void NMT::parseFrame(const QCanBusFrame &frame)
 {
-
+    if ((frame.frameId() >> 7) == 0x0)
+    {
+        qDebug() << "NMT " << QString::number(frame.frameId(), 16).toUpper() << frame.payload().toHex().toUpper();
+    }
+    else if ((frame.frameId() >> 7) == 0xE)  // NMT Error control
+    {
+        qDebug() << "NMT Error control : Node Guarding RTR " << QString::number(frame.frameId(), 16).toUpper() << frame.payload().toHex().toUpper();
+        manageErrorControl(frame);
+    }
 }
+
+void NMT::manageErrorControl(const QCanBusFrame &frame)
+{
+    uint32_t node = frame.frameId() & 0x7F;
+    switch (frame.payload()[0] & 0x7F)
+    {
+    case 4:  // Stopped
+    case 5:  // Operational
+    case 127:  // Pre-operational
+        emit nodeFound(node);
+        break;
+    default:
+        qDebug()<< "NMT Error control : error state" << QString::number(frame.frameId(), 16 ).toUpper() << frame.payload().toHex().toUpper();
+        break;
+    }
+}
+
+void NMT::explorerBus()
+{
+    if (!_bus)
+    {
+        return;
+    }
+    if (!_bus->canDevice())
+    {
+        return;
+    }
+
+    QCanBusFrame frameNodeGuarding;
+
+    for (quint8 i = 1; i <= 127; i++)
+    {
+        frameNodeGuarding.setFrameId(0x700 + i);
+        frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
+        _bus->canDevice()->writeFrame(frameNodeGuarding);
+    }
+}
+
