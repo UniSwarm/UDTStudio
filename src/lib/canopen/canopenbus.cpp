@@ -35,16 +35,12 @@ CanOpenBus::CanOpenBus(QCanBusDevice *canDevice)
         connect(_canDevice, &QCanBusDevice::stateChanged, this, &CanOpenBus::canState);
     }
 
-    _emergency = new Emergency(this);
-    _nmt = new NMT(this);
-    _pdo = new PDO(this);
-    _sdos.append(new SDO(this));
     _sync = new Sync(this);
     _timestamp = new TimeStamp(this);
 
-    connect(_sdos.first(), SIGNAL(dataObjetAvailable()),this, SLOT(dataObjetAvailable()));
-    connect(_sdos.first(), SIGNAL(dataObjetWritten()),this, SLOT(dataObjetWritten()));
-    connect(_nmt, &NMT::nodeFound, this, &CanOpenBus::addNodeFound);
+//    connect(_sdos.first(), SIGNAL(dataObjetAvailable()),this, SLOT(dataObjetAvailable()));
+//    connect(_sdos.first(), SIGNAL(dataObjetWritten()),this, SLOT(dataObjetWritten()));
+//    connect(_nmt, &NMT::nodeFound, this, &CanOpenBus::addNodeFound);
 }
 
 const QList<Node *> &CanOpenBus::nodes() const
@@ -94,7 +90,14 @@ void CanOpenBus::addNode(Node *node)
 
 void CanOpenBus::exploreBus()
 {
-    _nmt->exploreBus();
+    QCanBusFrame frameNodeGuarding;
+
+    for (quint8 i = 1; i <= 127; i++)
+    {
+        frameNodeGuarding.setFrameId(0x700 + i);
+        frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
+        this->canDevice()->writeFrame(frameNodeGuarding);
+    }
 }
 
 QCanBusDevice *CanOpenBus::canDevice() const
@@ -108,44 +111,15 @@ void CanOpenBus::canFrameRec()
     {
         QCanBusFrame frame = _canDevice->readFrame();
 
-//        switch (frame.frameId() >> 7)
-//        {
-//        case 0x0:   // NMT
-//        case 0xE:   // NMT error control
-//            _nmt->parseFrame(frame);
-//            break;
-//        case 0x1:   // SYNC/EMCY
-//            break;
-//        case 0x2:   // TIME
-//            break;
-//        case 0x3:   // PDO1tx
-//        case 0x5:   // PDO2tx
-//        case 0x7:   // PDO3tx
-//        case 0x9:   // PDO4tx
-//        case 0x4:   // PDO1rx
-//        case 0x6:   // PDO2rx
-//        case 0x8:   // PDO3rx
-//        case 0xA:   // PDO4rx
-//            _pdo->parseFrame(frame);
-//            break;
-//        case 0xB:   // SDOtx
-//        case 0xC:   // SDOrx
-//            _sdos.first()->parseFrame(frame);
-//            break;
-//        default:
-//            qDebug()<<frame.frameId()<<frame.payload().toHex();
-//            break;
-//        }
-
         if ((frame.frameId() & 0x780) == 0x580)                         // SDO response
         {
 //            _sdos.first()->parseFrame(frame);
 
             for (int i = 0; i < _nodes.size(); ++i)
             {
-                if (_nodes.at(i)->nodeId() == (frame.frameId() & 0xFF))
+                if (_nodes.at(i)->nodeId() == ((frame.frameId()) - 0x580))
                     {
-                        _nodes.at(i)->_sdos->parseFrame(frame);
+                        _nodes.at(i)->parseFrame(frame);
                     }
                 //List.append(QString::number(_bus->nodes().at(i)->nodeId()));
             }
@@ -153,11 +127,11 @@ void CanOpenBus::canFrameRec()
         }
         else if (frame.frameId() > 0x180 && frame.frameId() < 0x580)    // PDO receive
         {
-            _pdo->parseFrame(frame);
+            _nodes.at(0)->parseFrame(frame);
         }
         else if (frame.frameId() > 0x700 && frame.frameId() < 0x77f) // NMT Error Control
         {
-            _nmt->parseFrame(frame);
+            //_nodes.at(0)->parseFrame(frame);
         }
         else
         {
@@ -176,12 +150,12 @@ void CanOpenBus::canState(QCanBusDevice::CanBusDeviceState state)
 
 void CanOpenBus::readObjet(uint8_t nodeId, Index &index, uint8_t subindex)
 {
-    _sdos.first()->uploadData(nodeId, index, subindex);
+    //_sdos.first()->uploadData(nodeId, index, subindex);
 }
 
 void CanOpenBus::writeObjet(uint8_t nodeId, Index &index, uint8_t subindex)
 {
-    _sdos.first()->downloadData(nodeId, index, subindex);
+    //_sdos.first()->downloadData(nodeId, index, subindex);
 }
 
 void CanOpenBus::dataObjetAvailable()

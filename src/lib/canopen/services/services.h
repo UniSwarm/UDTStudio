@@ -3,7 +3,8 @@
 
 #include "emergency.h"
 #include "nmt.h"
-#include "pdo.h"
+#include "rpdo.h"
+#include "tpdo.h"
 #include "sdo.h"
 #include "sync.h"
 #include "timestamp.h"

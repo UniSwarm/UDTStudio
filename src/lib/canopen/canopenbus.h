@@ -69,10 +69,7 @@ public:
 
     // services
     QMap<uint32_t, Service *> _serviceId;
-    Emergency *_emergency;
-    NMT *_nmt;
-    PDO *_pdo;
-    QList<SDO *> _sdos;
+
     Sync *_sync;
     TimeStamp *_timestamp;
 
