@@ -34,7 +34,9 @@ public:
     void sendStop(uint8_t node_id);
     void exploreBus();
 
-    virtual void parseFrame(const QCanBusFrame &frame);
+    QString type() const override;
+
+    void parseFrame(const QCanBusFrame &frame) override;
 
 signals:
     void nodeFound(uint8_t node);

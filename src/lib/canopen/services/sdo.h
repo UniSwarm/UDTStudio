@@ -31,7 +31,9 @@ class CANOPEN_EXPORT SDO : public Service
 public:
     SDO(CanOpenBus *bus);
 
-    virtual void parseFrame(const QCanBusFrame &frame);
+    QString type() const override;
+
+    void parseFrame(const QCanBusFrame &frame) override;
 
 //protected:
     void sendSdoReadReq(uint8_t nodeId, uint16_t index, uint8_t subindex);                                          // OBSOLETE
@@ -71,11 +73,11 @@ public:
 
     //uint32_t blksize = 0;
 
-  signals:
+signals:
     void dataObjetAvailable();
     void dataObjetWritten();
 
-  private:
+private:
 
     qint32 sdoUploadInitiate(const QCanBusFrame &frame);
     qint32 sdoUploadSegment(const QCanBusFrame &frame);

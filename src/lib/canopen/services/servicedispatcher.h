@@ -16,22 +16,30 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef RPDO_H
-#define RPDO_H
+#ifndef SERVICEDISPATCHER_H
+#define SERVICEDISPATCHER_H
 
 #include "canopen_global.h"
 
 #include "service.h"
 
-class CANOPEN_EXPORT RPDO : public Service
+#include <QMultiMap>
+
+class CANOPEN_EXPORT ServiceDispatcher : public Service
 {
     Q_OBJECT
 public:
-    RPDO(CanOpenBus *bus);
+    ServiceDispatcher(CanOpenBus *bus);
+    ~ServiceDispatcher() override;
 
     QString type() const override;
 
+    void addService(uint32_t canId, Service *service);
+
     void parseFrame(const QCanBusFrame &frame) override;
+
+protected:
+    QMultiMap<quint32, Service *> _servicesMap;
 };
 
-#endif // RPDO_H
+#endif // SERVICEDISPATCHER_H

@@ -21,10 +21,13 @@
 TimeStamp::TimeStamp(CanOpenBus *bus)
     : Service (bus)
 {
+}
 
+QString TimeStamp::type() const
+{
+    return QLatin1String("Emergency");
 }
 
 void TimeStamp::parseFrame(const QCanBusFrame &frame)
 {
-
 }

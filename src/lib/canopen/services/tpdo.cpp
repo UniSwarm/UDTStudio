@@ -23,12 +23,15 @@
 TPDO::TPDO(CanOpenBus *bus)
     : Service (bus)
 {
+}
 
+QString TPDO::type() const
+{
+    return QLatin1String("Emergency");
 }
 
 void TPDO::parseFrame(const QCanBusFrame &frame)
 {
     uint8_t nodeId = frame.frameId() & 0x0000007F;
     uint8_t tpdo = (((frame.frameId() & 0x00000380) >> 7) - 3) / 2;
-
 }

@@ -24,7 +24,11 @@
 NMT::NMT(CanOpenBus *bus)
     : Service (bus)
 {
+}
 
+QString NMT::type() const
+{
+    return QLatin1String("Emergency");
 }
 
 void NMT::sendNmt(uint8_t node_id, uint8_t cmd)

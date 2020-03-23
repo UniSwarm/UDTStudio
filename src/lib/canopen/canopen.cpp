@@ -20,7 +20,6 @@
 
 CanOpen::CanOpen()
 {
-
 }
 
 const QList<CanOpenBus *> &CanOpen::buses() const

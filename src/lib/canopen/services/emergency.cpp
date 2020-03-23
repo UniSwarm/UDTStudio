@@ -21,10 +21,13 @@
 Emergency::Emergency(CanOpenBus *bus)
     : Service (bus)
 {
+}
 
+QString Emergency::type() const
+{
+    return QLatin1String("Emergency");
 }
 
 void Emergency::parseFrame(const QCanBusFrame &frame)
 {
-
 }

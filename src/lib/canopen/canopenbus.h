@@ -42,39 +42,40 @@ public:
 
     void readObjet(uint8_t nodeId, Index &index, uint8_t subindex);
     void writeObjet(uint8_t nodeId, Index &index, uint8_t subindex);
+
     QCanBusDevice *canDevice() const;
+    void setCanDevice(QCanBusDevice *canDevice);
 
 protected slots:
     void canFrameRec();
     void canState(QCanBusDevice::CanBusDeviceState state);
 
 public slots:
-  void exploreBus();
-  void dataObjetAvailable();
-  void dataObjetWritten();
+    void exploreBus();
+    void dataObjetAvailable();
+    void dataObjetWritten();
 
 signals:
-  void frameAvailable(QCanBusFrame frame);
-  void frameErrorOccurred(QCanBusDevice::CanBusError error);
-  void frameTransmit(qint64 framesCount);
-  void stateCanOpenChanged(QCanBusDevice::CanBusDeviceState state);
+    void frameAvailable(QCanBusFrame frame);
+    void frameErrorOccurred(QCanBusDevice::CanBusError error);
+    void frameTransmit(qint64 framesCount);
+    void stateCanOpenChanged(QCanBusDevice::CanBusDeviceState state);
 
-  void objetAvailable();
-  void objetWritten();
-  void nodeAdded();
+    void objetAvailable();
+    void objetWritten();
+    void nodeAdded();
 
-public:
+protected:
+    QString _busName;
     QList<Node *> _nodes;
     QCanBusDevice *_canDevice;
 
     // services
-    QMap<uint32_t, Service *> _serviceId;
-
+    ServiceDispatcher *_serviceDispatcher;
     Sync *_sync;
     TimeStamp *_timestamp;
 
-  private:
-
+private slots:
     void addNodeFound(uint8_t nodeId);
 };
 

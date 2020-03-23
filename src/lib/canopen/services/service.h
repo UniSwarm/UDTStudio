@@ -22,6 +22,7 @@
 #include "canopen_global.h"
 
 #include <QObject>
+#include <QString>
 #include <QCanBusFrame>
 
 class CanOpenBus;
@@ -32,6 +33,8 @@ class CANOPEN_EXPORT Service : public QObject
 public:
     Service(CanOpenBus *bus);
     virtual ~Service();
+
+    virtual QString type() const = 0;
 
     virtual void parseFrame(const QCanBusFrame &frame) = 0;
 

@@ -27,6 +27,11 @@ Sync::Sync(CanOpenBus *bus)
     connect(_syncTimer, &QTimer::timeout, this, &Sync::sendSync);
 }
 
+QString Sync::type() const
+{
+    return QLatin1String("Emergency");
+}
+
 void Sync::startSync(int ms)
 {
     _syncTimer->start(ms);

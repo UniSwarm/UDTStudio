@@ -29,7 +29,9 @@ class CANOPEN_EXPORT TPDO : public Service
 public:
     TPDO(CanOpenBus *bus);
 
-    virtual void parseFrame(const QCanBusFrame &frame);
+    QString type() const override;
+
+    void parseFrame(const QCanBusFrame &frame) override;
 };
 
 #endif // TPDO_H

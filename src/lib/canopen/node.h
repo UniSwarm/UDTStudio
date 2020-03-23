@@ -29,11 +29,12 @@ class CanOpenBus;
 class CANOPEN_EXPORT Node
 {
 public:
-    Node(CanOpenBus *bus = Q_NULLPTR);
-    virtual void parseFrame(const QCanBusFrame &frame);
+    Node(CanOpenBus *bus);
+    ~Node();
 
     uint32_t nodeId() const;
     void setNodeId(const uint32_t &nodeId);
+
     void addEds(QString fileName);
     void updateFirmware(const QByteArray &prog);
 
@@ -52,14 +53,15 @@ protected:
     uint32_t _nodeId;
     Status _status;
 
-    QList<SDO *> _sdoClient;
-    QList<TPDO *> _tpdo;
-    QList<RPDO *> _rpdo;
+    // services
+    QList<SDO *> _sdoClients;
+    QList<TPDO *> _tpdos;
+    QList<RPDO *> _rpdos;
     Emergency *_emergency;
     NMT *_nmt;
 
     CanOpenBus *_bus;
-    DeviceConfiguration *deviceConfiguration;
+    DeviceConfiguration *_deviceConfiguration;
 };
 
 #endif // NODE_H

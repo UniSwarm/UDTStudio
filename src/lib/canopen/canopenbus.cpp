@@ -22,19 +22,10 @@
 
 CanOpenBus::CanOpenBus(QCanBusDevice *canDevice)
 {
-    _canDevice = canDevice;
-    if (_canDevice)
-    {
-        if (_canDevice->state() == QCanBusDevice::UnconnectedState)
-        {
-            _canDevice->connectDevice();
-        }
-        connect(_canDevice, &QCanBusDevice::framesReceived, this, &CanOpenBus::canFrameRec);
-        connect(_canDevice, &QCanBusDevice::errorOccurred, this, &CanOpenBus::frameErrorOccurred);
-        connect(_canDevice, &QCanBusDevice::framesWritten, this, &CanOpenBus::frameTransmit);
-        connect(_canDevice, &QCanBusDevice::stateChanged, this, &CanOpenBus::canState);
-    }
+    _canDevice = nullptr;
+    setCanDevice(canDevice);
 
+    _serviceDispatcher = new ServiceDispatcher(this);
     _sync = new Sync(this);
     _timestamp = new TimeStamp(this);
 
@@ -62,7 +53,6 @@ Node *CanOpenBus::node(uint8_t nodeId)
 
 bool CanOpenBus::existNode(uint8_t nodeId)
 {
-
     for (int i = 0; i < _nodes.size(); i++)
     {
         if (_nodes.at(i)->nodeId() == nodeId)
@@ -105,40 +95,28 @@ QCanBusDevice *CanOpenBus::canDevice() const
     return _canDevice;
 }
 
+void CanOpenBus::setCanDevice(QCanBusDevice *canDevice)
+{
+    _canDevice = canDevice;
+    if (_canDevice)
+    {
+        if (_canDevice->state() == QCanBusDevice::UnconnectedState)
+        {
+            _canDevice->connectDevice();
+        }
+        connect(_canDevice, &QCanBusDevice::framesReceived, this, &CanOpenBus::canFrameRec);
+        connect(_canDevice, &QCanBusDevice::errorOccurred, this, &CanOpenBus::frameErrorOccurred);
+        connect(_canDevice, &QCanBusDevice::framesWritten, this, &CanOpenBus::frameTransmit);
+        connect(_canDevice, &QCanBusDevice::stateChanged, this, &CanOpenBus::canState);
+    }
+}
+
 void CanOpenBus::canFrameRec()
 {
     while (_canDevice->framesAvailable() > 0)
     {
-        QCanBusFrame frame = _canDevice->readFrame();
-
-        if ((frame.frameId() & 0x780) == 0x580)                         // SDO response
-        {
-//            _sdos.first()->parseFrame(frame);
-
-            for (int i = 0; i < _nodes.size(); ++i)
-            {
-                if (_nodes.at(i)->nodeId() == ((frame.frameId()) - 0x580))
-                    {
-                        _nodes.at(i)->parseFrame(frame);
-                    }
-                //List.append(QString::number(_bus->nodes().at(i)->nodeId()));
-            }
-
-        }
-        else if (frame.frameId() > 0x180 && frame.frameId() < 0x580)    // PDO receive
-        {
-            _nodes.at(0)->parseFrame(frame);
-        }
-        else if (frame.frameId() > 0x700 && frame.frameId() < 0x77f) // NMT Error Control
-        {
-            //_nodes.at(0)->parseFrame(frame);
-        }
-        else
-        {
-            qDebug()<<frame.frameId()<<frame.payload().toHex();
-        }
-
-
+        const QCanBusFrame &frame = _canDevice->readFrame();
+        _serviceDispatcher->parseFrame(frame);
         emit frameAvailable(frame);
     }
 }

@@ -34,7 +34,9 @@ public:
     void startSync(int ms);
     void stopSync();
 
-    virtual void parseFrame(const QCanBusFrame &frame);
+    QString type() const override;
+
+    void parseFrame(const QCanBusFrame &frame) override;
 
 public slots:
     void sendSync();

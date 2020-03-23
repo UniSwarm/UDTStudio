@@ -16,22 +16,38 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "rpdo.h"
+#include "servicedispatcher.h"
 
 #include <QDebug>
 
-RPDO::RPDO(CanOpenBus *bus)
+ServiceDispatcher::ServiceDispatcher(CanOpenBus *bus)
     : Service (bus)
 {
 }
 
-QString RPDO::type() const
+ServiceDispatcher::~ServiceDispatcher()
+{
+}
+
+QString ServiceDispatcher::type() const
 {
     return QLatin1String("Emergency");
 }
 
-void RPDO::parseFrame(const QCanBusFrame &frame)
+void ServiceDispatcher::addService(uint32_t canId, Service *service)
 {
-    uint8_t nodeId = frame.frameId() & 0x0000007F;
-    uint8_t tpdo = (((frame.frameId() & 0x00000380) >> 7) - 3) / 2;
+    _servicesMap.insert(canId, service);
+}
+
+void ServiceDispatcher::parseFrame(const QCanBusFrame &frame)
+{
+    QMultiMap<quint32, Service *>::iterator i = _servicesMap.find(frame.frameId());
+    qDebug() << "> ServiceDispatcher::parseFrame" << QString::number(frame.frameId(), 16) << frame.payload().toHex(' ').toUpper();
+    while (i != _servicesMap.end())
+    {
+        Service *service = i.value();
+        qDebug() << service->type();
+        service->parseFrame(frame);
+        ++i;
+    }
 }

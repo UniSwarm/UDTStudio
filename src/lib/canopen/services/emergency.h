@@ -29,7 +29,9 @@ class CANOPEN_EXPORT Emergency : public Service
 public:
     Emergency(CanOpenBus *bus);
 
-    virtual void parseFrame(const QCanBusFrame &frame);
+    QString type() const override;
+
+    void parseFrame(const QCanBusFrame &frame) override;
 };
 
 #endif // EMERGENCY_H

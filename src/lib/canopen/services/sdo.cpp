@@ -110,7 +110,11 @@
 SDO::SDO(CanOpenBus *bus)
     : Service (bus)
 {
+}
 
+QString SDO::type() const
+{
+    return QLatin1String("Emergency");
 }
 
 // OBSOLETE
