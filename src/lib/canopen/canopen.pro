@@ -15,11 +15,13 @@ SOURCES += \
     $$PWD/canopen.cpp \
     $$PWD/services/emergency.cpp \
     $$PWD/services/nmt.cpp \
-    $$PWD/services/pdo.cpp \
+    $$PWD/services/tpdo.cpp \
+    $$PWD/services/rpdo.cpp \
     $$PWD/services/sdo.cpp \
     $$PWD/services/service.cpp \
     $$PWD/services/sync.cpp \
     $$PWD/services/timestamp.cpp
+
 
 HEADERS += \
     $$PWD/canopen_global.h \
@@ -28,7 +30,8 @@ HEADERS += \
     $$PWD/canopen.h \
     $$PWD/services/emergency.h \
     $$PWD/services/nmt.h \
-    $$PWD/services/pdo.h \
+    $$PWD/services/tpdo.h \
+    $$PWD/services/rpdo.h \
     $$PWD/services/sdo.h \
     $$PWD/services/service.h \
     $$PWD/services/services.h \

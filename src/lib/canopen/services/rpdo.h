@@ -16,20 +16,20 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef PDO_H
-#define PDO_H
+#ifndef RPDO_H
+#define RPDO_H
 
 #include "canopen_global.h"
 
 #include "service.h"
 
-class CANOPEN_EXPORT PDO : public Service
+class CANOPEN_EXPORT RPDO : public Service
 {
     Q_OBJECT
-public:
-    PDO(CanOpenBus *bus);
+  public:
+    RPDO(CanOpenBus *bus);
 
     virtual void parseFrame(const QCanBusFrame &frame);
 };
 
-#endif // PDO_H
+#endif // RPDO_H
