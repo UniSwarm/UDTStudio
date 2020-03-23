@@ -21,7 +21,8 @@
 
 #include "canopen_global.h"
 
-//#include "model/od.h"
+#include "model/deviceconfiguration.h"
+#include "services/services.h"
 
 class CanOpenBus;
 
@@ -32,6 +33,13 @@ public:
 
     uint32_t nodeId() const;
     void setNodeId(const uint32_t &nodeId);
+    void addEds(QString fileName);
+    void updateFirmware(const QByteArray &prog);
+
+    QString device();
+    QString manuDeviceName();
+    QString manufacturerHardwareVersion();
+    QString manufacturerSoftwareVersion();
 
     enum Status {
         PREOP,
@@ -39,12 +47,15 @@ public:
         STOPPED
     };
 
+         SDO *_sdos;
 protected:
     uint32_t _nodeId;
     Status _status;
 
+//     SDO *_sdos;
 //    OD *_od;
     CanOpenBus *_bus;
+    DeviceConfiguration *deviceConfiguration;
 };
 
 #endif // NODE_H

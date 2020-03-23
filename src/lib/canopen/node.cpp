@@ -18,10 +18,15 @@
 
 #include "node.h"
 
+#include "model/deviceconfiguration.h"
+#include "parser/edsparser.h"
+#include "services/services.h"
+
 Node::Node(CanOpenBus *bus)
     : _bus(bus)
 {
 
+    _sdos = new SDO(_bus);
 }
 
 uint32_t Node::nodeId() const
@@ -32,4 +37,80 @@ uint32_t Node::nodeId() const
 void Node::setNodeId(const uint32_t &nodeId)
 {
     _nodeId = nodeId;
+}
+
+void Node::addEds(QString fileName)
+{
+    EdsParser parser;
+
+    DeviceDescription *deviceDescription = parser.parse(fileName);
+    deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, static_cast<uint8_t>(_nodeId));
+}
+
+void Node::updateFirmware(const QByteArray &prog)
+{
+    uint16_t index = 0x1F50;
+    uint8_t subindex = 0x01;
+    Index *index2;
+
+    if (deviceConfiguration->indexExist(index))
+    {
+        index2 = deviceConfiguration->index(index);
+        index2->subIndex(subindex)->setValue(prog);
+        _sdos->downloadData(static_cast<uint8_t>(_nodeId), *index2, subindex);
+    }
+}
+
+QString Node::device()
+{
+    uint16_t index = 0x1000;
+    uint8_t subindex = 0x00;
+    Index *index2;
+
+    if (deviceConfiguration->indexExist(index))
+    {
+        index2 = deviceConfiguration->index(index);
+        _sdos->uploadData(static_cast<uint8_t>(_nodeId), *index2, subindex);
+    }
+    return index2->subIndex(subindex)->value().toString();
+}
+
+QString Node::manuDeviceName()
+{
+    uint16_t index = 0x1008;
+    uint8_t subindex = 0x00;
+    Index *index2;
+
+    if (deviceConfiguration->indexExist(index))
+    {
+        index2 = deviceConfiguration->index(index);
+        _sdos->uploadData(static_cast<uint8_t>(_nodeId), *index2, subindex);
+    }
+    return index2->subIndex(subindex)->value().toString();
+}
+QString Node::manufacturerHardwareVersion()
+{
+    uint16_t index = 0x1009;
+    uint8_t subindex = 0x00;
+    Index *index2;
+
+    if (deviceConfiguration->indexExist(index))
+    {
+        index2 = deviceConfiguration->index(index);
+        _sdos->uploadData(static_cast<uint8_t>(_nodeId), *index2, subindex);
+    }
+    return index2->subIndex(subindex)->value().toString();
+}
+QString Node::manufacturerSoftwareVersion()
+{
+    uint16_t index = 0x100a;
+    uint8_t subindex = 0x00;
+    Index *index2;
+
+    if (deviceConfiguration->indexExist(index))
+    {
+        index2 = deviceConfiguration->index(index);
+        _sdos->uploadData(static_cast<uint8_t>(_nodeId), *index2, subindex);
+    }
+    return index2->subIndex(subindex)->value().toString();
 }
