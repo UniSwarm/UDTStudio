@@ -36,7 +36,9 @@ public:
     CanOpenBus(QCanBusDevice *canDevice = Q_NULLPTR);
 
     const QList<Node *> &nodes() const;
+    Node *nodes(uint32_t node);
     void addNode(Node *node);
+    bool existNode(uint32_t node);
 
     void readObjet(uint8_t nodeId, Index &index, uint8_t subindex);
     void writeObjet(uint8_t nodeId, Index &index, uint8_t subindex);
@@ -59,6 +61,7 @@ signals:
 
   void objetAvailable();
   void objetWritten();
+  void nodeAdded();
 
 public:
     QList<Node *> _nodes;
@@ -72,6 +75,10 @@ public:
     QList<SDO *> _sdos;
     Sync *_sync;
     TimeStamp *_timestamp;
+
+  private:
+
+    void addNodeFound(uint32_t node);
 };
 
 #endif // CANOPENBUS_H
