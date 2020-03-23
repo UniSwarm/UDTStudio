@@ -21,8 +21,9 @@
 
 #include "od_global.h"
 
-#include<QList>
-#include<QString>
+#include <QList>
+#include <QString>
+#include <QVariant>
 
 class OD_EXPORT SubIndex
 {

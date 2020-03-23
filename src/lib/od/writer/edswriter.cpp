@@ -20,6 +20,8 @@
 
 #include "deviceiniwriter.h"
 
+#include <QFile>
+
 /**
  * @brief default constructor
  */
