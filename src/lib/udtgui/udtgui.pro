@@ -13,14 +13,18 @@ HEADERS += \
     $$PWD/od/oditemmodel.h \
     $$PWD/od/odtreeview.h \
     $$PWD/od/odtreeviewdelegate.h \
-    $$PWD/can/canSettingsDialog/cansettingsdialog.h
+    $$PWD/can/canSettingsDialog/cansettingsdialog.h \
+    $$PWD/can/canFrameListView/canframelistview.h \
+    $$PWD/can/canFrameListView/canframemodel.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
     $$PWD/od/oditemmodel.cpp \
     $$PWD/od/odtreeview.cpp \
     $$PWD/od/odtreeviewdelegate.cpp \
-    $$PWD/can/canSettingsDialog/cansettingsdialog.cpp
+    $$PWD/can/canSettingsDialog/cansettingsdialog.cpp \
+    $$PWD/can/canFrameListView/canframelistview.cpp \
+    $$PWD/can/canFrameListView/canframemodel.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 
