@@ -20,11 +20,8 @@
 #define CANSETTINGDIALOG_H
 
 #include <QDialog>
-#include <QLineEdit>
-#include <QPlainTextEdit>
-#include <QLabel>
+
 #include <QComboBox>
-#include <QPushButton>
 
 #include <QCanBusDevice>
 #include <QCanBusDeviceInfo>
@@ -36,7 +33,7 @@ class UDTGUI_EXPORT CanSettingsDialog : public QDialog
 
 public:
     CanSettingsDialog(QCanBusDevice *canDevice = nullptr, QWidget *parent = nullptr);
-    ~CanSettingsDialog();
+    ~CanSettingsDialog() override;
 
     typedef QPair<QCanBusDevice::ConfigurationKey, QVariant> ConfigParam;
 
@@ -56,8 +53,6 @@ private:
     void createDialog();
     void interfaceChanged(const QString &interface);
     void deviceChanged(const QString &device);
-    void okButton(void);
-    void cancelButton(void);
     void saveSettings();
     void restoreSettings();
     void fillBitrates();
@@ -69,6 +64,11 @@ private:
     QComboBox *_interfaceComboBox;
     QComboBox *_deviceComboBox;
     QComboBox *_bitrateComboBox;
+
+    // QDialog interface
+public slots:
+    void accept() override;
+    void reject() override;
 };
 
 #endif // CANSETTINGDIALOG_H

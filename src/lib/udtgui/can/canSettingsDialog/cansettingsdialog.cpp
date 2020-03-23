@@ -19,9 +19,11 @@
 #include "cansettingsdialog.h"
 
 #include <QLayout>
+#include <QFormLayout>
 #include <QPushButton>
 #include <QMessageBox>
 #include <QCanBus>
+#include <QDialogButtonBox>
 
 CanSettingsDialog::CanSettingsDialog(QCanBusDevice *canDevice, QWidget *parent)
     : QDialog(parent), _canDevice(canDevice)
@@ -35,7 +37,6 @@ CanSettingsDialog::CanSettingsDialog(QCanBusDevice *canDevice, QWidget *parent)
 
 CanSettingsDialog::~CanSettingsDialog()
 {
-
 }
 
 CanSettingsDialog::Settings CanSettingsDialog::settings() const
@@ -64,7 +65,7 @@ void CanSettingsDialog::deviceChanged(const QString &device)
     Q_UNUSED(device)
 }
 
-void CanSettingsDialog::okButton(void)
+void CanSettingsDialog::accept()
 {
     saveSettings();
     QString errorString;
@@ -82,14 +83,13 @@ void CanSettingsDialog::okButton(void)
                                  QMessageBox::Cancel);
         }
     }
-
-    accept();
+    QDialog::accept();
 }
 
-void CanSettingsDialog::cancelButton(void)
+void CanSettingsDialog::reject()
 {
     restoreSettings();
-    reject();
+    QDialog::reject();
 }
 
 void CanSettingsDialog::restoreSettings()
@@ -142,41 +142,27 @@ void CanSettingsDialog::createDialog()
 {
     QLayout *layout = new QVBoxLayout();
 
-    QLayout *interfaceLayout = new QHBoxLayout();
-    QLabel *interfaceLabel = new QLabel("Interface :");
+    QFormLayout *formLayout = new QFormLayout();
+    formLayout->setSpacing(8);
+
     _interfaceComboBox = new QComboBox();
-    interfaceLayout->addWidget(interfaceLabel);
-    interfaceLayout->addWidget(_interfaceComboBox);
+    formLayout->addRow(tr("&Interface :"), _interfaceComboBox);
 
-    QLayout *deviceLayout = new QHBoxLayout();
-    QLabel *deviceLabel = new QLabel("Device :");
     _deviceComboBox = new QComboBox();
-    deviceLayout->addWidget(deviceLabel);
-    deviceLayout->addWidget(_deviceComboBox);
+    formLayout->addRow(tr("&Device :"), _deviceComboBox);
 
-    QLayout *bitrateLayout = new QHBoxLayout();
-    QLabel *bitrateLabel = new QLabel("Bitrate :");
     _bitrateComboBox = new QComboBox();
-    bitrateLayout->addWidget(bitrateLabel);
-    bitrateLayout->addWidget(_bitrateComboBox);
+    formLayout->addRow(tr("&Bitrate :"), _bitrateComboBox);
 
-    QLayout *pushButtonLayout = new QHBoxLayout();
-
-    QPushButton *cancelPushButton = new QPushButton("Cancel");
-    QPushButton *okPushButton = new QPushButton("OK");
-    pushButtonLayout->addWidget(cancelPushButton);
-    pushButtonLayout->addWidget(okPushButton);
-
-    layout->addItem(interfaceLayout);
-    layout->addItem(deviceLayout);
-    layout->addItem(bitrateLayout);
-    layout->addItem(pushButtonLayout);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    layout->addItem(formLayout);
+    layout->addWidget(buttonBox);
     setLayout(layout);
 
     fillBitrates();
 
     connect(_interfaceComboBox, &QComboBox::currentTextChanged, this, &CanSettingsDialog::interfaceChanged);
     connect(_deviceComboBox, &QComboBox::currentTextChanged, this, &CanSettingsDialog::deviceChanged);
-    connect(okPushButton, &QPushButton::clicked, this, &CanSettingsDialog::okButton);
-    connect(cancelPushButton, &QPushButton::clicked, this, &CanSettingsDialog::cancelButton);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
