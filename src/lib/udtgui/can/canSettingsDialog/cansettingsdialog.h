@@ -31,27 +31,27 @@
 
 #include "../../udtgui_global.h"
 
-class UDTGUI_EXPORT canSettingDialog : public QDialog
+class UDTGUI_EXPORT CanSettingsDialog : public QDialog
 {
 
-  public:
-    canSettingDialog(QWidget *parent = Q_NULLPTR);
-    ~canSettingDialog();
+public:
+    CanSettingsDialog(QCanBusDevice *canDevice, QWidget *parent = nullptr);
+    ~CanSettingsDialog();
 
-    typedef QPair<QCanBusDevice::ConfigurationKey, QVariant> configParam;
+    typedef QPair<QCanBusDevice::ConfigurationKey, QVariant> ConfigParam;
 
     struct Settings
     {
         QString interfaceName;
         QString deviceName;
-        QList<configParam> config;
+        QList<ConfigParam> config;
     };
 
     Settings settings() const;
     QCanBusDevice *device() const;
     QString searchParam(QCanBusDevice::ConfigurationKey key);
 
-  private:
+private:
     void init();
     void createDialog();
     void interfaceChanged(const QString &interface);
@@ -62,13 +62,13 @@ class UDTGUI_EXPORT canSettingDialog : public QDialog
     void restoreSettings();
     void fillBitrates();
 
-    Settings currentSettings;
-    QList<QCanBusDeviceInfo> devices;
-    QCanBusDevice *canDevice = nullptr;
+    Settings _currentSettings;
+    QList<QCanBusDeviceInfo> _devices;
+    QCanBusDevice *_canDevice = nullptr;
 
-    QComboBox *interfaceComboBox;
-    QComboBox *deviceComboBox;
-    QComboBox *bitrateComboBox;
+    QComboBox *_interfaceComboBox;
+    QComboBox *_deviceComboBox;
+    QComboBox *_bitrateComboBox;
 };
 
 #endif // CANSETTINGDIALOG_H
