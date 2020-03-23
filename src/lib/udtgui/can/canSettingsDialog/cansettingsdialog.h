@@ -35,7 +35,7 @@ class UDTGUI_EXPORT CanSettingsDialog : public QDialog
 {
 
 public:
-    CanSettingsDialog(QCanBusDevice *canDevice, QWidget *parent = nullptr);
+    CanSettingsDialog(QCanBusDevice *canDevice = nullptr, QWidget *parent = nullptr);
     ~CanSettingsDialog();
 
     typedef QPair<QCanBusDevice::ConfigurationKey, QVariant> ConfigParam;
