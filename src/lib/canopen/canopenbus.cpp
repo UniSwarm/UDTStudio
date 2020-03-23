@@ -52,11 +52,11 @@ const QList<Node *> &CanOpenBus::nodes() const
     return _nodes;
 }
 
-Node *CanOpenBus::nodes(uint32_t node)
+Node *CanOpenBus::node(uint8_t nodeId)
 {
     for (int i = 0; i < _nodes.size(); i++)
     {
-        if (_nodes.at(i)->nodeId() == node)
+        if (_nodes.at(i)->nodeId() == nodeId)
         {
             return _nodes.at(i);
         }
@@ -64,24 +64,24 @@ Node *CanOpenBus::nodes(uint32_t node)
     return nullptr;
 }
 
-bool CanOpenBus::existNode(uint32_t node)
+bool CanOpenBus::existNode(uint8_t nodeId)
 {
 
     for (int i = 0; i < _nodes.size(); i++)
     {
-        if (_nodes.at(i)->nodeId() == node)
+        if (_nodes.at(i)->nodeId() == nodeId)
         {
             return true;
         }
     }
     return false;
 }
-void CanOpenBus::addNodeFound(uint32_t node)
+void CanOpenBus::addNodeFound(uint8_t nodeId)
 {
-    if (existNode(node) == false)
+    if (existNode(nodeId) == false)
     {
         Node *nodeObject = new Node(this);
-        nodeObject->setNodeId(node);
+        nodeObject->setNodeId(nodeId);
         addNode(nodeObject);
         emit nodeAdded();
     }
@@ -94,7 +94,7 @@ void CanOpenBus::addNode(Node *node)
 
 void CanOpenBus::exploreBus()
 {
-    _nmt->explorerBus();
+    _nmt->exploreBus();
 }
 
 QCanBusDevice *CanOpenBus::canDevice() const
@@ -191,5 +191,5 @@ void CanOpenBus::dataObjetAvailable()
 
 void CanOpenBus::dataObjetWritten()
 {
-  emit objetWritten();
+    emit objetWritten();
 }

@@ -36,9 +36,9 @@ public:
     CanOpenBus(QCanBusDevice *canDevice = Q_NULLPTR);
 
     const QList<Node *> &nodes() const;
-    Node *nodes(uint32_t node);
+    Node *node(uint8_t nodeId);
     void addNode(Node *node);
-    bool existNode(uint32_t node);
+    bool existNode(uint8_t nodeId);
 
     void readObjet(uint8_t nodeId, Index &index, uint8_t subindex);
     void writeObjet(uint8_t nodeId, Index &index, uint8_t subindex);
@@ -78,7 +78,7 @@ public:
 
   private:
 
-    void addNodeFound(uint32_t node);
+    void addNodeFound(uint8_t nodeId);
 };
 
 #endif // CANOPENBUS_H

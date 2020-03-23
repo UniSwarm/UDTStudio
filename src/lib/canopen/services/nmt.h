@@ -32,12 +32,12 @@ public:
     void sendNmt(uint8_t node_id, uint8_t cmd);
     void sendStart(uint8_t node_id);
     void sendStop(uint8_t node_id);
-    void explorerBus();
+    void exploreBus();
 
     virtual void parseFrame(const QCanBusFrame &frame);
 
 signals:
-    void nodeFound(uint32_t node);
+    void nodeFound(uint8_t node);
 
 private:
     void manageErrorControl(const QCanBusFrame &frame);

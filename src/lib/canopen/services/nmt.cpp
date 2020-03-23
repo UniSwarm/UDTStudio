@@ -68,7 +68,7 @@ void NMT::parseFrame(const QCanBusFrame &frame)
 
 void NMT::manageErrorControl(const QCanBusFrame &frame)
 {
-    uint32_t node = frame.frameId() & 0x7F;
+    uint8_t node = frame.frameId() & 0x7F;
     switch (frame.payload()[0] & 0x7F)
     {
     case 4:  // Stopped
@@ -82,7 +82,7 @@ void NMT::manageErrorControl(const QCanBusFrame &frame)
     }
 }
 
-void NMT::explorerBus()
+void NMT::exploreBus()
 {
     if (!_bus)
     {
