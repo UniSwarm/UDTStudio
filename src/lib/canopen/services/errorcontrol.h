@@ -16,18 +16,21 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef SERVICES_H
-#define SERVICES_H
+#ifndef ERRORCONTROL_H
+#define ERRORCONTROL_H
 
-#include "servicedispatcher.h"
+#include "canopen_global.h"
+#include "service.h"
 
-#include "emergency.h"
-#include "errorcontrol.h"
-#include "nmt.h"
-#include "rpdo.h"
-#include "tpdo.h"
-#include "sdo.h"
-#include "sync.h"
-#include "timestamp.h"
+class CANOPEN_EXPORT ErrorControl : public Service
+{
+    Q_OBJECT
+  public:
+    ErrorControl(Node *node);
 
-#endif // SERVICES_H
+    QString type() const override;
+
+    void parseFrame(const QCanBusFrame &frame) override;
+};
+
+#endif // ERRORCONTROL_H
