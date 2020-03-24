@@ -45,6 +45,12 @@ CanOpenBus::~CanOpenBus()
     }
 }
 
+
+ServiceDispatcher *CanOpenBus::dispatcher() const
+{
+    return _serviceDispatcher;
+}
+
 CanOpen *CanOpenBus::canOpen() const
 {
     return _canOpen;
@@ -92,8 +98,7 @@ void CanOpenBus::addNodeFound(uint8_t nodeId)
 {
     if (existNode(nodeId) == false)
     {
-        Node *nodeObject = new Node(this);
-        nodeObject->setNodeId(nodeId);
+        Node *nodeObject = new Node(this, nodeId);
         addNode(nodeObject);
         emit nodeAdded();
         qDebug() << "> CanOpenBus::addNodeFound" << "Add NodeID : " << nodeId;

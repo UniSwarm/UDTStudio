@@ -37,6 +37,7 @@ public:
     ~CanOpenBus();
 
     CanOpen *canOpen() const;
+    ServiceDispatcher *dispatcher() const;
 
     QString busName() const;
     void setBusName(const QString &busName);
