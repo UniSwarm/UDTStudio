@@ -21,8 +21,8 @@
 #include "nmt.h"
 #include "canopenbus.h"
 
-NMT::NMT(CanOpenBus *bus)
-    : Service (bus)
+NMT::NMT(Node *node)
+    : Service (node)
 {
     _cobIdNmt = 0x0;
     _cobIdNmtErrorControl = 0x700;

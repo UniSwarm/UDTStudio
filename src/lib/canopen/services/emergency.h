@@ -27,7 +27,7 @@ class CANOPEN_EXPORT Emergency : public Service
 {
     Q_OBJECT
 public:
-    Emergency(CanOpenBus *bus);
+    Emergency(Node *node);
 
     uint32_t cobId();
 

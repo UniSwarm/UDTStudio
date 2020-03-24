@@ -29,7 +29,7 @@ class CANOPEN_EXPORT SDO : public Service
 {
     Q_OBJECT
 public:
-    SDO(CanOpenBus *bus);
+    SDO(Node *node);
 
     QString type() const override;
 

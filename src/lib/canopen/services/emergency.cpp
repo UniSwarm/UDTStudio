@@ -18,8 +18,8 @@
 
 #include "emergency.h"
 
-Emergency::Emergency(CanOpenBus *bus)
-    : Service (bus)
+Emergency::Emergency(Node *node)
+    : Service (node)
 {
     _cobId = 0x80;
 }

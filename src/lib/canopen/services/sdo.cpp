@@ -108,8 +108,8 @@
 
 #define CO_SDO_CS_ABORT                         0x80
 
-SDO::SDO(CanOpenBus *bus)
-    : Service (bus)
+SDO::SDO(Node *node)
+    : Service (node)
 {
     _cobIdClientToServer = 0x600;
     _cobIdServerToClient = 0x580;

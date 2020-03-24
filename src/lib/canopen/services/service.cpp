@@ -18,11 +18,23 @@
 
 #include "service.h"
 
+#include "canopenbus.h"
+
 Service::Service(CanOpenBus *bus)
     : _bus(bus)
 {
 }
 
+Service::Service(Node *node)
+    : _bus(node->bus()), _node(node)
+{
+}
+
 Service::~Service()
 {
+}
+
+const QList<quint32> &Service::cobIds() const
+{
+    return _cobIds;
 }

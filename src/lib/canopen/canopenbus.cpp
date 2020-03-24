@@ -38,7 +38,11 @@ CanOpenBus::~CanOpenBus()
     delete _sync;
     delete _timestamp;
     delete _serviceDispatcher;
-    _canDevice->deleteLater();
+
+    if (_canDevice)
+    {
+        _canDevice->deleteLater();
+    }
 }
 
 CanOpen *CanOpenBus::canOpen() const
@@ -88,7 +92,7 @@ void CanOpenBus::addNodeFound(uint8_t nodeId)
 {
     if (existNode(nodeId) == false)
     {
-        Node *nodeObject = new Node(this, _serviceDispatcher);
+        Node *nodeObject = new Node(this);
         nodeObject->setNodeId(nodeId);
         addNode(nodeObject);
         emit nodeAdded();
@@ -99,6 +103,14 @@ void CanOpenBus::addNodeFound(uint8_t nodeId)
 void CanOpenBus::addNode(Node *node)
 {
     _nodes.append(node);
+
+    Q_FOREACH (Service *service, node->services())
+    {
+        Q_FOREACH (quint32 cobId, service->cobIds())
+        {
+            _serviceDispatcher->addService(cobId, service);
+        }
+    }
 }
 
 void CanOpenBus::exploreBus()

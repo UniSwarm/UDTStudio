@@ -30,11 +30,12 @@ class CANOPEN_EXPORT Node : public QObject
 {
     Q_OBJECT
 public:
-    Node(CanOpenBus *bus, ServiceDispatcher *dispatcher);
+    Node(CanOpenBus *bus);
     ~Node();
 
     CanOpenBus *bus() const;
     void setBus(CanOpenBus *bus);
+    QList<Service *> services() const;
 
     uint32_t nodeId() const;
     void setNodeId(const uint32_t &nodeId);
@@ -67,9 +68,9 @@ protected:
     QList<RPDO *> _rpdos;
     Emergency *_emergency;
     NMT *_nmt;
+    QList<Service *> _services;
 
     CanOpenBus *_bus;
-    ServiceDispatcher *_dispatcher;
     DeviceConfiguration *_deviceConfiguration;
 };
 

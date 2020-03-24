@@ -26,20 +26,26 @@
 #include <QCanBusFrame>
 
 class CanOpenBus;
+class Node;
 
 class CANOPEN_EXPORT Service : public QObject
 {
     Q_OBJECT
 public:
     Service(CanOpenBus *bus);
+    Service(Node *node);
     virtual ~Service();
 
     virtual QString type() const = 0;
 
     virtual void parseFrame(const QCanBusFrame &frame) = 0;
 
+    const QList<quint32> &cobIds() const;
+
 protected:
     CanOpenBus *_bus;
+    Node *_node;
+    QList<quint32> _cobIds;
 };
 
 #endif // SERVICE_H

@@ -20,8 +20,8 @@
 
 #include <QDebug>
 
-TPDO::TPDO(CanOpenBus *bus)
-    : Service (bus)
+TPDO::TPDO(Node *node)
+    : Service (node)
 {
     _cobIdPdo1 = 0x180;
     _cobIdPdo2 = 0x280;

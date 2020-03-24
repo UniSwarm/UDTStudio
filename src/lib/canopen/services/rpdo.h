@@ -27,7 +27,7 @@ class CANOPEN_EXPORT RPDO : public Service
 {
     Q_OBJECT
 public:
-    RPDO(CanOpenBus *bus);
+    RPDO(Node *node);
 
     uint32_t cobIdPdo1();
     uint32_t cobIdPdo2();
