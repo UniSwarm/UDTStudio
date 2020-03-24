@@ -24,8 +24,8 @@
 NMT::NMT(CanOpenBus *bus)
     : Service (bus)
 {
-    _cobIdNmt = 0x0;
-    _cobIds.append(_cobIdNmt);
+    _cobId = 0x0;
+    _cobIds.append(_cobId);
 }
 
 QString NMT::type() const
@@ -33,16 +33,12 @@ QString NMT::type() const
     return QLatin1String("NMT");
 }
 
-uint32_t NMT::cobIdNmt()
+uint32_t NMT::cobId()
 {
-    return _cobIdNmt;
-}
-uint32_t NMT::cobIdNmtErrorControl()
-{
-    return _cobIdNmtErrorControl;
+    return _cobId;
 }
 
-void NMT::sendNmt(uint8_t node_id, uint8_t cmd)
+void NMT::sendNmt(uint8_t node_id, quint8 cmd)
 {
     if (!_bus)
         return;
@@ -58,63 +54,29 @@ void NMT::sendNmt(uint8_t node_id, uint8_t cmd)
     _bus->canDevice()->writeFrame(frameNmt);
 }
 
-void NMT::sendStart(uint8_t node_id)
+void NMT::sendStart(quint8 node_id)
 {
     sendNmt(node_id, 0x01);
 }
 
-void NMT::sendStop(uint8_t node_id)
+void NMT::sendStop(quint8 node_id)
 {
     sendNmt(node_id, 0x02);
 }
 
+void NMT::sendResetComm(quint8 node_id)
+{
+    sendNmt(node_id, 0x02);
+}
+void NMT::sendResetNode(quint8 node_id)
+{
+    sendNmt(node_id, 0x82);
+}
+
 void NMT::parseFrame(const QCanBusFrame &frame)
 {
-    if ((frame.frameId() >> 7) == 0x0)
-    {
-        qDebug() << "NMT " << QString::number(frame.frameId(), 16).toUpper() << frame.payload().toHex().toUpper();
-    }
-    else if ((frame.frameId() >> 7) == 0xE)  // NMT Error control
-    {
-        qDebug() << "NMT Error control : Node Guarding RTR " << QString::number(frame.frameId(), 16).toUpper() << frame.payload().toHex().toUpper();
-        manageErrorControl(frame);
-    }
+    Q_UNUSED(frame);
 }
 
-void NMT::manageErrorControl(const QCanBusFrame &frame)
-{
-    uint8_t node = frame.frameId() & 0x7F;
-    switch (frame.payload()[0] & 0x7F)
-    {
-    case 4:  // Stopped
-    case 5:  // Operational
-    case 127:  // Pre-operational
-        emit nodeFound(node);
-        break;
-    default:
-        qDebug()<< "NMT Error control : error state" << QString::number(frame.frameId(), 16 ).toUpper() << frame.payload().toHex().toUpper();
-        break;
-    }
-}
 
-void NMT::exploreBus()
-{
-    if (!_bus)
-    {
-        return;
-    }
-    if (!_bus->canDevice())
-    {
-        return;
-    }
-
-    QCanBusFrame frameNodeGuarding;
-
-    for (quint8 i = 1; i <= 127; i++)
-    {
-        frameNodeGuarding.setFrameId(0x700 + i);
-        frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
-        _bus->canDevice()->writeFrame(frameNodeGuarding);
-    }
-}
 

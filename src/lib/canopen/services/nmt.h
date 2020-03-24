@@ -29,26 +29,20 @@ class CANOPEN_EXPORT NMT : public Service
 public:
     NMT(CanOpenBus *bus);
 
-    uint32_t cobIdNmt();
-    uint32_t cobIdNmtErrorControl();
+    uint32_t cobId();
 
-    void sendNmt(uint8_t node_id, uint8_t cmd);
-    void sendStart(uint8_t node_id);
-    void sendStop(uint8_t node_id);
-    void exploreBus();
+    void sendNmt(quint8 node_id, quint8 cmd);
+    void sendStart(quint8 node_id);
+    void sendStop(quint8 node_id);
+    void sendResetComm(quint8 node_id);
+    void sendResetNode(quint8 node_id);
 
     QString type() const override;
 
     void parseFrame(const QCanBusFrame &frame) override;
 
-signals:
-    void nodeFound(uint8_t node);
-
 private:
-    void manageErrorControl(const QCanBusFrame &frame);
-
-    uint32_t _cobIdNmt;
-    uint32_t _cobIdNmtErrorControl;
+    uint32_t _cobId;
 };
 
 #endif // NMT_H
