@@ -103,6 +103,11 @@ void Node::setName(const QString &name)
     _name = name;
 }
 
+void Node::setStatus(Status status)
+{
+    _status = status;
+}
+
 void Node::addEds(const QString &fileName)
 {
     EdsParser parser;

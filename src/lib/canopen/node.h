@@ -43,6 +43,8 @@ public:
     QString name() const;
     void setName(const QString &name);
 
+
+
     void addEds(const QString &fileName);
     void updateFirmware(const QByteArray &prog);
 
@@ -57,7 +59,11 @@ public:
         STOPPED
     };
 
+    QString status() const;
+    void setStatus(Status status);
+
 protected:
+
     quint8 _nodeId;
     QString _name;
     Status _status;
