@@ -26,3 +26,10 @@ const QList<CanOpenBus *> &CanOpen::buses() const
 {
     return _buses;
 }
+
+CanOpenBus *CanOpen::addBus(CanOpenBus *bus)
+{
+    _buses.append(bus);
+    emit busChanged();
+    return bus;
+}

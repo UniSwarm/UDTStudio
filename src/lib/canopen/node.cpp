@@ -25,6 +25,9 @@
 Node::Node(CanOpenBus *bus)
     : _bus(bus)
 {
+    _nodeId = 1;
+    _status = PREOP;
+
     _emergency = new Emergency(_bus);
     _nmt = new NMT(_bus);
     _sdoClients.append(new SDO(_bus));
@@ -43,6 +46,16 @@ Node::~Node()
     delete _deviceConfiguration;
 }
 
+CanOpenBus *Node::bus() const
+{
+    return _bus;
+}
+
+void Node::setBus(CanOpenBus *bus)
+{
+    _bus = bus;
+}
+
 uint32_t Node::nodeId() const
 {
     return _nodeId;
@@ -53,7 +66,17 @@ void Node::setNodeId(const uint32_t &nodeId)
     _nodeId = nodeId;
 }
 
-void Node::addEds(QString fileName)
+QString Node::name() const
+{
+    return _name;
+}
+
+void Node::setName(const QString &name)
+{
+    _name = name;
+}
+
+void Node::addEds(const QString &fileName)
 {
     EdsParser parser;
 

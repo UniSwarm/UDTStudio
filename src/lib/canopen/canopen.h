@@ -25,15 +25,20 @@
 
 #include <QList>
 
-class CANOPEN_EXPORT CanOpen
+class CANOPEN_EXPORT CanOpen : public QObject
 {
+    Q_OBJECT
 public:
     CanOpen();
 
     const QList<CanOpenBus *> &buses() const;
+    CanOpenBus *addBus(CanOpenBus *bus);
 
 protected:
     QList<CanOpenBus *> _buses;
+
+signals:
+    void busChanged();
 };
 
 #endif // CANOPEN_H

@@ -21,19 +21,25 @@
 
 #include "canopen_global.h"
 
-#include <QCanBusDevice>
 #include "node.h"
 #include "services/services.h"
-#include "model/deviceconfiguration.h"
 
 #include <QList>
-#include <QMap>
+#include <QCanBusDevice>
+
+class CanOpen;
 
 class CANOPEN_EXPORT CanOpenBus : public QObject
 {
     Q_OBJECT
 public:
-    CanOpenBus(QCanBusDevice *canDevice = Q_NULLPTR);
+    CanOpenBus(CanOpen *canOpen, QCanBusDevice *canDevice = Q_NULLPTR);
+    ~CanOpenBus();
+
+    CanOpen *canOpen() const;
+
+    QString busName() const;
+    void setBusName(const QString &busName);
 
     const QList<Node *> &nodes() const;
     Node *node(uint8_t nodeId);
@@ -66,6 +72,7 @@ signals:
     void nodeAdded();
 
 protected:
+    CanOpen *_canOpen;
     QString _busName;
     QList<Node *> _nodes;
     QCanBusDevice *_canDevice;

@@ -23,6 +23,7 @@
 Sync::Sync(CanOpenBus *bus)
     : Service (bus)
 {
+    _syncCobId = 0x80;
     _syncTimer = new QTimer();
     connect(_syncTimer, &QTimer::timeout, this, &Sync::sendSync);
 }
@@ -50,7 +51,7 @@ void Sync::sendSync()
         return;
 
     QCanBusFrame frameSync;
-    frameSync.setFrameId(0x080);
+    frameSync.setFrameId(_syncCobId);
     _bus->canDevice()->writeFrame(frameSync);
 }
 

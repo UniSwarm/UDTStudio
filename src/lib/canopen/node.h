@@ -26,16 +26,23 @@
 
 class CanOpenBus;
 
-class CANOPEN_EXPORT Node
+class CANOPEN_EXPORT Node : public QObject
 {
+    Q_OBJECT
 public:
     Node(CanOpenBus *bus);
     ~Node();
 
+    CanOpenBus *bus() const;
+    void setBus(CanOpenBus *bus);
+
     uint32_t nodeId() const;
     void setNodeId(const uint32_t &nodeId);
 
-    void addEds(QString fileName);
+    QString name() const;
+    void setName(const QString &name);
+
+    void addEds(const QString &fileName);
     void updateFirmware(const QByteArray &prog);
 
     QString device();
@@ -51,6 +58,7 @@ public:
 
 protected:
     uint32_t _nodeId;
+    QString _name;
     Status _status;
 
     // services

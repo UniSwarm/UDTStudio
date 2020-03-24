@@ -20,7 +20,8 @@
 
 #include <QDebug>
 
-CanOpenBus::CanOpenBus(QCanBusDevice *canDevice)
+CanOpenBus::CanOpenBus(CanOpen *canOpen, QCanBusDevice *canDevice)
+ : _canOpen(canOpen)
 {
     _canDevice = nullptr;
     setCanDevice(canDevice);
@@ -28,10 +29,29 @@ CanOpenBus::CanOpenBus(QCanBusDevice *canDevice)
     _serviceDispatcher = new ServiceDispatcher(this);
     _sync = new Sync(this);
     _timestamp = new TimeStamp(this);
+}
 
-//    connect(_sdos.first(), SIGNAL(dataObjetAvailable()),this, SLOT(dataObjetAvailable()));
-//    connect(_sdos.first(), SIGNAL(dataObjetWritten()),this, SLOT(dataObjetWritten()));
-//    connect(_nmt, &NMT::nodeFound, this, &CanOpenBus::addNodeFound);
+CanOpenBus::~CanOpenBus()
+{
+    delete _sync;
+    delete _timestamp;
+    delete _serviceDispatcher;
+    _canDevice->deleteLater();
+}
+
+CanOpen *CanOpenBus::canOpen() const
+{
+    return _canOpen;
+}
+
+QString CanOpenBus::busName() const
+{
+    return _busName;
+}
+
+void CanOpenBus::setBusName(const QString &busName)
+{
+    _busName = busName;
 }
 
 const QList<Node *> &CanOpenBus::nodes() const
@@ -82,11 +102,16 @@ void CanOpenBus::exploreBus()
 {
     QCanBusFrame frameNodeGuarding;
 
+    if (!_canDevice)
+    {
+        return;
+    }
+
     for (quint8 i = 1; i <= 127; i++)
     {
         frameNodeGuarding.setFrameId(0x700 + i);
         frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
-        this->canDevice()->writeFrame(frameNodeGuarding);
+        _canDevice->writeFrame(frameNodeGuarding);
     }
 }
 

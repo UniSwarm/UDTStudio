@@ -17,6 +17,7 @@
  **/
 
 #include <QDebug>
+#include <QDataStream>
 
 #include "sdo.h"
 #include "canopenbus.h"
