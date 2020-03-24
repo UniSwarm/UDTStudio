@@ -60,7 +60,7 @@ public:
     {
         Index *index;
         CO_SDO_STATE state;
-        uint8_t nodeId;
+        //uint8_t nodeId;
         uint8_t subIndex;
         QByteArray data;
         uint32_t stay;  // nombre octet restant ou taille de l'objet
@@ -72,19 +72,17 @@ public:
         uint8_t seqno;  // sequence number of segment
     } co_sdo_t;
 
-    co_sdo_t co_sdo;
+    co_sdo_t _co_sdo;
 
-    uint32_t _cobIdClientToServer;
-    uint32_t _cobIdServerToClient;
-    quint8 _nodeId;
-
-    //uint32_t blksize = 0;
 
 signals:
     void dataObjetAvailable();
     void dataObjetWritten();
 
 private:
+    uint32_t _cobIdClientToServer;
+    uint32_t _cobIdServerToClient;
+    quint8 _nodeId;
 
     qint32 sdoUploadInitiate(const QCanBusFrame &frame);
     qint32 sdoUploadSegment(const QCanBusFrame &frame);
@@ -93,17 +91,14 @@ private:
     qint32 sdoBlockDownload(const QCanBusFrame &frame);
     qint32 sdoBlockUpload(const QCanBusFrame &frame);
 
-    bool sendSdoRequest(uint8_t nodeId, uint8_t cmd, uint16_t index, uint8_t subindex);                         // SDO upload initiate
-    bool sendSdoRequest(uint8_t nodeId, uint8_t cmd);                                                           // SDO upload segment, SDO block upload initiate, SDO block upload ends
-    //bool sendSdoRequest(uint8_t nodeId, uint8_t cmd, uint16_t index, uint8_t subindex, uint32_t size);          //
-    bool sendSdoRequest(uint8_t nodeId, uint8_t cmd, uint16_t index, uint8_t subindex, const QVariant &data);   // SDO download initiate, SDO block download initiate
-    bool sendSdoRequest(uint8_t nodeId, uint8_t cmd, const QByteArray &value);                                    // SDO download segment
-
-    bool sendSdoRequest(uint8_t nodeId, uint8_t cmd, uint16_t index, uint8_t subindex, uint8_t blksize, uint8_t pst);   // SDO block upload initiate
-    bool sendSdoRequest(uint8_t nodeId, uint8_t cmd, uint8_t &ackseq, uint8_t blksize);                                 // SDO block upload sub-block
-
-    bool sendSdoRequest(uint8_t nodeId, bool moreSegments, uint8_t seqno, const QByteArray &segData);             // SDO block download sub-block
-    bool sendSdoRequest(uint8_t nodeId, uint8_t cmd, uint16_t &crc);                                            // SDO block download end
+    bool sendSdoRequest(uint8_t cmd, uint16_t index, uint8_t subindex);                         // SDO upload initiate
+    bool sendSdoRequest(uint8_t cmd);                                                           // SDO upload segment, SDO block upload initiate, SDO block upload ends
+    bool sendSdoRequest(uint8_t cmd, uint16_t index, uint8_t subindex, const QVariant &data);   // SDO download initiate, SDO block download initiate
+    bool sendSdoRequest(uint8_t cmd, const QByteArray &value);                                    // SDO download segment
+    bool sendSdoRequest(uint8_t cmd, uint16_t index, uint8_t subindex, uint8_t blksize, uint8_t pst);   // SDO block upload initiate
+    bool sendSdoRequest(uint8_t cmd, uint8_t &ackseq, uint8_t blksize);                                 // SDO block upload sub-block
+    bool sendSdoRequest(bool moreSegments, uint8_t seqno, const QByteArray &segData);             // SDO block download sub-block
+    bool sendSdoRequest(uint8_t cmd, uint16_t &crc);                                            // SDO block download end
 };
 
 #endif // SDO_H
