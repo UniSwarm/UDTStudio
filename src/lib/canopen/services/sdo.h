@@ -42,8 +42,8 @@ public:
     void sendSdoReadReq(uint8_t nodeId, uint16_t index, uint8_t subindex);                                          // OBSOLETE
     void sendSdoWriteReq(uint8_t nodeId, uint16_t index, uint8_t subindex, const QVariant &value, uint8_t size);    // OBSOLETE
 
-    qint32 uploadData(uint8_t nodeId, Index &index, uint8_t subindex);
-    qint32 downloadData(uint8_t nodeId, Index &index, uint8_t subindex);
+    qint32 uploadData(Index &index, uint8_t subindex);
+    qint32 downloadData(Index &index, uint8_t subindex);
 
     typedef enum
     {
@@ -76,6 +76,7 @@ public:
 
     uint32_t _cobIdClientToServer;
     uint32_t _cobIdServerToClient;
+    quint8 _nodeId;
 
     //uint32_t blksize = 0;
 

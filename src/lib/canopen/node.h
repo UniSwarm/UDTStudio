@@ -30,15 +30,15 @@ class CANOPEN_EXPORT Node : public QObject
 {
     Q_OBJECT
 public:
-    Node(CanOpenBus *bus);
+    Node(CanOpenBus *bus, quint8 nodeId);
     ~Node();
 
     CanOpenBus *bus() const;
     void setBus(CanOpenBus *bus);
     QList<Service *> services() const;
 
-    uint32_t nodeId() const;
-    void setNodeId(const uint32_t &nodeId);
+    quint8 nodeId() const;
+    void setNodeId(const quint8 &nodeId);
 
     QString name() const;
     void setName(const QString &name);
@@ -58,7 +58,7 @@ public:
     };
 
 protected:
-    uint32_t _nodeId;
+    quint8 _nodeId;
     QString _name;
     Status _status;
 
@@ -68,6 +68,7 @@ protected:
     QList<RPDO *> _rpdos;
     Emergency *_emergency;
     NMT *_nmt;
+    ErrorControl *_errorControl;
     QList<Service *> _services;
 
     CanOpenBus *_bus;

@@ -21,11 +21,11 @@
 #include "nmt.h"
 #include "canopenbus.h"
 
-NMT::NMT(Node *node)
-    : Service (node)
+NMT::NMT(CanOpenBus *bus)
+    : Service (bus)
 {
     _cobIdNmt = 0x0;
-    _cobIdNmtErrorControl = 0x700;
+    _cobIds.append(_cobIdNmt);
 }
 
 QString NMT::type() const

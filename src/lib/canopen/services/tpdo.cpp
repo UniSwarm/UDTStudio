@@ -20,8 +20,8 @@
 
 #include <QDebug>
 
-TPDO::TPDO(Node *node)
-    : Service (node)
+TPDO::TPDO(Node *node, quint8 number)
+    : Service (node), _number(number)
 {
     _cobIdPdo1 = 0x180;
     _cobIdPdo2 = 0x280;
@@ -53,6 +53,7 @@ QString TPDO::type() const
 
 void TPDO::parseFrame(const QCanBusFrame &frame)
 {
-    uint8_t nodeId = frame.frameId() & 0x0000007F;
-    uint8_t tpdo = (((frame.frameId() & 0x00000380) >> 7) - 3) / 2;
+    Q_UNUSED(frame);
+//    uint8_t nodeId = frame.frameId() & 0x0000007F;
+//    uint8_t tpdo = (((frame.frameId() & 0x00000380) >> 7) - 3) / 2;
 }

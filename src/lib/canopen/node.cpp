@@ -22,8 +22,8 @@
 #include "parser/edsparser.h"
 #include "services/services.h"
 
-Node::Node(CanOpenBus *bus)
-    : _bus(bus)
+Node::Node(CanOpenBus *bus, quint8 nodeId)
+    : _nodeId(nodeId), _bus(bus)
 {
     _nodeId = 1;
     _status = PREOP;
@@ -31,46 +31,31 @@ Node::Node(CanOpenBus *bus)
     _emergency = new Emergency(this);
     _services.append(_emergency);
 
-    _nmt = new NMT(this);
+    _nmt = new NMT(_bus);
     _services.append(_nmt);
+
+    _errorControl = new ErrorControl(this);
+    _services.append(_errorControl);
 
     SDO *sdo = new SDO(this);
     _sdoClients.append(sdo);
     _services.append(sdo);
 
-    for (int i = 0; i < 4; i++)
+    for (quint8 i = 0; i < 4; i++)
     {
-        RPDO *rpdo = new RPDO(this);
+        RPDO *rpdo = new RPDO(this, i);
         _rpdos.append(rpdo);
         _services.append(rpdo);
     }
 
-    for (int i = 0; i < 4; i++)
+    for (quint8 i = 0; i < 4; i++)
     {
-        TPDO *tpdo = new TPDO(this);
+        TPDO *tpdo = new TPDO(this, i);
         _tpdos.append(tpdo);
         _services.append(tpdo);
     }
 
     _deviceConfiguration = nullptr;
-
-    /*_dispatcher->addService(_emergency->cobId() + _nodeId, _emergency);
-
-    _dispatcher->addService(_nmt->cobIdNmt() + _nodeId, _nmt);
-    _dispatcher->addService(_nmt->cobIdNmtErrorControl() + _nodeId, _nmt);
-
-    _dispatcher->addService(_sdoClients.at(0)->cobIdClientToServer() + _nodeId, _sdoClients.at(0));
-    _dispatcher->addService(_sdoClients.at(0)->cobIdServerToClient() + _nodeId, _sdoClients.at(0));
-
-    _dispatcher->addService(_rpdos.at(0)->cobIdPdo1() + _nodeId, _rpdos.at(0));
-    _dispatcher->addService(_rpdos.at(0)->cobIdPdo2() + _nodeId, _rpdos.at(0));
-    _dispatcher->addService(_rpdos.at(0)->cobIdPdo3() + _nodeId, _rpdos.at(0));
-    _dispatcher->addService(_rpdos.at(0)->cobIdPdo4() + _nodeId, _rpdos.at(0));
-
-    _dispatcher->addService(_tpdos.at(0)->cobIdPdo1() + _nodeId, _tpdos.at(0));
-    _dispatcher->addService(_tpdos.at(0)->cobIdPdo2() + _nodeId, _tpdos.at(0));
-    _dispatcher->addService(_tpdos.at(0)->cobIdPdo3() + _nodeId, _tpdos.at(0));
-    _dispatcher->addService(_tpdos.at(0)->cobIdPdo4() + _nodeId, _tpdos.at(0));*/
 }
 
 Node::~Node()
@@ -98,12 +83,12 @@ QList<Service *> Node::services() const
     return _services;
 }
 
-uint32_t Node::nodeId() const
+quint8 Node::nodeId() const
 {
     return _nodeId;
 }
 
-void Node::setNodeId(const uint32_t &nodeId)
+void Node::setNodeId(const quint8 &nodeId)
 {
     _nodeId = nodeId;
 }
@@ -136,7 +121,7 @@ void Node::updateFirmware(const QByteArray &prog)
     {
         index2 = _deviceConfiguration->index(index);
         index2->subIndex(subindex)->setValue(prog);
-        _sdoClients.at(0)->downloadData(static_cast<uint8_t>(_nodeId), *index2, subindex);
+        _sdoClients.at(0)->downloadData(*index2, subindex);
     }
 }
 
@@ -149,7 +134,7 @@ QString Node::device()
     if (_deviceConfiguration->indexExist(index))
     {
         index2 = _deviceConfiguration->index(index);
-        _sdoClients.at(0)->uploadData(static_cast<uint8_t>(_nodeId), *index2, subindex);
+        _sdoClients.at(0)->uploadData(*index2, subindex);
     }
     return index2->subIndex(subindex)->value().toString();
 }
@@ -163,7 +148,7 @@ QString Node::manuDeviceName()
     if (_deviceConfiguration->indexExist(index))
     {
         index2 = _deviceConfiguration->index(index);
-        _sdoClients.at(0)->uploadData(static_cast<uint8_t>(_nodeId), *index2, subindex);
+        _sdoClients.at(0)->uploadData(*index2, subindex);
     }
     return index2->subIndex(subindex)->value().toString();
 }
@@ -176,7 +161,7 @@ QString Node::manufacturerHardwareVersion()
     if (_deviceConfiguration->indexExist(index))
     {
         index2 = _deviceConfiguration->index(index);
-        _sdoClients.at(0)->uploadData(static_cast<uint8_t>(_nodeId), *index2, subindex);
+        _sdoClients.at(0)->uploadData(*index2, subindex);
     }
     return index2->subIndex(subindex)->value().toString();
 }
@@ -189,7 +174,7 @@ QString Node::manufacturerSoftwareVersion()
     if (_deviceConfiguration->indexExist(index))
     {
         index2 = _deviceConfiguration->index(index);
-        _sdoClients.at(0)->uploadData(static_cast<uint8_t>(_nodeId), *index2, subindex);
+        _sdoClients.at(0)->uploadData(*index2, subindex);
     }
     return index2->subIndex(subindex)->value().toString();
 }

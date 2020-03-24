@@ -17,11 +17,13 @@
  **/
 
 #include "errorcontrol.h"
+#include "canopenbus.h"
 
 ErrorControl::ErrorControl(Node *node)
-    : Service (node)
+    : Service(node)
 {
-
+    _cobIdErrorControl = 0x700;
+    _cobIds.append(_cobIdErrorControl + node->nodeId());
 }
 
 QString ErrorControl::type() const

@@ -25,12 +25,17 @@
 class CANOPEN_EXPORT ErrorControl : public Service
 {
     Q_OBJECT
-  public:
+public:
     ErrorControl(Node *node);
+
+    uint32_t cobId();
 
     QString type() const override;
 
     void parseFrame(const QCanBusFrame &frame) override;
+
+private:
+    uint32_t _cobIdErrorControl;
 };
 
 #endif // ERRORCONTROL_H

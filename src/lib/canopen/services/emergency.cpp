@@ -17,11 +17,13 @@
  **/
 
 #include "emergency.h"
+#include "canopenbus.h"
 
 Emergency::Emergency(Node *node)
     : Service (node)
 {
     _cobId = 0x80;
+    _cobIds.append(_cobId + node->nodeId());
 }
 
 uint32_t Emergency::cobId()
@@ -36,4 +38,5 @@ QString Emergency::type() const
 
 void Emergency::parseFrame(const QCanBusFrame &frame)
 {
+    Q_UNUSED(frame);
 }

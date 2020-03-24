@@ -111,8 +111,11 @@
 SDO::SDO(Node *node)
     : Service (node)
 {
+    _nodeId = node->nodeId();
     _cobIdClientToServer = 0x600;
     _cobIdServerToClient = 0x580;
+    _cobIds.append(_cobIdClientToServer + _nodeId);
+    _cobIds.append(_cobIdServerToClient + _nodeId);
 }
 
 QString SDO::type() const
@@ -175,7 +178,7 @@ void SDO::sendSdoWriteReq(uint8_t nodeId, uint16_t index, uint8_t subindex, cons
         data << value.toUInt();
 
         QCanBusFrame frameNmt;
-        frameNmt.setFrameId(0x600 + nodeId);
+        frameNmt.setFrameId(0x600 + _nodeId);
         frameNmt.setPayload(sdoWriteReqPayload);
         _bus->canDevice()->writeFrame(frameNmt);
     }
@@ -224,12 +227,12 @@ void SDO::parseFrame(const QCanBusFrame &frame)
     }
 }
 
-qint32 SDO::uploadData(uint8_t nodeId, Index &index, uint8_t subindex)
+qint32 SDO::uploadData(Index &index, uint8_t subindex)
 {
     bool error;
     uint8_t cmd = 0;
     co_sdo.index = &index;
-    co_sdo.nodeId = nodeId;
+    co_sdo.nodeId = _nodeId;
     co_sdo.subIndex = subindex;
 
     if (co_sdo.index->subIndex(subindex)->dataType() != SubIndex::DDOMAIN)
@@ -359,13 +362,13 @@ qint32 SDO::sdoBlockUpload(const QCanBusFrame &frame)
     return 0;
 }
 
-qint32 SDO::downloadData(uint8_t nodeId, Index &index, uint8_t subindex)
+qint32 SDO::downloadData(Index &index, uint8_t subindex)
 {
     bool error = true;
     uint8_t cmd = 0;
 
     co_sdo.index = &index;
-    co_sdo.nodeId = nodeId;
+    co_sdo.nodeId = _nodeId;
     co_sdo.subIndex = subindex;
 
     if (co_sdo.index->subIndex(subindex)->dataType() == SubIndex::DDOMAIN)

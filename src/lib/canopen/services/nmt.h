@@ -27,7 +27,7 @@ class CANOPEN_EXPORT NMT : public Service
 {
     Q_OBJECT
 public:
-    NMT(Node *node);
+    NMT(CanOpenBus *bus);
 
     uint32_t cobIdNmt();
     uint32_t cobIdNmtErrorControl();

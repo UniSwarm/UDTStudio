@@ -27,7 +27,7 @@ class CANOPEN_EXPORT RPDO : public Service
 {
     Q_OBJECT
 public:
-    RPDO(Node *node);
+    RPDO(Node *node, quint8 number);
 
     uint32_t cobIdPdo1();
     uint32_t cobIdPdo2();
@@ -39,6 +39,7 @@ public:
     void parseFrame(const QCanBusFrame &frame) override;
 
 private:
+    quint8 _number;
     uint32_t _cobIdPdo1;
     uint32_t _cobIdPdo2;
     uint32_t _cobIdPdo3;
