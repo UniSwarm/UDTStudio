@@ -16,14 +16,16 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <QDebug>
 #include "errorcontrol.h"
 #include "canopenbus.h"
 
-ErrorControl::ErrorControl(Node *node)
-    : Service(node)
+ErrorControl::ErrorControl(Node *node) : Service(node)
 {
-    _cobIdErrorControl = 0x700;
-    _cobIds.append(_cobIdErrorControl + node->nodeId());
+
+    _cobId = 0x700;
+    _cobIds.append(_cobId + node->nodeId());
+    toggleBit = false;
 }
 
 QString ErrorControl::type() const
@@ -33,4 +35,54 @@ QString ErrorControl::type() const
 
 void ErrorControl::parseFrame(const QCanBusFrame &frame)
 {
+    if (static_cast<uint8_t>(frame.payload()[0]) == 0x0)
+    {
+        // BootUp
+        toggleBit = false;
+    }
+
+    manageErrorControl(frame);
+}
+
+void ErrorControl::receiveHeartBeat()
+{
+    // heartbeat consumers
+    QCanBusFrame frameNodeGuarding;
+    frameNodeGuarding.setFrameId(_cobId + _node->nodeId());
+    frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
+    _node->bus()->canDevice()->writeFrame(frameNodeGuarding);
+}
+
+void ErrorControl::sendNodeGuarding()
+{
+    QCanBusFrame frameNodeGuarding;
+    frameNodeGuarding.setFrameId(_cobId + _node->nodeId());
+    frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
+    _node->bus()->canDevice()->writeFrame(frameNodeGuarding);
+}
+
+void ErrorControl::manageErrorControl(const QCanBusFrame &frame)
+{
+    if (toggleBit == frame.payload()[0] >> 7)
+    {
+        // ERROR TogleBit -> connection lost
+        return;
+    }
+    toggleBit = frame.payload()[0] >> 7;
+
+    switch (frame.payload()[0] & 0x7F)
+    {
+    case 4:  // Stopped
+        _node->setStatus(Node::Status::STOPPED);
+        break;
+    case 5:  // Operational
+        _node->setStatus(Node::Status::STARTED);
+        break;
+    case 127:  // Pre-operational
+        _node->setStatus(Node::Status::PREOP);
+        break;
+    default:
+        qDebug()<< "Error control : error state" << QString::number(frame.frameId(), 16 ).toUpper() << frame.payload().toHex().toUpper();
+        break;
+    }
 }
