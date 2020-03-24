@@ -16,31 +16,27 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef ODTREEVIEW_H
-#define ODTREEVIEW_H
+#ifndef BUSNODESTREEVIEW_H
+#define BUSNODESTREEVIEW_H
 
 #include "udtgui_global.h"
 
 #include <QTreeView>
 
-#include <QSortFilterProxyModel>
+#include "busnodesmodel.h"
 
-#include "oditemmodel.h"
-
-class UDTGUI_EXPORT ODTreeView : public QTreeView
+class UDTGUI_EXPORT BusNodesTreeView : public QTreeView
 {
+    Q_OBJECT
 public:
-    ODTreeView(QWidget *parent = nullptr);
-    ~ODTreeView();
+    BusNodesTreeView(QWidget *parent = nullptr);
+    ~BusNodesTreeView();
 
-    void setDeviceModel(DeviceModel *deviceModel);
-
-    bool editable() const;
-    void setEditable(bool editable);
+    CanOpen *canOpen() const;
+    void setCanOpen(CanOpen *canOpen);
 
 protected:
-    ODItemModel *_odModel;
-    QSortFilterProxyModel *_odModelSorter;
+    BusNodesModel *_busNodesModel;
 };
 
-#endif // ODTREEVIEW_H
+#endif // BUSNODESTREEVIEW_H

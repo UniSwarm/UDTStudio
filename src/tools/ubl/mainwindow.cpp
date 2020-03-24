@@ -63,7 +63,7 @@ void MainWindow::createActions()
 
     _canSettingsAction = new QAction(tr("&Can Settings"), this);
     connect(_canSettingsAction, &QAction::triggered, _connectDialog, &CanSettingsDialog::show);
-    connect(_connectDialog, &QDialog::accept, this, &MainWindow::connectDevice);
+    connect(_connectDialog, &QDialog::accepted, this, &MainWindow::connectDevice);
 
     _connectAction->setEnabled(true);
     _disconnectAction->setEnabled(false);
@@ -237,7 +237,9 @@ void MainWindow::connectDevice()
                 _disconnectAction->setEnabled(true);
             }
 
-            _bus = new CanOpenBus(_canDevice);
+            _canOpen = new CanOpen();
+            _bus = new CanOpenBus(_canOpen, _canDevice);
+            _canOpen->addBus(_bus);
             connect(_bus, &CanOpenBus::nodeAdded, this, &MainWindow::refreshListNode);
             statusBar()->showMessage(tr("%1 - %2").arg(settings.interfaceName).arg(settings.deviceName));
         }

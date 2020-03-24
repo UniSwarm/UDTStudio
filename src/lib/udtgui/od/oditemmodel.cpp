@@ -62,20 +62,22 @@ int ODItemModel::columnCount(const QModelIndex &parent) const
 QVariant ODItemModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation==Qt::Vertical)
+    {
         return QVariant();
+    }
     switch (role)
     {
     case Qt::DisplayRole:
         switch (section)
         {
         case OdIndex:
-            return QVariant("Index");
+            return QVariant(tr("Index"));
         case Name:
-            return QVariant("Name");
+            return QVariant(tr("Name"));
         case Type:
-            return QVariant("Type");
+            return QVariant(tr("Type"));
         case Value:
-            return QVariant("Value");
+            return QVariant(tr("Value"));
         }
         break;
     }
@@ -85,9 +87,13 @@ QVariant ODItemModel::headerData(int section, Qt::Orientation orientation, int r
 QVariant ODItemModel::data(const QModelIndex &index, int role) const
 {
     if (!_root)
+    {
         return QVariant();
+    }
     if (!index.isValid())
+    {
         return QVariant();
+    }
 
     ODItem *item = static_cast<ODItem*>(index.internalPointer());
 
@@ -97,7 +103,9 @@ QVariant ODItemModel::data(const QModelIndex &index, int role) const
 bool ODItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (!_root || !index.isValid())
+    {
         return false;
+    }
 
     ODItem *item = static_cast<ODItem*>(index.internalPointer());
     return item->setData(index.column(), value, role);
@@ -106,37 +114,56 @@ bool ODItemModel::setData(const QModelIndex &index, const QVariant &value, int r
 QModelIndex ODItemModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (!_root)
+    {
         return QModelIndex();
+    }
 
     ODItem *item;
     if (parent.internalPointer() == nullptr)
+    {
         item = _root;
+    }
     else
+    {
         item = static_cast<ODItem*>(parent.internalPointer());
+    }
 
     ODItem *childItem = item->child(row);
     if (childItem)
+    {
         return createIndex(row, column, childItem);
+    }
     else
+    {
         return QModelIndex();
+    }
 }
 
 QModelIndex ODItemModel::parent(const QModelIndex &child) const
 {
     if (!child.isValid() || child.internalPointer() == nullptr)
+    {
         return QModelIndex();
-    ODItem *item = static_cast<ODItem*>(child.internalPointer());
+    }
+
+    ODItem *item = static_cast<ODItem *>(child.internalPointer());
     if (item->parent() == nullptr)
+    {
         return QModelIndex();
+    }
     return createIndex(item->row(), child.column(), item->parent());
 }
 
 int ODItemModel::rowCount(const QModelIndex &parent) const
 {
     if (!_root)
+    {
         return 0;
+    }
     if (!parent.isValid())
+    {
         return _root->rowCount();
+    }
 
     ODItem *item = static_cast<ODItem*>(parent.internalPointer());
     return item->rowCount();
@@ -145,7 +172,9 @@ int ODItemModel::rowCount(const QModelIndex &parent) const
 Qt::ItemFlags ODItemModel::flags(const QModelIndex &index) const
 {
     if (!_root || !index.isValid())
+    {
         return Qt::NoItemFlags;
+    }
 
     ODItem *item = static_cast<ODItem*>(index.internalPointer());
     Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -154,9 +183,15 @@ Qt::ItemFlags ODItemModel::flags(const QModelIndex &index) const
         flags.setFlag(Qt::ItemIsEditable, true);
 
         if (item->type() == ODItem::Type::TIndex)
+        {
             if (item->index()->objectType() != Index::VAR)
+            {
                 if (index.column() == Value)
+                {
                     flags.setFlag(Qt::ItemIsEditable, false);
+                }
+            }
+        }
     }
     return flags;
 }

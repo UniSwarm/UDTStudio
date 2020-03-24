@@ -15,7 +15,9 @@ HEADERS += \
     $$PWD/od/odtreeviewdelegate.h \
     $$PWD/can/canSettingsDialog/cansettingsdialog.h \
     $$PWD/can/canFrameListView/canframelistview.h \
-    $$PWD/can/canFrameListView/canframemodel.h
+    $$PWD/can/canFrameListView/canframemodel.h \
+    canopen/busnodesmodel.h \
+    canopen/busnodestreeview.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -24,7 +26,9 @@ SOURCES += \
     $$PWD/od/odtreeviewdelegate.cpp \
     $$PWD/can/canSettingsDialog/cansettingsdialog.cpp \
     $$PWD/can/canFrameListView/canframelistview.cpp \
-    $$PWD/can/canFrameListView/canframemodel.cpp
+    $$PWD/can/canFrameListView/canframemodel.cpp \
+    canopen/busnodesmodel.cpp \
+    canopen/busnodestreeview.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 

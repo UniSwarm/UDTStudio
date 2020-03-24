@@ -19,14 +19,14 @@
 #ifndef CANSETTINGDIALOG_H
 #define CANSETTINGDIALOG_H
 
+#include "../../udtgui_global.h"
+
 #include <QDialog>
 
 #include <QComboBox>
 
 #include <QCanBusDevice>
 #include <QCanBusDeviceInfo>
-
-#include "../../udtgui_global.h"
 
 class UDTGUI_EXPORT CanSettingsDialog : public QDialog
 {

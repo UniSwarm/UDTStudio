@@ -19,14 +19,15 @@
 #ifndef CANFRAMEVIEW_H
 #define CANFRAMEVIEW_H
 
-#include <QWidget>
+#include "../../udtgui_global.h"
+
 #include <QTableView>
 #include <QCanBus>
 #include <QCanBusFrame>
 
 #include "canframemodel.h"
 
-class CanFrameListView : public QTableView
+class UDTGUI_EXPORT CanFrameListView : public QTableView
 {
  public:
     CanFrameListView(QWidget *parent = nullptr);

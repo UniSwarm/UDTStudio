@@ -18,7 +18,8 @@
 
 #include "odtreeview.h"
 
-ODTreeView::ODTreeView()
+ODTreeView::ODTreeView(QWidget *parent)
+    : QTreeView(parent)
 {
     _odModel = new ODItemModel();
     _odModelSorter = new QSortFilterProxyModel();

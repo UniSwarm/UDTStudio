@@ -16,31 +16,28 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef CANFRAMEMODEL_H
-#define CANFRAMEMODEL_H
+#ifndef BUSNODESMODEL_H
+#define BUSNODESMODEL_H
 
-#include "../../udtgui_global.h"
+#include "../udtgui_global.h"
 
 #include <QAbstractItemModel>
 
-#include <QCanBus>
-#include <QCanBusFrame>
+#include "canopen.h"
 
-class UDTGUI_EXPORT CanFrameModel : public QAbstractItemModel
+class UDTGUI_EXPORT BusNodesModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    CanFrameModel(QObject *parent = nullptr);
-    ~CanFrameModel();
+    BusNodesModel(QObject *parent = nullptr, CanOpen *canOpen = nullptr);
+    ~BusNodesModel();
 
-    void appendCanFrame(const QCanBusFrame &frame);
+    CanOpen *canOpen() const;
+    void setCanOpen(CanOpen *canOpen);
 
     enum Column {
-        Time,
-        CanId,
-        Type,
-        DLC,
-        DataByte,
+        NodeId,
+        Name,
         ColumnCount
     };
 
@@ -55,7 +52,7 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
 private:
-    QList<QCanBusFrame> _frames;
+    CanOpen *_canOpen;
 };
 
-#endif // CANFRAMEMODEL_H
+#endif // BUSNODESMODEL_H

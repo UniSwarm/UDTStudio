@@ -52,6 +52,7 @@ public:
     void refreshListNode();
 
     CanSettingsDialog *_connectDialog = nullptr;
+    CanOpen *_canOpen;
     CanOpenBus *_bus;
     QCanBusDevice *_canDevice = nullptr;
     HexFile *hexFile;
