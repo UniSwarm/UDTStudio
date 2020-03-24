@@ -24,11 +24,22 @@
 NMT::NMT(CanOpenBus *bus)
     : Service (bus)
 {
+    _cobIdNmt = 0x0;
+    _cobIdNmtErrorControl = 0x700;
 }
 
 QString NMT::type() const
 {
-    return QLatin1String("Emergency");
+    return QLatin1String("NMT");
+}
+
+uint32_t NMT::cobIdNmt()
+{
+    return _cobIdNmt;
+}
+uint32_t NMT::cobIdNmtErrorControl()
+{
+    return _cobIdNmtErrorControl;
 }
 
 void NMT::sendNmt(uint8_t node_id, uint8_t cmd)

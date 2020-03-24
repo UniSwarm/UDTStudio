@@ -23,11 +23,32 @@
 RPDO::RPDO(CanOpenBus *bus)
     : Service (bus)
 {
+    _cobIdPdo1 = 0x200;
+    _cobIdPdo2 = 0x300;
+    _cobIdPdo3 = 0x400;
+    _cobIdPdo4 = 0x500;
+}
+
+uint32_t RPDO::cobIdPdo1()
+{
+    return _cobIdPdo1;
+}
+uint32_t RPDO::cobIdPdo2()
+{
+    return _cobIdPdo2;
+}
+uint32_t RPDO::cobIdPdo3()
+{
+    return _cobIdPdo3;
+}
+uint32_t RPDO::cobIdPdo4()
+{
+    return _cobIdPdo4;
 }
 
 QString RPDO::type() const
 {
-    return QLatin1String("Emergency");
+    return QLatin1String("RPDO");
 }
 
 void RPDO::parseFrame(const QCanBusFrame &frame)

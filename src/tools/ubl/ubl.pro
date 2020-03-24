@@ -36,7 +36,7 @@ HEADERS += \
 
 FORMS +=
 
-INCLUDEPATH += $$PWD/../../lib/canopen/ $$PWD/../../lib/od/ $$PWD/../../lib/udtgui/can/canSettingsDialog/ $$PWD/../../lib/udtgui/can/canFrameView/
+INCLUDEPATH += $$PWD/../../lib/canopen/ $$PWD/../../lib/od/ $$PWD/../../lib/udtgui/can/canSettingsDialog/ $$PWD/../../lib/udtgui/can/canFrameListView/
 
 LIBS += -L"$$PWD/../../../bin" -lod -ludtgui -lcanopen
 #DEPENDPATH += $$PWD/../od/

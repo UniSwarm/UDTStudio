@@ -111,11 +111,23 @@
 SDO::SDO(CanOpenBus *bus)
     : Service (bus)
 {
+    _cobIdClientToServer = 0x600;
+    _cobIdServerToClient = 0x580;
 }
 
 QString SDO::type() const
 {
-    return QLatin1String("Emergency");
+    return QLatin1String("SDO");
+}
+
+uint32_t SDO::cobIdClientToServer()
+{
+    return _cobIdClientToServer;
+}
+
+uint32_t SDO::cobIdServerToClient()
+{
+    return _cobIdServerToClient;
 }
 
 // OBSOLETE
@@ -246,7 +258,7 @@ qint32 SDO::sdoUploadInitiate(const QCanBusFrame &frame)
     bool error;
 
     co_sdo.data.clear();
-    co_sdo.index->subIndex(co_sdo.subIndex)->clearValue();
+    co_sdo.index->subIndex(co_sdo.subIndex);
     if (transferType == SDO_E_EXPEDITED)
     {
         if (sizeIndicator == 0)  // data set size is not indicated
@@ -257,7 +269,6 @@ qint32 SDO::sdoUploadInitiate(const QCanBusFrame &frame)
             co_sdo.stay = (4 - SDO_N(frame.payload()));
             co_sdo.index->subIndex(co_sdo.subIndex)->setValue( frame.payload().mid(4, static_cast<uint8_t>(co_sdo.stay)));
 
-            emit dataObjetAvailable();
         }
         else
         {
@@ -731,7 +742,7 @@ bool SDO::sendSdoRequest(uint8_t nodeId, uint8_t cmd, uint8_t &ackseq, uint8_t b
 }
 
 // SDO block download sub-block
-bool SDO::sendSdoRequest(uint8_t nodeId, bool moreSegments, uint8_t seqno, const QVariant &segData)
+bool SDO::sendSdoRequest(uint8_t nodeId, bool moreSegments, uint8_t seqno, const QByteArray &segData)
 {
     QByteArray sdoWriteReqPayload;
     QDataStream data(&sdoWriteReqPayload, QIODevice::WriteOnly);
@@ -747,8 +758,9 @@ bool SDO::sendSdoRequest(uint8_t nodeId, bool moreSegments, uint8_t seqno, const
     {
         data << static_cast<uint8_t>(seqno);
     }
-    data << segData.toInt();
+    //data << segData.toUInt();
 
+    sdoWriteReqPayload.append(segData);
     frame.setFrameId(0x600 + nodeId);
     frame.setPayload(sdoWriteReqPayload);
 

@@ -30,7 +30,7 @@ class CANOPEN_EXPORT Node : public QObject
 {
     Q_OBJECT
 public:
-    Node(CanOpenBus *bus);
+    Node(CanOpenBus *bus, ServiceDispatcher *dispatcher);
     ~Node();
 
     CanOpenBus *bus() const;
@@ -69,6 +69,7 @@ protected:
     NMT *_nmt;
 
     CanOpenBus *_bus;
+    ServiceDispatcher *_dispatcher;
     DeviceConfiguration *_deviceConfiguration;
 };
 

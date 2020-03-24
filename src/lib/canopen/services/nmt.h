@@ -29,6 +29,9 @@ class CANOPEN_EXPORT NMT : public Service
 public:
     NMT(CanOpenBus *bus);
 
+    uint32_t cobIdNmt();
+    uint32_t cobIdNmtErrorControl();
+
     void sendNmt(uint8_t node_id, uint8_t cmd);
     void sendStart(uint8_t node_id);
     void sendStop(uint8_t node_id);
@@ -43,6 +46,9 @@ signals:
 
 private:
     void manageErrorControl(const QCanBusFrame &frame);
+
+    uint32_t _cobIdNmt;
+    uint32_t _cobIdNmtErrorControl;
 };
 
 #endif // NMT_H

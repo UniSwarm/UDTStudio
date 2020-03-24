@@ -23,6 +23,27 @@
 TPDO::TPDO(CanOpenBus *bus)
     : Service (bus)
 {
+    _cobIdPdo1 = 0x180;
+    _cobIdPdo2 = 0x280;
+    _cobIdPdo3 = 0x380;
+    _cobIdPdo4 = 0x480;
+}
+
+uint32_t TPDO::cobIdPdo1()
+{
+    return _cobIdPdo1;
+}
+uint32_t TPDO::cobIdPdo2()
+{
+    return _cobIdPdo2;
+}
+uint32_t TPDO::cobIdPdo3()
+{
+    return _cobIdPdo3;
+}
+uint32_t TPDO::cobIdPdo4()
+{
+    return _cobIdPdo4;
 }
 
 QString TPDO::type() const

@@ -29,6 +29,8 @@ CanOpenBus::CanOpenBus(CanOpen *canOpen, QCanBusDevice *canDevice)
     _serviceDispatcher = new ServiceDispatcher(this);
     _sync = new Sync(this);
     _timestamp = new TimeStamp(this);
+
+    connect(_serviceDispatcher, &ServiceDispatcher::nodeFound, this, &CanOpenBus::addNodeFound);
 }
 
 CanOpenBus::~CanOpenBus()
@@ -86,10 +88,11 @@ void CanOpenBus::addNodeFound(uint8_t nodeId)
 {
     if (existNode(nodeId) == false)
     {
-        Node *nodeObject = new Node(this);
+        Node *nodeObject = new Node(this, _serviceDispatcher);
         nodeObject->setNodeId(nodeId);
         addNode(nodeObject);
         emit nodeAdded();
+        qDebug() << "> CanOpenBus::addNodeFound" << "Add NodeID : " << nodeId;
     }
 }
 

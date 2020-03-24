@@ -22,8 +22,8 @@
 #include "parser/edsparser.h"
 #include "services/services.h"
 
-Node::Node(CanOpenBus *bus)
-    : _bus(bus)
+Node::Node(CanOpenBus *bus, ServiceDispatcher *dispatcher)
+    : _bus(bus), _dispatcher(dispatcher)
 {
     _nodeId = 1;
     _status = PREOP;
@@ -34,6 +34,24 @@ Node::Node(CanOpenBus *bus)
     _rpdos.append(new RPDO(_bus));
     _tpdos.append(new TPDO(_bus));
     _deviceConfiguration = nullptr;
+
+    _dispatcher->addService(_emergency->cobId() + _nodeId, _emergency);
+
+    _dispatcher->addService(_nmt->cobIdNmt() + _nodeId, _nmt);
+    _dispatcher->addService(_nmt->cobIdNmtErrorControl() + _nodeId, _nmt);
+
+    _dispatcher->addService(_sdoClients.at(0)->cobIdClientToServer() + _nodeId, _sdoClients.at(0));
+    _dispatcher->addService(_sdoClients.at(0)->cobIdServerToClient() + _nodeId, _sdoClients.at(0));
+
+    _dispatcher->addService(_rpdos.at(0)->cobIdPdo1() + _nodeId, _rpdos.at(0));
+    _dispatcher->addService(_rpdos.at(0)->cobIdPdo2() + _nodeId, _rpdos.at(0));
+    _dispatcher->addService(_rpdos.at(0)->cobIdPdo3() + _nodeId, _rpdos.at(0));
+    _dispatcher->addService(_rpdos.at(0)->cobIdPdo4() + _nodeId, _rpdos.at(0));
+
+    _dispatcher->addService(_tpdos.at(0)->cobIdPdo1() + _nodeId, _tpdos.at(0));
+    _dispatcher->addService(_tpdos.at(0)->cobIdPdo2() + _nodeId, _tpdos.at(0));
+    _dispatcher->addService(_tpdos.at(0)->cobIdPdo3() + _nodeId, _tpdos.at(0));
+    _dispatcher->addService(_tpdos.at(0)->cobIdPdo4() + _nodeId, _tpdos.at(0));
 }
 
 Node::~Node()

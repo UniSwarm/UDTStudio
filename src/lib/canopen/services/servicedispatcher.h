@@ -38,6 +38,9 @@ public:
 
     void parseFrame(const QCanBusFrame &frame) override;
 
+signals:
+    void nodeFound(uint8_t node);
+
 protected:
     QMultiMap<quint32, Service *> _servicesMap;
 };

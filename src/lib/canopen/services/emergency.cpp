@@ -21,6 +21,12 @@
 Emergency::Emergency(CanOpenBus *bus)
     : Service (bus)
 {
+    _cobId = 0x80;
+}
+
+uint32_t Emergency::cobId()
+{
+    return _cobId;
 }
 
 QString Emergency::type() const

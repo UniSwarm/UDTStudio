@@ -35,6 +35,9 @@ public:
 
     void parseFrame(const QCanBusFrame &frame) override;
 
+    uint32_t cobIdClientToServer();
+    uint32_t cobIdServerToClient();
+
 //protected:
     void sendSdoReadReq(uint8_t nodeId, uint16_t index, uint8_t subindex);                                          // OBSOLETE
     void sendSdoWriteReq(uint8_t nodeId, uint16_t index, uint8_t subindex, const QVariant &value, uint8_t size);    // OBSOLETE
@@ -71,6 +74,9 @@ public:
 
     co_sdo_t co_sdo;
 
+    uint32_t _cobIdClientToServer;
+    uint32_t _cobIdServerToClient;
+
     //uint32_t blksize = 0;
 
 signals:
@@ -95,7 +101,7 @@ private:
     bool sendSdoRequest(uint8_t nodeId, uint8_t cmd, uint16_t index, uint8_t subindex, uint8_t blksize, uint8_t pst);   // SDO block upload initiate
     bool sendSdoRequest(uint8_t nodeId, uint8_t cmd, uint8_t &ackseq, uint8_t blksize);                                 // SDO block upload sub-block
 
-    bool sendSdoRequest(uint8_t nodeId, bool moreSegments, uint8_t seqno, const QVariant &segData);             // SDO block download sub-block
+    bool sendSdoRequest(uint8_t nodeId, bool moreSegments, uint8_t seqno, const QByteArray &segData);             // SDO block download sub-block
     bool sendSdoRequest(uint8_t nodeId, uint8_t cmd, uint16_t &crc);                                            // SDO block download end
 };
 
