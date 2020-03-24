@@ -44,17 +44,22 @@ void ServiceDispatcher::parseFrame(const QCanBusFrame &frame)
     QMultiMap<quint32, Service *>::iterator i = _servicesMap.find(frame.frameId());
     if (i == _servicesMap.end())
     {
-        uint8_t node = frame.frameId() & 0x7F;
-        emit nodeFound(node);
-        qDebug() << "> ServiceDispatcher::parseFrame" << QString::number(frame.frameId(), 16) << frame.payload().toHex(' ').toUpper() << "No NodeID";
+        if ((frame.frameId() >= 0x701) && (frame.frameId() <= 0x7FF))
+        {
+            uint8_t node = frame.frameId() & 0x7F;
+            emit nodeFound(node);
+            qDebug() << "> ServiceDispatcher::parseFrame" << QString::number(frame.frameId(), 16) << frame.payload().toHex(' ').toUpper() << "NodeID not found";
+        }
     }
-
-    qDebug() << "> ServiceDispatcher::parseFrame" << QString::number(frame.frameId(), 16) << frame.payload().toHex(' ').toUpper();
-    while (i != _servicesMap.end())
+    else
     {
-        Service *service = i.value();
-        qDebug() << service->type();
-        service->parseFrame(frame);
-        ++i;
+        qDebug() << "> ServiceDispatcher::parseFrame" << QString::number(frame.frameId(), 16) << frame.payload().toHex(' ').toUpper();
+        while (i != _servicesMap.end())
+        {
+            Service *service = i.value();
+            qDebug() << service->type();
+            service->parseFrame(frame);
+            ++i;
+        }
     }
 }
