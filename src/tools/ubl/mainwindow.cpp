@@ -238,7 +238,7 @@ void MainWindow::connectDevice()
             }
 
             _canOpen = new CanOpen();
-            _bus = new CanOpenBus(_canOpen, _canDevice);
+            _bus = new CanOpenBus(_canDevice);
             _canOpen->addBus(_bus);
             connect(_bus, &CanOpenBus::nodeAdded, this, &MainWindow::refreshListNode);
             statusBar()->showMessage(tr("%1 - %2").arg(settings.interfaceName).arg(settings.deviceName));

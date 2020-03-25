@@ -30,11 +30,10 @@ class CANOPEN_EXPORT Node : public QObject
 {
     Q_OBJECT
 public:
-    Node(CanOpenBus *bus, quint8 nodeId);
+    Node(quint8 nodeId);
     ~Node();
 
     CanOpenBus *bus() const;
-    void setBus(CanOpenBus *bus);
     QList<Service *> services() const;
 
     quint8 nodeId() const;
@@ -66,12 +65,10 @@ public:
         STARTED,
         STOPPED
     };
-
-    QString status() const;
+    Status status() const;
     void setStatus(Status status);
 
 protected:
-
     quint8 _nodeId;
     QString _name;
     Status _status;
@@ -85,10 +82,10 @@ protected:
     ErrorControl *_errorControl;
     QList<Service *> _services;
 
+    friend class CanOpenBus;
     CanOpenBus *_bus;
+
     DeviceConfiguration *_deviceConfiguration;
-
-
 };
 
 #endif // NODE_H

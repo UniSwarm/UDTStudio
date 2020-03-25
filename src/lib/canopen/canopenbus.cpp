@@ -20,9 +20,9 @@
 
 #include <QDebug>
 
-CanOpenBus::CanOpenBus(CanOpen *canOpen, QCanBusDevice *canDevice)
- : _canOpen(canOpen)
+CanOpenBus::CanOpenBus(QCanBusDevice *canDevice)
 {
+    _canOpen = nullptr;
     _canDevice = nullptr;
     setCanDevice(canDevice);
 
@@ -98,7 +98,7 @@ void CanOpenBus::addNodeFound(quint8 nodeId)
 {
     if (existNode(nodeId) == false)
     {
-        Node *nodeObject = new Node(this, nodeId);
+        Node *nodeObject = new Node(nodeId);
         addNode(nodeObject);
         emit nodeAdded();
         qDebug() << "> CanOpenBus::addNodeFound" << "Add NodeID : " << nodeId;
@@ -107,6 +107,7 @@ void CanOpenBus::addNodeFound(quint8 nodeId)
 
 void CanOpenBus::addNode(Node *node)
 {
+    node->_bus = this;
     _nodes.append(node);
 
     Q_FOREACH (Service *service, node->services())

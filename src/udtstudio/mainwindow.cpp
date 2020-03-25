@@ -187,7 +187,7 @@ void MainWindow::connectDevice()
             }
 
             _canOpen = new CanOpen();
-            _bus = new CanOpenBus(_canOpen, _canDevice);
+            _bus = new CanOpenBus(_canDevice);
             _bus->setBusName(settings.interfaceName + "_" + settings.deviceName);
             _canOpen->addBus(_bus);
             _busNodeTreeView->setCanOpen(_canOpen);

@@ -22,11 +22,12 @@
 #include "parser/edsparser.h"
 #include "services/services.h"
 
-Node::Node(CanOpenBus *bus, quint8 nodeId)
-    : _nodeId(nodeId), _bus(bus)
+Node::Node(quint8 nodeId)
+    : _nodeId(nodeId)
 {
     _nodeId = 1;
     _status = PREOP;
+    _bus = nullptr;
 
     _emergency = new Emergency(this);
     _services.append(_emergency);
@@ -73,11 +74,6 @@ CanOpenBus *Node::bus() const
     return _bus;
 }
 
-void Node::setBus(CanOpenBus *bus)
-{
-    _bus = bus;
-}
-
 QList<Service *> Node::services() const
 {
     return _services;
@@ -101,6 +97,11 @@ QString Node::name() const
 void Node::setName(const QString &name)
 {
     _name = name;
+}
+
+Node::Status Node::status() const
+{
+    return _status;
 }
 
 void Node::setStatus(Status status)

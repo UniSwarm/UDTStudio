@@ -33,7 +33,7 @@ class CANOPEN_EXPORT CanOpenBus : public QObject
 {
     Q_OBJECT
 public:
-    CanOpenBus(CanOpen *canOpen, QCanBusDevice *canDevice = Q_NULLPTR);
+    CanOpenBus(QCanBusDevice *canDevice = Q_NULLPTR);
     ~CanOpenBus();
 
     CanOpen *canOpen() const;
@@ -70,6 +70,7 @@ signals:
     void nodeAdded();
 
 protected:
+    friend class CanOpen;
     CanOpen *_canOpen;
     QString _busName;
     QList<Node *> _nodes;
