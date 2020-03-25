@@ -32,6 +32,7 @@ CanFrameModel::~CanFrameModel()
 
 void CanFrameModel::appendCanFrame(const QCanBusFrame &frame)
 {
+    // TODO use insert system
     emit layoutAboutToBeChanged();
     _frames.append(frame);
     emit layoutChanged();
@@ -76,6 +77,10 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
     {
         return QVariant();
     }
+    if (index.row() >= _frames.count())
+    {
+        return QVariant();
+    }
 
     const QCanBusFrame &canFrame = _frames.at(index.row());
 
@@ -85,11 +90,23 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
         switch (index.column())
         {
         case Time:
-            return QVariant(canFrame.timeStamp().microSeconds());
+            return QVariant(QString("%1:%2").arg(canFrame.timeStamp().seconds()).arg(canFrame.timeStamp().microSeconds() / 10000));
         case CanId:
-            return QVariant(canFrame.frameId());
+            return QVariant(QString("0x%1 (%2)").arg(QString::number(canFrame.frameId(), 16)).arg(canFrame.frameId()));
         case Type:
-            return QVariant(canFrame.frameType());
+            switch (canFrame.frameType())
+            {
+            case QCanBusFrame::UnknownFrame:
+                return QVariant(tr("unk"));
+            case QCanBusFrame::DataFrame:
+                return QVariant(tr("Data"));
+            case QCanBusFrame::ErrorFrame:
+                return QVariant(tr("Err"));
+            case QCanBusFrame::RemoteRequestFrame:
+                return QVariant(tr("RTR"));
+            case QCanBusFrame::InvalidFrame:
+                return QVariant(tr("NV"));
+            }
         case DLC:
             return QVariant(canFrame.payload().count());
         case DataByte:
@@ -137,6 +154,5 @@ Qt::ItemFlags CanFrameModel::flags(const QModelIndex &index) const
     flags.setFlag(Qt::ItemIsEditable, false);
     flags.setFlag(Qt::ItemIsSelectable, true);
     flags.setFlag(Qt::ItemIsEnabled, true);
-
     return flags;
 }

@@ -18,17 +18,28 @@
 
 #include "canframelistview.h"
 
+#include <QScrollBar>
+#include <QDebug>
+
 CanFrameListView::CanFrameListView(QWidget *parent)
     : QTableView(parent)
 {
     _canModel = new CanFrameModel();
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setModel(_canModel);
+    setVerticalScrollMode(ScrollPerPixel);
 }
 
 void CanFrameListView::appendCanFrame(const QCanBusFrame &frame)
 {
+    bool needToScroll = (verticalScrollBar()->value() >= verticalScrollBar()->maximum() - rowHeight(0));
     _canModel->appendCanFrame(frame);
+    if (needToScroll)
+    {
+        int rowCount = model()->rowCount(rootIndex());
+        QModelIndex lastIndex = model()->index(rowCount - 1, 0, rootIndex());
+        scrollTo(lastIndex, PositionAtBottom);
+    }
 }
 
 CanFrameListView::~CanFrameListView()
