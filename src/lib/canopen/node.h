@@ -43,7 +43,8 @@ public:
     QString name() const;
     void setName(const QString &name);
 
-
+    void readObjet(Index &index, uint8_t subindex);
+    void writeObjet(Index &index, uint8_t subindex);
 
     void addEds(const QString &fileName);
     void updateFirmware(const QByteArray &prog);
@@ -53,7 +54,9 @@ public:
     QString manufacturerHardwareVersion();
     QString manufacturerSoftwareVersion();
 
-    enum Status {
+    enum Status
+    {
+        INIT,
         PREOP,
         STARTED,
         STOPPED

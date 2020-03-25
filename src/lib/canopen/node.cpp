@@ -108,6 +108,16 @@ void Node::setStatus(Status status)
     _status = status;
 }
 
+void Node::readObjet(Index &index, uint8_t subindex)
+{
+    _sdoClients.at(0)->uploadData(index, subindex);
+}
+
+void Node::writeObjet(Index &index, uint8_t subindex)
+{
+    _sdoClients.at(0)->downloadData(index, subindex);
+}
+
 void Node::addEds(const QString &fileName)
 {
     EdsParser parser;
