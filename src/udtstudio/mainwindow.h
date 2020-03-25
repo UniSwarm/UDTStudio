@@ -11,6 +11,7 @@
 
 #include "can/canFrameListView/canframelistview.h"
 #include "canopen/busnodestreeview.h"
+#include "can/canSettingsDialog/cansettingsdialog.h"
 
 class MainWindow : public QMainWindow
 {
@@ -20,12 +21,34 @@ public:
     ~MainWindow();
 
 private:
+    void createActions();
+    void createMenus();
+
+    CanSettingsDialog *_connectDialog = nullptr;
+    QCanBusDevice *_canDevice = nullptr;
     CanFrameListView *_canFrameListView;
     BusNodesTreeView *_busNodeTreeView;
     ODTreeView *_odView;
 
     CanOpen *_canOpen;
     CanOpenBus *_bus;
+
+    QWidget *widget;
+    QMenu *_fileMenu;
+    QMenu *_connectMenu;
+    QAction *_quitAction;
+
+    QAction *_connectAction;
+    void connectDevice();
+
+    QAction *_disconnectAction;
+    void disconnectDevice();
+
+    QAction *_canSettingsAction;
+
+    QAction *_exploreBusAction;
+    void exploreBus();
+
 };
 
 #endif // MAINWINDOW_H
