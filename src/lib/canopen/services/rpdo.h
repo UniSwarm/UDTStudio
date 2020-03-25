@@ -29,21 +29,14 @@ class CANOPEN_EXPORT RPDO : public Service
 public:
     RPDO(Node *node, quint8 number);
 
-    uint32_t cobIdPdo1();
-    uint32_t cobIdPdo2();
-    uint32_t cobIdPdo3();
-    uint32_t cobIdPdo4();
-
     QString type() const override;
 
     void parseFrame(const QCanBusFrame &frame) override;
 
+    quint8 number() const;
+
 private:
     quint8 _number;
-    uint32_t _cobIdPdo1;
-    uint32_t _cobIdPdo2;
-    uint32_t _cobIdPdo3;
-    uint32_t _cobIdPdo4;
 };
 
 #endif // RPDO_H

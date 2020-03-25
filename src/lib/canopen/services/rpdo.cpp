@@ -20,30 +20,12 @@
 
 #include <QDebug>
 
-RPDO::RPDO(Node *node, quint8 number)
-    : Service (node), _number(number)
-{
-    _cobIdPdo1 = 0x200;
-    _cobIdPdo2 = 0x300;
-    _cobIdPdo3 = 0x400;
-    _cobIdPdo4 = 0x500;
-}
+#include "canopenbus.h"
 
-uint32_t RPDO::cobIdPdo1()
+RPDO::RPDO(Node *node, quint8 number)
+    : Service(node), _number(number)
 {
-    return _cobIdPdo1;
-}
-uint32_t RPDO::cobIdPdo2()
-{
-    return _cobIdPdo2;
-}
-uint32_t RPDO::cobIdPdo3()
-{
-    return _cobIdPdo3;
-}
-uint32_t RPDO::cobIdPdo4()
-{
-    return _cobIdPdo4;
+    _cobIds.append(node->nodeId() * 0x200 + _number);
 }
 
 QString RPDO::type() const
@@ -56,4 +38,9 @@ void RPDO::parseFrame(const QCanBusFrame &frame)
     Q_UNUSED(frame);
 //    uint8_t nodeId = frame.frameId() & 0x0000007F;
 //    uint8_t tpdo = (((frame.frameId() & 0x00000380) >> 7) - 3) / 2;
+}
+
+quint8 RPDO::number() const
+{
+    return _number;
 }

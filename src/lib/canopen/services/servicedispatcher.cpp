@@ -41,25 +41,23 @@ void ServiceDispatcher::addService(uint32_t canId, Service *service)
 
 void ServiceDispatcher::parseFrame(const QCanBusFrame &frame)
 {
-    QMultiMap<quint32, Service *>::iterator i = _servicesMap.find(frame.frameId());
-    if (i == _servicesMap.end())
+    QList<Service *> interrestedServices = _servicesMap.values(frame.frameId());
+    if (interrestedServices.isEmpty())
     {
-        if ((frame.frameId() >= 0x701) && (frame.frameId() <= 0x7FF))
+        if ((frame.frameId() >= 0x701) && (frame.frameId() <= 0x7FF) /*&& frame.frameType() == QCanBusFrame::DataFrame*/)
         {
             uint8_t node = frame.frameId() & 0x7F;
             emit nodeFound(node);
-            qDebug() << "> ServiceDispatcher::parseFrame" << QString::number(frame.frameId(), 16) << frame.payload().toHex(' ').toUpper() << "NodeID not found";
         }
     }
     else
     {
         qDebug() << "> ServiceDispatcher::parseFrame" << QString::number(frame.frameId(), 16) << frame.payload().toHex(' ').toUpper();
-        while (i != _servicesMap.end())
+        QList<Service *>::const_iterator service = interrestedServices.cbegin();
+        while (service != interrestedServices.end())
         {
-            Service *service = i.value();
-            qDebug() << service->type();
-            service->parseFrame(frame);
-            ++i;
+            (*service)->parseFrame(frame);
+            ++service;
         }
     }
 }

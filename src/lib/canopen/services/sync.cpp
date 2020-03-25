@@ -46,9 +46,13 @@ void Sync::stopSync()
 void Sync::sendSync()
 {
     if (!_bus)
+    {
         return;
+    }
     if (!_bus->canDevice())
+    {
         return;
+    }
 
     QCanBusFrame frameSync;
     frameSync.setFrameId(_syncCobId);
@@ -58,5 +62,7 @@ void Sync::sendSync()
 void Sync::parseFrame(const QCanBusFrame &frame)
 {
     if (frame.frameId() == _syncCobId && frame.payload().isEmpty())
+    {
         emit syncEmitted();
+    }
 }

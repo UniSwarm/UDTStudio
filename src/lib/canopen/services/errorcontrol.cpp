@@ -16,13 +16,15 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <QDebug>
 #include "errorcontrol.h"
+
+#include <QDebug>
+
 #include "canopenbus.h"
 
-ErrorControl::ErrorControl(Node *node) : Service(node)
+ErrorControl::ErrorControl(Node *node)
+    : Service(node)
 {
-
     _cobId = 0x700;
     _cobIds.append(_cobId + node->nodeId());
     toggleBit = false;
@@ -35,10 +37,13 @@ QString ErrorControl::type() const
 
 void ErrorControl::parseFrame(const QCanBusFrame &frame)
 {
-    if (static_cast<uint8_t>(frame.payload()[0]) == 0x0)
+    if (frame.payload().size() == 1)
     {
-        // BootUp
-        toggleBit = false;
+        if (static_cast<uint8_t>(frame.payload().at(0)) == 0x0)
+        {
+            // BootUp
+            toggleBit = false;
+        }
     }
 
     manageErrorControl(frame);
@@ -63,26 +68,30 @@ void ErrorControl::sendNodeGuarding()
 
 void ErrorControl::manageErrorControl(const QCanBusFrame &frame)
 {
-    if (toggleBit == frame.payload()[0] >> 7)
+    if (frame.payload().size() == 1)
     {
-        // ERROR TogleBit -> connection lost
-        return;
-    }
-    toggleBit = frame.payload()[0] >> 7;
+        bool actualToggleBit = (frame.payload().at(0) >> 7);
+        if (toggleBit == actualToggleBit)
+        {
+            // ERROR TogleBit -> connection lost
+            return;
+        }
+        toggleBit = actualToggleBit;
 
-    switch (frame.payload()[0] & 0x7F)
-    {
-    case 4:  // Stopped
-        _node->setStatus(Node::Status::STOPPED);
-        break;
-    case 5:  // Operational
-        _node->setStatus(Node::Status::STARTED);
-        break;
-    case 127:  // Pre-operational
-        _node->setStatus(Node::Status::PREOP);
-        break;
-    default:
-        qDebug()<< "Error control : error state" << QString::number(frame.frameId(), 16 ).toUpper() << frame.payload().toHex().toUpper();
-        break;
+        switch (frame.payload().at(0) & 0x7F)
+        {
+        case 4:  // Stopped
+            _node->setStatus(Node::Status::STOPPED);
+            break;
+        case 5:  // Operational
+            _node->setStatus(Node::Status::STARTED);
+            break;
+        case 127:  // Pre-operational
+            _node->setStatus(Node::Status::PREOP);
+            break;
+        default:
+            qDebug()<< "Error control : error state" << QString::number(frame.frameId(), 16).toUpper() << frame.payload().toHex().toUpper();
+            break;
+        }
     }
 }

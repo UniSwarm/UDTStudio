@@ -78,6 +78,3 @@ void NMT::parseFrame(const QCanBusFrame &frame)
 {
     Q_UNUSED(frame);
 }
-
-
-

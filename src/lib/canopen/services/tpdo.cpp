@@ -20,35 +20,17 @@
 
 #include <QDebug>
 
-TPDO::TPDO(Node *node, quint8 number)
-    : Service (node), _number(number)
-{
-    _cobIdPdo1 = 0x180;
-    _cobIdPdo2 = 0x280;
-    _cobIdPdo3 = 0x380;
-    _cobIdPdo4 = 0x480;
-}
+#include "canopenbus.h"
 
-uint32_t TPDO::cobIdPdo1()
+TPDO::TPDO(Node *node, quint8 number)
+    : Service(node), _number(number)
 {
-    return _cobIdPdo1;
-}
-uint32_t TPDO::cobIdPdo2()
-{
-    return _cobIdPdo2;
-}
-uint32_t TPDO::cobIdPdo3()
-{
-    return _cobIdPdo3;
-}
-uint32_t TPDO::cobIdPdo4()
-{
-    return _cobIdPdo4;
+    _cobIds.append(node->nodeId() * 0x100 + 0x80 + _number);
 }
 
 QString TPDO::type() const
 {
-    return QLatin1String("Emergency");
+    return QLatin1String("TPDO");
 }
 
 void TPDO::parseFrame(const QCanBusFrame &frame)
@@ -56,4 +38,9 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
     Q_UNUSED(frame);
 //    uint8_t nodeId = frame.frameId() & 0x0000007F;
 //    uint8_t tpdo = (((frame.frameId() & 0x00000380) >> 7) - 3) / 2;
+}
+
+quint8 TPDO::number() const
+{
+    return _number;
 }
