@@ -43,12 +43,9 @@ public:
     void setBusName(const QString &busName);
 
     const QList<Node *> &nodes() const;
-    Node *node(uint8_t nodeId);
+    Node *node(quint8 nodeId);
     void addNode(Node *node);
-    bool existNode(uint8_t nodeId);
-
-    void readObjet(uint8_t nodeId, Index &index, uint8_t subindex);
-    void writeObjet(uint8_t nodeId, Index &index, uint8_t subindex);
+    bool existNode(quint8 nodeId);
 
     QCanBusDevice *canDevice() const;
     void setCanDevice(QCanBusDevice *canDevice);
@@ -84,7 +81,7 @@ protected:
     TimeStamp *_timestamp;
 
 private slots:
-    void addNodeFound(uint8_t nodeId);
+    void addNodeFound(quint8 nodeId);
 };
 
 #endif // CANOPENBUS_H

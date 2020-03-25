@@ -71,7 +71,7 @@ const QList<Node *> &CanOpenBus::nodes() const
     return _nodes;
 }
 
-Node *CanOpenBus::node(uint8_t nodeId)
+Node *CanOpenBus::node(quint8 nodeId)
 {
     for (int i = 0; i < _nodes.size(); i++)
     {
@@ -83,7 +83,7 @@ Node *CanOpenBus::node(uint8_t nodeId)
     return nullptr;
 }
 
-bool CanOpenBus::existNode(uint8_t nodeId)
+bool CanOpenBus::existNode(quint8 nodeId)
 {
     for (int i = 0; i < _nodes.size(); i++)
     {
@@ -94,7 +94,7 @@ bool CanOpenBus::existNode(uint8_t nodeId)
     }
     return false;
 }
-void CanOpenBus::addNodeFound(uint8_t nodeId)
+void CanOpenBus::addNodeFound(quint8 nodeId)
 {
     if (existNode(nodeId) == false)
     {
@@ -169,16 +169,6 @@ void CanOpenBus::canFrameRec()
 void CanOpenBus::canState(QCanBusDevice::CanBusDeviceState state)
 {
     emit stateCanOpenChanged(state);
-}
-
-void CanOpenBus::readObjet(uint8_t nodeId, Index &index, uint8_t subindex)
-{
-    //_sdos.first()->uploadData(nodeId, index, subindex);
-}
-
-void CanOpenBus::writeObjet(uint8_t nodeId, Index &index, uint8_t subindex)
-{
-    //_sdos.first()->downloadData(nodeId, index, subindex);
 }
 
 void CanOpenBus::dataObjetAvailable()
