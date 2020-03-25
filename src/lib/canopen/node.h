@@ -54,6 +54,11 @@ public:
     QString manufacturerHardwareVersion();
     QString manufacturerSoftwareVersion();
 
+    void sendStart();
+    void sendStop();
+    void sendResetComm();
+    void sendResetNode();
+
     enum Status
     {
         INIT,
@@ -82,6 +87,8 @@ protected:
 
     CanOpenBus *_bus;
     DeviceConfiguration *_deviceConfiguration;
+
+
 };
 
 #endif // NODE_H

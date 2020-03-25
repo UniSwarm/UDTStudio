@@ -21,10 +21,11 @@
 #include "nmt.h"
 #include "canopenbus.h"
 
-NMT::NMT(CanOpenBus *bus)
-    : Service (bus)
+NMT::NMT(Node *node)
+    : Service (node)
 {
-    _cobId = 0x0;
+    _cobId = 0x000;
+    _nodeId = node->nodeId();
     _cobIds.append(_cobId);
 }
 
@@ -38,7 +39,7 @@ uint32_t NMT::cobId()
     return _cobId;
 }
 
-void NMT::sendNmt(uint8_t node_id, quint8 cmd)
+void NMT::sendNmt(quint8 cmd)
 {
     if (!_bus)
         return;
@@ -47,30 +48,30 @@ void NMT::sendNmt(uint8_t node_id, quint8 cmd)
 
     QByteArray nmtStopPayload;
     nmtStopPayload.append(static_cast<char>(cmd));
-    nmtStopPayload.append(static_cast<char>(node_id));
+    nmtStopPayload.append(static_cast<char>(_nodeId));
     QCanBusFrame frameNmt;
-    frameNmt.setFrameId(0x000);
+    frameNmt.setFrameId(_cobId);
     frameNmt.setPayload(nmtStopPayload);
     _bus->canDevice()->writeFrame(frameNmt);
 }
 
-void NMT::sendStart(quint8 node_id)
+void NMT::sendStart()
 {
-    sendNmt(node_id, 0x01);
+    sendNmt(0x01);
 }
 
-void NMT::sendStop(quint8 node_id)
+void NMT::sendStop()
 {
-    sendNmt(node_id, 0x02);
+    sendNmt(0x02);
 }
 
-void NMT::sendResetComm(quint8 node_id)
+void NMT::sendResetComm()
 {
-    sendNmt(node_id, 0x02);
+    sendNmt(0x02);
 }
-void NMT::sendResetNode(quint8 node_id)
+void NMT::sendResetNode()
 {
-    sendNmt(node_id, 0x82);
+    sendNmt(0x82);
 }
 
 void NMT::parseFrame(const QCanBusFrame &frame)

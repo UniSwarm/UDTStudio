@@ -27,15 +27,14 @@ class CANOPEN_EXPORT NMT : public Service
 {
     Q_OBJECT
 public:
-    NMT(CanOpenBus *bus);
+    NMT(Node *node);
 
     uint32_t cobId();
 
-    void sendNmt(quint8 node_id, quint8 cmd);
-    void sendStart(quint8 node_id);
-    void sendStop(quint8 node_id);
-    void sendResetComm(quint8 node_id);
-    void sendResetNode(quint8 node_id);
+    void sendStart();
+    void sendStop();
+    void sendResetComm();
+    void sendResetNode();
 
     QString type() const override;
 
@@ -43,6 +42,8 @@ public:
 
 private:
     uint32_t _cobId;
+    quint8 _nodeId;
+    void sendNmt(quint8 cmd);
 };
 
 #endif // NMT_H

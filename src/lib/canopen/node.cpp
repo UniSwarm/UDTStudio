@@ -31,7 +31,7 @@ Node::Node(CanOpenBus *bus, quint8 nodeId)
     _emergency = new Emergency(this);
     _services.append(_emergency);
 
-    _nmt = new NMT(_bus);
+    _nmt = new NMT(this);
     _services.append(_nmt);
 
     _errorControl = new ErrorControl(this);
@@ -108,7 +108,28 @@ void Node::setStatus(Status status)
     _status = status;
 }
 
-void Node::readObjet(Index &index, uint8_t subindex)
+void Node::sendStart()
+{
+    _nmt->sendStart();
+}
+
+void Node::sendStop()
+{
+    _nmt->sendStop();
+}
+
+void Node::sendResetComm()
+{
+    _nmt->sendResetComm();
+}
+
+void Node::sendResetNode()
+{
+    _nmt->sendResetNode();
+}
+
+
+void Node:: Node::readObjet(Index &index, uint8_t subindex)
 {
     _sdoClients.at(0)->uploadData(index, subindex);
 }
