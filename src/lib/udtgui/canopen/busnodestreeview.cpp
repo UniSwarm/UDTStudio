@@ -39,3 +39,14 @@ void BusNodesTreeView::setCanOpen(CanOpen *canOpen)
 {
     _busNodesModel->setCanOpen(canOpen);
 }
+
+CanOpenBus *BusNodesTreeView::currentBus() const
+{
+    return _busNodesModel->bus(selectionModel()->currentIndex());
+}
+
+void BusNodesTreeView::refresh()
+{
+    // TODO add a real insert node/bus system
+    _busNodesModel->setCanOpen(_busNodesModel->canOpen());
+}

@@ -35,6 +35,11 @@ public:
     CanOpen *canOpen() const;
     void setCanOpen(CanOpen *canOpen);
 
+    CanOpenBus *currentBus() const;
+
+public slots:
+    void refresh();
+
 protected:
     BusNodesModel *_busNodesModel;
 };

@@ -35,6 +35,8 @@ public:
     CanOpen *canOpen() const;
     void setCanOpen(CanOpen *canOpen);
 
+    CanOpenBus *bus(const QModelIndex &index) const;
+
     enum Column {
         NodeId,
         Name,

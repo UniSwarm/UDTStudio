@@ -11,79 +11,34 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QStatusBar>
+#include <QAction>
 
-void delay()
-{
-    QTime dieTime= QTime::currentTime().addMSecs(10);
-    while (QTime::currentTime() < dieTime)
-        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
-}
-
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     _connectDialog = new CanSettingsDialog(nullptr, this);
 
-    createActions();
-    createMenus();
-
-    /*EdsParser parser;
-
-    DeviceDescription *deviceDescription = parser.parse("../../../fw/UMCfw/UMC1BDS32/umc1bds32fr.eds");
-    DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, 2);
-
-    _odView = new ODTreeView();
-    _odView->setDeviceModel(deviceDescription);
-    _odView->setEditable(true);
-    setCentralWidget(_odView);*/
-
-//    _canOpen = new CanOpen();
-
-//    _bus = _canOpen->addBus(new CanOpenBus(_canOpen, QCanBus::instance()->createDevice("socketcan", "can0")));
-//    _bus->setBusName("Bus 1");
-//    _bus->exploreBus();
-//    _bus->addNode(new Node(_bus));
-//    _bus->addNode(new Node(_bus));
-
-    /*for (int id=1; id<=6; id++)
-        _bus->_nmt->sendStop(id);
-
-    _bus->_nmt->sendStart(nodeId);
-    //_bus->_sdos.first()->sendSdoWriteReq(nodeId, 0x6060, 0x00, 2, 1);
-    delay();
-    _bus->_sdos.first()->sendSdoWriteReq(nodeId, 0x6042, 0x00, 0, 2);
-    delay();
-    _bus->_sdos.first()->sendSdoWriteReq(nodeId, 0x6040, 0x00, 0x06, 2);
-    delay();
-    _bus->_sdos.first()->sendSdoWriteReq(nodeId, 0x6040, 0x00, 0x07, 2);
-    delay();
-    _bus->_sdos.first()->sendSdoWriteReq(nodeId, 0x6040, 0x00, 0x0F, 2);
-    delay();
-    _bus->_sdos.first()->sendSdoWriteReq(nodeId, 0x6040, 0x00, 0x7F, 2);
-    delay();
-    _bus->_sdos.first()->sendSdoWriteReq(nodeId, 0x6042, 0x00, 2000, 2);
-    delay();
-    _bus->_sdos.first()->sendSdoWriteReq(nodeId, 0x6048, 0x02, 1, 2);
-    delay();
-    _bus->_sdos.first()->sendSdoWriteReq(nodeId, 0x6049, 0x02, 1, 2);
-    delay();
-    _bus->_sdos.first()->sendSdoReadReq(nodeId, 0x6040, 0x00);
-    _bus->_sync->startSync(10);
-
-    QTime dieTime= QTime::currentTime().addSecs(0);
-    while (QTime::currentTime() < dieTime)
+    /*_canOpen = new CanOpen();
+    if (QCanBus::instance()->plugins().contains("socketcan"))
     {
-        delay();
-        //_bus->_sdos.first()->sendSdoReadReq(nodeId, 0x6064, 0x00);
+        _bus = new CanOpenBus(QCanBus::instance()->createDevice("socketcan", "can0"));
     }
-    _bus->_sdos.first()->sendSdoWriteReq(nodeId, 0x6042, 0x00, 0, 2);
-    delay();*/
+    else
+    {
+        _bus = new CanOpenBus(QCanBus::instance()->createDevice("virtualcan", "can0"));
+    }
+    _bus->setBusName("Bus 1");
+    _canOpen->addBus(_bus);*/
+
+    _canOpen = new CanOpen();
 
     QWidget *widget = new QWidget();
     QLayout *layout = new QHBoxLayout();
 
     _busNodeTreeView = new BusNodesTreeView();
+    _busNodeTreeView->setCanOpen(_canOpen);
 
     layout->addWidget(_busNodeTreeView);
     _busNodeTreeView->expandAll();
@@ -94,13 +49,13 @@ MainWindow::MainWindow(QWidget *parent) :
     widget->setLayout(layout);
     setCentralWidget(widget);
 
+    createActions();
+    createMenus();
     resize(QApplication::screens()[0]->size() / 2);
 }
 
 MainWindow::~MainWindow()
 {
-    // _bus->_sdos.first()->sendSdoWriteReq(nodeId, 0x6042, 0x00, 0, 2);
-    delay();
 }
 
 void MainWindow::createActions()
@@ -144,7 +99,8 @@ void MainWindow::createMenus()
 
 void MainWindow::exploreBus()
 {
-    if (!_canDevice)
+    CanOpenBus *bus = _busNodeTreeView->currentBus();
+    if (!bus)
     {
         statusBar()->showMessage(tr("No interface"));
         return;
@@ -186,11 +142,10 @@ void MainWindow::connectDevice()
                 _disconnectAction->setEnabled(true);
             }
 
-            _canOpen = new CanOpen();
             _bus = new CanOpenBus(_canDevice);
             _bus->setBusName(settings.interfaceName + "_" + settings.deviceName);
             _canOpen->addBus(_bus);
-            _busNodeTreeView->setCanOpen(_canOpen);
+            connect(_bus, &CanOpenBus::nodeAdded, _busNodeTreeView, &BusNodesTreeView::refresh);
             //connect(_bus, &CanOpenBus::nodeAdded, this, &MainWindow::refreshListNode);
             statusBar()->showMessage(tr("%1 - %2").arg(settings.interfaceName).arg(settings.deviceName));
             connect(_bus, &CanOpenBus::frameAvailable, _canFrameListView, &CanFrameListView::appendCanFrame);

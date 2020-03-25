@@ -3,7 +3,7 @@
 #include <QDebug>
 
 BusNodesModel::BusNodesModel(QObject *parent, CanOpen *canOpen)
-    : _canOpen(canOpen)
+    : QAbstractItemModel(parent), _canOpen(canOpen)
 {
 }
 
@@ -17,6 +17,16 @@ void BusNodesModel::setCanOpen(CanOpen *canOpen)
     emit layoutAboutToBeChanged();
     _canOpen = canOpen;
     emit layoutChanged();
+}
+
+CanOpenBus *BusNodesModel::bus(const QModelIndex &index) const
+{
+    CanOpenBus *bus = qobject_cast<CanOpenBus *>(static_cast<QObject *>(index.internalPointer()));
+    if (bus)
+    {
+        return bus;
+    }
+    return nullptr;
 }
 
 BusNodesModel::~BusNodesModel()

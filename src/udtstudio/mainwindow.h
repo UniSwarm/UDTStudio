@@ -24,14 +24,15 @@ private:
     void createActions();
     void createMenus();
 
-    CanSettingsDialog *_connectDialog = nullptr;
-    QCanBusDevice *_canDevice = nullptr;
-    CanFrameListView *_canFrameListView;
-    BusNodesTreeView *_busNodeTreeView;
-    ODTreeView *_odView;
+    CanSettingsDialog *_connectDialog;
 
     CanOpen *_canOpen;
     CanOpenBus *_bus;
+    QCanBusDevice *_canDevice;
+
+    CanFrameListView *_canFrameListView;
+    BusNodesTreeView *_busNodeTreeView;
+    ODTreeView *_odView;
 
     QWidget *widget;
     QMenu *_fileMenu;
