@@ -12,6 +12,7 @@ CONFIG += c++11
 SOURCES += \
     $$PWD/canopenbus.cpp \
     $$PWD/node.cpp \
+    $$PWD/nodeod.cpp \
     $$PWD/canopen.cpp \
     $$PWD/services/emergency.cpp \
     $$PWD/services/nmt.cpp \
@@ -29,6 +30,7 @@ HEADERS += \
     $$PWD/canopen_global.h \
     $$PWD/canopenbus.h \
     $$PWD/node.h \
+    $$PWD/nodeod.h \
     $$PWD/canopen.h \
     $$PWD/services/emergency.h \
     $$PWD/services/nmt.h \

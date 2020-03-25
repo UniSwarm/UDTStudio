@@ -21,8 +21,8 @@
 
 #include "canopen_global.h"
 
-#include "model/deviceconfiguration.h"
 #include "services/services.h"
+#include "nodeod.h"
 
 class CanOpenBus;
 
@@ -45,7 +45,7 @@ public:
     void readObjet(Index &index, uint8_t subindex);
     void writeObjet(Index &index, uint8_t subindex);
 
-    void addEds(const QString &fileName);
+    void loadEds(const QString &fileName);
     void updateFirmware(const QByteArray &prog);
 
     QString device();
@@ -84,8 +84,8 @@ protected:
 
     friend class CanOpenBus;
     CanOpenBus *_bus;
+    NodeOd *_nodeOd;
 
-    DeviceConfiguration *_deviceConfiguration;
 };
 
 #endif // NODE_H

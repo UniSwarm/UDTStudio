@@ -29,6 +29,8 @@ Node::Node(quint8 nodeId)
     _status = PREOP;
     _bus = nullptr;
 
+    _nodeOd = new NodeOd(this);
+
     _emergency = new Emergency(this);
     _services.append(_emergency);
 
@@ -56,7 +58,6 @@ Node::Node(quint8 nodeId)
         _services.append(tpdo);
     }
 
-    _deviceConfiguration = nullptr;
 }
 
 Node::~Node()
@@ -66,7 +67,7 @@ Node::~Node()
     qDeleteAll(_rpdos);
     delete _emergency;
     delete _nmt;
-    delete _deviceConfiguration;
+    delete _nodeOd;
 }
 
 CanOpenBus *Node::bus() const
@@ -129,8 +130,7 @@ void Node::sendResetNode()
     _nmt->sendResetNode();
 }
 
-
-void Node:: Node::readObjet(Index &index, uint8_t subindex)
+void Node::readObjet(Index &index, uint8_t subindex)
 {
     _sdoClients.at(0)->uploadData(index, subindex);
 }
@@ -140,12 +140,9 @@ void Node::writeObjet(Index &index, uint8_t subindex)
     _sdoClients.at(0)->downloadData(index, subindex);
 }
 
-void Node::addEds(const QString &fileName)
+void Node::loadEds(const QString &fileName)
 {
-    EdsParser parser;
-
-    DeviceDescription *deviceDescription = parser.parse(fileName);
-    _deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, static_cast<uint8_t>(_nodeId));
+    _nodeOd->loadEds(fileName);
 }
 
 void Node::updateFirmware(const QByteArray &prog)
@@ -154,9 +151,9 @@ void Node::updateFirmware(const QByteArray &prog)
     uint8_t subindex = 0x01;
     Index *index2;
 
-    if (_deviceConfiguration->indexExist(index))
+    if (_nodeOd->indexExist(index))
     {
-        index2 = _deviceConfiguration->index(index);
+        index2 = _nodeOd->index(index);
         index2->subIndex(subindex)->setValue(prog);
         _sdoClients.at(0)->downloadData(*index2, subindex);
     }
@@ -168,9 +165,9 @@ QString Node::device()
     uint8_t subindex = 0x00;
     Index *index2 = nullptr;
 
-    if (_deviceConfiguration->indexExist(index))
+    if (_nodeOd->indexExist(index))
     {
-        index2 = _deviceConfiguration->index(index);
+        index2 = _nodeOd->index(index);
         _sdoClients.at(0)->uploadData(*index2, subindex);
     }
     return index2->subIndex(subindex)->value().toString();
@@ -182,9 +179,9 @@ QString Node::manuDeviceName()
     uint8_t subindex = 0x00;
     Index *index2 = nullptr;
 
-    if (_deviceConfiguration->indexExist(index))
+    if (_nodeOd->indexExist(index))
     {
-        index2 = _deviceConfiguration->index(index);
+        index2 = _nodeOd->index(index);
         _sdoClients.at(0)->uploadData(*index2, subindex);
     }
     return index2->subIndex(subindex)->value().toString();
@@ -195,9 +192,9 @@ QString Node::manufacturerHardwareVersion()
     uint8_t subindex = 0x00;
     Index *index2 = nullptr;
 
-    if (_deviceConfiguration->indexExist(index))
+    if (_nodeOd->indexExist(index))
     {
-        index2 = _deviceConfiguration->index(index);
+        index2 = _nodeOd->index(index);
         _sdoClients.at(0)->uploadData(*index2, subindex);
     }
     return index2->subIndex(subindex)->value().toString();
@@ -208,9 +205,9 @@ QString Node::manufacturerSoftwareVersion()
     uint8_t subindex = 0x00;
     Index *index2 = nullptr;
 
-    if (_deviceConfiguration->indexExist(index))
+    if (_nodeOd->indexExist(index))
     {
-        index2 = _deviceConfiguration->index(index);
+        index2 = _nodeOd->index(index);
         _sdoClients.at(0)->uploadData(*index2, subindex);
     }
     return index2->subIndex(subindex)->value().toString();

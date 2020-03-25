@@ -196,7 +196,7 @@ void MainWindow::addEds()
             int index = listeSelections.at(i).data(Qt::DisplayRole).toInt();
             if (_bus->existNode(static_cast<uint8_t>(index)) == true)
             {
-                _bus->node(static_cast<uint8_t>(index))->addEds(fileNameEds);
+                _bus->node(static_cast<uint8_t>(index))->loadEds(fileNameEds);
             }
         }
         _refreshPushButton->setEnabled(true);
