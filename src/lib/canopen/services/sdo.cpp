@@ -167,7 +167,8 @@ void SDO::parseFrame(const QCanBusFrame &frame)
 
     case CO_SDO_CS_ABORT:
         qDebug() << "ABORT received";
-        _co_sdo.state = CO_SDO_STATE_FREE;
+        _protocol.state = SDO_STATE_FREE;
+        emit sdoFree();
         break;
 
     default:
@@ -175,26 +176,33 @@ void SDO::parseFrame(const QCanBusFrame &frame)
     }
 }
 
+SDO::Status SDO::status() const
+{
+    return _protocol.state;
+}
+
 qint32 SDO::uploadData(NodeIndex &index, quint8 subindex)
 {
     bool error;
     quint8 cmd = 0;
-    _co_sdo.index = &index;
-    _co_sdo.subIndex = subindex;
+    _protocol.index = &index;
+    _protocol.subIndex = subindex;
 
-    if (_co_sdo.index->subIndex(subindex)->dataType() != SubIndex::DDOMAIN)
+    if (_protocol.index->subIndex(subindex)->dataType() != NodeSubIndex::DDOMAIN)
     {
         cmd = SDO_CCS_CLIENT_UPLOAD_INITIATE;
-        error = sendSdoRequest(cmd, _co_sdo.index->index(), _co_sdo.subIndex);
+        error = sendSdoRequest(cmd, _protocol.index->index(), _protocol.subIndex);
         if (error)
         {
             // TODO ABORT management error with framesWritten() and errorOccurred()
         }
+        _protocol.state = SDO_STATE_UPLOAD;
     }
     else
     {
          cmd = SDO_CCS_CLIENT_BLOCK_UPLOAD_INITIATE;
          // TODO
+         _protocol.state = SDO_STATE_BLOCK_UPLOAD;
     }
 
     return 0;
@@ -207,8 +215,8 @@ qint32 SDO::sdoUploadInitiate(const QCanBusFrame &frame)
     quint8 cmd = 0;
     bool error;
 
-    _co_sdo.data.clear();
-    _co_sdo.index->subIndex(_co_sdo.subIndex);
+    _protocol.data.clear();
+    _protocol.index->subIndex(_protocol.subIndex);
     if (transferType == SDO_E_EXPEDITED)
     {
         if (sizeIndicator == 0)  // data set size is not indicated
@@ -216,15 +224,16 @@ qint32 SDO::sdoUploadInitiate(const QCanBusFrame &frame)
         }
         else if (sizeIndicator == 1)  // data set size is indicated
         {
-            _co_sdo.stay = (4 - SDO_N(frame.payload()));
-            _co_sdo.index->subIndex(_co_sdo.subIndex)->setValue( frame.payload().mid(4, static_cast<quint8>(_co_sdo.stay)));
+            _protocol.stay = (4 - SDO_N(frame.payload()));
+            _protocol.index->subIndex(_protocol.subIndex)->setValue( frame.payload().mid(4, static_cast<quint8>(_protocol.stay)));
 
         }
         else
         {
         }
 
-        _co_sdo.state = CO_SDO_STATE_FREE;
+        _protocol.state = SDO_STATE_FREE;
+        emit sdoFree();
     }
     else if (transferType == SDO_E_NORMAL)
     {
@@ -240,22 +249,23 @@ qint32 SDO::sdoUploadInitiate(const QCanBusFrame &frame)
         {
 
         }
-        _co_sdo.stay = static_cast<quint32>(frame.payload()[4]);
+        _protocol.stay = static_cast<quint32>(frame.payload()[4]);
         cmd = SDO_CCS_CLIENT_UPLOAD_SEGMENT;
-        _co_sdo.toggle = 0;
-        cmd |= (_co_sdo.toggle << 4) & SDO_TOGGLE_MASK;
+        _protocol.toggle = 0;
+        cmd |= (_protocol.toggle << 4) & SDO_TOGGLE_MASK;
 
         error = sendSdoRequest(cmd);
         if (error)
         {
             // TODO ABORT management error with framesWritten() and errorOccurred()
         }
-        _co_sdo.stay = CO_SDO_STATE_UPLOAD_SEGMENT;
+        _protocol.stay = SDO_STATE_UPLOAD_SEGMENT;
     }
     else
     {
         // ERROR
-        _co_sdo.state = CO_SDO_STATE_FREE;
+        _protocol.state = SDO_STATE_FREE;
+        emit sdoFree();
     }
 
     return 0;
@@ -267,37 +277,39 @@ qint32 SDO::sdoUploadSegment(const QCanBusFrame &frame)
     quint8 toggle = SDO_TOG_BIT(frame.payload());
     quint8 size = 0;
 
-    if (toggle != (_co_sdo.toggle & SDO_TOGGLE_MASK))
+    if (toggle != (_protocol.toggle & SDO_TOGGLE_MASK))
     {
         // ABORT        
-        _co_sdo.state = CO_SDO_STATE_FREE;
+        _protocol.state = SDO_STATE_FREE;
+        emit sdoFree();
         return 1;
     }
     else
     {
         size = (7 - SDO_N(frame.payload()));
-        _co_sdo.data.append(frame.payload().mid(4, size));
-         _co_sdo.stay -= size;
+        _protocol.data.append(frame.payload().mid(4, size));
+         _protocol.stay -= size;
 
         if ((frame.payload()[0] & SDO_C_MASK) == SDO_C)  // no more segments to be uploaded
         {
-            _co_sdo.index->subIndex(_co_sdo.subIndex)->setValue(_co_sdo.data);
-            _co_sdo.stay = CO_SDO_STATE_FREE;
+            _protocol.index->subIndex(_protocol.subIndex)->setValue(_protocol.data);
+            _protocol.stay = SDO_STATE_FREE;
+            emit sdoFree();
             emit dataObjetAvailable();
         }
         else // more segments to be uploaded (C=0)
         {
 
             cmd = SDO_CCS_CLIENT_UPLOAD_SEGMENT;
-            _co_sdo.toggle = ~_co_sdo.toggle;
-            cmd |= (_co_sdo.toggle << 4) & SDO_TOGGLE_MASK;
+            _protocol.toggle = ~_protocol.toggle;
+            cmd |= (_protocol.toggle << 4) & SDO_TOGGLE_MASK;
             qDebug() << "Send upload segment request : ccs :" << cmd;
             error = sendSdoRequest(cmd);
             if (error)
             {
                 // TODO ABORT management error with framesWritten() and errorOccurred()
             }
-            _co_sdo.stay = CO_SDO_STATE_UPLOAD_SEGMENT;
+            _protocol.stay = SDO_STATE_UPLOAD_SEGMENT;
         }
     }
     return 0;
@@ -314,20 +326,20 @@ qint32 SDO::downloadData(NodeIndex &index, quint8 subindex)
     bool error = true;
     quint8 cmd = 0;
 
-    _co_sdo.index = &index;
-    _co_sdo.subIndex = subindex;
+    _protocol.index = &index;
+    _protocol.subIndex = subindex;
 
-    if (_co_sdo.index->subIndex(subindex)->dataType() == SubIndex::DDOMAIN)
+    if (_protocol.index->subIndex(subindex)->dataType() == NodeSubIndex::DDOMAIN)
     {
-        _co_sdo.stay = static_cast<quint32>(_co_sdo.index->subIndex(subindex)->value().toByteArray().size());
+        _protocol.stay = static_cast<quint32>(_protocol.index->subIndex(subindex)->value().toByteArray().size());
         // block download
         cmd = SDO_CCS_CLIENT_BLOCK_DOWNLOAD_INITIATE;
         // No support crc
-        if (_co_sdo.stay < 0xFFFF)
+        if (_protocol.stay < 0xFFFF)
         {
             cmd |= SDO_SCS_SERVER_BLOCK_DOWNLOAD_S;
 
-            error = sendSdoRequest(cmd, _co_sdo.index->index(), _co_sdo.subIndex, _co_sdo.stay);
+            error = sendSdoRequest(cmd, _protocol.index->index(), _protocol.subIndex, _protocol.stay);
             if (error)
             {
                 // TODO ABORT management error with framesWritten() and errorOccurred()
@@ -335,34 +347,36 @@ qint32 SDO::downloadData(NodeIndex &index, quint8 subindex)
         }
         else
         {  // Overload size so no indicate the size in frame S=0
-            error = sendSdoRequest(cmd, _co_sdo.index->index(), _co_sdo.subIndex, 0);
+            error = sendSdoRequest(cmd, _protocol.index->index(), _protocol.subIndex, 0);
             if (error)
             {
                 // TODO ABORT management error with framesWritten() and errorOccurred()
             }
         }
-        _co_sdo.seqno = 1;
-        _co_sdo.state = CO_SDO_STATE_FREE;
+        _protocol.seqno = 1;
+        _protocol.state = SDO_STATE_FREE;
+        emit sdoFree();
     }
     else
     {
          // expedited transfer
-        if (_co_sdo.index->subIndex(subindex)->length() <= 4)
+        if (_protocol.index->subIndex(subindex)->length() <= 4)
         {
             cmd = SDO_CCS_CLIENT_DOWNLOAD_INITIATE;
             cmd |= SDO_E_EXPEDITED << 1;
             cmd |= SDO_S;
-            cmd |= ((4 - _co_sdo.index->subIndex(subindex)->length()) & SDO_N_MASK) << 2;
-            sendSdoRequest(cmd, _co_sdo.index->index(), _co_sdo.subIndex, _co_sdo.index->subIndex(subindex)->value());
-            _co_sdo.state = CO_SDO_STATE_FREE;
+            cmd |= ((4 - _protocol.index->subIndex(subindex)->length()) & SDO_N_MASK) << 2;
+            sendSdoRequest(cmd, _protocol.index->index(), _protocol.subIndex, _protocol.index->subIndex(subindex)->value());
+            _protocol.state = SDO_STATE_FREE;
+            emit sdoFree();
         }
         else
         {   // normal transfer
             cmd = SDO_CCS_CLIENT_DOWNLOAD_INITIATE;
             cmd |= SDO_S;
-            sendSdoRequest(cmd, _co_sdo.index->index(), _co_sdo.subIndex, _co_sdo.index->subIndex(subindex)->value());
-            _co_sdo.stay = static_cast<quint32>(_co_sdo.index->subIndex(subindex)->length());
-            _co_sdo.state = CO_SDO_STATE_UPLOAD_SEGMENT;
+            sendSdoRequest(cmd, _protocol.index->index(), _protocol.subIndex, _protocol.index->subIndex(subindex)->value());
+            _protocol.stay = static_cast<quint32>(_protocol.index->subIndex(subindex)->length());
+            _protocol.state = SDO_STATE_UPLOAD_SEGMENT;
         }
     }
 
@@ -379,34 +393,36 @@ qint32 SDO::sdoDownloadInitiate(const QCanBusFrame &frame)
     index = SDO_INDEX(frame.payload());
     subindex = SDO_SUBINDEX(frame.payload());
 
-    if ((index != _co_sdo.index->index()) || (subindex |= _co_sdo.subIndex))
+    if ((index != _protocol.index->index()) || (subindex |= _protocol.subIndex))
     {
         // ABORT
-        _co_sdo.state = CO_SDO_STATE_FREE;
+        _protocol.state = SDO_STATE_FREE;
+        emit sdoFree();
         return 1;
     }
     else
     {
-        if (_co_sdo.state == CO_SDO_STATE_UPLOAD_SEGMENT)
+        if (_protocol.state == SDO_STATE_UPLOAD_SEGMENT)
         {
             cmd = SDO_CCS_CLIENT_UPLOAD_SEGMENT;
-            _co_sdo.toggle = 0;
-            cmd |= (_co_sdo.toggle << 4) & SDO_TOGGLE_MASK;
-            cmd |= ((7 - _co_sdo.index->subIndex(_co_sdo.subIndex)->length()) & SDO_N_MASK) << 2;
+            _protocol.toggle = 0;
+            cmd |= (_protocol.toggle << 4) & SDO_TOGGLE_MASK;
+            cmd |= ((7 - _protocol.index->subIndex(_protocol.subIndex)->length()) & SDO_N_MASK) << 2;
 
-            seek = (static_cast<quint32>(_co_sdo.index->subIndex(subindex)->length()) - _co_sdo.stay);
+            seek = (static_cast<quint32>(_protocol.index->subIndex(subindex)->length()) - _protocol.stay);
             buffer.clear();
-            buffer = _co_sdo.index->subIndex(_co_sdo.subIndex)->value().toByteArray().mid(static_cast<int32_t>(seek), SDO_SG_SIZE);
-            _co_sdo.stay -= SDO_SG_SIZE;
+            buffer = _protocol.index->subIndex(_protocol.subIndex)->value().toByteArray().mid(static_cast<int32_t>(seek), SDO_SG_SIZE);
+            _protocol.stay -= SDO_SG_SIZE;
 
-            if (_co_sdo.stay < SDO_SG_SIZE)
+            if (_protocol.stay < SDO_SG_SIZE)
             {
                 // no more segments to be downloaded
                 cmd |= SDO_C;
-                _co_sdo.state = CO_SDO_STATE_FREE;
+                _protocol.state = SDO_STATE_FREE;
+                emit sdoFree();
                 emit dataObjetWritten();
             }
-            _co_sdo.state = CO_SDO_STATE_UPLOAD_SEGMENT;
+            _protocol.state = SDO_STATE_UPLOAD_SEGMENT;
             sendSdoRequest(cmd, buffer);
         }
         else
@@ -422,35 +438,37 @@ qint32 SDO::sdoDownloadSegment(const QCanBusFrame &frame)
     QByteArray buffer;
     quint8 cmd = 0;
 
-    if (_co_sdo.state == CO_SDO_STATE_UPLOAD_SEGMENT)
+    if (_protocol.state == SDO_STATE_UPLOAD_SEGMENT)
     {
         quint8 toggle = SDO_TOG_BIT(frame.payload());
-        if (toggle != _co_sdo.toggle)
+        if (toggle != _protocol.toggle)
         {
             // ABORT
-            _co_sdo.state = CO_SDO_STATE_FREE;
+            _protocol.state = SDO_STATE_FREE;
+            emit sdoFree();
             return 1;
         }
         else
         {
             cmd = SDO_CCS_CLIENT_UPLOAD_SEGMENT;
-            _co_sdo.toggle = ~_co_sdo.toggle;
-            cmd |= (_co_sdo.toggle << 4) & SDO_TOGGLE_MASK;
-            cmd |= ((7 - _co_sdo.index->subIndex(_co_sdo.subIndex)->length()) & SDO_N_MASK) << 2;
+            _protocol.toggle = ~_protocol.toggle;
+            cmd |= (_protocol.toggle << 4) & SDO_TOGGLE_MASK;
+            cmd |= ((7 - _protocol.index->subIndex(_protocol.subIndex)->length()) & SDO_N_MASK) << 2;
 
-            seek = (static_cast<quint32>(_co_sdo.index->subIndex(_co_sdo.subIndex)->length()) - _co_sdo.stay);
+            seek = (static_cast<quint32>(_protocol.index->subIndex(_protocol.subIndex)->length()) - _protocol.stay);
             buffer.clear();
-            buffer = _co_sdo.index->subIndex(_co_sdo.subIndex)->value().toByteArray().mid(static_cast<int32_t>(seek), SDO_SG_SIZE);
-            _co_sdo.stay -= SDO_SG_SIZE;
+            buffer = _protocol.index->subIndex(_protocol.subIndex)->value().toByteArray().mid(static_cast<int32_t>(seek), SDO_SG_SIZE);
+            _protocol.stay -= SDO_SG_SIZE;
 
-            if (_co_sdo.stay < SDO_SG_SIZE)
+            if (_protocol.stay < SDO_SG_SIZE)
             {
                 // no more segments to be downloaded
                 cmd |= SDO_C;
-                _co_sdo.state = CO_SDO_STATE_FREE;
+                _protocol.state = SDO_STATE_FREE;
+                emit sdoFree();
                 emit dataObjetWritten();
             }
-            _co_sdo.state = CO_SDO_STATE_UPLOAD_SEGMENT;
+            _protocol.state = SDO_STATE_UPLOAD_SEGMENT;
             sendSdoRequest(cmd, buffer);
         }
     }
@@ -470,83 +488,86 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
     // ss : server subcommand
     quint8 ss = static_cast<quint8> (frame.payload()[0] & SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_MASK);
 
-    if ((ss == SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_INIT_RESP) && (_co_sdo.state == CO_SDO_STATE_FREE))
+    if ((ss == SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_INIT_RESP) && (_protocol.state == SDO_STATE_FREE))
     {
         // STATE SS = 0 -> Initiale download response
         index = SDO_INDEX(frame.payload());
         subindex = SDO_SUBINDEX(frame.payload());
-        if (index != _co_sdo.index->index() || subindex != _co_sdo.subIndex)
+        if (index != _protocol.index->index() || subindex != _protocol.subIndex)
         {
             qDebug() << "ERROR index, subindex not corresponding";
-            _co_sdo.state = CO_SDO_STATE_FREE;
+            _protocol.state = SDO_STATE_FREE;
+            emit sdoFree();
             return 1;
         }
         else
         {
-            _co_sdo.blksize = static_cast<quint8>(frame.payload().data()[4]);
-            _co_sdo.state = CO_SDO_STATE_BLOCK_DOWNLOAD;
-            _co_sdo.seqno = 1;
+            _protocol.blksize = static_cast<quint8>(frame.payload().data()[4]);
+            _protocol.state = SDO_STATE_BLOCK_DOWNLOAD;
+            _protocol.seqno = 1;
         }
     }
-    else if ((ss == SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_RESP) && (_co_sdo.state == CO_SDO_STATE_BLOCK_DOWNLOAD))
+    else if ((ss == SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_RESP) && (_protocol.state == SDO_STATE_BLOCK_DOWNLOAD))
     {
-        _co_sdo.blksize = static_cast<quint8>(frame.payload().data()[2]);
+        _protocol.blksize = static_cast<quint8>(frame.payload().data()[2]);
         quint8 ackseq = static_cast<quint8>(frame.payload().data()[1]);
         if (ackseq == 0)
         {
             // ERROR sequence detection from server
             // Re-Send block
             qDebug() << "ERROR sequence detection from server, ackseq : " << ackseq;
-            _co_sdo.seqno = 1;
-            _co_sdo.state = CO_SDO_STATE_BLOCK_DOWNLOAD;
+            _protocol.seqno = 1;
+            _protocol.state = SDO_STATE_BLOCK_DOWNLOAD;
             return 1;
         }
         //blksize++;
     }
     else if (ss == SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_END_RESP)
     {
-        _co_sdo.state = CO_SDO_STATE_FREE;
+        _protocol.state = SDO_STATE_FREE;
+        emit sdoFree();
     }
 
-    if (_co_sdo.state == CO_SDO_STATE_BLOCK_DOWNLOAD_END)
+    if (_protocol.state == SDO_STATE_BLOCK_DOWNLOAD_END)
     {
         cmd = SDO_CCS_CLIENT_BLOCK_DOWNLOAD_END;
         cmd |= SDO_CCS_CLIENT_BLOCK_DOWNLOAD_CS_END_REQ;
-        cmd |= (sizeSeg - _co_sdo.stay) << 2;
+        cmd |= (sizeSeg - _protocol.stay) << 2;
         quint16 crc = 0;
         sendSdoRequest(cmd, crc);
 
-        _co_sdo.state = CO_SDO_STATE_FREE;
+        _protocol.state = SDO_STATE_FREE;
+        emit sdoFree();
         emit dataObjetWritten();
     }
     else
     {
-        _co_sdo.seqno = 1;
-        _co_sdo.state = CO_SDO_STATE_BLOCK_DOWNLOAD;
+        _protocol.seqno = 1;
+        _protocol.state = SDO_STATE_BLOCK_DOWNLOAD;
     }
 
-    if (_co_sdo.state == CO_SDO_STATE_BLOCK_DOWNLOAD)
+    if (_protocol.state == SDO_STATE_BLOCK_DOWNLOAD)
     {
-        while (_co_sdo.seqno <= (_co_sdo.blksize) && (_co_sdo.stay > sizeSeg))
+        while (_protocol.seqno <= (_protocol.blksize) && (_protocol.stay > sizeSeg))
         {
-            seek = (static_cast<quint32>(_co_sdo.index->subIndex(_co_sdo.subIndex)->value().toByteArray().size()) - _co_sdo.stay);
+            seek = (static_cast<quint32>(_protocol.index->subIndex(_protocol.subIndex)->value().toByteArray().size()) - _protocol.stay);
             buffer.clear();
-            buffer = _co_sdo.index->subIndex(_co_sdo.subIndex)->value().toByteArray().mid(static_cast<int32_t>(seek), sizeSeg);
+            buffer = _protocol.index->subIndex(_protocol.subIndex)->value().toByteArray().mid(static_cast<int32_t>(seek), sizeSeg);
 
-            sendSdoRequest(true, _co_sdo.seqno, buffer);
+            sendSdoRequest(true, _protocol.seqno, buffer);
 
-            _co_sdo.stay -= sizeSeg;
-            _co_sdo.seqno++;
+            _protocol.stay -= sizeSeg;
+            _protocol.seqno++;
 
-            if (_co_sdo.stay < sizeSeg)
+            if (_protocol.stay < sizeSeg)
             {
-                seek = (static_cast<quint32>(_co_sdo.index->subIndex(_co_sdo.subIndex)->value().toByteArray().size()) - _co_sdo.stay);
+                seek = (static_cast<quint32>(_protocol.index->subIndex(_protocol.subIndex)->value().toByteArray().size()) - _protocol.stay);
                 buffer.clear();
-                buffer = _co_sdo.index->subIndex(_co_sdo.subIndex)->value().toByteArray().mid(static_cast<int32_t>(seek), sizeSeg);
-                _co_sdo.seqno++;
+                buffer = _protocol.index->subIndex(_protocol.subIndex)->value().toByteArray().mid(static_cast<int32_t>(seek), sizeSeg);
+                _protocol.seqno++;
 
-                sendSdoRequest(false, _co_sdo.seqno, buffer);
-                _co_sdo.state = CO_SDO_STATE_BLOCK_DOWNLOAD_END;
+                sendSdoRequest(false, _protocol.seqno, buffer);
+                _protocol.state = SDO_STATE_BLOCK_DOWNLOAD_END;
             }
         }
     }

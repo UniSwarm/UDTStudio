@@ -200,8 +200,9 @@ QString Node::device()
     {
         index2 = _nodeOd->index(index);
         _sdoClients.at(0)->uploadData(*index2, subindex);
+        return index2->subIndex(subindex)->value().toString();
     }
-    return index2->subIndex(subindex)->value().toString();
+    return QString();
 }
 
 QString Node::manuDeviceName()
@@ -214,8 +215,9 @@ QString Node::manuDeviceName()
     {
         index2 = _nodeOd->index(index);
         _sdoClients.at(0)->uploadData(*index2, subindex);
+        return index2->subIndex(subindex)->value().toString();
     }
-    return index2->subIndex(subindex)->value().toString();
+    return QString();
 }
 QString Node::manufacturerHardwareVersion()
 {
@@ -227,8 +229,9 @@ QString Node::manufacturerHardwareVersion()
     {
         index2 = _nodeOd->index(index);
         _sdoClients.at(0)->uploadData(*index2, subindex);
+        return index2->subIndex(subindex)->value().toString();
     }
-    return index2->subIndex(subindex)->value().toString();
+    return QString();
 }
 QString Node::manufacturerSoftwareVersion()
 {
@@ -240,8 +243,9 @@ QString Node::manufacturerSoftwareVersion()
     {
         index2 = _nodeOd->index(index);
         _sdoClients.at(0)->uploadData(*index2, subindex);
+        return index2->subIndex(subindex)->value().toString();
     }
-    return index2->subIndex(subindex)->value().toString();
+    return QString();
 }
 
 void Node::loadMandatoryObjectToDevice()
