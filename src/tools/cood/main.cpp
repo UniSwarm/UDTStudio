@@ -2,7 +2,7 @@
 #include <QCommandLineParser>
 #include <QFileInfo>
 
-#include <stdint.h>
+#include <cstdint>
 #include "model/devicemodel.h"
 #include "parser/edsparser.h"
 #include "parser/dcfparser.h"
