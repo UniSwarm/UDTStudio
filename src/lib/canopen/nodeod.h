@@ -22,6 +22,7 @@
 #include "canopen_global.h"
 #include "model/index.h"
 #include <QMap>
+#include "nodeindex.h"
 
 class Node;
 
@@ -32,16 +33,21 @@ public:
     NodeOd(Node *node);
     virtual ~NodeOd();
 
-    const QMap<quint16, Index *> &indexes() const;
-    Index *index(quint16 index) const;
-    void addIndex(Index *index);
+    const QMap<quint16, NodeIndex *> &indexes() const;
+    NodeIndex *index(quint16 index) const;
+    void addIndex(NodeIndex *index);
     int indexCount() const;
     bool indexExist(quint16 key) const;
+
+
     bool loadEds(const QString &fileName);
 
 private:
-    quint8 _nodeId;
-    QMap<quint16, Index *> _indexes;
+    Node *_node;
+
+    QMap<quint16, NodeIndex *> _nodeIndexes;
+
+    void loadMandatoryObjectToDevice();
 
 };
 

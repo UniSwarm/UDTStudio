@@ -21,14 +21,15 @@
 #include "node.h"
 
 NodeOd::NodeOd(Node *node)
+    : _node(node)
 {
-    _nodeId = node->nodeId();
+
 }
 
 NodeOd::~NodeOd()
 {
-    qDeleteAll(_indexes);
-    _indexes.clear();
+    qDeleteAll(_nodeIndexes);
+    _nodeIndexes.clear();
 }
 
 /**
@@ -36,18 +37,18 @@ NodeOd::~NodeOd()
  * @param index
  * @return an Index*
  */
-Index *NodeOd::index(uint16_t index) const
+NodeIndex *NodeOd::index(uint16_t index) const
 {
-    return _indexes.value(index);
+    return _nodeIndexes.value(index);
 }
 
 /**
  * @brief inserts a new index. If the index already exist, replaces it with the new index
  * @param index
  */
-void NodeOd::addIndex(Index *index)
+void NodeOd::addIndex(NodeIndex *index)
 {
-    _indexes.insert(index->index(), index);
+    _nodeIndexes.insert(index->index(), index);
 }
 
 /**
@@ -56,7 +57,7 @@ void NodeOd::addIndex(Index *index)
  */
 int NodeOd::indexCount() const
 {
-    return _indexes.count();
+    return _nodeIndexes.count();
 }
 
 /**
@@ -66,32 +67,33 @@ int NodeOd::indexCount() const
  */
 bool NodeOd::indexExist(uint16_t key) const
 {
-    return _indexes.contains(key);
+    return _nodeIndexes.contains(key);
 }
 
 bool NodeOd::loadEds(const QString &fileName)
 {
-    EdsParser parser;
-    DeviceDescription *deviceDescription = parser.parse(fileName);
+//    EdsParser parser;
+//    DeviceDescription *deviceDescription = parser.parse(fileName);
 
-    foreach (Index *index, deviceDescription->indexes())
-        addIndex(new Index(*index));
+//    foreach (NodeIndex *index, deviceDescription->indexes())
+//        addIndex(new NodeIndex(*index));
 
-    foreach (Index *index, _indexes)
-    {
-        foreach (SubIndex *subIndex, index->subIndexes())
-        {
-            QString value = subIndex->value().toString();
-            uint8_t base = 10;
-            if (value.startsWith("0x"))
-            {
-                base = 16;
-            }
+//    foreach (Index *index, _indexes)
+//    {
+//        foreach (SubIndex *subIndex, index->subIndexes())
+//        {
+//            QString value = subIndex->value().toString();
+//            uint8_t base = 10;
+//            if (value.startsWith("0x"))
+//            {
+//                base = 16;
+//            }
 
-            bool ok;
-            subIndex->setValue(value.toUInt(&ok, base) + _nodeId);
-        }
-    }
+//            bool ok;
+//            subIndex->setValue(value.toUInt(&ok, base) + _nodeId);
+//        }
+//    }
 
     return true;
 }
+

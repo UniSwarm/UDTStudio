@@ -13,6 +13,8 @@ SOURCES += \
     $$PWD/canopenbus.cpp \
     $$PWD/node.cpp \
     $$PWD/nodeod.cpp \
+    $$PWD/nodeindex.cpp \
+    $$PWD/nodesubindex.cpp \
     $$PWD/canopen.cpp \
     $$PWD/services/emergency.cpp \
     $$PWD/services/nmt.cpp \
@@ -31,6 +33,8 @@ HEADERS += \
     $$PWD/canopenbus.h \
     $$PWD/node.h \
     $$PWD/nodeod.h \
+    $$PWD/nodeindex.h \
+    $$PWD/nodesubindex.h \
     $$PWD/canopen.h \
     $$PWD/services/emergency.h \
     $$PWD/services/nmt.h \

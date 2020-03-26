@@ -42,8 +42,9 @@ public:
     QString name() const;
     void setName(const QString &name);
 
-    void readObjet(Index &index, uint8_t subindex);
-    void writeObjet(Index &index, uint8_t subindex);
+    void readObjet(NodeIndex &index, quint8 subindex);
+    void readObjet(NodeIndex &index);
+    void writeObjet(NodeIndex &index, quint8 subindex);
 
     void loadEds(const QString &fileName);
     void updateFirmware(const QByteArray &prog);
@@ -63,6 +64,8 @@ public:
     Status status() const;
     QString statusStr() const;
     void setStatus(Status status);
+
+    void loadMandatoryObjectToDevice();
 
 public slots:
     void sendStart();

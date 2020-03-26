@@ -153,12 +153,20 @@ void Node::sendResetNode()
     _nmt->sendResetNode();
 }
 
-void Node::readObjet(Index &index, uint8_t subindex)
+void Node::readObjet(NodeIndex &index, quint8 subindex)
 {
     _sdoClients.at(0)->uploadData(index, subindex);
 }
 
-void Node::writeObjet(Index &index, uint8_t subindex)
+void Node::readObjet(NodeIndex &index)
+{
+    Q_FOREACH (NodeSubIndex *subIndex, index.subIndexes())
+    {
+        _sdoClients.at(0)->uploadData(index, subIndex->subIndex());
+    }
+}
+
+void Node::writeObjet(NodeIndex &index, quint8 subindex)
 {
     _sdoClients.at(0)->downloadData(index, subindex);
 }
@@ -171,8 +179,8 @@ void Node::loadEds(const QString &fileName)
 void Node::updateFirmware(const QByteArray &prog)
 {
     uint16_t index = 0x1F50;
-    uint8_t subindex = 0x01;
-    Index *index2;
+    quint8 subindex = 0x01;
+    NodeIndex *index2;
 
     if (_nodeOd->indexExist(index))
     {
@@ -185,8 +193,8 @@ void Node::updateFirmware(const QByteArray &prog)
 QString Node::device()
 {
     uint16_t index = 0x1000;
-    uint8_t subindex = 0x00;
-    Index *index2 = nullptr;
+    quint8 subindex = 0x00;
+    NodeIndex *index2 = nullptr;
 
     if (_nodeOd->indexExist(index))
     {
@@ -199,8 +207,8 @@ QString Node::device()
 QString Node::manuDeviceName()
 {
     uint16_t index = 0x1008;
-    uint8_t subindex = 0x00;
-    Index *index2 = nullptr;
+    quint8 subindex = 0x00;
+    NodeIndex *index2 = nullptr;
 
     if (_nodeOd->indexExist(index))
     {
@@ -212,8 +220,8 @@ QString Node::manuDeviceName()
 QString Node::manufacturerHardwareVersion()
 {
     uint16_t index = 0x1009;
-    uint8_t subindex = 0x00;
-    Index *index2 = nullptr;
+    quint8 subindex = 0x00;
+    NodeIndex *index2 = nullptr;
 
     if (_nodeOd->indexExist(index))
     {
@@ -225,8 +233,8 @@ QString Node::manufacturerHardwareVersion()
 QString Node::manufacturerSoftwareVersion()
 {
     uint16_t index = 0x100a;
-    uint8_t subindex = 0x00;
-    Index *index2 = nullptr;
+    quint8 subindex = 0x00;
+    NodeIndex *index2 = nullptr;
 
     if (_nodeOd->indexExist(index))
     {
@@ -234,4 +242,16 @@ QString Node::manufacturerSoftwareVersion()
         _sdoClients.at(0)->uploadData(*index2, subindex);
     }
     return index2->subIndex(subindex)->value().toString();
+}
+
+void Node::loadMandatoryObjectToDevice()
+{
+    NodeIndex *deviceType = new NodeIndex(0x1000);
+    deviceType->setName("Device type");
+    deviceType->setObjectType(NodeIndex::VAR);
+    deviceType->addSubIndex(new NodeSubIndex(0));
+    deviceType->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
+    deviceType->subIndex(0)->setName("Device type");
+
+    readObjet(*deviceType);
 }
