@@ -18,13 +18,11 @@
 
 #include "nodemanagerwidget.h"
 
-#include <QGroupBox>
 #include <QFormLayout>
 
 NodeManagerWidget::NodeManagerWidget(QWidget *parent)
     : NodeManagerWidget(nullptr, parent)
 {
-
 }
 
 NodeManagerWidget::NodeManagerWidget(Node *node, QWidget *parent)
@@ -42,10 +40,7 @@ Node *NodeManagerWidget::node() const
 void NodeManagerWidget::setNode(Node *node)
 {
     _node = node;
-
-    _nodeNameEdit->setEnabled(_node);
-    _nodeStatusLabel->setEnabled(_node);
-
+    _groupBox->setEnabled(_node);
     updateData();
 }
 
@@ -58,12 +53,57 @@ void NodeManagerWidget::updateData()
     }
 }
 
+void NodeManagerWidget::start()
+{
+    if (_node)
+    {
+        _node->sendStart();
+    }
+}
+
+void NodeManagerWidget::stop()
+{
+    if (_node)
+    {
+        _node->sendStop();
+    }
+}
+
+void NodeManagerWidget::resetCom()
+{
+    if (_node)
+    {
+        _node->sendResetComm();
+    }
+}
+
+void NodeManagerWidget::resetNode()
+{
+    if (_node)
+    {
+        _node->sendResetNode();
+    }
+}
+
 void NodeManagerWidget::createWidgets()
 {
-    QLayout *layout = new QHBoxLayout();
+    QAction *action;
+    QLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
 
-    QGroupBox *groupBox = new QGroupBox(tr("Bus"));
+    _groupBox = new QGroupBox(tr("Node"));
     QFormLayout *layoutGroupBox = new QFormLayout();
+
+    _toolBar = new QToolBar(tr("Node commands"));
+    action = _toolBar->addAction(tr("start"));
+    connect(action, &QAction::triggered, this, &NodeManagerWidget::start);
+    action = _toolBar->addAction(tr("stop"));
+    connect(action, &QAction::triggered, this, &NodeManagerWidget::stop);
+    action = _toolBar->addAction(tr("resetCom"));
+    connect(action, &QAction::triggered, this, &NodeManagerWidget::resetCom);
+    action = _toolBar->addAction(tr("resetNode"));
+    connect(action, &QAction::triggered, this, &NodeManagerWidget::resetNode);
+    layoutGroupBox->addRow(_toolBar);
 
     _nodeNameEdit = new QLineEdit();
     layoutGroupBox->addRow(tr("Name :"), _nodeNameEdit);
@@ -71,8 +111,8 @@ void NodeManagerWidget::createWidgets()
     _nodeStatusLabel = new QLabel();
     layoutGroupBox->addRow(tr("Status :"), _nodeStatusLabel);
 
-    groupBox->setLayout(layoutGroupBox);
-    layout->addWidget(groupBox);
+    _groupBox->setLayout(layoutGroupBox);
+    layout->addWidget(_groupBox);
 
     setLayout(layout);
 }

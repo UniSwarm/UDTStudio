@@ -23,8 +23,10 @@
 
 #include <QWidget>
 
+#include <QGroupBox>
 #include <QLineEdit>
 #include <QLabel>
+#include <QToolBar>
 
 #include "canopenbus.h"
 
@@ -43,8 +45,12 @@ public slots:
     void setBus(CanOpenBus *bus);
     void updateData();
 
+    void exploreBus();
+
 protected:
     void createWidgets();
+    QGroupBox *_groupBox;
+    QToolBar *_toolBar;
     QLineEdit *_busNameEdit;
     QLabel *_busTypeLabel;
     QLabel *_busStatusLabel;

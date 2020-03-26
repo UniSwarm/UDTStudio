@@ -18,7 +18,6 @@
 
 #include "busmanagerwidget.h"
 
-#include <QGroupBox>
 #include <QFormLayout>
 
 BusManagerWidget::BusManagerWidget(QWidget *parent)
@@ -41,11 +40,7 @@ CanOpenBus *BusManagerWidget::bus() const
 void BusManagerWidget::setBus(CanOpenBus *bus)
 {
     _bus = bus;
-
-    _busNameEdit->setEnabled(_bus);
-    _busTypeLabel->setEnabled(_bus);
-    _busStatusLabel->setEnabled(_bus);
-
+    _groupBox->setEnabled(_bus);
     updateData();
 }
 
@@ -59,12 +54,27 @@ void BusManagerWidget::updateData()
     }
 }
 
+void BusManagerWidget::exploreBus()
+{
+    if (_bus)
+    {
+        _bus->exploreBus();
+    }
+}
+
 void BusManagerWidget::createWidgets()
 {
-    QLayout *layout = new QHBoxLayout();
+    QAction *action;
+    QLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
 
-    QGroupBox *groupBox = new QGroupBox(tr("Bus"));
+    _groupBox = new QGroupBox(tr("Bus"));
     QFormLayout *layoutGroupBox = new QFormLayout();
+
+    _toolBar = new QToolBar(tr("Bus commands"));
+    action = _toolBar->addAction(tr("Explore"));
+    connect(action, &QAction::triggered, this, &BusManagerWidget::exploreBus);
+    layoutGroupBox->addRow(_toolBar);
 
     _busNameEdit = new QLineEdit();
     layoutGroupBox->addRow(tr("Name :"), _busNameEdit);
@@ -75,8 +85,8 @@ void BusManagerWidget::createWidgets()
     _busStatusLabel = new QLabel();
     layoutGroupBox->addRow(tr("Status :"), _busStatusLabel);
 
-    groupBox->setLayout(layoutGroupBox);
-    layout->addWidget(groupBox);
+    _groupBox->setLayout(layoutGroupBox);
+    layout->addWidget(_groupBox);
 
     setLayout(layout);
 }

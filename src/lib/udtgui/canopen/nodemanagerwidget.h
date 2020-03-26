@@ -23,8 +23,10 @@
 
 #include <QWidget>
 
+#include <QGroupBox>
 #include <QLineEdit>
 #include <QLabel>
+#include <QToolBar>
 
 #include "node.h"
 
@@ -43,8 +45,15 @@ public slots:
     void setNode(Node *value);
     void updateData();
 
+    void start();
+    void stop();
+    void resetCom();
+    void resetNode();
+
 protected:
     void createWidgets();
+    QToolBar *_toolBar;
+    QGroupBox *_groupBox;
     QLineEdit *_nodeNameEdit;
     QLabel *_nodeStatusLabel;
 

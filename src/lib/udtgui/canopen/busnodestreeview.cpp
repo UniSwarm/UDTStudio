@@ -47,6 +47,10 @@ CanOpen *BusNodesTreeView::canOpen() const
 void BusNodesTreeView::setCanOpen(CanOpen *canOpen)
 {
     _busNodesModel->setCanOpen(canOpen);
+    if (canOpen)
+    {
+        connect(canOpen, &CanOpen::busChanged, this, &BusNodesTreeView::refresh);
+    }
 }
 
 CanOpenBus *BusNodesTreeView::currentBus() const
@@ -63,6 +67,13 @@ void BusNodesTreeView::refresh()
 {
     // TODO add a real insert node/bus system
     _busNodesModel->setCanOpen(_busNodesModel->canOpen());
+    if (_busNodesModel->canOpen())
+    {
+        foreach (CanOpenBus *bus, _busNodesModel->canOpen()->buses())
+        {
+            connect(bus, &CanOpenBus::nodeAdded, this, &BusNodesTreeView::refresh);
+        }
+    }
     expandAll();
 }
 
