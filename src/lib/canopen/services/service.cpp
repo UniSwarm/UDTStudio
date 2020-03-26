@@ -38,3 +38,13 @@ const QList<quint32> &Service::cobIds() const
 {
     return _cobIds;
 }
+
+CanOpenBus *Service::bus() const
+{
+    return _bus;
+}
+
+Node *Service::node() const
+{
+    return _node;
+}

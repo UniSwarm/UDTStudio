@@ -130,7 +130,12 @@ QString Node::statusStr() const
 
 void Node::setStatus(Status status)
 {
+    bool changed = (status != _status);
     _status = status;
+    if (changed)
+    {
+        emit statusChanged(_status);
+    }
 }
 
 void Node::sendStart()

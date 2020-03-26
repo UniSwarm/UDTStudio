@@ -67,6 +67,9 @@ public:
 
     void loadMandatoryObjectToDevice();
 
+signals:
+    void statusChanged(Status status);
+
 public slots:
     void sendStart();
     void sendStop();

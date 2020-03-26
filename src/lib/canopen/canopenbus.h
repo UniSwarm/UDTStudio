@@ -42,6 +42,8 @@ public:
     QString busName() const;
     void setBusName(const QString &busName);
 
+    bool isConnected() const;
+
     const QList<Node *> &nodes() const;
     Node *node(quint8 nodeId);
     void addNode(Node *node);

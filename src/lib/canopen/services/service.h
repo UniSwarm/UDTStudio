@@ -42,6 +42,9 @@ public:
 
     const QList<quint32> &cobIds() const;
 
+    CanOpenBus *bus() const;
+    Node *node() const;
+
 protected:
     CanOpenBus *_bus;
     Node *_node;

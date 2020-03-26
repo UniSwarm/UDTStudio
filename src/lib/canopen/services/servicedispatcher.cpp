@@ -20,6 +20,8 @@
 
 #include <QDebug>
 
+#include "node.h"
+
 ServiceDispatcher::ServiceDispatcher(CanOpenBus *bus)
     : Service (bus)
 {
@@ -52,11 +54,11 @@ void ServiceDispatcher::parseFrame(const QCanBusFrame &frame)
     }
     else
     {
-        qDebug() << "> ServiceDispatcher::parseFrame" << QString::number(frame.frameId(), 16) << frame.payload().toHex(' ').toUpper();
         QList<Service *>::const_iterator service = interrestedServices.cbegin();
         while (service != interrestedServices.end())
         {
             (*service)->parseFrame(frame);
+            qDebug() << (*service)->type() << "Node" << (((*service)->node()) ? (*service)->node()->nodeId() : 0);
             ++service;
         }
     }

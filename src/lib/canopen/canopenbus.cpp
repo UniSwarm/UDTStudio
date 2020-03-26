@@ -45,7 +45,6 @@ CanOpenBus::~CanOpenBus()
     }
 }
 
-
 ServiceDispatcher *CanOpenBus::dispatcher() const
 {
     return _serviceDispatcher;
@@ -64,6 +63,11 @@ QString CanOpenBus::busName() const
 void CanOpenBus::setBusName(const QString &busName)
 {
     _busName = busName;
+}
+
+bool CanOpenBus::isConnected() const
+{
+    return (_canDevice->state() == QCanBusDevice::ConnectedState);
 }
 
 const QList<Node *> &CanOpenBus::nodes() const
@@ -94,6 +98,7 @@ bool CanOpenBus::existNode(quint8 nodeId)
     }
     return false;
 }
+
 void CanOpenBus::addNodeFound(quint8 nodeId)
 {
     if (existNode(nodeId) == false)

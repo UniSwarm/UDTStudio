@@ -25,7 +25,7 @@
 TPDO::TPDO(Node *node, quint8 number)
     : Service(node), _number(number)
 {
-    _cobIds.append(node->nodeId() * 0x100 + 0x80 + _number);
+    _cobIds.append(_number * 0x100 + 0x180 + node->nodeId());
 }
 
 QString TPDO::type() const

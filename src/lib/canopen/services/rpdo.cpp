@@ -25,7 +25,7 @@
 RPDO::RPDO(Node *node, quint8 number)
     : Service(node), _number(number)
 {
-    _cobIds.append(node->nodeId() * 0x200 + _number);
+    _cobIds.append(_number * 0x200 + 0x100 + node->nodeId());
 }
 
 QString RPDO::type() const
