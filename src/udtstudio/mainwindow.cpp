@@ -19,6 +19,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    setWindowIcon(QIcon(":/icons/img/UNIdevkit.ico"));
     _connectDialog = new CanSettingsDialog(nullptr, this);
 
     _canOpen = new CanOpen();

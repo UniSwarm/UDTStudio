@@ -16,11 +16,11 @@ HEADERS += \
     $$PWD/can/canSettingsDialog/cansettingsdialog.h \
     $$PWD/can/canFrameListView/canframelistview.h \
     $$PWD/can/canFrameListView/canframemodel.h \
-    canopen/busmanagerwidget.h \
-    canopen/busnodesmanagerview.h \
-    canopen/busnodesmodel.h \
-    canopen/busnodestreeview.h \
-    canopen/nodemanagerwidget.h
+    $$PWD/canopen/busmanagerwidget.h \
+    $$PWD/canopen/busnodesmanagerview.h \
+    $$PWD/canopen/busnodesmodel.h \
+    $$PWD/canopen/busnodestreeview.h \
+    $$PWD/canopen/nodemanagerwidget.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -30,11 +30,11 @@ SOURCES += \
     $$PWD/can/canSettingsDialog/cansettingsdialog.cpp \
     $$PWD/can/canFrameListView/canframelistview.cpp \
     $$PWD/can/canFrameListView/canframemodel.cpp \
-    canopen/busmanagerwidget.cpp \
-    canopen/busnodesmanagerview.cpp \
-    canopen/busnodesmodel.cpp \
-    canopen/busnodestreeview.cpp \
-    canopen/nodemanagerwidget.cpp
+    $$PWD/canopen/busmanagerwidget.cpp \
+    $$PWD/canopen/busnodesmanagerview.cpp \
+    $$PWD/canopen/busnodesmodel.cpp \
+    $$PWD/canopen/busnodestreeview.cpp \
+    $$PWD/canopen/nodemanagerwidget.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 
@@ -44,5 +44,5 @@ unix:{
     QMAKE_LFLAGS_RPATH=
     QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN\'"
 }
-ls
 
+RESOURCES += $$PWD/img.qrc
