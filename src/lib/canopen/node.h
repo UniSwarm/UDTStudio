@@ -30,7 +30,7 @@ class CANOPEN_EXPORT Node : public QObject
 {
     Q_OBJECT
 public:
-    Node(quint8 nodeId);
+    Node(quint8 nodeId, const QString &name = QString());
     ~Node();
 
     CanOpenBus *bus() const;
@@ -53,11 +53,6 @@ public:
     QString manufacturerHardwareVersion();
     QString manufacturerSoftwareVersion();
 
-    void sendStart();
-    void sendStop();
-    void sendResetComm();
-    void sendResetNode();
-
     enum Status
     {
         INIT,
@@ -66,7 +61,14 @@ public:
         STOPPED
     };
     Status status() const;
+    QString statusStr() const;
     void setStatus(Status status);
+
+public slots:
+    void sendStart();
+    void sendStop();
+    void sendResetComm();
+    void sendResetNode();
 
 protected:
     quint8 _nodeId;
@@ -85,7 +87,6 @@ protected:
     friend class CanOpenBus;
     CanOpenBus *_bus;
     NodeOd *_nodeOd;
-
 };
 
 #endif // NODE_H

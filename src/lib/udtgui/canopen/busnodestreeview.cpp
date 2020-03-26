@@ -18,12 +18,21 @@
 
 #include "busnodestreeview.h"
 
+#include <QDebug>
+
 BusNodesTreeView::BusNodesTreeView(QWidget *parent)
+    : BusNodesTreeView(nullptr, parent)
+{
+}
+
+BusNodesTreeView::BusNodesTreeView(CanOpen *canOpen, QWidget *parent)
     : QTreeView(parent)
 {
     _busNodesModel = new BusNodesModel();
     setSelectionBehavior(QAbstractItemView::SelectRows);
+    setCanOpen(canOpen);
     setModel(_busNodesModel);
+    connect(selectionModel(), &QItemSelectionModel::selectionChanged, this, &BusNodesTreeView::updateSelection);
 }
 
 BusNodesTreeView::~BusNodesTreeView()
@@ -45,8 +54,20 @@ CanOpenBus *BusNodesTreeView::currentBus() const
     return _busNodesModel->bus(selectionModel()->currentIndex());
 }
 
+Node *BusNodesTreeView::currentNode() const
+{
+    return _busNodesModel->node(selectionModel()->currentIndex());
+}
+
 void BusNodesTreeView::refresh()
 {
     // TODO add a real insert node/bus system
     _busNodesModel->setCanOpen(_busNodesModel->canOpen());
+    expandAll();
+}
+
+void BusNodesTreeView::updateSelection()
+{
+    emit busSelected(currentBus());
+    emit nodeSelected(currentNode());
 }

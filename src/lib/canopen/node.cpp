@@ -22,15 +22,23 @@
 #include "parser/edsparser.h"
 #include "services/services.h"
 
-Node::Node(quint8 nodeId)
+Node::Node(quint8 nodeId, const QString &name)
     : _nodeId(nodeId)
 {
-    _nodeId = 1;
-    _status = PREOP;
+    _status = INIT;
     _bus = nullptr;
-
     _nodeOd = new NodeOd(this);
 
+    if (name.isEmpty())
+    {
+        _name = QString("Node %1").arg(_nodeId);
+    }
+    else
+    {
+        _name = name;
+    }
+
+    // services
     _emergency = new Emergency(this);
     _services.append(_emergency);
 
@@ -57,7 +65,6 @@ Node::Node(quint8 nodeId)
         _tpdos.append(tpdo);
         _services.append(tpdo);
     }
-
 }
 
 Node::~Node()
@@ -103,6 +110,22 @@ void Node::setName(const QString &name)
 Node::Status Node::status() const
 {
     return _status;
+}
+
+QString Node::statusStr() const
+{
+    switch (_status)
+    {
+    case Node::INIT:
+        return tr("init");
+    case Node::PREOP:
+        return tr("preop");
+    case Node::STARTED:
+        return tr("started");
+    case Node::STOPPED:
+        return tr("stopped");
+    }
+    return QString();
 }
 
 void Node::setStatus(Status status)

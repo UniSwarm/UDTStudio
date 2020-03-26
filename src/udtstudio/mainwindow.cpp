@@ -12,6 +12,7 @@
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QAction>
+#include <QDockWidget>
 
 #include <QDebug>
 
@@ -20,34 +21,25 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     _connectDialog = new CanSettingsDialog(nullptr, this);
 
-    /*_canOpen = new CanOpen();
+    _canOpen = new CanOpen();
+
+    createDocks();
+    createWidgets();
+
+    CanOpenBus *bus;
     if (QCanBus::instance()->plugins().contains("socketcan"))
     {
-        _bus = new CanOpenBus(QCanBus::instance()->createDevice("socketcan", "can0"));
+        bus = new CanOpenBus(QCanBus::instance()->createDevice("socketcan", "can0"));
     }
     else
     {
-        _bus = new CanOpenBus(QCanBus::instance()->createDevice("virtualcan", "can0"));
+        bus = new CanOpenBus(QCanBus::instance()->createDevice("virtualcan", "can0"));
     }
-    _bus->setBusName("Bus 1");
-    _canOpen->addBus(_bus);*/
+    bus->setBusName("Bus 1");
+    _canOpen->addBus(bus);
 
-    _canOpen = new CanOpen();
-
-    QWidget *widget = new QWidget();
-    QLayout *layout = new QHBoxLayout();
-
-    _busNodeTreeView = new BusNodesTreeView();
-    _busNodeTreeView->setCanOpen(_canOpen);
-
-    layout->addWidget(_busNodeTreeView);
-    _busNodeTreeView->expandAll();
-
-    _canFrameListView = new CanFrameListView();
-
-    layout->addWidget(_canFrameListView);
-    widget->setLayout(layout);
-    setCentralWidget(widget);
+    connect(bus, &CanOpenBus::frameAvailable, _canFrameListView, &CanFrameListView::appendCanFrame);
+    //connect(bus, &CanOpenBus::nodeAdded, _busNodeTreeView, &BusNodesTreeView::refresh);
 
     createActions();
     createMenus();
@@ -56,6 +48,35 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+}
+
+void MainWindow::createDocks()
+{
+    setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
+    setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+    setTabPosition(Qt::LeftDockWidgetArea, QTabWidget::North);
+
+    _busNodesManagerDock = new QDockWidget(tr("Bus nodes manager"), this);
+    _busNodesManagerDock->setObjectName("fileProjectDock");
+    //QWidget *fileProjectContent = new QWidget(_fileProjectDock);
+    //QLayout *fileProjectLayout = new QVBoxLayout();
+    _busNodesManagerView = new BusNodesManagerView(_canOpen);
+    //fileProjectLayout->addWidget(_fileProjectWidget);
+    //fileProjectContent->setLayout(fileProjectLayout);
+    _busNodesManagerDock->setWidget(_busNodesManagerView);
+    addDockWidget(Qt::LeftDockWidgetArea, _busNodesManagerDock);
+}
+
+void MainWindow::createWidgets()
+{
+    QWidget *widget = new QWidget();
+    QLayout *layout = new QHBoxLayout();
+
+    _canFrameListView = new CanFrameListView();
+    layout->addWidget(_canFrameListView);
+
+    widget->setLayout(layout);
+    setCentralWidget(widget);
 }
 
 void MainWindow::createActions()
@@ -77,6 +98,7 @@ void MainWindow::createActions()
     _disconnectAction->setEnabled(false);
 
     _exploreBusAction = new QAction(tr("&Explore"), this);
+    _exploreBusAction->setShortcut(QKeySequence("Ctrl+E"));
     connect(_exploreBusAction, &QAction::triggered, this, &MainWindow::exploreBus);
 }
 
@@ -99,13 +121,13 @@ void MainWindow::createMenus()
 
 void MainWindow::exploreBus()
 {
-    CanOpenBus *bus = _busNodeTreeView->currentBus();
+    /*CanOpenBus *bus = _busNodeTreeView->currentBus();
     if (!bus)
     {
         statusBar()->showMessage(tr("No interface"));
         return;
     }
-    _bus->exploreBus();
+    bus->exploreBus();*/
 }
 
 void MainWindow::connectDevice()
@@ -142,13 +164,12 @@ void MainWindow::connectDevice()
                 _disconnectAction->setEnabled(true);
             }
 
-            _bus = new CanOpenBus(_canDevice);
-            _bus->setBusName(settings.interfaceName + "_" + settings.deviceName);
-            _canOpen->addBus(_bus);
-            connect(_bus, &CanOpenBus::nodeAdded, _busNodeTreeView, &BusNodesTreeView::refresh);
-            //connect(_bus, &CanOpenBus::nodeAdded, this, &MainWindow::refreshListNode);
+            CanOpenBus *bus = new CanOpenBus(_canDevice);
+            bus->setBusName(settings.interfaceName + ":" + settings.deviceName);
             statusBar()->showMessage(tr("%1 - %2").arg(settings.interfaceName).arg(settings.deviceName));
-            connect(_bus, &CanOpenBus::frameAvailable, _canFrameListView, &CanFrameListView::appendCanFrame);
+            _canOpen->addBus(bus);
+            connect(bus, &CanOpenBus::frameAvailable, _canFrameListView, &CanFrameListView::appendCanFrame);
+            //connect(bus, &CanOpenBus::nodeAdded, _busNodeTreeView, &BusNodesTreeView::refresh);
         }
     }
 }

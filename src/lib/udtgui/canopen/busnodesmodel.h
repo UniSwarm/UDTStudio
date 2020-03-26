@@ -29,17 +29,20 @@ class UDTGUI_EXPORT BusNodesModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    BusNodesModel(QObject *parent = nullptr, CanOpen *canOpen = nullptr);
+    BusNodesModel(QObject *parent = nullptr);
+    BusNodesModel(CanOpen *canOpen, QObject *parent = nullptr);
     ~BusNodesModel();
 
     CanOpen *canOpen() const;
     void setCanOpen(CanOpen *canOpen);
 
     CanOpenBus *bus(const QModelIndex &index) const;
+    Node *node(const QModelIndex &index) const;
 
     enum Column {
         NodeId,
         Name,
+        Status,
         ColumnCount
     };
 

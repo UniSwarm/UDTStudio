@@ -2,7 +2,12 @@
 
 #include <QDebug>
 
-BusNodesModel::BusNodesModel(QObject *parent, CanOpen *canOpen)
+BusNodesModel::BusNodesModel(QObject *parent)
+    : BusNodesModel(nullptr, parent)
+{
+}
+
+BusNodesModel::BusNodesModel(CanOpen *canOpen, QObject *parent)
     : QAbstractItemModel(parent), _canOpen(canOpen)
 {
 }
@@ -25,6 +30,21 @@ CanOpenBus *BusNodesModel::bus(const QModelIndex &index) const
     if (bus)
     {
         return bus;
+    }
+    Node *nodeptr = node(index);
+    if (nodeptr)
+    {
+        return nodeptr->bus();
+    }
+    return nullptr;
+}
+
+Node *BusNodesModel::node(const QModelIndex &index) const
+{
+    Node *node = qobject_cast<Node *>(static_cast<QObject *>(index.internalPointer()));
+    if (node)
+    {
+        return node;
     }
     return nullptr;
 }
@@ -51,9 +71,11 @@ QVariant BusNodesModel::headerData(int section, Qt::Orientation orientation, int
         switch (section)
         {
         case NodeId:
-            return QVariant(tr("NodeId"));
+            return QVariant(tr("Id"));
         case Name:
             return QVariant(tr("Name"));
+        case Status:
+            return QVariant(tr("Status"));
         }
         break;
     }
@@ -76,9 +98,11 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
             switch (index.column())
             {
             case NodeId:
-                return QVariant(bus->busName());
+                return QVariant(index.row());
             case Name:
                 return QVariant(bus->busName());
+            case Status:
+                return QVariant(bus->canDevice()->state() == QCanBusDevice::ConnectedState ? tr("connected") : tr("unconnected"));
             default:
                 return QVariant();
             }
@@ -97,6 +121,8 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
                 return QVariant(node->nodeId());
             case Name:
                 return QVariant(node->name());
+            case Status:
+                return QVariant(node->statusStr());
             default:
                 return QVariant();
             }

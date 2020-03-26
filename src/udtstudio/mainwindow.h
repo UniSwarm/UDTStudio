@@ -10,7 +10,7 @@
 #include "canopenbus.h"
 
 #include "can/canFrameListView/canframelistview.h"
-#include "canopen/busnodestreeview.h"
+#include "canopen/busnodesmanagerview.h"
 #include "can/canSettingsDialog/cansettingsdialog.h"
 
 class MainWindow : public QMainWindow
@@ -20,20 +20,23 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private:
-    void createActions();
-    void createMenus();
-
+protected:
     CanSettingsDialog *_connectDialog;
 
     CanOpen *_canOpen;
     CanOpenBus *_bus;
     QCanBusDevice *_canDevice;
 
+    void createDocks();
+    QDockWidget *_busNodesManagerDock;
+    BusNodesManagerView *_busNodesManagerView;
+
+    void createWidgets();
     CanFrameListView *_canFrameListView;
-    BusNodesTreeView *_busNodeTreeView;
     ODTreeView *_odView;
 
+    void createActions();
+    void createMenus();
     QWidget *widget;
     QMenu *_fileMenu;
     QMenu *_connectMenu;
@@ -49,7 +52,6 @@ private:
 
     QAction *_exploreBusAction;
     void exploreBus();
-
 };
 
 #endif // MAINWINDOW_H

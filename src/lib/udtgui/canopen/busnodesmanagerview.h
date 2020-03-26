@@ -16,41 +16,38 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef BUSNODESTREEVIEW_H
-#define BUSNODESTREEVIEW_H
+#ifndef BUSNODESMANAGERVIEW_H
+#define BUSNODESMANAGERVIEW_H
 
-#include "udtgui_global.h"
+#include "../udtgui_global.h"
 
-#include <QTreeView>
+#include <QWidget>
 
-#include "busnodesmodel.h"
+#include "busnodestreeview.h"
+#include "busmanagerwidget.h"
+#include "nodemanagerwidget.h"
 
-class UDTGUI_EXPORT BusNodesTreeView : public QTreeView
+class UDTGUI_EXPORT BusNodesManagerView : public QWidget
 {
     Q_OBJECT
 public:
-    BusNodesTreeView(QWidget *parent = nullptr);
-    BusNodesTreeView(CanOpen *canOpen, QWidget *parent = nullptr);
-    ~BusNodesTreeView();
+    BusNodesManagerView(QWidget *parent = nullptr);
+    BusNodesManagerView(CanOpen *canOpen, QWidget *parent = nullptr);
 
     CanOpen *canOpen() const;
     void setCanOpen(CanOpen *canOpen);
 
-    CanOpenBus *currentBus() const;
-    Node *currentNode() const;
-
 signals:
-    void busSelected(CanOpenBus *currentBus);
-    void nodeSelected(Node *currentNode);
 
 public slots:
-    void refresh();
-
-protected slots:
-    void updateSelection();
 
 protected:
-    BusNodesModel *_busNodesModel;
+    void createWidgets();
+    BusNodesTreeView *_busNodeTreeView;
+    BusManagerWidget *_busManagerWidget;
+    NodeManagerWidget *_nodeManagerWidget;
+
+    CanOpen *_canOpen;
 };
 
-#endif // BUSNODESTREEVIEW_H
+#endif // BUSNODESMANAGERVIEW_H

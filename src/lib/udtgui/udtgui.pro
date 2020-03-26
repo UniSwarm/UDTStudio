@@ -16,8 +16,11 @@ HEADERS += \
     $$PWD/can/canSettingsDialog/cansettingsdialog.h \
     $$PWD/can/canFrameListView/canframelistview.h \
     $$PWD/can/canFrameListView/canframemodel.h \
+    canopen/busmanagerwidget.h \
+    canopen/busnodesmanagerview.h \
     canopen/busnodesmodel.h \
-    canopen/busnodestreeview.h
+    canopen/busnodestreeview.h \
+    canopen/nodemanagerwidget.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -27,8 +30,11 @@ SOURCES += \
     $$PWD/can/canSettingsDialog/cansettingsdialog.cpp \
     $$PWD/can/canFrameListView/canframelistview.cpp \
     $$PWD/can/canFrameListView/canframemodel.cpp \
+    canopen/busmanagerwidget.cpp \
+    canopen/busnodesmanagerview.cpp \
     canopen/busnodesmodel.cpp \
-    canopen/busnodestreeview.cpp
+    canopen/busnodestreeview.cpp \
+    canopen/nodemanagerwidget.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 
