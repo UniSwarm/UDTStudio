@@ -97,10 +97,6 @@ void MainWindow::createActions()
 
     _connectAction->setEnabled(true);
     _disconnectAction->setEnabled(false);
-
-    _exploreBusAction = new QAction(tr("&Explore"), this);
-    _exploreBusAction->setShortcut(QKeySequence("Ctrl+E"));
-    connect(_exploreBusAction, &QAction::triggered, this, &MainWindow::exploreBus);
 }
 
 void MainWindow::createMenus()
@@ -116,19 +112,7 @@ void MainWindow::createMenus()
     _connectMenu->addSeparator();
 
     _connectMenu = menuBar()->addMenu(tr("&Bus"));
-    _connectMenu->addAction(_exploreBusAction);
     _connectMenu->addSeparator();
-}
-
-void MainWindow::exploreBus()
-{
-    /*CanOpenBus *bus = _busNodeTreeView->currentBus();
-    if (!bus)
-    {
-        statusBar()->showMessage(tr("No interface"));
-        return;
-    }
-    bus->exploreBus();*/
 }
 
 void MainWindow::connectDevice()

@@ -49,9 +49,6 @@ protected:
     void disconnectDevice();
 
     QAction *_canSettingsAction;
-
-    QAction *_exploreBusAction;
-    void exploreBus();
 };
 
 #endif // MAINWINDOW_H

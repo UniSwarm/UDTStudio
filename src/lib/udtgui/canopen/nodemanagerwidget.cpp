@@ -39,7 +39,18 @@ Node *NodeManagerWidget::node() const
 
 void NodeManagerWidget::setNode(Node *node)
 {
+    if (node != _node)
+    {
+        if (_node)
+        {
+            disconnect(_node, &Node::statusChanged, this, &NodeManagerWidget::updateData);
+        }
+    }
     _node = node;
+    if (_node)
+    {
+        connect(_node, &Node::statusChanged, this, &NodeManagerWidget::updateData);
+    }
     _groupBox->setEnabled(_node);
     updateData();
 }

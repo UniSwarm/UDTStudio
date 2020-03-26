@@ -33,6 +33,7 @@ BusNodesTreeView::BusNodesTreeView(CanOpen *canOpen, QWidget *parent)
     setCanOpen(canOpen);
     setModel(_busNodesModel);
     connect(selectionModel(), &QItemSelectionModel::selectionChanged, this, &BusNodesTreeView::updateSelection);
+    connect(this, &QAbstractItemView::doubleClicked, this, &BusNodesTreeView::indexDbClick);
 }
 
 BusNodesTreeView::~BusNodesTreeView()
@@ -46,6 +47,14 @@ CanOpen *BusNodesTreeView::canOpen() const
 
 void BusNodesTreeView::setCanOpen(CanOpen *canOpen)
 {
+    CanOpen *oldCanOpen = _busNodesModel->canOpen();
+    if (canOpen != oldCanOpen)
+    {
+        if (oldCanOpen)
+        {
+            disconnect(oldCanOpen, &CanOpen::busChanged, this, &BusNodesTreeView::refresh);
+        }
+    }
     _busNodesModel->setCanOpen(canOpen);
     if (canOpen)
     {
@@ -81,4 +90,16 @@ void BusNodesTreeView::updateSelection()
 {
     emit busSelected(currentBus());
     emit nodeSelected(currentNode());
+}
+
+void BusNodesTreeView::indexDbClick(const QModelIndex &index)
+{
+    CanOpenBus *bus = _busNodesModel->bus(index);
+    if (bus)
+    {
+        if (bus->isConnected() && bus->nodes().isEmpty())
+        {
+            bus->exploreBus();
+        }
+    }
 }

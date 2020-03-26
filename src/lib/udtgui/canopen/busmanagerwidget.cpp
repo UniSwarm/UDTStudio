@@ -73,6 +73,7 @@ void BusManagerWidget::createWidgets()
 
     _toolBar = new QToolBar(tr("Bus commands"));
     action = _toolBar->addAction(tr("Explore"));
+    action->setShortcut(QKeySequence("Ctrl+E"));
     connect(action, &QAction::triggered, this, &BusManagerWidget::exploreBus);
     layoutGroupBox->addRow(_toolBar);
 

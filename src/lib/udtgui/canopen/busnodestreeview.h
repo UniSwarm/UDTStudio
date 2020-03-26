@@ -48,6 +48,7 @@ public slots:
 
 protected slots:
     void updateSelection();
+    void indexDbClick(const QModelIndex &index);
 
 protected:
     BusNodesModel *_busNodesModel;
