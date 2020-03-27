@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QString>
 #include <QCanBusFrame>
+#include <QCanBusDevice>
 
 class CanOpenBus;
 class Node;
@@ -43,6 +44,7 @@ public:
     const QList<quint32> &cobIds() const;
 
     CanOpenBus *bus() const;
+    QCanBusDevice *canDevice() const;
     Node *node() const;
 
 protected:

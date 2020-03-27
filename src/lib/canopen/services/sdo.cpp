@@ -269,6 +269,7 @@ qint32 SDO::sdoUploadInitiate(const QCanBusFrame &frame)
 
     return 0;
 }
+
 qint32 SDO::sdoUploadSegment(const QCanBusFrame &frame)
 {
     bool error;
@@ -431,6 +432,7 @@ qint32 SDO::sdoDownloadInitiate(const QCanBusFrame &frame)
     }
     return 0;
 }
+
 qint32 SDO::sdoDownloadSegment(const QCanBusFrame &frame)
 {
     quint32 seek = 0;
@@ -576,14 +578,12 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
 // SDO upload initiate
 bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex)
 {
-    if (!bus())
+    QCanBusDevice *lcanDevice = canDevice();
+    if (!lcanDevice)
     {
         return false;
     }
-    if (!bus()->canDevice())
-    {
-        return false;
-    }
+
     QByteArray sdoWriteReqPayload;
     QDataStream data(&sdoWriteReqPayload, QIODevice::WriteOnly);
     data.setByteOrder(QDataStream::LittleEndian);
@@ -594,19 +594,17 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex)
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
-    return bus()->canDevice()->writeFrame(frame);
+    return lcanDevice->writeFrame(frame);
 }
 // SDO upload segment, SDO block upload initiate, SDO block upload ends
 bool SDO::sendSdoRequest(quint8 cmd)
 {
-    if (!bus())
+    QCanBusDevice *lcanDevice = canDevice();
+    if (!lcanDevice)
     {
         return false;
     }
-    if (!bus()->canDevice())
-    {
-        return false;
-    }
+
     QByteArray sdoWriteReqPayload;
     QDataStream data(&sdoWriteReqPayload, QIODevice::WriteOnly);
     data.setByteOrder(QDataStream::LittleEndian);
@@ -615,20 +613,18 @@ bool SDO::sendSdoRequest(quint8 cmd)
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
-    return bus()->canDevice()->writeFrame(frame);
+    return lcanDevice->writeFrame(frame);
 }
 
 // SDO download initiate
 bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QVariant &data)
 {
-    if (!bus())
+    QCanBusDevice *lcanDevice = canDevice();
+    if (!lcanDevice)
     {
         return false;
     }
-    if (!bus()->canDevice())
-    {
-        return false;
-    }
+
     QByteArray sdoWriteReqPayload;
     QDataStream request(&sdoWriteReqPayload, QIODevice::WriteOnly);
     request.setByteOrder(QDataStream::LittleEndian);
@@ -640,20 +636,18 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QVari
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
-    return bus()->canDevice()->writeFrame(frame);
+    return lcanDevice->writeFrame(frame);
 }
 
 // SDO download segment
 bool SDO::sendSdoRequest(quint8 cmd, const QByteArray &value)
 {
-    if (!bus())
+    QCanBusDevice *lcanDevice = canDevice();
+    if (!lcanDevice)
     {
         return false;
     }
-    if (!bus()->canDevice())
-    {
-        return false;
-    }
+
     QByteArray sdoWriteReqPayload;
     QDataStream request(&sdoWriteReqPayload, QIODevice::WriteOnly);
     request.setByteOrder(QDataStream::LittleEndian);
@@ -663,20 +657,18 @@ bool SDO::sendSdoRequest(quint8 cmd, const QByteArray &value)
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
-    return bus()->canDevice()->writeFrame(frame);
+    return lcanDevice->writeFrame(frame);
 }
 
 // SDO block download end
 bool SDO::sendSdoRequest(quint8 cmd, quint16 &crc)
 {
-    if (!bus())
+    QCanBusDevice *lcanDevice = canDevice();
+    if (!lcanDevice)
     {
         return false;
     }
-    if (!bus()->canDevice())
-    {
-        return false;
-    }
+
     QByteArray sdoWriteReqPayload;
     QDataStream data(&sdoWriteReqPayload, QIODevice::WriteOnly);
     data.setByteOrder(QDataStream::LittleEndian);
@@ -686,7 +678,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 &crc)
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
-    return bus()->canDevice()->writeFrame(frame);
+    return lcanDevice->writeFrame(frame);
 }
 
 // SDO block upload initiate
@@ -699,6 +691,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blks
     Q_UNUSED(pst);
     return true;
 }
+
 // SDO block upload sub-block
 bool SDO::sendSdoRequest(quint8 cmd, quint8 &ackseq, quint8 blksize)
 {
@@ -711,6 +704,12 @@ bool SDO::sendSdoRequest(quint8 cmd, quint8 &ackseq, quint8 blksize)
 // SDO block download sub-block
 bool SDO::sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segData)
 {
+    QCanBusDevice *lcanDevice = canDevice();
+    if (!lcanDevice)
+    {
+        return false;
+    }
+
     QByteArray sdoWriteReqPayload;
     QDataStream data(&sdoWriteReqPayload, QIODevice::WriteOnly);
     QCanBusFrame frame;
@@ -731,6 +730,5 @@ bool SDO::sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segD
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    return bus()->canDevice()->writeFrame(frame);
+    return lcanDevice->writeFrame(frame);
 }
-

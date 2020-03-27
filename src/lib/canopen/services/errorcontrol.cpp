@@ -51,19 +51,31 @@ void ErrorControl::parseFrame(const QCanBusFrame &frame)
 
 void ErrorControl::receiveHeartBeat()
 {
+    QCanBusDevice *lcanDevice = canDevice();
+    if (!lcanDevice)
+    {
+        return;
+    }
+
     // heartbeat consumers
     QCanBusFrame frameNodeGuarding;
     frameNodeGuarding.setFrameId(_cobId + _node->nodeId());
     frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
-    _node->bus()->canDevice()->writeFrame(frameNodeGuarding);
+    lcanDevice->writeFrame(frameNodeGuarding);
 }
 
 void ErrorControl::sendNodeGuarding()
 {
+    QCanBusDevice *lcanDevice = canDevice();
+    if (!lcanDevice)
+    {
+        return;
+    }
+
     QCanBusFrame frameNodeGuarding;
     frameNodeGuarding.setFrameId(_cobId + _node->nodeId());
     frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
-    _node->bus()->canDevice()->writeFrame(frameNodeGuarding);
+    lcanDevice->writeFrame(frameNodeGuarding);
 }
 
 void ErrorControl::manageErrorControl(const QCanBusFrame &frame)

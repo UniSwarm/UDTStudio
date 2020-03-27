@@ -48,6 +48,22 @@ CanOpenBus *Service::bus() const
     return _bus;
 }
 
+QCanBusDevice *Service::canDevice() const
+{
+    if (_bus)
+    {
+        return _bus->canDevice();
+    }
+    if (_node)
+    {
+        if (_node->bus())
+        {
+            return _node->bus()->canDevice();
+        }
+    }
+    return nullptr;
+}
+
 Node *Service::node() const
 {
     return _node;

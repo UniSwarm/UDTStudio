@@ -41,11 +41,8 @@ uint32_t NMT::cobId()
 
 void NMT::sendNmt(quint8 cmd)
 {
-    if (!_node->bus())
-    {
-        return;
-    }
-    if (!_node->bus()->canDevice())
+    QCanBusDevice *lcanDevice = canDevice();
+    if (!lcanDevice)
     {
         return;
     }
@@ -56,7 +53,7 @@ void NMT::sendNmt(quint8 cmd)
     QCanBusFrame frameNmt;
     frameNmt.setFrameId(_cobId);
     frameNmt.setPayload(nmtStopPayload);
-    _node->bus()->canDevice()->writeFrame(frameNmt);
+    lcanDevice->writeFrame(frameNmt);
 }
 
 void NMT::sendStart()
@@ -73,6 +70,7 @@ void NMT::sendResetComm()
 {
     sendNmt(0x02);
 }
+
 void NMT::sendResetNode()
 {
     sendNmt(0x82);
