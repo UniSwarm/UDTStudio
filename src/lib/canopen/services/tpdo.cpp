@@ -25,12 +25,12 @@
 TPDO::TPDO(Node *node, quint8 number)
     : Service(node), _number(number)
 {
-    _cobIds.append(_number * 0x100 + 0x180 + node->nodeId());
+    _cobIds.append(0x180 + 0x100 * _number + node->nodeId());
 }
 
 QString TPDO::type() const
 {
-    return QLatin1String("TPDO");
+    return QLatin1String("TPDO") + QString::number(_number + 1, 10);
 }
 
 void TPDO::parseFrame(const QCanBusFrame &frame)

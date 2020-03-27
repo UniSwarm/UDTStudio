@@ -25,12 +25,12 @@
 RPDO::RPDO(Node *node, quint8 number)
     : Service(node), _number(number)
 {
-    _cobIds.append(_number * 0x200 + 0x100 + node->nodeId());
+    _cobIds.append(0x200 + 0x100 * _number + node->nodeId());
 }
 
 QString RPDO::type() const
 {
-    return QLatin1String("RPDO");
+    return QLatin1String("RPDO") + QString::number(_number + 1, 10);
 }
 
 void RPDO::parseFrame(const QCanBusFrame &frame)
