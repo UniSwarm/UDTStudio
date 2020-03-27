@@ -19,6 +19,7 @@
 #ifndef SDO_H
 #define SDO_H
 
+#include <QQueue>
 #include "canopen_global.h"
 #include "model/deviceconfiguration.h"
 
@@ -68,7 +69,7 @@ private:
     quint32 _cobIdServerToClient;
     quint8 _nodeId;
 
-    struct ProtocolSdo
+    struct RequestSdo
     {
         NodeIndex *index;
         Status state;
@@ -83,7 +84,15 @@ private:
         quint8 seqno;               // sequence number of segment
     };
 
-    ProtocolSdo _protocol;
+    RequestSdo *_request;
+    QQueue<RequestSdo *> _requestQueue;
+
+    qint32 uploadDispatcher();
+    qint32 downloadDispatcher();
+
+    void errorManagement();
+    void requestFinished();
+    void nextRequest();
 
     qint32 sdoUploadInitiate(const QCanBusFrame &frame);
     qint32 sdoUploadSegment(const QCanBusFrame &frame);

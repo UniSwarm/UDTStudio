@@ -16,6 +16,7 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <QDebug>
 #include "node.h"
 
 #include "model/deviceconfiguration.h"
@@ -162,22 +163,63 @@ void Node::sendResetNode()
     _nmt->sendResetNode();
 }
 
-void Node::readObjet(NodeIndex &index, quint8 subindex)
+void Node::readObject(quint16 index, quint8 subindex)
 {
-    _sdoClients.at(0)->uploadData(index, subindex);
-}
-
-void Node::readObjet(NodeIndex &index)
-{
-    Q_FOREACH (NodeSubIndex *subIndex, index.subIndexes())
+    if (_nodeOd->indexExist(index) == false)
     {
-        _sdoClients.at(0)->uploadData(index, subIndex->subIndex());
+        NodeIndex *nodeIndex = new NodeIndex(index);
+        nodeIndex->setName(QString::number(index, 10));
+        nodeIndex->setObjectType(NodeIndex::NONE);
+
+        for (quint8 i = 0; i <= subindex; i++)
+        {
+            nodeIndex->addSubIndex(new NodeSubIndex(i));
+            nodeIndex->setName("SubIndex" + QString::number(i, 10));
+            nodeIndex->subIndex(i)->setDataType(NodeSubIndex::NONE);
+        }
+            _sdoClients.at(0)->uploadData(*nodeIndex, subindex);
+    }
+    else
+    {
+        _sdoClients.at(0)->uploadData(*_nodeOd->index(index), subindex);
     }
 }
 
-void Node::writeObjet(NodeIndex &index, quint8 subindex)
+void Node::readObject(quint16 index)
 {
-    _sdoClients.at(0)->downloadData(index, subindex);
+    if (_nodeOd->indexExist(index))
+    {
+        Q_FOREACH (NodeSubIndex *subIndex, _nodeOd->index(index)->subIndexes())
+        {
+            _sdoClients.at(0)->uploadData(*_nodeOd->index(index), subIndex->subIndex());
+        }
+    }
+    else
+    {
+        qDebug() << ">Node::readObject: Index not in NodeOd";
+    }
+}
+
+void Node::writeObject(quint16 index, quint8 subindex)
+{
+    if (!_nodeOd->indexExist(index))
+    {
+        NodeIndex *nodeIndex = new NodeIndex(index);
+        nodeIndex->setName(QString::number(index, 10));
+        nodeIndex->setObjectType(NodeIndex::NONE);
+
+        for (quint8 i = 0; i <= subindex; i++)
+        {
+            nodeIndex->addSubIndex(new NodeSubIndex(i));
+            nodeIndex->setName("SubIndex" + QString::number(i, 10));
+            nodeIndex->subIndex(i)->setDataType(NodeSubIndex::NONE);
+        }
+        _sdoClients.at(0)->downloadData(*nodeIndex, subindex);
+    }
+    else
+    {
+        _sdoClients.at(0)->downloadData(*_nodeOd->index(index), subindex);
+    }
 }
 
 void Node::loadEds(const QString &fileName)
@@ -188,7 +230,7 @@ void Node::loadEds(const QString &fileName)
 void Node::searchEds()
 {
     QString path = ".";
-    QDirIterator dirIterator(path, QStringList() << ".eds", QDir::Files | QDir::NoSymLinks, QDirIterator::NoIteratorFlags);
+    QDirIterator dirIterator(path, QStringList() << "*.eds", QDir::Files | QDir::NoSymLinks, QDirIterator::NoIteratorFlags);
 
     while (dirIterator.hasNext())
     {
@@ -202,9 +244,11 @@ void Node::searchEds()
         {
             // EDS found
             _nodeOd->loadEds(dirIterator.fileName());
-            break;
+            qDebug() << ">searchEds : found, " << dirIterator.fileName();
+            return;
         }
     }
+    qDebug() << ">searchEds : Not found";
 
 }
 
@@ -291,9 +335,10 @@ void Node::loadDeviceIdentity(NodeIndex *nodeIndex)
         deviceType->addSubIndex(new NodeSubIndex(0));
         deviceType->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
         deviceType->subIndex(0)->setName("Device type");
+
         connect(_sdoClients.at(0), &SDO::dataObjetAvailable, this, &Node::loadDeviceIdentity);
 
-        readObjet(*deviceType);
+        readObject(0x1000);
     }
     else if (nodeIndex->index() == 0x1000)
     {
@@ -306,7 +351,7 @@ void Node::loadDeviceIdentity(NodeIndex *nodeIndex)
         deviceType->subIndex(0)->setName("Vendor-ID");
 
         connect(_sdoClients.at(0), &SDO::dataObjetAvailable, this, &Node::loadDeviceIdentity);
-        readObjet(*deviceType, 0);
+        readObject(0x1018, 0);
     }
 }
 

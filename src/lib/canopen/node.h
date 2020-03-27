@@ -42,9 +42,9 @@ public:
     QString name() const;
     void setName(const QString &name);
 
-    void readObjet(NodeIndex &index, quint8 subindex);
-    void readObjet(NodeIndex &index);
-    void writeObjet(NodeIndex &index, quint8 subindex);
+    void readObject(quint16 index, quint8 subindex);
+    void readObject(quint16 index);
+    void writeObject(quint16 index, quint8 subindex);
 
     void loadEds(const QString &fileName);
     void updateFirmware(const QByteArray &prog);
@@ -67,7 +67,7 @@ public:
 
     void loadDeviceIdentity(NodeIndex *nodeIndex);
     void objectReceived(NodeIndex *nodeIndex);
-
+    void searchEds();
 signals:
     void statusChanged(Status status);
 
@@ -95,7 +95,7 @@ protected:
     CanOpenBus *_bus;
     NodeOd *_nodeOd;
 
-    void searchEds();
+
 };
 
 #endif // NODE_H

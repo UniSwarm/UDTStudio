@@ -23,6 +23,7 @@ class CANOPEN_EXPORT NodeIndex
     // =========== Object type ====================
     enum Object
     {
+        NONE = 0x01,
         OBJECT_NULL = 0x00,
         OBJECT_DOMAIN = 0x02,
         DEFTYPE = 0x05,

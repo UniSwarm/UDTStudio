@@ -16,6 +16,7 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <QDebug>
 #include "nodeod.h"
 #include "parser/edsparser.h"
 #include "node.h"
@@ -96,7 +97,7 @@ bool NodeOd::loadEds(const QString &fileName)
             nodeIndex->addSubIndex(nodeSubIndex);
         }
     }
-
+    qDebug() << ">loadEds :" << fileName;
     return true;
 }
 
