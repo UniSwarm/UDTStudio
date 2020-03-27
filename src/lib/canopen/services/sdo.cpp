@@ -295,7 +295,7 @@ qint32 SDO::sdoUploadSegment(const QCanBusFrame &frame)
             _protocol.index->subIndex(_protocol.subIndex)->setValue(_protocol.data);
             _protocol.stay = SDO_STATE_FREE;
             emit sdoFree();
-            emit dataObjetAvailable();
+            emit dataObjetAvailable(_protocol.index);
         }
         else // more segments to be uploaded (C=0)
         {

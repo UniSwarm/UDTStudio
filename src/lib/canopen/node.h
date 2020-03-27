@@ -65,7 +65,8 @@ public:
     QString statusStr() const;
     void setStatus(Status status);
 
-    void loadMandatoryObjectToDevice();
+    void loadDeviceIdentity(NodeIndex *nodeIndex);
+    void objectReceived(NodeIndex *nodeIndex);
 
 signals:
     void statusChanged(Status status);
@@ -93,6 +94,8 @@ protected:
     friend class CanOpenBus;
     CanOpenBus *_bus;
     NodeOd *_nodeOd;
+
+    void searchEds();
 };
 
 #endif // NODE_H

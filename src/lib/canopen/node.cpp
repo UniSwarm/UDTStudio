@@ -1,4 +1,4 @@
-﻿/**
+/**
  ** This file is part of the UDTStudio project.
  ** Copyright 2019-2020 UniSwarm
  **
@@ -51,6 +51,9 @@ Node::Node(quint8 nodeId, const QString &name)
     SDO *sdo = new SDO(this);
     _sdoClients.append(sdo);
     _services.append(sdo);
+
+    connect(_sdoClients.at(0), &SDO::dataObjetAvailable, this, &Node::objectReceived);
+
 
     for (quint8 i = 0; i < 4; i++)
     {
@@ -253,14 +256,42 @@ QString Node::manufacturerSoftwareVersion()
     return QString();
 }
 
-void Node::loadMandatoryObjectToDevice()
+void Node::loadDeviceIdentity(NodeIndex *nodeIndex)
 {
-    NodeIndex *deviceType = new NodeIndex(0x1000);
-    deviceType->setName("Device type");
-    deviceType->setObjectType(NodeIndex::VAR);
-    deviceType->addSubIndex(new NodeSubIndex(0));
-    deviceType->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
-    deviceType->subIndex(0)->setName("Device type");
+    // A REVOIR
+    if (nodeIndex == nullptr)
+    {
+        NodeIndex *deviceType = new NodeIndex(0x1000);
+        deviceType->setName("Device type");
+        deviceType->setObjectType(NodeIndex::VAR);
+        deviceType->addSubIndex(new NodeSubIndex(0));
+        deviceType->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
+        deviceType->subIndex(0)->setName("Device type");
+        connect(_sdoClients.at(0), &SDO::dataObjetAvailable, this, &Node::loadDeviceIdentity);
 
-    readObjet(*deviceType);
+        readObjet(*deviceType);
+    }
+    else if (nodeIndex->index() == 0x1000)
+    {
+        NodeIndex *deviceType = new NodeIndex(0x1018);
+        deviceType->setName("Identity object");
+        deviceType->setObjectType(NodeIndex::RECORD);
+
+        deviceType->addSubIndex(new NodeSubIndex(0));
+        deviceType->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
+        deviceType->subIndex(0)->setName("Vendor-ID");
+
+        connect(_sdoClients.at(0), &SDO::dataObjetAvailable, this, &Node::loadDeviceIdentity);
+        readObjet(*deviceType, 0);
+    }
 }
+
+void Node::objectReceived(NodeIndex *nodeIndex)
+{
+    if (_nodeOd->indexExist(nodeIndex->index()) == false)
+    {
+        _nodeOd->addIndex(nodeIndex);
+    }
+}
+
+

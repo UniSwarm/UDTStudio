@@ -60,7 +60,7 @@ public:
 
   signals:
     void sdoFree();
-    void dataObjetAvailable();
+    void dataObjetAvailable(NodeIndex *nodeIndex);
     void dataObjetWritten();
 
 private:
