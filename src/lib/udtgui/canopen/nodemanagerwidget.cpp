@@ -28,6 +28,7 @@ NodeManagerWidget::NodeManagerWidget(QWidget *parent)
 NodeManagerWidget::NodeManagerWidget(Node *node, QWidget *parent)
     : QWidget(parent)
 {
+    _node = nullptr;
     createWidgets();
     setNode(node);
 }
