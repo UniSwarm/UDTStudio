@@ -72,27 +72,30 @@ bool NodeOd::indexExist(uint16_t key) const
 
 bool NodeOd::loadEds(const QString &fileName)
 {
-//    EdsParser parser;
-//    DeviceDescription *deviceDescription = parser.parse(fileName);
+    EdsParser parser;
+    DeviceDescription *deviceDescription = parser.parse(fileName);
+    _fileName = fileName;
 
-//    foreach (NodeIndex *index, deviceDescription->indexes())
-//        addIndex(new NodeIndex(*index));
+    foreach (Index *index, deviceDescription->indexes())
+    {
+        NodeIndex *nodeIndex = new NodeIndex(index->index());
+        nodeIndex->setName(index->name());
+        nodeIndex->setObjectType(index->objectType());
+        addIndex(nodeIndex);
 
-//    foreach (Index *index, _indexes)
-//    {
-//        foreach (SubIndex *subIndex, index->subIndexes())
-//        {
-//            QString value = subIndex->value().toString();
-//            uint8_t base = 10;
-//            if (value.startsWith("0x"))
-//            {
-//                base = 16;
-//            }
-
-//            bool ok;
-//            subIndex->setValue(value.toUInt(&ok, base) + _nodeId);
-//        }
-//    }
+        foreach (SubIndex *subIndex, index->subIndexes())
+        {
+            NodeSubIndex *nodeSubIndex = new NodeSubIndex(subIndex->subIndex());
+            nodeSubIndex->setName(subIndex->name());
+            nodeSubIndex->setAccessType(subIndex->accessType());
+            nodeSubIndex->setValue(subIndex->value());
+            nodeSubIndex->setDataType(static_cast<NodeSubIndex::Type>(subIndex->dataType()));
+            nodeSubIndex->setLowLimit(subIndex->lowLimit());
+            nodeSubIndex->setHighLimit(subIndex->highLimit());
+            nodeSubIndex->setFlagLimit(subIndex->flagLimit());
+            nodeIndex->addSubIndex(nodeSubIndex);
+        }
+    }
 
     return true;
 }

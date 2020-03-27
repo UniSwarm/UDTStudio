@@ -36,18 +36,18 @@ public:
     const QMap<quint16, NodeIndex *> &indexes() const;
     NodeIndex *index(quint16 index) const;
     void addIndex(NodeIndex *index);
+
     int indexCount() const;
     bool indexExist(quint16 key) const;
 
 
     bool loadEds(const QString &fileName);
 
+
 private:
     Node *_node;
-
     QMap<quint16, NodeIndex *> _nodeIndexes;
-
-    void loadMandatoryObjectToDevice();
+    QString _fileName;
 
 };
 

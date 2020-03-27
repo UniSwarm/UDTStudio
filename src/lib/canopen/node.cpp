@@ -21,6 +21,7 @@
 #include "model/deviceconfiguration.h"
 #include "parser/edsparser.h"
 #include "services/services.h"
+#include <QDirIterator>
 
 Node::Node(quint8 nodeId, const QString &name)
     : _nodeId(nodeId)
@@ -182,6 +183,29 @@ void Node::writeObjet(NodeIndex &index, quint8 subindex)
 void Node::loadEds(const QString &fileName)
 {
     _nodeOd->loadEds(fileName);
+}
+
+void Node::searchEds()
+{
+    QString path = ".";
+    QDirIterator dirIterator(path, QStringList() << ".eds", QDir::Files | QDir::NoSymLinks, QDirIterator::NoIteratorFlags);
+
+    while (dirIterator.hasNext())
+    {
+        EdsParser parser;
+        DeviceDescription *deviceDescription = parser.parse(dirIterator.fileName());
+
+        if ((_nodeOd->index(0x1000)->subIndex(0)->value() == deviceDescription->index(0x1000)->subIndex(0)->value())
+            && (_nodeOd->index(0x1018)->subIndex(1)->value() == deviceDescription->index(0x1018)->subIndex(1)->value())
+            && (_nodeOd->index(0x1018)->subIndex(2)->value() == deviceDescription->index(0x1018)->subIndex(2)->value())
+            && (_nodeOd->index(0x1018)->subIndex(3)->value() == deviceDescription->index(0x1018)->subIndex(3)->value()))
+        {
+            // EDS found
+            _nodeOd->loadEds(dirIterator.fileName());
+            break;
+        }
+    }
+
 }
 
 void Node::updateFirmware(const QByteArray &prog)
