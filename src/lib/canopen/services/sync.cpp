@@ -45,18 +45,18 @@ void Sync::stopSync()
 
 void Sync::sendSync()
 {
-    if (!_bus)
+    if (!bus())
     {
         return;
     }
-    if (!_bus->canDevice())
+    if (!bus()->canDevice())
     {
         return;
     }
 
     QCanBusFrame frameSync;
     frameSync.setFrameId(_syncCobId);
-    _bus->canDevice()->writeFrame(frameSync);
+    bus()->canDevice()->writeFrame(frameSync);
 }
 
 void Sync::parseFrame(const QCanBusFrame &frame)

@@ -41,6 +41,10 @@ const QList<quint32> &Service::cobIds() const
 
 CanOpenBus *Service::bus() const
 {
+    if (_node)
+    {
+        return _node->bus();
+    }
     return _bus;
 }
 
