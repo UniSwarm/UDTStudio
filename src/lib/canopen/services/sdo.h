@@ -93,6 +93,10 @@ private:
     void errorManagement();
     void requestFinished();
     void nextRequest();
+    int _time;
+    void timeout();
+
+    QTimer *_timer;
 
     qint32 sdoUploadInitiate(const QCanBusFrame &frame);
     qint32 sdoUploadSegment(const QCanBusFrame &frame);

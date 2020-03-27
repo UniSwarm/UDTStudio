@@ -116,6 +116,10 @@ SDO::SDO(Node *node)
     _cobIdServerToClient = 0x580;
     _cobIds.append(_cobIdClientToServer + _nodeId);
     _cobIds.append(_cobIdServerToClient + _nodeId);
+
+    _time = 6000;
+    _timer = new QTimer(this);
+    connect(_timer, &QTimer::timeout, this, &SDO::timeout);
 }
 
 QString SDO::type() const
@@ -138,6 +142,7 @@ void SDO::parseFrame(const QCanBusFrame &frame)
     quint8 scs = static_cast<quint8>SDO_SCS(frame.payload());
     qDebug() << QString::number(frame.frameId(), 16) << QString::number(scs, 16);
 
+    _timer->stop();
     switch (scs)
     {
     case SDO_SCS_SERVER_UPLOAD_INITIATE:
@@ -234,7 +239,6 @@ qint32 SDO::sdoUploadInitiate(const QCanBusFrame &frame)
     quint8 transferType = (static_cast<quint8>(frame.payload()[0] & SDO_E_MASK)) >> 1;
     quint8 sizeIndicator = static_cast<quint8>(frame.payload()[0] & SDO_S_MASK);
     quint8 cmd = 0;
-    bool error;
 
     _request->data.clear();
     _request->index->subIndex(_request->subIndex);
@@ -276,11 +280,7 @@ qint32 SDO::sdoUploadInitiate(const QCanBusFrame &frame)
         _request->toggle = 0;
         cmd |= (_request->toggle << 4) & SDO_TOGGLE_MASK;
 
-        error = sendSdoRequest(cmd);
-        if (error)
-        {
-            // TODO ABORT management error with framesWritten() and errorOccurred()
-        }
+        sendSdoRequest(cmd);
         _request->stay = SDO_STATE_UPLOAD_SEGMENT;
     }
     else
@@ -295,7 +295,6 @@ qint32 SDO::sdoUploadInitiate(const QCanBusFrame &frame)
 
 qint32 SDO::sdoUploadSegment(const QCanBusFrame &frame)
 {
-    bool error;
     quint8 cmd = 0;
     quint8 toggle = SDO_TOG_BIT(frame.payload());
     quint8 size = 0;
@@ -344,7 +343,6 @@ qint32 SDO::sdoBlockUpload(const QCanBusFrame &frame)
 
 qint32 SDO::downloadDispatcher()
 {
-    bool error = true;
     quint8 cmd = 0;
 
     if (_request->index->subIndex(_request->subIndex)->dataType() == NodeSubIndex::DDOMAIN)
@@ -425,7 +423,6 @@ qint32 SDO::sdoDownloadInitiate(const QCanBusFrame &frame)
             {
                 // no more segments to be downloaded
                 cmd |= SDO_C;
-
                 emit dataObjetWritten();
                 requestFinished();
             }
@@ -473,8 +470,6 @@ qint32 SDO::sdoDownloadSegment(const QCanBusFrame &frame)
             {
                 // no more segments to be downloaded
                 cmd |= SDO_C;
-                _request->state = SDO_STATE_FREE;
-
                 emit dataObjetWritten();
                 requestFinished();
             }
@@ -506,8 +501,6 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
         if (index != _request->index->index() || subindex != _request->subIndex)
         {
             qDebug() << "ERROR index, subindex not corresponding";
-            _request->state = SDO_STATE_FREE;
-
             errorManagement();
             return 1;
         }
@@ -617,6 +610,13 @@ void SDO::nextRequest()
     }
 }
 
+void SDO::timeout()
+{
+    uint32_t error = 0x08000000;
+    sendSdoRequest(0x80, _request->index->index(),_request->subIndex, error);
+    _timer->stop();
+}
+
 // SDO upload initiate
 bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex)
 {
@@ -636,6 +636,8 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex)
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
+
+    _timer->start(6000);
     return lcanDevice->writeFrame(frame);
 }
 // SDO upload segment, SDO block upload initiate, SDO block upload ends
@@ -655,6 +657,8 @@ bool SDO::sendSdoRequest(quint8 cmd)
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
+
+    _timer->start(6000);
     return lcanDevice->writeFrame(frame);
 }
 
@@ -678,6 +682,8 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QVari
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
+
+    _timer->start(6000);
     return lcanDevice->writeFrame(frame);
 }
 
@@ -699,6 +705,7 @@ bool SDO::sendSdoRequest(quint8 cmd, const QByteArray &value)
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
+    _timer->start(6000);
     return lcanDevice->writeFrame(frame);
 }
 
@@ -720,6 +727,8 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 &crc)
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
+
+    _timer->start(6000);
     return lcanDevice->writeFrame(frame);
 }
 
