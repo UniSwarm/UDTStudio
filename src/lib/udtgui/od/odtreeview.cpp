@@ -47,6 +47,11 @@ void ODTreeView::setDeviceModel(DeviceModel *deviceModel)
     collapseAll();
 }
 
+DeviceModel *ODTreeView::deviceModel() const
+{
+    return _odModel->deviceModel();
+}
+
 bool ODTreeView::editable() const
 {
     return _odModel->editable();

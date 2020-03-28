@@ -16,32 +16,37 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef ODTREEVIEW_H
-#define ODTREEVIEW_H
+#include <QApplication>
+#include <QScreen>
 
-#include "udtgui_global.h"
+#include <parser/edsparser.h>
 
-#include <QTreeView>
+#include "od/odtreeview.h"
 
-#include <QSortFilterProxyModel>
-
-#include "oditemmodel.h"
-
-class UDTGUI_EXPORT ODTreeView : public QTreeView
+int main(int argc, char *argv[])
 {
-public:
-    ODTreeView(QWidget *parent = nullptr);
-    ~ODTreeView();
+    int ret;
+    QApplication a(argc, argv);
 
-    void setDeviceModel(DeviceModel *deviceModel);
-    DeviceModel *deviceModel() const;
+    ODTreeView w;
 
-    bool editable() const;
-    void setEditable(bool editable);
+    if (a.arguments().size() > 1)
+    {
+        EdsParser parser;
+        DeviceDescription *deviceDescription = parser.parse(a.arguments()[1]);
+        w.setDeviceModel(deviceDescription);
+    }
+    w.show();
+    w.resize(QApplication::screens()[0]->size() / 2);
+    for (int i=0; i<4; i++)
+    {
+        w.resizeColumnToContents(i);
+    }
 
-protected:
-    ODItemModel *_odModel;
-    QSortFilterProxyModel *_odModelSorter;
-};
-
-#endif // ODTREEVIEW_H
+     ret = a.exec();
+     if (w.deviceModel())
+     {
+         delete w.deviceModel();
+     }
+     return ret;
+}
