@@ -33,9 +33,9 @@
 #define SDO_C               0x1              // C: indicates whether there are still more segments to be downloaded.
 
 #define SDO_N_MASK          0x03
-#define SDO_N(data)         ((((data)[0]) >> 2) & 0x03) // Used for download/upload initiate. \
+#define SDO_N(data)         ((((data)[0]) >> 2) & 0x03) // Used for download/upload initiate.
     // If valid it indicates the number of bytes in d that do not contain data
-#define SDO_N_SEG(data)     ((((data)[0]) >> 1) & 0x07) // Used for download/upload segment. \
+#define SDO_N_SEG(data)     ((((data)[0]) >> 1) & 0x07) // Used for download/upload segment.
     // indicates the number of bytes in seg-data that do not contain segment data.
 
 #define SDO_TOG_BIT(data)   ((data)[0] & 0x10)  // 0x10 -> mask for toggle bit
@@ -366,12 +366,12 @@ qint32 SDO::downloadDispatcher()
     else
     {
          // expedited transfer
-        if (_request->index->subIndex(_request->subIndex)->length() <= 4)
+        if (_request->index->subIndex(_request->subIndex)->byteLength() <= 4)
         {
             cmd = SDO_CCS_CLIENT_DOWNLOAD_INITIATE;
             cmd |= SDO_E_EXPEDITED << 1;
             cmd |= SDO_S;
-            cmd |= ((4 - _request->index->subIndex(_request->subIndex)->length()) & SDO_N_MASK) << 2;
+            cmd |= ((4 - _request->index->subIndex(_request->subIndex)->byteLength()) & SDO_N_MASK) << 2;
             sendSdoRequest(cmd, _request->index->index(), _request->subIndex, _request->index->subIndex(_request->subIndex)->value());
             requestFinished();
         }
@@ -380,7 +380,7 @@ qint32 SDO::downloadDispatcher()
             cmd = SDO_CCS_CLIENT_DOWNLOAD_INITIATE;
             cmd |= SDO_S;
             sendSdoRequest(cmd, _request->index->index(), _request->subIndex, _request->index->subIndex(_request->subIndex)->value());
-            _request->stay = static_cast<quint32>(_request->index->subIndex(_request->subIndex)->length());
+            _request->stay = static_cast<quint32>(_request->index->subIndex(_request->subIndex)->byteLength());
             _request->state = SDO_STATE_UPLOAD_SEGMENT;
         }
     }
@@ -412,9 +412,9 @@ qint32 SDO::sdoDownloadInitiate(const QCanBusFrame &frame)
             cmd = SDO_CCS_CLIENT_UPLOAD_SEGMENT;
             _request->toggle = 0;
             cmd |= (_request->toggle << 4) & SDO_TOGGLE_MASK;
-            cmd |= ((7 - _request->index->subIndex(_request->subIndex)->length()) & SDO_N_MASK) << 2;
+            cmd |= ((7 - _request->index->subIndex(_request->subIndex)->byteLength()) & SDO_N_MASK) << 2;
 
-            seek = (static_cast<quint32>(_request->index->subIndex(subindex)->length()) - _request->stay);
+            seek = (static_cast<quint32>(_request->index->subIndex(subindex)->byteLength()) - _request->stay);
             buffer.clear();
             buffer = _request->index->subIndex(_request->subIndex)->value().toByteArray().mid(static_cast<int32_t>(seek), SDO_SG_SIZE);
             _request->stay -= SDO_SG_SIZE;
@@ -459,9 +459,9 @@ qint32 SDO::sdoDownloadSegment(const QCanBusFrame &frame)
             cmd = SDO_CCS_CLIENT_UPLOAD_SEGMENT;
             _request->toggle = ~_request->toggle;
             cmd |= (_request->toggle << 4) & SDO_TOGGLE_MASK;
-            cmd |= ((7 - _request->index->subIndex(_request->subIndex)->length()) & SDO_N_MASK) << 2;
+            cmd |= ((7 - _request->index->subIndex(_request->subIndex)->byteLength()) & SDO_N_MASK) << 2;
 
-            seek = (static_cast<quint32>(_request->index->subIndex(_request->subIndex)->length()) - _request->stay);
+            seek = (static_cast<quint32>(_request->index->subIndex(_request->subIndex)->byteLength()) - _request->stay);
             buffer.clear();
             buffer = _request->index->subIndex(_request->subIndex)->value().toByteArray().mid(static_cast<int32_t>(seek), SDO_SG_SIZE);
             _request->stay -= SDO_SG_SIZE;

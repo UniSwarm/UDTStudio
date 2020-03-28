@@ -7,9 +7,10 @@
 
 class NodeOd;
 
-class CANOPEN_EXPORT NodeIndex
+class CANOPEN_EXPORT NodeIndex : public QObject
 {
-  public:
+    Q_OBJECT
+public:
     NodeIndex(const quint16 &index);
     NodeIndex(const NodeIndex &other);
     ~NodeIndex();
@@ -21,7 +22,7 @@ class CANOPEN_EXPORT NodeIndex
     void setName(const QString &name);
 
     // =========== Object type ====================
-    enum Object
+    enum ObjectType
     {
         NONE = 0x01,
         OBJECT_NULL = 0x00,
@@ -33,26 +34,25 @@ class CANOPEN_EXPORT NodeIndex
         RECORD = 0x09
     };
 
-    quint8 objectType() const;
-    void setObjectType(const quint8 &objectType);
-    static QString objectTypeStr(const quint8 &objectType);
+    ObjectType objectType() const;
+    void setObjectType(const ObjectType &objectType);
+    static QString objectTypeStr(const ObjectType &objectType);
 
     const QMap<quint8, NodeSubIndex *> &subIndexes() const;
-
     NodeSubIndex *subIndex(quint8 subIndex) const;
     void addSubIndex(NodeSubIndex *subIndex);
     int subIndexesCount();
     bool subIndexExist(quint8 subIndex);
 
-  private:
+private:
+    friend class NodeOd;
     NodeOd *_nodeOd;
 
     quint16 _index;
     QString _name;
-    quint8 _objectType;
+    ObjectType _objectType;
 
     QMap<quint8, NodeSubIndex *> _nodeSubIndexes;
-
 };
 
 #endif // NODEINDEX_H

@@ -20,8 +20,10 @@
 #define NODEOD_H
 
 #include "canopen_global.h"
-#include "model/index.h"
+
 #include <QMap>
+
+#include "model/index.h"
 #include "nodeindex.h"
 
 class Node;
@@ -40,15 +42,12 @@ public:
     int indexCount() const;
     bool indexExist(quint16 key) const;
 
-
     bool loadEds(const QString &fileName);
-
 
 private:
     Node *_node;
     QMap<quint16, NodeIndex *> _nodeIndexes;
     QString _fileName;
-
 };
 
 #endif // NODEOD_H

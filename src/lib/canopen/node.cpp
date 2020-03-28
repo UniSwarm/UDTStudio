@@ -53,9 +53,7 @@ Node::Node(quint8 nodeId, const QString &name)
     SDO *sdo = new SDO(this);
     _sdoClients.append(sdo);
     _services.append(sdo);
-
-    connect(_sdoClients.at(0), &SDO::dataObjetAvailable, this, &Node::objectReceived);
-
+    connect(sdo, &SDO::dataObjetAvailable, this, &Node::objectReceived);
 
     for (quint8 i = 0; i < 4; i++)
     {

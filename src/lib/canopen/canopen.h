@@ -34,11 +34,11 @@ public:
     const QList<CanOpenBus *> &buses() const;
     CanOpenBus *addBus(CanOpenBus *bus);
 
-protected:
-    QList<CanOpenBus *> _buses;
-
 signals:
     void busChanged();
+
+protected:
+    QList<CanOpenBus *> _buses;
 };
 
 #endif // CANOPEN_H

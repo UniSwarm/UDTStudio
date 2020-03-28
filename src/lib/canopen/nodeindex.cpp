@@ -8,6 +8,7 @@ NodeIndex::NodeIndex(const quint16 &index)
 }
 
 NodeIndex::NodeIndex(const NodeIndex &other)
+    : QObject ()
 {
     _index = other.index();
     _objectType = other.objectType();
@@ -21,13 +22,13 @@ NodeIndex::NodeIndex(const NodeIndex &other)
 
 NodeIndex::~NodeIndex()
 {
-
 }
 
 quint16 NodeIndex::index() const
 {
     return _index;
 }
+
 void NodeIndex::setIndex(const quint16 &index)
 {
     _index = index;
@@ -47,7 +48,7 @@ void NodeIndex::setName(const QString &name)
  * @brief object type getter
  * @return 8bits object type code
  */
-quint8 NodeIndex::objectType() const
+NodeIndex::ObjectType NodeIndex::objectType() const
 {
     return _objectType;
 }
@@ -56,7 +57,7 @@ quint8 NodeIndex::objectType() const
  * @brief object type setter
  * @param 8 bits objects type code
  */
-void NodeIndex::setObjectType(const quint8 &objectType)
+void NodeIndex::setObjectType(const ObjectType &objectType)
 {
     _objectType = objectType;
 }
@@ -66,10 +67,12 @@ void NodeIndex::setObjectType(const quint8 &objectType)
  * @param 8 bits object type code
  * @return object type string
  */
-QString NodeIndex::objectTypeStr(const quint8 &objectType)
+QString NodeIndex::objectTypeStr(const ObjectType &objectType)
 {
     switch (objectType)
     {
+    case NONE:
+        return QString("NONE");
     case OBJECT_NULL:
         return QString("NULL");
     case OBJECT_DOMAIN:
@@ -120,6 +123,7 @@ NodeSubIndex *NodeIndex::subIndex(uint8_t subIndex) const
 void NodeIndex::addSubIndex(NodeSubIndex *subIndex)
 {
     _nodeSubIndexes.insert(subIndex->subIndex(), subIndex);
+    subIndex->_nodeIndex = this;
 }
 
 /**

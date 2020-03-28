@@ -71,9 +71,13 @@ signals:
     void objetWritten();
     void nodeAdded();
 
+private slots:
+    void addNodeFound(quint8 nodeId);
+
 protected:
     friend class CanOpen;
     CanOpen *_canOpen;
+
     QString _busName;
     QList<Node *> _nodes;
     QCanBusDevice *_canDevice;
@@ -82,9 +86,6 @@ protected:
     ServiceDispatcher *_serviceDispatcher;
     Sync *_sync;
     TimeStamp *_timestamp;
-
-private slots:
-    void addNodeFound(quint8 nodeId);
 };
 
 #endif // CANOPENBUS_H

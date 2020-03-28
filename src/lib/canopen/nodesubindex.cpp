@@ -4,12 +4,13 @@ NodeSubIndex::NodeSubIndex(const quint8 subIndex)
 {
     _subIndex = subIndex;
     _flagLimit = 0;
-    _accessType = 0;
-    _value = QVariant(0);
+    _accessType = NOACESS;
+    _value = QVariant();
     _dataType = NONE;
 }
 
 NodeSubIndex::NodeSubIndex(const NodeSubIndex &other)
+    : QObject ()
 {
     _accessType = other.accessType();
     _subIndex = other.subIndex();
@@ -70,7 +71,7 @@ void NodeSubIndex::setName(const QString &name)
  * @brief access type getter
  * @return 8 bits access type code
  */
-uint8_t NodeSubIndex::accessType() const
+NodeSubIndex::AccessType NodeSubIndex::accessType() const
 {
     return _accessType;
 }
@@ -79,7 +80,7 @@ uint8_t NodeSubIndex::accessType() const
  * @brief access type setter
  * @param 8 bits access type code
  */
-void NodeSubIndex::setAccessType(const uint8_t &accessType)
+void NodeSubIndex::setAccessType(const AccessType &accessType)
 {
     _accessType = accessType;
 }
@@ -117,70 +118,16 @@ void NodeSubIndex::clearValue()
  * @brief _dataType getter
  * @return 16 bits sub-index data type code
  */
-NodeSubIndex::Type NodeSubIndex::dataType() const
+NodeSubIndex::DataType NodeSubIndex::dataType() const
 {
-    switch (_dataType)
-    {
-    case BOOLEAN:
-        return BOOLEAN;
-    case INTEGER8:
-        return INTEGER8;
-    case INTEGER16:
-        return INTEGER16;
-    case INTEGER32:
-        return INTEGER32;
-    case UNSIGNED8:
-        return UNSIGNED8;
-    case UNSIGNED16:
-        return UNSIGNED16;
-    case UNSIGNED32:
-        return UNSIGNED32;
-    case REAL32:
-        return REAL32;
-    case VISIBLE_STRING:
-        return VISIBLE_STRING;
-    case OCTET_STRING:
-        return OCTET_STRING;
-    case UNICODE_STRING:
-        return UNICODE_STRING;
-    case TIME_OF_DAY:
-        return TIME_OF_DAY;
-    case TIME_DIFFERENCE:
-        return TIME_DIFFERENCE;
-    case DDOMAIN:
-        return DDOMAIN;
-    case INTEGER24:
-        return INTEGER24;
-    case REAL64:
-        return REAL64;
-    case INTEGER40:
-        return INTEGER40;
-    case INTEGER48:
-        return INTEGER48;
-    case INTEGER56:
-        return INTEGER56;
-    case INTEGER64:
-        return INTEGER64;
-    case UNSIGNED24:
-        return UNSIGNED24;
-    case UNSIGNED40:
-        return UNSIGNED40;
-    case UNSIGNED48:
-        return UNSIGNED48;
-    case UNSIGNED56:
-        return UNSIGNED56;
-    case UNSIGNED64:
-        return UNSIGNED64;
-    default:
-        return NONE;
-    }
+    return _dataType;
 }
 
 /**
  * @brief _dataType setter
  * @param new 16 bits data type code
  */
-void NodeSubIndex::setDataType(const Type &dataType)
+void NodeSubIndex::setDataType(const DataType &dataType)
 {
     _dataType = dataType;
 }
@@ -190,7 +137,7 @@ void NodeSubIndex::setDataType(const Type &dataType)
  * @param 16 bits data type code
  * @return data type string
  */
-QString NodeSubIndex::dataTypeStr(const Type &dataType)
+QString NodeSubIndex::dataTypeStr(const DataType &dataType)
 {
     switch (dataType)
     {
@@ -308,34 +255,62 @@ void NodeSubIndex::setFlagLimit(const uint8_t &flagLimit)
  * @brief return the length of the sub-index value
  * @return octet sub-index value length
  */
-int NodeSubIndex::length() const
+int NodeSubIndex::byteLength() const
 {
     switch (_dataType)
     {
-    case BOOLEAN:
-    case UNSIGNED8:
-    case INTEGER8:
+    case NodeSubIndex::NONE:
+        break;
+    case NodeSubIndex::VISIBLE_STRING:
+    case NodeSubIndex::OCTET_STRING:
+    case NodeSubIndex::UNICODE_STRING:
+        break;
+    case NodeSubIndex::TIME_OF_DAY:
+        break;
+    case NodeSubIndex::TIME_DIFFERENCE:
+        break;
+    case NodeSubIndex::DDOMAIN:
+        break;
+
+    case NodeSubIndex::BOOLEAN:
+    case NodeSubIndex::UNSIGNED8:
+    case NodeSubIndex::INTEGER8:
         return 1;
 
-    case UNSIGNED16:
-    case INTEGER16:
+    case NodeSubIndex::UNSIGNED16:
+    case NodeSubIndex::INTEGER16:
         return 2;
 
-    case UNSIGNED32:
-    case INTEGER32:
-    case REAL32:
+    case NodeSubIndex::UNSIGNED24:
+    case NodeSubIndex::INTEGER24:
+        return 3;
+
+    case NodeSubIndex::UNSIGNED32:
+    case NodeSubIndex::INTEGER32:
+    case NodeSubIndex::REAL32:
         return 4;
 
-    case UNSIGNED64:
-    case INTEGER64:
-    case REAL64:
+    case NodeSubIndex::UNSIGNED40:
+    case NodeSubIndex::INTEGER40:
+        return 5;
+
+    case NodeSubIndex::UNSIGNED48:
+    case NodeSubIndex::INTEGER48:
+        return 6;
+
+    case NodeSubIndex::UNSIGNED56:
+    case NodeSubIndex::INTEGER56:
+        return 7;
+
+    case NodeSubIndex::UNSIGNED64:
+    case NodeSubIndex::INTEGER64:
+    case NodeSubIndex::REAL64:
         return 8;
     }
     return 0;
 }
 
-QTime NodeSubIndex::lastModification()
+const QTime &NodeSubIndex::lastModification() const
 {
     return _lastModification;
 }
-

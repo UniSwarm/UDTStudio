@@ -17,6 +17,7 @@
  **/
 
 #include <QDebug>
+
 #include "nodeod.h"
 #include "parser/edsparser.h"
 #include "node.h"
@@ -24,7 +25,6 @@
 NodeOd::NodeOd(Node *node)
     : _node(node)
 {
-
 }
 
 NodeOd::~NodeOd()
@@ -50,6 +50,7 @@ NodeIndex *NodeOd::index(uint16_t index) const
 void NodeOd::addIndex(NodeIndex *index)
 {
     _nodeIndexes.insert(index->index(), index);
+    index->_nodeOd = this;
 }
 
 /**
@@ -81,16 +82,16 @@ bool NodeOd::loadEds(const QString &fileName)
     {
         NodeIndex *nodeIndex = new NodeIndex(index->index());
         nodeIndex->setName(index->name());
-        nodeIndex->setObjectType(index->objectType());
+        nodeIndex->setObjectType(static_cast<NodeIndex::ObjectType>(index->objectType()));
         addIndex(nodeIndex);
 
         foreach (SubIndex *subIndex, index->subIndexes())
         {
             NodeSubIndex *nodeSubIndex = new NodeSubIndex(subIndex->subIndex());
             nodeSubIndex->setName(subIndex->name());
-            nodeSubIndex->setAccessType(subIndex->accessType());
+            nodeSubIndex->setAccessType(static_cast<NodeSubIndex::AccessType>(subIndex->accessType()));
             nodeSubIndex->setValue(subIndex->value());
-            nodeSubIndex->setDataType(static_cast<NodeSubIndex::Type>(subIndex->dataType()));
+            nodeSubIndex->setDataType(static_cast<NodeSubIndex::DataType>(subIndex->dataType()));
             nodeSubIndex->setLowLimit(subIndex->lowLimit());
             nodeSubIndex->setHighLimit(subIndex->highLimit());
             nodeSubIndex->setFlagLimit(subIndex->flagLimit());
@@ -100,4 +101,3 @@ bool NodeOd::loadEds(const QString &fileName)
     qDebug() << ">loadEds :" << fileName;
     return true;
 }
-

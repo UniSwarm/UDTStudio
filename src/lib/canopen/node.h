@@ -78,6 +78,9 @@ public slots:
     void sendResetNode();
 
 protected:
+    friend class CanOpenBus;
+    CanOpenBus *_bus;
+
     quint8 _nodeId;
     QString _name;
     Status _status;
@@ -91,11 +94,7 @@ protected:
     ErrorControl *_errorControl;
     QList<Service *> _services;
 
-    friend class CanOpenBus;
-    CanOpenBus *_bus;
     NodeOd *_nodeOd;
-
-
 };
 
 #endif // NODE_H
