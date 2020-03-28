@@ -46,7 +46,9 @@ void EdsWriter::write(const DeviceDescription *deviceDescription, const QString 
     QFile dcfFile(filePath);
 
     if (!dcfFile.open(QIODevice::WriteOnly))
+    {
         return;
+    }
 
     QTextStream out(&dcfFile);
     DeviceIniWriter writer(&out);

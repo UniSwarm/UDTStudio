@@ -41,7 +41,9 @@ Index::Index(const Index &other)
     _name = other.name();
 
     foreach (SubIndex *subIndex, other._subIndexes)
+    {
         _subIndexes.insert(subIndex->subIndex(), new SubIndex(*subIndex));
+    }
 }
 
 /**
@@ -102,9 +104,11 @@ const QMap<uint8_t, SubIndex *> &Index::subIndexes() const
 SubIndex *Index::subIndex(uint8_t subIndex) const
 {
     if (_subIndexes.contains(subIndex))
+    {
         return _subIndexes.value(subIndex);
+    }
 
-   return nullptr;
+    return nullptr;
 }
 
 /**
@@ -165,20 +169,20 @@ QString Index::objectTypeStr(const uint8_t &objectType)
 {
     switch (objectType)
     {
-        case OBJECT_NULL:
-            return QString("NULL");
-        case OBJECT_DOMAIN:
-            return QString("DOMAIN");
-        case DEFTYPE:
-            return QString("DEFTYPE");
-        case DEFSTRUCT:
-            return QString("DEFSTRUCT");
-        case VAR:
-            return QString("VAR");
-        case ARRAY:
-            return QString("ARRAY");
-        case RECORD:
-            return QString("RECORD");
+    case OBJECT_NULL:
+        return QString("NULL");
+    case OBJECT_DOMAIN:
+        return QString("DOMAIN");
+    case DEFTYPE:
+        return QString("DEFTYPE");
+    case DEFSTRUCT:
+        return QString("DEFSTRUCT");
+    case VAR:
+        return QString("VAR");
+    case ARRAY:
+        return QString("ARRAY");
+    case RECORD:
+        return QString("RECORD");
     }
     return QString();
 }

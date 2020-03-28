@@ -42,6 +42,8 @@ Generator::~Generator()
 Generator *Generator::getGenerator(const QString &type)
 {
     if (type == "c")
+    {
         return new CGenerator();
+    }
     return nullptr;
 }

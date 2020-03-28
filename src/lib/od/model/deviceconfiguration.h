@@ -21,8 +21,8 @@
 
 #include "od_global.h"
 
-#include "devicemodel.h"
 #include "devicedescription.h"
+#include "devicemodel.h"
 
 #include <QMap>
 

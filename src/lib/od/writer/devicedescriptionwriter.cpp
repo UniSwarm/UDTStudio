@@ -18,7 +18,6 @@
 
 #include "devicedescriptionwriter.h"
 
-
 /**
  * @brief default constructor
  */

@@ -33,22 +33,16 @@ public:
     ~SubIndex();
 
     // ============== Access type =================
-     enum Access
-     {
-         READ = 0x01,
-         WRITE = 0x02,
-         TPDO = 0x04,
-         RPDO = 0x08
-     };
-
-     enum Limit
-     {
-         LOW = 0x01,
-         HIGH = 0x02
-     };
-
-    uint8_t accessType() const;
-    void setAccessType(const uint8_t &accessType);
+    enum AccessType
+    {
+        NONE = 0x00,
+        READ = 0x01,
+        WRITE = 0x02,
+        TPDO = 0x04,
+        RPDO = 0x08
+    };
+    AccessType accessType() const;
+    void setAccessType(const AccessType accessType);
 
     uint8_t subIndex() const;
     void setSubIndex(const uint8_t &subIndex);
@@ -58,12 +52,11 @@ public:
 
     const QVariant &lowLimit() const;
     void setLowLimit(const QVariant &lowLimit);
+    bool hasLowLimit() const;
 
     const QVariant &highLimit() const;
     void setHighLimit(const QVariant &highLimit);
-
-    uint8_t flagLimit() const;
-    void setFlagLimit(const uint8_t &flagLimit);
+    bool hasHighLimit() const;
 
     bool hasNodeId() const;
     void setHasNodeId(bool hasNodeId);
@@ -73,8 +66,9 @@ public:
     void clearValue();
 
     // =============== Data type ==================
-    enum Type
+    enum DataType
     {
+        INVALID = 0x0000,
         BOOLEAN = 0x0001,
         INTEGER8 = 0x0002,
         INTEGER16 = 0x0003,
@@ -101,22 +95,20 @@ public:
         UNSIGNED56 = 0x001A,
         UNSIGNED64 = 0x001B
     };
-
-    Type dataType() const;
-    void setDataType(const uint16_t &dataType);
-    static QString dataTypeStr(const uint16_t &dataType);
+    DataType dataType() const;
+    void setDataType(const DataType dataType);
+    static QString dataTypeStr(const DataType dataType);
 
     int length() const;
 
 protected:
-    uint8_t _accessType;
+    AccessType _accessType;
     uint8_t _subIndex;
     QString _name;
 
     QVariant _value;
-    uint16_t _dataType;
+    DataType _dataType;
 
-    uint8_t _flagLimit;
     QVariant _lowLimit;
     QVariant _highLimit;
 

@@ -16,12 +16,12 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <QFile>
-#include <QMap>
-#include <QList>
-#include <QRegularExpression>
-#include <QDebug>
 #include <QDateTime>
+#include <QDebug>
+#include <QFile>
+#include <QList>
+#include <QMap>
+#include <QRegularExpression>
 
 #include "cgenerator.h"
 
@@ -88,7 +88,9 @@ void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
     QFile hFile(filePath);
 
     if (!hFile.open(QIODevice::WriteOnly))
+    {
         return;
+    }
 
     QTextStream out(&hFile);
 
@@ -102,44 +104,58 @@ void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
 
     out << " */\n";
     out << "\n";
-    out << "#ifndef OD_DATA_H" << "\n";
-    out << "#define OD_DATA_H" << "\n";
+    out << "#ifndef OD_DATA_H"
+        << "\n";
+    out << "#define OD_DATA_H"
+        << "\n";
     out << "\n";
-    out << "#include \"co_od.h\"" << "\n";
+    out << "#include \"co_od.h\""
+        << "\n";
     out << "\n";
-    out << "// == Number of entries in object dictionary ==" << "\n";
+    out << "// == Number of entries in object dictionary =="
+        << "\n";
     out << "#define OD_NB_ELEMENTS " << deviceConfiguration->indexCount() << "\n";
     out << "\n";
-    out << "// ===== struct definitions for records =======" << "\n";
+    out << "// ===== struct definitions for records ======="
+        << "\n";
 
-    QMap<uint16_t, Index*> indexes = deviceConfiguration->indexes();
+    QMap<uint16_t, Index *> indexes = deviceConfiguration->indexes();
 
     foreach (Index *index, indexes)
     {
         writeRecordDefinitionH(index, out);
     }
 
-    out << "// === struct definitions for memory types ===" << "\n";
+    out << "// === struct definitions for memory types ==="
+        << "\n";
 
-    //TODO test read access to know wich memory to use (FLASH/RAM)
-    out << "struct sOD_RAM" << "\n";
-    out << "{" << "\n";
+    // TODO test read access to know wich memory to use (FLASH/RAM)
+    out << "struct sOD_RAM"
+        << "\n";
+    out << "{"
+        << "\n";
 
     foreach (Index *index, indexes)
     {
         writeIndexH(index, out);
     }
 
-    out << "};" << "\n";
+    out << "};"
+        << "\n";
     out << "\n";
 
-    //TODO declararion of FLASH memory
-    out << "// extern declaration for RAM and FLASH struct" << "\n";
-    out << "extern const struct sOD_FLASH OD_FLASH;" << "\n";
+    // TODO declararion of FLASH memory
+    out << "// extern declaration for RAM and FLASH struct"
+        << "\n";
+    out << "extern const struct sOD_FLASH OD_FLASH;"
+        << "\n";
     out << "\n";
-    out << "// ======== extern declaration of OD ========" << "\n";
-    out << "extern const OD_entry_t OD[OD_NB_ELEMENTS];" << "\n";
-    out << "extern struct sOD_RAM OD_RAM;" << "\n";
+    out << "// ======== extern declaration of OD ========"
+        << "\n";
+    out << "extern const OD_entry_t OD[OD_NB_ELEMENTS];"
+        << "\n";
+    out << "extern struct sOD_RAM OD_RAM;"
+        << "\n";
     out << "\n";
 
     foreach (Index *index, indexes)
@@ -147,10 +163,14 @@ void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
         writeDefineH(index, out);
     }
 
-    out << "// ============== function ==================" << "\n";
-    out << "void od_initCommIndexes(void);" << "\n";
-    out << "void od_initAppIndexes(void);" << "\n";
-    out << "void od_setNodeId(uint8_t nodeId);" << "\n";
+    out << "// ============== function =================="
+        << "\n";
+    out << "void od_initCommIndexes(void);"
+        << "\n";
+    out << "void od_initAppIndexes(void);"
+        << "\n";
+    out << "void od_setNodeId(uint8_t nodeId);"
+        << "\n";
     out << "\n";
     out << "#endif // OD_DATA_H";
     out << "\n";
@@ -168,7 +188,9 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
     QFile cFile(filePath);
 
     if (!cFile.open(QIODevice::WriteOnly))
+    {
         return;
+    }
 
     QTextStream out(&cFile);
 
@@ -182,10 +204,13 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
 
     out << " */\n";
     out << "\n";
-    out << "#include \"od_data.h\"" << "\n";
+    out << "#include \"od_data.h\""
+        << "\n";
     out << "\n";
-    out << "// ==================== initialization =====================" << "\n";
-    out << "struct sOD_RAM OD_RAM;" << "\n";
+    out << "// ==================== initialization ====================="
+        << "\n";
+    out << "struct sOD_RAM OD_RAM;"
+        << "\n";
     out << "\n";
 
     QMap<uint16_t, Index *> indexes = deviceConfiguration->indexes();
@@ -194,7 +219,7 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
     {
         if (index->maxSubIndex() > 0)
         {
-            foreach (SubIndex* subIndex, index->subIndexes())
+            foreach (SubIndex *subIndex, index->subIndexes())
             {
                 writeCharLineC(subIndex, out);
             }
@@ -202,7 +227,9 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
         }
 
         if (index->subIndexExist(0))
+        {
             writeCharLineC(index->subIndex(0), out);
+        }
     }
 
     QList<Index *> appIndexes;
@@ -210,38 +237,51 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
 
     foreach (Index *index, indexes)
     {
-        if (index->index() < 0x1000);
-
+        if (index->index() < 0x1000)
+        {
+            ;
+        }
         else if (index->index() < 0x2000)
+        {
             commIndexes.append(index);
-
+        }
         else
+        {
             appIndexes.append(index);
+        }
     }
 
-    out << "void od_initCommIndexes()" << "\n";
+    out << "void od_initCommIndexes()"
+        << "\n";
     out << "{";
     writeInitRamC(commIndexes, out);
-    out << "}" << "\n";
+    out << "}"
+        << "\n";
     out << "\n";
 
-    out << "void od_initAppIndexes()" << "\n";
+    out << "void od_initAppIndexes()"
+        << "\n";
     out << "{";
     writeInitRamC(appIndexes, out);
-    out << "}" << "\n";
+    out << "}"
+        << "\n";
     out << "\n";
 
-    //TODO initialize struct for FLASH memory
-    out << "// ==================== record completion =================" << "\n";
+    // TODO initialize struct for FLASH memory
+    out << "// ==================== record completion ================="
+        << "\n";
 
     foreach (Index *index, indexes)
     {
         writeRecordCompletionC(index, out);
     }
 
-    out << "// ============ object dicitonary completion ==============" << "\n";
-    out << "const OD_entry_t OD[OD_NB_ELEMENTS] = " << "\n";
-    out << "{" << "\n";
+    out << "// ============ object dicitonary completion =============="
+        << "\n";
+    out << "const OD_entry_t OD[OD_NB_ELEMENTS] = "
+        << "\n";
+    out << "{"
+        << "\n";
 
     foreach (Index *index, indexes)
     {
@@ -264,46 +304,46 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
  */
 QString CGenerator::typeToString(const uint16_t &type) const
 {
-    switch(type)
+    switch (type)
     {
-    case SubIndex::Type::INTEGER8:
-       return QLatin1String("int8_t");
+    case SubIndex::INTEGER8:
+        return QLatin1String("int8_t");
 
-    case SubIndex::Type::INTEGER16:
+    case SubIndex::INTEGER16:
         return QLatin1String("int16_t");
 
-    case SubIndex::Type::INTEGER32:
+    case SubIndex::INTEGER32:
         return QLatin1String("int32_t");
 
-    case SubIndex::Type::INTEGER64:
+    case SubIndex::INTEGER64:
         return QLatin1String("int64_t");
 
-    case SubIndex::Type::BOOLEAN:
-    case SubIndex::Type::UNSIGNED8:
-       return QLatin1String("uint8_t");
+    case SubIndex::BOOLEAN:
+    case SubIndex::UNSIGNED8:
+        return QLatin1String("uint8_t");
 
-    case SubIndex::Type::UNSIGNED16:
+    case SubIndex::UNSIGNED16:
         return QLatin1String("uint16_t");
 
-    case SubIndex::Type::UNSIGNED32:
+    case SubIndex::UNSIGNED32:
         return QLatin1String("uint32_t");
 
-    case SubIndex::Type::UNSIGNED64:
+    case SubIndex::UNSIGNED64:
         return QLatin1String("uint64_t");
 
-    case SubIndex::Type::REAL32:
+    case SubIndex::REAL32:
         return QLatin1String("float32_t");
 
-    case SubIndex::Type::REAL64:
+    case SubIndex::REAL64:
         return QLatin1String("float64_t");
 
-    case SubIndex::Type::VISIBLE_STRING:
+    case SubIndex::VISIBLE_STRING:
         return QLatin1String("vstring_t");
 
-    case SubIndex::Type::OCTET_STRING:
+    case SubIndex::OCTET_STRING:
         return QLatin1String("ostring_t");
 
-    case SubIndex::Type::DDOMAIN:
+    case SubIndex::DDOMAIN:
         return QLatin1String("OD_domain_t");
 
     default:
@@ -321,13 +361,17 @@ QString CGenerator::varNameToString(const QString &name) const
     QString modified;
     modified = name.toLower();
 
-    for (int i=0; i < modified.count(); i++)
+    for (int i = 0; i < modified.count(); i++)
     {
         if (modified[i] == QChar('-'))
+        {
             modified[i] = QChar(' ');
+        }
 
         if (modified[i] == QChar(' '))
-            modified[i+1] = modified[i+1].toUpper();
+        {
+            modified[i + 1] = modified[i + 1].toUpper();
+        }
     }
 
     modified = modified.remove(QChar(' '));
@@ -361,28 +405,28 @@ QString CGenerator::dataToString(const SubIndex *subIndex) const
 
     switch (subIndex->dataType())
     {
-    case SubIndex::Type::OCTET_STRING:
-    case SubIndex::Type::VISIBLE_STRING:
-    case SubIndex::Type::UNICODE_STRING:
+    case SubIndex::OCTET_STRING:
+    case SubIndex::VISIBLE_STRING:
+    case SubIndex::UNICODE_STRING:
         data = stringNameToString(subIndex);
         break;
 
-    case SubIndex::Type::REAL32:
+    case SubIndex::REAL32:
         data = QString::number(subIndex->value().toReal(), 'f', 7) + QStringLiteral("f");
         break;
 
-    case SubIndex::Type::REAL64:
+    case SubIndex::REAL64:
         data = QString::number(subIndex->value().toReal(), 'f', 16) + QStringLiteral("F");
         break;
 
-    case SubIndex::Type::UNSIGNED8:
-    case SubIndex::Type::UNSIGNED16:
-    case SubIndex::Type::UNSIGNED24:
-    case SubIndex::Type::UNSIGNED32:
-    case SubIndex::Type::UNSIGNED40:
-    case SubIndex::Type::UNSIGNED48:
-    case SubIndex::Type::UNSIGNED56:
-    case SubIndex::Type::UNSIGNED64:
+    case SubIndex::UNSIGNED8:
+    case SubIndex::UNSIGNED16:
+    case SubIndex::UNSIGNED24:
+    case SubIndex::UNSIGNED32:
+    case SubIndex::UNSIGNED40:
+    case SubIndex::UNSIGNED48:
+    case SubIndex::UNSIGNED56:
+    case SubIndex::UNSIGNED64:
         data = subIndex->value().toString() + QStringLiteral("u");
         break;
 
@@ -617,9 +661,13 @@ QString CGenerator::stringNameToString(const SubIndex *subIndex) const
     QString string;
 
     if (subIndex->subIndex() == 0)
+    {
         string = varNameToString(subIndex->name()) + "Str";
+    }
     else
+    {
         string = varNameToString(subIndex->name()) + "Str" + QString::number(subIndex->subIndex());
+    }
 
     return string;
 }
@@ -631,17 +679,21 @@ QString CGenerator::stringNameToString(const SubIndex *subIndex) const
  */
 void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile) const
 {
-    if ( index->objectType() == Index::Object::RECORD)
+    if (index->objectType() == Index::Object::RECORD)
     {
-        hFile << "typedef struct" << "  // 0x" << QString::number(index->index(), 16) << "\n{\n";
+        hFile << "typedef struct"
+              << "  // 0x" << QString::number(index->index(), 16) << "\n{\n";
 
         foreach (const SubIndex *subIndex, index->subIndexes())
         {
             QString dataType = typeToString(subIndex->dataType());
             if (dataType == nullptr)
+            {
                 continue;
+            }
 
-            hFile << "    " << dataType << " "<< varNameToString(subIndex->name()) << ";" << "\n";
+            hFile << "    " << dataType << " " << varNameToString(subIndex->name()) << ";"
+                  << "\n";
         }
         hFile << "} " << structNameToString(index->name()) << ";\n\n";
     }
@@ -655,19 +707,24 @@ void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile) const
 void CGenerator::writeIndexH(Index *index, QTextStream &hFile) const
 {
     QString dataType;
-    switch(index->objectType())
+    switch (index->objectType())
     {
     case Index::Object::VAR:
         if (!index->subIndexExist(0))
+        {
             return;
-        if (index->subIndex(0)->dataType() == SubIndex::VISIBLE_STRING
-            || index->subIndex(0)->dataType() == SubIndex::OCTET_STRING
-            || index->subIndex(0)->dataType() == SubIndex::UNICODE_STRING)
+        }
+
+        if (index->subIndex(0)->dataType() == SubIndex::VISIBLE_STRING || index->subIndex(0)->dataType() == SubIndex::OCTET_STRING || index->subIndex(0)->dataType() == SubIndex::UNICODE_STRING)
+        {
             return;
+        }
 
         dataType = typeToString(index->subIndex(0)->dataType());
         if (dataType == nullptr)
+        {
             break;
+        }
 
         hFile << "    " << dataType << " " << varNameToString(index->name()) << ";";
         break;
@@ -678,14 +735,19 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile) const
 
     case Index::Object::ARRAY:
         if (!index->subIndexExist(1))
+        {
             break;
+        }
 
         dataType = typeToString(index->subIndex(1)->dataType());
         if (dataType == nullptr)
+        {
             break;
+        }
 
         hFile << "    " << dataType << " " << varNameToString(index->name());
-        hFile << "[" << index->maxSubIndex()-1 << "]" << ";";
+        hFile << "[" << index->maxSubIndex() - 1 << "]"
+              << ";";
 
         break;
     }
@@ -702,17 +764,20 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
 {
     QMap<uint8_t, SubIndex *> subIndexes;
 
-    switch(index->objectType())
+    switch (index->objectType())
     {
     case Index::Object::VAR:
         if (!index->subIndexExist(0))
+        {
             break;
-        if (index->subIndex(0)->dataType() == SubIndex::VISIBLE_STRING
-            || index->subIndex(0)->dataType() == SubIndex::OCTET_STRING
-            || index->subIndex(0)->dataType() == SubIndex::UNICODE_STRING)
+        }
+        if (index->subIndex(0)->dataType() == SubIndex::VISIBLE_STRING || index->subIndex(0)->dataType() == SubIndex::OCTET_STRING || index->subIndex(0)->dataType() == SubIndex::UNICODE_STRING)
+        {
             break;
+        }
 
-        cFile << "    " << "OD_RAM." << varNameToString(index->name());
+        cFile << "    "
+              << "OD_RAM." << varNameToString(index->name());
         cFile << " = ";
         cFile << dataToString(index->subIndex(0));
         cFile << ";";
@@ -724,7 +789,8 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
         subIndexes = index->subIndexes();
         foreach (SubIndex *subIndex, subIndexes)
         {
-            cFile << "    " << "OD_RAM." << varNameToString(index->name()) << "." << varNameToString(subIndex->name());
+            cFile << "    "
+                  << "OD_RAM." << varNameToString(index->name()) << "." << varNameToString(subIndex->name());
             cFile << " = ";
             cFile << dataToString(subIndex);
             cFile << ";";
@@ -734,17 +800,22 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
         break;
 
     case Index::Object::ARRAY:
-        for (uint8_t i = 1; i<index->subIndexesCount(); i++)
+        for (uint8_t i = 1; i < index->subIndexesCount(); i++)
         {
             if (!index->subIndexExist(i))
+            {
                 continue;
+            }
             if (index->subIndex(i)->dataType() == SubIndex::DDOMAIN)
+            {
                 break;
-            cFile << "    " << "OD_RAM." << varNameToString(index->name()) << "[" << i - 1 << "]";
+            }
+            cFile << "    "
+                  << "OD_RAM." << varNameToString(index->name()) << "[" << i - 1 << "]";
             cFile << " = ";
             cFile << dataToString(index->subIndex(i));
             cFile << ";";
-            cFile << "  // 0x" << QString::number(index->index(), 16) << "." << i-1;
+            cFile << "  // 0x" << QString::number(index->index(), 16) << "." << i - 1;
             cFile << "\n";
         }
         break;
@@ -758,20 +829,22 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
  */
 void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
 {
-    if ( index->objectType() == Index::Object::RECORD)
+    if (index->objectType() == Index::Object::RECORD)
     {
         cFile << "static const OD_entrySubIndex_t OD_Record" << QString::number(index->index(), 16).toUpper() << "[" << index->maxSubIndex() << "] =\n";
         cFile << "{\n";
 
         foreach (SubIndex *subIndex, index->subIndexes())
         {
-            cFile << "    " << "{(void*)&OD_RAM." << varNameToString(index->name());
+            cFile << "    "
+                  << "{(void*)&OD_RAM." << varNameToString(index->name());
             cFile << "." << varNameToString(subIndex->name());
-            //TODO PDOmapping
+            // TODO PDOmapping
             cFile << ", " << typeObjectToString(index, subIndex->subIndex(), true) << ", ";
             cFile << accessToEnumString(subIndex->accessType()) << ", ";
             cFile << subIndex->subIndex();
-            cFile << "}," << "\n";
+            cFile << "},"
+                  << "\n";
         }
 
         cFile << "};\n\n";
@@ -785,10 +858,12 @@ void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
  */
 void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
 {
-    cFile << "    " << "{";
+    cFile << "    "
+          << "{";
 
     // OD_entry_t.index
-    cFile << "0x" << QString::number(index->index(), 16).toUpper() << ", " << "0x";
+    cFile << "0x" << QString::number(index->index(), 16).toUpper() << ", "
+          << "0x";
 
     // OD_entry_t.nbSubIndex
     switch (index->objectType())
@@ -798,11 +873,11 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
         break;
 
     case Index::Object::RECORD:
-        cFile << index->maxSubIndex()-1;
+        cFile << index->maxSubIndex() - 1;
         break;
 
     case Index::Object::ARRAY:
-        cFile << index->maxSubIndex()-1;
+        cFile << index->maxSubIndex() - 1;
         break;
     }
     cFile << ", ";
@@ -816,9 +891,7 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
             break;
         }
         // OD_entry_t.ptData
-        if (index->subIndex(0)->dataType() == SubIndex::VISIBLE_STRING
-            || index->subIndex(0)->dataType() == SubIndex::OCTET_STRING
-            || index->subIndex(0)->dataType() == SubIndex::UNICODE_STRING)
+        if (index->subIndex(0)->dataType() == SubIndex::VISIBLE_STRING || index->subIndex(0)->dataType() == SubIndex::OCTET_STRING || index->subIndex(0)->dataType() == SubIndex::UNICODE_STRING)
         {
             cFile << "(void*)" << stringNameToString(index->subIndex(0)) << ", ";
         }
@@ -876,9 +949,12 @@ void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile) co
 {
     switch (subIndex->dataType())
     {
-    case SubIndex::Type::VISIBLE_STRING:
-    case SubIndex::Type::OCTET_STRING:
-        cFile << "static const char " << stringNameToString(subIndex) << "[]" << " = " << "\"" << subIndex->value().toString() << "\"" << ";\n";
+    case SubIndex::VISIBLE_STRING:
+    case SubIndex::OCTET_STRING:
+        cFile << "static const char " << stringNameToString(subIndex) << "[]"
+              << " = "
+              << "\"" << subIndex->value().toString() << "\""
+              << ";\n";
         break;
     default:
         break;
@@ -895,15 +971,14 @@ void CGenerator::writeInitRamC(QList<Index *> indexes, QTextStream &cFile) const
     uint8_t lastOT = 0;
     foreach (Index *index, indexes)
     {
-        if (index->objectType() != lastOT
-                || index->objectType() == Index::Object::RECORD
-                || index->objectType() == Index::Object::ARRAY)
-        cFile << "\n";
+        if (index->objectType() != lastOT || index->objectType() == Index::Object::RECORD || index->objectType() == Index::Object::ARRAY)
+        {
+            cFile << "\n";
+        }
         writeRamLineC(index, cFile);
         lastOT = index->objectType();
     }
 }
-
 
 /**
  * @brief write custom defines for index and sub-indexes
@@ -912,14 +987,17 @@ void CGenerator::writeInitRamC(QList<Index *> indexes, QTextStream &cFile) const
  */
 void CGenerator::writeDefineH(Index *index, QTextStream &hFile) const
 {
-    hFile << "#define " << "OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
-    hFile << "#define " << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
+    hFile << "#define "
+          << "OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
+    hFile << "#define "
+          << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
 
     if (index->objectType() == Index::Object::RECORD)
     {
         foreach (SubIndex *subIndex, index->subIndexes())
         {
-            hFile << "#define " << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(subIndex->subIndex(), 16).toUpper();
+            hFile << "#define "
+                  << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(subIndex->subIndex(), 16).toUpper();
             hFile << " OD_INDEX" << QString::number(index->index(), 16).toUpper() << "." << varNameToString(subIndex->name()) << "\n";
         }
     }
@@ -931,10 +1009,14 @@ void CGenerator::writeDefineH(Index *index, QTextStream &hFile) const
             uint8_t numSubIndex = subIndex->subIndex();
 
             if (numSubIndex == 0)
+            {
                 continue;
+            }
 
-            hFile << "#define " << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(numSubIndex, 16).toUpper();
-            hFile << " OD_INDEX" << QString::number(index->index(), 16).toUpper() << "[" << QString::number(numSubIndex - 1, 16).toUpper() << "]" << "\n";
+            hFile << "#define "
+                  << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(numSubIndex, 16).toUpper();
+            hFile << " OD_INDEX" << QString::number(index->index(), 16).toUpper() << "[" << QString::number(numSubIndex - 1, 16).toUpper() << "]"
+                  << "\n";
         }
     }
 
@@ -966,7 +1048,8 @@ void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextS
                     break;
                 }
 
-                cFile << " = " << subIndex->value().toUInt() - deviceConfiguration->nodeId().toUInt() << " + " << "nodeId";
+                cFile << " = " << subIndex->value().toUInt() - deviceConfiguration->nodeId().toUInt() << " + "
+                      << "nodeId";
 
                 cFile << ";  // " << index->name() << " : " << subIndex->name() << "\n";
             }

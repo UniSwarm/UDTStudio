@@ -21,10 +21,10 @@
 
 #include "od_global.h"
 
-#include <QTextStream>
-#include <QString>
 #include <QList>
 #include <QMap>
+#include <QString>
+#include <QTextStream>
 
 #include "deviceconfigurationwriter.h"
 #include "model/deviceconfiguration.h"

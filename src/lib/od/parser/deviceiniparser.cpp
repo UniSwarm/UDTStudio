@@ -18,9 +18,9 @@
 
 #include "deviceiniparser.h"
 
-#include <QRegularExpression>
 #include <QDebug>
 #include <QLocale>
+#include <QRegularExpression>
 
 /**
  * @brief constructor
@@ -108,7 +108,7 @@ void DeviceIniParser::readSubIndexes(DeviceModel *deviceModel) const
  * @brief parses an index field and completes index model
  * @param index model
  */
-void DeviceIniParser::readIndex(Index* index) const
+void DeviceIniParser::readIndex(Index *index) const
 {
     uint8_t objectType;
     uint8_t maxSubIndex;
@@ -121,7 +121,9 @@ void DeviceIniParser::readIndex(Index* index) const
 
         uint8_t base = 10;
         if (value.startsWith("0x", Qt::CaseInsensitive))
+        {
             base = 16;
+        }
 
         if (key == "ObjectType")
         {
@@ -156,66 +158,68 @@ void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
 {
     bool hasNodeId = 0;
     uint8_t accessType = 0;
-    uint8_t flagLimit = 0;
-    uint16_t dataType;
+    uint16_t dataType = SubIndex::INVALID;
     QString name;
     QVariant data;
     QVariant lowLimit;
     QVariant highLimit;
 
     foreach (const QString &key, _file->allKeys())
-     {
-         QString value = _file->value(key).toString();
+    {
+        QString value = _file->value(key).toString();
 
-         if (key == "AccessType")
-         {
-             QString accessString = _file->value(key).toString();
+        if (key == "AccessType")
+        {
+            QString accessString = _file->value(key).toString();
 
-             if (accessString == "rw" || accessString == "rwr" || accessString == "rww")
-                 accessType += SubIndex::Access::READ + SubIndex::Access::WRITE;
+            if (accessString == "rw" || accessString == "rwr" || accessString == "rww")
+            {
+                accessType += SubIndex::READ + SubIndex::WRITE;
+            }
 
-             else if (accessString == "wo")
-                 accessType += SubIndex::Access::WRITE;
+            else if (accessString == "wo")
+            {
+                accessType += SubIndex::WRITE;
+            }
 
-             else if (accessString == "ro" || accessString == "const")
-                 accessType += SubIndex::Access::READ;
-         }
+            else if (accessString == "ro" || accessString == "const")
+            {
+                accessType += SubIndex::READ;
+            }
+        }
 
-         else if (key == "PDOMapping")
-         {
-             accessType += readPdoMapping();
-         }
+        else if (key == "PDOMapping")
+        {
+            accessType += readPdoMapping();
+        }
 
-         else if (key == "ParameterName")
-         {
-             name = value;
-         }
+        else if (key == "ParameterName")
+        {
+            name = value;
+        }
 
-         else if (key == "LowLimit")
-         {
-             lowLimit = readLowLimit();
-             flagLimit += SubIndex::Limit::LOW;
-         }
+        else if (key == "LowLimit")
+        {
+            lowLimit = readLowLimit();
+        }
 
-         else if (key == "HighLimit")
-         {
-             highLimit = readHighLimit();
-             flagLimit += SubIndex::Limit::HIGH;
-         }
+        else if (key == "HighLimit")
+        {
+            highLimit = readHighLimit();
+        }
 
-         else if (key == "DataType")
-         {
-             dataType = readDataType();
-         }
+        else if (key == "DataType")
+        {
+            dataType = readDataType();
+        }
 
-         data = readData(&hasNodeId);
+        data = readData(&hasNodeId);
     }
 
-    subIndex->setAccessType(accessType);
+    subIndex->setAccessType(static_cast<SubIndex::AccessType>(accessType));
     subIndex->setName(name);
     subIndex->setValue(data);
-    subIndex->setDataType(dataType);
-    subIndex->setFlagLimit(flagLimit);
+    subIndex->setDataType(static_cast<SubIndex::DataType>(dataType));
     subIndex->setLowLimit(lowLimit);
     subIndex->setHighLimit(highLimit);
     subIndex->setHasNodeId(hasNodeId);
@@ -231,8 +235,9 @@ QVariant DeviceIniParser::readData(bool *nodeId) const
     QString value;
 
     if (_file->value("DefaultValue").isNull())
+    {
         value = "0";
-
+    }
     else if (_file->value("DefaultValue").toString().startsWith("$NODEID+"))
     {
         value = _file->value("DefaultValue").toString().mid(8);
@@ -248,42 +253,43 @@ QVariant DeviceIniParser::readData(bool *nodeId) const
 
     int base = 10;
     if (value.startsWith("0x"))
+    {
         base = 16;
+    }
 
     bool ok;
     switch (dataType)
     {
-    case SubIndex::Type::BOOLEAN:
-    case SubIndex::Type::INTEGER8:
-    case SubIndex::Type::INTEGER16:
-    case SubIndex::Type::INTEGER32:
+    case SubIndex::BOOLEAN:
+    case SubIndex::INTEGER8:
+    case SubIndex::INTEGER16:
+    case SubIndex::INTEGER32:
         return QVariant(value.toInt(&ok, base));
 
-    case SubIndex::Type::INTEGER64:
+    case SubIndex::INTEGER64:
         return QVariant(value.toLongLong(&ok, base));
 
-    case SubIndex::Type::UNSIGNED8:
-    case SubIndex::Type::UNSIGNED16:
-    case SubIndex::Type::UNSIGNED32:
+    case SubIndex::UNSIGNED8:
+    case SubIndex::UNSIGNED16:
+    case SubIndex::UNSIGNED32:
         return QVariant(value.toUInt(&ok, base));
 
-    case SubIndex::Type::UNSIGNED64:
+    case SubIndex::UNSIGNED64:
         return QVariant(value.toULongLong(&ok, base));
 
-    case SubIndex::Type::REAL32:
+    case SubIndex::REAL32:
         return QVariant(value.toFloat());
 
-    case SubIndex::Type::REAL64:
+    case SubIndex::REAL64:
         return QVariant(value.toDouble());
 
-    case SubIndex::Type::VISIBLE_STRING:
-    case SubIndex::Type::OCTET_STRING:
+    case SubIndex::VISIBLE_STRING:
+    case SubIndex::OCTET_STRING:
         return QVariant(value);
     }
 
     return 0;
 }
-
 
 /**
  * @brief parses file infos and completes device model
@@ -293,7 +299,7 @@ void DeviceIniParser::readFileInfo(DeviceModel *deviceModel) const
 {
     foreach (const QString &key, _file->allKeys())
     {
-       deviceModel->setFileInfo(key, _file->value(key).toString());
+        deviceModel->setFileInfo(key, _file->value(key).toString());
     }
 }
 
@@ -305,7 +311,7 @@ void DeviceIniParser::readDummyUsage(DeviceModel *deviceModel) const
 {
     foreach (const QString &key, _file->allKeys())
     {
-       deviceModel->setDummyUsage(key, _file->value(key).toString());
+        deviceModel->setDummyUsage(key, _file->value(key).toString());
     }
 }
 
@@ -317,7 +323,7 @@ void DeviceIniParser::readDeviceInfo(DeviceDescription *deviceDescription) const
 {
     foreach (const QString &key, _file->allKeys())
     {
-       deviceDescription->setDeviceInfo(key, _file->value(key).toString());
+        deviceDescription->setDeviceInfo(key, _file->value(key).toString());
     }
 }
 
@@ -329,7 +335,7 @@ void DeviceIniParser::readDeviceComissioning(DeviceConfiguration *deviceConfigur
 {
     foreach (const QString &key, _file->allKeys())
     {
-       deviceConfiguration->addDeviceComissioning(key, _file->value(key).toString());
+        deviceConfiguration->addDeviceComissioning(key, _file->value(key).toString());
     }
 }
 
@@ -340,17 +346,23 @@ void DeviceIniParser::readDeviceComissioning(DeviceConfiguration *deviceConfigur
 uint8_t DeviceIniParser::readPdoMapping() const
 {
     if (_file->value("PDOMapping") == 0)
+    {
         return 0;
+    }
 
     QString accessString = _file->value("AccessType").toString();
 
     if (accessString == "rwr" || accessString == "ro" || accessString == "const")
-        return SubIndex::Access::TPDO;
+    {
+        return SubIndex::TPDO;
+    }
 
     if (accessString == "rww" || accessString == "wo")
-        return SubIndex::Access::RPDO;
+    {
+        return SubIndex::RPDO;
+    }
 
-    return SubIndex::Access::TPDO + SubIndex::Access::RPDO;
+    return SubIndex::TPDO + SubIndex::RPDO;
 }
 
 /**
@@ -361,7 +373,6 @@ QVariant DeviceIniParser::readLowLimit() const
 {
     return QVariant(_file->value("LowLimit"));
 }
-
 
 /**
  * @brief parses high limit value and returns it
@@ -382,7 +393,9 @@ uint16_t DeviceIniParser::readDataType() const
 
     int base = 10;
     if (dataType.startsWith("0x"))
+    {
         base = 16;
+    }
 
     bool ok;
     return static_cast<uint16_t>(dataType.toInt(&ok, base));

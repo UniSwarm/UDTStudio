@@ -23,7 +23,6 @@
  */
 DeviceConfiguration::DeviceConfiguration()
 {
-
 }
 
 /**
@@ -31,7 +30,6 @@ DeviceConfiguration::DeviceConfiguration()
  */
 DeviceConfiguration::~DeviceConfiguration()
 {
-
 }
 
 /**
@@ -153,7 +151,9 @@ DeviceConfiguration *DeviceConfiguration::fromDeviceDescription(const DeviceDesc
 
                 uint8_t base = 10;
                 if (value.startsWith("0x"))
+                {
                     base = 16;
+                }
 
                 bool ok;
                 subIndex->setValue(value.toUInt(&ok, base) + nodeId);

@@ -2,12 +2,10 @@
 
 TexGenerator::TexGenerator()
 {
-
 }
 
 TexGenerator::~TexGenerator()
 {
-
 }
 
 bool TexGenerator::generate(DeviceConfiguration *deviceConfiguration, const QString &filePath) const

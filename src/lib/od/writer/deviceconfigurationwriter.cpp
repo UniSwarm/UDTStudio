@@ -22,7 +22,7 @@
  * @brief default constructor
  */
 DeviceConfigurationWriter::DeviceConfigurationWriter()
-{   
+{
 }
 
 /**

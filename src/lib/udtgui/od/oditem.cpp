@@ -235,7 +235,7 @@ bool ODItem::setData(int column, const QVariant &value, int role)
             case ODItemModel::Type:
                 if (_index->objectType() == Index::VAR && index()->subIndexesCount() == 1)
                 {
-                    index()->subIndex(0)->setDataType(value.toInt());
+                    index()->subIndex(0)->setDataType(static_cast<SubIndex::DataType>(value.toInt()));
                 }
                 else
                 {
@@ -271,7 +271,7 @@ bool ODItem::setData(int column, const QVariant &value, int role)
                 _subIndex->setName(value.toString());
                 return true;
             case ODItemModel::Type:
-                _subIndex->setDataType(value.toInt());
+                _subIndex->setDataType(static_cast<SubIndex::DataType>(value.toInt()));
                 return true;
             case ODItemModel::Value:
                 _subIndex->setValue(value);

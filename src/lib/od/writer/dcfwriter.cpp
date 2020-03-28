@@ -44,11 +44,12 @@ DcfWriter::~DcfWriter()
  */
 void DcfWriter::write(DeviceConfiguration *deviceConfiguration, const QString &filePath) const
 {
-
     QFile dcfFile(filePath);
 
     if (!dcfFile.open(QIODevice::WriteOnly))
+    {
         return;
+    }
 
     QTextStream out(&dcfFile);
     DeviceIniWriter writer(&out);

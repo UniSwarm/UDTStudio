@@ -55,32 +55,39 @@ void DeviceIniWriter::writeObjects(const DeviceModel *deviceModel) const
         uint16_t numIndex = index->index();
 
         if (numIndex == 0x1000 || numIndex == 0x1001 || numIndex == 0x1018)
+        {
             mandatories.append(index);
-
+        }
         else if (numIndex >= 0x2000 && numIndex < 0x6000)
+        {
             manufacturers.append(index);
-
+        }
         else
+        {
             optionals.append(index);
+        }
     }
 
     std::sort(mandatories.begin(), mandatories.end(), indexLessThan);
     std::sort(optionals.begin(), optionals.end(), indexLessThan);
     std::sort(manufacturers.begin(), manufacturers.end(), indexLessThan);
 
-    *_file  << "[MandatoryObjects]" << "\n";
+    *_file << "[MandatoryObjects]"
+           << "\n";
     writeSupportedIndexes(mandatories);
-    *_file  << "\n";
+    *_file << "\n";
     writeListIndex(mandatories);
 
-    *_file  << "[OptionalObjects]" << "\n";
+    *_file << "[OptionalObjects]"
+           << "\n";
     writeSupportedIndexes(optionals);
-    *_file  << "\n";
+    *_file << "\n";
     writeListIndex(optionals);
 
-    *_file  << "[ManufacturerObjects]" << "\n";
+    *_file << "[ManufacturerObjects]"
+           << "\n";
     writeSupportedIndexes(manufacturers);
-    *_file  << "\n";
+    *_file << "\n";
     writeListIndex(manufacturers);
 }
 
@@ -90,7 +97,8 @@ void DeviceIniWriter::writeObjects(const DeviceModel *deviceModel) const
  */
 void DeviceIniWriter::writeFileInfo(QMap<QString, QString> fileInfos) const
 {
-    *_file << "[FileInfo]" << "\n";
+    *_file << "[FileInfo]"
+           << "\n";
 
     QString date = QDateTime().currentDateTime().toString("dd-MM-yyyy");
     QString time = QDateTime().currentDateTime().toString("hh:mm AP");
@@ -107,7 +115,8 @@ void DeviceIniWriter::writeFileInfo(QMap<QString, QString> fileInfos) const
  */
 void DeviceIniWriter::writeDeviceComissioning(const QMap<QString, QString> &deviceComissionings) const
 {
-    *_file << "[DeviceComissioning]" << "\n";
+    *_file << "[DeviceComissioning]"
+           << "\n";
 
     writeStringMap(deviceComissionings);
 }
@@ -118,7 +127,8 @@ void DeviceIniWriter::writeDeviceComissioning(const QMap<QString, QString> &devi
  */
 void DeviceIniWriter::writeDeviceInfo(const QMap<QString, QString> &deviceInfos) const
 {
-    *_file << "[DeviceInfo]" << "\n";
+    *_file << "[DeviceInfo]"
+           << "\n";
 
     writeStringMap(deviceInfos);
 }
@@ -129,7 +139,8 @@ void DeviceIniWriter::writeDeviceInfo(const QMap<QString, QString> &deviceInfos)
  */
 void DeviceIniWriter::writeDummyUsage(const QMap<QString, QString> &dummyUsages) const
 {
-    *_file << "[DummyUsage]" << "\n";
+    *_file << "[DummyUsage]"
+           << "\n";
 
     writeStringMap(dummyUsages);
 }
@@ -186,7 +197,9 @@ void DeviceIniWriter::writeIndex(Index *index) const
     subIndex = index->subIndex(0);
 
     if (subIndex == nullptr)
+    {
         return;
+    }
 
     int base = 16;
 
@@ -244,13 +257,15 @@ void DeviceIniWriter::writeArray(Index *index) const
  */
 void DeviceIniWriter::writeLimit(const SubIndex *subIndex) const
 {
-    uint8_t flagLimit = subIndex->flagLimit();
-
-    if ((flagLimit & SubIndex::Limit::LOW) == SubIndex::Limit::LOW)
+    if (subIndex->hasLowLimit())
+    {
         *_file << "LowLimit=" << subIndex->lowLimit().toString() << "\n";
+    }
 
-    if ((flagLimit & SubIndex::Limit::HIGH) == SubIndex::Limit::HIGH)
+    if (subIndex->hasHighLimit())
+    {
         *_file << "HighLimit=" << subIndex->highLimit().toString() << "\n";
+    }
 }
 
 /**
@@ -296,22 +311,22 @@ QString DeviceIniWriter::accessToString(int access) const
 {
     switch (access)
     {
-    case SubIndex::Access::READ:
-    case SubIndex::Access::READ + SubIndex::Access::TPDO:
+    case SubIndex::READ:
+    case SubIndex::READ + SubIndex::TPDO:
         return QString("ro");
 
-    case SubIndex::Access::WRITE:
-    case SubIndex::Access::WRITE + SubIndex::Access::RPDO:
+    case SubIndex::WRITE:
+    case SubIndex::WRITE + SubIndex::RPDO:
         return QString("ro");
 
-    case SubIndex::Access::READ + SubIndex::Access::WRITE:
-    case SubIndex::Access::READ + SubIndex::Access::WRITE + SubIndex::Access::TPDO + SubIndex::Access::RPDO:
+    case SubIndex::READ + SubIndex::WRITE:
+    case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO + SubIndex::RPDO:
         return QString("rw");
 
-    case SubIndex::Access::READ + SubIndex::Access::WRITE + SubIndex::Access::TPDO:
+    case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO:
         return QString("rwr");
 
-    case SubIndex::Access::READ + SubIndex::Access::WRITE + SubIndex::Access::RPDO:
+    case SubIndex::READ + SubIndex::WRITE + SubIndex::RPDO:
         return QString("rww");
     }
 
@@ -335,8 +350,10 @@ QString DeviceIniWriter::dataToString(const QVariant &value) const
  */
 QString DeviceIniWriter::pdoToString(uint8_t accessType) const
 {
-    if ((accessType & SubIndex::Access::TPDO) == SubIndex::Access::TPDO || (accessType & SubIndex::Access::RPDO) == SubIndex::Access::RPDO)
+    if ((accessType & SubIndex::TPDO) == SubIndex::TPDO || (accessType & SubIndex::RPDO) == SubIndex::RPDO)
+    {
         return QString::number(1);
+    }
 
     return QString::number(0);
 }

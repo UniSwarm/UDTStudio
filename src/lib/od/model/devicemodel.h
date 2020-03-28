@@ -53,7 +53,7 @@ public:
     int indexCount() const;
     bool indexExist(uint16_t key) const;
 
-    const QString &fileName() const;
+    QString fileName() const;
     void setFileName(const QString &name);
 
 private:

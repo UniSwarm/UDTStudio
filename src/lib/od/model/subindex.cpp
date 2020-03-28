@@ -25,11 +25,9 @@
 SubIndex::SubIndex(const uint8_t subIndex)
 {
     _subIndex = subIndex;
-    _flagLimit = 0;
-    _accessType = 0;
+    _accessType = NONE;
     _hasNodeId = false;
-    _value = QVariant(0);
-    _dataType = 0;
+    _dataType = INVALID;
 }
 
 /**
@@ -43,7 +41,6 @@ SubIndex::SubIndex(const SubIndex &other)
     _name = other.name();
     _value = other.value();
 
-    _flagLimit = other.flagLimit();
     _lowLimit = other.lowLimit();
     _highLimit = other.highLimit();
 
@@ -56,14 +53,13 @@ SubIndex::SubIndex(const SubIndex &other)
  */
 SubIndex::~SubIndex()
 {
-
 }
 
 /**
  * @brief access type getter
  * @return 8 bits access type code
  */
-uint8_t SubIndex::accessType() const
+SubIndex::AccessType SubIndex::accessType() const
 {
     return _accessType;
 }
@@ -72,7 +68,7 @@ uint8_t SubIndex::accessType() const
  * @brief access type setter
  * @param 8 bits access type code
  */
-void SubIndex::setAccessType(const uint8_t &accessType)
+void SubIndex::setAccessType(const AccessType accessType)
 {
     _accessType = accessType;
 }
@@ -131,6 +127,11 @@ void SubIndex::setLowLimit(const QVariant &lowLimit)
     _lowLimit = lowLimit;
 }
 
+bool SubIndex::hasLowLimit() const
+{
+    return _lowLimit.isValid();
+}
+
 /**
  * @brief high limit getter
  * @return high limit value
@@ -149,22 +150,9 @@ void SubIndex::setHighLimit(const QVariant &highLimit)
     _highLimit = highLimit;
 }
 
-/**
- * @brief flag limit getter
- * @return 0x1 if sub-index has low limit, 0x2 if has high limit and 0x3 if has both. Else 0.
- */
-uint8_t SubIndex::flagLimit() const
+bool SubIndex::hasHighLimit() const
 {
-    return _flagLimit;
-}
-
-/**
- * @brief flag limit setter
- * @param new flag limit code
- */
-void SubIndex::setFlagLimit(const uint8_t &flagLimit)
-{
-    _flagLimit = flagLimit;
+    return _highLimit.isValid();
 }
 
 /**
@@ -216,68 +204,16 @@ void SubIndex::clearValue()
  * @brief _dataType getter
  * @return 16 bits sub-index data type code
  */
-SubIndex::Type SubIndex::dataType() const
+SubIndex::DataType SubIndex::dataType() const
 {
-    switch (_dataType)
-    {
-    case BOOLEAN:
-        return BOOLEAN;
-    case INTEGER8:
-        return INTEGER8;
-    case INTEGER16:
-        return INTEGER16;
-    case INTEGER32:
-        return INTEGER32;
-    case UNSIGNED8:
-        return UNSIGNED8;
-    case UNSIGNED16:
-        return UNSIGNED16;
-    case UNSIGNED32:
-        return UNSIGNED32;
-    case REAL32:
-        return REAL32;
-    case VISIBLE_STRING:
-        return VISIBLE_STRING;
-    case OCTET_STRING:
-        return OCTET_STRING;
-    case UNICODE_STRING:
-        return UNICODE_STRING;
-    case TIME_OF_DAY:
-        return TIME_OF_DAY;
-    case TIME_DIFFERENCE:
-        return TIME_DIFFERENCE;
-    case DDOMAIN:
-        return DDOMAIN;
-    case INTEGER24:
-        return INTEGER24;
-    case REAL64:
-        return REAL64;
-    case INTEGER40:
-        return INTEGER40;
-    case INTEGER48:
-        return INTEGER48;
-    case INTEGER56:
-        return INTEGER56;
-    case INTEGER64:
-        return INTEGER64;
-    case UNSIGNED24:
-        return UNSIGNED24;
-    case UNSIGNED40:
-        return UNSIGNED40;
-    case UNSIGNED48:
-        return UNSIGNED48;
-    case UNSIGNED56:
-        return UNSIGNED56;
-    case UNSIGNED64:
-        return UNSIGNED64;
-    }
+    return _dataType;
 }
 
 /**
  * @brief _dataType setter
  * @param new 16 bits data type code
  */
-void SubIndex::setDataType(const uint16_t &dataType)
+void SubIndex::setDataType(const DataType dataType)
 {
     _dataType = dataType;
 }
@@ -287,10 +223,12 @@ void SubIndex::setDataType(const uint16_t &dataType)
  * @param 16 bits data type code
  * @return data type string
  */
-QString SubIndex::dataTypeStr(const uint16_t &dataType)
+QString SubIndex::dataTypeStr(const DataType dataType)
 {
     switch (dataType)
     {
+    case INVALID:
+        return QString("INVALID");
     case BOOLEAN:
         return QString("BOOLEAN");
     case INTEGER8:
@@ -343,7 +281,6 @@ QString SubIndex::dataTypeStr(const uint16_t &dataType)
         return QString("UINT64");
     }
     return QString();
-
 }
 
 /**
@@ -354,23 +291,53 @@ int SubIndex::length() const
 {
     switch (_dataType)
     {
-    case BOOLEAN:
-    case UNSIGNED8:
-    case INTEGER8:
+    case SubIndex::INVALID:
+        return 0;
+
+    case SubIndex::VISIBLE_STRING:
+    case SubIndex::OCTET_STRING:
+    case SubIndex::UNICODE_STRING:
+        break;
+    case SubIndex::TIME_OF_DAY:
+        break;
+    case SubIndex::TIME_DIFFERENCE:
+        break;
+    case SubIndex::DDOMAIN:
+        break;
+
+    case SubIndex::BOOLEAN:
+    case SubIndex::UNSIGNED8:
+    case SubIndex::INTEGER8:
         return 1;
 
-    case UNSIGNED16:
-    case INTEGER16:
+    case SubIndex::UNSIGNED16:
+    case SubIndex::INTEGER16:
         return 2;
 
-    case UNSIGNED32:
-    case INTEGER32:
-    case REAL32:
+    case SubIndex::UNSIGNED24:
+    case SubIndex::INTEGER24:
+        return 3;
+
+    case SubIndex::UNSIGNED32:
+    case SubIndex::INTEGER32:
+    case SubIndex::REAL32:
         return 4;
 
-    case UNSIGNED64:
-    case INTEGER64:
-    case REAL64:
+    case SubIndex::UNSIGNED40:
+    case SubIndex::INTEGER40:
+        return 5;
+
+    case SubIndex::UNSIGNED48:
+    case SubIndex::INTEGER48:
+        return 6;
+
+    case SubIndex::UNSIGNED56:
+    case SubIndex::INTEGER56:
+        return 7;
+
+    case SubIndex::UNSIGNED64:
+    case SubIndex::INTEGER64:
+    case SubIndex::REAL64:
         return 8;
     }
     return 0;

@@ -23,7 +23,6 @@
  */
 DeviceModel::DeviceModel()
 {
-
 }
 
 /**
@@ -143,7 +142,7 @@ bool DeviceModel::indexExist(uint16_t key) const
  * @brief return the name of the device file
  * @return string
  */
-const QString &DeviceModel::fileName() const
+QString DeviceModel::fileName() const
 {
     return _fileInfos.value("FileName");
 }

@@ -18,8 +18,8 @@
 
 #include "dcfparser.h"
 
-#include <QSettings>
 #include <QRegularExpression>
+#include <QSettings>
 
 #include "deviceiniparser.h"
 

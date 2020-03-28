@@ -21,11 +21,11 @@
 
 #include "od_global.h"
 
-#include <QTextStream>
 #include <QSettings>
+#include <QTextStream>
 
-#include "model/devicedescription.h"
 #include "model/deviceconfiguration.h"
+#include "model/devicedescription.h"
 
 class DeviceIniParser
 {

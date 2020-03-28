@@ -94,7 +94,6 @@ bool NodeOd::loadEds(const QString &fileName)
             nodeSubIndex->setDataType(static_cast<NodeSubIndex::DataType>(subIndex->dataType()));
             nodeSubIndex->setLowLimit(subIndex->lowLimit());
             nodeSubIndex->setHighLimit(subIndex->highLimit());
-            nodeSubIndex->setFlagLimit(subIndex->flagLimit());
             nodeIndex->addSubIndex(nodeSubIndex);
         }
     }

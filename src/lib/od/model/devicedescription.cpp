@@ -23,7 +23,6 @@
  */
 DeviceDescription::DeviceDescription()
 {
-
 }
 
 /**
@@ -31,7 +30,6 @@ DeviceDescription::DeviceDescription()
  */
 DeviceDescription::~DeviceDescription()
 {
-
 }
 
 /**
