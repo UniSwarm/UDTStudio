@@ -42,12 +42,19 @@ public:
     int indexCount() const;
     bool indexExist(quint16 key) const;
 
+    void updateObjectFromDevice(quint16 index, quint8 subindex, QByteArray &data);
+
     bool loadEds(const QString &fileName);
+
+signals:
+    void updatedObject(quint16 indexDevice);
 
 private:
     Node *_node;
     QMap<quint16, NodeIndex *> _nodeIndexes;
     QString _fileName;
+
+    void createMandatoryObject();
 };
 
 #endif // NODEOD_H

@@ -25,6 +25,8 @@
 NodeOd::NodeOd(Node *node)
     : _node(node)
 {
+
+    createMandatoryObject();
 }
 
 NodeOd::~NodeOd()
@@ -38,7 +40,7 @@ NodeOd::~NodeOd()
  * @param index
  * @return an Index*
  */
-NodeIndex *NodeOd::index(uint16_t index) const
+NodeIndex *NodeOd::index(quint16 index) const
 {
     return _nodeIndexes.value(index);
 }
@@ -67,9 +69,55 @@ int NodeOd::indexCount() const
  * @param key
  * @return boolean
  */
-bool NodeOd::indexExist(uint16_t key) const
+bool NodeOd::indexExist(quint16 key) const
 {
     return _nodeIndexes.contains(key);
+}
+
+void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, QByteArray &data)
+{
+    if (indexExist(indexDevice))
+    {
+        index(indexDevice)->subIndex(subindexDevice)->setValue(data);
+        emit updatedObject(indexDevice);
+    }
+}
+
+void NodeOd::createMandatoryObject()
+{
+    NodeIndex *deviceType = new NodeIndex(0x1000);
+    deviceType->setName("Device type");
+    deviceType->setObjectType(NodeIndex::VAR);
+    deviceType->addSubIndex(new NodeSubIndex(0));
+    deviceType->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
+    deviceType->subIndex(0)->setName("Device type");
+
+    this->addIndex(deviceType);
+
+    NodeIndex *identityObject = new NodeIndex(0x1018);
+    identityObject->setName("Identity object");
+    identityObject->setObjectType(NodeIndex::RECORD);
+    identityObject->addSubIndex(new NodeSubIndex(0));
+    identityObject->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
+    identityObject->subIndex(0)->setName("Highest sub-index supported");
+
+    identityObject->addSubIndex(new NodeSubIndex(1));
+    identityObject->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
+    identityObject->subIndex(0)->setName("Vendor-ID");
+
+    identityObject->addSubIndex(new NodeSubIndex(2));
+    identityObject->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
+    identityObject->subIndex(0)->setName("Product code");
+
+    identityObject->addSubIndex(new NodeSubIndex(3));
+    identityObject->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
+    identityObject->subIndex(0)->setName("Revision number");
+
+    identityObject->addSubIndex(new NodeSubIndex(4));
+    identityObject->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
+    identityObject->subIndex(0)->setName("Serial number");
+
+    this->addIndex(identityObject);
 }
 
 bool NodeOd::loadEds(const QString &fileName)
