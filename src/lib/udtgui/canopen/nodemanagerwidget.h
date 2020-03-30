@@ -39,6 +39,9 @@ public:
 
     Node *node() const;
 
+    static void snotify(void* object, quint16 index, quint8 subindexDevice, const QByteArray &data);
+    void notify(quint16 index, quint8 subindexDevice, const QByteArray &data);
+
 signals:
 
 public slots:
@@ -49,12 +52,14 @@ public slots:
     void stop();
     void resetCom();
     void resetNode();
+    void test();
 
 protected:
     void createWidgets();
     QToolBar *_toolBar;
     QGroupBox *_groupBox;
     QLineEdit *_nodeNameEdit;
+    QLabel *_index1000Label;
     QLabel *_nodeStatusLabel;
 
     Node *_node;

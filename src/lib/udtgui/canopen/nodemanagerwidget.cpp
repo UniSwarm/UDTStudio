@@ -38,6 +38,19 @@ Node *NodeManagerWidget::node() const
     return _node;
 }
 
+void NodeManagerWidget::snotify(void *object, quint16 index, quint8 subindexDevice, const QByteArray &data)
+{
+    static_cast<NodeManagerWidget *>(object)->notify(index, subindexDevice, data);
+}
+
+void NodeManagerWidget::notify(quint16 index, quint8 subindexDevice, const QByteArray &data)
+{
+    if (index == 0x1000 && subindexDevice == 0x00)
+    {
+        _index1000Label->setText(data.toHex(' ').toUpper());
+    }
+}
+
 void NodeManagerWidget::setNode(Node *node)
 {
     if (node != _node)
@@ -97,6 +110,20 @@ void NodeManagerWidget::resetNode()
     }
 }
 
+void NodeManagerWidget::test()
+{
+    if (_node)
+    {
+        // TODO move to register fonction
+        _node->nodeOd()->_object = this;
+        _node->nodeOd()->_notifyIndex = 0x1000;
+        _node->nodeOd()->_notifySubIndex = 0x00;
+        _node->nodeOd()->_notify = NodeManagerWidget::snotify;
+
+        _node->readObject(0x1000, 0x00);
+    }
+}
+
 void NodeManagerWidget::createWidgets()
 {
     QAction *action;
@@ -115,6 +142,8 @@ void NodeManagerWidget::createWidgets()
     connect(action, &QAction::triggered, this, &NodeManagerWidget::resetCom);
     action = _toolBar->addAction(tr("resetNode"));
     connect(action, &QAction::triggered, this, &NodeManagerWidget::resetNode);
+    action = _toolBar->addAction(tr("test"));
+    connect(action, &QAction::triggered, this, &NodeManagerWidget::test);
     layoutGroupBox->addRow(_toolBar);
 
     _nodeNameEdit = new QLineEdit();
@@ -122,6 +151,9 @@ void NodeManagerWidget::createWidgets()
 
     _nodeStatusLabel = new QLabel();
     layoutGroupBox->addRow(tr("Status :"), _nodeStatusLabel);
+
+    _index1000Label = new QLabel();
+    layoutGroupBox->addRow(tr("0x1000 :"), _index1000Label);
 
     _groupBox->setLayout(layoutGroupBox);
     layout->addWidget(_groupBox);

@@ -46,6 +46,11 @@ public:
 
     bool loadEds(const QString &fileName);
 
+    void (*_notify)(void *object, quint16 index, quint8 subindexDevice, const QByteArray &data);
+    quint16 _notifyIndex;
+    quint8 _notifySubIndex;
+    void *_object;
+
 signals:
     void updatedObject(quint16 indexDevice);
 

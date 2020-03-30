@@ -80,6 +80,11 @@ void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, 
     {
         index(indexDevice)->subIndex(subindexDevice)->setValue(data);
         emit updatedObject(indexDevice);
+
+        if (indexDevice == _notifyIndex && subindexDevice == _notifySubIndex)
+        {
+            ((*_notify)(_object, indexDevice, subindexDevice, data));
+        }
     }
 }
 
