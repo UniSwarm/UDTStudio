@@ -66,8 +66,6 @@ public:
     QString statusStr() const;
     void setStatus(Status status);
 
-    void loadDeviceIdentity(NodeIndex *nodeIndex);
-
     void searchEds();
 signals:
     void statusChanged(Status status);

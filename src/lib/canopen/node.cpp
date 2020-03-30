@@ -212,16 +212,10 @@ void Node::searchEds()
 
 void Node::updateFirmware(const QByteArray &prog)
 {
-//    uint16_t index = 0x1F50;
-//    quint8 subindex = 0x01;
-//    NodeIndex *index2;
+    quint16 index = 0x1F50;
+    quint8 subindex = 0x01;
+    _sdoClients.at(0)->downloadData(index, subindex, prog);
 
-//    if (_nodeOd->indexExist(index))
-//    {
-//        index2 = _nodeOd->index(index);
-//        index2->subIndex(subindex)->setValue(prog);
-//        _sdoClients.at(0)->downloadData(*index2, subindex);
-//    }
 }
 
 QString Node::device()
@@ -257,34 +251,4 @@ QString Node::manufacturerSoftwareVersion()
     return _nodeOd->index(index)->subIndex(subindex)->value().toString();
 }
 
-void Node::loadDeviceIdentity(NodeIndex *nodeIndex)
-{
-    // A REVOIR
-    if (nodeIndex == nullptr)
-    {
-        NodeIndex *deviceType = new NodeIndex(0x1000);
-        deviceType->setName("Device type");
-        deviceType->setObjectType(NodeIndex::VAR);
-        deviceType->addSubIndex(new NodeSubIndex(0));
-        deviceType->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
-        deviceType->subIndex(0)->setName("Device type");
-
-        connect(_sdoClients.at(0), &SDO::dataObjetAvailable, this, &Node::loadDeviceIdentity);
-
-        readObject(0x1000);
-    }
-    else if (nodeIndex->index() == 0x1000)
-    {
-        NodeIndex *deviceType = new NodeIndex(0x1018);
-        deviceType->setName("Identity object");
-        deviceType->setObjectType(NodeIndex::RECORD);
-
-        deviceType->addSubIndex(new NodeSubIndex(0));
-        deviceType->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
-        deviceType->subIndex(0)->setName("Vendor-ID");
-
-        connect(_sdoClients.at(0), &SDO::dataObjetAvailable, this, &Node::loadDeviceIdentity);
-        readObject(0x1018, 0);
-    }
-}
 
