@@ -184,13 +184,17 @@ SDO::Status SDO::status() const
     return _request->state;
 }
 
-qint32 SDO::uploadData(NodeIndex &index, quint8 subindex)
+qint32 SDO::uploadData(quint16 index, quint8 subindex)
 {
-    RequestSdo *_request = new RequestSdo();
-    _request->index = &index;
-    _request->subIndex = subindex;
-    _request->state = SDO_STATE_UPLOAD;
-    _requestQueue.enqueue(_request);
+    RequestSdo *request = new RequestSdo();
+    request->index2 = index;
+    request->subIndex = subindex;
+    request->state = SDO_STATE_UPLOAD;
+    _requestQueue.enqueue(request);
+    if (_request == nullptr)
+    {
+        _request = _requestQueue.dequeue();
+    }
 
     nextRequest();
 
@@ -199,11 +203,15 @@ qint32 SDO::uploadData(NodeIndex &index, quint8 subindex)
 
 qint32 SDO::downloadData(NodeIndex &index, quint8 subindex)
 {
-    RequestSdo *_request = new RequestSdo();
-    _request->index = &index;
-    _request->subIndex = subindex;
-    _request->state = SDO_STATE_DOWNLOAD;
-    _requestQueue.enqueue(_request);
+    RequestSdo *request = new RequestSdo();
+    request->index = &index;
+    request->subIndex = subindex;
+    request->state = SDO_STATE_DOWNLOAD;
+    _requestQueue.enqueue(request);
+    if (_request == nullptr)
+    {
+        _request = _requestQueue.dequeue();
+    }
 
     nextRequest();
 
@@ -212,25 +220,20 @@ qint32 SDO::downloadData(NodeIndex &index, quint8 subindex)
 
 qint32 SDO::uploadDispatcher()
 {
-    bool error;
     quint8 cmd = 0;
 
-    if (_request->index->subIndex(_request->subIndex)->dataType() != NodeSubIndex::DDOMAIN)
-    {
+//    if (_request->index->subIndex(_request->subIndex)->dataType() != NodeSubIndex::DDOMAIN)
+//    {
         cmd = SDO_CCS_CLIENT_UPLOAD_INITIATE;
-        error = sendSdoRequest(cmd, _request->index->index(), _request->subIndex);
-        if (error)
-        {
-            // TODO ABORT management error with framesWritten() and errorOccurred()
-        }
+        sendSdoRequest(cmd, _request->index2, _request->subIndex);
         _request->state = SDO_STATE_UPLOAD;
-    }
-    else
-    {
-        cmd = SDO_CCS_CLIENT_BLOCK_UPLOAD_INITIATE;
-        // TODO
-        _request->state = SDO_STATE_BLOCK_UPLOAD;
-    }
+//    }
+//    else
+//    {
+//        cmd = SDO_CCS_CLIENT_BLOCK_UPLOAD_INITIATE;
+//        // TODO
+//        _request->state = SDO_STATE_BLOCK_UPLOAD;
+//    }
 
     return 0;
 }
@@ -241,41 +244,27 @@ qint32 SDO::sdoUploadInitiate(const QCanBusFrame &frame)
     quint8 cmd = 0;
 
     _request->data.clear();
-    _request->index->subIndex(_request->subIndex);
     if (transferType == SDO_E_EXPEDITED)
     {
-        if (sizeIndicator == 0)  // data set size is not indicated
-        {
-        }
-        else if (sizeIndicator == 1)  // data set size is indicated
+        if (sizeIndicator == 1)  // data set size is indicated
         {
             _request->stay = (4 - SDO_N(frame.payload()));
-            _request->index->subIndex(_request->subIndex)->setValue( frame.payload().mid(4, static_cast<quint8>(_request->stay)));
-
+            //_request->index->subIndex(_request->subIndex)->setValue( frame.payload().mid(4, static_cast<quint8>(_request->stay)));
+            _request->data.append(frame.payload().mid(4, static_cast<quint8>(_request->stay)));
         }
         else
         {
         }
-
-        _request->state = SDO_STATE_FREE;
-
         requestFinished();
     }
     else if (transferType == SDO_E_NORMAL)
     {
         if (sizeIndicator == 0)  // data set size is not indicated
         {
-            // NOT USED
+            // NOT USED -> ERROR d is reserved for further use.
         }
-        else if (sizeIndicator == 1)  // data set size is indicated
-        {
 
-        }
-        else
-        {
-
-        }
-        _request->stay = static_cast<quint32>(frame.payload()[4]);
+        _request->stay = static_cast<quint32>(frame.payload().at(4));
         cmd = SDO_CCS_CLIENT_UPLOAD_SEGMENT;
         _request->toggle = 0;
         cmd |= (_request->toggle << 4) & SDO_TOGGLE_MASK;
@@ -310,12 +299,11 @@ qint32 SDO::sdoUploadSegment(const QCanBusFrame &frame)
     {
         size = (7 - SDO_N(frame.payload()));
         _request->data.append(frame.payload().mid(4, size));
-         _request->stay -= size;
+        _request->stay -= size;
 
         if ((frame.payload()[0] & SDO_C_MASK) == SDO_C)  // no more segments to be uploaded
         {
-            _request->index->subIndex(_request->subIndex)->setValue(_request->data);
-            _request->stay = SDO_STATE_FREE;
+//            _request->index->subIndex(_request->subIndex)->setValue(_request->data);
 
             emit dataObjetAvailable(_request->index);
             requestFinished();
@@ -587,15 +575,17 @@ void SDO::errorManagement()
 
 void SDO::requestFinished()
 {
+    //emit dataObjetAvailable(_request->index);
+    _node->nodeOd()->updateObjectFromDevice(_request->index2, _request->subIndex, _request->data);
     _request->state = SDO_STATE_FREE;
-    emit sdoFree();
+    //emit sdoFree();
 }
 
 void SDO::nextRequest()
 {
     if (!_requestQueue.isEmpty())
     {
-        if ((_request->state == SDO_STATE_FREE) || (_request == nullptr))
+        if (_request->state == SDO_STATE_FREE)
         {
             _request = _requestQueue.dequeue();
             if (_request->state == SDO_STATE_UPLOAD)
@@ -613,7 +603,8 @@ void SDO::nextRequest()
 void SDO::timeout()
 {
     uint32_t error = 0x08000000;
-    sendSdoRequest(0x80, _request->index->index(),_request->subIndex, error);
+    sendSdoRequest(CO_SDO_CS_ABORT, _request->index->index(),_request->subIndex, error);
+    _request->state = SDO_STATE_FREE;
     _timer->stop();
 }
 

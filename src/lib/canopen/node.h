@@ -35,6 +35,7 @@ public:
 
     CanOpenBus *bus() const;
     QList<Service *> services() const;
+    NodeOd *nodeOd() const;
 
     quint8 nodeId() const;
     void setNodeId(const quint8 &nodeId);
@@ -66,7 +67,7 @@ public:
     void setStatus(Status status);
 
     void loadDeviceIdentity(NodeIndex *nodeIndex);
-    void objectReceived(NodeIndex *nodeIndex);
+
     void searchEds();
 signals:
     void statusChanged(Status status);

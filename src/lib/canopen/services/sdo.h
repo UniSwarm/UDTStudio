@@ -20,8 +20,8 @@
 #define SDO_H
 
 #include <QQueue>
+#include <QTimer>
 #include "canopen_global.h"
-#include "model/deviceconfiguration.h"
 
 #include "service.h"
 #include "nodeindex.h"
@@ -39,7 +39,7 @@ public:
     quint32 cobIdClientToServer();
     quint32 cobIdServerToClient();
 
-    qint32 uploadData(NodeIndex &index, quint8 subindex);
+    qint32 uploadData(quint16 index, quint8 subindex);
     qint32 downloadData(NodeIndex &index, quint8 subindex);
 
     enum Status
@@ -73,6 +73,7 @@ private:
     {
         NodeIndex *index;
         Status state;
+        quint16 index2;
         quint8 subIndex;
         QByteArray data;
         quint32 stay;
@@ -84,7 +85,7 @@ private:
         quint8 seqno;               // sequence number of segment
     };
 
-    RequestSdo *_request;
+    RequestSdo *_request = nullptr;
     QQueue<RequestSdo *> _requestQueue;
 
     qint32 uploadDispatcher();
@@ -93,10 +94,10 @@ private:
     void errorManagement();
     void requestFinished();
     void nextRequest();
-    int _time;
-    void timeout();
 
+    int _time;
     QTimer *_timer;
+    void timeout();
 
     qint32 sdoUploadInitiate(const QCanBusFrame &frame);
     qint32 sdoUploadSegment(const QCanBusFrame &frame);

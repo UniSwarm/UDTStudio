@@ -53,7 +53,6 @@ Node::Node(quint8 nodeId, const QString &name)
     SDO *sdo = new SDO(this);
     _sdoClients.append(sdo);
     _services.append(sdo);
-    connect(sdo, &SDO::dataObjetAvailable, this, &Node::objectReceived);
 
     for (quint8 i = 0; i < 4; i++)
     {
@@ -88,6 +87,11 @@ CanOpenBus *Node::bus() const
 QList<Service *> Node::services() const
 {
     return _services;
+}
+
+NodeOd *Node::nodeOd() const
+{
+    return _nodeOd;
 }
 
 quint8 Node::nodeId() const
@@ -163,61 +167,17 @@ void Node::sendResetNode()
 
 void Node::readObject(quint16 index, quint8 subindex)
 {
-    if (_nodeOd->indexExist(index) == false)
-    {
-        NodeIndex *nodeIndex = new NodeIndex(index);
-        nodeIndex->setName(QString::number(index, 10));
-        nodeIndex->setObjectType(NodeIndex::NONE);
-
-        for (quint8 i = 0; i <= subindex; i++)
-        {
-            nodeIndex->addSubIndex(new NodeSubIndex(i));
-            nodeIndex->setName("SubIndex" + QString::number(i, 10));
-            nodeIndex->subIndex(i)->setDataType(NodeSubIndex::NONE);
-        }
-            _sdoClients.at(0)->uploadData(*nodeIndex, subindex);
-    }
-    else
-    {
-        _sdoClients.at(0)->uploadData(*_nodeOd->index(index), subindex);
-    }
+    _sdoClients.at(0)->uploadData(index, subindex);
 }
 
 void Node::readObject(quint16 index)
 {
-    if (_nodeOd->indexExist(index))
-    {
-        Q_FOREACH (NodeSubIndex *subIndex, _nodeOd->index(index)->subIndexes())
-        {
-            _sdoClients.at(0)->uploadData(*_nodeOd->index(index), subIndex->subIndex());
-        }
-    }
-    else
-    {
-        qDebug() << ">Node::readObject: Index not in NodeOd";
-    }
+
 }
 
 void Node::writeObject(quint16 index, quint8 subindex)
 {
-    if (!_nodeOd->indexExist(index))
-    {
-        NodeIndex *nodeIndex = new NodeIndex(index);
-        nodeIndex->setName(QString::number(index, 10));
-        nodeIndex->setObjectType(NodeIndex::NONE);
 
-        for (quint8 i = 0; i <= subindex; i++)
-        {
-            nodeIndex->addSubIndex(new NodeSubIndex(i));
-            nodeIndex->setName("SubIndex" + QString::number(i, 10));
-            nodeIndex->subIndex(i)->setDataType(NodeSubIndex::NONE);
-        }
-        _sdoClients.at(0)->downloadData(*nodeIndex, subindex);
-    }
-    else
-    {
-        _sdoClients.at(0)->downloadData(*_nodeOd->index(index), subindex);
-    }
 }
 
 void Node::loadEds(const QString &fileName)
@@ -252,74 +212,49 @@ void Node::searchEds()
 
 void Node::updateFirmware(const QByteArray &prog)
 {
-    uint16_t index = 0x1F50;
-    quint8 subindex = 0x01;
-    NodeIndex *index2;
+//    uint16_t index = 0x1F50;
+//    quint8 subindex = 0x01;
+//    NodeIndex *index2;
 
-    if (_nodeOd->indexExist(index))
-    {
-        index2 = _nodeOd->index(index);
-        index2->subIndex(subindex)->setValue(prog);
-        _sdoClients.at(0)->downloadData(*index2, subindex);
-    }
+//    if (_nodeOd->indexExist(index))
+//    {
+//        index2 = _nodeOd->index(index);
+//        index2->subIndex(subindex)->setValue(prog);
+//        _sdoClients.at(0)->downloadData(*index2, subindex);
+//    }
 }
 
 QString Node::device()
 {
-    uint16_t index = 0x1000;
+    quint16 index = 0x1000;
     quint8 subindex = 0x00;
-    NodeIndex *index2 = nullptr;
-
-    if (_nodeOd->indexExist(index))
-    {
-        index2 = _nodeOd->index(index);
-        _sdoClients.at(0)->uploadData(*index2, subindex);
-        return index2->subIndex(subindex)->value().toString();
-    }
-    return QString();
+    _sdoClients.at(0)->uploadData(index, subindex);
+    return _nodeOd->index(index)->subIndex(subindex)->value().toString();
 }
 
 QString Node::manuDeviceName()
 {
-    uint16_t index = 0x1008;
+    quint16 index = 0x1008;
     quint8 subindex = 0x00;
-    NodeIndex *index2 = nullptr;
-
-    if (_nodeOd->indexExist(index))
-    {
-        index2 = _nodeOd->index(index);
-        _sdoClients.at(0)->uploadData(*index2, subindex);
-        return index2->subIndex(subindex)->value().toString();
-    }
-    return QString();
+    _sdoClients.at(0)->uploadData(index, subindex);
+    // REDO
+    return _nodeOd->index(index)->subIndex(subindex)->value().toString();
 }
 QString Node::manufacturerHardwareVersion()
 {
-    uint16_t index = 0x1009;
+    quint16 index = 0x1009;
     quint8 subindex = 0x00;
-    NodeIndex *index2 = nullptr;
-
-    if (_nodeOd->indexExist(index))
-    {
-        index2 = _nodeOd->index(index);
-        _sdoClients.at(0)->uploadData(*index2, subindex);
-        return index2->subIndex(subindex)->value().toString();
-    }
-    return QString();
+    _sdoClients.at(0)->uploadData(index, subindex);
+    // REDO
+    return _nodeOd->index(index)->subIndex(subindex)->value().toString();
 }
 QString Node::manufacturerSoftwareVersion()
 {
-    uint16_t index = 0x100a;
+    quint16 index = 0x100a;
     quint8 subindex = 0x00;
-    NodeIndex *index2 = nullptr;
-
-    if (_nodeOd->indexExist(index))
-    {
-        index2 = _nodeOd->index(index);
-        _sdoClients.at(0)->uploadData(*index2, subindex);
-        return index2->subIndex(subindex)->value().toString();
-    }
-    return QString();
+    _sdoClients.at(0)->uploadData(index, subindex);
+    // REDO
+    return _nodeOd->index(index)->subIndex(subindex)->value().toString();
 }
 
 void Node::loadDeviceIdentity(NodeIndex *nodeIndex)
@@ -352,13 +287,4 @@ void Node::loadDeviceIdentity(NodeIndex *nodeIndex)
         readObject(0x1018, 0);
     }
 }
-
-void Node::objectReceived(NodeIndex *nodeIndex)
-{
-    if (_nodeOd->indexExist(nodeIndex->index()) == false)
-    {
-        _nodeOd->addIndex(nodeIndex);
-    }
-}
-
 
