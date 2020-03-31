@@ -25,7 +25,6 @@
 NodeOd::NodeOd(Node *node)
     : _node(node)
 {
-
     createMandatoryObject();
 }
 
@@ -81,9 +80,13 @@ void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, 
         index(indexDevice)->subIndex(subindexDevice)->setValue(data);
         emit updatedObject(indexDevice);
 
-        if (indexDevice == _notifyIndex && subindexDevice == _notifySubIndex)
+        quint32 key = (static_cast<quint32>(indexDevice) << 8) + subindexDevice;
+        QList<Subscriber> interrestedSubscribers = _subscribers.values(key);
+        QList<Subscriber>::const_iterator subscriber = interrestedSubscribers.cbegin();
+        while (subscriber != interrestedSubscribers.cend())
         {
-            ((*_notify)(_object, indexDevice, subindexDevice, data));
+            (((*subscriber).notify)((*subscriber).object, indexDevice, subindexDevice, data));
+            ++subscriber;
         }
     }
 }
@@ -152,4 +155,15 @@ bool NodeOd::loadEds(const QString &fileName)
     }
     qDebug() << ">loadEds :" << fileName;
     return true;
+}
+
+void NodeOd::subscribe(void *object, void (*notify)(void *, quint16, quint8, const QByteArray &), quint16 notifyIndex, quint8 notifySubIndex)
+{
+    Subscriber subscriber;
+    subscriber.object = object;
+    subscriber.notify = notify;
+    subscriber.notifyIndex = notifyIndex;
+    subscriber.notifySubIndex = notifySubIndex;
+    quint32 key = (static_cast<quint32>(notifyIndex) << 8) + notifySubIndex;
+    _subscribers.insert(key, subscriber);
 }

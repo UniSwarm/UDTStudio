@@ -22,6 +22,7 @@
 #include "canopen_global.h"
 
 #include <QMap>
+#include <QMultiMap>
 
 #include "model/index.h"
 #include "nodeindex.h"
@@ -38,7 +39,6 @@ public:
     const QMap<quint16, NodeIndex *> &indexes() const;
     NodeIndex *index(quint16 index) const;
     void addIndex(NodeIndex *index);
-
     int indexCount() const;
     bool indexExist(quint16 key) const;
 
@@ -46,10 +46,7 @@ public:
 
     bool loadEds(const QString &fileName);
 
-    void (*_notify)(void *object, quint16 index, quint8 subindexDevice, const QByteArray &data);
-    quint16 _notifyIndex;
-    quint8 _notifySubIndex;
-    void *_object;
+    void subscribe(void *object, void (*notify)(void *object, quint16 index, quint8 subindexDevice, const QByteArray &data), quint16 notifyIndex, quint8 notifySubIndex);
 
 signals:
     void updatedObject(quint16 indexDevice);
@@ -60,6 +57,15 @@ private:
     QString _fileName;
 
     void createMandatoryObject();
+
+    struct Subscriber
+    {
+        void *object;
+        void (*notify)(void *object, quint16 index, quint8 subindexDevice, const QByteArray &data);
+        quint16 notifyIndex;
+        quint8 notifySubIndex;
+    };
+    QMultiMap<quint32, Subscriber> _subscribers;
 };
 
 #endif // NODEOD_H

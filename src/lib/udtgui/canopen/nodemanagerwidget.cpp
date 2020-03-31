@@ -63,6 +63,7 @@ void NodeManagerWidget::setNode(Node *node)
     _node = node;
     if (_node)
     {
+        _node->nodeOd()->subscribe(this, NodeManagerWidget::snotify, 0x1000, 0x00);
         connect(_node, &Node::statusChanged, this, &NodeManagerWidget::updateData);
     }
     _groupBox->setEnabled(_node);
@@ -114,12 +115,6 @@ void NodeManagerWidget::test()
 {
     if (_node)
     {
-        // TODO move to register fonction
-        _node->nodeOd()->_object = this;
-        _node->nodeOd()->_notifyIndex = 0x1000;
-        _node->nodeOd()->_notifySubIndex = 0x00;
-        _node->nodeOd()->_notify = NodeManagerWidget::snotify;
-
         _node->readObject(0x1000, 0x00);
     }
 }
