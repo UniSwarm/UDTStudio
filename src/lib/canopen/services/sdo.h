@@ -80,7 +80,7 @@ private:
         RequestState state;
         quint16 index;
         quint8 subIndex;
-        QByteArray data;
+        QVariant data;
         quint32 stay;
         quint8 toggle;
 
