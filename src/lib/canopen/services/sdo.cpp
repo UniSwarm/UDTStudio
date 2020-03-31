@@ -51,6 +51,9 @@ SDO::SDO(Node *node)
     _time = 6000;
     _timer = new QTimer(this);
     connect(_timer, &QTimer::timeout, this, &SDO::timeout);
+
+    _state = SDO_STATE_FREE;
+    _request = nullptr;
 }
 
 QString SDO::type() const
@@ -70,6 +73,10 @@ quint32 SDO::cobIdServerToClient()
 
 void SDO::parseFrame(const QCanBusFrame &frame)
 {
+    if (_request == nullptr)
+    {
+        return;
+    }
     quint8 scs = static_cast<quint8>SDO_SCS(frame.payload());
     qDebug() << QString::number(frame.frameId(), 16) << QString::number(scs, 16);
 
@@ -165,7 +172,14 @@ qint32 SDO::sdoUploadInitiate(const QCanBusFrame &frame)
     quint8 sizeIndicator = static_cast<quint8>(frame.payload().at(0) & Flag::SDO_S_MASK);
     quint8 cmd = 0;
 
+
+
+
+    /////////////////////////////////
     _request->data.clear();
+
+
+    /////////////////////////////////
     if (transferType == Flag::SDO_E_EXPEDITED)
     {
         if (sizeIndicator == 1)  // data set size is indicated

@@ -90,9 +90,9 @@ private:
         quint8 seqno;               // sequence number of segment
     };
 
-    RequestSdo *_request = nullptr;
+    RequestSdo *_request;
     QQueue<RequestSdo *> _requestQueue;
-    Status _state = SDO_STATE_FREE;
+    Status _state;
 
     qint32 uploadDispatcher();
     qint32 downloadDispatcher();
