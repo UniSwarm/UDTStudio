@@ -28,6 +28,7 @@
 #include "nodeindex.h"
 
 class Node;
+class NodeOdSubscriber;
 
 class CANOPEN_EXPORT NodeOd : public QObject
 {
@@ -46,7 +47,8 @@ public:
 
     bool loadEds(const QString &fileName);
 
-    void subscribe(void *object, void (*notify)(void *object, quint16 index, quint8 subindexDevice, const QByteArray &data), quint16 notifyIndex, quint8 notifySubIndex);
+    void subscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex);
+    void unsubscribe(NodeOdSubscriber *object);
 
 signals:
     void updatedObject(quint16 indexDevice);
@@ -60,8 +62,7 @@ private:
 
     struct Subscriber
     {
-        void *object;
-        void (*notify)(void *object, quint16 index, quint8 subindexDevice, const QByteArray &data);
+        NodeOdSubscriber *object;
         quint16 notifyIndex;
         quint8 notifySubIndex;
     };

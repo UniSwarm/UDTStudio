@@ -13,6 +13,7 @@ SOURCES += \
     $$PWD/canopenbus.cpp \
     $$PWD/node.cpp \
     $$PWD/nodeod.cpp \
+    $$PWD/nodeodsubscriber.cpp \
     $$PWD/nodeindex.cpp \
     $$PWD/nodesubindex.cpp \
     $$PWD/canopen.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
     $$PWD/canopenbus.h \
     $$PWD/node.h \
     $$PWD/nodeod.h \
+    $$PWD/nodeodsubscriber.h \
     $$PWD/nodeindex.h \
     $$PWD/nodesubindex.h \
     $$PWD/canopen.h \

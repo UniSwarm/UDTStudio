@@ -22,6 +22,7 @@
 #include "../udtgui_global.h"
 
 #include <QWidget>
+#include "nodeodsubscriber.h"
 
 #include <QGroupBox>
 #include <QLineEdit>
@@ -30,7 +31,7 @@
 
 #include "node.h"
 
-class UDTGUI_EXPORT NodeManagerWidget : public QWidget
+class UDTGUI_EXPORT NodeManagerWidget : public QWidget, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
@@ -38,9 +39,6 @@ public:
     NodeManagerWidget(Node *node, QWidget *parent = nullptr);
 
     Node *node() const;
-
-    static void snotify(void* object, quint16 index, quint8 subindexDevice, const QByteArray &data);
-    void notify(quint16 index, quint8 subindexDevice, const QByteArray &data);
 
 signals:
 
@@ -63,6 +61,10 @@ protected:
     QLabel *_nodeStatusLabel;
 
     Node *_node;
+
+    // NodeOdSubscriber interface
+protected:
+    void odNotify(quint16 index, quint8 subindex, const QVariant &value) override;
 };
 
 #endif // NODEMANAGERWIDGET_H

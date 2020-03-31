@@ -31,24 +31,13 @@ NodeManagerWidget::NodeManagerWidget(Node *node, QWidget *parent)
     _node = nullptr;
     createWidgets();
     setNode(node);
+
+    registerSubIndex(0x1000, 0x00);
 }
 
 Node *NodeManagerWidget::node() const
 {
     return _node;
-}
-
-void NodeManagerWidget::snotify(void *object, quint16 index, quint8 subindexDevice, const QByteArray &data)
-{
-    static_cast<NodeManagerWidget *>(object)->notify(index, subindexDevice, data);
-}
-
-void NodeManagerWidget::notify(quint16 index, quint8 subindexDevice, const QByteArray &data)
-{
-    if (index == 0x1000 && subindexDevice == 0x00)
-    {
-        _index1000Label->setText(data.toHex(' ').toUpper());
-    }
 }
 
 void NodeManagerWidget::setNode(Node *node)
@@ -60,10 +49,12 @@ void NodeManagerWidget::setNode(Node *node)
             disconnect(_node, &Node::statusChanged, this, &NodeManagerWidget::updateData);
         }
     }
+
+    setNodeInterrest(node);
     _node = node;
+
     if (_node)
     {
-        _node->nodeOd()->subscribe(this, NodeManagerWidget::snotify, 0x1000, 0x00);
         connect(_node, &Node::statusChanged, this, &NodeManagerWidget::updateData);
     }
     _groupBox->setEnabled(_node);
@@ -154,4 +145,12 @@ void NodeManagerWidget::createWidgets()
     layout->addWidget(_groupBox);
 
     setLayout(layout);
+}
+
+void NodeManagerWidget::odNotify(quint16 index, quint8 subindex, const QVariant &value)
+{
+    if (index == 0x1000 && subindex == 0x00)
+    {
+        _index1000Label->setText(value.toByteArray().toHex(' ').toUpper());
+    }
 }
