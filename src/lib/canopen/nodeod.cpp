@@ -165,6 +165,23 @@ bool NodeOd::loadEds(const QString &fileName)
     return true;
 }
 
+QVariant NodeOd::value(quint16 index, quint8 subIndex)
+{
+    NodeIndex *nodeIndex = this->index(index);
+    if (!nodeIndex)
+    {
+        return QVariant();
+    }
+
+    NodeSubIndex *nodeSubIndex = nodeIndex->subIndex(subIndex);
+    if (!nodeSubIndex)
+    {
+        return QVariant();
+    }
+
+    return nodeSubIndex->value();
+}
+
 void NodeOd::subscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex)
 {
     Subscriber subscriber;

@@ -47,6 +47,7 @@ public:
 
     bool loadEds(const QString &fileName);
 
+    QVariant value(quint16 index, quint8 subIndex = 0x00);
     void subscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex);
     void unsubscribe(NodeOdSubscriber *object);
 
