@@ -40,7 +40,7 @@ public:
     quint32 cobIdServerToClient();
 
     qint32 uploadData(quint16 index, quint8 subindex);
-    qint32 downloadData(quint16 index, quint8 subindex, const QByteArray &data);
+    qint32 downloadData(quint16 index, quint8 subindex, const QVariant &data);
 
     enum Status
     {

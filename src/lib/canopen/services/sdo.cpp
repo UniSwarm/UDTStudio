@@ -134,12 +134,12 @@ qint32 SDO::uploadData(quint16 index, quint8 subindex)
     return 0;
 }
 
-qint32 SDO::downloadData(quint16 index, quint8 subindex, const QByteArray &data)
+qint32 SDO::downloadData(quint16 index, quint8 subindex, const QVariant &data)
 {
     RequestSdo *request = new RequestSdo();
     request->index = index;
     request->subIndex = subindex;
-    request->data = data;
+    request->data = data.toByteArray();
     request->state = STATE_DOWNLOAD;
     _requestQueue.enqueue(request);
 
@@ -488,7 +488,7 @@ void SDO::errorManagement()
 void SDO::requestFinished()
 {
     // TODO convert data to the good type
-    _node->nodeOd()->updateObjectFromDevice(_request->index, _request->subIndex, _request->data);
+    _node->nodeOd()->updateObjectFromDevice(_request->index, _request->subIndex, QVariant(_request->data));
     _state = SDO_STATE_FREE;
 }
 
