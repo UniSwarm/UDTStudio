@@ -78,7 +78,7 @@ void SDO::parseFrame(const QCanBusFrame &frame)
         return;
     }
     quint8 scs = static_cast<quint8>SDO_SCS(frame.payload());
-    qDebug() << QString::number(frame.frameId(), 16) << QString::number(scs, 16);
+    //qDebug() << QString::number(frame.frameId(), 16) << QString::number(scs, 16);
 
     _timer->stop();
     switch (scs)
@@ -487,6 +487,7 @@ void SDO::errorManagement()
 
 void SDO::requestFinished()
 {
+    // TODO convert data to the good type
     _node->nodeOd()->updateObjectFromDevice(_request->index, _request->subIndex, _request->data);
     _state = SDO_STATE_FREE;
 }

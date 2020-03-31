@@ -43,15 +43,12 @@ public:
     int indexCount() const;
     bool indexExist(quint16 key) const;
 
-    void updateObjectFromDevice(quint16 index, quint8 subindex, QByteArray &data);
+    void updateObjectFromDevice(quint16 index, quint8 subindex, const QVariant &value);
 
     bool loadEds(const QString &fileName);
 
     void subscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex);
     void unsubscribe(NodeOdSubscriber *object);
-
-signals:
-    void updatedObject(quint16 indexDevice);
 
 private:
     Node *_node;
@@ -67,6 +64,7 @@ private:
         quint8 notifySubIndex;
     };
     QMultiMap<quint32, Subscriber> _subscribers;
+    void notifySubscribers(quint16 notifyIndex, quint8 notifySubIndex, const QVariant &value);
 };
 
 #endif // NODEOD_H

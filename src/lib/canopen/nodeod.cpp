@@ -74,22 +74,15 @@ bool NodeOd::indexExist(quint16 key) const
     return _nodeIndexes.contains(key);
 }
 
-void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, QByteArray &data)
+void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, const QVariant &value)
 {
     if (indexExist(indexDevice))
     {
-        index(indexDevice)->subIndex(subindexDevice)->setValue(data);
-        emit updatedObject(indexDevice);
+        index(indexDevice)->subIndex(subindexDevice)->setValue(value);
 
-        quint32 key = (static_cast<quint32>(indexDevice) << 8) + subindexDevice;
-        QList<Subscriber> interrestedSubscribers = _subscribers.values(key);
-        QList<Subscriber>::const_iterator subscriber = interrestedSubscribers.cbegin();
-        while (subscriber != interrestedSubscribers.cend())
-        {
-            NodeOdSubscriber *nodeOdSubscriber = (*subscriber).object;
-            nodeOdSubscriber->notifySubscriber(indexDevice, subindexDevice, data);
-            ++subscriber;
-        }
+        notifySubscribers(indexDevice, subindexDevice, value);   // notify subscribers to index/subindex
+        notifySubscribers(indexDevice, 0xFFu, value);            // notify subscribers to index with all subindex
+        notifySubscribers(0xFFFFu, 0xFFu, value);                // notify subscribers to the full od
     }
 }
 
@@ -128,6 +121,19 @@ void NodeOd::createMandatoryObject()
     identityObject->subIndex(0)->setName("Serial number");
 
     this->addIndex(identityObject);
+}
+
+void NodeOd::notifySubscribers(quint16 notifyIndex, quint8 notifySubIndex, const QVariant &value)
+{
+    quint32 key = (static_cast<quint32>(notifyIndex) << 8) + notifySubIndex;
+    QList<Subscriber> interrestedSubscribers = _subscribers.values(key);
+    QList<Subscriber>::const_iterator subscriber = interrestedSubscribers.cbegin();
+    while (subscriber != interrestedSubscribers.cend())
+    {
+        NodeOdSubscriber *nodeOdSubscriber = (*subscriber).object;
+        nodeOdSubscriber->notifySubscriber(notifyIndex, notifySubIndex, value);
+        ++subscriber;
+    }
 }
 
 bool NodeOd::loadEds(const QString &fileName)

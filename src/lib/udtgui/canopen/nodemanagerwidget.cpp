@@ -152,5 +152,6 @@ void NodeManagerWidget::odNotify(quint16 index, quint8 subindex, const QVariant 
     if (index == 0x1000 && subindex == 0x00)
     {
         _index1000Label->setText(value.toByteArray().toHex(' ').toUpper());
+        //_index1000Label->setNum(value.toInt());
     }
 }
