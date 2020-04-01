@@ -26,7 +26,9 @@ HEADERS += \
     $$PWD/parser/deviceconfigurationparser.h \
     $$PWD/parser/deviceiniparser.h \
     $$PWD/parser/devicedescriptionparser.h \
-    $$PWD/parser/edsparser.h
+    $$PWD/parser/edsparser.h \
+    $$PWD/db/oddb.h \
+    $$PWD/db/odindexdb.h
 
 SOURCES += \
     $$PWD/model/index.cpp \
@@ -46,4 +48,6 @@ SOURCES += \
     $$PWD/parser/deviceconfigurationparser.cpp \
     $$PWD/parser/deviceiniparser.cpp \
     $$PWD/parser/devicedescriptionparser.cpp \
-    $$PWD/parser/edsparser.cpp
+    $$PWD/parser/edsparser.cpp \
+    $$PWD/db/oddb.cpp \
+    $$PWD/db/odindexdb.cpp
