@@ -212,4 +212,3 @@ void Node::updateFirmware(const QByteArray &prog)
     _sdoClients.at(0)->downloadData(index, subindex, prog);
 
 }
-

@@ -67,6 +67,7 @@ public:
     void setStatus(Status status);
 
     void searchEds();
+
 signals:
     void statusChanged(Status status);
 

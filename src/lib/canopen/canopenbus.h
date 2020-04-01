@@ -60,7 +60,7 @@ public slots:
     void exploreBus();
 
 signals:
-    void frameAvailable(QCanBusFrame frame);
+    void frameAvailable(const QCanBusFrame &frame);
     void frameErrorOccurred(QCanBusDevice::CanBusError error);
     void frameTransmit(qint64 framesCount);
     void stateCanOpenChanged(QCanBusDevice::CanBusDeviceState state);
@@ -77,6 +77,7 @@ protected:
 
     // services
     ServiceDispatcher *_serviceDispatcher;
+    NodeDiscover *_nodeDiscover;
     Sync *_sync;
     TimeStamp *_timestamp;
 };

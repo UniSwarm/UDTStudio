@@ -29,5 +29,6 @@
 #include "sdo.h"
 #include "sync.h"
 #include "timestamp.h"
+#include "nodediscover.h"
 
 #endif // SERVICES_H

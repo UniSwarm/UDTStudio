@@ -26,7 +26,8 @@ SOURCES += \
     $$PWD/services/sync.cpp \
     $$PWD/services/timestamp.cpp \
     $$PWD/services/errorcontrol.cpp \
-    $$PWD/services/servicedispatcher.cpp
+    $$PWD/services/servicedispatcher.cpp \
+    $$PWD/services/nodediscover.cpp
 
 
 HEADERS += \
@@ -48,7 +49,8 @@ HEADERS += \
     $$PWD/services/sync.h \
     $$PWD/services/timestamp.h \
     $$PWD/services/errorcontrol.h \
-    $$PWD/services/servicedispatcher.h
+    $$PWD/services/servicedispatcher.h \
+    $$PWD/services/nodediscover.h
 
 INCLUDEPATH += $$PWD/../od/
 

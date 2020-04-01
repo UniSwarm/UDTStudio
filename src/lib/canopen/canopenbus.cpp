@@ -26,16 +26,24 @@ CanOpenBus::CanOpenBus(QCanBusDevice *canDevice)
     _canDevice = nullptr;
     setCanDevice(canDevice);
 
+    // services
     _serviceDispatcher = new ServiceDispatcher(this);
-    _sync = new Sync(this);
-    _timestamp = new TimeStamp(this);
 
+    _sync = new Sync(this);
+    _serviceDispatcher->addService(_sync);
+
+    _timestamp = new TimeStamp(this);
+    _serviceDispatcher->addService(_timestamp);
+
+    _nodeDiscover = new NodeDiscover(this);
+    _serviceDispatcher->addService(_nodeDiscover);
 }
 
 CanOpenBus::~CanOpenBus()
 {
     delete _sync;
     delete _timestamp;
+    delete _nodeDiscover;
     delete _serviceDispatcher;
 
     if (_canDevice)
@@ -115,19 +123,7 @@ void CanOpenBus::addNode(Node *node)
 
 void CanOpenBus::exploreBus()
 {
-    QCanBusFrame frameNodeGuarding;
-
-    if (!_canDevice)
-    {
-        return;
-    }
-
-    for (quint8 i = 1; i <= 127; i++)
-    {
-        frameNodeGuarding.setFrameId(0x700 + i);
-        frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
-        _canDevice->writeFrame(frameNodeGuarding);
-    }
+    _nodeDiscover->explore();
 }
 
 QCanBusDevice *CanOpenBus::canDevice() const

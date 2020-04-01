@@ -16,31 +16,34 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef SERVICEDISPATCHER_H
-#define SERVICEDISPATCHER_H
+#ifndef NODEDISCOVER_H
+#define NODEDISCOVER_H
 
 #include "canopen_global.h"
 
 #include "service.h"
 
-#include <QMultiMap>
+#include <QTimer>
 
-class CANOPEN_EXPORT ServiceDispatcher : public Service
+class CANOPEN_EXPORT NodeDiscover : public Service
 {
     Q_OBJECT
 public:
-    ServiceDispatcher(CanOpenBus *bus);
-    ~ServiceDispatcher() override;
+    NodeDiscover(CanOpenBus *bus);
 
     QString type() const override;
 
-    void addService(uint32_t canId, Service *service);
-    void addService(Service *service);
-
     void parseFrame(const QCanBusFrame &frame) override;
 
+    void explore();
+
+protected slots:
+    void exploreNext();
+
 protected:
-    QMultiMap<quint32, Service *> _servicesMap;
+    // explorer
+    quint8 _exploreId;
+    QTimer _exploreTimer;
 };
 
-#endif // SERVICEDISPATCHER_H
+#endif // NODEDISCOVER_H

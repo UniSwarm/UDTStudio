@@ -21,7 +21,7 @@
 #include "canopenbus.h"
 
 Service::Service(CanOpenBus *bus)
-    : _bus(bus)
+    : _bus(bus), _node(nullptr)
 {
 }
 
