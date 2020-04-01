@@ -38,6 +38,13 @@ void CanFrameModel::appendCanFrame(const QCanBusFrame &frame)
     emit layoutChanged();
 }
 
+void CanFrameModel::clear()
+{
+    emit layoutAboutToBeChanged();
+    _frames.clear();
+    emit layoutChanged();
+}
+
 int CanFrameModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
@@ -107,6 +114,7 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
             case QCanBusFrame::InvalidFrame:
                 return QVariant(tr("NV"));
             }
+            return QVariant();
         case DLC:
             return QVariant(canFrame.payload().count());
         case DataByte:

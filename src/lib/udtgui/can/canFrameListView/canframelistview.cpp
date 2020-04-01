@@ -42,6 +42,11 @@ void CanFrameListView::appendCanFrame(const QCanBusFrame &frame)
     }
 }
 
+void CanFrameListView::clear()
+{
+    _canModel->clear();
+}
+
 CanFrameListView::~CanFrameListView()
 {
     delete _canModel;

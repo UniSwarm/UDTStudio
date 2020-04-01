@@ -29,11 +29,14 @@
 
 class UDTGUI_EXPORT CanFrameListView : public QTableView
 {
- public:
+    Q_OBJECT
+public:
     CanFrameListView(QWidget *parent = nullptr);
     ~CanFrameListView();
 
+public slots:
     void appendCanFrame(const QCanBusFrame &frame);
+    void clear();
 
 protected:
     CanFrameModel *_canModel;

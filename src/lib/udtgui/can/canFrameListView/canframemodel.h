@@ -34,6 +34,7 @@ public:
     ~CanFrameModel();
 
     void appendCanFrame(const QCanBusFrame &frame);
+    void clear();
 
     enum Column {
         Time,
