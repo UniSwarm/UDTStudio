@@ -25,7 +25,6 @@
 
 int main(int argc, char *argv[])
 {
-    int ret;
     QApplication a(argc, argv);
 
     ODTreeView w;
@@ -36,6 +35,7 @@ int main(int argc, char *argv[])
         DeviceDescription *deviceDescription = parser.parse(a.arguments()[1]);
         w.setDeviceModel(deviceDescription);
     }
+    w.setEditable(true);
     w.show();
     w.resize(QApplication::screens()[0]->size() / 2);
     for (int i=0; i<4; i++)
@@ -43,10 +43,5 @@ int main(int argc, char *argv[])
         w.resizeColumnToContents(i);
     }
 
-     ret = a.exec();
-     if (w.deviceModel())
-     {
-         delete w.deviceModel();
-     }
-     return ret;
+    return a.exec();
 }

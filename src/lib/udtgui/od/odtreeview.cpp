@@ -26,6 +26,11 @@ ODTreeView::ODTreeView(QWidget *parent)
     _odModelSorter->setSourceModel(_odModel);
     setModel(_odModelSorter);
 
+    /*
+    _odModelSorter->setFilterRegularExpression(QRegularExpression("0x1[0-9]{3}"));
+    _odModelSorter->setFilterKeyColumn(ODItemModel::OdIndex);
+*/
+
     setSortingEnabled(true);
     sortByColumn(0, Qt::SortOrder::AscendingOrder);
 }
