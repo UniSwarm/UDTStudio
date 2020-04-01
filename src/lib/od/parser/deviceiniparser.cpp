@@ -48,7 +48,7 @@ void DeviceIniParser::readObjects(DeviceModel *deviceModel) const
 void DeviceIniParser::readIndexes(DeviceModel *deviceModel) const
 {
     QRegularExpression reIndex("^[0-9A-F]{1,4}$");
-    foreach (const QString &group, _file->childGroups())
+    for (const QString &group : _file->childGroups())
     {
         bool ok;
         uint16_t numIndex = 0;
@@ -76,7 +76,7 @@ void DeviceIniParser::readIndexes(DeviceModel *deviceModel) const
 void DeviceIniParser::readSubIndexes(DeviceModel *deviceModel) const
 {
     QRegularExpression reSub("^([0-9A-F]{4})sub([0-9]+)");
-    foreach (const QString &group, _file->childGroups())
+    for (const QString &group : _file->childGroups())
     {
         bool ok;
         uint8_t numSubIndex = 0;
@@ -114,7 +114,7 @@ void DeviceIniParser::readIndex(Index *index) const
     uint8_t maxSubIndex;
     QString name;
 
-    foreach (const QString &key, _file->allKeys())
+    for (const QString &key : _file->allKeys())
     {
         bool ok;
         QString value = _file->value(key).toString();
@@ -164,7 +164,7 @@ void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
     QVariant lowLimit;
     QVariant highLimit;
 
-    foreach (const QString &key, _file->allKeys())
+    for (const QString &key : _file->allKeys())
     {
         QString value = _file->value(key).toString();
 
@@ -297,7 +297,7 @@ QVariant DeviceIniParser::readData(bool *nodeId) const
  */
 void DeviceIniParser::readFileInfo(DeviceModel *deviceModel) const
 {
-    foreach (const QString &key, _file->allKeys())
+    for (const QString &key : _file->allKeys())
     {
         deviceModel->setFileInfo(key, _file->value(key).toString());
     }
@@ -309,7 +309,7 @@ void DeviceIniParser::readFileInfo(DeviceModel *deviceModel) const
  */
 void DeviceIniParser::readDummyUsage(DeviceModel *deviceModel) const
 {
-    foreach (const QString &key, _file->allKeys())
+    for (const QString &key : _file->allKeys())
     {
         deviceModel->setDummyUsage(key, _file->value(key).toString());
     }
@@ -321,7 +321,7 @@ void DeviceIniParser::readDummyUsage(DeviceModel *deviceModel) const
  */
 void DeviceIniParser::readDeviceInfo(DeviceDescription *deviceDescription) const
 {
-    foreach (const QString &key, _file->allKeys())
+    for (const QString &key : _file->allKeys())
     {
         deviceDescription->setDeviceInfo(key, _file->value(key).toString());
     }
@@ -333,7 +333,7 @@ void DeviceIniParser::readDeviceInfo(DeviceDescription *deviceDescription) const
  */
 void DeviceIniParser::readDeviceComissioning(DeviceConfiguration *deviceConfiguration) const
 {
-    foreach (const QString &key, _file->allKeys())
+    for (const QString &key : _file->allKeys())
     {
         deviceConfiguration->addDeviceComissioning(key, _file->value(key).toString());
     }

@@ -138,12 +138,14 @@ DeviceConfiguration *DeviceConfiguration::fromDeviceDescription(const DeviceDesc
     deviceConfiguration->setNodeId(QString::number(nodeId));
     deviceConfiguration->setDummyUsages(deviceDescription->dummyUsages());
 
-    foreach (Index *index, deviceDescription->indexes())
-        deviceConfiguration->addIndex(new Index(*index));
-
-    foreach (Index *index, deviceConfiguration->indexes())
+    for (Index *index: deviceDescription->indexes())
     {
-        foreach (SubIndex *subIndex, index->subIndexes())
+        deviceConfiguration->addIndex(new Index(*index));
+    }
+
+    for (Index *index : deviceConfiguration->indexes())
+    {
+        for (SubIndex *subIndex : index->subIndexes())
         {
             if (subIndex->hasNodeId())
             {

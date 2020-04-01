@@ -50,7 +50,7 @@ DeviceConfiguration *DcfParser::parse(const QString &path) const
     DeviceIniParser parser(&file);
 
     // infos
-    foreach (const QString &group, file.childGroups())
+    for (const QString &group : file.childGroups())
     {
         if (group == "DeviceComissioning")
         {

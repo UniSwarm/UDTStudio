@@ -40,7 +40,7 @@ Index::Index(const Index &other)
     _objectType = other.objectType();
     _name = other.name();
 
-    foreach (SubIndex *subIndex, other._subIndexes)
+    for (SubIndex *subIndex : other._subIndexes)
     {
         _subIndexes.insert(subIndex->subIndex(), new SubIndex(*subIndex));
     }

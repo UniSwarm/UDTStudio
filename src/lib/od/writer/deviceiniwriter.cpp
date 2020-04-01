@@ -50,7 +50,7 @@ void DeviceIniWriter::writeObjects(const DeviceModel *deviceModel) const
     QList<Index *> optionals;
     QList<Index *> manufacturers;
 
-    foreach (Index *index, deviceModel->indexes().values())
+    for (Index *index : deviceModel->indexes().values())
     {
         uint16_t numIndex = index->index();
 
@@ -155,7 +155,7 @@ void DeviceIniWriter::writeSupportedIndexes(const QList<Index *> &indexes) const
 
     int base = 16;
     int i = 1;
-    foreach (Index *index, indexes)
+    for (Index *index : indexes)
     {
         *_file << i << "=" << valueToString(index->index(), base) << "\n";
         i++;
@@ -168,7 +168,7 @@ void DeviceIniWriter::writeSupportedIndexes(const QList<Index *> &indexes) const
  */
 void DeviceIniWriter::writeListIndex(const QList<Index *> indexes) const
 {
-    foreach (Index *index, indexes)
+    for (Index *index : indexes)
     {
         switch (index->objectType())
         {
@@ -228,7 +228,7 @@ void DeviceIniWriter::writeRecord(Index *index) const
     *_file << "SubNumber=" << valueToString(index->subIndexesCount(), base) << "\n";
     *_file << "\n";
 
-    foreach (SubIndex *subIndex, index->subIndexes())
+    for (SubIndex *subIndex : index->subIndexes())
     {
         *_file << "[" << QString::number(index->index(), base).toUpper() << "sub" << subIndex->subIndex() << "]\n";
         *_file << "ParameterName=" << subIndex->name() << "\n";
@@ -274,7 +274,7 @@ void DeviceIniWriter::writeLimit(const SubIndex *subIndex) const
  */
 void DeviceIniWriter::writeStringMap(const QMap<QString, QString> &map) const
 {
-    foreach (const QString &key, map.keys())
+    for (const QString &key : map.keys())
     {
         *_file << key << "=" << map.value(key) << "\n";
     }

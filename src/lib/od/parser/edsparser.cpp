@@ -50,7 +50,7 @@ DeviceDescription *EdsParser::parse(const QString &path) const
     DeviceIniParser parser(&file);
 
     // infos
-    foreach (const QString &group, file.childGroups())
+    for (const QString &group : file.childGroups())
     {
         if (group == "DeviceInfo")
         {
@@ -59,7 +59,6 @@ DeviceDescription *EdsParser::parse(const QString &path) const
             file.endGroup();
             continue;
         }
-
         else if (group == "FileInfo")
         {
             file.beginGroup(group);
@@ -67,7 +66,6 @@ DeviceDescription *EdsParser::parse(const QString &path) const
             file.endGroup();
             continue;
         }
-
         else if (group == "DummyUsage")
         {
             file.beginGroup(group);

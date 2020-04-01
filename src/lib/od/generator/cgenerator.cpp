@@ -121,7 +121,7 @@ void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
 
     QMap<uint16_t, Index *> indexes = deviceConfiguration->indexes();
 
-    foreach (Index *index, indexes)
+    for (Index *index : indexes)
     {
         writeRecordDefinitionH(index, out);
     }
@@ -135,7 +135,7 @@ void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
     out << "{"
         << "\n";
 
-    foreach (Index *index, indexes)
+    for (Index *index : indexes)
     {
         writeIndexH(index, out);
     }
@@ -158,7 +158,7 @@ void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
         << "\n";
     out << "\n";
 
-    foreach (Index *index, indexes)
+    for (Index *index : indexes)
     {
         writeDefineH(index, out);
     }
@@ -215,11 +215,11 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
 
     QMap<uint16_t, Index *> indexes = deviceConfiguration->indexes();
 
-    foreach (Index *index, indexes)
+    for (Index *index : indexes)
     {
         if (index->maxSubIndex() > 0)
         {
-            foreach (SubIndex *subIndex, index->subIndexes())
+            for (SubIndex *subIndex : index->subIndexes())
             {
                 writeCharLineC(subIndex, out);
             }
@@ -235,7 +235,7 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
     QList<Index *> appIndexes;
     QList<Index *> commIndexes;
 
-    foreach (Index *index, indexes)
+    for (Index *index : indexes)
     {
         if (index->index() < 0x1000)
         {
@@ -271,7 +271,7 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
     out << "// ==================== record completion ================="
         << "\n";
 
-    foreach (Index *index, indexes)
+    for (Index *index : indexes)
     {
         writeRecordCompletionC(index, out);
     }
@@ -283,7 +283,7 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
     out << "{"
         << "\n";
 
-    foreach (Index *index, indexes)
+    for (Index *index : indexes)
     {
         writeOdCompletionC(index, out);
     }
@@ -684,7 +684,7 @@ void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile) const
         hFile << "typedef struct"
               << "  // 0x" << QString::number(index->index(), 16) << "\n{\n";
 
-        foreach (const SubIndex *subIndex, index->subIndexes())
+        for (SubIndex *subIndex : index->subIndexes())
         {
             QString dataType = typeToString(subIndex->dataType());
             if (dataType == nullptr)
@@ -787,7 +787,7 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
 
     case Index::Object::RECORD:
         subIndexes = index->subIndexes();
-        foreach (SubIndex *subIndex, subIndexes)
+        for (SubIndex *subIndex : subIndexes)
         {
             cFile << "    "
                   << "OD_RAM." << varNameToString(index->name()) << "." << varNameToString(subIndex->name());
@@ -834,7 +834,7 @@ void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
         cFile << "static const OD_entrySubIndex_t OD_Record" << QString::number(index->index(), 16).toUpper() << "[" << index->maxSubIndex() << "] =\n";
         cFile << "{\n";
 
-        foreach (SubIndex *subIndex, index->subIndexes())
+        for (SubIndex *subIndex : index->subIndexes())
         {
             cFile << "    "
                   << "{(void*)&OD_RAM." << varNameToString(index->name());
@@ -969,7 +969,7 @@ void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile) co
 void CGenerator::writeInitRamC(QList<Index *> indexes, QTextStream &cFile) const
 {
     uint8_t lastOT = 0;
-    foreach (Index *index, indexes)
+    for (Index *index : indexes)
     {
         if (index->objectType() != lastOT || index->objectType() == Index::Object::RECORD || index->objectType() == Index::Object::ARRAY)
         {
@@ -994,7 +994,7 @@ void CGenerator::writeDefineH(Index *index, QTextStream &hFile) const
 
     if (index->objectType() == Index::Object::RECORD)
     {
-        foreach (SubIndex *subIndex, index->subIndexes())
+        for (SubIndex *subIndex : index->subIndexes())
         {
             hFile << "#define "
                   << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(subIndex->subIndex(), 16).toUpper();
@@ -1004,7 +1004,7 @@ void CGenerator::writeDefineH(Index *index, QTextStream &hFile) const
 
     else if (index->objectType() == Index::Object::ARRAY)
     {
-        foreach (SubIndex *subIndex, index->subIndexes())
+        for (SubIndex *subIndex : index->subIndexes())
         {
             uint8_t numSubIndex = subIndex->subIndex();
 
@@ -1028,9 +1028,9 @@ void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextS
     cFile << "void od_setNodeId(uint8_t nodeId)\n";
     cFile << "{\n";
 
-    foreach (Index *index, deviceConfiguration->indexes())
+    for (Index *index : deviceConfiguration->indexes())
     {
-        foreach (SubIndex *subIndex, index->subIndexes())
+        for (SubIndex *subIndex : index->subIndexes())
         {
             if (subIndex->hasNodeId())
             {
