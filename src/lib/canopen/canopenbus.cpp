@@ -30,7 +30,6 @@ CanOpenBus::CanOpenBus(QCanBusDevice *canDevice)
     _sync = new Sync(this);
     _timestamp = new TimeStamp(this);
 
-    connect(_serviceDispatcher, &ServiceDispatcher::nodeFound, this, &CanOpenBus::addNodeFound);
 }
 
 CanOpenBus::~CanOpenBus()
@@ -99,17 +98,6 @@ bool CanOpenBus::existNode(quint8 nodeId)
     return false;
 }
 
-void CanOpenBus::addNodeFound(quint8 nodeId)
-{
-    if (existNode(nodeId) == false)
-    {
-        Node *nodeObject = new Node(nodeId);
-        addNode(nodeObject);
-        emit nodeAdded();
-        qDebug() << "> CanOpenBus::addNodeFound" << "Add NodeID : " << nodeId;
-    }
-}
-
 void CanOpenBus::addNode(Node *node)
 {
     node->_bus = this;
@@ -122,6 +110,7 @@ void CanOpenBus::addNode(Node *node)
             _serviceDispatcher->addService(cobId, service);
         }
     }
+    emit nodeAdded();
 }
 
 void CanOpenBus::exploreBus()
@@ -175,14 +164,4 @@ void CanOpenBus::canFrameRec()
 void CanOpenBus::canState(QCanBusDevice::CanBusDeviceState state)
 {
     emit stateCanOpenChanged(state);
-}
-
-void CanOpenBus::dataObjetAvailable()
-{
-    emit objetAvailable();
-}
-
-void CanOpenBus::dataObjetWritten()
-{
-    emit objetWritten();
 }

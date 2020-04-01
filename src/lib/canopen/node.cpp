@@ -170,11 +170,6 @@ void Node::readObject(quint16 index, quint8 subindex)
     _sdoClients.at(0)->uploadData(index, subindex);
 }
 
-void Node::readObject(quint16 index)
-{
-
-}
-
 void Node::writeObject(quint16 index, quint8 subindex)
 {
 
@@ -217,38 +212,4 @@ void Node::updateFirmware(const QByteArray &prog)
     _sdoClients.at(0)->downloadData(index, subindex, prog);
 
 }
-
-QString Node::device()
-{
-    quint16 index = 0x1000;
-    quint8 subindex = 0x00;
-    _sdoClients.at(0)->uploadData(index, subindex);
-    return _nodeOd->index(index)->subIndex(subindex)->value().toString();
-}
-
-QString Node::manuDeviceName()
-{
-    quint16 index = 0x1008;
-    quint8 subindex = 0x00;
-    _sdoClients.at(0)->uploadData(index, subindex);
-    // REDO
-    return _nodeOd->index(index)->subIndex(subindex)->value().toString();
-}
-QString Node::manufacturerHardwareVersion()
-{
-    quint16 index = 0x1009;
-    quint8 subindex = 0x00;
-    _sdoClients.at(0)->uploadData(index, subindex);
-    // REDO
-    return _nodeOd->index(index)->subIndex(subindex)->value().toString();
-}
-QString Node::manufacturerSoftwareVersion()
-{
-    quint16 index = 0x100a;
-    quint8 subindex = 0x00;
-    _sdoClients.at(0)->uploadData(index, subindex);
-    // REDO
-    return _nodeOd->index(index)->subIndex(subindex)->value().toString();
-}
-
 

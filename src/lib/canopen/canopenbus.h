@@ -58,8 +58,6 @@ protected slots:
 
 public slots:
     void exploreBus();
-    void dataObjetAvailable();
-    void dataObjetWritten();
 
 signals:
     void frameAvailable(QCanBusFrame frame);
@@ -67,12 +65,7 @@ signals:
     void frameTransmit(qint64 framesCount);
     void stateCanOpenChanged(QCanBusDevice::CanBusDeviceState state);
 
-    void objetAvailable();
-    void objetWritten();
     void nodeAdded();
-
-private slots:
-    void addNodeFound(quint8 nodeId);
 
 protected:
     friend class CanOpen;

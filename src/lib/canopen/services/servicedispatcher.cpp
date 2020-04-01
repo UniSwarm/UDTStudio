@@ -19,7 +19,7 @@
 #include "servicedispatcher.h"
 
 #include <QDebug>
-
+#include "canopen.h"
 #include "node.h"
 
 ServiceDispatcher::ServiceDispatcher(CanOpenBus *bus)
@@ -49,7 +49,28 @@ void ServiceDispatcher::parseFrame(const QCanBusFrame &frame)
         if ((frame.frameId() >= 0x701) && (frame.frameId() <= 0x7FF) /*&& frame.frameType() == QCanBusFrame::DataFrame*/)
         {
             uint8_t node = frame.frameId() & 0x7F;
-            emit nodeFound(node);
+            if (_bus->existNode(node) == false)
+            {
+                Node *nodeObject = new Node(node);
+                _bus->addNode(nodeObject);
+
+                switch (frame.payload().at(0) & 0x7F)
+                {
+                case 4:  // Stopped
+                    _bus->node(node)->setStatus(Node::Status::STOPPED);
+                    break;
+                case 5:  // Operational
+                    _bus->node(node)->setStatus(Node::Status::STARTED);
+                    break;
+                case 127:  // Pre-operational
+                    _bus->node(node)->setStatus(Node::Status::PREOP);
+                    break;
+                default:
+                    qDebug() << "> ServiceDispatcher::parseFrame : error status of node";
+                    break;
+                }
+                qDebug() << "> ServiceDispatcher::parseFrame" << "Add NodeID : " << node << "Status of node : " << _bus->node(node)->statusStr();
+            }
         }
     }
     else
