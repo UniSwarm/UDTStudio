@@ -59,6 +59,8 @@ public:
     void subscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex);
     void unsubscribe(NodeOdSubscriber *object);
 
+    QMetaType::Type dataTypeCiaToQt(NodeSubIndex::DataType type);
+
 private:
     Node *_node;
     QMap<quint16, NodeIndex *> _nodeIndexes;

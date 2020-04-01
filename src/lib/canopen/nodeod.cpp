@@ -217,3 +217,68 @@ NodeObjectId::NodeObjectId(quint16 index, quint8 subIndex)
     : index(index), subIndex(subIndex)
 {
 }
+
+QMetaType::Type NodeOd::dataTypeCiaToQt(NodeSubIndex::DataType type)
+{
+    switch (type)
+    {
+    case NodeSubIndex::NONE:
+        break;
+    case NodeSubIndex::VISIBLE_STRING:
+    case NodeSubIndex::OCTET_STRING:
+    case NodeSubIndex::UNICODE_STRING:
+        return QMetaType::QByteArray;
+    case NodeSubIndex::TIME_OF_DAY:
+        break;
+    case NodeSubIndex::TIME_DIFFERENCE:
+        break;
+    case NodeSubIndex::DDOMAIN:
+        return QMetaType::QByteArray;
+
+    case NodeSubIndex::BOOLEAN:
+    case NodeSubIndex::UNSIGNED8:
+        return QMetaType::Char;
+    case NodeSubIndex::INTEGER8:
+        return QMetaType::SChar;
+
+    case NodeSubIndex::UNSIGNED16:
+        return QMetaType::Short;
+    case NodeSubIndex::INTEGER16:
+        return QMetaType::UShort;
+
+    case NodeSubIndex::UNSIGNED24:
+        return QMetaType::UnknownType;
+    case NodeSubIndex::INTEGER24:
+        return QMetaType::UnknownType;
+
+    case NodeSubIndex::UNSIGNED32:
+        return QMetaType::Int;
+    case NodeSubIndex::INTEGER32:
+        return QMetaType::UInt;
+    case NodeSubIndex::REAL32:
+        return QMetaType::Float;
+
+    case NodeSubIndex::UNSIGNED40:
+        return QMetaType::UnknownType;
+    case NodeSubIndex::INTEGER40:
+        return QMetaType::UnknownType;
+
+    case NodeSubIndex::UNSIGNED48:
+        return QMetaType::UnknownType;
+    case NodeSubIndex::INTEGER48:
+        return QMetaType::UnknownType;
+
+    case NodeSubIndex::UNSIGNED56:
+        return QMetaType::UnknownType;
+    case NodeSubIndex::INTEGER56:
+        return QMetaType::UnknownType;
+
+    case NodeSubIndex::UNSIGNED64:
+        return QMetaType::ULongLong;
+    case NodeSubIndex::INTEGER64:
+        return QMetaType::LongLong;
+    case NodeSubIndex::REAL64:
+        return QMetaType::Double;
+    }
+    return QMetaType::UnknownType;
+}
