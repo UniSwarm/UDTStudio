@@ -52,20 +52,23 @@ void NodeDiscover::parseFrame(const QCanBusFrame &frame)
         {
             Node *node = new Node(nodeId);
 
-            switch (frame.payload().at(0) & 0x7F)
+            if (frame.payload().size() == 1)
             {
-            case 4:  // Stopped
-                node->setStatus(Node::Status::STOPPED);
-                break;
-            case 5:  // Operational
-                node->setStatus(Node::Status::STARTED);
-                break;
-            case 127:  // Pre-operational
-                node->setStatus(Node::Status::PREOP);
-                break;
-            default:
-                qDebug() << "> ServiceDispatcher::parseFrame : error status of node";
-                break;
+                switch (frame.payload().at(0) & 0x7F)
+                {
+                case 4:  // Stopped
+                    node->setStatus(Node::Status::STOPPED);
+                    break;
+                case 5:  // Operational
+                    node->setStatus(Node::Status::STARTED);
+                    break;
+                case 127:  // Pre-operational
+                    node->setStatus(Node::Status::PREOP);
+                    break;
+                default:
+                    qDebug() << "> ServiceDispatcher::parseFrame : error status of node";
+                    break;
+                }
             }
             qDebug() << "> ServiceDispatcher::parseFrame" << "Add NodeID : " << node << "Status of node : " << node->statusStr();
             bus()->addNode(node);
@@ -134,12 +137,11 @@ void NodeDiscover::exploreNodeNext()
         {
             _exploreNodeCurrentId = _nodeIdToExplore.dequeue();
             _exploreNodeState = 0;
-            bus()->node(_exploreNodeCurrentId)->readObject(_objectsId[_exploreNodeState]);
         }
     }
     else
     {
         bus()->node(_exploreNodeCurrentId)->readObject(_objectsId[_exploreNodeState]);
+        _exploreNodeState++;
     }
-    _exploreNodeState++;
 }
