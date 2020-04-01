@@ -111,12 +111,9 @@ void CanOpenBus::addNode(Node *node)
     node->_bus = this;
     _nodes.append(node);
 
-    Q_FOREACH (Service *service, node->services())
+    for (Service *service : node->services())
     {
-        Q_FOREACH (quint32 cobId, service->cobIds())
-        {
-            _serviceDispatcher->addService(cobId, service);
-        }
+        _serviceDispatcher->addService(service);
     }
     emit nodeAdded();
 }

@@ -48,12 +48,17 @@ SDO::SDO(Node *node)
     _cobIds.append(_cobIdClientToServer + _nodeId);
     _cobIds.append(_cobIdServerToClient + _nodeId);
 
-    _time = 6000;
+    _time = 1000;
     _timer = new QTimer(this);
     connect(_timer, &QTimer::timeout, this, &SDO::timeout);
 
     _state = SDO_STATE_FREE;
     _request = nullptr;
+}
+
+SDO::~SDO()
+{
+    delete _timer;
 }
 
 QString SDO::type() const
@@ -187,6 +192,7 @@ qint32 SDO::sdoUploadInitiate(const QCanBusFrame &frame)
         {
         }
         requestFinished();
+        nextRequest();
     }
     else if (transferType == Flag::SDO_E_NORMAL)
     {
@@ -519,6 +525,7 @@ void SDO::timeout()
     _state = SDO_STATE_FREE;
     _request->state = STATE_FREE;
     _timer->stop();
+    nextRequest();
 }
 
 // SDO upload initiate
@@ -541,7 +548,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex)
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timer->start(6000);
+    _timer->start(_time);
     return lcanDevice->writeFrame(frame);
 }
 // SDO upload segment, SDO block upload initiate, SDO block upload ends
@@ -562,7 +569,7 @@ bool SDO::sendSdoRequest(quint8 cmd)
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timer->start(6000);
+    _timer->start(_time);
     return lcanDevice->writeFrame(frame);
 }
 
@@ -587,7 +594,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QVari
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timer->start(6000);
+    _timer->start(_time);
     return lcanDevice->writeFrame(frame);
 }
 
@@ -609,7 +616,7 @@ bool SDO::sendSdoRequest(quint8 cmd, const QByteArray &value)
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
-    _timer->start(6000);
+    _timer->start(_time);
     return lcanDevice->writeFrame(frame);
 }
 
@@ -632,7 +639,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 &crc)
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timer->start(6000);
+    _timer->start(_time);
     return lcanDevice->writeFrame(frame);
 }
 
@@ -693,6 +700,7 @@ QVariant SDO::arrangeData(QByteArray data, QMetaType::Type type)
 {
     QDataStream dataStream(&data, QIODevice::ReadOnly);
     dataStream.setByteOrder(QDataStream::LittleEndian);
+/*
     qDebug() << "QMetaType::int: " << sizeof(int);
     qDebug() << "QMetaType::unsigned int: " << sizeof(unsigned int);
     qDebug() << "QMetaType::double: " << sizeof(double);
@@ -702,6 +710,7 @@ QVariant SDO::arrangeData(QByteArray data, QMetaType::Type type)
     qDebug() << "QMetaType::float: " << sizeof(float);
     qDebug() << "QMetaType::unsigned short: " << sizeof(unsigned short);
     qDebug() << "QMetaType::unsigned long: " << sizeof(unsigned long);
+*/
 
     switch (type)
     {
@@ -772,5 +781,3 @@ QVariant SDO::arrangeData(QByteArray data, QMetaType::Type type)
 
     return QVariant();
 }
-
-

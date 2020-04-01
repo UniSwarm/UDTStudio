@@ -105,20 +105,20 @@ void NodeOd::createMandatoryObject()
     identityObject->subIndex(0)->setName("Highest sub-index supported");
 
     identityObject->addSubIndex(new NodeSubIndex(1));
-    identityObject->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
-    identityObject->subIndex(0)->setName("Vendor-ID");
+    identityObject->subIndex(1)->setDataType(NodeSubIndex::UNSIGNED32);
+    identityObject->subIndex(1)->setName("Vendor-ID");
 
     identityObject->addSubIndex(new NodeSubIndex(2));
-    identityObject->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
-    identityObject->subIndex(0)->setName("Product code");
+    identityObject->subIndex(2)->setDataType(NodeSubIndex::UNSIGNED32);
+    identityObject->subIndex(2)->setName("Product code");
 
     identityObject->addSubIndex(new NodeSubIndex(3));
-    identityObject->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
-    identityObject->subIndex(0)->setName("Revision number");
+    identityObject->subIndex(3)->setDataType(NodeSubIndex::UNSIGNED32);
+    identityObject->subIndex(3)->setName("Revision number");
 
     identityObject->addSubIndex(new NodeSubIndex(4));
-    identityObject->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
-    identityObject->subIndex(0)->setName("Serial number");
+    identityObject->subIndex(4)->setDataType(NodeSubIndex::UNSIGNED32);
+    identityObject->subIndex(4)->setName("Serial number");
 
     this->addIndex(identityObject);
 }
@@ -179,6 +179,28 @@ bool NodeOd::loadEds(const QString &fileName)
     return true;
 }
 
+QMetaType::Type NodeOd::dataType(NodeObjectId id)
+{
+    return dataType(id.index, id.subIndex);
+}
+
+QMetaType::Type NodeOd::dataType(quint16 index, quint8 subIndex)
+{
+    NodeIndex *nodeIndex = this->index(index);
+    if (!nodeIndex)
+    {
+        return QMetaType::UnknownType;
+    }
+
+    NodeSubIndex *nodeSubIndex = nodeIndex->subIndex(subIndex);
+    if (!nodeSubIndex)
+    {
+        return QMetaType::UnknownType;
+    }
+
+    return dataTypeCiaToQt(nodeSubIndex->dataType());
+}
+
 QVariant NodeOd::value(NodeObjectId id)
 {
     return value(id.index, id.subIndex);
@@ -227,8 +249,8 @@ void NodeOd::unsubscribe(NodeOdSubscriber *object)
     }
 }
 
-NodeObjectId::NodeObjectId(quint16 index, quint8 subIndex)
-    : index(index), subIndex(subIndex)
+NodeObjectId::NodeObjectId(quint16 index, quint8 subIndex, QMetaType::Type dataType)
+    : index(index), subIndex(subIndex), dataType(dataType)
 {
 }
 

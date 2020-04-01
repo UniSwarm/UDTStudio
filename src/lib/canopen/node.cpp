@@ -114,11 +114,6 @@ void Node::setName(const QString &name)
     _name = name;
 }
 
-void Node::readObject(NodeObjectId id)
-{
-    readObject(id.index, id.subIndex);
-}
-
 Node::Status Node::status() const
 {
     return _status;
@@ -170,14 +165,24 @@ void Node::sendResetNode()
     _nmt->sendResetNode();
 }
 
+void Node::readObject(NodeObjectId id)
+{
+    readObject(id.index, id.subIndex, id.dataType);
+}
+
 void Node::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
 {
-    _sdoClients.at(0)->uploadData(index, subindex, dataType);
+    QMetaType::Type mdataType = dataType;
+    if (mdataType == QMetaType::Type::UnknownType)
+    {
+        mdataType = _nodeOd->dataType(index, subindex);
+    }
+    _sdoClients.at(0)->uploadData(index, subindex, mdataType);
 }
 
 void Node::writeObject(quint16 index, quint8 subindex)
 {
-
+    // TODO IMPLEMENT ME
 }
 
 void Node::loadEds(const QString &fileName)
@@ -185,35 +190,9 @@ void Node::loadEds(const QString &fileName)
     _nodeOd->loadEds(fileName);
 }
 
-void Node::searchEds()
-{
-    QString path = ".";
-    QDirIterator dirIterator(path, QStringList() << "*.eds", QDir::Files | QDir::NoSymLinks, QDirIterator::NoIteratorFlags);
-
-    while (dirIterator.hasNext())
-    {
-        EdsParser parser;
-        DeviceDescription *deviceDescription = parser.parse(dirIterator.fileName());
-
-        if ((_nodeOd->index(0x1000)->subIndex(0)->value() == deviceDescription->index(0x1000)->subIndex(0)->value())
-            && (_nodeOd->index(0x1018)->subIndex(1)->value() == deviceDescription->index(0x1018)->subIndex(1)->value())
-            && (_nodeOd->index(0x1018)->subIndex(2)->value() == deviceDescription->index(0x1018)->subIndex(2)->value())
-            && (_nodeOd->index(0x1018)->subIndex(3)->value() == deviceDescription->index(0x1018)->subIndex(3)->value()))
-        {
-            // EDS found
-            _nodeOd->loadEds(dirIterator.fileName());
-            qDebug() << ">searchEds : found, " << dirIterator.fileName();
-            return;
-        }
-    }
-    qDebug() << ">searchEds : Not found";
-
-}
-
 void Node::updateFirmware(const QByteArray &prog)
 {
     quint16 index = 0x1F50;
     quint8 subindex = 0x01;
     _sdoClients.at(0)->downloadData(index, subindex, prog);
-
 }

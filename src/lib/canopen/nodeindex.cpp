@@ -14,7 +14,7 @@ NodeIndex::NodeIndex(const NodeIndex &other)
     _objectType = other.objectType();
     _name = other.name();
 
-    foreach (NodeSubIndex *subIndex, other._nodeSubIndexes)
+    for (NodeSubIndex *subIndex : other._nodeSubIndexes)
     {
         _nodeSubIndexes.insert(subIndex->subIndex(), new NodeSubIndex(*subIndex));
     }
@@ -22,6 +22,7 @@ NodeIndex::NodeIndex(const NodeIndex &other)
 
 NodeIndex::~NodeIndex()
 {
+    qDeleteAll(_nodeSubIndexes);
 }
 
 quint16 NodeIndex::index() const

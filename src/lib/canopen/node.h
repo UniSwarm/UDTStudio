@@ -50,11 +50,6 @@ public:
     void loadEds(const QString &fileName);
     void updateFirmware(const QByteArray &prog);
 
-    QString device();
-    QString manuDeviceName();
-    QString manufacturerHardwareVersion();
-    QString manufacturerSoftwareVersion();
-
     enum Status
     {
         INIT,
@@ -65,8 +60,6 @@ public:
     Status status() const;
     QString statusStr() const;
     void setStatus(Status status);
-
-    void searchEds();
 
 signals:
     void statusChanged(Status status);

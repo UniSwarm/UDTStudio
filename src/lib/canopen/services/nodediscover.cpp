@@ -127,6 +127,16 @@ void NodeDiscover::exploreNodeNext()
         // load object eds
         //ODBDD find eds
         //bus()->node(_exploreNodeCurrentId)->nodeOd()->loadEds(foundeds);
+        Node *node = bus()->node(_exploreNodeCurrentId);
+        uint profile = node->nodeOd()->value(0x1000).toUInt() & 0xFFFF;
+        if (profile == 401)
+        {
+            bus()->node(_exploreNodeCurrentId)->nodeOd()->loadEds("../../../fw/UIOfw/UIO44FR/uio44fr-i.eds");
+        }
+        if (profile == 402)
+        {
+            bus()->node(_exploreNodeCurrentId)->nodeOd()->loadEds("../../../fw/UMCfw/UMC1BDS32/umc1bds32fr.eds");
+        }
 
         if (_nodeIdToExplore.isEmpty())
         {
