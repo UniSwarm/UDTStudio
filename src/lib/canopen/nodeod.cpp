@@ -142,26 +142,40 @@ bool NodeOd::loadEds(const QString &fileName)
     DeviceDescription *deviceDescription = parser.parse(fileName);
     _fileName = fileName;
 
-    foreach (Index *index, deviceDescription->indexes())
+    for (Index *odIndex : deviceDescription->indexes())
     {
-        NodeIndex *nodeIndex = new NodeIndex(index->index());
-        nodeIndex->setName(index->name());
-        nodeIndex->setObjectType(static_cast<NodeIndex::ObjectType>(index->objectType()));
+        NodeIndex *nodeIndex;
+        nodeIndex = index(odIndex->index());
+        if (!nodeIndex)
+        {
+            nodeIndex = new NodeIndex(odIndex->index());
+        }
+        nodeIndex->setName(odIndex->name());
+        nodeIndex->setObjectType(static_cast<NodeIndex::ObjectType>(odIndex->objectType()));
         addIndex(nodeIndex);
 
-        foreach (SubIndex *subIndex, index->subIndexes())
+        for (SubIndex *odSubIndex : odIndex->subIndexes())
         {
-            NodeSubIndex *nodeSubIndex = new NodeSubIndex(subIndex->subIndex());
-            nodeSubIndex->setName(subIndex->name());
-            nodeSubIndex->setAccessType(static_cast<NodeSubIndex::AccessType>(subIndex->accessType()));
-            nodeSubIndex->setValue(subIndex->value());
-            nodeSubIndex->setDataType(static_cast<NodeSubIndex::DataType>(subIndex->dataType()));
-            nodeSubIndex->setLowLimit(subIndex->lowLimit());
-            nodeSubIndex->setHighLimit(subIndex->highLimit());
+            NodeSubIndex *nodeSubIndex;
+            nodeSubIndex = nodeIndex->subIndex(odSubIndex->subIndex());
+            if (!nodeSubIndex)
+            {
+                nodeSubIndex = new NodeSubIndex(odSubIndex->subIndex());
+            }
+            if (!nodeSubIndex->value().isValid())
+            {
+                nodeSubIndex->setValue(odSubIndex->value());
+            }
+            nodeSubIndex->setName(odSubIndex->name());
+            nodeSubIndex->setAccessType(static_cast<NodeSubIndex::AccessType>(odSubIndex->accessType()));
+            nodeSubIndex->setDataType(static_cast<NodeSubIndex::DataType>(odSubIndex->dataType()));
+            nodeSubIndex->setLowLimit(odSubIndex->lowLimit());
+            nodeSubIndex->setHighLimit(odSubIndex->highLimit());
             nodeIndex->addSubIndex(nodeSubIndex);
         }
     }
     qDebug() << ">loadEds :" << fileName;
+    delete deviceDescription;
     return true;
 }
 
