@@ -10,11 +10,9 @@ class OD_EXPORT OdDb
   public:
     OdDb(QString directory = ".");
 
-    QString fileName();
-    QString filePath();
-
     void setDirectory(QString directory);
     QString fileEds(quint32 deviceType, quint32 vendorID, quint32 productCode, quint32 revisionNumber);
+    void refreshFile();
 
   private:
     quint32 _deviceType;
@@ -26,6 +24,7 @@ class OD_EXPORT OdDb
     QString _directory;
     QString _fileName;
     QString _path;
+    QList<QString> _directoryList;
 
     void searchEds();
 
