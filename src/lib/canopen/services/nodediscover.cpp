@@ -29,7 +29,13 @@ NodeDiscover::NodeDiscover(CanOpenBus *bus)
     {
         _cobIds.append(0x700u + nodeId);
     }
-    connect(&_exploreTimer, &QTimer::timeout, this, &NodeDiscover::exploreNext);
+
+    _exploreBusNodeId = 0;
+    connect(&_exploreBusTimer, &QTimer::timeout, this, &NodeDiscover::exploreBusNext);
+
+    _exploreNodeState = -1;
+    _exploreNodeCurrentId = 0;
+    connect(&_exploreNodeTimer, &QTimer::timeout, this, &NodeDiscover::exploreNodeNext);
 }
 
 QString NodeDiscover::type() const
@@ -63,28 +69,77 @@ void NodeDiscover::parseFrame(const QCanBusFrame &frame)
             }
             qDebug() << "> ServiceDispatcher::parseFrame" << "Add NodeID : " << node << "Status of node : " << node->statusStr();
             bus()->addNode(node);
+
+            exploreNode(nodeId);
         }
     }
 }
 
-void NodeDiscover::explore()
+void NodeDiscover::exploreBus()
 {
-    _exploreId = 1;
-    _exploreTimer.start(8);
+    if (_exploreBusNodeId != 0)
+    {
+        return;
+    }
+    _exploreBusNodeId = 1;
+    _exploreBusTimer.start(8);
 }
 
-void NodeDiscover::exploreNext()
+void NodeDiscover::exploreNode(quint8 nodeId)
 {
-    if (_exploreId > 127)
+    _nodeIdToExplore.enqueue(nodeId);
+
+    if (_exploreNodeState == -1)
     {
-        _exploreTimer.stop();
+        _exploreNodeCurrentId = _nodeIdToExplore.dequeue();
+        _exploreNodeState = 0;
+        _exploreNodeTimer.start(8);
+    }
+}
+
+void NodeDiscover::exploreBusNext()
+{
+    if (_exploreBusNodeId > 127)
+    {
+        _exploreBusNodeId = 0;
+        _exploreBusTimer.stop();
         return;
     }
 
     QCanBusFrame frameNodeGuarding;
-    frameNodeGuarding.setFrameId(0x700 + _exploreId);
+    frameNodeGuarding.setFrameId(0x700 + _exploreBusNodeId);
     frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
     canDevice()->writeFrame(frameNodeGuarding);
 
-    _exploreId++;
+    _exploreBusNodeId++;
+}
+
+void NodeDiscover::exploreNodeNext()
+{
+    QList<NodeObjectId> _objectsId{{0x1000, 0x0}, {0x1018, 0x1}, {0x1018, 0x2}, {0x1018, 0x3}};
+
+    if (_exploreNodeState >= _objectsId.size())
+    {
+        // explore node finished
+        // load object eds
+        //ODBDD find eds
+        //bus()->node(_exploreNodeCurrentId)->nodeOd()->loadEds(foundeds);
+
+        if (_nodeIdToExplore.isEmpty())
+        {
+            _exploreNodeState = -1;
+            _exploreNodeTimer.stop();
+        }
+        else
+        {
+            _exploreNodeCurrentId = _nodeIdToExplore.dequeue();
+            _exploreNodeState = 0;
+            bus()->node(_exploreNodeCurrentId)->readObject(_objectsId[_exploreNodeState]);
+        }
+    }
+    else
+    {
+        bus()->node(_exploreNodeCurrentId)->readObject(_objectsId[_exploreNodeState]);
+    }
+    _exploreNodeState++;
 }

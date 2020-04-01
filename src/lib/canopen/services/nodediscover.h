@@ -24,6 +24,7 @@
 #include "service.h"
 
 #include <QTimer>
+#include <QQueue>
 
 class CANOPEN_EXPORT NodeDiscover : public Service
 {
@@ -35,15 +36,23 @@ public:
 
     void parseFrame(const QCanBusFrame &frame) override;
 
-    void explore();
+    void exploreBus();
+    void exploreNode(quint8 nodeId);
 
 protected slots:
-    void exploreNext();
+    void exploreBusNext();
+    void exploreNodeNext();
 
 protected:
-    // explorer
-    quint8 _exploreId;
-    QTimer _exploreTimer;
+    // explorer bus
+    quint8 _exploreBusNodeId;
+    QTimer _exploreBusTimer;
+
+    // explorer node
+    QQueue<quint8> _nodeIdToExplore;
+    quint8 _exploreNodeCurrentId;
+    QTimer _exploreNodeTimer;
+    int _exploreNodeState;
 };
 
 #endif // NODEDISCOVER_H

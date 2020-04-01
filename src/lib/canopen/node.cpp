@@ -114,6 +114,11 @@ void Node::setName(const QString &name)
     _name = name;
 }
 
+void Node::readObject(NodeObjectId id)
+{
+    readObject(id.index, id.subIndex);
+}
+
 Node::Status Node::status() const
 {
     return _status;

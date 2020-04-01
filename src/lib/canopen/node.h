@@ -43,6 +43,7 @@ public:
     QString name() const;
     void setName(const QString &name);
 
+    void readObject(NodeObjectId id);
     void readObject(quint16 index, quint8 subindex);
     void readObject(quint16 index);
     void writeObject(quint16 index, quint8 subindex);

@@ -30,6 +30,13 @@
 class Node;
 class NodeOdSubscriber;
 
+struct NodeObjectId
+{
+    NodeObjectId(quint16 index, quint8 subIndex);
+    quint16 index;
+    quint8 subIndex;
+};
+
 class CANOPEN_EXPORT NodeOd : public QObject
 {
     Q_OBJECT
@@ -47,6 +54,7 @@ public:
 
     bool loadEds(const QString &fileName);
 
+    QVariant value(NodeObjectId id);
     QVariant value(quint16 index, quint8 subIndex = 0x00);
     void subscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex);
     void unsubscribe(NodeOdSubscriber *object);

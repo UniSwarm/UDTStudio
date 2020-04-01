@@ -123,7 +123,7 @@ void CanOpenBus::addNode(Node *node)
 
 void CanOpenBus::exploreBus()
 {
-    _nodeDiscover->explore();
+    _nodeDiscover->exploreBus();
 }
 
 QCanBusDevice *CanOpenBus::canDevice() const
