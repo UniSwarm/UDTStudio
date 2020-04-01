@@ -122,11 +122,12 @@ SDO::Status SDO::status() const
     return _state;
 }
 
-qint32 SDO::uploadData(quint16 index, quint8 subindex)
+qint32 SDO::uploadData(quint16 index, quint8 subindex, QMetaType::Type dataType)
 {
     RequestSdo *request = new RequestSdo();
     request->index = index;
     request->subIndex = subindex;
+    request->dataType = dataType;
     request->state = STATE_UPLOAD;
     _requestQueue.enqueue(request);
 
@@ -179,11 +180,8 @@ qint32 SDO::sdoUploadInitiate(const QCanBusFrame &frame)
             _request->stay = (4 - SDO_N(frame.payload()));
 
             QByteArray data = frame.payload().mid(4, static_cast<quint8>(_request->stay));
-            QDataStream dataStream(&data, QIODevice::ReadOnly);
-            dataStream.setByteOrder(QDataStream::LittleEndian);
-            int d;
-            dataStream >> d;
-            _request->data = d;
+            _request->data = arrangeData(data, _request->dataType);
+             qDebug() << "data" << _request->data;
         }
         else
         {
@@ -230,12 +228,12 @@ qint32 SDO::sdoUploadSegment(const QCanBusFrame &frame)
     else
     {
         size = (7 - SDO_N(frame.payload()));
-        _request->data.toByteArray().append(frame.payload().mid(4, size));
+        _request->dataByte.append(frame.payload().mid(4, size));
         _request->stay -= size;
 
         if ((frame.payload().at(0) & Flag::SDO_C_MASK) == Flag::SDO_C)  // no more segments to be uploaded
         {
-//            _request->index->subIndex(_request->subIndex)->setValue(_request->data);
+            _request->data = arrangeData(_request->dataByte, _request->dataType);
             requestFinished();
         }
         else // more segments to be uploaded (C=0)
@@ -518,6 +516,7 @@ void SDO::timeout()
 {
     uint32_t error = 0x08000000;
     sendSdoRequest(CO_SDO_CS_ABORT, _request->index,_request->subIndex, error);
+    _state = SDO_STATE_FREE;
     _request->state = STATE_FREE;
     _timer->stop();
 }
@@ -688,3 +687,90 @@ bool SDO::sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segD
 
     return lcanDevice->writeFrame(frame);
 }
+
+
+QVariant SDO::arrangeData(QByteArray data, QMetaType::Type type)
+{
+    QDataStream dataStream(&data, QIODevice::ReadOnly);
+    dataStream.setByteOrder(QDataStream::LittleEndian);
+    qDebug() << "QMetaType::int: " << sizeof(int);
+    qDebug() << "QMetaType::unsigned int: " << sizeof(unsigned int);
+    qDebug() << "QMetaType::double: " << sizeof(double);
+    qDebug() << "QMetaType::short: " << sizeof(short);
+    qDebug() << "QMetaType::unsigned short: " << sizeof(unsigned short);
+    qDebug() << "QMetaType::char: " << sizeof(char);
+    qDebug() << "QMetaType::float: " << sizeof(float);
+    qDebug() << "QMetaType::unsigned short: " << sizeof(unsigned short);
+    qDebug() << "QMetaType::unsigned long: " << sizeof(unsigned long);
+
+    switch (type)
+    {
+    case QMetaType::Int:
+        int a;
+        dataStream >> a;
+        return QVariant(a);
+
+    case QMetaType::UInt:
+        unsigned int b;
+        dataStream >> b;
+        return QVariant(b);
+
+    case QMetaType::LongLong:
+        qint64 c;
+        dataStream >> c;
+        return QVariant(c);
+
+    case QMetaType::ULongLong:
+        quint64 d;
+        dataStream >> d;
+        return QVariant(d);
+
+    case QMetaType::Double:
+        double e;
+        dataStream >> e;
+        return QVariant(e);
+
+        //        case QMetaType::Long:
+        //        long f;
+        //        return QVariant(f);
+
+    case QMetaType::Short:
+        short g;
+        dataStream >> g;
+        return QVariant(g);
+
+    case QMetaType::Char:
+        return QVariant(data);
+
+        //    case QMetaType::ULong:
+        //        unsigned long i;
+        //        i = static_cast<unsigned long>(data.toUInt());
+        //        return QVariant(i);
+
+    case QMetaType::UShort:
+        unsigned short j;
+        dataStream >> j;
+        return QVariant(j);
+
+    case QMetaType::UChar:
+        unsigned char k;
+        k = static_cast<unsigned char>(data.toUInt());
+        return QVariant(k);
+
+    case QMetaType::Float:
+        float l;
+        dataStream >> l;
+        return QVariant(l);
+
+    case QMetaType::SChar:
+        signed char m;
+        m = static_cast<signed char>(data.toInt());
+        return QVariant(m);
+    default:
+        break;
+    }
+
+    return QVariant();
+}
+
+

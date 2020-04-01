@@ -39,7 +39,7 @@ public:
     quint32 cobIdClientToServer();
     quint32 cobIdServerToClient();
 
-    qint32 uploadData(quint16 index, quint8 subindex);
+    qint32 uploadData(quint16 index, quint8 subindex, QMetaType::Type dataType);
     qint32 downloadData(quint16 index, quint8 subindex, const QVariant &data);
 
     enum Status
@@ -81,6 +81,8 @@ private:
         quint16 index;
         quint8 subIndex;
         QVariant data;
+        QByteArray dataByte;
+        QMetaType::Type dataType;
         quint32 stay;
         quint8 toggle;
 
@@ -119,7 +121,9 @@ private:
     bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blksize, quint8 pst);// SDO block upload initiate
     bool sendSdoRequest(quint8 cmd, quint8 &ackseq, quint8 blksize);                            // SDO block upload sub-block
     bool sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segData);            // SDO block download sub-block
-    bool sendSdoRequest(quint8 cmd, quint16 &crc);                                              // SDO block download end
+    bool sendSdoRequest(quint8 cmd, quint16 &crc);  // SDO block download end
+
+    QVariant arrangeData(QByteArray, QMetaType::Type type);
 
     enum CCS : uint8_t  // CCS : Client Command Specifier from Client to Server
     {

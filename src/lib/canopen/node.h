@@ -20,7 +20,7 @@
 #define NODE_H
 
 #include "canopen_global.h"
-
+#include <QMetaType>
 #include "services/services.h"
 #include "nodeod.h"
 
@@ -44,8 +44,7 @@ public:
     void setName(const QString &name);
 
     void readObject(NodeObjectId id);
-    void readObject(quint16 index, quint8 subindex);
-    void readObject(quint16 index);
+    void readObject(quint16 index, quint8 subindex, QMetaType::Type dataType = QMetaType::Type::UnknownType);
     void writeObject(quint16 index, quint8 subindex);
 
     void loadEds(const QString &fileName);

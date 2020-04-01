@@ -170,9 +170,9 @@ void Node::sendResetNode()
     _nmt->sendResetNode();
 }
 
-void Node::readObject(quint16 index, quint8 subindex)
+void Node::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
 {
-    _sdoClients.at(0)->uploadData(index, subindex);
+    _sdoClients.at(0)->uploadData(index, subindex, dataType);
 }
 
 void Node::writeObject(quint16 index, quint8 subindex)
