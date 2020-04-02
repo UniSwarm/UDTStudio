@@ -56,7 +56,6 @@ void NodeManagerWidget::setNode(Node *node)
     if (_node)
     {
         connect(_node, &Node::statusChanged, this, &NodeManagerWidget::updateData);
-        _index1000Label->setNum(_node->nodeOd()->value(0x1000, 0x00).toInt());
     }
     _groupBox->setEnabled(_node);
     updateData();
@@ -113,10 +112,7 @@ void NodeManagerWidget::resetNode()
 
 void NodeManagerWidget::test()
 {
-    if (_node)
-    {
-        _node->readObject(0x1000, 0x00);
-    }
+    readObject(0x1000, 0x00, QMetaType::Int);
 }
 
 void NodeManagerWidget::createWidgets()
@@ -162,7 +158,6 @@ void NodeManagerWidget::odNotify(quint16 index, quint8 subindex, const QVariant 
 {
     if (index == 0x1000 && subindex == 0x00)
     {
-        //_index1000Label->setText(value.toByteArray().toHex(' ').toUpper());
         _index1000Label->setNum(value.toInt());
     }
 }

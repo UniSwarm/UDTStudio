@@ -27,9 +27,13 @@ NodeOdSubscriber::NodeOdSubscriber()
     _nodeInterrest = nullptr;
 }
 
-void NodeOdSubscriber::notifySubscriber(quint16 index, quint8 subindex, const QVariant &value)
+NodeOdSubscriber::~NodeOdSubscriber()
 {
-    this->odNotify(index, subindex, value);
+}
+
+void NodeOdSubscriber::notifySubscriber(quint16 index, quint8 subIndex, const QVariant &value)
+{
+    this->odNotify(index, subIndex, value);
 }
 
 Node *NodeOdSubscriber::nodeInterrest() const
@@ -55,7 +59,18 @@ void NodeOdSubscriber::setNodeInterrest(Node *nodeInterrest)
             quint16 index = static_cast<quint16>(key >> 8);
             quint8 subIndex = static_cast<quint8>(key & 0xFFu);
             _nodeInterrest->nodeOd()->subscribe(this, index, subIndex);
+
+            const QVariant &value = _nodeInterrest->nodeOd()->value(index, subIndex);
+            this->odNotify(index, subIndex, value);
         }
+    }
+}
+
+void NodeOdSubscriber::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
+{
+    if (_nodeInterrest)
+    {
+        _nodeInterrest->readObject(index, subindex, dataType);
     }
 }
 

@@ -30,12 +30,15 @@ class CANOPEN_EXPORT NodeOdSubscriber
 {
 public:
     NodeOdSubscriber();
+    virtual ~NodeOdSubscriber();
 
-    void notifySubscriber(quint16 index, quint8 subindex, const QVariant &value);
+    void notifySubscriber(quint16 index, quint8 subIndex, const QVariant &value);
 
 protected:
     Node *nodeInterrest() const;
     void setNodeInterrest(Node *nodeInterrest);
+
+    void readObject(quint16 index, quint8 subindex, QMetaType::Type dataType = QMetaType::UnknownType);
 
     QList<quint32> indexSubIndexList() const;
 
