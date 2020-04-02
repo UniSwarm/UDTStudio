@@ -124,19 +124,36 @@ void NodeManagerWidget::createWidgets()
     _groupBox = new QGroupBox(tr("Node"));
     QFormLayout *layoutGroupBox = new QFormLayout();
 
+    // toolbar nmt
     _toolBar = new QToolBar(tr("Node commands"));
-    action = _toolBar->addAction(tr("preop"));
+    QActionGroup *groupNmt = new QActionGroup(this);
+    groupNmt->setExclusive(true);
+
+    action = groupNmt->addAction(tr("preop"));
+    action->setCheckable(true);
     connect(action, &QAction::triggered, this, &NodeManagerWidget::preop);
-    action = _toolBar->addAction(tr("start"));
+
+    action = groupNmt->addAction(tr("start"));
+    action->setCheckable(true);
     connect(action, &QAction::triggered, this, &NodeManagerWidget::start);
-    action = _toolBar->addAction(tr("stop"));
+
+    action = groupNmt->addAction(tr("stop"));
+    action->setCheckable(true);
     connect(action, &QAction::triggered, this, &NodeManagerWidget::stop);
-    action = _toolBar->addAction(tr("rstCom"));
+
+    action = groupNmt->addAction(tr("rstCom"));
+    action->setCheckable(true);
     connect(action, &QAction::triggered, this, &NodeManagerWidget::resetCom);
-    action = _toolBar->addAction(tr("rstNode"));
+
+    action = groupNmt->addAction(tr("rstNode"));
+    action->setCheckable(true);
     connect(action, &QAction::triggered, this, &NodeManagerWidget::resetNode);
-    action = _toolBar->addAction(tr("test"));
+
+    action = groupNmt->addAction(tr("test"));
+    action->setCheckable(true);
     connect(action, &QAction::triggered, this, &NodeManagerWidget::test);
+
+    _toolBar->addActions(groupNmt->actions());
     layoutGroupBox->addRow(_toolBar);
 
     _nodeNameEdit = new QLineEdit();

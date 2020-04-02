@@ -1,3 +1,21 @@
+/**
+ ** This file is part of the UDTStudio project.
+ ** Copyright 2019-2020 UniSwarm
+ **
+ ** This program is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU General Public License as published by
+ ** the Free Software Foundation, either version 3 of the License, or
+ ** (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ ** GNU General Public License for more details.
+ **
+ ** You should have received a copy of the GNU General Public License
+ ** along with this program. If not, see <http://www.gnu.org/licenses/>.
+ **/
+
 #include "mainwindow.h"
 
 #include "model/deviceconfiguration.h"
@@ -26,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createDocks();
     createWidgets();
+    connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, _nodeOdTreeView, &NodeOdTreeView::setNode);
 
     CanOpenBus *bus;
     if (QCanBus::instance()->plugins().contains("socketcan"))
@@ -38,9 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     bus->setBusName("Bus 1");
     _canOpen->addBus(bus);
-
     connect(bus, &CanOpenBus::frameAvailable, _canFrameListView, &CanFrameListView::appendCanFrame);
-    //connect(bus, &CanOpenBus::nodeAdded, _busNodeTreeView, &BusNodesTreeView::refresh);
 
     createActions();
     createMenus();
@@ -49,6 +66,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete _canOpen;
+    delete _connectDialog;
 }
 
 void MainWindow::createDocks()
@@ -59,11 +78,7 @@ void MainWindow::createDocks()
 
     _busNodesManagerDock = new QDockWidget(tr("Bus nodes manager"), this);
     _busNodesManagerDock->setObjectName("fileProjectDock");
-    //QWidget *fileProjectContent = new QWidget(_fileProjectDock);
-    //QLayout *fileProjectLayout = new QVBoxLayout();
     _busNodesManagerView = new BusNodesManagerView(_canOpen);
-    //fileProjectLayout->addWidget(_fileProjectWidget);
-    //fileProjectContent->setLayout(fileProjectLayout);
     _busNodesManagerDock->setWidget(_busNodesManagerView);
     addDockWidget(Qt::LeftDockWidgetArea, _busNodesManagerDock);
 }
@@ -72,6 +87,9 @@ void MainWindow::createWidgets()
 {
     QWidget *widget = new QWidget();
     QLayout *layout = new QHBoxLayout();
+
+    _nodeOdTreeView = new NodeOdTreeView();
+    layout->addWidget(_nodeOdTreeView);
 
     _canFrameListView = new CanFrameListView();
     layout->addWidget(_canFrameListView);

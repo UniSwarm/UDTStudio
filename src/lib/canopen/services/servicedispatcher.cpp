@@ -55,8 +55,8 @@ void ServiceDispatcher::parseFrame(const QCanBusFrame &frame)
     QList<Service *>::const_iterator service = interrestedServices.cbegin();
     while (service != interrestedServices.cend())
     {
-        (*service)->parseFrame(frame);
         qDebug() << (*service)->type() << "Node" << (((*service)->node()) ? (*service)->node()->nodeId() : 0);
+        (*service)->parseFrame(frame);
         ++service;
     }
 }

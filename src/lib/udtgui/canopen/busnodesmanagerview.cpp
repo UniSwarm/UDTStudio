@@ -31,6 +31,8 @@ BusNodesManagerView::BusNodesManagerView(CanOpen *canOpen, QWidget *parent)
     createWidgets();
     setCanOpen(canOpen);
 
+    connect(_busNodeTreeView, &BusNodesTreeView::busSelected, this, &BusNodesManagerView::busSelected);
+    connect(_busNodeTreeView, &BusNodesTreeView::nodeSelected, this, &BusNodesManagerView::nodeSelected);
     connect(_busNodeTreeView, &BusNodesTreeView::busSelected, _busManagerWidget, &BusManagerWidget::setBus);
     connect(_busNodeTreeView, &BusNodesTreeView::nodeSelected, _nodeManagerWidget, &NodeManagerWidget::setNode);
 }

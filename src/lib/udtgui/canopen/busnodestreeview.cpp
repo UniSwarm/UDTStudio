@@ -32,6 +32,7 @@ BusNodesTreeView::BusNodesTreeView(CanOpen *canOpen, QWidget *parent)
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setCanOpen(canOpen);
     setModel(_busNodesModel);
+    setAnimated(true);
     connect(selectionModel(), &QItemSelectionModel::selectionChanged, this, &BusNodesTreeView::updateSelection);
     connect(this, &QAbstractItemView::doubleClicked, this, &BusNodesTreeView::indexDbClick);
 }
@@ -78,7 +79,7 @@ void BusNodesTreeView::refresh()
     _busNodesModel->setCanOpen(_busNodesModel->canOpen());
     if (_busNodesModel->canOpen())
     {
-        foreach (CanOpenBus *bus, _busNodesModel->canOpen()->buses())
+        for (CanOpenBus *bus : _busNodesModel->canOpen()->buses())
         {
             connect(bus, &CanOpenBus::nodeAdded, this, &BusNodesTreeView::refresh);
         }

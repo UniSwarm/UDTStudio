@@ -19,6 +19,7 @@
 #include "nodediscover.h"
 
 #include <QDebug>
+#include <QDir>
 
 #include "canopenbus.h"
 
@@ -45,7 +46,7 @@ QString NodeDiscover::type() const
 
 void NodeDiscover::parseFrame(const QCanBusFrame &frame)
 {
-    if ((frame.frameId() >= 0x701) && (frame.frameId() <= 0x7FF) /*&& frame.frameType() == QCanBusFrame::DataFrame*/)
+    if ((frame.frameId() >= 0x701) && (frame.frameId() <= 0x7FF) && frame.frameType() == QCanBusFrame::DataFrame)
     {
         uint8_t nodeId = frame.frameId() & 0x7F;
         if (bus()->existNode(nodeId) == false)
@@ -66,11 +67,11 @@ void NodeDiscover::parseFrame(const QCanBusFrame &frame)
                     node->setStatus(Node::Status::PREOP);
                     break;
                 default:
-                    qDebug() << "> ServiceDispatcher::parseFrame : error status of node";
+                    qDebug() << "> NodeDiscover::parseFrame : error status of node";
                     break;
                 }
             }
-            qDebug() << "> ServiceDispatcher::parseFrame" << "Add NodeID : " << node << "Status of node : " << node->statusStr();
+            qDebug() << "> NodeDiscover::parseFrame" << "Add NodeID :" << node << "Status of node :" << node->statusStr();
             bus()->addNode(node);
 
             exploreNode(nodeId);
@@ -121,21 +122,21 @@ void NodeDiscover::exploreNodeNext()
 {
     QList<NodeObjectId> _objectsId{{0x1000, 0x0}, {0x1018, 0x1}, {0x1018, 0x2}, {0x1018, 0x3}};
 
+    Node *node = bus()->node(_exploreNodeCurrentId);
     if (_exploreNodeState >= _objectsId.size())
     {
         // explore node finished
         // load object eds
         //ODBDD find eds
         //bus()->node(_exploreNodeCurrentId)->nodeOd()->loadEds(foundeds);
-        Node *node = bus()->node(_exploreNodeCurrentId);
         uint profile = node->nodeOd()->value(0x1000).toUInt() & 0xFFFF;
         if (profile == 401)
         {
-            bus()->node(_exploreNodeCurrentId)->nodeOd()->loadEds("../../../fw/UIOfw/UIO44FR/uio44fr-i.eds");
+            node->nodeOd()->loadEds(QDir::homePath() + "/Seafile/Produits/4_UIO/uio44fr-i.eds");
         }
         if (profile == 402)
         {
-            bus()->node(_exploreNodeCurrentId)->nodeOd()->loadEds("../../../fw/UMCfw/UMC1BDS32/umc1bds32fr.eds");
+            node->nodeOd()->loadEds(QDir::homePath() + "/Seafile/Produits/1_UMC/umc1bds32fr.eds");
         }
 
         if (_nodeIdToExplore.isEmpty())
@@ -151,7 +152,7 @@ void NodeDiscover::exploreNodeNext()
     }
     else
     {
-        bus()->node(_exploreNodeCurrentId)->readObject(_objectsId[_exploreNodeState]);
+        node->readObject(_objectsId[_exploreNodeState]);
         _exploreNodeState++;
     }
 }

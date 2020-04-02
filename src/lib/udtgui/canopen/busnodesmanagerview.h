@@ -38,6 +38,8 @@ public:
     void setCanOpen(CanOpen *canOpen);
 
 signals:
+    void busSelected(CanOpenBus *currentBus);
+    void nodeSelected(Node *currentNode);
 
 public slots:
 

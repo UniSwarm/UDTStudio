@@ -20,7 +20,10 @@ HEADERS += \
     $$PWD/canopen/busnodesmanagerview.h \
     $$PWD/canopen/busnodesmodel.h \
     $$PWD/canopen/busnodestreeview.h \
-    $$PWD/canopen/nodemanagerwidget.h
+    $$PWD/canopen/nodemanagerwidget.h \
+    $$PWD/canopen/nodeod/nodeoditem.h \
+    $$PWD/canopen/nodeod/nodeoditemmodel.h \
+    $$PWD/canopen/nodeod/nodeodtreeview.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -34,7 +37,10 @@ SOURCES += \
     $$PWD/canopen/busnodesmanagerview.cpp \
     $$PWD/canopen/busnodesmodel.cpp \
     $$PWD/canopen/busnodestreeview.cpp \
-    $$PWD/canopen/nodemanagerwidget.cpp
+    $$PWD/canopen/nodemanagerwidget.cpp \
+    $$PWD/canopen/nodeod/nodeoditem.cpp \
+    $$PWD/canopen/nodeod/nodeoditemmodel.cpp \
+    $$PWD/canopen/nodeod/nodeodtreeview.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 
