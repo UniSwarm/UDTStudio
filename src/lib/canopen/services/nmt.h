@@ -31,6 +31,7 @@ public:
 
     uint32_t cobId();
 
+    void sendPreop();
     void sendStart();
     void sendStop();
     void sendResetComm();

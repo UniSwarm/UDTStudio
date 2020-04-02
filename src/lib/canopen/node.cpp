@@ -145,6 +145,11 @@ void Node::setStatus(Status status)
     }
 }
 
+void Node::sendPreop()
+{
+    _nmt->sendPreop();
+}
+
 void Node::sendStart()
 {
     _nmt->sendStart();

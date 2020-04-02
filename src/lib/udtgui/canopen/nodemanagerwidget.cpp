@@ -71,6 +71,14 @@ void NodeManagerWidget::updateData()
     }
 }
 
+void NodeManagerWidget::preop()
+{
+    if (_node)
+    {
+        _node->sendPreop();
+    }
+}
+
 void NodeManagerWidget::start()
 {
     if (_node)
@@ -121,13 +129,15 @@ void NodeManagerWidget::createWidgets()
     QFormLayout *layoutGroupBox = new QFormLayout();
 
     _toolBar = new QToolBar(tr("Node commands"));
+    action = _toolBar->addAction(tr("preop"));
+    connect(action, &QAction::triggered, this, &NodeManagerWidget::preop);
     action = _toolBar->addAction(tr("start"));
     connect(action, &QAction::triggered, this, &NodeManagerWidget::start);
     action = _toolBar->addAction(tr("stop"));
     connect(action, &QAction::triggered, this, &NodeManagerWidget::stop);
-    action = _toolBar->addAction(tr("resetCom"));
+    action = _toolBar->addAction(tr("rstCom"));
     connect(action, &QAction::triggered, this, &NodeManagerWidget::resetCom);
-    action = _toolBar->addAction(tr("resetNode"));
+    action = _toolBar->addAction(tr("rstNode"));
     connect(action, &QAction::triggered, this, &NodeManagerWidget::resetNode);
     action = _toolBar->addAction(tr("test"));
     connect(action, &QAction::triggered, this, &NodeManagerWidget::test);

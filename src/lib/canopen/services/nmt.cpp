@@ -21,6 +21,12 @@
 #include "nmt.h"
 #include "canopenbus.h"
 
+#define NMT_CS_START        0x01
+#define NMT_CS_STOP         0x02
+#define NMT_CS_PRE_OP       0x80
+#define NMT_CS_RESET_NODE   0x81
+#define NMT_CS_RESET_COMM   0x82
+
 NMT::NMT(Node *node)
     : Service (node)
 {
@@ -39,6 +45,36 @@ uint32_t NMT::cobId()
     return _cobId;
 }
 
+void NMT::sendPreop()
+{
+    sendNmt(NMT_CS_PRE_OP);
+}
+
+void NMT::sendStart()
+{
+    sendNmt(NMT_CS_START);
+}
+
+void NMT::sendStop()
+{
+    sendNmt(NMT_CS_STOP);
+}
+
+void NMT::sendResetComm()
+{
+    sendNmt(NMT_CS_RESET_COMM);
+}
+
+void NMT::sendResetNode()
+{
+    sendNmt(NMT_CS_RESET_NODE);
+}
+
+void NMT::parseFrame(const QCanBusFrame &frame)
+{
+    Q_UNUSED(frame);
+}
+
 void NMT::sendNmt(quint8 cmd)
 {
     QCanBusDevice *lcanDevice = canDevice();
@@ -54,29 +90,4 @@ void NMT::sendNmt(quint8 cmd)
     frameNmt.setFrameId(_cobId);
     frameNmt.setPayload(nmtStopPayload);
     lcanDevice->writeFrame(frameNmt);
-}
-
-void NMT::sendStart()
-{
-    sendNmt(0x01);
-}
-
-void NMT::sendStop()
-{
-    sendNmt(0x02);
-}
-
-void NMT::sendResetComm()
-{
-    sendNmt(0x02);
-}
-
-void NMT::sendResetNode()
-{
-    sendNmt(0x82);
-}
-
-void NMT::parseFrame(const QCanBusFrame &frame)
-{
-    Q_UNUSED(frame);
 }

@@ -65,6 +65,7 @@ signals:
     void statusChanged(Status status);
 
 public slots:
+    void sendPreop();
     void sendStart();
     void sendStop();
     void sendResetComm();
