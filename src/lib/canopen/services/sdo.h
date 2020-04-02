@@ -81,8 +81,7 @@ private:
         RequestState state;
         quint16 index;
         quint8 subIndex;
-        QVariant data;
-        QByteArray dataByte;
+        QByteArray data;
         QMetaType::Type dataType;
         quint32 stay;
         quint8 toggle;
