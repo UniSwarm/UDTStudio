@@ -78,6 +78,28 @@ quint32 SDO::cobIdServerToClient()
 
 void SDO::parseFrame(const QCanBusFrame &frame)
 {
+    if (frame.frameId() == _cobIdClientToServer + _nodeId)
+    {
+        processingFrameFromClient(frame);
+    }
+    else if (frame.frameId() == _cobIdServerToClient + _nodeId)
+    {
+        processingFrameFromServer(frame);
+    }
+    else
+    {
+        return;
+    }
+}
+
+void SDO::processingFrameFromClient(const QCanBusFrame &frame)
+{
+    Q_UNUSED(frame);
+    return;
+}
+
+void SDO::processingFrameFromServer(const QCanBusFrame &frame)
+{
     if (_request == nullptr)
     {
         return;

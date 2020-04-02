@@ -36,6 +36,8 @@ public:
     QString type() const override;
 
     void parseFrame(const QCanBusFrame &frame) override;
+    void processingFrameFromClient(const QCanBusFrame &frame);
+    void processingFrameFromServer(const QCanBusFrame &frame);
 
     quint32 cobIdClientToServer();
     quint32 cobIdServerToClient();
