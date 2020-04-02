@@ -273,14 +273,14 @@ QMetaType::Type NodeOd::dataTypeCiaToQt(NodeSubIndex::DataType type)
 
     case NodeSubIndex::BOOLEAN:
     case NodeSubIndex::UNSIGNED8:
-        return QMetaType::Char;
+        return QMetaType::UChar;
     case NodeSubIndex::INTEGER8:
         return QMetaType::SChar;
 
     case NodeSubIndex::UNSIGNED16:
-        return QMetaType::Short;
-    case NodeSubIndex::INTEGER16:
         return QMetaType::UShort;
+    case NodeSubIndex::INTEGER16:
+        return QMetaType::Short;
 
     case NodeSubIndex::UNSIGNED24:
         return QMetaType::UnknownType;
@@ -288,9 +288,9 @@ QMetaType::Type NodeOd::dataTypeCiaToQt(NodeSubIndex::DataType type)
         return QMetaType::UnknownType;
 
     case NodeSubIndex::UNSIGNED32:
-        return QMetaType::Int;
-    case NodeSubIndex::INTEGER32:
         return QMetaType::UInt;
+    case NodeSubIndex::INTEGER32:
+        return QMetaType::Int;
     case NodeSubIndex::REAL32:
         return QMetaType::Float;
 
