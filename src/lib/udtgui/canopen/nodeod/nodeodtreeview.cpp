@@ -22,14 +22,13 @@ NodeOdTreeView::NodeOdTreeView(QWidget *parent)
     : QTreeView(parent)
 {
     _odModel = new NodeOdItemModel();
-    _odModelSorter = new QSortFilterProxyModel();
+    _odModelSorter = new QSortFilterProxyModel(this);
     _odModelSorter->setSourceModel(_odModel);
     setModel(_odModelSorter);
 
-    /*
-    _odModelSorter->setFilterRegularExpression(QRegularExpression("0x1[0-9]{3}"));
-    _odModelSorter->setFilterKeyColumn(ODItemModel::OdIndex);
-*/
+    //_odModelSorter->setFilterRegularExpression(QRegularExpression("0x64[0-9]{2}"));
+    //_odModelSorter->setFilterKeyColumn(NodeOdItemModel::OdIndex);
+    _odModelSorter->setDynamicSortFilter(true);
 
     setSortingEnabled(true);
     sortByColumn(0, Qt::SortOrder::AscendingOrder);

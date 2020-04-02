@@ -18,6 +18,8 @@
 
 #include "nodeoditem.h"
 
+#include <QDebug>
+
 #include "nodeoditemmodel.h"
 
 NodeOdItem::NodeOdItem(NodeOd *od, NodeOdItem *parent)
@@ -178,15 +180,20 @@ NodeOdItem *NodeOdItem::parent() const
     return _parent;
 }
 
-NodeOdItem *NodeOdItem::child(int id) const
+NodeOdItem *NodeOdItem::child(int row) const
 {
     NodeOdItem *child;
-    if (id < 0 || id >= _children.count())
+    if (row < 0 || row >= _children.count())
     {
         return nullptr;
     }
-    child = _children.at(id);
+    child = _children.at(row);
     return child;
+}
+
+NodeOdItem *NodeOdItem::childIndex(int index) const
+{
+    return _childrenMap.value(index);
 }
 
 int NodeOdItem::row() const
@@ -196,6 +203,12 @@ int NodeOdItem::row() const
         return 0;
     }
     return _parent->_children.indexOf(const_cast<NodeOdItem *>(this));
+}
+
+void NodeOdItem::addChild(quint16 index, NodeOdItem *child)
+{
+    _children.append(child);
+    _childrenMap.insert(index, child);
 }
 
 const QList<NodeOdItem *> &NodeOdItem::children() const
@@ -210,14 +223,14 @@ void NodeOdItem::createChildren()
     case NodeOdItem::TOD:
         for (NodeIndex *index : _od->indexes())
         {
-            _children.append(new NodeOdItem(index, this));
+            addChild(index->index(), new NodeOdItem(index, this));
         }
         break;
 
     case NodeOdItem::TIndex:
         for (NodeSubIndex *subIndex : _index->subIndexes())
         {
-            _children.append(new NodeOdItem(subIndex, this));
+            addChild(subIndex->subIndex(), new NodeOdItem(subIndex, this));
         }
         break;
 

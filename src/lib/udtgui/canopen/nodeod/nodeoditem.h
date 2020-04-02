@@ -48,7 +48,8 @@ public:
 
     const QList<NodeOdItem *> &children() const;
     NodeOdItem *parent() const;
-    NodeOdItem *child(int id) const;
+    NodeOdItem *child(int row) const;
+    NodeOdItem *childIndex(int index) const;
     int row() const;
 
 protected:
@@ -60,6 +61,8 @@ protected:
 
     NodeOdItem *_parent;
     QList<NodeOdItem *> _children;
+    QMap<quint16, NodeOdItem *> _childrenMap;
+    void addChild(quint16 index, NodeOdItem *child);
     void createChildren();
 };
 

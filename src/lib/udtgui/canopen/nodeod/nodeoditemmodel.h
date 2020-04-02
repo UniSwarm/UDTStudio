@@ -64,8 +64,8 @@ protected:
     void odNotify(quint16 index, quint8 subindex, const QVariant &value) override;
 
 protected:
-    NodeOdItem *indexItem(quint16 index);
-    NodeOdItem *subIndexItem(quint16 index, quint8 subindex);
+    QModelIndex indexItem(quint16 index, int col);
+    QModelIndex subIndexItem(quint16 index, quint8 subindex, int col);
 
 private:
     NodeOdItem *_root;

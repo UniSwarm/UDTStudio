@@ -85,9 +85,14 @@ void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, 
     {
         index(indexDevice)->subIndex(subindexDevice)->setValue(value);
 
-        notifySubscribers(indexDevice, subindexDevice, value);   // notify subscribers to index/subindex
-        notifySubscribers(indexDevice, 0xFFu, value);            // notify subscribers to index with all subindex
-        notifySubscribers(0xFFFFu, 0xFFu, value);                // notify subscribers to the full od
+        quint32 key = (static_cast<quint32>(indexDevice) << 8) + subindexDevice;
+        notifySubscribers(key, indexDevice, subindexDevice, value);   // notify subscribers to index/subindex
+
+        key = (static_cast<quint32>(indexDevice) << 8) + 0xFFu;
+        notifySubscribers(key, indexDevice, subindexDevice, value);   // notify subscribers to index with all subindex
+
+        key = (static_cast<quint32>(0xFFFFu) << 8) + 0xFFu;
+        notifySubscribers(key, indexDevice, subindexDevice, value);   // notify subscribers to the full od
     }
 }
 
@@ -128,9 +133,8 @@ void NodeOd::createMandatoryObject()
     this->addIndex(identityObject);
 }
 
-void NodeOd::notifySubscribers(quint16 notifyIndex, quint8 notifySubIndex, const QVariant &value)
+void NodeOd::notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySubIndex, const QVariant &value)
 {
-    quint32 key = (static_cast<quint32>(notifyIndex) << 8) + notifySubIndex;
     QList<Subscriber> interrestedSubscribers = _subscribers.values(key);
     QList<Subscriber>::const_iterator subscriber = interrestedSubscribers.cbegin();
     while (subscriber != interrestedSubscribers.cend())

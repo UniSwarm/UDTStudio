@@ -18,6 +18,8 @@
 
 #include "nodeoditemmodel.h"
 
+#include <QDebug>
+
 #include "node.h"
 #include "nodeoditem.h"
 
@@ -138,7 +140,7 @@ QModelIndex NodeOdItemModel::parent(const QModelIndex &child) const
     {
         return QModelIndex();
     }
-    return createIndex(item->row(), child.column(), item->parent());
+    return createIndex(item->parent()->row(), 0, item->parent());
 }
 
 int NodeOdItemModel::rowCount(const QModelIndex &parent) const
@@ -172,26 +174,52 @@ QVariant NodeOdItemModel::data(const QModelIndex &index, int role) const
     return item->data(index.column(), role);
 }
 
-NodeOdItem *NodeOdItemModel::indexItem(quint16 index)
+QModelIndex NodeOdItemModel::indexItem(quint16 index, int col)
 {
     if (!_root)
     {
-        return nullptr;
+        return QModelIndex();
     }
 
-    // TODO
-    //NodeOdItem _root->children()
-    return nullptr;
+    NodeOdItem *childIndex = _root->childIndex(index);
+    if (!childIndex)
+    {
+        return QModelIndex();
+    }
+    return createIndex(childIndex->row(), col, childIndex);
 }
 
-NodeOdItem *NodeOdItemModel::subIndexItem(quint16 index, quint8 subindex)
+QModelIndex NodeOdItemModel::subIndexItem(quint16 index, quint8 subindex, int col)
 {
-    // TODO
-    return nullptr;
+    if (!_root)
+    {
+        return QModelIndex();
+    }
+
+    NodeOdItem *childIndex = _root->childIndex(index);
+    if (!childIndex)
+    {
+        return QModelIndex();
+    }
+    if (childIndex->rowCount() == 0)
+    {
+        return createIndex(childIndex->row(), col, childIndex);
+    }
+
+    NodeOdItem *childSubIndex = childIndex->childIndex(subindex);
+    if (!childSubIndex)
+    {
+        return QModelIndex();
+    }
+    return createIndex(childSubIndex->row(), col, childSubIndex);
 }
 
 void NodeOdItemModel::odNotify(quint16 index, quint8 subindex, const QVariant &value)
 {
-    // TODO
-    //emit dataChanged();
+    Q_UNUSED(value)
+    QModelIndex modelIndex = subIndexItem(index, subindex, 3);
+    if (modelIndex.isValid())
+    {
+        emit dataChanged(modelIndex, modelIndex);
+    }
 }
