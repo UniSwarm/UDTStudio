@@ -13,16 +13,16 @@ OdDb::OdDb(QString directory)
     _fileName = nullptr;
     _path = nullptr;
 
-    searchEds();
+    searchFile();
 }
 
 void OdDb::setDirectory(QString directory)
 {
     _directory = directory;
-    searchEds();
+    searchFile();
 }
 
-void OdDb::searchEds()
+void OdDb::searchFile()
 {
     QDir dir(_directory);
     QStringList list = dir.entryList(QStringList() << "*.eds", QDir::Files | QDir::NoSymLinks);
@@ -37,12 +37,12 @@ void OdDb::searchEds()
         byte.append(deviceDescription->index(0x1018)->subIndex(2)->value().toByteArray());
         byte.append(deviceDescription->index(0x1018)->subIndex(3)->value().toByteArray());
         QByteArray hash = QCryptographicHash::hash(byte, QCryptographicHash::Md4);
-        _mapFile.insert(hash, file);
+        _mapFile.insert(hash, _directory + "/" + file);
         byte.clear();
     }
 }
 
-QString OdDb::fileEds(quint32 deviceType, quint32 vendorID, quint32 productCode, quint32 revisionNumber)
+QString OdDb::file(quint32 deviceType, quint32 vendorID, quint32 productCode, quint32 revisionNumber)
 {
     QByteArray byte;
     byte.append(QVariant(deviceType).toByteArray());
@@ -62,5 +62,5 @@ QString OdDb::fileEds(quint32 deviceType, quint32 vendorID, quint32 productCode,
 void OdDb::refreshFile()
 {
     _mapFile.clear();
-    searchEds();
+    searchFile();
 }

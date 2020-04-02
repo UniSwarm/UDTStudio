@@ -22,9 +22,10 @@
 #include <QDir>
 
 #include "canopenbus.h"
+#include "db/oddb.h"
 
 NodeDiscover::NodeDiscover(CanOpenBus *bus)
-    : Service (bus)
+    : Service(bus)
 {
     for (quint8 nodeId = 1; nodeId <= 127; nodeId++)
     {
@@ -57,13 +58,13 @@ void NodeDiscover::parseFrame(const QCanBusFrame &frame)
             {
                 switch (frame.payload().at(0) & 0x7F)
                 {
-                case 4:  // Stopped
+                case 4: // Stopped
                     node->setStatus(Node::Status::STOPPED);
                     break;
-                case 5:  // Operational
+                case 5: // Operational
                     node->setStatus(Node::Status::STARTED);
                     break;
-                case 127:  // Pre-operational
+                case 127: // Pre-operational
                     node->setStatus(Node::Status::PREOP);
                     break;
                 default:
@@ -71,7 +72,8 @@ void NodeDiscover::parseFrame(const QCanBusFrame &frame)
                     break;
                 }
             }
-            qDebug() << "> NodeDiscover::parseFrame" << "Add NodeID :" << node << "Status of node :" << node->statusStr();
+            qDebug() << "> NodeDiscover::parseFrame"
+                     << "Add NodeID :" << node << "Status of node :" << node->statusStr();
             bus()->addNode(node);
 
             exploreNode(nodeId);
@@ -126,17 +128,21 @@ void NodeDiscover::exploreNodeNext()
     if (_exploreNodeState >= _objectsId.size())
     {
         // explore node finished
+        // ODBDD find eds
+        OdDb db;
+        db.setDirectory(QDir::homePath() + "/Seafile/Produits/4_UIO/");
+        db.setDirectory(QDir::homePath() + "/Seafile/Produits/1_UMC/");
+
+        Node *node = bus()->node(_exploreNodeCurrentId);
+        QString file = db.file(node->nodeOd()->value(0x1000).toUInt(),
+                               node->nodeOd()->value(0x1018, 1).toUInt(),
+                               node->nodeOd()->value(0x1018, 2).toUInt(),
+                               node->nodeOd()->value(0x1018, 3).toUInt());
+
         // load object eds
-        //ODBDD find eds
-        //bus()->node(_exploreNodeCurrentId)->nodeOd()->loadEds(foundeds);
-        uint profile = node->nodeOd()->value(0x1000).toUInt() & 0xFFFF;
-        if (profile == 401)
+        if (!file.isEmpty())
         {
-            node->nodeOd()->loadEds(QDir::homePath() + "/Seafile/Produits/4_UIO/uio44fr-i.eds");
-        }
-        if (profile == 402)
-        {
-            node->nodeOd()->loadEds(QDir::homePath() + "/Seafile/Produits/1_UMC/umc1bds32fr.eds");
+            node->nodeOd()->loadEds(file);
         }
 
         if (_nodeIdToExplore.isEmpty())

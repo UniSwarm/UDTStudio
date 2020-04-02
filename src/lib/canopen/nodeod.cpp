@@ -179,7 +179,7 @@ bool NodeOd::loadEds(const QString &fileName)
             nodeIndex->addSubIndex(nodeSubIndex);
         }
     }
-    qDebug() << ">loadEds :" << fileName;
+    qDebug() << ">NodeOd::loadEds :" << fileName;
     delete deviceDescription;
     return true;
 }
