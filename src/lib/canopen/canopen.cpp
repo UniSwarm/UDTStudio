@@ -22,6 +22,11 @@ CanOpen::CanOpen()
 {
 }
 
+CanOpen::~CanOpen()
+{
+    qDeleteAll(_buses);
+}
+
 const QList<CanOpenBus *> &CanOpen::buses() const
 {
     return _buses;

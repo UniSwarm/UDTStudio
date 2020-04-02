@@ -2,26 +2,29 @@
 
 NodeSubIndex::NodeSubIndex(const quint8 subIndex)
 {
+    _nodeIndex = nullptr;
+
     _subIndex = subIndex;
-    _flagLimit = 0;
     _accessType = NOACESS;
-    _value = QVariant();
     _dataType = NONE;
 }
 
 NodeSubIndex::NodeSubIndex(const NodeSubIndex &other)
-    : QObject ()
 {
-    _accessType = other.accessType();
+    _nodeIndex = nullptr;
+
     _subIndex = other.subIndex();
     _name = other.name();
-    _value = other.value();
+    _accessType = other.accessType();
 
-    _flagLimit = other.flagLimit();
-    _lowLimit = other.lowLimit();
-    _highLimit = other.highLimit();
+    _value = other._value;
+    _defaultValue = other._defaultValue;
+    _dataType = other._dataType;
 
-    _dataType = other.dataType();
+    _lowLimit = other._lowLimit;
+    _highLimit = other._highLimit;
+
+    _lastModification = other._lastModification;
 }
 
 /**
@@ -83,6 +86,42 @@ NodeSubIndex::AccessType NodeSubIndex::accessType() const
 void NodeSubIndex::setAccessType(const AccessType &accessType)
 {
     _accessType = accessType;
+}
+
+/**
+ * @brief Acces readable
+ * @return true is the sub index is readable
+ */
+bool NodeSubIndex::isReadable() const
+{
+    return (_accessType & READ);
+}
+
+/**
+ * @brief Acces writable
+ * @return true is the sub index is writable
+ */
+bool NodeSubIndex::isWritable() const
+{
+    return (_accessType & WRITE);
+}
+
+/**
+ * @brief Acces by TPDO
+ * @return true is the sub index can be accessed by TPDO
+ */
+bool NodeSubIndex::hasTPDOAccess() const
+{
+    return (_accessType & TPDO);
+}
+
+/**
+ * @brief Acces by RPDO
+ * @return true is the sub index can be accessed by RPDO
+ */
+bool NodeSubIndex::hasRPDOAccess() const
+{
+    return (_accessType & RPDO);
 }
 
 /**
@@ -216,6 +255,15 @@ void NodeSubIndex::setLowLimit(const QVariant &lowLimit)
 }
 
 /**
+ * @brief Low limit set
+ * @return true if a low limit is set
+ */
+bool NodeSubIndex::hasLowLimit() const
+{
+    return _lowLimit.isValid();
+}
+
+/**
  * @brief high limit getter
  * @return high limit value
  */
@@ -234,21 +282,12 @@ void NodeSubIndex::setHighLimit(const QVariant &highLimit)
 }
 
 /**
- * @brief flag limit getter
- * @return 0x1 if sub-index has low limit, 0x2 if has high limit and 0x3 if has both. Else 0.
+ * @brief High limit set
+ * @return true if a high limit is set
  */
-uint8_t NodeSubIndex::flagLimit() const
+bool NodeSubIndex::hasHighLimit() const
 {
-    return _flagLimit;
-}
-
-/**
- * @brief flag limit setter
- * @param new flag limit code
- */
-void NodeSubIndex::setFlagLimit(const uint8_t &flagLimit)
-{
-    _flagLimit = flagLimit;
+    return _highLimit.isValid();
 }
 
 /**
@@ -264,12 +303,16 @@ int NodeSubIndex::byteLength() const
     case NodeSubIndex::VISIBLE_STRING:
     case NodeSubIndex::OCTET_STRING:
     case NodeSubIndex::UNICODE_STRING:
+        // TODO
         break;
     case NodeSubIndex::TIME_OF_DAY:
+        // TODO
         break;
     case NodeSubIndex::TIME_DIFFERENCE:
+        // TODO
         break;
     case NodeSubIndex::DDOMAIN:
+        // TODO
         break;
 
     case NodeSubIndex::BOOLEAN:

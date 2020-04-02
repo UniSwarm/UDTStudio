@@ -2,15 +2,14 @@
 #define NODESUBINDEX_H
 
 #include "canopen_global.h"
-#include <QObject>
+
 #include <QVariant>
 #include <QTime>
 
 class NodeIndex;
 
-class CANOPEN_EXPORT NodeSubIndex : public QObject
+class CANOPEN_EXPORT NodeSubIndex
 {
-    Q_OBJECT
 public:
     NodeSubIndex(const quint8 subIndex);
     NodeSubIndex(const NodeSubIndex &other);
@@ -33,6 +32,10 @@ public:
     };
     AccessType accessType() const;
     void setAccessType(const AccessType &accessType);
+    bool isReadable() const;
+    bool isWritable() const;
+    bool hasTPDOAccess() const;
+    bool hasRPDOAccess() const;
 
     const QVariant &value() const;
     void setValue(const QVariant &value);
@@ -75,12 +78,11 @@ public:
 
     const QVariant &lowLimit() const;
     void setLowLimit(const QVariant &lowLimit);
+    bool hasLowLimit() const;
 
     const QVariant &highLimit() const;
     void setHighLimit(const QVariant &highLimit);
-
-    uint8_t flagLimit() const;
-    void setFlagLimit(const uint8_t &flagLimit);
+    bool hasHighLimit() const;
 
     int byteLength() const;
 
@@ -98,7 +100,6 @@ private:
     QVariant _defaultValue;
     DataType _dataType;
 
-    uint8_t _flagLimit;
     QVariant _lowLimit;
     QVariant _highLimit;
 

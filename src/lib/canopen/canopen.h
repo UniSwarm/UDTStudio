@@ -30,6 +30,7 @@ class CANOPEN_EXPORT CanOpen : public QObject
     Q_OBJECT
 public:
     CanOpen();
+    ~CanOpen();
 
     const QList<CanOpenBus *> &buses() const;
     CanOpenBus *addBus(CanOpenBus *bus);

@@ -45,6 +45,7 @@ CanOpenBus::~CanOpenBus()
     delete _timestamp;
     delete _nodeDiscover;
     delete _serviceDispatcher;
+    qDeleteAll(_nodes);
 
     if (_canDevice)
     {

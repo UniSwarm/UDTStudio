@@ -3,16 +3,18 @@
 
 NodeIndex::NodeIndex(const quint16 &index)
 {
+    _nodeOd = nullptr;
     _index = index;
     _objectType = VAR;
 }
 
 NodeIndex::NodeIndex(const NodeIndex &other)
-    : QObject ()
 {
-    _index = other.index();
-    _objectType = other.objectType();
-    _name = other.name();
+    _nodeOd = nullptr;
+
+    _index = other._index;
+    _name = other._name;
+    _objectType = other._objectType;
 
     for (NodeSubIndex *subIndex : other._nodeSubIndexes)
     {

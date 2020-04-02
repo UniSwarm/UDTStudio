@@ -2,14 +2,13 @@
 #define NODEINDEX_H
 
 #include "canopen_global.h"
-#include <QObject>
+
 #include "nodesubindex.h"
 
 class NodeOd;
 
-class CANOPEN_EXPORT NodeIndex : public QObject
+class CANOPEN_EXPORT NodeIndex
 {
-    Q_OBJECT
 public:
     NodeIndex(const quint16 &index);
     NodeIndex(const NodeIndex &other);
