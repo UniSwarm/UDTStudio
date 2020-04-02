@@ -105,7 +105,7 @@ void SDO::processingFrameFromServer(const QCanBusFrame &frame)
         return;
     }
 
-    if (frame.payload().size() == 0)
+    if (frame.payload().size() != 8)
     {
         errorManagement();
         return;
@@ -324,6 +324,10 @@ qint32 SDO::downloadDispatcher()
             cmd |= SDO_E_EXPEDITED << 1;
             cmd |= Flag::SDO_S;
             cmd |= ((4 - _request->data.size()) & SDO_N_MASK) << 2;
+            for (int i = (_request->data.size() - 1); i < 4; i++)
+            {
+                _request->data.append(static_cast<quint8>(0));
+            }
             sendSdoRequest(cmd, _request->index, _request->subIndex, _request->data);
             _request->state = STATE_DOWNLOAD;
         }
@@ -331,7 +335,7 @@ qint32 SDO::downloadDispatcher()
         {   // normal transfer
             cmd = CCS::SDO_CCS_CLIENT_DOWNLOAD_INITIATE;
             cmd |= Flag::SDO_S;
-            sendSdoRequest(cmd, _request->index, _request->subIndex, _request->data.size());
+            sendSdoRequest(cmd, _request->index, _request->subIndex, static_cast<quint32>(_request->data.size()));
             _request->stay = static_cast<quint32>(_request->data.size());
             _request->state = STATE_DOWNLOAD_SEGMENT;
         }
@@ -371,7 +375,11 @@ qint32 SDO::sdoDownloadInitiate(const QCanBusFrame &frame)
            _request->stay -= SDO_SG_SIZE;
 
             if (_request->stay < SDO_SG_SIZE) // no more segments to be downloaded
-            {                
+            {
+                for (int i = (buffer.size() - 1 ); i < SDO_SG_SIZE; i++)
+                {
+                    buffer.append(static_cast<quint8>(0));
+                }
                 cmd |= SDO_C;
                 requestFinished();
             }
@@ -416,6 +424,10 @@ qint32 SDO::sdoDownloadSegment(const QCanBusFrame &frame)
             if (_request->stay < SDO_SG_SIZE)
             {
                 // no more segments to be downloaded
+                for (int i = (buffer.size() - 1 ); i < SDO_SG_SIZE; i++)
+                {
+                    buffer.append(static_cast<quint8>(0));
+                }
                 cmd |= SDO_C;
                 requestFinished();
             }
@@ -432,7 +444,6 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
     quint16 index = 0;
     quint8 subindex = 0;
     quint8 cmd = 0;
-    quint8 sizeSeg = 7;
     quint32 seek = 0;
     QByteArray buffer;
 
@@ -478,7 +489,7 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
     {
         cmd = CCS::SDO_CCS_CLIENT_BLOCK_DOWNLOAD;
         cmd |= CS::SDO_CCS_CLIENT_BLOCK_DOWNLOAD_CS_END_REQ;
-        cmd |= (sizeSeg - _request->stay) << 2;
+        cmd |= (SDO_SG_SIZE - _request->stay) << 2;
         quint16 crc = 0;
         sendSdoRequest(cmd, crc);
     }
@@ -490,21 +501,25 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
 
     if (_request->state == STATE_BLOCK_DOWNLOAD)
     {
-        while (_request->seqno <= (_request->blksize) && (_request->stay > sizeSeg))
+        while (_request->seqno <= (_request->blksize) && (_request->stay > SDO_SG_SIZE))
         {
             seek = (static_cast<quint32>(_request->data.size()) - _request->stay);
             buffer.clear();
-            buffer = _request->data.mid(static_cast<int32_t>(seek), sizeSeg);
+            buffer = _request->data.mid(static_cast<int32_t>(seek), SDO_SG_SIZE);
 
             sendSdoRequest(true, _request->seqno, buffer);
-            _request->stay -= sizeSeg;
+            _request->stay -= SDO_SG_SIZE;
             _request->seqno++;
             qDebug() << "_request->stay" << _request->stay;
-            if (_request->stay < sizeSeg)
+            if (_request->stay < SDO_SG_SIZE)
             {
                 seek = (static_cast<quint32>(_request->data.size()) - _request->stay);
                 buffer.clear();
-                buffer = _request->data.mid(static_cast<int32_t>(seek), sizeSeg);
+                buffer = _request->data.mid(static_cast<int32_t>(seek), SDO_SG_SIZE);
+                for (int i = (buffer.size() - 1 ); i < SDO_SG_SIZE; i++)
+                {
+                    buffer.append(static_cast<quint8>(0));
+                }
                 _request->seqno++;
 
                 sendSdoRequest(false, _request->seqno, buffer);
@@ -582,6 +597,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex)
     data << cmd;
     data << index;
     data << subindex;
+    data << static_cast<quint32>(0);
 
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
@@ -603,6 +619,9 @@ bool SDO::sendSdoRequest(quint8 cmd)
     QDataStream data(&sdoWriteReqPayload, QIODevice::WriteOnly);
     data.setByteOrder(QDataStream::LittleEndian);
     data << cmd;
+    data << static_cast<quint32>(0);
+    data << static_cast<quint8>(0);
+    data << static_cast<quint16>(0);
 
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
@@ -673,6 +692,8 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 &crc)
     data.setByteOrder(QDataStream::LittleEndian);
     data << cmd;
     data << crc;
+    data << static_cast<quint32>(0);
+    data << static_cast<quint8>(0);
 
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
