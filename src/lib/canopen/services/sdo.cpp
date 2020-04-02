@@ -22,19 +22,19 @@
 #include "sdo.h"
 #include "canopenbus.h"
 
-#define SDO_SCS(data)       ((data)[0] & 0xE0)  // E0 -> mask for css
+#define SDO_SCS(data)       ((data).at(0) & 0xE0)  // E0 -> mask for css
 
 #define SDO_N_MASK          0x03
-#define SDO_N(data)         ((((data)[0]) >> 2) & 0x03) // Used for download/upload initiate.
+#define SDO_N(data)         ((((data).at(0)) >> 2) & 0x03) // Used for download/upload initiate.
     // If valid it indicates the number of bytes in d that do not contain data
-#define SDO_N_SEG(data)     ((((data)[0]) >> 1) & 0x07) // Used for download/upload segment.
+#define SDO_N_SEG(data)     ((((data).at(0)) >> 1) & 0x07) // Used for download/upload segment.
     // indicates the number of bytes in seg-data that do not contain segment data.
 
-#define SDO_TOG_BIT(data)   ((data)[0] & 0x10)  // 0x10 -> mask for toggle bit
+#define SDO_TOG_BIT(data)   ((data).at(0) & 0x10)  // 0x10 -> mask for toggle bit
 #define SDO_TOGGLE_MASK     1 << 4
 
-#define SDO_INDEX(data) static_cast<quint16>(((data)[2]) << 8) + static_cast<quint8>((data)[1])
-#define SDO_SUBINDEX(data) static_cast<quint8>((data)[3])
+#define SDO_INDEX(data) static_cast<quint16>(((data).at(2)) << 8) + static_cast<quint8>((data).at(1))
+#define SDO_SUBINDEX(data) static_cast<quint8>((data).at(3))
 #define SDO_SG_SIZE       7         // size max by segment
 
 #define CO_SDO_CS_ABORT                         0x80
@@ -104,6 +104,13 @@ void SDO::processingFrameFromServer(const QCanBusFrame &frame)
     {
         return;
     }
+
+    if (frame.payload().size() == 0)
+    {
+        errorManagement();
+        return;
+    }
+
     quint8 scs = static_cast<quint8>SDO_SCS(frame.payload());
     //qDebug() << QString::number(frame.frameId(), 16) << QString::number(scs, 16);
 
