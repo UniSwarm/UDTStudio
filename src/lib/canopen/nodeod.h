@@ -24,7 +24,6 @@
 #include <QMap>
 #include <QMultiMap>
 
-#include "model/index.h"
 #include "nodeindex.h"
 
 class Node;

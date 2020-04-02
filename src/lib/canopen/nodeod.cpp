@@ -45,6 +45,11 @@ NodeIndex *NodeOd::index(quint16 index) const
     return _nodeIndexes.value(index);
 }
 
+const QMap<quint16, NodeIndex *> &NodeOd::indexes() const
+{
+    return _nodeIndexes;
+}
+
 /**
  * @brief inserts a new index. If the index already exist, replaces it with the new index
  * @param index
