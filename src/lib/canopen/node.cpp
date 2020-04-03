@@ -185,18 +185,19 @@ void Node::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
     _sdoClients.at(0)->uploadData(index, subindex, mdataType);
 }
 
-void Node::writeObject(quint16 index, quint8 subindex, QVariant &data)
+void Node::writeObject(quint16 index, quint8 subindex, const QVariant &data)
 {
+    QVariant mdata = data;
     QMetaType::Type mdataType = _nodeOd->dataType(index, subindex);
     if (mdataType != QMetaType::Type::UnknownType)
     {
         if (mdataType != QMetaType::Type(data.type()))
         {
-            data.canConvert(mdataType);
+            mdata.convert(mdataType);
         }
     }
 
-    _sdoClients.at(0)->downloadData(index, subindex, data);
+    _sdoClients.at(0)->downloadData(index, subindex, mdata);
 }
 
 void Node::loadEds(const QString &fileName)

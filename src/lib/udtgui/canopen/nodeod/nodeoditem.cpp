@@ -21,6 +21,7 @@
 #include <QDebug>
 
 #include "nodeoditemmodel.h"
+#include "node.h"
 
 NodeOdItem::NodeOdItem(NodeOd *od, NodeOdItem *parent)
 {
@@ -112,7 +113,7 @@ QVariant NodeOdItem::data(int column, int role) const
             switch (column)
             {
             case NodeOdItemModel::OdIndex:
-                return QVariant(QLatin1String("0x") + QString::number(_index->index(), 16).toUpper());
+                return QVariant(QLatin1String("0x") + QString::number(_index->index(), 16).toUpper().rightJustified(4, '0'));
 
             case NodeOdItemModel::Name:
                 return QVariant(_index->name());
@@ -128,7 +129,7 @@ QVariant NodeOdItem::data(int column, int role) const
                 }
 
             case NodeOdItemModel::Value:
-                if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1)
+                if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
                 {
                     return _index->subIndex(0)->value();
                 }
@@ -136,9 +137,28 @@ QVariant NodeOdItem::data(int column, int role) const
                 {
                     return QVariant(QString("%1 items").arg(_index->subIndexesCount()));
                 }
-            default:
-                return QVariant();
             }
+            break;
+
+        case Qt::EditRole:
+            switch (column)
+            {
+            case NodeOdItemModel::Value:
+                if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
+                {
+                    return _index->subIndex(0)->value();
+                }
+                break;
+            }
+            break;
+
+        case Qt::TextAlignmentRole:
+            switch (column)
+            {
+            case NodeOdItemModel::OdIndex:
+                return QVariant(Qt::AlignRight);
+            }
+            break;
         }
         break;
 
@@ -149,7 +169,7 @@ QVariant NodeOdItem::data(int column, int role) const
             switch (column)
             {
             case NodeOdItemModel::OdIndex:
-                return QVariant(QLatin1String("0x") + QString::number(_subIndex->subIndex(), 16).toUpper());
+                return QVariant(QLatin1String("0x") + QString::number(_subIndex->subIndex(), 16).toUpper().rightJustified(2, '0'));
 
             case NodeOdItemModel::Name:
                 return QVariant(_subIndex->name());
@@ -159,20 +179,105 @@ QVariant NodeOdItem::data(int column, int role) const
 
             case NodeOdItemModel::Value:
                 return _subIndex->value();
-
-            default:
-                return QVariant();
             }
+            break;
+
+        case Qt::EditRole:
+            switch (column)
+            {
+            case NodeOdItemModel::Value:
+                return _subIndex->value();
+            }
+            break;
+
+        case Qt::TextAlignmentRole:
+            switch (column)
+            {
+            case NodeOdItemModel::OdIndex:
+                return QVariant(Qt::AlignRight);
+            }
+            break;
         }
         break;
     }
     return QVariant();
 }
 
-bool NodeOdItem::setData(int column, const QVariant &value, int role)
+bool NodeOdItem::setData(int column, const QVariant &value, int role, Node *node)
 {
-    // TODO IMPLEMENT ME to set value
+    Q_UNUSED(role)
+    switch (_type)
+    {
+    case NodeOdItem::TOD:
+        break;
+
+    case NodeOdItem::TIndex:
+        switch (column)
+        {
+        case NodeOdItemModel::Value:
+            if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
+            {
+                if (_index->subIndex(0)->isWritable())
+                {
+                    node->writeObject(_index->index(), _index->subIndex(0)->subIndex(), value);
+                }
+            }
+            break;
+        }
+        break;
+
+    case NodeOdItem::TSubIndex:
+        switch (column)
+        {
+        case NodeOdItemModel::Value:
+            if (_subIndex->isWritable())
+            {
+                node->writeObject(_subIndex->nodeIndex()->index(), _subIndex->subIndex(), value);
+            }
+            break;
+        }
+        break;
+    }
     return false;
+}
+
+Qt::ItemFlags NodeOdItem::flags(int column) const
+{
+    Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+
+    switch (_type)
+    {
+    case NodeOdItem::TOD:
+        break;
+
+    case NodeOdItem::TIndex:
+        switch (column)
+        {
+        case NodeOdItemModel::Value:
+            if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
+            {
+                if (_index->subIndex(0)->isWritable())
+                {
+                    flags.setFlag(Qt::ItemIsEditable);
+                }
+            }
+            break;
+        }
+        break;
+
+    case NodeOdItem::TSubIndex:
+        switch (column)
+        {
+        case NodeOdItemModel::Value:
+            if (_subIndex->isWritable())
+            {
+                flags.setFlag(Qt::ItemIsEditable);
+            }
+            break;
+        }
+        break;
+    }
+    return flags;
 }
 
 NodeOdItem *NodeOdItem::parent() const
@@ -191,7 +296,7 @@ NodeOdItem *NodeOdItem::child(int row) const
     return child;
 }
 
-NodeOdItem *NodeOdItem::childIndex(int index) const
+NodeOdItem *NodeOdItem::childIndex(quint16 index) const
 {
     return _childrenMap.value(index);
 }

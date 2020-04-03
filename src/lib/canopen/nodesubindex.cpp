@@ -34,6 +34,11 @@ NodeSubIndex::~NodeSubIndex()
 {
 }
 
+NodeIndex *NodeSubIndex::nodeIndex() const
+{
+    return _nodeIndex;
+}
+
 /**
  * @brief sub-index number getter
  * @return 8 bits sub-index number

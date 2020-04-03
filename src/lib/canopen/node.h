@@ -45,7 +45,7 @@ public:
 
     void readObject(NodeObjectId id);
     void readObject(quint16 index, quint8 subindex, QMetaType::Type dataType = QMetaType::Type::UnknownType);
-    void writeObject(quint16 index, quint8 subindex, QVariant &data);
+    void writeObject(quint16 index, quint8 subindex, const QVariant &data);
 
     void loadEds(const QString &fileName);
     void updateFirmware(const QByteArray &prog);

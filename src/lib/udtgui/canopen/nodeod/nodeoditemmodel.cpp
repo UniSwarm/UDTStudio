@@ -170,8 +170,38 @@ QVariant NodeOdItemModel::data(const QModelIndex &index, int role) const
     }
 
     NodeOdItem *item = static_cast<NodeOdItem *>(index.internalPointer());
-
     return item->data(index.column(), role);
+}
+
+bool NodeOdItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (!_root)
+    {
+        return false;
+    }
+    if (!index.isValid())
+    {
+        return false;
+    }
+
+    NodeOdItem *item = static_cast<NodeOdItem *>(index.internalPointer());
+    item->setData(index.column(), value, role, _node);
+    return false;
+}
+
+Qt::ItemFlags NodeOdItemModel::flags(const QModelIndex &index) const
+{
+    if (!_root)
+    {
+        return Qt::NoItemFlags;
+    }
+    if (!index.isValid())
+    {
+        return Qt::NoItemFlags;
+    }
+
+    NodeOdItem *item = static_cast<NodeOdItem *>(index.internalPointer());
+    return item->flags(index.column());
 }
 
 QModelIndex NodeOdItemModel::indexItem(quint16 index, int col)

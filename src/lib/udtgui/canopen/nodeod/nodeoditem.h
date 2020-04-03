@@ -44,12 +44,13 @@ public:
 
     int rowCount() const;
     QVariant data(int column, int role) const;
-    bool setData(int column, const QVariant &value, int role);
+    bool setData(int column, const QVariant &value, int role, Node *node);
+    Qt::ItemFlags flags(int column) const;
 
     const QList<NodeOdItem *> &children() const;
     NodeOdItem *parent() const;
     NodeOdItem *child(int row) const;
-    NodeOdItem *childIndex(int index) const;
+    NodeOdItem *childIndex(quint16 index) const;
     int row() const;
 
 protected:
