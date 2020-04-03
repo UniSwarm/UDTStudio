@@ -83,9 +83,11 @@ private:
         RequestState state;
         quint16 index;
         quint8 subIndex;
-        QByteArray data;
+        QByteArray dataByte;
         QMetaType::Type dataType;
+        QVariant data;
         quint32 stay;
+        quint32 size;
         quint8 toggle;
 
         // For SDO Block
