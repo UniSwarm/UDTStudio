@@ -21,6 +21,7 @@
 #include "nodeod.h"
 #include "nodeodsubscriber.h"
 #include "parser/edsparser.h"
+#include "model/deviceconfiguration.h"
 #include "node.h"
 
 NodeOd::NodeOd(Node *node)
@@ -149,9 +150,10 @@ bool NodeOd::loadEds(const QString &fileName)
 {
     EdsParser parser;
     DeviceDescription *deviceDescription = parser.parse(fileName);
+    DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, _node->nodeId());
     _fileName = fileName;
 
-    for (Index *odIndex : deviceDescription->indexes())
+    for (Index *odIndex : deviceConfiguration->indexes())
     {
         NodeIndex *nodeIndex;
         nodeIndex = index(odIndex->index());
