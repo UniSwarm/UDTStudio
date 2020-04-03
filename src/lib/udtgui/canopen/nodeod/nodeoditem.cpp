@@ -131,7 +131,14 @@ QVariant NodeOdItem::data(int column, int role) const
             case NodeOdItemModel::Value:
                 if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
                 {
-                    return _index->subIndex(0)->value();
+                    QVariant value = _index->subIndex(0)->value();
+                    if (QMetaType::Type(value.type()) == QMetaType::UChar
+                        || QMetaType::Type(value.type()) == QMetaType::SChar
+                        || QMetaType::Type(value.type()) == QMetaType::QChar)
+                    {
+                        value.convert(QMetaType::Int);
+                    }
+                    return value;
                 }
                 else
                 {
@@ -146,7 +153,14 @@ QVariant NodeOdItem::data(int column, int role) const
             case NodeOdItemModel::Value:
                 if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
                 {
-                    return _index->subIndex(0)->value();
+                    QVariant value = _index->subIndex(0)->value();
+                    if (QMetaType::Type(value.type()) == QMetaType::UChar
+                        || QMetaType::Type(value.type()) == QMetaType::SChar
+                        || QMetaType::Type(value.type()) == QMetaType::QChar)
+                    {
+                        value.convert(QMetaType::Int);
+                    }
+                    return value;
                 }
                 break;
             }
@@ -178,7 +192,14 @@ QVariant NodeOdItem::data(int column, int role) const
                 return QVariant(NodeSubIndex::dataTypeStr(_subIndex->dataType()));
 
             case NodeOdItemModel::Value:
-                return _subIndex->value();
+                QVariant value = _subIndex->value();
+                if (QMetaType::Type(value.type()) == QMetaType::UChar
+                    || QMetaType::Type(value.type()) == QMetaType::SChar
+                    || QMetaType::Type(value.type()) == QMetaType::QChar)
+                {
+                    value.convert(QMetaType::Int);
+                }
+                return value;
             }
             break;
 
@@ -186,7 +207,14 @@ QVariant NodeOdItem::data(int column, int role) const
             switch (column)
             {
             case NodeOdItemModel::Value:
-                return _subIndex->value();
+                QVariant value = _subIndex->value();
+                if (QMetaType::Type(value.type()) == QMetaType::UChar
+                    || QMetaType::Type(value.type()) == QMetaType::SChar
+                    || QMetaType::Type(value.type()) == QMetaType::QChar)
+                {
+                    value.convert(QMetaType::Int);
+                }
+                return value;
             }
             break;
 
