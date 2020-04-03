@@ -835,6 +835,13 @@ QVariant SDO::arrangeData(QByteArray data, QMetaType::Type type)
         signed char m;
         m = static_cast<signed char>(data.toInt());
         return QVariant(m);
+
+    case QMetaType::QString:
+        return QVariant(QString(data));
+
+    case QMetaType::QByteArray:
+        return QVariant(data);
+
     default:
         break;
     }
