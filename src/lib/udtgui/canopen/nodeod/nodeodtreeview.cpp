@@ -18,6 +18,10 @@
 
 #include "nodeodtreeview.h"
 
+#include <QKeyEvent>
+
+#include "node.h"
+
 NodeOdTreeView::NodeOdTreeView(QWidget *parent)
     : QTreeView(parent)
 {
@@ -56,4 +60,29 @@ bool NodeOdTreeView::isEditable() const
 void NodeOdTreeView::setEditable(bool editable)
 {
     _odModel->setEditable(editable);
+}
+
+void NodeOdTreeView::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_F5)
+    {
+        const QModelIndex &curentIndex = _odModelSorter->mapToSource(selectionModel()->currentIndex());
+        NodeSubIndex *nodeSubIndex = _odModel->nodeSubIndex(curentIndex);
+        if (nodeSubIndex)
+        {
+            _odModel->node()->readObject(nodeSubIndex->nodeIndex()->index(), nodeSubIndex->subIndex());
+            return;
+        }
+
+        NodeIndex *nodeIndex = _odModel->nodeIndex(curentIndex);
+        if (nodeIndex)
+        {
+            for (NodeSubIndex *subIndexN : nodeIndex->subIndexes())
+            {
+                _odModel->node()->readObject(nodeIndex->index(), subIndexN->subIndex());
+            }
+            return;
+        }
+    }
+    QTreeView::keyPressEvent(event);
 }

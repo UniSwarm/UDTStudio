@@ -42,6 +42,44 @@ Node *NodeOdItemModel::node() const
     return _node;
 }
 
+NodeIndex *NodeOdItemModel::nodeIndex(const QModelIndex &index) const
+{
+    if (!_root)
+    {
+        return nullptr;
+    }
+    if (!index.isValid())
+    {
+        return nullptr;
+    }
+
+    NodeOdItem *item = static_cast<NodeOdItem *>(index.internalPointer());
+    if (item->type() == NodeOdItem::TIndex)
+    {
+        return item->index();
+    }
+    return nullptr;
+}
+
+NodeSubIndex *NodeOdItemModel::nodeSubIndex(const QModelIndex &index) const
+{
+    if (!_root)
+    {
+        return nullptr;
+    }
+    if (!index.isValid())
+    {
+        return nullptr;
+    }
+
+    NodeOdItem *item = static_cast<NodeOdItem *>(index.internalPointer());
+    if (item->type() == NodeOdItem::TSubIndex)
+    {
+        return item->subIndex();
+    }
+    return nullptr;
+}
+
 void NodeOdItemModel::setNode(Node *node)
 {
     beginResetModel();

@@ -42,6 +42,10 @@ public:
 protected:
     NodeOdItemModel *_odModel;
     QSortFilterProxyModel *_odModelSorter;
+
+    // QWidget interface
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
 };
 
 #endif // NODEODTREEVIEW_H

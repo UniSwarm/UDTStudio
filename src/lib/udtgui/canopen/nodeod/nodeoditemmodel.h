@@ -25,6 +25,8 @@
 #include "nodeodsubscriber.h"
 
 class Node;
+class NodeIndex;
+class NodeSubIndex;
 class NodeOdItem;
 
 class UDTGUI_EXPORT NodeOdItemModel : public QAbstractItemModel, public NodeOdSubscriber
@@ -35,6 +37,8 @@ public:
     ~NodeOdItemModel();
 
     Node *node() const;
+    NodeIndex *nodeIndex(const QModelIndex &index) const;
+    NodeSubIndex *nodeSubIndex(const QModelIndex &index) const;
 
     bool isEditable() const;
     void setEditable(bool editable);
