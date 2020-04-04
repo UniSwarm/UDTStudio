@@ -16,36 +16,25 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef NODEODTREEVIEW_H
-#define NODEODTREEVIEW_H
+#ifndef NODEODFILTERPROXYMODEL_H
+#define NODEODFILTERPROXYMODEL_H
 
 #include "../../udtgui_global.h"
 
-#include <QTreeView>
+#include <QSortFilterProxyModel>
 
-#include "nodeoditemmodel.h"
-#include "nodeodfilterproxymodel.h"
-
-class UDTGUI_EXPORT NodeOdTreeView : public QTreeView
+class UDTGUI_EXPORT NodeOdFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 public:
-    NodeOdTreeView(QWidget *parent = nullptr);
-    ~NodeOdTreeView();
+    NodeOdFilterProxyModel(QObject *parent = nullptr);
+    ~NodeOdFilterProxyModel();
 
-    Node *node() const;
-    void setNode(Node *node);
-
-    bool isEditable() const;
-    void setEditable(bool editable);
-
+    // QSortFilterProxyModel interface
 protected:
-    NodeOdItemModel *_odModel;
-    NodeOdFilterProxyModel *_odModelSorter;
-
-    // QWidget interface
-protected:
-    void keyPressEvent(QKeyEvent *event) override;
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
+    bool filterAcceptsColumn(int source_column, const QModelIndex &source_parent) const override;
+    bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;
 };
 
-#endif // NODEODTREEVIEW_H
+#endif // NODEODFILTERPROXYMODEL_H

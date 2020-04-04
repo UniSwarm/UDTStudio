@@ -23,7 +23,8 @@ HEADERS += \
     $$PWD/canopen/nodemanagerwidget.h \
     $$PWD/canopen/nodeod/nodeoditem.h \
     $$PWD/canopen/nodeod/nodeoditemmodel.h \
-    $$PWD/canopen/nodeod/nodeodtreeview.h
+    $$PWD/canopen/nodeod/nodeodtreeview.h \
+    $$PWD/canopen/nodeod/nodeodfilterproxymodel.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -40,7 +41,8 @@ SOURCES += \
     $$PWD/canopen/nodemanagerwidget.cpp \
     $$PWD/canopen/nodeod/nodeoditem.cpp \
     $$PWD/canopen/nodeod/nodeoditemmodel.cpp \
-    $$PWD/canopen/nodeod/nodeodtreeview.cpp
+    $$PWD/canopen/nodeod/nodeodtreeview.cpp \
+    $$PWD/canopen/nodeod/nodeodfilterproxymodel.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 

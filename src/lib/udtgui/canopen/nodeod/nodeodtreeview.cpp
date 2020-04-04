@@ -19,6 +19,8 @@
 #include "nodeodtreeview.h"
 
 #include <QKeyEvent>
+#include <QHeaderView>
+#include <QFontMetrics>
 
 #include "node.h"
 
@@ -26,12 +28,18 @@ NodeOdTreeView::NodeOdTreeView(QWidget *parent)
     : QTreeView(parent)
 {
     _odModel = new NodeOdItemModel();
-    _odModelSorter = new QSortFilterProxyModel(this);
+    _odModelSorter = new NodeOdFilterProxyModel(this);
     _odModelSorter->setSourceModel(_odModel);
     setModel(_odModelSorter);
 
-    //_odModelSorter->setFilterRegularExpression(QRegularExpression("0x64[0-9]{2}"));
-    //_odModelSorter->setFilterKeyColumn(NodeOdItemModel::OdIndex);
+    int w0 = QFontMetrics(font()).horizontalAdvance("0");
+    header()->resizeSection(0, 12 * w0);
+    header()->resizeSection(1, 40 * w0);
+    header()->resizeSection(2, 12 * w0);
+    header()->resizeSection(3, 20 * w0);
+
+    // _odModelSorter->setFilterRegularExpression(QRegularExpression("0x64[0-9]{2}"));
+    _odModelSorter->setFilterKeyColumn(NodeOdItemModel::OdIndex);
     _odModelSorter->setDynamicSortFilter(true);
 
     setSortingEnabled(true);
