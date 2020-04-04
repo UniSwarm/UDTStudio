@@ -32,10 +32,13 @@ CanFrameModel::~CanFrameModel()
 
 void CanFrameModel::appendCanFrame(const QCanBusFrame &frame)
 {
-    // TODO use insert system
-    emit layoutAboutToBeChanged();
+    beginInsertRows(QModelIndex(), _frames.count(), _frames.count());
+    if (_frames.isEmpty())
+    {
+        _startTime = frame.timeStamp().seconds();
+    }
     _frames.append(frame);
-    emit layoutChanged();
+    endInsertRows();
 }
 
 void CanFrameModel::clear()
@@ -97,7 +100,7 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
         switch (index.column())
         {
         case Time:
-            return QVariant(QString("%1:%2").arg(canFrame.timeStamp().seconds()).arg(canFrame.timeStamp().microSeconds() / 10000));
+            return QVariant(QString("%1.%2").arg(canFrame.timeStamp().seconds() - _startTime).arg(QString::number(canFrame.timeStamp().microSeconds() / 1000).rightJustified(3, '0')));
         case CanId:
             return QVariant(QString("0x%1 (%2)").arg(QString::number(canFrame.frameId(), 16)).arg(canFrame.frameId()));
         case Type:
@@ -119,6 +122,17 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
             return QVariant(canFrame.payload().count());
         case DataByte:
             return QVariant(canFrame.payload().toHex(' ').toUpper());
+        default:
+            return QVariant();
+        }
+    case Qt::TextAlignmentRole:
+        switch (index.column())
+        {
+        case Time:
+            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+        case Type:
+        case DLC:
+            return QVariant(Qt::AlignHCenter | Qt::AlignVCenter);
         default:
             return QVariant();
         }

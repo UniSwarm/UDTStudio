@@ -19,6 +19,8 @@
 #include "canframelistview.h"
 
 #include <QScrollBar>
+#include <QHeaderView>
+#include <QFontMetrics>
 #include <QDebug>
 
 CanFrameListView::CanFrameListView(QWidget *parent)
@@ -28,6 +30,13 @@ CanFrameListView::CanFrameListView(QWidget *parent)
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setModel(_canModel);
     setVerticalScrollMode(ScrollPerPixel);
+
+    int w0 = QFontMetrics(font()).horizontalAdvance("0");
+    horizontalHeader()->resizeSection(0, 10 * w0);
+    horizontalHeader()->resizeSection(1, 12 * w0);
+    horizontalHeader()->resizeSection(2, 6 * w0);
+    horizontalHeader()->resizeSection(3, 6 * w0);
+    horizontalHeader()->resizeSection(4, 22 * w0);
 }
 
 void CanFrameListView::appendCanFrame(const QCanBusFrame &frame)

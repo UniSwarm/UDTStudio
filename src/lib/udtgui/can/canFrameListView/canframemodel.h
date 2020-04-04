@@ -56,6 +56,7 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
 private:
+    qint64 _startTime;
     QList<QCanBusFrame> _frames;
 };
 
