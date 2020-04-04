@@ -158,10 +158,10 @@ void MainWindow::refreshOInfo()
     QStringList elementsSelectionnes;
 
     int index = listeSelections.at(0).data(Qt::DisplayRole).toInt();
-    _deviceDataLabel->setText(_bus->node(static_cast<uint8_t>(index))->device());
-    _manuDeviceNameDataLabel->setText(_bus->node(static_cast<uint8_t>(index))->manuDeviceName());
-    _manufacturerHardwareVersionDataLabel->setText(_bus->node(static_cast<uint8_t>(index))->manufacturerHardwareVersion());
-    _manufacturerSoftwareVersionDataLabel->setText(_bus->node(static_cast<uint8_t>(index))->manufacturerSoftwareVersion());
+    //_deviceDataLabel->setText(_bus->node(static_cast<uint8_t>(index))->device());
+    //_manuDeviceNameDataLabel->setText(_bus->node(static_cast<uint8_t>(index))->manuDeviceName());
+    //_manufacturerHardwareVersionDataLabel->setText(_bus->node(static_cast<uint8_t>(index))->manufacturerHardwareVersion());
+    //_manufacturerSoftwareVersionDataLabel->setText(_bus->node(static_cast<uint8_t>(index))->manufacturerSoftwareVersion());
 }
 
 void MainWindow::addEds()
@@ -196,7 +196,7 @@ void MainWindow::addEds()
             int index = listeSelections.at(i).data(Qt::DisplayRole).toInt();
             if (_bus->existNode(static_cast<uint8_t>(index)) == true)
             {
-                _bus->node(static_cast<uint8_t>(index))->searchEds();
+                //_bus->node(static_cast<uint8_t>(index))->searchEds();
             }
         }
         _refreshPushButton->setEnabled(true);

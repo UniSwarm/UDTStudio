@@ -31,7 +31,7 @@ bool HexFile::read()
 {
     int lineCount = 1;
     int offsetAddr = 0;
-    int dataCount, addr, type, checkSum;
+    int dataCount, addr, type;
     bool ok;
 
     QFile file(_fileName);
@@ -120,7 +120,7 @@ bool HexFile::read()
             // qDebug() << "unknow type" << type << "at line" << lineCount;
         }
 
-        checkSum = line.midRef(index, 2).toInt(&ok, 16);
+        // checkSum = line.midRef(index, 2).toInt(&ok, 16);
         if (!ok)
         {
             return false;

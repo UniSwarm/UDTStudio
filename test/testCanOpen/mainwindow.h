@@ -2,9 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QPushButton>
 
-#include "canopenbus.h"
+#include <QCanBus>
+
+#include "canopen.h"
+#include "can/canFrameListView/canframelistview.h"
 
 class MainWindow : public QMainWindow
 {
@@ -15,11 +17,16 @@ public:
     ~MainWindow();
 
 private slots:
-    void pushButton_clicked();
+    void explore();
+    void sendState();
+    void replySdo1000();
 
 private:
-    CanOpenBus *_bus;
-    QPushButton *_button;
+    CanOpen *_canOpen;
+    QCanBusDevice *_canDev;
+    CanFrameListView *_canView;
+    bool toggle;
+    quint32 _value;
 };
 
 #endif // MAINWINDOW_H
