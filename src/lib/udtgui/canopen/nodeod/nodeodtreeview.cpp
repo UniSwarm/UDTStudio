@@ -38,7 +38,6 @@ NodeOdTreeView::NodeOdTreeView(QWidget *parent)
     header()->resizeSection(2, 12 * w0);
     header()->resizeSection(3, 20 * w0);
 
-    // _odModelSorter->setFilterRegularExpression(QRegularExpression("0x64[0-9]{2}"));
     _odModelSorter->setFilterKeyColumn(NodeOdItemModel::OdIndex);
     _odModelSorter->setDynamicSortFilter(true);
 
@@ -70,6 +69,11 @@ void NodeOdTreeView::setEditable(bool editable)
     _odModel->setEditable(editable);
 }
 
+void NodeOdTreeView::setFilter(const QString filterText)
+{
+    _odModelSorter->setFilterRegularExpression(QRegularExpression(filterText));
+}
+
 void NodeOdTreeView::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_F5)
@@ -78,7 +82,7 @@ void NodeOdTreeView::keyPressEvent(QKeyEvent *event)
         NodeSubIndex *nodeSubIndex = _odModel->nodeSubIndex(curentIndex);
         if (nodeSubIndex)
         {
-            _odModel->node()->readObject(nodeSubIndex->nodeIndex()->index(), nodeSubIndex->subIndex());
+            _odModel->node()->readObject(nodeSubIndex->index(), nodeSubIndex->subIndex());
             return;
         }
 

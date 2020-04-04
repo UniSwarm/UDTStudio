@@ -260,7 +260,7 @@ bool NodeOdItem::setData(int column, const QVariant &value, int role, Node *node
         case NodeOdItemModel::Value:
             if (_subIndex->isWritable())
             {
-                node->writeObject(_subIndex->nodeIndex()->index(), _subIndex->subIndex(), value);
+                node->writeObject(_subIndex->index(), _subIndex->subIndex(), value);
             }
             break;
         }

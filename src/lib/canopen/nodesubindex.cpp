@@ -1,5 +1,7 @@
 #include "nodesubindex.h"
 
+#include "nodeindex.h"
+
 NodeSubIndex::NodeSubIndex(const quint8 subIndex)
 {
     _nodeIndex = nullptr;
@@ -37,6 +39,15 @@ NodeSubIndex::~NodeSubIndex()
 NodeIndex *NodeSubIndex::nodeIndex() const
 {
     return _nodeIndex;
+}
+
+quint16 NodeSubIndex::index() const
+{
+    if (_nodeIndex)
+    {
+        return _nodeIndex->index();
+    }
+    return 0;
 }
 
 /**

@@ -17,6 +17,7 @@ public:
 
     NodeIndex *nodeIndex() const;
 
+    quint16 index() const;
     quint8 subIndex() const;
     void setSubIndex(const quint8 &subIndex);
 

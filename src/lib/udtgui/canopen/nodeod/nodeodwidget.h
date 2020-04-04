@@ -16,39 +16,48 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef NODEODTREEVIEW_H
-#define NODEODTREEVIEW_H
+#ifndef NODEODWIDGET_H
+#define NODEODWIDGET_H
 
 #include "../../udtgui_global.h"
 
-#include <QTreeView>
+#include <QWidget>
 
-#include "nodeoditemmodel.h"
-#include "nodeodfilterproxymodel.h"
+#include "nodeodtreeview.h"
+#include <QToolBar>
+#include <QComboBox>
+#include <QLineEdit>
 
-class UDTGUI_EXPORT NodeOdTreeView : public QTreeView
+class UDTGUI_EXPORT NodeOdWidget : public QWidget
 {
     Q_OBJECT
 public:
-    NodeOdTreeView(QWidget *parent = nullptr);
-    ~NodeOdTreeView();
+    NodeOdWidget(QWidget *parent = nullptr);
+    NodeOdWidget(Node *node, QWidget *parent = nullptr);
+    ~NodeOdWidget();
 
     Node *node() const;
-    void setNode(Node *node);
-
-    bool isEditable() const;
-    void setEditable(bool editable);
 
 public slots:
-    void setFilter(const QString filterText);
+    void setNode(Node *node);
+
+protected slots:
+    void selectFilter(int index);
+    void applyFilter(const QString &filterText);
+
+signals:
 
 protected:
-    NodeOdItemModel *_odModel;
-    NodeOdFilterProxyModel *_odModelSorter;
+    void createWidgets();
+    QToolBar *_toolBar;
+    QComboBox *_filterCombobox;
+    QLineEdit *_filterLineEdit;
+    NodeOdTreeView *_nodeOdTreeView;
 
-    // QWidget interface
-protected:
-    void keyPressEvent(QKeyEvent *event) override;
+    void createDefaultFilters(uint profile = 0);
+    uint _oldProfile;
+
+    Node *_node;
 };
 
-#endif // NODEODTREEVIEW_H
+#endif // NODEODWIDGET_H
