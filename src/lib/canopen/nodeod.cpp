@@ -141,7 +141,7 @@ void NodeOd::notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySu
     while (subscriber != interrestedSubscribers.cend())
     {
         NodeOdSubscriber *nodeOdSubscriber = (*subscriber).object;
-        nodeOdSubscriber->notifySubscriber(notifyIndex, notifySubIndex, value);
+        nodeOdSubscriber->notifySubscriber(_node->nodeId(), notifyIndex, notifySubIndex, value);
         ++subscriber;
     }
 }
@@ -190,7 +190,7 @@ bool NodeOd::loadEds(const QString &fileName)
     return true;
 }
 
-QMetaType::Type NodeOd::dataType(NodeObjectId id)
+QMetaType::Type NodeOd::dataType(const NodeObjectId &id)
 {
     return dataType(id.index, id.subIndex);
 }
@@ -212,7 +212,7 @@ QMetaType::Type NodeOd::dataType(quint16 index, quint8 subIndex)
     return dataTypeCiaToQt(nodeSubIndex->dataType());
 }
 
-QVariant NodeOd::value(NodeObjectId id)
+QVariant NodeOd::value(const NodeObjectId &id)
 {
     return value(id.index, id.subIndex);
 }
@@ -258,11 +258,6 @@ void NodeOd::unsubscribe(NodeOdSubscriber *object)
             ++itSub;
         }
     }
-}
-
-NodeObjectId::NodeObjectId(quint16 index, quint8 subIndex, QMetaType::Type dataType)
-    : index(index), subIndex(subIndex), dataType(dataType)
-{
 }
 
 QMetaType::Type NodeOd::dataTypeCiaToQt(NodeSubIndex::DataType type)

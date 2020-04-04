@@ -12,6 +12,7 @@ CONFIG += c++11
 SOURCES += \
     $$PWD/canopenbus.cpp \
     $$PWD/node.cpp \
+    $$PWD/nodeobjectid.cpp \
     $$PWD/nodeod.cpp \
     $$PWD/nodeodsubscriber.cpp \
     $$PWD/nodeindex.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     $$PWD/canopen_global.h \
     $$PWD/canopenbus.h \
     $$PWD/node.h \
+    $$PWD/nodeobjectid.h \
     $$PWD/nodeod.h \
     $$PWD/nodeodsubscriber.h \
     $$PWD/nodeindex.h \

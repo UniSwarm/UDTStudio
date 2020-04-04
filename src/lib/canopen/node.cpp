@@ -170,7 +170,7 @@ void Node::sendResetNode()
     _nmt->sendResetNode();
 }
 
-void Node::readObject(NodeObjectId id)
+void Node::readObject(const NodeObjectId &id)
 {
     readObject(id.index, id.subIndex, id.dataType);
 }
@@ -196,7 +196,6 @@ void Node::writeObject(quint16 index, quint8 subindex, const QVariant &data)
             mdata.convert(mdataType);
         }
     }
-
     _sdoClients.at(0)->downloadData(index, subindex, mdata);
 }
 
