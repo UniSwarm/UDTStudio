@@ -26,11 +26,14 @@
 #include <QTimer>
 #include <QQueue>
 
+#include "db/oddb.h"
+
 class CANOPEN_EXPORT NodeDiscover : public Service
 {
     Q_OBJECT
 public:
     NodeDiscover(CanOpenBus *bus);
+    ~NodeDiscover();
 
     QString type() const override;
 
@@ -44,6 +47,8 @@ protected slots:
     void exploreNodeNext();
 
 protected:
+    OdDb *_db;
+
     // explorer bus
     quint8 _exploreBusNodeId;
     QTimer _exploreBusTimer;

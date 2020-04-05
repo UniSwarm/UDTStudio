@@ -22,7 +22,6 @@
 #include <QDir>
 
 #include "canopenbus.h"
-#include "db/oddb.h"
 
 NodeDiscover::NodeDiscover(CanOpenBus *bus)
     : Service(bus)
@@ -32,12 +31,21 @@ NodeDiscover::NodeDiscover(CanOpenBus *bus)
         _cobIds.append(0x700u + nodeId);
     }
 
+    _db = new OdDb();
+    _db->setDirectory(QDir::homePath() + "/Seafile/Produits/4_UIO/");
+    _db->setDirectory(QDir::homePath() + "/Seafile/Produits/1_UMC/");
+
     _exploreBusNodeId = 0;
     connect(&_exploreBusTimer, &QTimer::timeout, this, &NodeDiscover::exploreBusNext);
 
     _exploreNodeState = -1;
     _exploreNodeCurrentId = 0;
     connect(&_exploreNodeTimer, &QTimer::timeout, this, &NodeDiscover::exploreNodeNext);
+}
+
+NodeDiscover::~NodeDiscover()
+{
+    delete _db;
 }
 
 QString NodeDiscover::type() const
@@ -68,12 +76,9 @@ void NodeDiscover::parseFrame(const QCanBusFrame &frame)
                     node->setStatus(Node::Status::PREOP);
                     break;
                 default:
-                    qDebug() << "> NodeDiscover::parseFrame : error status of node";
                     break;
                 }
             }
-            qDebug() << "> NodeDiscover::parseFrame"
-                     << "Add NodeID :" << node << "Status of node :" << node->statusStr();
             bus()->addNode(node);
 
             exploreNode(nodeId);
@@ -99,7 +104,7 @@ void NodeDiscover::exploreNode(quint8 nodeId)
     {
         _exploreNodeCurrentId = _nodeIdToExplore.dequeue();
         _exploreNodeState = 0;
-        _exploreNodeTimer.start(8);
+        _exploreNodeTimer.start(20);
     }
 }
 
@@ -125,19 +130,14 @@ void NodeDiscover::exploreNodeNext()
     QList<NodeObjectId> _objectsId{{0x1000, 0x0}, {0x1018, 0x1}, {0x1018, 0x2}, {0x1018, 0x3}};
 
     Node *node = bus()->node(_exploreNodeCurrentId);
-    if (_exploreNodeState >= _objectsId.size())
+    if (_exploreNodeState >= _objectsId.size() && node->nodeOd()->value(_objectsId[_exploreNodeState - 1]).isValid())
     {
         // explore node finished
-        // ODBDD find eds
-        OdDb db;
-        db.setDirectory(QDir::homePath() + "/Seafile/Produits/4_UIO/");
-        db.setDirectory(QDir::homePath() + "/Seafile/Produits/1_UMC/");
-
         Node *node = bus()->node(_exploreNodeCurrentId);
-        QString file = db.file(node->nodeOd()->value(0x1000).toUInt(),
-                               node->nodeOd()->value(0x1018, 1).toUInt(),
-                               node->nodeOd()->value(0x1018, 2).toUInt(),
-                               node->nodeOd()->value(0x1018, 3).toUInt());
+        QString file = _db->file(node->nodeOd()->value(0x1000).toUInt(),
+                                 node->nodeOd()->value(0x1018, 1).toUInt(),
+                                 node->nodeOd()->value(0x1018, 2).toUInt(),
+                                 node->nodeOd()->value(0x1018, 3).toUInt());
 
         // load object eds
         if (!file.isEmpty())
@@ -158,7 +158,10 @@ void NodeDiscover::exploreNodeNext()
     }
     else
     {
-        node->readObject(_objectsId[_exploreNodeState]);
-        _exploreNodeState++;
+        if ((_exploreNodeState == 0) || (_exploreNodeState >= 1 && node->nodeOd()->value(_objectsId[_exploreNodeState - 1]).isValid()))
+        {
+            node->readObject(_objectsId[_exploreNodeState]);
+            _exploreNodeState++;
+        }
     }
 }
