@@ -25,6 +25,7 @@
 
 class UDTGUI_EXPORT ODTreeViewDelegate : public QItemDelegate
 {
+    Q_OBJECT
 public:
     ODTreeViewDelegate(QObject *parent = Q_NULLPTR);
 

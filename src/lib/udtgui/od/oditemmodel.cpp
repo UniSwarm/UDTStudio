@@ -61,7 +61,7 @@ int ODItemModel::columnCount(const QModelIndex &parent) const
 
 QVariant ODItemModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation==Qt::Vertical)
+    if (orientation == Qt::Vertical)
     {
         return QVariant();
     }
@@ -141,17 +141,20 @@ QModelIndex ODItemModel::index(int row, int column, const QModelIndex &parent) c
 
 QModelIndex ODItemModel::parent(const QModelIndex &child) const
 {
-    if (!child.isValid() || child.internalPointer() == nullptr)
+    if (!child.isValid())
     {
         return QModelIndex();
     }
 
-    ODItem *item = static_cast<ODItem *>(child.internalPointer());
-    if (item->parent() == nullptr)
+    ODItem *childItem = static_cast<ODItem *>(child.internalPointer());
+    ODItem *parentItem = childItem->parent();
+
+    if (parentItem == _root)
     {
         return QModelIndex();
     }
-    return createIndex(item->row(), child.column(), item->parent());
+
+    return createIndex(parentItem->row(), 0, parentItem);
 }
 
 int ODItemModel::rowCount(const QModelIndex &parent) const
@@ -160,13 +163,18 @@ int ODItemModel::rowCount(const QModelIndex &parent) const
     {
         return 0;
     }
-    if (!parent.isValid())
+
+    ODItem *parentItem;
+    if (parent.internalPointer() == nullptr)
     {
-        return _root->rowCount();
+        parentItem = _root;
+    }
+    else
+    {
+        parentItem = static_cast<ODItem *>(parent.internalPointer());
     }
 
-    ODItem *item = static_cast<ODItem*>(parent.internalPointer());
-    return item->rowCount();
+    return parentItem->rowCount();
 }
 
 Qt::ItemFlags ODItemModel::flags(const QModelIndex &index) const

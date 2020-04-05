@@ -145,17 +145,17 @@ QModelIndex NodeOdItemModel::index(int row, int column, const QModelIndex &paren
         return QModelIndex();
     }
 
-    NodeOdItem *item;
+    NodeOdItem *parentItem;
     if (parent.internalPointer() == nullptr)
     {
-        item = _root;
+        parentItem = _root;
     }
     else
     {
-        item = static_cast<NodeOdItem *>(parent.internalPointer());
+        parentItem = static_cast<NodeOdItem *>(parent.internalPointer());
     }
 
-    NodeOdItem *childItem = item->child(row);
+    NodeOdItem *childItem = parentItem->child(row);
     if (childItem)
     {
         return createIndex(row, column, childItem);
@@ -168,17 +168,20 @@ QModelIndex NodeOdItemModel::index(int row, int column, const QModelIndex &paren
 
 QModelIndex NodeOdItemModel::parent(const QModelIndex &child) const
 {
-    if (!child.isValid() || child.internalPointer() == nullptr)
+    if (!child.isValid())
     {
         return QModelIndex();
     }
 
-    NodeOdItem *item = static_cast<NodeOdItem *>(child.internalPointer());
-    if (item->parent() == nullptr)
+    NodeOdItem *childItem = static_cast<NodeOdItem *>(child.internalPointer());
+    NodeOdItem *parentItem = childItem->parent();
+
+    if (parentItem == _root)
     {
         return QModelIndex();
     }
-    return createIndex(item->parent()->row(), 0, item->parent());
+
+    return createIndex(parentItem->row(), 0, parentItem);
 }
 
 int NodeOdItemModel::rowCount(const QModelIndex &parent) const
@@ -187,13 +190,18 @@ int NodeOdItemModel::rowCount(const QModelIndex &parent) const
     {
         return 0;
     }
-    if (!parent.isValid())
+
+    NodeOdItem *parentItem;
+    if (parent.internalPointer() == nullptr)
     {
-        return _root->rowCount();
+        parentItem = _root;
+    }
+    else
+    {
+        parentItem = static_cast<NodeOdItem *>(parent.internalPointer());
     }
 
-    NodeOdItem *item = static_cast<NodeOdItem *>(parent.internalPointer());
-    return item->rowCount();
+    return parentItem->rowCount();
 }
 
 QVariant NodeOdItemModel::data(const QModelIndex &index, int role) const
