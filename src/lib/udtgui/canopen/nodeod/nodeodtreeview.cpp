@@ -43,6 +43,10 @@ NodeOdTreeView::NodeOdTreeView(QWidget *parent)
 
     setSortingEnabled(true);
     sortByColumn(0, Qt::SortOrder::AscendingOrder);
+
+    setSelectionMode(QAbstractItemView::SingleSelection);
+    setDragEnabled(true);
+    setDragDropMode(QAbstractItemView::DragDrop);
 }
 
 NodeOdTreeView::~NodeOdTreeView()

@@ -19,6 +19,7 @@
 #include "nodeoditemmodel.h"
 
 #include <QDebug>
+#include <QMimeData>
 
 #include "node.h"
 #include "nodeoditem.h"
@@ -243,6 +244,10 @@ Qt::ItemFlags NodeOdItemModel::flags(const QModelIndex &index) const
     }
     if (!index.isValid())
     {
+        return Qt::ItemIsDropEnabled;
+    }
+    if (!index.isValid())
+    {
         return Qt::NoItemFlags;
     }
 
@@ -298,4 +303,77 @@ void NodeOdItemModel::odNotify(quint16 index, quint8 subindex, const QVariant &v
     {
         emit dataChanged(modelIndex, modelIndex);
     }
+}
+
+QStringList NodeOdItemModel::mimeTypes() const
+{
+    QStringList types;
+    types << "index/subindex";
+    return types;
+}
+
+QMimeData *NodeOdItemModel::mimeData(const QModelIndexList &indexes) const
+{
+    QMimeData *mimeData = new QMimeData();
+    QByteArray encodedData;
+
+    foreach (QModelIndex index, indexes)
+    {
+        if (index.isValid())
+        {
+            QString text = data(index, Qt::DisplayRole).toString();
+            encodedData.append(text + ":");
+        }
+    }
+
+    mimeData->setData("index/subindex", encodedData);
+    return mimeData;
+}
+
+bool NodeOdItemModel::canDropMimeData(const QMimeData *mimeData, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
+{
+    Q_UNUSED(action)
+    Q_UNUSED(row)
+    Q_UNUSED(column)
+    Q_UNUSED(parent)
+    if (mimeData->hasFormat("index/subindex"))
+    {
+        return true;
+    }
+    return false;
+}
+
+bool NodeOdItemModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+    Q_UNUSED(row)
+    Q_UNUSED(column)
+    if (action == Qt::IgnoreAction)
+    {
+        return true;
+    }
+    if (!mimeData->hasFormat("index/subindex"))
+    {
+        return false;
+    }
+
+    if (!parent.isValid())
+    {
+        /*NodeObjectId nodeObjectId = QString(mimeData->data("index/subindex")).split(':');
+        foreach (QString flowName, flowsName)
+        {
+            // TODO
+            qDebug() << "dropMimeData" <<
+        }mimeData->data("index/subindex");*/
+    }
+    return true;
+}
+
+Qt::DropActions NodeOdItemModel::supportedDropActions() const
+{
+    return Qt::MoveAction;
+}
+
+Qt::DropActions NodeOdItemModel::supportedDragActions() const
+{
+    return Qt::MoveAction;
 }

@@ -271,7 +271,7 @@ bool NodeOdItem::setData(int column, const QVariant &value, int role, Node *node
 
 Qt::ItemFlags NodeOdItem::flags(int column) const
 {
-    Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled;
 
     switch (_type)
     {
