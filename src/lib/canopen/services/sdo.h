@@ -125,9 +125,11 @@ private:
     bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blksize, quint8 pst);// SDO block upload initiate
     bool sendSdoRequest(quint8 cmd, quint8 &ackseq, quint8 blksize);                            // SDO block upload sub-block
     bool sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segData);            // SDO block download sub-block
-    bool sendSdoRequest(quint8 cmd, quint16 &crc);  // SDO block download end
+    bool sendSdoRequest(quint8 cmd, quint16 &crc);                                              // SDO block download end
+    bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint32 error);             // SDO abort transfer
 
-    QVariant arrangeData(QByteArray, QMetaType::Type type);
+    QVariant arrangeDataUpload(QByteArray, QMetaType::Type type);
+    void arrangeDataDownload(QDataStream &request, const QVariant &data);
 
     enum CCS : uint8_t  // CCS : Client Command Specifier from Client to Server
     {
