@@ -18,12 +18,76 @@
 
 #include "nodeobjectid.h"
 
-NodeObjectId::NodeObjectId(quint8 bus, quint8 nodeId, quint16 index, quint8 subIndex, QMetaType::Type dataType)
-    : bus(bus), nodeId(nodeId), index(index), subIndex(subIndex), dataType(dataType)
+NodeObjectId::NodeObjectId(quint8 busId, quint8 nodeId, quint16 index, quint8 subIndex, QMetaType::Type dataType)
+    : busId(busId), nodeId(nodeId), index(index), subIndex(subIndex), dataType(dataType)
 {
 }
 
 NodeObjectId::NodeObjectId(quint16 index, quint8 subIndex, QMetaType::Type dataType)
-    : index(index), subIndex(subIndex), dataType(dataType)
+    : busId(0xFF), nodeId(0xFF), index(index), subIndex(subIndex), dataType(dataType)
 {
+}
+
+quint64 NodeObjectId::key() const
+{
+    quint64 key = 0;
+    key += static_cast<quint64>(busId) << 24;
+    key += static_cast<quint64>(nodeId) << 16;
+    key += static_cast<quint64>(index) << 8;
+    key += static_cast<quint64>(subIndex);
+    return key;
+}
+
+bool NodeObjectId::isValid() const
+{
+    if (busId == 0xFF && nodeId == 0xFF)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool NodeObjectId::isNodeIndependant() const
+{
+    if (busId == 0xFF && nodeId == 0xFF)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool NodeObjectId::isABus() const
+{
+    if (busId != 0xFF && nodeId == 0xFF && index == 0xFFFF && subIndex == 0xFF)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool NodeObjectId::isANode() const
+{
+    if (busId != 0xFF && nodeId != 0xFF && index == 0xFFFF && subIndex == 0xFF)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool NodeObjectId::isAnIndex() const
+{
+    if (index != 0xFFFF && subIndex == 0xFF)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool NodeObjectId::isASubIndex() const
+{
+    if (index != 0xFFFF && subIndex != 0xFF)
+    {
+        return true;
+    }
+    return false;
 }

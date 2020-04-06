@@ -31,9 +31,9 @@ NodeOdSubscriber::~NodeOdSubscriber()
 {
 }
 
-void NodeOdSubscriber::notifySubscriber(quint16 index, quint8 subIndex, const QVariant &value)
+void NodeOdSubscriber::notifySubscriber(const NodeObjectId &objId, const QVariant &value)
 {
-    this->odNotify(index, subIndex, value);
+    this->odNotify(objId, value);
 }
 
 Node *NodeOdSubscriber::nodeInterrest() const
@@ -54,14 +54,15 @@ void NodeOdSubscriber::setNodeInterrest(Node *nodeInterrest)
     // register new nodeInterrest
     if (_nodeInterrest)
     {
-        for (quint32 key : _indexSubIndexList)
+        for (const NodeObjectId &objId : _objIdList)
         {
-            quint16 index = static_cast<quint16>(key >> 8);
-            quint8 subIndex = static_cast<quint8>(key & 0xFFu);
-            _nodeInterrest->nodeOd()->subscribe(this, index, subIndex);
+            if (objId.isNodeIndependant())
+            {
+                _nodeInterrest->nodeOd()->subscribe(this, objId.index, objId.subIndex);
 
-            const QVariant &value = _nodeInterrest->nodeOd()->value(index, subIndex);
-            this->odNotify(index, subIndex, value);
+                const QVariant &value = _nodeInterrest->nodeOd()->value(objId.index, objId.subIndex);
+                this->odNotify(objId, value);
+            }
         }
     }
 }
@@ -72,11 +73,6 @@ void NodeOdSubscriber::readObject(quint16 index, quint8 subindex, QMetaType::Typ
     {
         _nodeInterrest->readObject(index, subindex, dataType);
     }
-}
-
-QList<quint32> NodeOdSubscriber::indexSubIndexList() const
-{
-    return _indexSubIndexList.toList();
 }
 
 void NodeOdSubscriber::registerSubIndex(quint16 index, quint8 subindex)
@@ -94,17 +90,28 @@ void NodeOdSubscriber::registerFullOd()
     registerKey();
 }
 
+QList<NodeObjectId> NodeOdSubscriber::objIdList() const
+{
+    return _objIdList;
+}
+
 void NodeOdSubscriber::registerKey(quint16 index, quint8 subindex)
 {
-    quint32 key = (static_cast<quint32>(index) << 8) + static_cast<quint32>(subindex);
+    registerKey({index, subindex});
+}
+
+void NodeOdSubscriber::registerKey(const NodeObjectId &objId)
+{
+    quint64 key = objId.key();
     if (_indexSubIndexList.contains(key))
     {
         return;
     }
     _indexSubIndexList.insert(key);
+    _objIdList.append(objId);
 
     if (_nodeInterrest)
     {
-        _nodeInterrest->nodeOd()->subscribe(this, index, subindex);
+        _nodeInterrest->nodeOd()->subscribe(this, objId.index, objId.subIndex);
     }
 }

@@ -19,9 +19,11 @@
 #include <QDebug>
 #include "node.h"
 
+#include "canopenbus.h"
 #include "model/deviceconfiguration.h"
 #include "parser/edsparser.h"
 #include "services/services.h"
+
 #include <QDirIterator>
 
 Node::Node(quint8 nodeId, const QString &name)
@@ -82,6 +84,15 @@ Node::~Node()
 CanOpenBus *Node::bus() const
 {
     return _bus;
+}
+
+quint8 Node::busId() const
+{
+    if (_bus)
+    {
+        return _bus->busId();
+    }
+    return 255;
 }
 
 QList<Service *> Node::services() const

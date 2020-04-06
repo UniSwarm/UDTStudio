@@ -20,6 +20,7 @@
 #define NODEODSUBSCRIBER_H
 
 #include "canopen_global.h"
+#include "nodeobjectid.h"
 
 #include <QSet>
 #include <QVariant>
@@ -32,7 +33,9 @@ public:
     NodeOdSubscriber();
     virtual ~NodeOdSubscriber();
 
-    void notifySubscriber(quint16 index, quint8 subIndex, const QVariant &value);
+    void notifySubscriber(const NodeObjectId &objId, const QVariant &value);
+
+    QList<NodeObjectId> objIdList() const;
 
 protected:
     Node *nodeInterrest() const;
@@ -40,18 +43,18 @@ protected:
 
     void readObject(quint16 index, quint8 subindex, QMetaType::Type dataType = QMetaType::UnknownType);
 
-    QList<quint32> indexSubIndexList() const;
-
     void registerSubIndex(quint16 index, quint8 subindex);
     void registerIndex(quint16 index);
     void registerFullOd();
 
-    virtual void odNotify(quint16 index, quint8 subindex, const QVariant &value) =0;
+    virtual void odNotify(const NodeObjectId &objId, const QVariant &value) =0;
 
 private:
     Node *_nodeInterrest;
-    QSet<quint32> _indexSubIndexList;
+    QSet<quint64> _indexSubIndexList;
+    QList<NodeObjectId> _objIdList;
     void registerKey(quint16 index = 0xFFFFu, quint8 subindex = 0xFFu);
+    void registerKey(const NodeObjectId &objId);
 };
 
 #endif // NODEODSUBSCRIBER_H

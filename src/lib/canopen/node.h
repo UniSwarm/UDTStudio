@@ -34,6 +34,7 @@ public:
     ~Node();
 
     CanOpenBus *bus() const;
+    quint8 busId() const;
     QList<Service *> services() const;
     NodeOd *nodeOd() const;
 

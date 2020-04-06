@@ -141,7 +141,8 @@ void NodeOd::notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySu
     while (subscriber != interrestedSubscribers.cend())
     {
         NodeOdSubscriber *nodeOdSubscriber = (*subscriber).object;
-        nodeOdSubscriber->notifySubscriber(_node->nodeId(), notifyIndex, notifySubIndex, value);
+        NodeObjectId objId(_node->busId(), _node->nodeId(), notifyIndex, notifySubIndex);
+        nodeOdSubscriber->notifySubscriber(objId,  value);
         ++subscriber;
     }
 }

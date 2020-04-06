@@ -65,7 +65,7 @@ protected:
 
     // NodeOdSubscriber interface
 protected:
-    void odNotify(quint16 index, quint8 subindex, const QVariant &value) override;
+    void odNotify(const NodeObjectId &objId, const QVariant &value) override;
 };
 
 #endif // NODEMANAGERWIDGET_H

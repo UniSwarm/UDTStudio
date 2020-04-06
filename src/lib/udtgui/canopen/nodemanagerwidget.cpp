@@ -171,9 +171,9 @@ void NodeManagerWidget::createWidgets()
     setLayout(layout);
 }
 
-void NodeManagerWidget::odNotify(quint16 index, quint8 subindex, const QVariant &value)
+void NodeManagerWidget::odNotify(const NodeObjectId &objId, const QVariant &value)
 {
-    if (index == 0x1000 && subindex == 0x00)
+    if (objId.index == 0x1000 && objId.subIndex == 0x00)
     {
         _index1000Label->setNum(value.toInt());
     }

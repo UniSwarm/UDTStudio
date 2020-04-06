@@ -20,6 +20,8 @@
 
 #include <QDebug>
 
+#include "canopen.h"
+
 CanOpenBus::CanOpenBus(QCanBusDevice *canDevice)
 {
     _canOpen = nullptr;
@@ -61,6 +63,15 @@ ServiceDispatcher *CanOpenBus::dispatcher() const
 CanOpen *CanOpenBus::canOpen() const
 {
     return _canOpen;
+}
+
+quint8 CanOpenBus::busId() const
+{
+    if (_canOpen)
+    {
+        return static_cast<quint8>(_canOpen->buses().indexOf(const_cast<CanOpenBus *>(this)));
+    }
+    return 255;
 }
 
 QString CanOpenBus::busName() const

@@ -26,13 +26,21 @@
 class CANOPEN_EXPORT NodeObjectId
 {
 public:
-    NodeObjectId(quint8 bus, quint8 nodeId, quint16 index, quint8 subIndex, QMetaType::Type dataType = QMetaType::Type::UnknownType);
+    NodeObjectId(quint8 busId, quint8 nodeId, quint16 index, quint8 subIndex, QMetaType::Type dataType = QMetaType::Type::UnknownType);
     NodeObjectId(quint16 index, quint8 subIndex, QMetaType::Type dataType = QMetaType::Type::UnknownType);
-    quint8 bus;
+    quint8 busId;
     quint8 nodeId;
     quint16 index;
     quint8 subIndex;
     QMetaType::Type dataType;
+
+    quint64 key() const;
+    bool isValid() const;
+    bool isNodeIndependant() const;
+    bool isABus() const;
+    bool isANode() const;
+    bool isAnIndex() const;
+    bool isASubIndex() const;
 };
 
 #endif // NODEOBJECTID_H
