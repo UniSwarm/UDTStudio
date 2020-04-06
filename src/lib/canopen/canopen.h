@@ -28,18 +28,36 @@
 class CANOPEN_EXPORT CanOpen : public QObject
 {
     Q_OBJECT
-public:
-    CanOpen();
-    ~CanOpen();
+    Q_DISABLE_COPY(CanOpen)
 
-    const QList<CanOpenBus *> &buses() const;
-    CanOpenBus *addBus(CanOpenBus *bus);
+public:
+    static const QList<CanOpenBus *> &buses();
+    static CanOpenBus *addBus(CanOpenBus *bus);
+
+    static inline CanOpen *instance()
+    {
+        if (!CanOpen::_instance)
+        {
+            CanOpen::_instance = new CanOpen();
+        }
+        return CanOpen::_instance;
+    }
+
+    static inline void release()
+    {
+        delete CanOpen::_instance;
+    }
 
 signals:
     void busChanged();
 
 protected:
+    CanOpen();
+    ~CanOpen();
     QList<CanOpenBus *> _buses;
+    CanOpenBus *addBusI(CanOpenBus *bus);
+
+    static CanOpen *_instance;
 };
 
 #endif // CANOPEN_H

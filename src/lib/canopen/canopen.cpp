@@ -18,6 +18,8 @@
 
 #include "canopen.h"
 
+CanOpen *CanOpen::_instance = nullptr;
+
 CanOpen::CanOpen()
 {
 }
@@ -27,12 +29,17 @@ CanOpen::~CanOpen()
     qDeleteAll(_buses);
 }
 
-const QList<CanOpenBus *> &CanOpen::buses() const
+const QList<CanOpenBus *> &CanOpen::buses()
 {
-    return _buses;
+    return instance()->_buses;
 }
 
 CanOpenBus *CanOpen::addBus(CanOpenBus *bus)
+{
+    return instance()->addBusI(bus);
+}
+
+CanOpenBus *CanOpen::addBusI(CanOpenBus *bus)
 {
     bus->_canOpen = this;
     _buses.append(bus);

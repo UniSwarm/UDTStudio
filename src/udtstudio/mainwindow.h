@@ -42,7 +42,6 @@ public:
 protected:
     CanSettingsDialog *_connectDialog;
 
-    CanOpen *_canOpen;
     CanOpenBus *_bus;
     QCanBusDevice *_canDevice;
 

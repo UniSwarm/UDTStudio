@@ -85,32 +85,19 @@ const QList<Node *> &CanOpenBus::nodes() const
 
 Node *CanOpenBus::node(quint8 nodeId)
 {
-    for (int i = 0; i < _nodes.size(); i++)
-    {
-        if (_nodes.at(i)->nodeId() == nodeId)
-        {
-            return _nodes.at(i);
-        }
-    }
-    return nullptr;
+    return _nodesMap.value(nodeId);
 }
 
 bool CanOpenBus::existNode(quint8 nodeId)
 {
-    for (int i = 0; i < _nodes.size(); i++)
-    {
-        if (_nodes.at(i)->nodeId() == nodeId)
-        {
-            return true;
-        }
-    }
-    return false;
+    return _nodesMap.contains(nodeId);
 }
 
 void CanOpenBus::addNode(Node *node)
 {
     node->_bus = this;
     _nodes.append(node);
+    _nodesMap.insert(node->nodeId(), node);
 
     for (Service *service : node->services())
     {

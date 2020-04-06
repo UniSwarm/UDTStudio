@@ -24,7 +24,7 @@
 #include "node.h"
 #include "services/services.h"
 
-#include <QList>
+#include <QMap>
 #include <QCanBusDevice>
 
 class CanOpen;
@@ -72,6 +72,7 @@ protected:
     CanOpen *_canOpen;
 
     QString _busName;
+    QMap<quint8, Node *> _nodesMap;
     QList<Node *> _nodes;
     QCanBusDevice *_canDevice;
 

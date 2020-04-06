@@ -40,8 +40,6 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowIcon(QIcon(":/icons/img/UNIdevkit.ico"));
     _connectDialog = new CanSettingsDialog(nullptr, this);
 
-    _canOpen = new CanOpen();
-
     createDocks();
     createWidgets();
     connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, _nodeOdWidget, &NodeOdWidget::setNode);
@@ -56,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
         bus = new CanOpenBus(QCanBus::instance()->createDevice("virtualcan", "can0"));
     }
     bus->setBusName("Bus 1");
-    _canOpen->addBus(bus);
+    CanOpen::addBus(bus);
     connect(bus, &CanOpenBus::frameAvailable, _canFrameListView, &CanFrameListView::appendCanFrame);
 
     createActions();
@@ -66,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete _canOpen;
+    CanOpen::release();
     delete _connectDialog;
 }
 
@@ -78,7 +76,7 @@ void MainWindow::createDocks()
 
     _busNodesManagerDock = new QDockWidget(tr("Bus nodes manager"), this);
     _busNodesManagerDock->setObjectName("fileProjectDock");
-    _busNodesManagerView = new BusNodesManagerView(_canOpen);
+    _busNodesManagerView = new BusNodesManagerView(CanOpen::instance());
     _busNodesManagerDock->setWidget(_busNodesManagerView);
     addDockWidget(Qt::LeftDockWidgetArea, _busNodesManagerDock);
 }
@@ -170,9 +168,8 @@ void MainWindow::connectDevice()
             CanOpenBus *bus = new CanOpenBus(_canDevice);
             bus->setBusName(settings.interfaceName + ":" + settings.deviceName);
             statusBar()->showMessage(tr("%1 - %2").arg(settings.interfaceName).arg(settings.deviceName));
-            _canOpen->addBus(bus);
+            CanOpen::addBus(bus);
             connect(bus, &CanOpenBus::frameAvailable, _canFrameListView, &CanFrameListView::appendCanFrame);
-            //connect(bus, &CanOpenBus::nodeAdded, _busNodeTreeView, &BusNodesTreeView::refresh);
         }
     }
 }
