@@ -103,7 +103,7 @@ private:
     qint32 uploadDispatcher();
     qint32 downloadDispatcher();
 
-    void errorManagement();
+    void errorManagement(uint32_t error);
     void requestFinished();
     void nextRequest();
 
@@ -139,6 +139,7 @@ private:
         SDO_CCS_CLIENT_UPLOAD_SEGMENT = 0x60,   // ccs:3
         SDO_CCS_CLIENT_BLOCK_DOWNLOAD = 0xC0,   // ccs:6
         SDO_CCS_CLIENT_BLOCK_UPLOAD = 0xA0,     // ccs:5
+        SDO_CCS_CLIENT_ABORT = 0x80
     };
 
     enum SCS : uint8_t  // SCS : Server Command Specifier from Server to Client
@@ -149,6 +150,7 @@ private:
         SDO_SCS_SERVER_UPLOAD_SEGMENT = 0x00,   // scs:0
         SDO_SCS_SERVER_BLOCK_DOWNLOAD = 0xA0,   // scs:5
         SDO_SCS_SERVER_BLOCK_UPLOAD = 0xC0,     // scs:6
+        SDO_SCS_CLIENT_ABORT = 0x80
     };
 
     enum CS : uint8_t   // cs: client subcommand
@@ -188,6 +190,58 @@ private:
     {
         BLOCK_SIZE = 0x2, // s: size indicator
         BLOCK_CRC = 0x04
+    };
+
+    // ================= sdo abort codes ====================
+    enum SDOAbortCodes : uint32_t
+    {
+        CO_SDO_ABORT_CODE_BIT_NOT_ALTERNATED = 0x05030000,  // Toggle bit not alternated
+        CO_SDO_ABORT_CODE_TIMED_OUT = 0x05040000,  // SDO protocol timed out
+        CO_SDO_ABORT_CODE_CMD_NOT_VALID = 0x05040001,  // Client/server command specifier not valid or unknown
+        CO_SDO_ABORT_CODE_INVALID_BLOCK_SIZE = 0x05040002,  // Invalid block size (block mode only)
+        CO_SDO_ABORT_CODE_INVALID_SEQ_NUMBER = 0x05040003,  // Invalid sequence number (block mode only)
+        CO_SDO_ABORT_CODE_CRC_ERROR = 0x05040004,  // CRC error (block mode only)
+        CO_SDO_ABORT_CODE_OUT_OF_MEMORY = 0x05040005,  // Out of memory
+        CO_SDO_ABORT_CODE_UNSUPPORTED_ACCESS = 0x06010000,  // Unsupported access to an object
+
+        // access errors
+        CO_SDO_ABORT_CODE_WRITE_ONLY = 0x06010001,  // Attempt to read a write only object
+        CO_SDO_ABORT_CODE_READ_ONLY = 0x06010002,  // Attempt to write a read only object
+
+        // no object erros
+        CO_SDO_ABORT_CODE_NO_OBJECT = 0x06020000,  // Object does not exist in the object dictionary
+        CO_SDO_ABORT_CODE_NO_SUBINDEX = 0x06090011,  // Sub-index does not exist
+
+        // PDO errors
+        CO_SDO_ABORT_CODE_CANNOT_MAP_PDO = 0x06040041,  // Object cannot be mapped to the PDO
+        CO_SDO_ABORT_CODE_EXCEED_PDO_LENGTH = 0x06040042,  // The number and length of the objects to be mapped would exceed PDO length
+
+        CO_SDO_ABORT_CODE_PARAM_IMCOMPATIBILITY = 0x06040043,  // General parameter incompatibility reason
+        CO_SDO_ABORT_CODE_ITRN_IMCOMPATIBILITY = 0x06040047,  // General internal incompatibility in the device
+        CO_SDO_ABORT_CODE_FAILED_HARDWARE_ERR = 0x06060000,  // Access failed due to an hardware error
+
+        // data type length errors
+        CO_SDO_ABORT_CODE_LENGTH_DOESNT_MATCH = 0x06070010,  // Data type does not match, length of service parameter does not match
+        CO_SDO_ABORT_CODE_LENGTH_TOO_HIGH = 0x06070012,  // Data type does not match, length of service parameter too high
+        CO_SDO_ABORT_CODE_LENGTH_TOO_LOW = 0x06070013,  // Data type does not match, length of service parameter too low
+
+        // data value errors
+        CO_SDO_ABORT_CODE_INVALID_VALUE = 0x06090030,  // Invalid value for parameter (download only)
+        CO_SDO_ABORT_CODE_VALUE_TOO_HIGH = 0x06090031,  // Value of parameter written too high (download only)
+        CO_SDO_ABORT_CODE_VALUE_TOO_LOW = 0x06090032,  // Value of parameter written too low (download only)
+        CO_SDO_ABORT_CODE_MAX_VALUE_LESS_MIN = 0x06090036,  // Maximum value is less than minimum value
+
+        CO_SDO_ABORT_CODE_RESRC_NOT_AVAILABLE = 0x060A0023,  // Resource not available: SDO connection
+        CO_SDO_ABORT_CODE_GENERAL_ERROR = 0x08000000,  // General error
+
+        // transferred or stored data erros
+        CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_1 = 0x08000020,  // Data cannot be transferred or stored to the application
+        CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_2 = 0x08000021,  // Data cannot be transferred or stored to the application because of local control
+        CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_3 = 0x08000022,  // Data cannot be transferred or stored to the application because of the present device state
+
+        CO_SDO_ABORT_CODE_NO_OBJECT_DICO = 0x08000023,  // Object dictionary dynamic generation fails or no object dictionary is present (e.g. \
+                                                                   // object dictionary is generated from file and generation fails because of an file error)
+        CO_SDO_ABORT_CODE_NO_DATA_AVAILABLE = 0x08000024  // No data available
     };
 };
 

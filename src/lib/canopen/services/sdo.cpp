@@ -38,8 +38,6 @@
 #define SDO_SUBINDEX(data) static_cast<quint8>((data).at(3))
 #define SDO_SG_SIZE 7 // size max by segment
 
-#define CO_SDO_CS_ABORT 0x80
-
 SDO::SDO(Node *node)
     : Service(node)
 {
@@ -108,7 +106,7 @@ void SDO::processingFrameFromServer(const QCanBusFrame &frame)
 
     if (frame.payload().size() != 8)
     {
-        errorManagement();
+        errorManagement(SDOAbortCodes::CO_SDO_ABORT_CODE_GENERAL_ERROR);
         return;
     }
 
@@ -141,7 +139,7 @@ void SDO::processingFrameFromServer(const QCanBusFrame &frame)
         sdoBlockDownload(frame);
         break;
 
-    case CO_SDO_CS_ABORT:
+    case SCS::SDO_SCS_CLIENT_ABORT:
         qDebug() << "ABORT received : Index :" << QString::number(SDO_INDEX(frame.payload()), 16).toUpper()
                  << ", SubIndex :" << QString::number(SDO_SUBINDEX(frame.payload()), 16).toUpper()
                  << ", abort :" << QString::number(arrangeDataUpload(frame.payload().mid(4, 4), QMetaType::Type::UInt).toUInt(), 16).toUpper();
@@ -279,7 +277,7 @@ qint32 SDO::sdoUploadInitiate(const QCanBusFrame &frame)
     {
         // ERROR
         _request->state = STATE_FREE;
-        errorManagement();
+        errorManagement(CO_SDO_ABORT_CODE_CMD_NOT_VALID);
     }
 
     return 0;
@@ -300,7 +298,7 @@ qint32 SDO::sdoUploadSegment(const QCanBusFrame &frame)
     if (toggle != (_request->toggle & SDO_TOGGLE_MASK))
     {
         // ABORT
-        errorManagement();
+        errorManagement(CO_SDO_ABORT_CODE_BIT_NOT_ALTERNATED);
         return 1;
     }
     else
@@ -392,7 +390,7 @@ qint32 SDO::sdoDownloadInitiate(const QCanBusFrame &frame)
     if ((index != _request->index) || (subindex != _request->subIndex))
     {
         // ABORT
-        errorManagement();
+        errorManagement(CO_SDO_ABORT_CODE_CMD_NOT_VALID);
         return 1;
     }
     else
@@ -441,7 +439,7 @@ qint32 SDO::sdoDownloadSegment(const QCanBusFrame &frame)
         if (toggle != _request->toggle)
         {
             // ABORT
-            errorManagement();
+            errorManagement(CO_SDO_ABORT_CODE_BIT_NOT_ALTERNATED);
             return 1;
         }
         else
@@ -493,7 +491,7 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
         if (index != _request->index || subindex != _request->subIndex)
         {
             qDebug() << "ERROR index, subindex not corresponding";
-            errorManagement();
+            errorManagement(CO_SDO_ABORT_CODE_CMD_NOT_VALID);
             return 1;
         }
         else
@@ -512,6 +510,7 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
             // ERROR sequence detection from server
             // Re-Send block
             qDebug() << "ERROR sequence detection from server, ackseq : " << ackseq;
+            errorManagement(CO_SDO_ABORT_CODE_INVALID_SEQ_NUMBER);
             _request->seqno = 1;
             _request->state = STATE_BLOCK_DOWNLOAD;
             return 1;
@@ -566,10 +565,9 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
     }
     return 0;
 }
-void SDO::errorManagement()
+void SDO::errorManagement(uint32_t error)
 {
-    uint32_t error = 0x08000000;
-    sendSdoRequest(CO_SDO_CS_ABORT, _request->index, _request->subIndex, error);
+    sendSdoRequest(CCS::SDO_CCS_CLIENT_ABORT, _request->index, _request->subIndex, error);
     _state = SDO_STATE_FREE;
     _request->state = STATE_FREE;
     _timer->stop();
@@ -621,7 +619,7 @@ void SDO::nextRequest()
 void SDO::timeout()
 {
     uint32_t error = 0x05040000;
-    sendSdoRequest(CO_SDO_CS_ABORT, _request->index, _request->subIndex, error);
+    sendSdoRequest(CCS::SDO_CCS_CLIENT_ABORT, _request->index, _request->subIndex, error);
     _state = SDO_STATE_FREE;
     _request->state = STATE_FREE;
     _timer->stop();
