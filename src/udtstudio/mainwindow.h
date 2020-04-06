@@ -25,7 +25,7 @@
 #include <QSortFilterProxyModel>
 
 #include "od/odtreeview.h"
-#include "canopen/nodeod/nodeodtreeview.h"
+#include "canopen/nodeod/nodeodwidget.h"
 #include "canopenbus.h"
 
 #include "can/canFrameListView/canframelistview.h"
@@ -53,7 +53,7 @@ protected:
     void createWidgets();
     CanFrameListView *_canFrameListView;
     ODTreeView *_odView;
-    NodeOdTreeView *_nodeOdTreeView;
+    NodeOdWidget *_nodeOdWidget;
 
     void createActions();
     void createMenus();

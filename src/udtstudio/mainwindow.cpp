@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createDocks();
     createWidgets();
-    connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, _nodeOdTreeView, &NodeOdTreeView::setNode);
+    connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, _nodeOdWidget, &NodeOdWidget::setNode);
 
     CanOpenBus *bus;
     if (QCanBus::instance()->plugins().contains("socketcan"))
@@ -88,8 +88,8 @@ void MainWindow::createWidgets()
     QWidget *widget = new QWidget();
     QLayout *layout = new QHBoxLayout();
 
-    _nodeOdTreeView = new NodeOdTreeView();
-    layout->addWidget(_nodeOdTreeView);
+    _nodeOdWidget = new NodeOdWidget();
+    layout->addWidget(_nodeOdWidget);
 
     _canFrameListView = new CanFrameListView();
     layout->addWidget(_canFrameListView);
