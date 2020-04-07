@@ -22,8 +22,10 @@
 #include "canopen_global.h"
 
 #include "service.h"
+#include "nodeod.h"
+#include "pdo.h"
 
-class CANOPEN_EXPORT TPDO : public Service
+class CANOPEN_EXPORT TPDO : public PDO
 {
     Q_OBJECT
 public:
@@ -33,10 +35,19 @@ public:
 
     void parseFrame(const QCanBusFrame &frame) override;
 
+    void odNotify(const NodeObjectId &objId, const QVariant &value) override;
+
     quint8 number() const;
 
 private:
-    quint8 _number;
+  quint8 _number;
+  quint32 _cobId;
+  quint8 _nodeId;
+  quint8 _busId;
+  NodeOd *_nodeOd;
+
+  quint16 _objectMappingId;
+  quint16 _objectCommId;
 };
 
 #endif // TPDO_H

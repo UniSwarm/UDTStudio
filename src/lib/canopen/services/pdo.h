@@ -16,20 +16,32 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef SERVICES_H
-#define SERVICES_H
+#ifndef PDO_H
+#define PDO_H
 
-#include "servicedispatcher.h"
+#include "canopen_global.h"
 
-#include "emergency.h"
-#include "errorcontrol.h"
-#include "nmt.h"
-#include "rpdo.h"
-#include "tpdo.h"
-#include "pdo.h"
-#include "sdo.h"
-#include "sync.h"
-#include "timestamp.h"
-#include "nodediscover.h"
+#include "nodeobjectid.h"
+#include "nodeod.h"
+#include "nodeodsubscriber.h"
+#include "service.h"
 
-#endif // SERVICES_H
+class RPDO;
+class TPDO;
+
+class CANOPEN_EXPORT PDO : public Service, public NodeOdSubscriber
+{
+    Q_OBJECT
+  public:
+    PDO(Node *node);
+
+    virtual QString type() const = 0;
+    virtual void parseFrame(const QCanBusFrame &frame) = 0;
+    void odNotify(const NodeObjectId &objId, const QVariant &value) = 0;
+
+  protected:
+    QList<TPDO *> _tpdos;
+    QList<RPDO *> _rpdos;
+};
+
+#endif // PDO_H

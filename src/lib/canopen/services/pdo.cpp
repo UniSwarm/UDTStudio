@@ -16,20 +16,11 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef SERVICES_H
-#define SERVICES_H
-
-#include "servicedispatcher.h"
-
-#include "emergency.h"
-#include "errorcontrol.h"
-#include "nmt.h"
-#include "rpdo.h"
-#include "tpdo.h"
 #include "pdo.h"
-#include "sdo.h"
-#include "sync.h"
-#include "timestamp.h"
-#include "nodediscover.h"
+#include "canopenbus.h"
+#include "services/services.h"
 
-#endif // SERVICES_H
+PDO::PDO(Node *node): Service(node)
+{
+
+}

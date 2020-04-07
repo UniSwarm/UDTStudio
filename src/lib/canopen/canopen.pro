@@ -30,7 +30,8 @@ SOURCES += \
     $$PWD/services/servicedispatcher.cpp \
     $$PWD/services/nodediscover.cpp \
     $$PWD/datalogger/datalogger.cpp \
-    $$PWD/datalogger/dldata.cpp
+    $$PWD/datalogger/dldata.cpp \
+    services/pdo.cpp
 
 
 HEADERS += \
@@ -56,7 +57,8 @@ HEADERS += \
     $$PWD/services/servicedispatcher.h \
     $$PWD/services/nodediscover.h \
     $$PWD/datalogger/datalogger.h \
-    $$PWD/datalogger/dldata.h
+    $$PWD/datalogger/dldata.h \
+    services/pdo.h
 
 INCLUDEPATH += $$PWD/../od/
 

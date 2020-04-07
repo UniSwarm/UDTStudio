@@ -27,8 +27,7 @@
 #define PDO_DATASIZE_MASK 0x000000FF
 
 RPDO::RPDO(Node *node, quint8 number)
-    : Service(node)
-    , _number(number)
+    : PDO(node), _number(number)
 {
     _nodeOd = node->nodeOd();
     _busId = node->busId();
@@ -41,11 +40,12 @@ RPDO::RPDO(Node *node, quint8 number)
 
     _rpdo = new RPDO_();
 
-    NodeObjectId objectMapping(_nodeId, _busId, _objectMappingId, 0);
+    registerObjId({_objectMappingId, 255});
+    setNodeInterrest(node);
 
-    registerIndex(_objectMappingId);
-    node->readObject(objectMapping);
     createListObjectMapped();
+
+    connect(node->bus()->sync(), &Sync::syncEmitted, this, &RPDO::receiveSync);
 }
 
 QString RPDO::type() const
@@ -55,7 +55,7 @@ QString RPDO::type() const
 
 void RPDO::parseFrame(const QCanBusFrame &frame)
 {
-    Q_UNUSED(frame);
+    Q_UNUSED(frame)
 }
 
 void RPDO::receiveSync()
@@ -79,15 +79,15 @@ void RPDO::odNotify(const NodeObjectId &objId, const QVariant &value)
 
 void RPDO::saveData()
 {
-    for (QPair<NodeIndex *, quint8> pair : _objectMapped)
+    for (NodeObjectId object : _objectMapped)
     {
-        quint8 size = static_cast<quint8>(QMetaType::sizeOf(_nodeOd->dataType(pair.first->index(), pair.second)));
+        quint8 size = static_cast<quint8>(QMetaType::sizeOf(object.dataType));
         if (size > 8)
         {
             // ERROR : CO_SDO_ABORT_CODE_EXCEED_PDO_LENGTH
             return;
         }
-        arrangeData(_rpdo->data, _nodeOd->value(pair.first->index(), pair.second));
+        arrangeData(_rpdo->data, _nodeOd->value(object.index, object.subIndex));
     }
 }
 
@@ -104,8 +104,8 @@ bool RPDO::createListObjectMapped()
         quint32 mapping = _nodeOd->value(objectMapping).toUInt();
         quint8 subIndexMapping = (mapping & PDO_SUBINDEX_MASK) >> 8;
         quint16 indexMapping = mapping >> 16;
-
-        _objectMapped.append(qMakePair(_nodeOd->index(indexMapping), subIndexMapping));
+        NodeObjectId object(indexMapping, subIndexMapping);
+        _objectMapped.append(object);
     }
     return true;
 }

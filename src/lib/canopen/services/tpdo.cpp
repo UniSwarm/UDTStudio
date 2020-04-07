@@ -23,7 +23,7 @@
 #include "canopenbus.h"
 
 TPDO::TPDO(Node *node, quint8 number)
-    : Service(node), _number(number)
+    : PDO(node), _number(number)
 {
     _cobIds.append(0x180 + 0x100 * _number + node->nodeId());
 }
@@ -43,4 +43,9 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
 quint8 TPDO::number() const
 {
     return _number;
+}
+
+void TPDO::odNotify(const NodeObjectId &objId, const QVariant &value)
+{
+
 }

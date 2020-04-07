@@ -25,16 +25,19 @@
 #include "nodeod.h"
 #include "nodeodsubscriber.h"
 #include "service.h"
+#include "pdo.h"
 
-class CANOPEN_EXPORT RPDO : public Service, public NodeOdSubscriber
+class CANOPEN_EXPORT RPDO : public PDO
 {
     Q_OBJECT
 public:
-    RPDO(Node *node, quint8 number);
+    RPDO(Node *pdo, quint8 number);
 
     QString type() const override;
 
     void parseFrame(const QCanBusFrame &frame) override;
+
+    void odNotify(const NodeObjectId &objId, const QVariant &value) override;
 
     quint8 number() const;
 
@@ -61,16 +64,16 @@ private:
     };
 
     RPDO_ *_rpdo;
-    quint8 _number;
-    quint32 _cobId;
-    quint8 _nodeId;
+                        quint8 _number;
+                        quint32 _cobId;
+                        quint8 _nodeId;
     quint8 _busId;
     NodeOd *_nodeOd;
 
-    quint16 _objectMappingId;
-    quint16 _objectCommId;
+                        quint16 _objectMappingId;
+                        quint16 _objectCommId;
 
-    QList<QPair<NodeIndex *, quint8>> _objectMapped;
+    QList<NodeObjectId> _objectMapped;
 
     void receiveSync();
     bool createListObjectMapped();
@@ -81,7 +84,7 @@ private:
 
     // NodeOdSubscriber interface
 protected:
-    void odNotify(const NodeObjectId &objId, const QVariant &value) override;
+
 };
 
 #endif // RPDO_H
