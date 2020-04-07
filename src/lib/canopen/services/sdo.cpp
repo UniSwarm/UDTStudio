@@ -326,7 +326,7 @@ qint32 SDO::sdoUploadSegment(const QCanBusFrame &frame)
 
 qint32 SDO::sdoBlockUpload(const QCanBusFrame &frame)
 {
-    Q_UNUSED(frame);
+    Q_UNUSED(frame)
     return 0;
 }
 

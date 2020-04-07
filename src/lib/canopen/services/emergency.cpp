@@ -38,5 +38,5 @@ QString Emergency::type() const
 
 void Emergency::parseFrame(const QCanBusFrame &frame)
 {
-    Q_UNUSED(frame);
+    Q_UNUSED(frame)
 }

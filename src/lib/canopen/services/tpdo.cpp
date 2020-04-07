@@ -35,7 +35,7 @@ QString TPDO::type() const
 
 void TPDO::parseFrame(const QCanBusFrame &frame)
 {
-    Q_UNUSED(frame);
+    Q_UNUSED(frame)
 //    uint8_t nodeId = frame.frameId() & 0x0000007F;
 //    uint8_t tpdo = (((frame.frameId() & 0x00000380) >> 7) - 3) / 2;
 }

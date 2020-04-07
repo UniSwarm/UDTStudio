@@ -72,7 +72,7 @@ void NMT::sendResetNode()
 
 void NMT::parseFrame(const QCanBusFrame &frame)
 {
-    Q_UNUSED(frame);
+    Q_UNUSED(frame)
 }
 
 void NMT::sendNmt(quint8 cmd)
