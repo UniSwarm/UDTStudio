@@ -60,6 +60,11 @@ ServiceDispatcher *CanOpenBus::dispatcher() const
     return _serviceDispatcher;
 }
 
+Sync *CanOpenBus::sync() const
+{
+    return _sync;
+}
+
 CanOpen *CanOpenBus::canOpen() const
 {
     return _canOpen;

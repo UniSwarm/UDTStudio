@@ -39,6 +39,7 @@ public:
     CanOpen *canOpen() const;
     quint8 busId() const;
     ServiceDispatcher *dispatcher() const;
+    Sync *sync() const;
 
     QString busName() const;
     void setBusName(const QString &busName);
