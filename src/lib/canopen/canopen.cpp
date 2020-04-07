@@ -39,6 +39,15 @@ CanOpenBus *CanOpen::addBus(CanOpenBus *bus)
     return instance()->addBusI(bus);
 }
 
+CanOpenBus *CanOpen::bus(quint8 busId)
+{
+    if (busId >= instance()->_buses.count())
+    {
+        return nullptr;
+    }
+    return instance()->_buses.at(busId);
+}
+
 CanOpenBus *CanOpen::addBusI(CanOpenBus *bus)
 {
     bus->_canOpen = this;

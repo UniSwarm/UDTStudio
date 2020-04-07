@@ -28,6 +28,15 @@ NodeObjectId::NodeObjectId(quint16 index, quint8 subIndex, QMetaType::Type dataT
 {
 }
 
+NodeObjectId::NodeObjectId(const NodeObjectId &other)
+{
+    busId = other.busId;
+    nodeId = other.nodeId;
+    index = other.index;
+    subIndex = other.subIndex;
+    dataType = other.dataType;
+}
+
 quint64 NodeObjectId::key() const
 {
     quint64 key = 0;
@@ -90,4 +99,22 @@ bool NodeObjectId::isASubIndex() const
         return true;
     }
     return false;
+}
+
+NodeObjectId &NodeObjectId::operator=(const NodeObjectId &other)
+{
+    busId = other.busId;
+    nodeId = other.nodeId;
+    index = other.index;
+    subIndex = other.subIndex;
+    dataType = other.dataType;
+    return *this;
+}
+
+bool operator==(const NodeObjectId &a, const NodeObjectId &b)
+{
+    return (a.busId == b.busId
+           && a.nodeId == b.nodeId
+           && a.index == b.index
+           && a.subIndex == b.subIndex);
 }

@@ -74,10 +74,10 @@ public:
         UNSIGNED56 = 0x001A,
         UNSIGNED64 = 0x001B
     };
-
     DataType dataType() const;
     void setDataType(const DataType &dataType);
     static QString dataTypeStr(const DataType &dataType);
+    bool isNumeric() const;
 
     const QVariant &lowLimit() const;
     void setLowLimit(const QVariant &lowLimit);

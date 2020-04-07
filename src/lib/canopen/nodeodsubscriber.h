@@ -43,6 +43,7 @@ protected:
 
     void readObject(quint16 index, quint8 subindex, QMetaType::Type dataType = QMetaType::UnknownType);
 
+    void registerObjId(const NodeObjectId &objId);
     void registerSubIndex(quint16 index, quint8 subindex);
     void registerIndex(quint16 index);
     void registerFullOd();

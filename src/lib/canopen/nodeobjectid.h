@@ -28,6 +28,8 @@ class CANOPEN_EXPORT NodeObjectId
 public:
     NodeObjectId(quint8 busId, quint8 nodeId, quint16 index, quint8 subIndex, QMetaType::Type dataType = QMetaType::Type::UnknownType);
     NodeObjectId(quint16 index, quint8 subIndex, QMetaType::Type dataType = QMetaType::Type::UnknownType);
+    NodeObjectId(const NodeObjectId &other);
+
     quint8 busId;
     quint8 nodeId;
     quint16 index;
@@ -41,6 +43,10 @@ public:
     bool isANode() const;
     bool isAnIndex() const;
     bool isASubIndex() const;
+
+    NodeObjectId &operator=(const NodeObjectId &other);
 };
+
+bool operator==(const NodeObjectId &a, const NodeObjectId &b);
 
 #endif // NODEOBJECTID_H

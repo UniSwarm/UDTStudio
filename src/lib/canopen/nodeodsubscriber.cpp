@@ -21,6 +21,7 @@
 #include <QDebug>
 
 #include "node.h"
+#include "canopen.h"
 
 NodeOdSubscriber::NodeOdSubscriber()
 {
@@ -75,6 +76,11 @@ void NodeOdSubscriber::readObject(quint16 index, quint8 subindex, QMetaType::Typ
     }
 }
 
+void NodeOdSubscriber::registerObjId(const NodeObjectId &objId)
+{
+    registerKey(objId);
+}
+
 void NodeOdSubscriber::registerSubIndex(quint16 index, quint8 subindex)
 {
     registerKey(index, subindex);
@@ -110,8 +116,24 @@ void NodeOdSubscriber::registerKey(const NodeObjectId &objId)
     _indexSubIndexList.insert(key);
     _objIdList.append(objId);
 
-    if (_nodeInterrest)
+    // register on nodeOd
+    if (objId.isNodeIndependant())
     {
-        _nodeInterrest->nodeOd()->subscribe(this, objId.index, objId.subIndex);
+        if (_nodeInterrest)
+        {
+            _nodeInterrest->nodeOd()->subscribe(this, objId.index, objId.subIndex);
+        }
+    }
+    else
+    {
+        CanOpenBus *bus = CanOpen::bus(objId.busId);
+        if (!bus)
+        {
+            return;
+        }
+        Node *node = bus->node(objId.busId);
+        NodeOd *nodeOd = node->nodeOd();
+
+        nodeOd->subscribe(this, objId.index, objId.subIndex);
     }
 }

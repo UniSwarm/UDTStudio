@@ -252,6 +252,35 @@ QString NodeSubIndex::dataTypeStr(const DataType &dataType)
     return QString();
 }
 
+bool NodeSubIndex::isNumeric() const
+{
+    switch (_dataType)
+    {
+    case INTEGER8:
+    case INTEGER16:
+    case INTEGER32:
+    case UNSIGNED8:
+    case UNSIGNED16:
+    case UNSIGNED32:
+    case REAL32:
+    case REAL64:
+    case INTEGER24:
+    case INTEGER40:
+    case INTEGER48:
+    case INTEGER56:
+    case INTEGER64:
+    case UNSIGNED24:
+    case UNSIGNED40:
+    case UNSIGNED48:
+    case UNSIGNED56:
+    case UNSIGNED64:
+        return true;
+
+    default:
+        return false;
+    }
+}
+
 /**
  * @brief low limit getter
  * @return low limit value
