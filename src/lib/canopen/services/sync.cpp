@@ -30,7 +30,7 @@ Sync::Sync(CanOpenBus *bus)
 
 QString Sync::type() const
 {
-    return QLatin1String("Emergency");
+    return QLatin1String("Sync");
 }
 
 void Sync::startSync(int ms)
@@ -57,6 +57,7 @@ void Sync::sendSync()
     QCanBusFrame frameSync;
     frameSync.setFrameId(_syncCobId);
     bus()->canDevice()->writeFrame(frameSync);
+    emit syncEmitted();
 }
 
 void Sync::parseFrame(const QCanBusFrame &frame)
