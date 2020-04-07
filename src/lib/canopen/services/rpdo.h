@@ -21,9 +21,12 @@
 
 #include "canopen_global.h"
 
+#include "nodeobjectid.h"
+#include "nodeod.h"
+#include "nodeodsubscriber.h"
 #include "service.h"
 
-class CANOPEN_EXPORT RPDO : public Service
+class CANOPEN_EXPORT RPDO : public Service, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
@@ -35,8 +38,50 @@ public:
 
     quint8 number() const;
 
+    enum TransmissionType
+    {
+        RPDO_TRM_TYPE_SYNC_MIN = 0x00u, // synchronous (acyclic)
+        RPDO_TRM_TYPE_SYNC_MAX = 0xF0u, // synchronous (cyclic every 240 th SYNC)
+        RPDO_TRM_TYPE_EVENT_MS = 0xFEu, // event-driven (manufacturer-specific)
+        RPDO_TRM_TYPE_EVENT_DP = 0xFFu // event-driven (device profile and application profile specific)
+    };
+
+    void addMappingObject(NodeObjectId objList);
+    void setTransmissionType(RPDO::TransmissionType type);
+    void setEventTimer();
+    void setInhibitTime();
+    void setSyncStartValue();
+
 private:
+    struct RPDO_
+    {
+        quint16 notifyIndex;
+        quint8 notifySubIndex;
+        QByteArray data;
+    };
+
+    RPDO_ *_rpdo;
     quint8 _number;
+    quint32 _cobId;
+    quint8 _nodeId;
+    quint8 _busId;
+    NodeOd *_nodeOd;
+
+    quint16 _objectMappingId;
+    quint16 _objectCommId;
+
+    QList<QPair<NodeIndex *, quint8>> _objectMapped;
+
+    void receiveSync();
+    bool createListObjectMapped();
+
+    void saveData();
+    bool sendData(const QByteArray data);
+    void arrangeData(QByteArray &request, const QVariant &data);
+
+    // NodeOdSubscriber interface
+protected:
+    void odNotify(const NodeObjectId &objId, const QVariant &value) override;
 };
 
 #endif // RPDO_H
