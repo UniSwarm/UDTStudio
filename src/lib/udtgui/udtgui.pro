@@ -25,7 +25,11 @@ HEADERS += \
     $$PWD/canopen/nodeod/nodeoditemmodel.h \
     $$PWD/canopen/nodeod/nodeodtreeview.h \
     $$PWD/canopen/nodeod/nodeodfilterproxymodel.h \
-    canopen/nodeod/nodeodwidget.h
+    $$PWD/canopen/nodeod/nodeodwidget.h \
+    $$PWD/canopen/datalogger/dataloggerwidget.h \
+    $$PWD/canopen/datalogger/dataloggertreeview.h \
+    $$PWD/canopen/datalogger/dataloggermodel.h \
+    $$PWD/canopen/datalogger/dataloggermanagerwidget.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -44,7 +48,11 @@ SOURCES += \
     $$PWD/canopen/nodeod/nodeoditemmodel.cpp \
     $$PWD/canopen/nodeod/nodeodtreeview.cpp \
     $$PWD/canopen/nodeod/nodeodfilterproxymodel.cpp \
-    canopen/nodeod/nodeodwidget.cpp
+    $$PWD/canopen/nodeod/nodeodwidget.cpp \
+    $$PWD/canopen/datalogger/dataloggerwidget.cpp \
+    $$PWD/canopen/datalogger/dataloggertreeview.cpp \
+    $$PWD/canopen/datalogger/dataloggermodel.cpp \
+    $$PWD/canopen/datalogger/dataloggermanagerwidget.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 
