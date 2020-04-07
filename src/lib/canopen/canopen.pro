@@ -28,7 +28,9 @@ SOURCES += \
     $$PWD/services/timestamp.cpp \
     $$PWD/services/errorcontrol.cpp \
     $$PWD/services/servicedispatcher.cpp \
-    $$PWD/services/nodediscover.cpp
+    $$PWD/services/nodediscover.cpp \
+    $$PWD/datalogger/datalogger.cpp \
+    $$PWD/datalogger/dldata.cpp
 
 
 HEADERS += \
@@ -52,7 +54,9 @@ HEADERS += \
     $$PWD/services/timestamp.h \
     $$PWD/services/errorcontrol.h \
     $$PWD/services/servicedispatcher.h \
-    $$PWD/services/nodediscover.h
+    $$PWD/services/nodediscover.h \
+    $$PWD/datalogger/datalogger.h \
+    $$PWD/datalogger/dldata.h
 
 INCLUDEPATH += $$PWD/../od/
 
