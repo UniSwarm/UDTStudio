@@ -21,9 +21,9 @@
 
 #include "canopen_global.h"
 
-#include "service.h"
 #include "nodeod.h"
 #include "pdo.h"
+#include "service.h"
 
 class CANOPEN_EXPORT TPDO : public PDO
 {
@@ -40,14 +40,8 @@ public:
     quint8 number() const;
 
 private:
-  quint8 _number;
-  quint32 _cobId;
-  quint8 _nodeId;
-  quint8 _busId;
-  NodeOd *_nodeOd;
-
-  quint16 _objectMappingId;
-  quint16 _objectCommId;
+    void receiveSync();
+    QVariant arrangeData(QByteArray data, QMetaType::Type type);
 };
 
 #endif // TPDO_H

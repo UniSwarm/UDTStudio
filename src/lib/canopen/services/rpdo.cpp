@@ -19,33 +19,26 @@
 #include "rpdo.h"
 
 #include "canopenbus.h"
-#include <QDataStream>
+
 #include <QDebug>
 
-#define PDO_INDEX_MASK 0xFFFF0000
-#define PDO_SUBINDEX_MASK 0x0000FF00
-#define PDO_DATASIZE_MASK 0x000000FF
-
 RPDO::RPDO(Node *node, quint8 number)
-    : PDO(node), _number(number)
+    : PDO(node, number)
 {
-    _nodeOd = node->nodeOd();
-    _busId = node->busId();
-    _nodeId = node->nodeId();
-
     _cobId = 0x200 + 0x100 * _number + node->nodeId();
     _cobIds.append(_cobId);
     _objectCommId = 0x1400 + _number;
     _objectMappingId = 0x1600 + _number;
-
+    state = STATE_FREE;
     _rpdo = new RPDO_();
 
+    registerObjId({_objectCommId, 0x01});
     registerObjId({_objectMappingId, 255});
     setNodeInterrest(node);
 
     createListObjectMapped();
 
-    connect(node->bus()->sync(), &Sync::syncEmitted, this, &RPDO::receiveSync);
+    // connect(node->bus()->sync(), &Sync::syncEmitted, this, &RPDO::receiveSync);
 }
 
 QString RPDO::type() const
@@ -58,10 +51,50 @@ void RPDO::parseFrame(const QCanBusFrame &frame)
     Q_UNUSED(frame)
 }
 
-void RPDO::receiveSync()
+void RPDO::odNotify(const NodeObjectId &objId, const QVariant &value)
 {
-    saveData();
-    sendData(_rpdo->data);
+    if ((objId.index == _objectCommId) && objId.subIndex == 0x01 && (state == STATE_FREE))
+    {
+        state = STATE_DEACTIVATE;
+        applyMapping();
+    }
+    if ((objId.index == _objectMappingId) && (objId.subIndex == 0x00) && (state == STATE_DEACTIVATE))
+    {
+        state = STATE_DISABLE;
+        _numberObjectCurrent = 0;
+        applyMapping();
+    }
+    if ((objId.index == _objectMappingId) && (objId.subIndex != 0x00) && (state == STATE_DISABLE))
+    {
+        if (value == SDO::FlagsRequest::Error)
+        {
+            // TODO     QUOI FAIRE????
+            state = STATE_FREE;
+            return;
+        }
+        _numberObjectCurrent++;
+        if (_numberObjectCurrent == _objectMap.size())
+        {
+            state = STATE_MODIFY;
+        }
+        applyMapping();
+    }
+    if ((objId.index == _objectMappingId) && (objId.subIndex == 0x00) && (state == STATE_MODIFY))
+    {
+        if (value == SDO::FlagsRequest::Error)
+        {
+            // TODO     QUOI FAIRE????
+            state = STATE_FREE;
+            return;
+        }
+        state = STATE_ENABLE;
+        applyMapping();
+    }
+    if ((objId.index == _objectCommId) && objId.subIndex == 0x01 && (state == STATE_ENABLE))
+    {
+        state = STATE_ACTIVATE;
+        applyMapping();
+    }
 }
 
 quint8 RPDO::number() const
@@ -69,14 +102,11 @@ quint8 RPDO::number() const
     return _number;
 }
 
-void RPDO::odNotify(const NodeObjectId &objId, const QVariant &value)
+void RPDO::receiveSync()
 {
-    if (objId.index == (_objectMappingId) && objId.subIndex == 0x00)
-    {
-        createListObjectMapped();
-    }
+    saveData();
+    sendData(_rpdo->data);
 }
-
 void RPDO::saveData()
 {
     for (NodeObjectId object : _objectMapped)
@@ -88,101 +118,5 @@ void RPDO::saveData()
             return;
         }
         arrangeData(_rpdo->data, _nodeOd->value(object.index, object.subIndex));
-    }
-}
-
-bool RPDO::createListObjectMapped()
-{
-    _objectMapped.clear();
-    NodeObjectId objectMapping(_nodeId, _busId, _objectMappingId, 0);
-    quint8 numberEntries = static_cast<quint8>(_nodeOd->value(objectMapping).toUInt());
-
-    for (quint8 i = 1; i <= numberEntries; i++)
-    {
-        NodeObjectId objectMapping(_nodeId, _busId, _objectMappingId, i);
-
-        quint32 mapping = _nodeOd->value(objectMapping).toUInt();
-        quint8 subIndexMapping = (mapping & PDO_SUBINDEX_MASK) >> 8;
-        quint16 indexMapping = mapping >> 16;
-        NodeObjectId object(indexMapping, subIndexMapping);
-        _objectMapped.append(object);
-    }
-    return true;
-}
-
-bool RPDO::sendData(const QByteArray data)
-{
-    QCanBusDevice *lcanDevice = canDevice();
-    if (!lcanDevice)
-    {
-        return false;
-    }
-
-    QByteArray sdoWriteReqPayload;
-    QDataStream request(&sdoWriteReqPayload, QIODevice::WriteOnly);
-    QCanBusFrame frame;
-    request.setByteOrder(QDataStream::LittleEndian);
-    request << data;
-
-    frame.setFrameId(_cobId);
-    frame.setPayload(sdoWriteReqPayload);
-
-    return lcanDevice->writeFrame(frame);
-}
-
-void RPDO::arrangeData(QByteArray &dataByte, const QVariant &data)
-{
-    switch (QMetaType::Type(data.type()))
-    {
-    case QMetaType::Long:
-    case QMetaType::LongLong:
-    case QMetaType::Int:
-        dataByte.append(QByteArray::number(data.value<int>()));
-        break;
-
-    case QMetaType::ULong:
-    case QMetaType::ULongLong:
-    case QMetaType::UInt:
-        dataByte.append(QByteArray::number(data.value<unsigned int>()));
-        break;
-
-    case QMetaType::Double:
-        dataByte.append(QByteArray::number(data.value<double>()));
-        break;
-
-    case QMetaType::Short:
-        dataByte.append(QByteArray::number(data.value<short>()));
-        break;
-
-    case QMetaType::Char:
-        dataByte.append(QByteArray::number(data.value<char>()));
-        break;
-
-    case QMetaType::UShort:
-        dataByte.append(QByteArray::number(data.value<unsigned short>()));
-        break;
-
-    case QMetaType::UChar:
-        dataByte.append(QByteArray::number(data.value<unsigned char>()));
-        break;
-
-    case QMetaType::Float:
-        dataByte.append(QByteArray::number(data.value<float>()));
-        break;
-
-    case QMetaType::SChar:
-        dataByte.append(QByteArray::number(data.value<signed char>()));
-        break;
-
-    case QMetaType::QString:
-        dataByte.append(data.toByteArray());
-        break;
-
-    case QMetaType::QByteArray:
-        dataByte.append(data.toByteArray());
-        break;
-
-    default:
-        break;
     }
 }

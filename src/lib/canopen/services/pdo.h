@@ -32,16 +32,44 @@ class TPDO;
 class CANOPEN_EXPORT PDO : public Service, public NodeOdSubscriber
 {
     Q_OBJECT
-  public:
-    PDO(Node *node);
+public:
+    PDO(Node *node, quint8 number);
 
     virtual QString type() const = 0;
     virtual void parseFrame(const QCanBusFrame &frame) = 0;
     void odNotify(const NodeObjectId &objId, const QVariant &value) = 0;
 
-  protected:
-    QList<TPDO *> _tpdos;
-    QList<RPDO *> _rpdos;
+protected:
+    enum StateMapping
+    {
+        STATE_FREE,
+        STATE_DEACTIVATE,
+        STATE_DISABLE,
+        STATE_MODIFY,
+        STATE_ENABLE,
+        STATE_ACTIVATE,
+    };
+    StateMapping state;
+
+    quint8 _number;
+    quint32 _cobId;
+    quint8 _nodeId;
+    NodeOd *_nodeOd;
+    quint16 _objectMappingId;
+    quint16 _objectCommId;
+
+    QList<NodeObjectId> _objectMapped;
+    bool createListObjectMapped();
+    QList<NodeObjectId> listObjectMapped();
+
+    quint8 _numberObjectCurrent;
+    QList<NodeObjectId> _objectMap;
+    void mapObjectList(QList<NodeObjectId> objectList);
+    QList<NodeObjectId> currentMappedObjectList() const;
+    void applyMapping();
+
+    bool sendData(const QByteArray data);
+    void arrangeData(QByteArray &request, const QVariant &data);
 };
 
 #endif // PDO_H

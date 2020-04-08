@@ -24,14 +24,14 @@
 #include "nodeobjectid.h"
 #include "nodeod.h"
 #include "nodeodsubscriber.h"
-#include "service.h"
 #include "pdo.h"
+#include "service.h"
 
 class CANOPEN_EXPORT RPDO : public PDO
 {
     Q_OBJECT
 public:
-    RPDO(Node *pdo, quint8 number);
+    RPDO(Node *node, quint8 number);
 
     QString type() const override;
 
@@ -49,7 +49,6 @@ public:
         RPDO_TRM_TYPE_EVENT_DP = 0xFFu // event-driven (device profile and application profile specific)
     };
 
-    void addMappingObject(NodeObjectId objList);
     void setTransmissionType(RPDO::TransmissionType type);
     void setEventTimer();
     void setInhibitTime();
@@ -64,27 +63,9 @@ private:
     };
 
     RPDO_ *_rpdo;
-                        quint8 _number;
-                        quint32 _cobId;
-                        quint8 _nodeId;
-    quint8 _busId;
-    NodeOd *_nodeOd;
-
-                        quint16 _objectMappingId;
-                        quint16 _objectCommId;
-
-    QList<NodeObjectId> _objectMapped;
 
     void receiveSync();
-    bool createListObjectMapped();
-
     void saveData();
-    bool sendData(const QByteArray data);
-    void arrangeData(QByteArray &request, const QVariant &data);
-
-    // NodeOdSubscriber interface
-protected:
-
 };
 
 #endif // RPDO_H
