@@ -564,9 +564,12 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
     }
     return 0;
 }
-void SDO::errorManagement(uint32_t error)
+void SDO::errorManagement(SDOAbortCodes error)
 {
     sendSdoRequest(CCS::SDO_CCS_CLIENT_ABORT, _request->index, _request->subIndex, error);
+    _node->nodeOd()->updateObjectFromDevice(_request->index, _request->subIndex, QVariant(), FlagsRequest::Error);
+    _node->nodeOd()->setErrorObject(_request->index, _request->subIndex, error);
+
     _state = SDO_STATE_FREE;
     _request->state = STATE_FREE;
     _timer->stop();
@@ -577,11 +580,11 @@ void SDO::requestFinished()
 {
     if (_request->state == STATE_UPLOAD)
     {
-        _node->nodeOd()->updateObjectFromDevice(_request->index, _request->subIndex, arrangeDataUpload(_request->dataByte, _request->dataType));
+        _node->nodeOd()->updateObjectFromDevice(_request->index, _request->subIndex, arrangeDataUpload(_request->dataByte, _request->dataType), FlagsRequest::Read);
     }
     else if (_request->state == STATE_DOWNLOAD)
     {
-        _node->nodeOd()->updateObjectFromDevice(_request->index, _request->subIndex, _request->data);
+        _node->nodeOd()->updateObjectFromDevice(_request->index, _request->subIndex, _request->data, FlagsRequest::Write);
     }
 
     _state = SDO_STATE_FREE;
@@ -617,7 +620,11 @@ void SDO::nextRequest()
 void SDO::timeout()
 {
     uint32_t error = 0x05040000;
+
     sendSdoRequest(CCS::SDO_CCS_CLIENT_ABORT, _request->index, _request->subIndex, error);
+    _node->nodeOd()->updateObjectFromDevice(_request->index, _request->subIndex, QVariant(), FlagsRequest::Error);
+    _node->nodeOd()->setErrorObject(_request->index, _request->subIndex, error);
+
     _state = SDO_STATE_FREE;
     _request->state = STATE_FREE;
     _timer->stop();

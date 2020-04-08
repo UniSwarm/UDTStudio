@@ -53,6 +53,10 @@ public:
     void setValue(const QVariant &value);
     void clearValue();
 
+    const quint32 &error() const;
+    void setError(const quint32 &value);
+    void clearError();
+
     // =============== Data type ==================
     enum DataType
     {
@@ -111,6 +115,8 @@ private:
     QVariant _value;
     QVariant _defaultValue;
     DataType _dataType;
+
+    quint32 _error;
 
     QVariant _lowLimit;
     QVariant _highLimit;

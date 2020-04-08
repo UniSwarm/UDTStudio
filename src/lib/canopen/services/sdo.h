@@ -45,6 +45,15 @@ public:
     qint32 uploadData(quint16 index, quint8 subindex, QMetaType::Type dataType);
     qint32 downloadData(quint16 index, quint8 subindex, const QVariant &data);
 
+    enum FlagsRequest
+    {
+        Read = 0x01,
+        Write = 0x02,
+        Error = 0x04,
+        Sdo = 0x08,
+        Pdo = 0x10
+    };
+
     enum Status
     {
         SDO_STATE_FREE,
@@ -68,132 +77,8 @@ public:
 
     Status status() const;
 
-  signals:
-    void sdoFree();
-    void dataObjetAvailable(NodeIndex *nodeIndex);
-    void dataObjetWritten();
-
-private:
-    quint32 _cobIdClientToServer;
-    quint32 _cobIdServerToClient;
-    quint8 _nodeId;
-
-    struct RequestSdo
-    {
-        RequestState state;
-        quint16 index;
-        quint8 subIndex;
-        QByteArray dataByte;
-        QMetaType::Type dataType;
-        QVariant data;
-        quint32 stay;
-        quint32 size;
-        quint8 toggle;
-
-        // For SDO Block
-        quint8 blksize;             // Number of segments per block with 0 < blksize < 128.
-        quint8 moreBlockSegments;   // indicates whether there are still more segments to be downloaded
-        quint8 seqno;               // sequence number of segment
-    };
-
-    RequestSdo *_request;
-    QQueue<RequestSdo *> _requestQueue;
-    Status _state;
-
-    qint32 uploadDispatcher();
-    qint32 downloadDispatcher();
-
-    void errorManagement(uint32_t error);
-    void requestFinished();
-    void nextRequest();
-
-    int _time;
-    QTimer *_timer;
-    void timeout();
-
-    qint32 sdoUploadInitiate(const QCanBusFrame &frame);
-    qint32 sdoUploadSegment(const QCanBusFrame &frame);
-    qint32 sdoDownloadInitiate(const QCanBusFrame &frame);
-    qint32 sdoDownloadSegment(const QCanBusFrame &frame);
-    qint32 sdoBlockDownload(const QCanBusFrame &frame);
-    qint32 sdoBlockUpload(const QCanBusFrame &frame);
-
-    bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex);                            // SDO upload initiate
-    bool sendSdoRequest(quint8 cmd);                                                            // SDO upload segment, SDO block upload initiate, SDO block upload ends
-    bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QVariant &data);      // SDO download initiate, SDO block download initiate
-    bool sendSdoRequest(quint8 cmd, const QByteArray &value);                                   // SDO download segment
-    bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blksize, quint8 pst);// SDO block upload initiate
-    bool sendSdoRequest(quint8 cmd, quint8 &ackseq, quint8 blksize);                            // SDO block upload sub-block
-    bool sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segData);            // SDO block download sub-block
-    bool sendSdoRequest(quint8 cmd, quint16 &crc);                                              // SDO block download end
-    bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint32 error);             // SDO abort transfer
-
-    QVariant arrangeDataUpload(QByteArray, QMetaType::Type type);
-    void arrangeDataDownload(QDataStream &request, const QVariant &data);
-
-    enum CCS : uint8_t  // CCS : Client Command Specifier from Client to Server
-    {
-        SDO_CCS_CLIENT_DOWNLOAD_INITIATE = 0x20,// ccs:1
-        SDO_CCS_CLIENT_DOWNLOAD_SEGMENT = 0x00, // ccs:0
-        SDO_CCS_CLIENT_UPLOAD_INITIATE = 0x40,  // ccs:2 : initiate upload request
-        SDO_CCS_CLIENT_UPLOAD_SEGMENT = 0x60,   // ccs:3
-        SDO_CCS_CLIENT_BLOCK_DOWNLOAD = 0xC0,   // ccs:6
-        SDO_CCS_CLIENT_BLOCK_UPLOAD = 0xA0,     // ccs:5
-        SDO_CCS_CLIENT_ABORT = 0x80
-    };
-
-    enum SCS : uint8_t  // SCS : Server Command Specifier from Server to Client
-    {
-        SDO_SCS_SERVER_DOWNLOAD_INITIATE = 0x60,// scs:3
-        SDO_SCS_SERVER_DOWNLOAD_SEGMENT = 0x20, // scs:1
-        SDO_SCS_SERVER_UPLOAD_INITIATE = 0x40,  // scs:2
-        SDO_SCS_SERVER_UPLOAD_SEGMENT = 0x00,   // scs:0
-        SDO_SCS_SERVER_BLOCK_DOWNLOAD = 0xA0,   // scs:5
-        SDO_SCS_SERVER_BLOCK_UPLOAD = 0xC0,     // scs:6
-        SDO_SCS_CLIENT_ABORT = 0x80
-    };
-
-    enum CS : uint8_t   // cs: client subcommand
-    {
-        SDO_CCS_CLIENT_BLOCK_DOWNLOAD_CS_MASK = 0x1,    // Maks for cs: client subcommand
-        SDO_CCS_CLIENT_BLOCK_DOWNLOAD_CS_INIT_REQ = 0x0,// cs:0: initiate download request
-        SDO_CCS_CLIENT_BLOCK_DOWNLOAD_CS_END_REQ = 0x1, // cs:1: end block download request
-        SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_MASK = 0x3,      // Mask for cs: client subcommand
-        SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_INIT_REQ = 0x0,  // 0: initiate upload request
-        SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_END_REQ = 0x1,   // 1: end block upload request
-        SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_RESP = 0x2,      // 2: block upload response
-        SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_START = 0x3,     // 3: start upload
-    };
-
-    enum SS : uint8_t   // ss: server subcommand
-    {
-        SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_MASK = 0x3,        // ss :0: initiate download response
-        SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_INIT_RESP = 0x0,   // ss :0: initiate download response
-        SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_RESP = 0x2,        // ss :2: block download response
-        SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_END_RESP = 0x1,    // ss :1: end block download response
-        SDO_SCS_SERVER_BLOCK_UPLOAD_SS_INIT_RESP = 0x0,     // 0: initiate upload response
-        SDO_SCS_SERVER_BLOCK_UPLOAD_SS_END_RESP = 0x1       // 1: end block upload response
-    };
-
-    enum Flag :  uint8_t
-    {
-        SDO_E_MASK = 0x2,
-        SDO_E_NORMAL = 0x0,     // E: transfer type
-        SDO_E_EXPEDITED = 0x1,  // E: transfer type
-        SDO_S_MASK = 0x1,
-        SDO_S = 0x1,            // S : size indicator
-        SDO_C_MASK = 0x1,
-        SDO_C = 0x1             // C: indicates whether there are still more segments to be downloaded.
-    };
-
-    enum FlagBlock :  uint8_t
-    {
-        BLOCK_SIZE = 0x2, // s: size indicator
-        BLOCK_CRC = 0x04
-    };
-
     // ================= sdo abort codes ====================
-    enum SDOAbortCodes : uint32_t
+    enum SDOAbortCodes : quint32
     {
         CO_SDO_ABORT_CODE_BIT_NOT_ALTERNATED = 0x05030000,  // Toggle bit not alternated
         CO_SDO_ABORT_CODE_TIMED_OUT = 0x05040000,  // SDO protocol timed out
@@ -239,10 +124,135 @@ private:
         CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_2 = 0x08000021,  // Data cannot be transferred or stored to the application because of local control
         CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_3 = 0x08000022,  // Data cannot be transferred or stored to the application because of the present device state
 
-        CO_SDO_ABORT_CODE_NO_OBJECT_DICO = 0x08000023,  // Object dictionary dynamic generation fails or no object dictionary is present (e.g. \
-                                                                   // object dictionary is generated from file and generation fails because of an file error)
-        CO_SDO_ABORT_CODE_NO_DATA_AVAILABLE = 0x08000024  // No data available
+        CO_SDO_ABORT_CODE_NO_OBJECT_DICO = 0x08000023,      // Object dictionary dynamic generation fails or no object dictionary is present
+        // object dictionary is generated from file and generation fails because of an file error)
+        CO_SDO_ABORT_CODE_NO_DATA_AVAILABLE = 0x08000024    // No data available
     };
+
+  signals:
+    void sdoFree();
+    void dataObjetAvailable(NodeIndex *nodeIndex);
+    void dataObjetWritten();
+
+private:
+    quint32 _cobIdClientToServer;
+    quint32 _cobIdServerToClient;
+    quint8 _nodeId;
+
+    struct RequestSdo
+    {
+        RequestState state;
+        quint16 index;
+        quint8 subIndex;
+        QByteArray dataByte;
+        QMetaType::Type dataType;
+        QVariant data;
+        quint32 stay;
+        quint32 size;
+        quint8 toggle;
+
+        // For SDO Block
+        quint8 blksize;             // Number of segments per block with 0 < blksize < 128.
+        quint8 moreBlockSegments;   // indicates whether there are still more segments to be downloaded
+        quint8 seqno;               // sequence number of segment
+    };
+
+    RequestSdo *_request;
+    QQueue<RequestSdo *> _requestQueue;
+    Status _state;
+
+    qint32 uploadDispatcher();
+    qint32 downloadDispatcher();
+
+    void errorManagement(SDOAbortCodes error);
+    void requestFinished();
+    void nextRequest();
+
+    int _time;
+    QTimer *_timer;
+    void timeout();
+
+    qint32 sdoUploadInitiate(const QCanBusFrame &frame);
+    qint32 sdoUploadSegment(const QCanBusFrame &frame);
+    qint32 sdoDownloadInitiate(const QCanBusFrame &frame);
+    qint32 sdoDownloadSegment(const QCanBusFrame &frame);
+    qint32 sdoBlockDownload(const QCanBusFrame &frame);
+    qint32 sdoBlockUpload(const QCanBusFrame &frame);
+
+    bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex);                            // SDO upload initiate
+    bool sendSdoRequest(quint8 cmd);                                                            // SDO upload segment, SDO block upload initiate, SDO block upload ends
+    bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QVariant &data);      // SDO download initiate, SDO block download initiate
+    bool sendSdoRequest(quint8 cmd, const QByteArray &value);                                   // SDO download segment
+    bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blksize, quint8 pst);// SDO block upload initiate
+    bool sendSdoRequest(quint8 cmd, quint8 &ackseq, quint8 blksize);                            // SDO block upload sub-block
+    bool sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segData);            // SDO block download sub-block
+    bool sendSdoRequest(quint8 cmd, quint16 &crc);                                              // SDO block download end
+    bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint32 error);             // SDO abort transfer
+
+    QVariant arrangeDataUpload(QByteArray, QMetaType::Type type);
+    void arrangeDataDownload(QDataStream &request, const QVariant &data);
+
+    enum CCS : quint8  // CCS : Client Command Specifier from Client to Server
+    {
+        SDO_CCS_CLIENT_DOWNLOAD_INITIATE = 0x20,// ccs:1
+        SDO_CCS_CLIENT_DOWNLOAD_SEGMENT = 0x00, // ccs:0
+        SDO_CCS_CLIENT_UPLOAD_INITIATE = 0x40,  // ccs:2 : initiate upload request
+        SDO_CCS_CLIENT_UPLOAD_SEGMENT = 0x60,   // ccs:3
+        SDO_CCS_CLIENT_BLOCK_DOWNLOAD = 0xC0,   // ccs:6
+        SDO_CCS_CLIENT_BLOCK_UPLOAD = 0xA0,     // ccs:5
+        SDO_CCS_CLIENT_ABORT = 0x80
+    };
+
+    enum SCS : quint8  // SCS : Server Command Specifier from Server to Client
+    {
+        SDO_SCS_SERVER_DOWNLOAD_INITIATE = 0x60,// scs:3
+        SDO_SCS_SERVER_DOWNLOAD_SEGMENT = 0x20, // scs:1
+        SDO_SCS_SERVER_UPLOAD_INITIATE = 0x40,  // scs:2
+        SDO_SCS_SERVER_UPLOAD_SEGMENT = 0x00,   // scs:0
+        SDO_SCS_SERVER_BLOCK_DOWNLOAD = 0xA0,   // scs:5
+        SDO_SCS_SERVER_BLOCK_UPLOAD = 0xC0,     // scs:6
+        SDO_SCS_CLIENT_ABORT = 0x80
+    };
+
+    enum CS : quint8   // cs: client subcommand
+    {
+        SDO_CCS_CLIENT_BLOCK_DOWNLOAD_CS_MASK = 0x1,    // Maks for cs: client subcommand
+        SDO_CCS_CLIENT_BLOCK_DOWNLOAD_CS_INIT_REQ = 0x0,// cs:0: initiate download request
+        SDO_CCS_CLIENT_BLOCK_DOWNLOAD_CS_END_REQ = 0x1, // cs:1: end block download request
+        SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_MASK = 0x3,      // Mask for cs: client subcommand
+        SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_INIT_REQ = 0x0,  // 0: initiate upload request
+        SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_END_REQ = 0x1,   // 1: end block upload request
+        SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_RESP = 0x2,      // 2: block upload response
+        SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_START = 0x3,     // 3: start upload
+    };
+
+    enum SS : quint8   // ss: server subcommand
+    {
+        SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_MASK = 0x3,        // ss :0: initiate download response
+        SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_INIT_RESP = 0x0,   // ss :0: initiate download response
+        SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_RESP = 0x2,        // ss :2: block download response
+        SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_END_RESP = 0x1,    // ss :1: end block download response
+        SDO_SCS_SERVER_BLOCK_UPLOAD_SS_INIT_RESP = 0x0,     // 0: initiate upload response
+        SDO_SCS_SERVER_BLOCK_UPLOAD_SS_END_RESP = 0x1       // 1: end block upload response
+    };
+
+    enum Flag :  quint8
+    {
+        SDO_E_MASK = 0x2,
+        SDO_E_NORMAL = 0x0,     // E: transfer type
+        SDO_E_EXPEDITED = 0x1,  // E: transfer type
+        SDO_S_MASK = 0x1,
+        SDO_S = 0x1,            // S : size indicator
+        SDO_C_MASK = 0x1,
+        SDO_C = 0x1             // C: indicates whether there are still more segments to be downloaded.
+    };
+
+    enum FlagBlock :  quint8
+    {
+        BLOCK_SIZE = 0x2, // s: size indicator
+        BLOCK_CRC = 0x04
+    };
+
 };
 
 #endif // SDO_H

@@ -211,6 +211,33 @@ void NodeSubIndex::clearValue()
 }
 
 /**
+ * @brief _error getter
+ * @return return sub-index value
+ */
+const quint32 &NodeSubIndex::error() const
+{
+    return _error;
+}
+
+/**
+ * @brief _error setter
+ * @param new sub-index value
+ */
+void NodeSubIndex::setError(const quint32 &error)
+{
+    _error = error;
+}
+
+/**
+ * @brief _error clear
+ * @param new sub-index value
+ */
+void NodeSubIndex::clearError()
+{
+    _error = 0;
+}
+
+/**
  * @brief _dataType getter
  * @return 16 bits sub-index data type code
  */

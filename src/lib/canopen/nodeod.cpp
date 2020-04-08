@@ -85,20 +85,32 @@ bool NodeOd::indexExist(quint16 key) const
     return _nodeIndexes.contains(key);
 }
 
-void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, const QVariant &value)
+void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, const QVariant &value, SDO::FlagsRequest flags)
 {
     if (indexExist(indexDevice))
     {
-        index(indexDevice)->subIndex(subindexDevice)->setValue(value);
+        if (flags != SDO::Error)
+        {
+            index(indexDevice)->subIndex(subindexDevice)->clearError();
+            index(indexDevice)->subIndex(subindexDevice)->setValue(value);
+        }
 
         quint32 key = (static_cast<quint32>(indexDevice) << 8) + subindexDevice;
-        notifySubscribers(key, indexDevice, subindexDevice, value);   // notify subscribers to index/subindex
+        notifySubscribers(key, indexDevice, subindexDevice, flags);   // notify subscribers to index/subindex
 
         key = (static_cast<quint32>(indexDevice) << 8) + 0xFFu;
-        notifySubscribers(key, indexDevice, subindexDevice, value);   // notify subscribers to index with all subindex
+        notifySubscribers(key, indexDevice, subindexDevice, flags);   // notify subscribers to index with all subindex
 
         key = (static_cast<quint32>(0xFFFFu) << 8) + 0xFFu;
-        notifySubscribers(key, indexDevice, subindexDevice, value);   // notify subscribers to the full od
+        notifySubscribers(key, indexDevice, subindexDevice, flags);   // notify subscribers to the full od
+    }
+}
+
+void NodeOd::setErrorObject(quint16 indexDevice, quint8 subindexDevice, quint32 error)
+{
+    if (indexExist(indexDevice))
+    {
+        index(indexDevice)->subIndex(subindexDevice)->setError(error);
     }
 }
 
