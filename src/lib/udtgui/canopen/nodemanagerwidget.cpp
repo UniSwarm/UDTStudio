@@ -171,10 +171,10 @@ void NodeManagerWidget::createWidgets()
     setLayout(layout);
 }
 
-void NodeManagerWidget::odNotify(const NodeObjectId &objId, const QVariant &value)
+void NodeManagerWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (objId.index == 0x1000 && objId.subIndex == 0x00)
     {
-        _index1000Label->setNum(value.toInt());
+        _index1000Label->setNum(flags);
     }
 }

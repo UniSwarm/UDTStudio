@@ -37,7 +37,7 @@ public:
 
     void parseFrame(const QCanBusFrame &frame) override;
 
-    void odNotify(const NodeObjectId &objId, const QVariant &value) override;
+    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 
     quint8 number() const;
 

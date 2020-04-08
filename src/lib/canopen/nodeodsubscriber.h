@@ -25,6 +25,8 @@
 #include <QSet>
 #include <QVariant>
 
+#include "services/sdo.h"
+
 class Node;
 
 class CANOPEN_EXPORT NodeOdSubscriber
@@ -33,7 +35,7 @@ public:
     NodeOdSubscriber();
     virtual ~NodeOdSubscriber();
 
-    void notifySubscriber(const NodeObjectId &objId, const QVariant &value);
+    void notifySubscriber(const NodeObjectId &objId, SDO::FlagsRequest flags);
 
     QList<NodeObjectId> objIdList() const;
 
@@ -48,7 +50,7 @@ protected:
     void registerIndex(quint16 index);
     void registerFullOd();
 
-    virtual void odNotify(const NodeObjectId &objId, const QVariant &value) =0;
+    virtual void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) =0;
 
 private:
     Node *_nodeInterrest;

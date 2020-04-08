@@ -77,7 +77,7 @@ public:
 
     // NodeOdSubscriber interface
 protected:
-    void odNotify(const NodeObjectId &objId, const QVariant &value) override;
+    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 
 protected:
     QModelIndex indexItem(quint16 index, int col);

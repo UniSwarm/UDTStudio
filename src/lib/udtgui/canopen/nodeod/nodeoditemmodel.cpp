@@ -295,11 +295,10 @@ QModelIndex NodeOdItemModel::subIndexItem(quint16 index, quint8 subindex, int co
     return createIndex(childSubIndex->row(), col, childSubIndex);
 }
 
-void NodeOdItemModel::odNotify(const NodeObjectId &objId, const QVariant &value)
+void NodeOdItemModel::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    Q_UNUSED(value)
-    Q_UNUSED(objId)
-    QModelIndex modelIndex = subIndexItem(objId.index, objId.subIndex, 3);
+    Q_UNUSED(flags)
+    QModelIndex modelIndex = subIndexItem(objId.index, objId.subIndex, Value);
     if (modelIndex.isValid())
     {
         emit dataChanged(modelIndex, modelIndex);

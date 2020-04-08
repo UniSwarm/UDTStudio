@@ -62,7 +62,7 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
     }
 }
 
-void TPDO::odNotify(const NodeObjectId &objId, const QVariant &value)
+void TPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if ((objId.index == _objectCommId) && objId.subIndex == 0x01 && (state == STATE_FREE))
     {
@@ -77,7 +77,7 @@ void TPDO::odNotify(const NodeObjectId &objId, const QVariant &value)
     }
     if ((objId.index == _objectMappingId) && (objId.subIndex != 0x00) && (state == STATE_DISABLE))
     {
-        if (value == SDO::FlagsRequest::Error)
+        if (flags == SDO::FlagsRequest::Error)
         {
             // TODO     QUOI FAIRE????
             state = STATE_FREE;
@@ -92,7 +92,7 @@ void TPDO::odNotify(const NodeObjectId &objId, const QVariant &value)
     }
     if ((objId.index == _objectMappingId) && (objId.subIndex == 0x00) && (state == STATE_MODIFY))
     {
-        if (value == SDO::FlagsRequest::Error)
+        if (flags == SDO::FlagsRequest::Error)
         {
             // TODO     QUOI FAIRE????
             state = STATE_FREE;

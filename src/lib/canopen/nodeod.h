@@ -76,7 +76,7 @@ private:
         quint8 notifySubIndex;
     };
     QMultiMap<quint32, Subscriber> _subscribers;
-    void notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySubIndex, const QVariant &value);
+    void notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySubIndex, SDO::FlagsRequest flags);
 };
 
 #endif // NODEOD_H

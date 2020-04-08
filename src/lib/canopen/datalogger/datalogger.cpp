@@ -52,7 +52,7 @@ DLData *DataLogger::data(const NodeObjectId &objId) const
     return _dataMap.value(objId.key());
 }
 
-void DataLogger::odNotify(const NodeObjectId &objId, const QVariant &value)
+void DataLogger::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    qDebug() << objId.nodeId << objId.index << objId.subIndex << value;
+    qDebug() << objId.nodeId << objId.index << objId.subIndex << flags;
 }

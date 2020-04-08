@@ -32,9 +32,9 @@ NodeOdSubscriber::~NodeOdSubscriber()
 {
 }
 
-void NodeOdSubscriber::notifySubscriber(const NodeObjectId &objId, const QVariant &value)
+void NodeOdSubscriber::notifySubscriber(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    this->odNotify(objId, value);
+    this->odNotify(objId, flags);
 }
 
 Node *NodeOdSubscriber::nodeInterrest() const
@@ -61,8 +61,7 @@ void NodeOdSubscriber::setNodeInterrest(Node *nodeInterrest)
             {
                 _nodeInterrest->nodeOd()->subscribe(this, objId.index, objId.subIndex);
 
-                const QVariant &value = _nodeInterrest->nodeOd()->value(objId.index, objId.subIndex);
-                this->odNotify(objId, value);
+                this->odNotify(objId, SDO::Read);
             }
         }
     }

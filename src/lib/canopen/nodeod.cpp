@@ -151,7 +151,7 @@ void NodeOd::createMandatoryObject()
     this->addIndex(identityObject);
 }
 
-void NodeOd::notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySubIndex, const QVariant &value)
+void NodeOd::notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySubIndex, SDO::FlagsRequest flags)
 {
     QList<Subscriber> interrestedSubscribers = _subscribers.values(key);
     QList<Subscriber>::const_iterator subscriber = interrestedSubscribers.cbegin();
@@ -159,7 +159,7 @@ void NodeOd::notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySu
     {
         NodeOdSubscriber *nodeOdSubscriber = (*subscriber).object;
         NodeObjectId objId(_node->busId(), _node->nodeId(), notifyIndex, notifySubIndex);
-        nodeOdSubscriber->notifySubscriber(objId,  value);
+        nodeOdSubscriber->notifySubscriber(objId,  flags);
         ++subscriber;
     }
 }

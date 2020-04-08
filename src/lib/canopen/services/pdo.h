@@ -37,7 +37,7 @@ public:
 
     virtual QString type() const = 0;
     virtual void parseFrame(const QCanBusFrame &frame) = 0;
-    void odNotify(const NodeObjectId &objId, const QVariant &value) = 0;
+    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) = 0;
 
 protected:
     enum StateMapping
