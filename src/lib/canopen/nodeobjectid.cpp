@@ -18,6 +18,11 @@
 
 #include "nodeobjectid.h"
 
+NodeObjectId::NodeObjectId()
+    : busId(0xFF), nodeId(0xFF), index(0xFFFF), subIndex(0xFF), dataType(QMetaType::Type::UnknownType)
+{
+}
+
 NodeObjectId::NodeObjectId(quint8 busId, quint8 nodeId, quint16 index, quint8 subIndex, QMetaType::Type dataType)
     : busId(busId), nodeId(nodeId), index(index), subIndex(subIndex), dataType(dataType)
 {
@@ -35,6 +40,14 @@ NodeObjectId::NodeObjectId(const NodeObjectId &other)
     index = other.index;
     subIndex = other.subIndex;
     dataType = other.dataType;
+}
+
+bool operator==(const NodeObjectId &a, const NodeObjectId &b)
+{
+    return (a.busId == b.busId
+            && a.nodeId == b.nodeId
+            && a.index == b.index
+            && a.subIndex == b.subIndex);
 }
 
 quint64 NodeObjectId::key() const
@@ -101,6 +114,15 @@ bool NodeObjectId::isASubIndex() const
     return false;
 }
 
+QString NodeObjectId::mimeData() const
+{
+    return QString("%1.%2.%3.%4")
+        .arg(QString::number(busId, 16).rightJustified(2, '0'))
+        .arg(QString::number(nodeId, 16).rightJustified(2, '0'))
+        .arg(QString::number(index, 16).rightJustified(2, '0'))
+        .arg(QString::number(subIndex, 16).rightJustified(2, '0'));
+}
+
 NodeObjectId &NodeObjectId::operator=(const NodeObjectId &other)
 {
     busId = other.busId;
@@ -109,12 +131,4 @@ NodeObjectId &NodeObjectId::operator=(const NodeObjectId &other)
     subIndex = other.subIndex;
     dataType = other.dataType;
     return *this;
-}
-
-bool operator==(const NodeObjectId &a, const NodeObjectId &b)
-{
-    return (a.busId == b.busId
-           && a.nodeId == b.nodeId
-           && a.index == b.index
-           && a.subIndex == b.subIndex);
 }

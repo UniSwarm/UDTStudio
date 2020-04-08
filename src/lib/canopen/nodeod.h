@@ -37,6 +37,8 @@ public:
     NodeOd(Node *node);
     virtual ~NodeOd();
 
+    Node *node() const;
+
     const QMap<quint16, NodeIndex *> &indexes() const;
     NodeIndex *index(quint16 index) const;
     void addIndex(NodeIndex *index);

@@ -4,7 +4,9 @@
 #include "canopen_global.h"
 
 #include "nodesubindex.h"
+#include "nodeobjectid.h"
 
+class Node;
 class NodeOd;
 
 class CANOPEN_EXPORT NodeIndex
@@ -13,6 +15,12 @@ public:
     NodeIndex(const quint16 &index);
     NodeIndex(const NodeIndex &other);
     ~NodeIndex();
+
+    quint8 busId() const;
+    quint8 nodeId() const;
+    Node *node() const;
+    NodeOd *nodeOd() const;
+    NodeObjectId objectId() const;
 
     quint16 index() const;
     void setIndex(const quint16 &index);
@@ -32,11 +40,11 @@ public:
         ARRAY = 0x08,
         RECORD = 0x09
     };
-
     ObjectType objectType() const;
     void setObjectType(const ObjectType &objectType);
     static QString objectTypeStr(const ObjectType &objectType);
 
+    // =========== Sub indexes ====================
     const QMap<quint8, NodeSubIndex *> &subIndexes() const;
     NodeSubIndex *subIndex(quint8 subIndex) const;
     void addSubIndex(NodeSubIndex *subIndex);

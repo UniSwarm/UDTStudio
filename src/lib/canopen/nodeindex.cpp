@@ -1,4 +1,7 @@
 #include "nodeindex.h"
+
+#include "node.h"
+#include "nodeod.h"
 #include "nodesubindex.h"
 
 NodeIndex::NodeIndex(const quint16 &index)
@@ -25,6 +28,43 @@ NodeIndex::NodeIndex(const NodeIndex &other)
 NodeIndex::~NodeIndex()
 {
     qDeleteAll(_nodeSubIndexes);
+}
+
+quint8 NodeIndex::busId() const
+{
+    if (_nodeOd)
+    {
+        return _nodeOd->node()->busId();
+    }
+    return 0xFF;
+}
+
+quint8 NodeIndex::nodeId() const
+{
+    if (_nodeOd)
+    {
+        return _nodeOd->node()->nodeId();
+    }
+    return 0xFF;
+}
+
+Node *NodeIndex::node() const
+{
+    if (_nodeOd)
+    {
+        return _nodeOd->node();
+    }
+    return nullptr;
+}
+
+NodeOd *NodeIndex::nodeOd() const
+{
+    return _nodeOd;
+}
+
+NodeObjectId NodeIndex::objectId() const
+{
+    return NodeObjectId(busId(), nodeId(), _index, 0xFF);
 }
 
 quint16 NodeIndex::index() const

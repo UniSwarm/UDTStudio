@@ -36,6 +36,11 @@ NodeOd::~NodeOd()
     _nodeIndexes.clear();
 }
 
+Node *NodeOd::node() const
+{
+    return _node;
+}
+
 /**
  * @brief returns the value associated with the key index
  * @param index

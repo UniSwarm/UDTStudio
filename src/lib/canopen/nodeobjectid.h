@@ -22,13 +22,16 @@
 #include "canopen_global.h"
 
 #include <QMetaType>
+#include <QString>
 
 class CANOPEN_EXPORT NodeObjectId
 {
 public:
+    NodeObjectId();
     NodeObjectId(quint8 busId, quint8 nodeId, quint16 index, quint8 subIndex, QMetaType::Type dataType = QMetaType::Type::UnknownType);
     NodeObjectId(quint16 index, quint8 subIndex, QMetaType::Type dataType = QMetaType::Type::UnknownType);
     NodeObjectId(const NodeObjectId &other);
+    NodeObjectId &operator=(const NodeObjectId &other);
 
     quint8 busId;
     quint8 nodeId;
@@ -44,7 +47,7 @@ public:
     bool isAnIndex() const;
     bool isASubIndex() const;
 
-    NodeObjectId &operator=(const NodeObjectId &other);
+    QString mimeData() const;
 };
 
 bool operator==(const NodeObjectId &a, const NodeObjectId &b);

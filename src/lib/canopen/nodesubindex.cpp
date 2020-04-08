@@ -36,9 +36,40 @@ NodeSubIndex::~NodeSubIndex()
 {
 }
 
-NodeIndex *NodeSubIndex::nodeIndex() const
+quint8 NodeSubIndex::busId() const
 {
-    return _nodeIndex;
+    if (_nodeIndex)
+    {
+        return _nodeIndex->busId();
+    }
+    return 0xFF;
+}
+
+quint8 NodeSubIndex::nodeId() const
+{
+    if (_nodeIndex)
+    {
+        return _nodeIndex->nodeId();
+    }
+    return 0xFF;
+}
+
+Node *NodeSubIndex::node() const
+{
+    if (_nodeIndex)
+    {
+        return _nodeIndex->node();
+    }
+    return nullptr;
+}
+
+NodeOd *NodeSubIndex::nodeOd() const
+{
+    if (_nodeIndex)
+    {
+        return _nodeIndex->nodeOd();
+    }
+    return nullptr;
 }
 
 quint16 NodeSubIndex::index() const
@@ -47,7 +78,17 @@ quint16 NodeSubIndex::index() const
     {
         return _nodeIndex->index();
     }
-    return 0;
+    return 0xFFFF;
+}
+
+NodeIndex *NodeSubIndex::nodeIndex() const
+{
+    return _nodeIndex;
+}
+
+NodeObjectId NodeSubIndex::objectId() const
+{
+    return NodeObjectId(busId(), nodeId(), index(), _subIndex);
 }
 
 /**

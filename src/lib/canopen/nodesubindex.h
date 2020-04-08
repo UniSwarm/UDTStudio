@@ -6,6 +6,10 @@
 #include <QVariant>
 #include <QTime>
 
+#include "nodeobjectid.h"
+
+class Node;
+class NodeOd;
 class NodeIndex;
 
 class CANOPEN_EXPORT NodeSubIndex
@@ -15,9 +19,14 @@ public:
     NodeSubIndex(const NodeSubIndex &other);
     ~NodeSubIndex();
 
-    NodeIndex *nodeIndex() const;
-
+    quint8 busId() const;
+    quint8 nodeId() const;
+    Node *node() const;
+    NodeOd *nodeOd() const;
     quint16 index() const;
+    NodeIndex *nodeIndex() const;
+    NodeObjectId objectId() const;
+
     quint8 subIndex() const;
     void setSubIndex(const quint8 &subIndex);
 
