@@ -319,13 +319,15 @@ QMimeData *NodeOdItemModel::mimeData(const QModelIndexList &indexes) const
 
     foreach (QModelIndex index, indexes)
     {
-        if (index.isValid())
+        if (index.isValid() && index.column() == OdIndex)
         {
-            QString text = data(index, Qt::DisplayRole).toString();
-            encodedData.append(text + ":");
+            NodeOdItem *item = static_cast<NodeOdItem *>(index.internalPointer());
+            if (item->type() == NodeOdItem::TIndex || item->type() == NodeOdItem::TSubIndex)
+            {
+                encodedData.append(item->mimeData() + ":");
+            }
         }
     }
-
     mimeData->setData("index/subindex", encodedData);
     return mimeData;
 }
@@ -356,24 +358,16 @@ bool NodeOdItemModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction act
         return false;
     }
 
-    if (!parent.isValid())
-    {
-        /*NodeObjectId nodeObjectId = QString(mimeData->data("index/subindex")).split(':');
-        foreach (QString flowName, flowsName)
-        {
-            // TODO
-            qDebug() << "dropMimeData" <<
-        }mimeData->data("index/subindex");*/
-    }
+    // TODO
     return true;
 }
 
 Qt::DropActions NodeOdItemModel::supportedDropActions() const
 {
-    return Qt::MoveAction;
+    return Qt::MoveAction | Qt::CopyAction;
 }
 
 Qt::DropActions NodeOdItemModel::supportedDragActions() const
 {
-    return Qt::MoveAction;
+    return Qt::MoveAction | Qt::CopyAction;
 }

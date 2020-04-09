@@ -53,6 +53,9 @@ public:
     NodeOdItem *childIndex(quint16 index) const;
     int row() const;
 
+    NodeObjectId objectId() const;
+    QString mimeData() const;
+
 protected:
     Type _type;
 

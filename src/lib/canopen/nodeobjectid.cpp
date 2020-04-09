@@ -18,6 +18,9 @@
 
 #include "nodeobjectid.h"
 
+#include <QDebug>
+#include <QStringList>
+
 NodeObjectId::NodeObjectId()
     : busId(0xFF), nodeId(0xFF), index(0xFFFF), subIndex(0xFF), dataType(QMetaType::Type::UnknownType)
 {
@@ -123,6 +126,21 @@ QString NodeObjectId::mimeData() const
         .arg(QString::number(subIndex, 16).rightJustified(2, '0'));
 }
 
+NodeObjectId NodeObjectId::fromMimeData(const QString mimeData)
+{
+    const QStringList fields = mimeData.split('.', QString::SkipEmptyParts);
+    if (fields.count() < 4)
+    {
+        return NodeObjectId();
+    }
+
+    bool ok;
+    return NodeObjectId(static_cast<quint8>(fields[0].toUShort(&ok, 16)),
+                        static_cast<quint8>(fields[1].toUShort(&ok, 16)),
+                        fields[2].toUShort(&ok, 16),
+                        static_cast<quint8>(fields[3].toUShort(&ok, 16)));
+}
+
 NodeObjectId &NodeObjectId::operator=(const NodeObjectId &other)
 {
     busId = other.busId;
@@ -131,4 +149,11 @@ NodeObjectId &NodeObjectId::operator=(const NodeObjectId &other)
     subIndex = other.subIndex;
     dataType = other.dataType;
     return *this;
+}
+
+QDebug operator<<(QDebug debug, const NodeObjectId &c)
+{
+    QDebugStateSaver saver(debug);
+    debug.nospace() << '(' << c.mimeData() << ')';
+    return debug;
 }

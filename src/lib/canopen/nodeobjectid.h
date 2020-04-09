@@ -48,8 +48,10 @@ public:
     bool isASubIndex() const;
 
     QString mimeData() const;
+    static NodeObjectId fromMimeData(const QString mimeData);
 };
 
 bool operator==(const NodeObjectId &a, const NodeObjectId &b);
+QDebug operator<<(QDebug debug, const NodeObjectId &c);
 
 #endif // NODEOBJECTID_H

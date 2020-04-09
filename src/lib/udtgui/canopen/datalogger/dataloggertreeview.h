@@ -35,9 +35,6 @@ public:
     DataLogger *dataLogger() const;
     void setDataLogger(DataLogger *dataLogger);
 
-public slots:
-    void setFilter(const QString filterText);
-
 protected:
     DataLoggerModel *_loggerModel;
 };

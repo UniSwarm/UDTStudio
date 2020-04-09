@@ -17,6 +17,7 @@
  **/
 
 #include <QDebug>
+#include <QMimeData>
 
 #include "dataloggermodel.h"
 
@@ -138,11 +139,20 @@ int DataLoggerModel::rowCount(const QModelIndex &parent) const
     return 0;
 }
 
+bool DataLoggerModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    return false;
+}
+
 Qt::ItemFlags DataLoggerModel::flags(const QModelIndex &index) const
 {
-    if (!index.isValid())
+    if (!_dataLogger)
     {
         return Qt::NoItemFlags;
+    }
+    if (!index.isValid())
+    {
+        return Qt::ItemIsDropEnabled;
     }
 
     Qt::ItemFlags flags;
@@ -150,4 +160,73 @@ Qt::ItemFlags DataLoggerModel::flags(const QModelIndex &index) const
     flags.setFlag(Qt::ItemIsSelectable, true);
     flags.setFlag(Qt::ItemIsEnabled, true);
     return flags;
+}
+
+QStringList DataLoggerModel::mimeTypes() const
+{
+    QStringList types;
+    types << "index/subindex";
+    return types;
+}
+
+QMimeData *DataLoggerModel::mimeData(const QModelIndexList &indexes) const
+{
+    QMimeData *mimeData = new QMimeData();
+    QByteArray encodedData;
+
+    foreach (QModelIndex index, indexes)
+    {
+        if (index.isValid() && index.column() == Node)
+        {
+            const DLData *dlData = _dataLogger->dataList().at(index.row());
+            encodedData.append(dlData->objectId().mimeData() + ":");
+        }
+    }
+    mimeData->setData("index/subindex", encodedData);
+    return mimeData;
+}
+
+bool DataLoggerModel::canDropMimeData(const QMimeData *mimeData, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
+{
+    Q_UNUSED(action)
+    Q_UNUSED(row)
+    Q_UNUSED(column)
+    Q_UNUSED(parent)
+    if (mimeData->hasFormat("index/subindex"))
+    {
+        return true;
+    }
+    return false;
+}
+
+bool DataLoggerModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+    Q_UNUSED(row)
+    Q_UNUSED(column)
+    Q_UNUSED(parent)
+    if (action == Qt::IgnoreAction)
+    {
+        return true;
+    }
+    if (mimeData->hasFormat("index/subindex"))
+    {
+        const QStringList &stringListObjId = QString(mimeData->data("index/subindex")).split(':', QString::SkipEmptyParts);
+        for (const QString &stringObjId : stringListObjId)
+        {
+            NodeObjectId objId = NodeObjectId::fromMimeData(stringObjId);
+            _dataLogger->addData(objId);
+        }
+        return true;
+    }
+    return false;
+}
+
+Qt::DropActions DataLoggerModel::supportedDropActions() const
+{
+    return Qt::MoveAction | Qt::CopyAction;
+}
+
+Qt::DropActions DataLoggerModel::supportedDragActions() const
+{
+    return Qt::MoveAction | Qt::CopyAction;
 }

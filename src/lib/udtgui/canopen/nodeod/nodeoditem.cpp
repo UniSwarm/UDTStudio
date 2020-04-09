@@ -338,6 +338,45 @@ int NodeOdItem::row() const
     return _parent->_children.indexOf(const_cast<NodeOdItem *>(this));
 }
 
+NodeObjectId NodeOdItem::objectId() const
+{
+    switch (_type)
+    {
+    case NodeOdItem::TOD:
+        return NodeObjectId(_od->node()->busId(), _od->node()->nodeId(), 0xFFFF, 0xFF);
+
+    case NodeOdItem::TIndex:
+        return _index->objectId();
+
+    case NodeOdItem::TSubIndex:
+        return _subIndex->objectId();
+    }
+    return NodeObjectId();
+}
+
+QString NodeOdItem::mimeData() const
+{
+    switch (_type)
+    {
+    case NodeOdItem::TOD:
+        return QString();
+
+    case NodeOdItem::TIndex:
+        if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
+        {
+            return _index->subIndex(0)->objectId().mimeData();
+        }
+        else
+        {
+            return _index->objectId().mimeData();
+        }
+
+    case NodeOdItem::TSubIndex:
+        return _subIndex->objectId().mimeData();
+    }
+    return QString();
+}
+
 void NodeOdItem::addChild(quint16 index, NodeOdItem *child)
 {
     _children.append(child);
