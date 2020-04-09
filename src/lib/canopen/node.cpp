@@ -181,6 +181,15 @@ void Node::sendResetNode()
     _nmt->sendResetNode();
 }
 
+void Node::setBus(CanOpenBus *bus)
+{
+    _bus = bus;
+    for (Service *service : _services)
+    {
+        service->setBus(bus);
+    }
+}
+
 void Node::readObject(const NodeObjectId &id)
 {
     readObject(id.index, id.subIndex, id.dataType);

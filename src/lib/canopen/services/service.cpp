@@ -34,6 +34,11 @@ Service::~Service()
 {
 }
 
+void Service::setBus(CanOpenBus *bus)
+{
+    _bus = bus;
+}
+
 const QList<quint32> &Service::cobIds() const
 {
     return _cobIds;

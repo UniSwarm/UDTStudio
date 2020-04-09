@@ -37,6 +37,8 @@ public:
     Service(Node *node);
     virtual ~Service();
 
+    virtual void setBus(CanOpenBus *bus);
+
     virtual QString type() const = 0;
 
     virtual void parseFrame(const QCanBusFrame &frame) = 0;

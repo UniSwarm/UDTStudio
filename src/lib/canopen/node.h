@@ -74,6 +74,7 @@ public slots:
 
 protected:
     friend class CanOpenBus;
+    void setBus(CanOpenBus *bus);
     CanOpenBus *_bus;
 
     quint8 _nodeId;

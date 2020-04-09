@@ -111,10 +111,10 @@ bool CanOpenBus::existNode(quint8 nodeId)
 
 void CanOpenBus::addNode(Node *node)
 {
-    node->_bus = this;
     _nodes.append(node);
     _nodesMap.insert(node->nodeId(), node);
 
+    node->setBus(this);
     for (Service *service : node->services())
     {
         _serviceDispatcher->addService(service);
