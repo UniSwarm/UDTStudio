@@ -26,8 +26,9 @@
 #include "dldata.h"
 #include <QMap>
 
-class CANOPEN_EXPORT DataLogger : public NodeOdSubscriber
+class CANOPEN_EXPORT DataLogger : public QObject, public NodeOdSubscriber
 {
+    Q_OBJECT
 public:
     DataLogger();
 
@@ -40,9 +41,20 @@ public:
 protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 
+signals:
+    void dataListChanged();
+
+public slots:
+    void start(int ms);
+    void stop();
+
+protected slots:
+    void readData();
+
 protected:
     QMap<quint64, DLData *> _dataMap;
     QList<DLData *> _dataList;
+    QTimer _timer;
 };
 
 #endif // DATALOGGER_H

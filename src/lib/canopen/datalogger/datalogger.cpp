@@ -22,6 +22,8 @@
 
 DataLogger::DataLogger()
 {
+    connect(&_timer, &QTimer::timeout, this, &DataLogger::readData);
+    start(500);
 }
 
 void DataLogger::addData(const NodeObjectId &objId)
@@ -35,6 +37,8 @@ void DataLogger::addData(const NodeObjectId &objId)
     _dataMap.insert(data->key(), data);
     _dataList.append(data);
     registerObjId(data->objectId());
+
+    emit dataListChanged();
 }
 
 QList<DLData *> &DataLogger::dataList()
@@ -54,5 +58,31 @@ DLData *DataLogger::data(const NodeObjectId &objId) const
 
 void DataLogger::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    qDebug() << objId.nodeId << objId.index << objId.subIndex << flags;
+    DLData *dlData = data(objId);
+    if (!dlData)
+    {
+        return;
+    }
+
+    const QVariant &value = dlData->node()->nodeOd()->value(dlData->objectId());
+    const QDateTime &dateTime = dlData->node()->nodeOd()->lastModification(dlData->objectId());
+    dlData->appendData(value.toDouble(), dateTime);
+}
+
+void DataLogger::start(int ms)
+{
+    _timer.start(ms);
+}
+
+void DataLogger::stop()
+{
+    _timer.stop();
+}
+
+void DataLogger::readData()
+{
+    for (DLData *dlData : _dataList)
+    {
+        dlData->node()->readObject(dlData->objectId());
+    }
 }

@@ -34,9 +34,14 @@ public:
     quint64 key() const;
     Node *node() const;
 
+    void appendData(double value, const QDateTime &dateTime);
+
 protected:
     NodeObjectId _objectId;
     Node *_node;
+
+    QList <double> _values;
+    QList <QDateTime> _times;
 };
 
 #endif // DLDATA_H

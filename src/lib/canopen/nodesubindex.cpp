@@ -197,7 +197,7 @@ const QVariant &NodeSubIndex::value() const
 void NodeSubIndex::setValue(const QVariant &value)
 {
     _value.setValue(value);
-    _lastModification = QTime().currentTime();
+    _lastModification = QDateTime().currentDateTime();
 }
 
 /**
@@ -207,7 +207,7 @@ void NodeSubIndex::setValue(const QVariant &value)
 void NodeSubIndex::clearValue()
 {
     _value.clear();
-    _lastModification = QTime().currentTime();
+    _lastModification = QDateTime().currentDateTime();
 }
 
 /**
@@ -466,7 +466,7 @@ int NodeSubIndex::byteLength() const
     return 0;
 }
 
-const QTime &NodeSubIndex::lastModification() const
+const QDateTime &NodeSubIndex::lastModification() const
 {
     return _lastModification;
 }

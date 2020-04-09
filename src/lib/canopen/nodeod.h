@@ -57,6 +57,9 @@ public:
     QVariant value(const NodeObjectId &id);
     QVariant value(quint16 index, quint8 subIndex = 0x00);
 
+    QDateTime lastModification(const NodeObjectId &id);
+    QDateTime lastModification(quint16 index, quint8 subIndex = 0x00);
+
     void subscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex);
     void unsubscribe(NodeOdSubscriber *object);
 

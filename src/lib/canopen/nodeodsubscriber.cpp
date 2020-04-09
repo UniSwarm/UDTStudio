@@ -125,14 +125,11 @@ void NodeOdSubscriber::registerKey(const NodeObjectId &objId)
     }
     else
     {
-        CanOpenBus *bus = CanOpen::bus(objId.busId);
-        if (!bus)
+        Node *node = objId.node();
+        if (node)
         {
-            return;
+            NodeOd *nodeOd = node->nodeOd();
+            nodeOd->subscribe(this, objId.index, objId.subIndex);
         }
-        Node *node = bus->node(objId.busId);
-        NodeOd *nodeOd = node->nodeOd();
-
-        nodeOd->subscribe(this, objId.index, objId.subIndex);
     }
 }

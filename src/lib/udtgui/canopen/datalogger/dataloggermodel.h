@@ -42,6 +42,9 @@ public:
         ColumnCount
     };
 
+protected slots:
+    void updateDataLoggerList();
+
     // QAbstractItemModel interface
 public:
     int columnCount(const QModelIndex &parent) const override;

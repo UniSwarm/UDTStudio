@@ -24,6 +24,11 @@
 #include <QMetaType>
 #include <QString>
 
+class CanOpenBus;
+class Node;
+class NodeIndex;
+class NodeSubIndex;
+
 class CANOPEN_EXPORT NodeObjectId
 {
 public:
@@ -46,6 +51,11 @@ public:
     bool isANode() const;
     bool isAnIndex() const;
     bool isASubIndex() const;
+
+    CanOpenBus *bus() const;
+    Node *node() const;
+    NodeIndex *nodeIndex() const;
+    NodeSubIndex *nodeSubIndex() const;
 
     QString mimeData() const;
     static NodeObjectId fromMimeData(const QString mimeData);

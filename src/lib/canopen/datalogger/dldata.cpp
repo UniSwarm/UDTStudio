@@ -27,7 +27,7 @@ DLData::DLData(const NodeObjectId &objectId)
     CanOpenBus *bus = CanOpen::bus(objectId.busId);
     if (bus)
     {
-        _node = bus->node(objectId.busId);
+        _node = bus->node(objectId.nodeId);
     }
 }
 
@@ -44,4 +44,10 @@ quint64 DLData::key() const
 Node *DLData::node() const
 {
     return _node;
+}
+
+void DLData::appendData(double value, const QDateTime &dateTime)
+{
+    _values.append(value);
+    _times.append(dateTime);
 }

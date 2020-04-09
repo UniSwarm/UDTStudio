@@ -102,7 +102,7 @@ public:
 
     int byteLength() const;
 
-    const QTime &lastModification() const;
+    const QDateTime &lastModification() const;
 
 private:
     friend class NodeIndex;
@@ -121,7 +121,7 @@ private:
     QVariant _lowLimit;
     QVariant _highLimit;
 
-    QTime _lastModification;
+    QDateTime _lastModification;
 };
 
 #endif // NODESUBINDEX_H

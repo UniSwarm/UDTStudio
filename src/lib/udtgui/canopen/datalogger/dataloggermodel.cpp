@@ -39,8 +39,18 @@ DataLogger *DataLoggerModel::dataLogger() const
 void DataLoggerModel::setDataLogger(DataLogger *dataLogger)
 {
     emit layoutAboutToBeChanged();
+
+    if (dataLogger != _dataLogger)
+    {
+        connect(dataLogger, &DataLogger::dataListChanged, this, &DataLoggerModel::updateDataLoggerList);
+    }
     _dataLogger = dataLogger;
     emit layoutChanged();
+}
+
+void DataLoggerModel::updateDataLoggerList()
+{
+    setDataLogger(_dataLogger);
 }
 
 int DataLoggerModel::columnCount(const QModelIndex &parent) const
@@ -97,7 +107,7 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
             return QVariant(QString("0x%1").arg(QString::number(dlData->objectId().index, 16)));
 
         case SubIndex:
-            return QVariant(QString("0x%1").arg(QString::number(dlData->objectId().index, 16)));
+            return QVariant(QString("0x%1").arg(QString::number(dlData->objectId().subIndex, 16)));
 
         default:
             return QVariant();

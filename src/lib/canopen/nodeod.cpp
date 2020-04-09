@@ -252,6 +252,28 @@ QVariant NodeOd::value(quint16 index, quint8 subIndex)
     return nodeSubIndex->value();
 }
 
+QDateTime NodeOd::lastModification(const NodeObjectId &id)
+{
+    return lastModification(id.index, id.subIndex);
+}
+
+QDateTime NodeOd::lastModification(quint16 index, quint8 subIndex)
+{
+    NodeIndex *nodeIndex = this->index(index);
+    if (!nodeIndex)
+    {
+        return QDateTime();
+    }
+
+    NodeSubIndex *nodeSubIndex = nodeIndex->subIndex(subIndex);
+    if (!nodeSubIndex)
+    {
+        return QDateTime();
+    }
+
+    return nodeSubIndex->lastModification();
+}
+
 void NodeOd::subscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex)
 {
     Subscriber subscriber;

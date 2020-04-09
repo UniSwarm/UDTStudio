@@ -21,6 +21,8 @@
 #include <QDebug>
 #include <QStringList>
 
+#include "canopen.h"
+
 NodeObjectId::NodeObjectId()
     : busId(0xFF), nodeId(0xFF), index(0xFFFF), subIndex(0xFF), dataType(QMetaType::Type::UnknownType)
 {
@@ -65,7 +67,7 @@ quint64 NodeObjectId::key() const
 
 bool NodeObjectId::isValid() const
 {
-    if (busId == 0xFF && nodeId == 0xFF)
+    if (busId != 0xFF && nodeId != 0xFF && index != 0xFFFF && subIndex != 0xFF)
     {
         return true;
     }
@@ -115,6 +117,72 @@ bool NodeObjectId::isASubIndex() const
         return true;
     }
     return false;
+}
+
+CanOpenBus *NodeObjectId::bus() const
+{
+    if (!isABus())
+    {
+        return nullptr;
+    }
+    return CanOpen::bus(busId);
+}
+
+Node *NodeObjectId::node() const
+{
+    if (busId == 0xFF || nodeId == 0xFF)
+    {
+        return nullptr;
+    }
+    CanOpenBus *bus = CanOpen::bus(busId);
+    if (!bus)
+    {
+        return nullptr;
+    }
+    return bus->node(nodeId);
+}
+
+NodeIndex *NodeObjectId::nodeIndex() const
+{
+    if (busId == 0xFF || nodeId == 0xFF || index == 0xFFFF)
+    {
+        return nullptr;
+    }
+    CanOpenBus *bus = CanOpen::bus(busId);
+    if (!bus)
+    {
+        return nullptr;
+    }
+    Node *node = bus->node(nodeId);
+    if (!node)
+    {
+        return nullptr;
+    }
+    return node->nodeOd()->index(index);
+}
+
+NodeSubIndex *NodeObjectId::nodeSubIndex() const
+{
+    if (busId == 0xFF || nodeId == 0xFF || index == 0xFFFF || subIndex == 0xFF)
+    {
+        return nullptr;
+    }
+    CanOpenBus *bus = CanOpen::bus(busId);
+    if (!bus)
+    {
+        return nullptr;
+    }
+    Node *node = bus->node(nodeId);
+    if (!node)
+    {
+        return nullptr;
+    }
+    NodeIndex *nodeIndex = node->nodeOd()->index(index);
+    if (!nodeIndex)
+    {
+        return nullptr;
+    }
+    return nodeIndex->subIndex(subIndex);
 }
 
 QString NodeObjectId::mimeData() const

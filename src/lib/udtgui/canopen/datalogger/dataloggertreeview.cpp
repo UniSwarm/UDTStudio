@@ -31,10 +31,10 @@ DataLoggerTreeView::DataLoggerTreeView(QWidget *parent)
     setModel(_loggerModel);
 
     int w0 = QFontMetrics(font()).horizontalAdvance("0");
-    header()->resizeSection(0, 12 * w0);
-    header()->resizeSection(1, 40 * w0);
-    header()->resizeSection(2, 12 * w0);
-    header()->resizeSection(3, 20 * w0);
+    header()->resizeSection(0, 16 * w0);
+    header()->resizeSection(1, 8 * w0);
+    header()->resizeSection(2, 8 * w0);
+    header()->resizeSection(3, 12 * w0);
 
     setSelectionMode(QAbstractItemView::SingleSelection);
     setDragEnabled(true);
