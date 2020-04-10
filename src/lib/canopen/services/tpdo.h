@@ -37,11 +37,26 @@ public:
 
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 
+    virtual void setBus(CanOpenBus *bus) override;
+
     quint8 number() const;
+
+    enum TransmissionType
+    {
+        TPDO_ACYCLIC = 0x00u, // synchronou,s (acyclic)
+        TPDO_CYCLIC_MIN = 0x01u, // synchronou,s (cyclic every sync)
+        TPDO_CYCLIC_MAX = 0xF0u, // synchronou,s (cyclic every 240 th SYNC)
+        TPDO_RTR_SYNC = 0xFCu, // RTR-only (synchronou,s)
+        TPDO_RTR_EVENT = 0xFDu, // RTR-only (event-driven)
+        TPDO_EVENT_MS = 0xFEu, // event-driven (manufacturer-specific)
+        TPDO_EVENT_DP = 0xFFu // event-driven (device profile and application profile specific)
+    };
+
+    void setCommParam(PDO_conf &conf);
 
 private:
     void receiveSync();
-    QVariant arrangeData(QByteArray data, QMetaType::Type type);
+    QVariant convertQByteArrayToQVariant(QByteArray data, QMetaType::Type type);
 };
 
 #endif // TPDO_H

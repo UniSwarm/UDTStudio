@@ -39,30 +39,22 @@ public:
 
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 
+    virtual void setBus(CanOpenBus *bus) override;
+
     quint8 number() const;
 
     enum TransmissionType
     {
-        RPDO_TRM_TYPE_SYNC_MIN = 0x00u, // synchronous (acyclic)
-        RPDO_TRM_TYPE_SYNC_MAX = 0xF0u, // synchronous (cyclic every 240 th SYNC)
-        RPDO_TRM_TYPE_EVENT_MS = 0xFEu, // event-driven (manufacturer-specific)
-        RPDO_TRM_TYPE_EVENT_DP = 0xFFu // event-driven (device profile and application profile specific)
+        RPDO_SYNC_MIN = 0x00u, // synchronous (acyclic)
+        RPDO_SYNC_MAX = 0xF0u, // synchronous (cyclic every 240 th SYNC)
+        RPDO_EVENT_MS = 0xFEu, // event-driven (manufacturer-specific)
+        RPDO_EVENT_DP = 0xFFu // event-driven (device profile and application profile specific)
     };
 
-    void setTransmissionType(RPDO::TransmissionType type);
-    void setEventTimer();
-    void setInhibitTime();
-    void setSyncStartValue();
+    void setCommParam(PDO_conf &conf);
 
 private:
-    struct RPDO_
-    {
-        quint16 notifyIndex;
-        quint8 notifySubIndex;
-        QByteArray data;
-    };
-
-    RPDO_ *_rpdo;
+    QByteArray data;
 
     void receiveSync();
     void saveData();

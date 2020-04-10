@@ -110,7 +110,7 @@ void SDO::processingFrameFromServer(const QCanBusFrame &frame)
         return;
     }
 
-    quint8 scs = static_cast<quint8>SDO_SCS(frame.payload());
+    quint8 scs = static_cast<quint8> SDO_SCS(frame.payload());
 
     _timer->stop();
     switch (scs)
@@ -243,6 +243,15 @@ qint32 SDO::sdoUploadInitiate(const QCanBusFrame &frame)
     quint8 transferType = (static_cast<quint8>(frame.payload().at(0) & Flag::SDO_E_MASK)) >> 1;
     quint8 sizeIndicator = static_cast<quint8>(frame.payload().at(0) & Flag::SDO_S_MASK);
     quint8 cmd = 0;
+    quint16 index = SDO_INDEX(frame.payload());
+    quint8 subindex = SDO_SUBINDEX(frame.payload());
+
+    if ((index != _request->index) || (subindex != _request->subIndex))
+    {
+        // ABORT
+        errorManagement(CO_SDO_ABORT_CODE_CMD_NOT_VALID);
+        return 1;
+    }
 
     if (transferType == Flag::SDO_E_EXPEDITED)
     {

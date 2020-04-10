@@ -31,15 +31,13 @@ TPDO::TPDO(Node *node, quint8 number)
     _cobIds.append(_cobId);
     _objectCommId = 0x1800 + _number;
     _objectMappingId = 0x1A00 + _number;
-    state = STATE_FREE;
 
-    registerObjId({_objectCommId, 0x01});
+    registerObjId({_objectCommId, 255});
     registerObjId({_objectMappingId, 255});
+    registerObjId({0x4000, 255});
     setNodeInterrest(node);
 
-    createListObjectMapped();
-
-    // connect(node->bus()->sync(), &Sync::syncEmitted, this, &TPDO::receiveSync);
+    _objectCommList = {{_objectCommId, 0x1}, {_objectCommId, 0x2}, {_objectCommId, 0x3}, {_objectCommId, 0x5}, {_objectCommId, 0x6}};
 }
 
 QString TPDO::type() const
@@ -51,61 +49,33 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
 {
     quint8 offset = 0;
 
-    for (quint8 i = 0; i < _objectMapped.size(); i++)
+    for (quint8 i = 0; i < _objectCurrentMapped.size(); i++)
     {
-        QByteArray data = frame.payload().mid(offset, QMetaType::sizeOf(_objectMapped.at(i).dataType));
+        QByteArray data = frame.payload().mid(offset, QMetaType::sizeOf(_objectCurrentMapped.at(i).dataType));
+        QVariant vata = convertQByteArrayToQVariant(data, _objectCurrentMapped.at(i).dataType);
 
-        QVariant vata = arrangeData(data, _objectMapped.at(i).dataType);
-        _nodeOd->index(_objectMapped.at(i).index)->subIndex(_objectMapped.at(i).subIndex)->setValue(vata);
-
-        offset += QMetaType::sizeOf(_objectMapped.at(i).dataType);
+        _nodeOd->updateObjectFromDevice(_objectCurrentMapped.at(i).index, _objectCurrentMapped.at(i).subIndex, vata, SDO::FlagsRequest::Pdo);
+        offset += QMetaType::sizeOf(_objectCurrentMapped.at(i).dataType);
     }
 }
 
 void TPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if ((objId.index == _objectCommId) && objId.subIndex == 0x01 && (state == STATE_FREE))
+    if (statusPdo == STATE_READ)
     {
-        state = STATE_DEACTIVATE;
-        applyMapping();
+        notifyReadPdo(objId, flags);
     }
-    if ((objId.index == _objectMappingId) && (objId.subIndex == 0x00) && (state == STATE_DEACTIVATE))
+
+    if (statusPdo == STATE_WRITE)
     {
-        state = STATE_DISABLE;
-        _numberObjectCurrent = 0;
-        applyMapping();
+        notifyWritePdo(objId, flags);
     }
-    if ((objId.index == _objectMappingId) && (objId.subIndex != 0x00) && (state == STATE_DISABLE))
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            // TODO     QUOI FAIRE????
-            state = STATE_FREE;
-            return;
-        }
-        _numberObjectCurrent++;
-        if (_numberObjectCurrent == _objectMap.size())
-        {
-            state = STATE_MODIFY;
-        }
-        applyMapping();
-    }
-    if ((objId.index == _objectMappingId) && (objId.subIndex == 0x00) && (state == STATE_MODIFY))
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            // TODO     QUOI FAIRE????
-            state = STATE_FREE;
-            return;
-        }
-        state = STATE_ENABLE;
-        applyMapping();
-    }
-    if ((objId.index == _objectCommId) && objId.subIndex == 0x01 && (state == STATE_ENABLE))
-    {
-        state = STATE_ACTIVATE;
-        applyMapping();
-    }
+}
+
+void TPDO::setBus(CanOpenBus *bus)
+{
+    _bus = bus;
+    connect(_bus->sync(), &Sync::syncEmitted, this, &TPDO::receiveSync);
 }
 
 quint8 TPDO::number() const
@@ -113,11 +83,27 @@ quint8 TPDO::number() const
     return _number;
 }
 
+void TPDO::setCommParam(PDO_conf &conf)
+{
+    if ((conf.transType <= TPDO_CYCLIC_MAX) || (conf.transType == TPDO_RTR_SYNC) || (conf.transType == TPDO_RTR_EVENT) || (conf.transType == TPDO_EVENT_MS) || (conf.transType == TPDO_EVENT_DP))
+    {
+        _waitingParam.transType = conf.transType;
+    }
+    else
+    {
+        _waitingParam.transType = 0;
+    }
+
+    _waitingParam.eventTimer = conf.eventTimer;
+    _waitingParam.inhibitTime = conf.inhibitTime;
+    _waitingParam.syncStartValue = conf.syncStartValue;
+}
+
 void TPDO::receiveSync()
 {
 }
 
-QVariant TPDO::arrangeData(QByteArray data, QMetaType::Type type)
+QVariant TPDO::convertQByteArrayToQVariant(QByteArray data, QMetaType::Type type)
 {
     QDataStream dataStream(&data, QIODevice::ReadOnly);
     dataStream.setByteOrder(QDataStream::LittleEndian);

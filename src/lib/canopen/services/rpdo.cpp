@@ -29,16 +29,12 @@ RPDO::RPDO(Node *node, quint8 number)
     _cobIds.append(_cobId);
     _objectCommId = 0x1400 + _number;
     _objectMappingId = 0x1600 + _number;
-    state = STATE_FREE;
-    _rpdo = new RPDO_();
 
-    registerObjId({_objectCommId, 0x01});
+    registerObjId({_objectCommId, 255});
     registerObjId({_objectMappingId, 255});
     setNodeInterrest(node);
 
-    createListObjectMapped();
-
-    // connect(node->bus()->sync(), &Sync::syncEmitted, this, &RPDO::receiveSync);
+    _objectCommList = {{_objectCommId, 0x1}, {_objectCommId, 0x2}, {_objectCommId, 0x3}, {_objectCommId, 0x5}};
 }
 
 QString RPDO::type() const
@@ -53,48 +49,22 @@ void RPDO::parseFrame(const QCanBusFrame &frame)
 
 void RPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if ((objId.index == _objectCommId) && objId.subIndex == 0x01 && (state == STATE_FREE))
+    if (statusPdo == STATE_READ)
     {
-        state = STATE_DEACTIVATE;
-        applyMapping();
+        notifyReadPdo(objId, flags);
     }
-    if ((objId.index == _objectMappingId) && (objId.subIndex == 0x00) && (state == STATE_DEACTIVATE))
+
+    if (statusPdo == STATE_WRITE)
     {
-        state = STATE_DISABLE;
-        _numberObjectCurrent = 0;
-        applyMapping();
+        notifyWritePdo(objId, flags);
     }
-    if ((objId.index == _objectMappingId) && (objId.subIndex != 0x00) && (state == STATE_DISABLE))
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            // TODO     QUOI FAIRE????
-            state = STATE_FREE;
-            return;
-        }
-        _numberObjectCurrent++;
-        if (_numberObjectCurrent == _objectMap.size())
-        {
-            state = STATE_MODIFY;
-        }
-        applyMapping();
-    }
-    if ((objId.index == _objectMappingId) && (objId.subIndex == 0x00) && (state == STATE_MODIFY))
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            // TODO     QUOI FAIRE????
-            state = STATE_FREE;
-            return;
-        }
-        state = STATE_ENABLE;
-        applyMapping();
-    }
-    if ((objId.index == _objectCommId) && objId.subIndex == 0x01 && (state == STATE_ENABLE))
-    {
-        state = STATE_ACTIVATE;
-        applyMapping();
-    }
+}
+
+void RPDO::setBus(CanOpenBus *bus)
+{
+    _bus = bus;
+    connect(_bus->sync(), &Sync::syncEmitted, this, &RPDO::receiveSync);
+    refreshPdo();
 }
 
 quint8 RPDO::number() const
@@ -102,14 +72,30 @@ quint8 RPDO::number() const
     return _number;
 }
 
+void RPDO::setCommParam(PDO_conf &conf)
+{
+    if ((conf.transType <= RPDO_SYNC_MAX) || (conf.transType == RPDO_EVENT_MS) || (conf.transType == RPDO_EVENT_DP))
+    {
+        _waitingParam.transType = conf.transType;
+    }
+    else
+    {
+        _waitingParam.transType = 0;
+    }
+
+    _waitingParam.eventTimer = conf.eventTimer;
+    _waitingParam.inhibitTime = conf.inhibitTime;
+    _waitingParam.syncStartValue = 0;
+}
+
 void RPDO::receiveSync()
 {
     saveData();
-    sendData(_rpdo->data);
+    sendData(data);
 }
 void RPDO::saveData()
 {
-    for (NodeObjectId object : _objectMapped)
+    for (NodeObjectId object : _objectCurrentMapped)
     {
         quint8 size = static_cast<quint8>(QMetaType::sizeOf(object.dataType));
         if (size > 8)
@@ -117,6 +103,6 @@ void RPDO::saveData()
             // ERROR : CO_SDO_ABORT_CODE_EXCEED_PDO_LENGTH
             return;
         }
-        arrangeData(_rpdo->data, _nodeOd->value(object.index, object.subIndex));
+        arrangeData(data, _nodeOd->value(object.index, object.subIndex));
     }
 }
