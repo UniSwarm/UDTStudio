@@ -47,7 +47,10 @@ public:
     bool indexExist(quint16 key) const;
 
     void updateObjectFromDevice(quint16 index, quint8 subindex, const QVariant &value, SDO::FlagsRequest flags);
+
     void setErrorObject(quint16 indexDevice, quint8 subindexDevice, quint32 error);
+    quint32 errorObject(const NodeObjectId &id);
+    quint32 errorObject(quint16 indexDevice, quint8 subindexDevice);
 
     bool loadEds(const QString &fileName);
 

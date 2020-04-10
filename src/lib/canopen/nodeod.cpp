@@ -114,6 +114,20 @@ void NodeOd::setErrorObject(quint16 indexDevice, quint8 subindexDevice, quint32 
     }
 }
 
+quint32 NodeOd::errorObject(const NodeObjectId &id)
+{
+    return errorObject(id.index, id.subIndex);
+}
+
+quint32 NodeOd::errorObject(quint16 indexDevice, quint8 subindexDevice)
+{
+    if (indexExist(indexDevice))
+    {
+        return index(indexDevice)->subIndex(subindexDevice)->error();
+    }
+    return 0;
+}
+
 void NodeOd::createMandatoryObject()
 {
     NodeIndex *deviceType = new NodeIndex(0x1000);
