@@ -38,7 +38,6 @@ public:
     virtual QString type() const = 0;
     virtual void parseFrame(const QCanBusFrame &frame) = 0;
     virtual void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) = 0;
-
     virtual void setBus(CanOpenBus *bus) = 0;
 
     void mapObjectList(QList<NodeObjectId> objectList);
@@ -80,19 +79,17 @@ protected:
     quint32 _cobId;
     quint8 _nodeId;
     NodeOd *_nodeOd;
+    quint8 _increment;
+
     quint16 _objectMappingId;
     quint16 _objectCommId;
+    QList<NodeObjectId> _objectCommList;
 
     void notifyReadPdo(const NodeObjectId &objId, SDO::FlagsRequest flags);
     void notifyWritePdo(const NodeObjectId &objId, SDO::FlagsRequest flags);
 
     QList<NodeObjectId> _objectCurrentMapped;
-
-    QList<NodeObjectId> _objectCommList;
-
-    quint8 _numberObjectCurrent;
-    quint8 _numberSubIndexCurrent;
-    QList<NodeObjectId> _objectMap;
+    QList<NodeObjectId> _objectToMap;
 
     bool sendData(const QByteArray data);
     void arrangeData(QByteArray &request, const QVariant &data);
@@ -114,7 +111,7 @@ protected:
         quint8 syncStartValue;
     };
 
-    PDO_conf _waitingParam;
+    PDO_conf _waitingConf;
 };
 
 #endif // PDO_H
