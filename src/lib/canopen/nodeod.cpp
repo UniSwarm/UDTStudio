@@ -91,8 +91,11 @@ void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, 
     {
         if (flags != SDO::Error)
         {
-            index(indexDevice)->subIndex(subindexDevice)->clearError();
-            index(indexDevice)->subIndex(subindexDevice)->setValue(value);
+            if (index(indexDevice)->subIndexExist(subindexDevice))
+            {
+                index(indexDevice)->subIndex(subindexDevice)->clearError();
+                index(indexDevice)->subIndex(subindexDevice)->setValue(value);
+            }
         }
 
         quint32 key = (static_cast<quint32>(indexDevice) << 8) + subindexDevice;
