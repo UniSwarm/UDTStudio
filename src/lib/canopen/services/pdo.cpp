@@ -125,6 +125,10 @@ void PDO::readMappingParam()
 
 bool PDO::createListObjectMapped()
 {
+    if (_nodeOd->value(_objectCommList[0]) == (_cobId | COBID_VALID_NOT_VALID))
+    {
+        return false;
+    }
     _objectCurrentMapped.clear();
     NodeObjectId objectMapping(_objectMappingId, 0);
     quint8 numberEntries = static_cast<quint8>(_nodeOd->value(objectMapping).toUInt());
@@ -160,15 +164,17 @@ void PDO::notifyWritePdo(const NodeObjectId &objId, SDO::FlagsRequest flags)
     if ((objId.index == _objectCommId) && (state == STATE_FREE))
     {
         _numberSubIndexCurrent++;
-        if (!_nodeOd->index(_objectCommList[_numberSubIndexCurrent].index)->subIndexExist(_objectCommList[_numberSubIndexCurrent].subIndex))
-        {
-            _numberSubIndexCurrent++;
-        }
         if (_numberSubIndexCurrent >= _objectCommList.size())
         {
             state = STATE_DEACTIVATE;
             _numberObjectCurrent = 0;
+            _numberSubIndexCurrent = 0;
+            processMapping();
             return;
+        }
+        if (!_nodeOd->index(_objectCommList[_numberSubIndexCurrent].index)->subIndexExist(_objectCommList[_numberSubIndexCurrent].subIndex))
+        {
+            _numberSubIndexCurrent++;
         }
         processMapping();
     }
@@ -239,8 +245,7 @@ void PDO::processMapping()
         if ((subindex) == 1)
         {
             // Deactivate the PDO
-            _cobId = _cobId & COBID_VALID_NOT_VALID;
-            _node->writeObject(_objectCommList[_numberSubIndexCurrent].index, subindex, QVariant(_cobId));
+            _node->writeObject(_objectCommList[_numberSubIndexCurrent].index, subindex, QVariant(_cobId | COBID_VALID_NOT_VALID));
         }
         else if ((subindex) == 2)
         {
@@ -263,14 +268,15 @@ void PDO::processMapping()
     }
     case STATE_DEACTIVATE:
         // Disable the mapping
-        if (_nodeOd->value(_objectCommList[1]) == (_cobId & COBID_VALID_NOT_VALID))
+        if (_nodeOd->value(_objectCommList[0]) == (_cobId | COBID_VALID_NOT_VALID))
         {
             _node->writeObject(_objectMappingId, 0x00, QVariant(quint8(0)));
             _numberObjectCurrent = 1;
-            state = STATE_DISABLE;
         }
-        state = STATE_FREE;
-
+        else
+        {
+            state = STATE_FREE;
+        }
         break;
 
     case STATE_DISABLE:
