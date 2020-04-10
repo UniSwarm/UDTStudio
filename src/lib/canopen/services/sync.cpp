@@ -24,6 +24,7 @@ Sync::Sync(CanOpenBus *bus)
     : Service (bus)
 {
     _syncCobId = 0x80;
+    _cobIds.append(_syncCobId);
     _syncTimer = new QTimer();
     connect(_syncTimer, &QTimer::timeout, this, &Sync::sendSync);
 }
