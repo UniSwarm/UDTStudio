@@ -35,16 +35,26 @@ class CANOPEN_EXPORT PDO : public Service, public NodeOdSubscriber
 public:
     PDO(Node *node, quint8 number);
 
-    virtual QString type() const = 0;
-    virtual void parseFrame(const QCanBusFrame &frame) = 0;
-    virtual void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) = 0;
-    virtual void setBus(CanOpenBus *bus) = 0;
+    quint32 cobId();
+    quint8 pdoNumber();
 
-    void mapObjectList(QList<NodeObjectId> objectList);
-    QList<NodeObjectId> currentMappedObjectList() const;
+    QList<NodeObjectId> currentMappind() const;
 
-    void applyMapping();
-    void refreshPdo();
+    void applyMapping(QList<NodeObjectId> objectList);
+    void readMappingFromDevice();
+
+    void setInhibitTime(quint32 inhibitTime);
+    void setEventTimer(quint32 eventTimer);
+
+    struct PDO_conf
+    {
+        quint8 transType;
+        quint32 inhibitTime; // The value is defined as multiple of 100 μs. The value of 0 shall disable the inhibit time.
+        quint32 eventTimer; // The value is defined as multiple of 1 ms. The value of 0 shall disable the event-timer.
+        quint8 syncStartValue;
+    };
+
+    PDO_conf _waitingConf;
 
 private:
 
@@ -75,14 +85,14 @@ protected:
     };
     StateMapping state;
 
-    quint8 _number;
+    quint8 _pdoNumber;
     quint32 _cobId;
-    quint8 _nodeId;
-    NodeOd *_nodeOd;
-    quint8 _increment;
+
+    quint8 _iFsm;
 
     quint16 _objectMappingId;
     quint16 _objectCommId;
+
     QList<NodeObjectId> _objectCommList;
 
     void notifyReadPdo(const NodeObjectId &objId, SDO::FlagsRequest flags);
@@ -91,8 +101,10 @@ protected:
     QList<NodeObjectId> _objectCurrentMapped;
     QList<NodeObjectId> _objectToMap;
 
-    bool sendData(const QByteArray data);
-    void arrangeData(QByteArray &request, const QVariant &data);
+    QByteArray _data;
+
+    bool sendData();
+    void convertQVariantToQDataStream(QDataStream &request, const QVariant &data);
 
     enum CommParam
     {
@@ -103,15 +115,8 @@ protected:
         PDO_COMM_EVENT_TIMER = 0x05,
         PDO_COMM_SYNC_START_VALUE = 0x06
     };
-    struct PDO_conf
-    {
-        quint8 transType;
-        quint32 inhibitTime; // The value is defined as multiple of 100 μs. The value of 0 shall disable the inhibit time.
-        quint32 eventTimer; // The value is defined as multiple of 1 ms. The value of 0 shall disable the event-timer.
-        quint8 syncStartValue;
-    };
 
-    PDO_conf _waitingConf;
+
 };
 
 #endif // PDO_H

@@ -27,26 +27,33 @@
 TPDO::TPDO(Node *node, quint8 number)
     : PDO(node, number)
 {
-    _cobId = 0x180 + 0x100 * _number + node->nodeId();
+    _cobId = 0x180 + 0x100 * _pdoNumber + node->nodeId();
     _cobIds.append(_cobId);
-    _objectCommId = 0x1800 + _number;
-    _objectMappingId = 0x1A00 + _number;
+    _objectCommId = 0x1800 + _pdoNumber;
+    _objectMappingId = 0x1A00 + _pdoNumber;
 
     registerObjId({_objectCommId, 255});
     registerObjId({_objectMappingId, 255});
-    registerObjId({0x4000, 255});
     setNodeInterrest(node);
 
-    _objectCommList = {{_objectCommId, 0x1}, {_objectCommId, 0x2}, {_objectCommId, 0x3}, {_objectCommId, 0x5}, {_objectCommId, 0x6}};
+    _objectCommList = {{_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_COB_ID},
+                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_TRASMISSION_TYPE},
+                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_INHIBIT_TIME},
+                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_EVENT_TIMER},
+                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_SYNC_START_VALUE}};
 }
 
 QString TPDO::type() const
 {
-    return QLatin1String("TPDO") + QString::number(_number + 1, 10);
+    return QLatin1String("TPDO") + QString::number(_pdoNumber + 1, 10);
 }
 
 void TPDO::parseFrame(const QCanBusFrame &frame)
 {
+    if (_objectCurrentMapped.isEmpty())
+    {
+        return;
+    }
     quint8 offset = 0;
 
     for (quint8 i = 0; i < _objectCurrentMapped.size(); i++)
@@ -54,7 +61,7 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
         QByteArray data = frame.payload().mid(offset, QMetaType::sizeOf(_objectCurrentMapped.at(i).dataType));
         QVariant vata = convertQByteArrayToQVariant(data, _objectCurrentMapped.at(i).dataType);
 
-        _nodeOd->updateObjectFromDevice(_objectCurrentMapped.at(i).index, _objectCurrentMapped.at(i).subIndex, vata, SDO::FlagsRequest::Pdo);
+        _node->nodeOd()->updateObjectFromDevice(_objectCurrentMapped.at(i).index, _objectCurrentMapped.at(i).subIndex, vata, SDO::FlagsRequest::Pdo);
         offset += QMetaType::sizeOf(_objectCurrentMapped.at(i).dataType);
     }
 }
@@ -76,27 +83,28 @@ void TPDO::setBus(CanOpenBus *bus)
 {
     _bus = bus;
     connect(_bus->sync(), &Sync::syncEmitted, this, &TPDO::receiveSync);
+    readMappingFromDevice();
 }
 
-quint8 TPDO::number() const
+bool TPDO::setTransmissionType(quint8 type)
 {
-    return _number;
-}
-
-void TPDO::setCommParam(PDO_conf &conf)
-{
-    if ((conf.transType <= TPDO_CYCLIC_MAX) || (conf.transType == TPDO_RTR_SYNC) || (conf.transType == TPDO_RTR_EVENT) || (conf.transType == TPDO_EVENT_MS) || (conf.transType == TPDO_EVENT_DP))
+    if ((type <= TPDO_CYCLIC_MAX) || (type == TPDO_RTR_SYNC) || (type == TPDO_RTR_EVENT) || (type == TPDO_EVENT_MS) || (type == TPDO_EVENT_DP))
     {
-        _waitingParam.transType = conf.transType;
+        _waitingConf.transType = type;
+        _node->writeObject(_objectCommList[1].index, PDO_COMM_TRASMISSION_TYPE, _waitingConf.transType);
+        return true;
     }
     else
     {
-        _waitingParam.transType = 0;
+        _waitingConf.transType = 0;
+        return false;
     }
+}
 
-    _waitingParam.eventTimer = conf.eventTimer;
-    _waitingParam.inhibitTime = conf.inhibitTime;
-    _waitingParam.syncStartValue = conf.syncStartValue;
+void TPDO::setSyncStartValue(quint8 syncStartValue)
+{
+    _waitingConf.syncStartValue = syncStartValue;
+    _node->writeObject(_objectCommList[4].index, PDO_COMM_SYNC_START_VALUE, _waitingConf.syncStartValue);
 }
 
 void TPDO::receiveSync()

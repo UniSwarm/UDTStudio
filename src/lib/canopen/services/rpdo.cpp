@@ -19,27 +19,30 @@
 #include "rpdo.h"
 
 #include "canopenbus.h"
-
+#include <QDataStream>
 #include <QDebug>
 
 RPDO::RPDO(Node *node, quint8 number)
     : PDO(node, number)
 {
-    _cobId = 0x200 + 0x100 * _number + node->nodeId();
+    _cobId = 0x200 + 0x100 * _pdoNumber + node->nodeId();
     _cobIds.append(_cobId);
-    _objectCommId = 0x1400 + _number;
-    _objectMappingId = 0x1600 + _number;
+    _objectCommId = 0x1400 + _pdoNumber;
+    _objectMappingId = 0x1600 + _pdoNumber;
 
     registerObjId({_objectCommId, 255});
     registerObjId({_objectMappingId, 255});
     setNodeInterrest(node);
 
-    _objectCommList = {{_objectCommId, 0x1}, {_objectCommId, 0x2}, {_objectCommId, 0x3}, {_objectCommId, 0x5}};
+    _objectCommList = {{_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_COB_ID},
+                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_TRASMISSION_TYPE},
+                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_INHIBIT_TIME},
+                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_SYNC_START_VALUE}};
 }
 
 QString RPDO::type() const
 {
-    return QLatin1String("RPDO") + QString::number(_number + 1, 10);
+    return QLatin1String("RPDO") + QString::number(_pdoNumber + 1, 10);
 }
 
 void RPDO::parseFrame(const QCanBusFrame &frame)
@@ -64,45 +67,26 @@ void RPDO::setBus(CanOpenBus *bus)
 {
     _bus = bus;
     connect(_bus->sync(), &Sync::syncEmitted, this, &RPDO::receiveSync);
-    refreshPdo();
+    readMappingFromDevice();
 }
 
-quint8 RPDO::number() const
+bool RPDO::setTransmissionType(quint8 type)
 {
-    return _number;
-}
-
-void RPDO::setCommParam(PDO_conf &conf)
-{
-    if ((conf.transType <= RPDO_SYNC_MAX) || (conf.transType == RPDO_EVENT_MS) || (conf.transType == RPDO_EVENT_DP))
+    if ((type <= RPDO_SYNC_MAX) || (type== RPDO_EVENT_MS) || (type == RPDO_EVENT_DP))
     {
-        _waitingParam.transType = conf.transType;
+        _waitingConf.transType = type;
+        _node->writeObject(_objectCommList[1].index, PDO_COMM_TRASMISSION_TYPE, _waitingConf.transType);
+        return true;
     }
     else
     {
-        _waitingParam.transType = 0;
+        _waitingConf.transType = 0;
+        return false;
     }
-
-    _waitingParam.eventTimer = conf.eventTimer;
-    _waitingParam.inhibitTime = conf.inhibitTime;
-    _waitingParam.syncStartValue = 0;
 }
 
 void RPDO::receiveSync()
 {
-    saveData();
-    sendData(data);
-}
-void RPDO::saveData()
-{
-    for (NodeObjectId object : _objectCurrentMapped)
-    {
-        quint8 size = static_cast<quint8>(QMetaType::sizeOf(object.dataType));
-        if (size > 8)
-        {
-            // ERROR : CO_SDO_ABORT_CODE_EXCEED_PDO_LENGTH
-            return;
-        }
-        arrangeData(data, _nodeOd->value(object.index, object.subIndex));
-    }
+    _data.clear();
+    sendData();
 }

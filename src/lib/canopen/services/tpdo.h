@@ -32,14 +32,12 @@ public:
     TPDO(Node *node, quint8 number);
 
     QString type() const override;
-
     void parseFrame(const QCanBusFrame &frame) override;
-
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
-
     virtual void setBus(CanOpenBus *bus) override;
 
-    quint8 number() const;
+    bool setTransmissionType(quint8 type);
+    void setSyncStartValue(quint8 syncStartValue);
 
     enum TransmissionType
     {
@@ -51,8 +49,6 @@ public:
         TPDO_EVENT_MS = 0xFEu, // event-driven (manufacturer-specific)
         TPDO_EVENT_DP = 0xFFu // event-driven (device profile and application profile specific)
     };
-
-    void setCommParam(PDO_conf &conf);
 
 private:
     void receiveSync();
