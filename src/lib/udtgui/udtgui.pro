@@ -1,5 +1,5 @@
 
-QT += core gui widgets serialbus
+QT += core gui widgets serialbus charts
 
 TARGET = udtgui
 TEMPLATE = lib
@@ -29,7 +29,10 @@ HEADERS += \
     $$PWD/canopen/datalogger/dataloggerwidget.h \
     $$PWD/canopen/datalogger/dataloggertreeview.h \
     $$PWD/canopen/datalogger/dataloggermodel.h \
-    $$PWD/canopen/datalogger/dataloggermanagerwidget.h
+    $$PWD/canopen/datalogger/dataloggermanagerwidget.h \
+    $$PWD/canopen/pdo/nodepdomappingwidget.h \
+    $$PWD/canopen/pdo/pdomappingpainter.h \
+    $$PWD/canopen/pdo/pdomappingwidget.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -52,12 +55,15 @@ SOURCES += \
     $$PWD/canopen/datalogger/dataloggerwidget.cpp \
     $$PWD/canopen/datalogger/dataloggertreeview.cpp \
     $$PWD/canopen/datalogger/dataloggermodel.cpp \
-    $$PWD/canopen/datalogger/dataloggermanagerwidget.cpp
+    $$PWD/canopen/datalogger/dataloggermanagerwidget.cpp \
+    $$PWD/canopen/pdo/nodepdomappingwidget.cpp \
+    $$PWD/canopen/pdo/pdomappingpainter.cpp \
+    $$PWD/canopen/pdo/pdomappingwidget.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 
 LIBS += -L"$$PWD/../../../bin" -lod -lcanopen
-DEPENDPATH += $$PWD/../../lib/od/
+DEPENDPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 unix:{
     QMAKE_LFLAGS_RPATH=
     QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN\'"
