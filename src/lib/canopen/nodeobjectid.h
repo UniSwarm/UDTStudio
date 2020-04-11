@@ -44,6 +44,8 @@ public:
     quint8 subIndex;
     QMetaType::Type dataType;
 
+    quint8 bitSize() const;
+
     quint64 key() const;
     bool isValid() const;
     bool isNodeIndependant() const;
@@ -61,7 +63,7 @@ public:
     static NodeObjectId fromMimeData(const QString mimeData);
 };
 
-bool operator==(const NodeObjectId &a, const NodeObjectId &b);
-QDebug operator<<(QDebug debug, const NodeObjectId &c);
+bool CANOPEN_EXPORT operator==(const NodeObjectId &a, const NodeObjectId &b);
+QDebug CANOPEN_EXPORT operator<<(QDebug debug, const NodeObjectId &c);
 
 #endif // NODEOBJECTID_H

@@ -21,10 +21,16 @@
 
 #include "canopen_global.h"
 #include <QMetaType>
-#include "services/services.h"
+
 #include "nodeod.h"
 
 class CanOpenBus;
+
+class TPDO;
+class RPDO;
+class Emergency;
+class NMT;
+class ErrorControl;
 
 class CANOPEN_EXPORT Node : public QObject
 {
@@ -61,6 +67,9 @@ public:
     Status status() const;
     QString statusStr() const;
     void setStatus(Status status);
+
+    QList<TPDO *> tpdos() const;
+    QList<RPDO *> rpdos() const;
 
 signals:
     void statusChanged(Status status);

@@ -786,20 +786,20 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 &crc)
 // SDO block upload initiate
 bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blksize, quint8 pst)
 {
-    Q_UNUSED(cmd);
-    Q_UNUSED(index);
-    Q_UNUSED(subindex);
-    Q_UNUSED(blksize);
-    Q_UNUSED(pst);
+    Q_UNUSED(cmd)
+    Q_UNUSED(index)
+    Q_UNUSED(subindex)
+    Q_UNUSED(blksize)
+    Q_UNUSED(pst)
     return true;
 }
 
 // SDO block upload sub-block
 bool SDO::sendSdoRequest(quint8 cmd, quint8 &ackseq, quint8 blksize)
 {
-    Q_UNUSED(cmd);
-    Q_UNUSED(ackseq);
-    Q_UNUSED(blksize);
+    Q_UNUSED(cmd)
+    Q_UNUSED(ackseq)
+    Q_UNUSED(blksize)
     return true;
 }
 

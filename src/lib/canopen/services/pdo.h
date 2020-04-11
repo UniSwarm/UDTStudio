@@ -38,9 +38,9 @@ public:
     quint32 cobId();
     quint8 pdoNumber();
 
-    QList<NodeObjectId> currentMappind() const;
+    const QList<NodeObjectId> &currentMappind() const;
 
-    void applyMapping(QList<NodeObjectId> objectList);
+    void applyMapping(const QList<NodeObjectId> &objectList);
     void readMappingFromDevice();
 
     void setInhibitTime(quint32 inhibitTime);
@@ -54,16 +54,12 @@ public:
         quint8 syncStartValue;
     };
 
-    PDO_conf _waitingConf;
-
-private:
-
-    void readCommParam();
-    void readMappingParam();
-    void processMapping();
-    bool createListObjectMapped();
+signals:
+    void mappingChanged();
 
 protected:
+    quint32 _cobId;
+    quint8 _pdoNumber;
 
     enum StatePdo
     {
@@ -81,12 +77,8 @@ protected:
         STATE_MODIFY,
         STATE_ENABLE,
         STATE_ACTIVATE
-
     };
     StateMapping state;
-
-    quint8 _pdoNumber;
-    quint32 _cobId;
 
     quint8 _iFsm;
 
@@ -102,7 +94,6 @@ protected:
     QList<NodeObjectId> _objectToMap;
 
     QByteArray _data;
-
     bool sendData();
     void convertQVariantToQDataStream(QDataStream &request, const QVariant &data);
 
@@ -116,7 +107,13 @@ protected:
         PDO_COMM_SYNC_START_VALUE = 0x06
     };
 
+    PDO_conf _waitingConf;
 
+private:
+    void readCommParam();
+    void readMappingParam();
+    void processMapping();
+    bool createListObjectMapped();
 };
 
 #endif // PDO_H

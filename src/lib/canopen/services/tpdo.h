@@ -36,9 +36,6 @@ public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
     virtual void setBus(CanOpenBus *bus) override;
 
-    bool setTransmissionType(quint8 type);
-    void setSyncStartValue(quint8 syncStartValue);
-
     enum TransmissionType
     {
         TPDO_ACYCLIC = 0x00u, // synchronou,s (acyclic)
@@ -49,9 +46,14 @@ public:
         TPDO_EVENT_MS = 0xFEu, // event-driven (manufacturer-specific)
         TPDO_EVENT_DP = 0xFFu // event-driven (device profile and application profile specific)
     };
+    bool setTransmissionType(quint8 type);
+
+    void setSyncStartValue(quint8 syncStartValue);
+
+protected slots:
+    void receiveSync();
 
 private:
-    void receiveSync();
     QVariant convertQByteArrayToQVariant(QByteArray data, QMetaType::Type type);
 };
 

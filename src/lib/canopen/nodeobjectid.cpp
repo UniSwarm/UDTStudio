@@ -190,7 +190,7 @@ QString NodeObjectId::mimeData() const
     return QString("%1.%2.%3.%4")
         .arg(QString::number(busId, 16).rightJustified(2, '0'))
         .arg(QString::number(nodeId, 16).rightJustified(2, '0'))
-        .arg(QString::number(index, 16).rightJustified(2, '0'))
+        .arg(QString::number(index, 16).rightJustified(4, '0'))
         .arg(QString::number(subIndex, 16).rightJustified(2, '0'));
 }
 
@@ -219,9 +219,40 @@ NodeObjectId &NodeObjectId::operator=(const NodeObjectId &other)
     return *this;
 }
 
+quint8 NodeObjectId::bitSize() const
+{
+    switch (dataType)
+    {
+    case QMetaType::Bool:
+        return 1;
+
+    case QMetaType::Char:
+    case QMetaType::UChar:
+    case QMetaType::SChar:
+        return 8;
+
+    case QMetaType::Short:
+    case QMetaType::UShort:
+        return 16;
+
+    case QMetaType::UInt:
+    case QMetaType::Int:
+    case QMetaType::Float:
+        return 32;
+
+    case QMetaType::Double:
+    case QMetaType::Long:
+    case QMetaType::ULong:
+        return 64;
+
+    default:
+        return 0;
+    }
+}
+
 QDebug operator<<(QDebug debug, const NodeObjectId &c)
 {
     QDebugStateSaver saver(debug);
-    debug.nospace() << '(' << c.mimeData() << ')';
+    debug.nospace() << '(' << c.mimeData() << '.' << c.dataType << ')';
     return debug;
 }

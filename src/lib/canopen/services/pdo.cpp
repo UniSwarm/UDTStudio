@@ -163,10 +163,11 @@ bool PDO::createListObjectMapped()
 
         _objectCurrentMapped.append(object);
     }
+    emit mappingChanged();
     return true;
 }
 
-QList<NodeObjectId> PDO::currentMappind() const
+const QList<NodeObjectId> &PDO::currentMappind() const
 {
     return _objectCurrentMapped;
 }
@@ -233,7 +234,7 @@ void PDO::notifyWritePdo(const NodeObjectId &objId, SDO::FlagsRequest flags)
     }
 }
 
-void PDO::applyMapping(QList<NodeObjectId> objectList)
+void PDO::applyMapping(const QList<NodeObjectId> &objectList)
 {
     _objectToMap = objectList;
     statusPdo = STATE_WRITE;

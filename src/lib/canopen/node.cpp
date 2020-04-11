@@ -190,6 +190,16 @@ void Node::setBus(CanOpenBus *bus)
     }
 }
 
+QList<RPDO *> Node::rpdos() const
+{
+    return _rpdos;
+}
+
+QList<TPDO *> Node::tpdos() const
+{
+    return _tpdos;
+}
+
 void Node::readObject(const NodeObjectId &id)
 {
     readObject(id.index, id.subIndex, id.dataType);

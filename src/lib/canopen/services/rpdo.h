@@ -48,9 +48,10 @@ public:
         RPDO_EVENT_DP = 0xFFu // event-driven (device profile and application profile specific)
     };
 
-private:
-
+protected slots:
     void receiveSync();
+
+private:
     void saveData();
 };
 
