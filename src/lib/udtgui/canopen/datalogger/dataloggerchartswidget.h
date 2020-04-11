@@ -16,46 +16,35 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef DATALOGGER_H
-#define DATALOGGER_H
+#ifndef DATALOGGERCHARTSWIDGET_H
+#define DATALOGGERCHARTSWIDGET_H
 
-#include "canopen_global.h"
+#include "../../udtgui_global.h"
 
-#include "nodeodsubscriber.h"
+#include <QChartView>
+#include <QLineSeries>
 
-#include "dldata.h"
-#include <QMap>
+#include "datalogger/datalogger.h"
 
-class CANOPEN_EXPORT DataLogger : public QObject, public NodeOdSubscriber
+class UDTGUI_EXPORT DataLoggerChartsWidget : public QtCharts::QChartView
 {
     Q_OBJECT
 public:
-    DataLogger();
+    DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *parent = nullptr);
 
-    void addData(const NodeObjectId &objId);
-    QList<DLData *> &dataList();
-    DLData *data(int index) const;
-    DLData *data(const NodeObjectId &objId) const;
-
-    // NodeOdSubscriber interface
-protected:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
-
-signals:
-    void dataListChanged();
-    void dataChanged(int id);
-
-public slots:
-    void start(int ms);
-    void stop();
+    DataLogger *dataLogger() const;
+    void setDataLogger(DataLogger *dataLogger);
 
 protected slots:
-    void readData();
+    void updateDataLoggerList();
+    void updateDlData(int id);
 
-protected:
-    QMap<quint64, DLData *> _dataMap;
-    QList<DLData *> _dataList;
-    QTimer _timer;
+private:
+    DataLogger *_dataLogger;
+
+    QtCharts::QChart *_chart;
+    QList<QtCharts::QLineSeries *> _series;
+    double _time;
 };
 
-#endif // DATALOGGER_H
+#endif // DATALOGGERCHARTSWIDGET_H

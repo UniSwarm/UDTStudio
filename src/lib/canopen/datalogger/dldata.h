@@ -34,11 +34,16 @@ public:
     quint64 key() const;
     Node *node() const;
 
+    QString name() const;
+    void setName(const QString &name);
+
     void appendData(double value, const QDateTime &dateTime);
+    double lastValue() const;
 
 protected:
     NodeObjectId _objectId;
     Node *_node;
+    QString _name;
 
     QList <double> _values;
     QList <QDateTime> _times;

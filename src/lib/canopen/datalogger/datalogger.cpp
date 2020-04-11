@@ -23,7 +23,7 @@
 DataLogger::DataLogger()
 {
     connect(&_timer, &QTimer::timeout, this, &DataLogger::readData);
-    start(500);
+    start(100);
 }
 
 void DataLogger::addData(const NodeObjectId &objId)
@@ -59,7 +59,7 @@ DLData *DataLogger::data(const NodeObjectId &objId) const
 void DataLogger::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     DLData *dlData = data(objId);
-    if (!dlData)
+    if (!dlData || flags == SDO::Error)
     {
         return;
     }
@@ -67,6 +67,8 @@ void DataLogger::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     const QVariant &value = dlData->node()->nodeOd()->value(dlData->objectId());
     const QDateTime &dateTime = dlData->node()->nodeOd()->lastModification(dlData->objectId());
     dlData->appendData(value.toDouble(), dateTime);
+
+    emit dataChanged(_dataList.indexOf(dlData));
 }
 
 void DataLogger::start(int ms)

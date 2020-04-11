@@ -43,6 +43,7 @@ void DataLoggerModel::setDataLogger(DataLogger *dataLogger)
     if (dataLogger != _dataLogger)
     {
         connect(dataLogger, &DataLogger::dataListChanged, this, &DataLoggerModel::updateDataLoggerList);
+        connect(dataLogger, &DataLogger::dataChanged, this, &DataLoggerModel::updateDlData);
     }
     _dataLogger = dataLogger;
     emit layoutChanged();
@@ -51,6 +52,16 @@ void DataLoggerModel::setDataLogger(DataLogger *dataLogger)
 void DataLoggerModel::updateDataLoggerList()
 {
     setDataLogger(_dataLogger);
+}
+
+void DataLoggerModel::updateDlData(int id)
+{
+    QModelIndex modelIndexTL = index(id, Node, QModelIndex());
+    QModelIndex modelIndexBR = index(id, Value, QModelIndex());
+    if (modelIndexTL.isValid() && modelIndexBR.isValid())
+    {
+        emit dataChanged(modelIndexTL, modelIndexBR);
+    }
 }
 
 int DataLoggerModel::columnCount(const QModelIndex &parent) const
@@ -76,6 +87,10 @@ QVariant DataLoggerModel::headerData(int section, Qt::Orientation orientation, i
             return QVariant(tr("Index"));
         case SubIndex:
             return QVariant(tr("SubIndex"));
+        case Name:
+            return QVariant(tr("Name"));
+        case Value:
+            return QVariant(tr("Value"));
         }
         break;
     }
@@ -108,6 +123,12 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
 
         case SubIndex:
             return QVariant(QString("0x%1").arg(QString::number(dlData->objectId().subIndex, 16)));
+
+        case Name:
+            return QVariant(dlData->name());
+
+        case Value:
+            return QVariant(dlData->lastValue());
 
         default:
             return QVariant();

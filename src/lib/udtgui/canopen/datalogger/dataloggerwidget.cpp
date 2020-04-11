@@ -25,23 +25,31 @@ DataLoggerWidget::DataLoggerWidget(QWidget *parent)
 {
 }
 
-DataLoggerWidget::DataLoggerWidget(DataLogger *logger, QWidget *parent)
-    : QWidget(parent), _logger(logger)
+DataLoggerWidget::DataLoggerWidget(DataLogger *dataLogger, QWidget *parent)
+    : QWidget(parent), _dataLogger(dataLogger)
 {
-    if (!_logger)
+    if (!_dataLogger)
     {
-        _logger = new DataLogger();
+        _dataLogger = new DataLogger();
     }
     createWidgets();
 }
 
+DataLogger *DataLoggerWidget::dataLogger() const
+{
+    return _dataLogger;
+}
+
 void DataLoggerWidget::createWidgets()
 {
-    QLayout *layout = new QVBoxLayout();
+    QLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
 
-    _dataLoggerManagerWidget = new DataLoggerManagerWidget(_logger);
+    _dataLoggerManagerWidget = new DataLoggerManagerWidget(_dataLogger);
     layout->addWidget(_dataLoggerManagerWidget);
+
+    _chartView = new DataLoggerChartsWidget(_dataLogger);
+    layout->addWidget(_chartView);
 
     setLayout(layout);
 }

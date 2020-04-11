@@ -25,19 +25,23 @@
 
 #include "datalogger/datalogger.h"
 #include "dataloggermanagerwidget.h"
+#include "dataloggerchartswidget.h"
 
 class UDTGUI_EXPORT DataLoggerWidget : public QWidget
 {
     Q_OBJECT
 public:
     DataLoggerWidget(QWidget *parent = nullptr);
-    DataLoggerWidget(DataLogger *logger, QWidget *parent = nullptr);
+    DataLoggerWidget(DataLogger *dataLogger, QWidget *parent = nullptr);
+
+    DataLogger *dataLogger() const;
 
 protected:
-    DataLogger *_logger;
+    DataLogger *_dataLogger;
 
     void createWidgets();
     DataLoggerManagerWidget *_dataLoggerManagerWidget;
+    DataLoggerChartsWidget *_chartView;
 };
 
 #endif // DATALOGGERWIDGET_H

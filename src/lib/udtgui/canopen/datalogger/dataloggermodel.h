@@ -39,11 +39,14 @@ public:
         Node,
         Index,
         SubIndex,
+        Name,
+        Value,
         ColumnCount
     };
 
 protected slots:
     void updateDataLoggerList();
+    void updateDlData(int id);
 
     // QAbstractItemModel interface
 public:

@@ -28,6 +28,11 @@ DLData::DLData(const NodeObjectId &objectId)
     if (bus)
     {
         _node = bus->node(objectId.nodeId);
+        NodeSubIndex *nodeSubIndex = objectId.nodeSubIndex();
+        if (nodeSubIndex)
+        {
+            _name = nodeSubIndex->name();
+        }
     }
 }
 
@@ -46,8 +51,27 @@ Node *DLData::node() const
     return _node;
 }
 
+QString DLData::name() const
+{
+    return _name;
+}
+
+void DLData::setName(const QString &name)
+{
+    _name = name;
+}
+
 void DLData::appendData(double value, const QDateTime &dateTime)
 {
     _values.append(value);
     _times.append(dateTime);
+}
+
+double DLData::lastValue() const
+{
+    if (_values.isEmpty())
+    {
+        return 0.0;
+    }
+    return _values.last();
 }
