@@ -100,6 +100,7 @@ protected:
 
     QList<NodeObjectId> _objectCommList;
 
+    void notifyWriteParam(const NodeObjectId &objId, SDO::FlagsRequest flags);
     void notifyReadPdo(const NodeObjectId &objId, SDO::FlagsRequest flags);
     void notifyWritePdo(const NodeObjectId &objId, SDO::FlagsRequest flags);
 

@@ -52,6 +52,11 @@ void RPDO::parseFrame(const QCanBusFrame &frame)
 
 void RPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (statusPdo == STATE_NONE)
+    {
+        notifyWriteParam(objId, flags);
+    }
+
     if (statusPdo == STATE_READ)
     {
         notifyReadPdo(objId, flags);
@@ -72,7 +77,7 @@ void RPDO::setBus(CanOpenBus *bus)
 
 bool RPDO::setTransmissionType(quint8 type)
 {
-    state = STATE_FREE;
+    statusPdo = STATE_NONE;
     if ((type <= RPDO_SYNC_MAX) || (type== RPDO_EVENT_MS) || (type == RPDO_EVENT_DP))
     {
         _waitingConf.transType = type;

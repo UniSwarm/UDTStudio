@@ -113,6 +113,12 @@ quint32 PDO::eventTimer()
 
 void PDO::notifyWriteParam(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (flags == SDO::FlagsRequest::Error)
+    {
+        qDebug() << ">PDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index, 16)) << ":" << objId.subIndex
+                 << ", Error : " << _node->nodeOd()->errorObject(objId);
+        return;
+    }
     if (objId.subIndex == PDO_COMM_TRASMISSION_TYPE)
     {
         _waitingConf.transType = static_cast<quint8>(_node->nodeOd()->value(objId).toUInt());
