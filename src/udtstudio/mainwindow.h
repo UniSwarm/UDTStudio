@@ -32,12 +32,17 @@
 #include "canopen/busnodesmanagerview.h"
 #include "can/canSettingsDialog/cansettingsdialog.h"
 
+#include "canopen/datalogger/dataloggerwidget.h"
+#include "canopen/pdo/nodepdomappingwidget.h"
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+protected slots:
 
 protected:
     CanSettingsDialog *_connectDialog;
@@ -48,18 +53,18 @@ protected:
     void createDocks();
     QDockWidget *_busNodesManagerDock;
     BusNodesManagerView *_busNodesManagerView;
+    QDockWidget *_canFrameListDock;
+    CanFrameListView *_canFrameListView;
+    QDockWidget *_dataLoggerDock;
+    DataLoggerWidget *_dataLoggerWidget;
 
     void createWidgets();
-    CanFrameListView *_canFrameListView;
     ODTreeView *_odView;
     NodeOdWidget *_nodeOdWidget;
+    NodePDOMappingWidget *_nodePdoMappingWidget;
 
-    void createActions();
+    // actions / menu
     void createMenus();
-    QWidget *widget;
-    QMenu *_fileMenu;
-    QMenu *_connectMenu;
-    QAction *_quitAction;
 
     QAction *_connectAction;
     void connectDevice();
@@ -68,6 +73,10 @@ protected:
     void disconnectDevice();
 
     QAction *_canSettingsAction;
+
+    // QObject interface
+public:
+    bool event(QEvent *event) override;
 };
 
 #endif // MAINWINDOW_H

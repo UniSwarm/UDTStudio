@@ -46,6 +46,7 @@ public slots:
     void updateData();
 
     void exploreBus();
+    void sendSync();
 
 protected:
     void createWidgets();

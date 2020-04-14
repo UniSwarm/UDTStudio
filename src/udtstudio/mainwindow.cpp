@@ -31,6 +31,7 @@
 #include <QStatusBar>
 #include <QAction>
 #include <QDockWidget>
+#include <QSplitter>
 
 #include <QDebug>
 
@@ -39,10 +40,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     setWindowIcon(QIcon(":/icons/img/UNIdevkit.ico"));
     _connectDialog = new CanSettingsDialog(nullptr, this);
+    statusBar()->setVisible(true);
 
     createDocks();
     createWidgets();
     connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, _nodeOdWidget, &NodeOdWidget::setNode);
+    connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, _nodePdoMappingWidget, &NodePDOMappingWidget::setNode);
 
     CanOpenBus *bus;
     if (QCanBus::instance()->plugins().contains("socketcan"))
@@ -57,9 +60,8 @@ MainWindow::MainWindow(QWidget *parent) :
     CanOpen::addBus(bus);
     connect(bus, &CanOpenBus::frameAvailable, _canFrameListView, &CanFrameListView::appendCanFrame);
 
-    createActions();
     createMenus();
-    resize(QApplication::screens()[0]->size() / 2);
+    resize(QApplication::screens()[0]->size() * 3 / 4);
 }
 
 MainWindow::~MainWindow()
@@ -75,60 +77,59 @@ void MainWindow::createDocks()
     setTabPosition(Qt::LeftDockWidgetArea, QTabWidget::North);
 
     _busNodesManagerDock = new QDockWidget(tr("Bus nodes manager"), this);
-    _busNodesManagerDock->setObjectName("fileProjectDock");
+    _busNodesManagerDock->setObjectName("busNodesManagerDock");
     _busNodesManagerView = new BusNodesManagerView(CanOpen::instance());
     _busNodesManagerDock->setWidget(_busNodesManagerView);
     addDockWidget(Qt::LeftDockWidgetArea, _busNodesManagerDock);
+
+    _canFrameListDock = new QDockWidget(tr("Can frames list view"), this);
+    _canFrameListDock->setObjectName("canFrameListDock");
+    _canFrameListView = new CanFrameListView();
+    _canFrameListDock->setWidget(_canFrameListView);
+    addDockWidget(Qt::LeftDockWidgetArea, _canFrameListDock);
+    tabifyDockWidget(_busNodesManagerDock, _canFrameListDock);
+
+    _dataLoggerDock = new QDockWidget(tr("Data logger"), this);
+    _dataLoggerDock->setObjectName("dataLoggerDock");
+    _dataLoggerWidget = new DataLoggerWidget();
+    _dataLoggerDock->setWidget(_dataLoggerWidget);
+    addDockWidget(Qt::BottomDockWidgetArea, _dataLoggerDock);
+
+    _busNodesManagerDock->raise();
 }
 
 void MainWindow::createWidgets()
 {
-    QWidget *widget = new QWidget();
-    QLayout *layout = new QHBoxLayout();
+    QSplitter *splitter = new QSplitter();
 
     _nodeOdWidget = new NodeOdWidget();
-    layout->addWidget(_nodeOdWidget);
+    splitter->addWidget(_nodeOdWidget);
 
-    _canFrameListView = new CanFrameListView();
-    layout->addWidget(_canFrameListView);
+    _nodePdoMappingWidget = new NodePDOMappingWidget();
+    splitter->addWidget(_nodePdoMappingWidget);
 
-    widget->setLayout(layout);
-    setCentralWidget(widget);
-}
-
-void MainWindow::createActions()
-{
-    _quitAction = new QAction(tr("&Quit"), this);
-    connect(_quitAction, &QAction::triggered, this, &MainWindow::close);
-
-    _connectAction = new QAction(tr("&Connect"), this);
-    connect(_connectAction, &QAction::triggered, this, &MainWindow::connectDevice);
-
-    _disconnectAction = new QAction(tr("&Disconnect"), this);
-    connect(_disconnectAction, &QAction::triggered, this, &MainWindow::disconnectDevice);
-
-    _canSettingsAction = new QAction(tr("&Can Settings"), this);
-    connect(_canSettingsAction, &QAction::triggered, _connectDialog, &CanSettingsDialog::show);
-    connect(_connectDialog, &QDialog::accepted, this, &MainWindow::connectDevice);
-
-    _connectAction->setEnabled(true);
-    _disconnectAction->setEnabled(false);
+    setCentralWidget(splitter);
 }
 
 void MainWindow::createMenus()
 {
-    _fileMenu = menuBar()->addMenu(tr("&File"));
-    _fileMenu->addAction(_quitAction);
-    _fileMenu->addSeparator();
+    // ============= file =============
+    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
 
-    _connectMenu = menuBar()->addMenu(tr("&Connection"));
-    _connectMenu->addAction(_connectAction);
-    _connectMenu->addAction(_disconnectAction);
-    _connectMenu->addAction(_canSettingsAction);
-    _connectMenu->addSeparator();
+    QAction *exitAction = new QAction(tr("E&xit"), this);
+    exitAction->setStatusTip(tr("Exits UDTStudio"));
+    exitAction->setShortcut(QKeySequence::Quit);
+    fileMenu->addAction(exitAction);
+    connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
-    _connectMenu = menuBar()->addMenu(tr("&Bus"));
-    _connectMenu->addSeparator();
+    // ============= Bus =============
+    QMenu *busMenu = menuBar()->addMenu(tr("&Bus"));
+
+    // ============= View =============
+    QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
+    viewMenu->addAction(_busNodesManagerDock->toggleViewAction());
+    viewMenu->addAction(_canFrameListDock->toggleViewAction());
+    viewMenu->addAction(_dataLoggerDock->toggleViewAction());
 }
 
 void MainWindow::connectDevice()
@@ -185,4 +186,13 @@ void MainWindow::disconnectDevice()
     _connectAction->setEnabled(true);
     _disconnectAction->setEnabled(false);
     statusBar()->showMessage(tr("Disconnected"));
+}
+
+bool MainWindow::event(QEvent *event)
+{
+    if (event->type()==QEvent::Close)
+    {
+        QApplication::quit();
+    }
+    return QMainWindow::event(event);
 }

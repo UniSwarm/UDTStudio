@@ -1,5 +1,5 @@
 
-QT       += core gui widgets serialbus
+QT       += core gui widgets serialbus charts
 
 TARGET = udtstudio
 TEMPLATE = app

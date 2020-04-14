@@ -62,6 +62,14 @@ void BusManagerWidget::exploreBus()
     }
 }
 
+void BusManagerWidget::sendSync()
+{
+    if (_bus)
+    {
+        _bus->sync()->sendSync();
+    }
+}
+
 void BusManagerWidget::createWidgets()
 {
     QAction *action;
@@ -75,6 +83,8 @@ void BusManagerWidget::createWidgets()
     action = _toolBar->addAction(tr("Explore"));
     action->setShortcut(QKeySequence("Ctrl+E"));
     connect(action, &QAction::triggered, this, &BusManagerWidget::exploreBus);
+    action = _toolBar->addAction(tr("Sync"));
+    connect(action, &QAction::triggered, this, &BusManagerWidget::sendSync);
     layoutGroupBox->addRow(_toolBar);
 
     _busNameEdit = new QLineEdit();
