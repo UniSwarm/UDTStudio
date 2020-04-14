@@ -43,7 +43,7 @@ void NodePDOMappingWidget::setNode(Node *node)
         {
             if (node->tpdos().count() >= tpdo)
             {
-                node->tpdos()[tpdo]->readMappingFromDevice();
+                node->tpdos()[tpdo]->readMapping();
                 _tpdoMappingWidgets[tpdo]->setPdo(node->tpdos()[tpdo]);
             }
             else
@@ -55,7 +55,7 @@ void NodePDOMappingWidget::setNode(Node *node)
         {
             if (node->rpdos().count() >= rpdo)
             {
-                node->rpdos()[rpdo]->readMappingFromDevice();
+                node->rpdos()[rpdo]->readMapping();
                 _rpdoMappingWidgets[rpdo]->setPdo(node->rpdos()[rpdo]);
             }
             else
