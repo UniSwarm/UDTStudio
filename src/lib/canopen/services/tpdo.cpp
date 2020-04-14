@@ -68,6 +68,11 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
 
 void TPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (statusPdo == STATE_NONE)
+    {
+        notifyWriteParam(objId, flags);
+    }
+
     if (statusPdo == STATE_READ)
     {
         notifyReadPdo(objId, flags);
@@ -83,11 +88,12 @@ void TPDO::setBus(CanOpenBus *bus)
 {
     _bus = bus;
     connect(_bus->sync(), &Sync::syncEmitted, this, &TPDO::receiveSync);
-    readMappingFromDevice();
+    readMapping();
 }
 
 bool TPDO::setTransmissionType(quint8 type)
 {
+    statusPdo = STATE_NONE;
     if ((type <= TPDO_CYCLIC_MAX) || (type == TPDO_RTR_SYNC) || (type == TPDO_RTR_EVENT) || (type == TPDO_EVENT_MS) || (type == TPDO_EVENT_DP))
     {
         _waitingConf.transType = type;
@@ -96,15 +102,28 @@ bool TPDO::setTransmissionType(quint8 type)
     }
     else
     {
-        _waitingConf.transType = 0;
+        // ERROR_PARAM_IMCOMPATIBILITY
         return false;
     }
 }
 
+quint8 TPDO::transmissionType()
+{
+    NodeObjectId object(_objectCommId, PDO_COMM_TRASMISSION_TYPE);
+    return static_cast<quint8>(_node->nodeOd()->value(object).toUInt());
+}
+
 void TPDO::setSyncStartValue(quint8 syncStartValue)
 {
+    statusPdo = STATE_NONE;
     _waitingConf.syncStartValue = syncStartValue;
     _node->writeObject(_objectCommList[4].index, PDO_COMM_SYNC_START_VALUE, _waitingConf.syncStartValue);
+}
+
+quint8 TPDO::syncStartValue()
+{
+    NodeObjectId object(_objectCommId, PDO_COMM_SYNC_START_VALUE);
+    return static_cast<quint8>(_node->nodeOd()->value(object).toUInt());
 }
 
 void TPDO::receiveSync()

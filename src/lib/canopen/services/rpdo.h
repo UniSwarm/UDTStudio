@@ -39,6 +39,7 @@ public:
     virtual void setBus(CanOpenBus *bus) override;
 
     bool setTransmissionType(quint8  type);
+    quint8 transmissionType();
 
     enum TransmissionType
     {

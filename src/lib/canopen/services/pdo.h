@@ -40,18 +40,31 @@ public:
 
     const QList<NodeObjectId> &currentMappind() const;
 
-    void applyMapping(const QList<NodeObjectId> &objectList);
-    void readMappingFromDevice();
+    void writeMapping(const QList<NodeObjectId> &objectList);
+    void readMapping();
+
+    bool isEnabled();
+    void setEnabled(bool b);
+
+    bool hasMappedObject();
 
     void setInhibitTime(quint32 inhibitTime);
-    void setEventTimer(quint32 eventTimer);
+    quint32 inhibitTime();
 
-    struct PDO_conf
+    void setEventTimer(quint32 eventTimer);
+    quint32 eventTimer();
+
+    enum ErrorPdo
     {
-        quint8 transType;
-        quint32 inhibitTime; // The value is defined as multiple of 100 μs. The value of 0 shall disable the inhibit time.
-        quint32 eventTimer; // The value is defined as multiple of 1 ms. The value of 0 shall disable the event-timer.
-        quint8 syncStartValue;
+        ERROR_COBID_NOT_VALID,
+        ERROR_WRITE_ONLY,
+        ERROR_READ_ONLY,
+        ERROR_NO_OBJECT,
+        ERROR_NO_SUBINDEX,
+        ERROR_CANNOT_MAP_PDO,
+        ERROR_EXCEED_PDO_LENGTH,
+        ERROR_PARAM_IMCOMPATIBILITY,
+        ERROR_GENERAL_ERROR
     };
 
 signals:
@@ -93,7 +106,6 @@ protected:
     QList<NodeObjectId> _objectCurrentMapped;
     QList<NodeObjectId> _objectToMap;
 
-    QByteArray _data;
     bool sendData();
     void convertQVariantToQDataStream(QDataStream &request, const QVariant &data);
 
@@ -107,9 +119,18 @@ protected:
         PDO_COMM_SYNC_START_VALUE = 0x06
     };
 
+    struct PDO_conf
+    {
+        quint8 transType;
+        quint32 inhibitTime; // The value is defined as multiple of 100 μs. The value of 0 shall disable the inhibit time.
+        quint32 eventTimer; // The value is defined as multiple of 1 ms. The value of 0 shall disable the event-timer.
+        quint8 syncStartValue;
+    };
+
     PDO_conf _waitingConf;
 
 private:
+
     void readCommParam();
     void readMappingParam();
     void processMapping();

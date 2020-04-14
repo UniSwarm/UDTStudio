@@ -71,6 +71,14 @@ public:
     QList<TPDO *> tpdos() const;
     QList<RPDO *> rpdos() const;
 
+    void readMappingRpdo(quint8 rpdoNumber);
+    const QList<NodeObjectId> &currentMappindRpdo(quint8 rpdoNumber) const;
+    void writeMappingRpdo(quint8 rpdoNumber, const QList<NodeObjectId> &objectList);
+
+    void readMappingTpdo(quint8 tpdoNumber);
+    const QList<NodeObjectId> &currentMappindTpdo(quint8 tpdoNumber) const;
+    void writeMappingTpdo(quint8 tpdoNumber, const QList<NodeObjectId> &objectList);
+
 signals:
     void statusChanged(Status status);
 

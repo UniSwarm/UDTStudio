@@ -67,11 +67,12 @@ void RPDO::setBus(CanOpenBus *bus)
 {
     _bus = bus;
     connect(_bus->sync(), &Sync::syncEmitted, this, &RPDO::receiveSync);
-    readMappingFromDevice();
+    readMapping();
 }
 
 bool RPDO::setTransmissionType(quint8 type)
 {
+    state = STATE_FREE;
     if ((type <= RPDO_SYNC_MAX) || (type== RPDO_EVENT_MS) || (type == RPDO_EVENT_DP))
     {
         _waitingConf.transType = type;
@@ -80,13 +81,18 @@ bool RPDO::setTransmissionType(quint8 type)
     }
     else
     {
-        _waitingConf.transType = 0;
+        // ERROR_PARAM_IMCOMPATIBILITY
         return false;
     }
 }
 
+quint8 RPDO::transmissionType()
+{
+    NodeObjectId object(_objectCommId, PDO_COMM_TRASMISSION_TYPE);
+    return static_cast<quint8>(_node->nodeOd()->value(object).toUInt());
+}
+
 void RPDO::receiveSync()
 {
-    _data.clear();
     sendData();
 }

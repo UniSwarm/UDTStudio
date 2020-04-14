@@ -200,6 +200,49 @@ QList<TPDO *> Node::tpdos() const
     return _tpdos;
 }
 
+void Node::readMappingRpdo(quint8 rpdoNumber)
+{
+    if (rpdoNumber > _rpdos.size())
+    {
+        return;
+    }
+    _rpdos.at(rpdoNumber)->readMapping();
+}
+
+const QList<NodeObjectId> &Node::currentMappindRpdo(quint8 rpdoNumber) const
+{
+    return _rpdos.at(rpdoNumber)->currentMappind();
+}
+void Node::writeMappingRpdo(quint8 rpdoNumber, const QList<NodeObjectId> &objectList)
+{
+    if (rpdoNumber > _rpdos.size())
+    {
+        return;
+    }
+    _rpdos.at(rpdoNumber)->writeMapping(objectList);
+}
+
+void Node::readMappingTpdo(quint8 tpdoNumber)
+{
+    if (tpdoNumber > _tpdos.size())
+    {
+        return;
+    }
+    _tpdos.at(tpdoNumber)->readMapping();
+}
+const QList<NodeObjectId> &Node::currentMappindTpdo(quint8 tpdoNumber) const
+{
+    return _tpdos.at(tpdoNumber)->currentMappind();
+}
+void Node::writeMappingTpdo(quint8 tpdoNumber, const QList<NodeObjectId> &objectList)
+{
+    if (tpdoNumber > _tpdos.size())
+    {
+        return;
+    }
+    _tpdos.at(tpdoNumber)->writeMapping(objectList);
+}
+
 void Node::readObject(const NodeObjectId &id)
 {
     readObject(id.index, id.subIndex, id.dataType);

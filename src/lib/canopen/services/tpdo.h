@@ -47,8 +47,10 @@ public:
         TPDO_EVENT_DP = 0xFFu // event-driven (device profile and application profile specific)
     };
     bool setTransmissionType(quint8 type);
+    quint8 transmissionType();
 
     void setSyncStartValue(quint8 syncStartValue);
+    quint8 syncStartValue();
 
 protected slots:
     void receiveSync();
