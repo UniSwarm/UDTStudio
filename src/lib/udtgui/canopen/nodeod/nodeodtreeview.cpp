@@ -36,14 +36,15 @@ NodeOdTreeView::NodeOdTreeView(QWidget *parent)
     header()->resizeSection(0, 12 * w0);
     header()->resizeSection(1, 40 * w0);
     header()->resizeSection(2, 12 * w0);
-    header()->resizeSection(3, 20 * w0);
+    header()->resizeSection(3, 10 * w0);
+    header()->resizeSection(4, 20 * w0);
 
     _odModelSorter->setDynamicSortFilter(true);
 
     setSortingEnabled(true);
     sortByColumn(0, Qt::SortOrder::AscendingOrder);
 
-    setSelectionMode(QAbstractItemView::SingleSelection);
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
     setDragEnabled(true);
     setDragDropMode(QAbstractItemView::DragDrop);
 }

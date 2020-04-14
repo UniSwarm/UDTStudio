@@ -128,6 +128,13 @@ QVariant NodeOdItem::data(int column, int role) const
                     return QVariant(NodeIndex::objectTypeStr(_index->objectType()));
                 }
 
+            case NodeOdItemModel::Acces:
+                if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
+                {
+                    return QVariant(_index->subIndex(0)->accessString());
+                }
+                break;
+
             case NodeOdItemModel::Value:
                 if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
                 {
@@ -190,6 +197,9 @@ QVariant NodeOdItem::data(int column, int role) const
 
             case NodeOdItemModel::Type:
                 return QVariant(NodeSubIndex::dataTypeStr(_subIndex->dataType()));
+
+            case NodeOdItemModel::Acces:
+                return QVariant(_subIndex->accessString());
 
             case NodeOdItemModel::Value:
                 QVariant value = _subIndex->value();

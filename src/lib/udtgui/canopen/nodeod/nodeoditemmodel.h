@@ -47,6 +47,7 @@ public:
         OdIndex,
         Name,
         Type,
+        Acces,
         Value,
         ColumnCount
     };

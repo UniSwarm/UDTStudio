@@ -131,6 +131,8 @@ QVariant NodeOdItemModel::headerData(int section, Qt::Orientation orientation, i
             return QVariant(tr("Name"));
         case Type:
             return QVariant(tr("Type"));
+        case Acces:
+            return QVariant(tr("Acces"));
         case Value:
             return QVariant(tr("Value"));
         }

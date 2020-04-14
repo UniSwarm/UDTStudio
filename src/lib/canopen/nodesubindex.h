@@ -48,6 +48,7 @@ public:
     bool isWritable() const;
     bool hasTPDOAccess() const;
     bool hasRPDOAccess() const;
+    QString accessString() const;
 
     const QVariant &value() const;
     void setValue(const QVariant &value);

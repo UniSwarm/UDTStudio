@@ -181,6 +181,30 @@ bool NodeSubIndex::hasRPDOAccess() const
     return (_accessType & RPDO);
 }
 
+QString NodeSubIndex::accessString() const
+{
+    QString acces;
+
+    if (_accessType & READ)
+    {
+        acces += "R";
+    }
+    if (_accessType & WRITE)
+    {
+        acces += "W";
+    }
+    if (_accessType & TPDO)
+    {
+        acces += " TPDO";
+    }
+    if (_accessType & RPDO)
+    {
+        acces += " RPDO";
+    }
+
+    return acces;
+}
+
 /**
  * @brief _value getter
  * @return return sub-index value
