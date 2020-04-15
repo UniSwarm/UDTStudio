@@ -114,7 +114,7 @@ protected:
     QList<NodeObjectId> _objectToMap;
 
     bool sendData();
-    void convertQVariantToQDataStream(QDataStream &request, const QVariant &data);
+    void convertQVariantToQDataStream(QDataStream &request, const QVariant &data, QMetaType::Type type);
 
     enum CommParam
     {

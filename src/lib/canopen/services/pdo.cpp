@@ -453,7 +453,7 @@ bool PDO::sendData()
             setError(ERROR_EXCEED_PDO_LENGTH);
             return false;
         }
-        convertQVariantToQDataStream(request, _node->nodeOd()->value(object.index, object.subIndex));
+        convertQVariantToQDataStream(request, _node->nodeOd()->value(object), _node->nodeOd()->dataType(object));
     }
 
     QCanBusFrame frame;
@@ -463,9 +463,9 @@ bool PDO::sendData()
     return lcanDevice->writeFrame(frame);
 }
 
-void PDO::convertQVariantToQDataStream(QDataStream &request, const QVariant &data)
+void PDO::convertQVariantToQDataStream(QDataStream &request, const QVariant &data, QMetaType::Type type)
 {
-    switch (QMetaType::Type(data.type()))
+    switch (type)
     {
     case QMetaType::Long:
     case QMetaType::LongLong:
