@@ -102,7 +102,7 @@ bool TPDO::setTransmissionType(quint8 type)
     }
     else
     {
-        // ERROR_PARAM_IMCOMPATIBILITY
+        setError(ERROR_PARAM_IMCOMPATIBILITY);
         return false;
     }
 }

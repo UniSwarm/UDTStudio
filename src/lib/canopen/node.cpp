@@ -200,47 +200,47 @@ QList<TPDO *> Node::tpdos() const
     return _tpdos;
 }
 
-void Node::readMappingRpdo(quint8 rpdoNumber)
+bool Node::isMappedObjectInPdo(NodeObjectId object) const
 {
-    if (rpdoNumber > _rpdos.size())
+    for (RPDO *rpdo : _rpdos)
     {
-        return;
+        if ( rpdo->isMappedObject(object))
+        {
+            return true;
+        }
     }
-    _rpdos.at(rpdoNumber)->readMapping();
+    for (TPDO *tpdo : _tpdos)
+    {
+        if (tpdo->isMappedObject(object))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
-const QList<NodeObjectId> &Node::currentMappindRpdo(quint8 rpdoNumber) const
+RPDO *Node::isMappedObjectInRpdo(NodeObjectId object) const
 {
-    return _rpdos.at(rpdoNumber)->currentMappind();
-}
-void Node::writeMappingRpdo(quint8 rpdoNumber, const QList<NodeObjectId> &objectList)
-{
-    if (rpdoNumber > _rpdos.size())
+    for (RPDO *rpdo : _rpdos)
     {
-        return;
+        if ( rpdo->isMappedObject(object))
+        {
+            return rpdo;
+        }
     }
-    _rpdos.at(rpdoNumber)->writeMapping(objectList);
+    return nullptr;
 }
 
-void Node::readMappingTpdo(quint8 tpdoNumber)
+TPDO *Node::isMappedObjectInTpdo(NodeObjectId object) const
 {
-    if (tpdoNumber > _tpdos.size())
+    for (TPDO *tpdo : _tpdos)
     {
-        return;
+        if (tpdo->isMappedObject(object))
+        {
+            return tpdo;
+        }
     }
-    _tpdos.at(tpdoNumber)->readMapping();
-}
-const QList<NodeObjectId> &Node::currentMappindTpdo(quint8 tpdoNumber) const
-{
-    return _tpdos.at(tpdoNumber)->currentMappind();
-}
-void Node::writeMappingTpdo(quint8 tpdoNumber, const QList<NodeObjectId> &objectList)
-{
-    if (tpdoNumber > _tpdos.size())
-    {
-        return;
-    }
-    _tpdos.at(tpdoNumber)->writeMapping(objectList);
+    return nullptr;
 }
 
 void Node::readObject(const NodeObjectId &id)

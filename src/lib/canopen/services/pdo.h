@@ -39,6 +39,7 @@ public:
     quint8 pdoNumber();
 
     const QList<NodeObjectId> &currentMappind() const;
+    bool isMappedObject(NodeObjectId object) const;
 
     void writeMapping(const QList<NodeObjectId> &objectList);
     void readMapping();
@@ -64,11 +65,16 @@ public:
         ERROR_CANNOT_MAP_PDO,
         ERROR_EXCEED_PDO_LENGTH,
         ERROR_PARAM_IMCOMPATIBILITY,
+        ERROR_WRITE_PARAM,
+        ERROR_MODIFY_MAPPING,
+        ERROR_DEACTIVATE_COBID,
+        ERROR_DISABLE_MAPPING,
         ERROR_GENERAL_ERROR
     };
 
 signals:
     void mappingChanged();
+    void errorOccurred(ErrorPdo error);
 
 protected:
     quint32 _cobId;
@@ -129,6 +135,8 @@ protected:
     };
 
     PDO_conf _waitingConf;
+
+    void setError(ErrorPdo error);
 
 private:
 

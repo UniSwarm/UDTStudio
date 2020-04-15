@@ -36,8 +36,7 @@ RPDO::RPDO(Node *node, quint8 number)
 
     _objectCommList = {{_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_COB_ID},
                        {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_TRASMISSION_TYPE},
-                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_INHIBIT_TIME},
-                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_SYNC_START_VALUE}};
+                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_INHIBIT_TIME}};
 }
 
 QString RPDO::type() const
@@ -86,7 +85,7 @@ bool RPDO::setTransmissionType(quint8 type)
     }
     else
     {
-        // ERROR_PARAM_IMCOMPATIBILITY
+        setError(ERROR_PARAM_IMCOMPATIBILITY);
         return false;
     }
 }
@@ -99,5 +98,9 @@ quint8 RPDO::transmissionType()
 
 void RPDO::receiveSync()
 {
+    if (_objectCurrentMapped.isEmpty())
+    {
+        return;
+    }
     sendData();
 }
