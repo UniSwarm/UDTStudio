@@ -177,6 +177,8 @@ private:
     qint32 sdoDownloadInitiate(const QCanBusFrame &frame);
     qint32 sdoDownloadSegment(const QCanBusFrame &frame);
     qint32 sdoBlockDownload(const QCanBusFrame &frame);
+    void sdoBlockDownloadSubBlock();
+    bool sdoBlockDownloadEnd();
     qint32 sdoBlockUpload(const QCanBusFrame &frame);
 
     bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex);                            // SDO upload initiate

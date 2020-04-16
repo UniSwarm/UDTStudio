@@ -357,6 +357,7 @@ qint32 SDO::downloadDispatcher()
             sendSdoRequest(cmd, _request->index, _request->subIndex, QVariant(static_cast<quint32>(0)));
         }
         _request->seqno = 1;
+        _request->stay = _request->size;
     }
     else
     {
@@ -486,8 +487,6 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
 {
     quint16 index = 0;
     quint8 subindex = 0;
-    quint8 cmd = 0;
-    quint32 seek = 0;
     QByteArray buffer;
 
     quint8 ss = static_cast<quint8>(frame.payload().at(0) & SS::SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_MASK);
@@ -506,7 +505,7 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
         {
             _request->blksize = static_cast<quint8>(frame.payload().at(4));
             _request->state = STATE_BLOCK_DOWNLOAD;
-            _request->seqno = 1;
+            sdoBlockDownloadSubBlock();
         }
     }
     else if ((ss == SS::SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_RESP) && (_request->state == STATE_BLOCK_DOWNLOAD))
@@ -519,60 +518,73 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
             // Re-Send block
             qDebug() << "ERROR sequence detection from server, ackseq : " << ackseq;
             errorManagement(CO_SDO_ABORT_CODE_INVALID_SEQ_NUMBER);
-            _request->seqno = 1;
-            _request->state = STATE_BLOCK_DOWNLOAD;
-            return 1;
+            return 0;
+        }
+        if (_request->state == STATE_BLOCK_DOWNLOAD)
+        {
+            sdoBlockDownloadSubBlock();
+        }
+        if (_request->state == STATE_BLOCK_DOWNLOAD_END)
+        {
+            sdoBlockDownloadEnd();
         }
     }
     else if (ss == SS::SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_END_RESP)
     {
         requestFinished();
     }
+    return 0;
+}
 
-    if (_request->state == STATE_BLOCK_DOWNLOAD_END)
-    {
-        cmd = CCS::SDO_CCS_CLIENT_BLOCK_DOWNLOAD;
-        cmd |= CS::SDO_CCS_CLIENT_BLOCK_DOWNLOAD_CS_END_REQ;
-        cmd |= (SDO_SG_SIZE - _request->stay) << 2;
-        quint16 crc = 0;
-        sendSdoRequest(cmd, crc);
-    }
-    else
-    {
-        _request->seqno = 1;
-        _request->state = STATE_BLOCK_DOWNLOAD;
-    }
+/**
+ * @brief Send a sub block
+ */
+void SDO::sdoBlockDownloadSubBlock()
+{
+    quint32 seek = 0;
+    QByteArray buffer;
 
-    if (_request->state == STATE_BLOCK_DOWNLOAD)
+    _request->seqno = 1;
+    while (_request->seqno <= _request->blksize)
     {
-        while (_request->seqno <= (_request->blksize) && (_request->stay > SDO_SG_SIZE))
+        seek = _request->size - _request->stay;
+        buffer.clear();
+        buffer = _request->dataByte.mid(static_cast<int32_t>(seek), SDO_SG_SIZE);
+
+        sendSdoRequest(true, _request->seqno, buffer);
+        _request->stay -= SDO_SG_SIZE;
+        _request->seqno++;
+
+        if (_request->stay <= SDO_SG_SIZE)
         {
             seek = _request->size - _request->stay;
             buffer.clear();
             buffer = _request->dataByte.mid(static_cast<int32_t>(seek), SDO_SG_SIZE);
-
-            sendSdoRequest(true, _request->seqno, buffer);
-            _request->stay -= SDO_SG_SIZE;
             _request->seqno++;
-            qDebug() << "_request->stay" << _request->stay;
-            if (_request->stay < SDO_SG_SIZE)
-            {
-                seek = _request->size - _request->stay;
-                buffer.clear();
-                buffer = _request->dataByte.mid(static_cast<int32_t>(seek), SDO_SG_SIZE);
-                for (int i = (buffer.size() - 1); i < SDO_SG_SIZE; i++)
-                {
-                    buffer.append(static_cast<quint8>(0));
-                }
-                _request->seqno++;
 
-                sendSdoRequest(false, _request->seqno, buffer);
-                _request->state = STATE_BLOCK_DOWNLOAD_END;
-            }
+            sendSdoRequest(false, _request->seqno, buffer);
+            _request->state = STATE_BLOCK_DOWNLOAD_END;
+
+            return;
         }
     }
-    return 0;
+    _request->state = STATE_BLOCK_DOWNLOAD;
+    return;
 }
+
+/**
+ * @brief Send a last response to device, Protocol Block Donwload
+ */
+bool SDO::sdoBlockDownloadEnd()
+{
+    quint8 cmd = 0;
+    cmd = CCS::SDO_CCS_CLIENT_BLOCK_DOWNLOAD;
+    cmd |= CS::SDO_CCS_CLIENT_BLOCK_DOWNLOAD_CS_END_REQ;
+    cmd |= (SDO_SG_SIZE - _request->stay) << 2;
+    quint16 crc = 0;
+    return sendSdoRequest(cmd, crc);
+}
+
 void SDO::errorManagement(SDOAbortCodes error)
 {
     sendSdoRequest(CCS::SDO_CCS_CLIENT_ABORT, _request->index, _request->subIndex, error);
@@ -826,8 +838,8 @@ bool SDO::sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segD
     {
         request << static_cast<quint8>(seqno);
     }
-    arrangeDataDownload(request, segData);
-    // sdoWriteReqPayload.append(segData);
+    //arrangeDataDownload(request, segData);
+    sdoWriteReqPayload.append(segData);
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
