@@ -508,7 +508,7 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
             sdoBlockDownloadSubBlock();
         }
     }
-    else if ((ss == SS::SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_RESP) && (_request->state == STATE_BLOCK_DOWNLOAD))
+    else if (ss == SS::SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_RESP)
     {
         _request->blksize = static_cast<quint8>(frame.payload().at(2));
         quint8 ackseq = static_cast<quint8>(frame.payload().at(1));
@@ -517,14 +517,15 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
             // ERROR sequence detection from server
             // Re-Send block
             qDebug() << "ERROR sequence detection from server, ackseq : " << ackseq;
-            errorManagement(CO_SDO_ABORT_CODE_INVALID_SEQ_NUMBER);
-            return 0;
+            _request->stay += _request->seqno * SDO_SG_SIZE;
+            _request->state = STATE_BLOCK_DOWNLOAD;
         }
+
         if (_request->state == STATE_BLOCK_DOWNLOAD)
         {
             sdoBlockDownloadSubBlock();
         }
-        if (_request->state == STATE_BLOCK_DOWNLOAD_END)
+        else if (_request->state == STATE_BLOCK_DOWNLOAD_END)
         {
             sdoBlockDownloadEnd();
         }
@@ -560,10 +561,10 @@ void SDO::sdoBlockDownloadSubBlock()
             seek = _request->size - _request->stay;
             buffer.clear();
             buffer = _request->dataByte.mid(static_cast<int32_t>(seek), SDO_SG_SIZE);
-            _request->seqno++;
 
             sendSdoRequest(false, _request->seqno, buffer);
             _request->state = STATE_BLOCK_DOWNLOAD_END;
+            _timer->start(_time);
 
             return;
         }
@@ -840,6 +841,10 @@ bool SDO::sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segD
     }
     //arrangeDataDownload(request, segData);
     sdoWriteReqPayload.append(segData);
+    for (int i = sdoWriteReqPayload.size(); i < 8; i++)
+    {
+        sdoWriteReqPayload.append(static_cast<quint8>(0));// << static_cast<quint8>(0);
+    }
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
