@@ -199,7 +199,7 @@ private:
 
     QVariant arrangeDataUpload(QByteArray, QMetaType::Type type);
     void arrangeDataDownload(QDataStream &request, const QVariant &data);
-    QProgressBar *procressBlockDownload;
+    QProgressBar *_procressBlockDownload;
 
     enum CCS : quint8  // CCS : Client Command Specifier from Client to Server
     {

@@ -381,10 +381,10 @@ qint32 SDO::sdoBlockUpload(const QCanBusFrame &frame)
             return 1;
         }
 
-        procressBlockDownload = new QProgressBar();
-        procressBlockDownload->setRange(0, static_cast<int>(_request->size));
-        //procressBlockDownload->setWindowModality(Qt::ApplicationModal);
-        procressBlockDownload->show();
+        _procressBlockDownload = new QProgressBar();
+        _procressBlockDownload->setRange(0, static_cast<int>(_request->size));
+        //_procressBlockDownload->setWindowModality(Qt::ApplicationModal);
+        _procressBlockDownload->show();
 
         cmd = CCS::SDO_CCS_CLIENT_BLOCK_UPLOAD;
         cmd |= SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_START;
@@ -429,7 +429,7 @@ qint32 SDO::sdoBlockUpload(const QCanBusFrame &frame)
 
         fichier.write(_request->dataByte);
         fichier.close();
-        delete procressBlockDownload;
+        delete _procressBlockDownload;
 
         QMessageBox msgBox;
         msgBox.setText("The data is save in file: " + name);
@@ -493,7 +493,7 @@ qint32 SDO::sdoBlockUploadSubBlock(const QCanBusFrame &frame)
     }
     _request->seqno++;
 
-    procressBlockDownload->setValue(static_cast<int>(_request->size - _request->stay));
+    _procressBlockDownload->setValue(static_cast<int>(_request->size - _request->stay));
     return 0;
 }
 
@@ -517,15 +517,9 @@ qint32 SDO::downloadDispatcher()
     {
         // block download
         cmd = CCS::SDO_CCS_CLIENT_BLOCK_DOWNLOAD;
-        if (_request->size < 0xFFFF)
-        {
-            cmd |= FlagBlock::BLOCK_SIZE;
-            sendSdoRequest(cmd, _request->index, _request->subIndex, QVariant(static_cast<quint32>(_request->size)));
-        }
-        else
-        { // Overload size so no indicate the size in frame S=0
-            sendSdoRequest(cmd, _request->index, _request->subIndex, QVariant(static_cast<quint32>(0)));
-        }
+        cmd |= FlagBlock::BLOCK_SIZE;
+        sendSdoRequest(cmd, _request->index, _request->subIndex, QVariant(static_cast<quint32>(_request->size)));
+
         _request->seqno = 1;
         _request->stay = _request->size;
     }
@@ -687,7 +681,7 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
             // ERROR sequence detection from server
             // Re-Send block
             qDebug() << "ERROR sequence detection from server, ackseq : " << ackseq;
-            _request->stay += _request->seqno * SDO_SG_SIZE;
+            _request->stay += (_request->seqno - 1) * SDO_SG_SIZE;
             _request->state = STATE_BLOCK_DOWNLOAD;
         }
 
