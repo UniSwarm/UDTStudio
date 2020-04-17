@@ -21,6 +21,7 @@
 
 #include <QQueue>
 #include <QTimer>
+#include <QProgressBar>
 #include "canopen_global.h"
 
 #include "service.h"
@@ -152,9 +153,12 @@ private:
         quint8 toggle;
 
         // For SDO Block
+        QByteArray dataByteBySegment;
         quint8 blksize;             // Number of segments per block with 0 < blksize < 128.
         quint8 moreBlockSegments;   // indicates whether there are still more segments to be downloaded
         quint8 seqno;               // sequence number of segment
+        quint8 ackseq;               // sequence number of segment
+        bool error;
     };
 
     RequestSdo *_request;
@@ -180,6 +184,7 @@ private:
     void sdoBlockDownloadSubBlock();
     bool sdoBlockDownloadEnd();
     qint32 sdoBlockUpload(const QCanBusFrame &frame);
+    qint32 sdoBlockUploadSubBlock(const QCanBusFrame &frame);
 
     bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex);                            // SDO upload initiate
     bool sendSdoRequest(quint8 cmd);                                                            // SDO upload segment, SDO block upload initiate, SDO block upload ends
@@ -190,9 +195,11 @@ private:
     bool sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segData);            // SDO block download sub-block
     bool sendSdoRequest(quint8 cmd, quint16 &crc);                                              // SDO block download end
     bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint32 error);             // SDO abort transfer
+    quint8 calculateBlockSize(quint32 size);
 
     QVariant arrangeDataUpload(QByteArray, QMetaType::Type type);
     void arrangeDataDownload(QDataStream &request, const QVariant &data);
+    QProgressBar *procressBlockDownload;
 
     enum CCS : quint8  // CCS : Client Command Specifier from Client to Server
     {
@@ -252,7 +259,11 @@ private:
     enum FlagBlock :  quint8
     {
         BLOCK_SIZE = 0x2, // s: size indicator
-        BLOCK_CRC = 0x04
+        BLOCK_CRC = 0x04,
+        BLOCK_BLKSIZE_MAX = 0x7F,
+        BLOCK_SEQNO_MASK = 0x7F,
+        BLOCK_MORE_SEG = 0x80,
+        BLOCK_SIZE_MASK = 0x1C
     };
 
 };
