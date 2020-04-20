@@ -225,7 +225,7 @@ qint32 SDO::downloadData(quint16 index, quint8 subindex, const QVariant &data)
 qint32 SDO::uploadDispatcher()
 {
     quint8 cmd = 0;
-    if (_request->size != 0)
+    if (_request->size < 256)
     {
         cmd = CCS::SDO_CCS_CLIENT_UPLOAD_INITIATE;
         sendSdoRequest(cmd, _request->index, _request->subIndex);
@@ -321,6 +321,7 @@ qint32 SDO::sdoUploadSegment(const QCanBusFrame &frame)
 
         if ((frame.payload().at(0) & Flag::SDO_C_MASK) == Flag::SDO_C) // no more segments to be uploaded
         {
+            _request->state = SDO::STATE_UPLOAD;
             requestFinished();
         }
         else // more segments to be uploaded (C=0)
@@ -549,6 +550,7 @@ qint32 SDO::sdoDownloadInitiate(const QCanBusFrame &frame)
 
             if (_request->stay < SDO_SG_SIZE) // no more segments to be downloaded
             {
+                _request->state = STATE_DOWNLOAD;
                 cmd |= SDO_C;
                 sendSdoRequest(cmd, buffer);
                 requestFinished();
