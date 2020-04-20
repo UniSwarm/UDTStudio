@@ -18,12 +18,9 @@
 
 #include <QDataStream>
 #include <QDebug>
-#include <QMessageBox>
-#include <QFile>
 
 #include "canopenbus.h"
 #include "sdo.h"
-#include <iostream>
 
 #define SDO_SCS(data) ((data).at(0) & 0xE0) // E0 -> mask for css
 
@@ -169,15 +166,6 @@ qint32 SDO::uploadData(quint16 index, quint8 subindex, QMetaType::Type dataType)
     request->dataType = dataType;
     request->size = static_cast<quint32>(QMetaType::sizeOf(QMetaType::Type(dataType)));
     request->state = STATE_UPLOAD;
-
-    if (request->dataType == QMetaType::Type::QByteArray)
-    {
-        request->size = 0;
-    }
-    else
-    {
-        request->size = static_cast<quint32>(QMetaType::sizeOf(QMetaType::Type(dataType)));
-    }
 
     bool existing = false;
     for (RequestSdo *req : _requestQueue)
@@ -381,11 +369,6 @@ qint32 SDO::sdoBlockUpload(const QCanBusFrame &frame)
             return 1;
         }
 
-        _procressBlockDownload = new QProgressBar();
-        _procressBlockDownload->setRange(0, static_cast<int>(_request->size));
-        //_procressBlockDownload->setWindowModality(Qt::ApplicationModal);
-        _procressBlockDownload->show();
-
         cmd = CCS::SDO_CCS_CLIENT_BLOCK_UPLOAD;
         cmd |= SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_START;
         sendSdoRequest(cmd);
@@ -417,23 +400,6 @@ qint32 SDO::sdoBlockUpload(const QCanBusFrame &frame)
         }
         cmd = CCS::SDO_CCS_CLIENT_BLOCK_UPLOAD;
         cmd |= CS::SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_END_REQ;
-
-        QString name = "Object_" + QString::number(_request->index, 16) + ":"
-                         + QString::number(_request->subIndex) + "_"
-                         + QDateTime().currentDateTime().toString(QString("yyyy.MM.dd_hh:mm:ss.z"));
-        QFile fichier(name);
-        if(!fichier.open(QIODevice::WriteOnly))
-        {
-            return 0;
-        }
-
-        fichier.write(_request->dataByte);
-        fichier.close();
-        delete _procressBlockDownload;
-
-        QMessageBox msgBox;
-        msgBox.setText("The data is save in file: " + name);
-        msgBox.exec();
 
         sendSdoRequest(cmd);
         requestFinished();
@@ -493,11 +459,12 @@ qint32 SDO::sdoBlockUploadSubBlock(const QCanBusFrame &frame)
     }
     _request->seqno++;
 
-    _procressBlockDownload->setValue(static_cast<int>(_request->size - _request->stay));
     return 0;
 }
 
-// Calculate seg number for the next block
+/**
+ * @brief Calculate seg number for the next block, Block download
+ */
 quint8 SDO::calculateBlockSize(quint32 size)
 {
     if (((size + SDO_SG_SIZE) / SDO_SG_SIZE) >= BLOCK_BLKSIZE_MAX)
@@ -509,6 +476,7 @@ quint8 SDO::calculateBlockSize(quint32 size)
         return static_cast<quint8>((_request->stay + SDO_SG_SIZE) / SDO_SG_SIZE);
     }
 }
+
 qint32 SDO::downloadDispatcher()
 {
     quint8 cmd = 0;
@@ -833,6 +801,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex)
     request << index;
     request << subindex;
 
+    // the frame must be a size of 8
     for (int i = sdoWriteReqPayload.size(); i < 8; i++)
     {
         request << static_cast<quint8>(0);
@@ -859,6 +828,7 @@ bool SDO::sendSdoRequest(quint8 cmd)
     request.setByteOrder(QDataStream::LittleEndian);
     request << cmd;
 
+    // the frame must be a size of 8
     for (int i = sdoWriteReqPayload.size(); i < 8; i++)
     {
         request << static_cast<quint8>(0);
@@ -887,9 +857,9 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QVari
     request << cmd;
     request << index;
     request << subindex;
-
     arrangeDataDownload(request, data);
 
+    // the frame must be a size of 8
     for (int i = sdoWriteReqPayload.size(); i < 8; i++)
     {
         request << static_cast<quint8>(0);
@@ -920,6 +890,7 @@ bool SDO::sendSdoRequest(quint8 cmd, const QByteArray &data)
 
     //    arrangeDataDownload(request, data);
     sdoWriteReqPayload.append(data);
+    // the frame must be a size of 8
     for (int i = sdoWriteReqPayload.size(); i < 8; i++)
     {
         request << static_cast<quint8>(0);
@@ -947,6 +918,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 &crc)
     request << cmd;
     request << crc;
 
+    // the frame must be a size of 8
     for (int i = sdoWriteReqPayload.size(); i < 8; i++)
     {
         request << static_cast<quint8>(0);
@@ -978,6 +950,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blks
     request << blksize;
     request << pst;
 
+    // the frame must be a size of 8
     for (int i = sdoWriteReqPayload.size(); i < 8; i++)
     {
         request << static_cast<quint8>(0);
@@ -1007,6 +980,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint8 &ackseq, quint8 blksize)
     request << ackseq;
     request << blksize;
 
+    // the frame must be a size of 8
     for (int i = sdoWriteReqPayload.size(); i < 8; i++)
     {
         request << static_cast<quint8>(0);
@@ -1042,11 +1016,12 @@ bool SDO::sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segD
     {
         request << static_cast<quint8>(seqno);
     }
-    //arrangeDataDownload(request, segData);
+
     sdoWriteReqPayload.append(segData);
+    // the frame must be a size of 8
     for (int i = sdoWriteReqPayload.size(); i < 8; i++)
     {
-        sdoWriteReqPayload.append(static_cast<quint8>(0));// << static_cast<quint8>(0);
+        sdoWriteReqPayload.append(static_cast<quint8>(0));
     }
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
