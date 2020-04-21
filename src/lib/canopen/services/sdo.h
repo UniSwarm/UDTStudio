@@ -19,13 +19,12 @@
 #ifndef SDO_H
 #define SDO_H
 
+#include "canopen_global.h"
 #include <QQueue>
 #include <QTimer>
-#include <QProgressBar>
-#include "canopen_global.h"
 
-#include "service.h"
 #include "nodeindex.h"
+#include "service.h"
 
 class CANOPEN_EXPORT SDO : public Service
 {
@@ -130,7 +129,7 @@ public:
         CO_SDO_ABORT_CODE_NO_DATA_AVAILABLE = 0x08000024    // No data available
     };
 
-  signals:
+signals:
     void sdoFree();
     void dataObjetAvailable(NodeIndex *nodeIndex);
     void dataObjetWritten();
@@ -188,7 +187,7 @@ private:
 
     bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex);                            // SDO upload initiate
     bool sendSdoRequest(quint8 cmd);                                                            // SDO upload segment, SDO block upload initiate, SDO block upload ends
-    bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QVariant &data);      // SDO download initiate, SDO block download initiate
+    bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QByteArray &data);    // SDO download initiate, SDO block download initiate
     bool sendSdoRequest(quint8 cmd, const QByteArray &value);                                   // SDO download segment
     bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blksize, quint8 pst);// SDO block upload initiate
     bool sendSdoRequest(quint8 cmd, quint8 &ackseq, quint8 blksize);                            // SDO block upload sub-block
@@ -200,7 +199,7 @@ private:
     QVariant arrangeDataUpload(QByteArray, QMetaType::Type type);
     void arrangeDataDownload(QDataStream &request, const QVariant &data);
 
-    enum CCS : quint8  // CCS : Client Command Specifier from Client to Server
+    enum CCS : quint8 // CCS : Client Command Specifier from Client to Server
     {
         SDO_CCS_CLIENT_DOWNLOAD_INITIATE = 0x20,// ccs:1
         SDO_CCS_CLIENT_DOWNLOAD_SEGMENT = 0x00, // ccs:0
@@ -211,7 +210,7 @@ private:
         SDO_CCS_CLIENT_ABORT = 0x80
     };
 
-    enum SCS : quint8  // SCS : Server Command Specifier from Server to Client
+    enum SCS : quint8 // SCS : Server Command Specifier from Server to Client
     {
         SDO_SCS_SERVER_DOWNLOAD_INITIATE = 0x60,// scs:3
         SDO_SCS_SERVER_DOWNLOAD_SEGMENT = 0x20, // scs:1
@@ -222,7 +221,7 @@ private:
         SDO_SCS_CLIENT_ABORT = 0x80
     };
 
-    enum CS : quint8   // cs: client subcommand
+    enum CS : quint8 // cs: client subcommand
     {
         SDO_CCS_CLIENT_BLOCK_DOWNLOAD_CS_MASK = 0x1,    // Maks for cs: client subcommand
         SDO_CCS_CLIENT_BLOCK_DOWNLOAD_CS_INIT_REQ = 0x0,// cs:0: initiate download request
@@ -234,7 +233,7 @@ private:
         SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_START = 0x3,     // 3: start upload
     };
 
-    enum SS : quint8   // ss: server subcommand
+    enum SS : quint8 // ss: server subcommand
     {
         SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_MASK = 0x3,        // ss :0: initiate download response
         SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_INIT_RESP = 0x0,   // ss :0: initiate download response
@@ -244,27 +243,35 @@ private:
         SDO_SCS_SERVER_BLOCK_UPLOAD_SS_END_RESP = 0x1       // 1: end block upload response
     };
 
-    enum Flag :  quint8
+    enum Flag : quint8
     {
-        SDO_E_MASK = 0x2,
+        SDO_E_MASK = 0x2,       // transfer type
         SDO_E_NORMAL = 0x0,     // E: transfer type
         SDO_E_EXPEDITED = 0x1,  // E: transfer type
-        SDO_S_MASK = 0x1,
-        SDO_S = 0x1,            // S : size indicator
-        SDO_C_MASK = 0x1,
-        SDO_C = 0x1             // C: indicates whether there are still more segments to be downloaded.
+
+        SDO_S_SIZE_MASK = 0x1,  // size indicator mask
+        SDO_S_SIZE = 0x1,       // S : size indicator
+
+        SDO_N_NUMBER_INIT_MASK = 0xC,   // indicates the number of bytes that do not contain data
+        SDO_N_NUMBER_SEG_MASK = 0xE,    // indicates the number of bytes that do not contain data
+
+        SDO_C_MORE_MASK = 0x1,
+        SDO_C_MORE = 0x1,   // C: indicates whether there are still more segments to be downloaded.
+
+        SDO_TOGGLE_MASK = 0x10,
+
+        SDO_SG_SIZE = 7 // size max by segment, used for SDO SEGMENT ant SDO BLOCK
     };
 
-    enum FlagBlock :  quint8
+    enum FlagBlock : quint8
     {
-        BLOCK_SIZE = 0x2, // s: size indicator
-        BLOCK_CRC = 0x04,
-        BLOCK_BLKSIZE_MAX = 0x7F,
-        BLOCK_SEQNO_MASK = 0x7F,
-        BLOCK_MORE_SEG = 0x80,
-        BLOCK_SIZE_MASK = 0x1C
-    };
+        BLOCK_SIZE = 0x2,   // s: size indicator
+        BLOCK_CRC = 0x04,   // CRC
+        BLOCK_C_MORE_SEG = 0x80,    // C: indicates whether there are still more segments to be downloaded.
+        BLOCK_N_NUMBER_MASK = 0x1C, // indicates the number of bytes that do not contain data
 
+        BLOCK_SEQNO_MASK = 0x7F // Max segment by sub-block
+    };
 };
 
 #endif // SDO_H
