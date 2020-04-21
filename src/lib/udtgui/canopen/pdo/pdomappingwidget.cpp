@@ -21,11 +21,16 @@
 #include "pdomappingpainter.h"
 
 #include <QDebug>
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QMimeData>
 
 PDOMappingWidget::PDOMappingWidget(QWidget *parent)
     : QWidget(parent)
 {
     _pdo = nullptr;
+    _dragBytePos = -1;
+    setAcceptDrops(true);
 }
 
 const QList<NodeObjectId> &PDOMappingWidget::nodeListMapping() const
@@ -36,7 +41,7 @@ const QList<NodeObjectId> &PDOMappingWidget::nodeListMapping() const
 void PDOMappingWidget::setNodeListMapping(const QList<NodeObjectId> &nodeListMapping)
 {
     _nodeListMapping = nodeListMapping;
-    repaint();
+    update();
 }
 
 const QList<QString> &PDOMappingWidget::nodeListName() const
@@ -47,7 +52,7 @@ const QList<QString> &PDOMappingWidget::nodeListName() const
 void PDOMappingWidget::setNodeListName(const QList<QString> &nodeListName)
 {
     _nodeListName = nodeListName;
-    repaint();
+    update();
 }
 
 const QList<QColor> &PDOMappingWidget::nodeListColor() const
@@ -58,7 +63,7 @@ const QList<QColor> &PDOMappingWidget::nodeListColor() const
 void PDOMappingWidget::setNodeListColor(const QList<QColor> &nodeListColor)
 {
     _nodeListColor = nodeListColor;
-    repaint();
+    update();
 }
 
 PDO *PDOMappingWidget::pdo() const
@@ -102,6 +107,11 @@ void PDOMappingWidget::paintEvent(QPaintEvent *event)
     PDOMappingPainter painter(this);
     QRect rectPdo = rect().adjusted(1, 1, -1, -1);
     painter.drawListMapping(rectPdo, _nodeListMapping, _nodeListName, _nodeListColor);
+
+    if (_dragBytePos >= 0)
+    {
+        painter.drawDragPos(rectPdo, _dragBytePos);
+    }
 }
 
 void PDOMappingWidget::updateMapping()
@@ -130,4 +140,58 @@ void PDOMappingWidget::updateMapping()
         }
         setNodeListMapping(nodeListMapping);
     }
+}
+
+void PDOMappingWidget::dropEvent(QDropEvent *event)
+{
+    QRect rectPdo = rect().adjusted(1, 1, -1, -1);
+    qDebug() << __FUNCTION__ << PDOMappingPainter::byteFromX(rectPdo, event->pos().y());
+
+    // TODO drop and insert map
+
+    _dragBytePos = -1;
+    update();
+}
+
+void PDOMappingWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasFormat("index/subindex") && _pdo)
+    {
+        const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', QString::SkipEmptyParts);
+        for (const QString &stringObjId : stringListObjId)
+        {
+            NodeObjectId objId = NodeObjectId::fromMimeData(stringObjId);
+            NodeSubIndex *nodeSubIndex = objId.nodeSubIndex();
+            if (nodeSubIndex)
+            {
+                if (_pdo->isTPDO() != nodeSubIndex->hasTPDOAccess())
+                {
+                    return;
+                }
+                if (_pdo->isRPDO() != nodeSubIndex->hasRPDOAccess())
+                {
+                    return;
+                }
+            }
+            else
+            {
+                return;
+            }
+        }
+        event->acceptProposedAction();
+    }
+}
+
+void PDOMappingWidget::dragMoveEvent(QDragMoveEvent *event)
+{
+    QRect rectPdo = rect().adjusted(1, 1, -1, -1);
+    _dragBytePos = PDOMappingPainter::byteFromX(rectPdo, event->posF().x());
+    update();
+}
+
+void PDOMappingWidget::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    Q_UNUSED(event)
+    _dragBytePos = -1;
+    update();
 }

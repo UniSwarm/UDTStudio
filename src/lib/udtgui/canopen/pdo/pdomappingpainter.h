@@ -30,6 +30,10 @@ class UDTGUI_EXPORT PDOMappingPainter : public QPainter
 public:
     PDOMappingPainter(QWidget *widget);
 
+    static double byteFromX(const QRect &rect, double x);
+
+    void drawDragPos(const QRect &rect, double pos);
+
     void drawListMapping(const QRect &rect,
                          const QList<NodeObjectId> &nodeListMapping,
                          const QList<QString> &nodeListName = QList<QString>(),

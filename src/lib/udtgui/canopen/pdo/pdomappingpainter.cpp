@@ -20,19 +20,40 @@
 
 #include <QWidget>
 #include <QDebug>
+#include <QtMath>
+
+const int yMargin = 5;
+const int xMargin = 2;
 
 PDOMappingPainter::PDOMappingPainter(QWidget *widget)
     : QPainter(widget), _widget(widget)
 {
+    setRenderHint(QPainter::Antialiasing);
+}
+
+double PDOMappingPainter::byteFromX(const QRect &rect, double x)
+{
+    double bitWidth = (static_cast<double>(rect.width()) - 2 * xMargin) / (8 * 8);
+    qDebug() << x << bitWidth << (x) / (bitWidth * 8.0);
+    return x / (bitWidth * 8.0);
+}
+
+void PDOMappingPainter::drawDragPos(const QRect &rect, double pos)
+{
+    setViewport(rect);
+
+    double bitWidth = (static_cast<double>(rect.width()) - 2 * xMargin) / (8 * 8);
+    setPen(QPen(Qt::darkRed, 1));
+    int height = rect.height();
+
+    int x = static_cast<int>(qRound(pos) * bitWidth * 8) + xMargin;
+    drawLine(x, 0, x, height);
 }
 
 void PDOMappingPainter::drawListMapping(const QRect &rect, const QList<NodeObjectId> &nodeListMapping, const QList<QString> &nodeListName, const QList<QColor> &nodeListColor)
 {
-    setRenderHint(QPainter::Antialiasing);
     setViewport(rect);
 
-    int yMargin = 5;
-    int xMargin = 2;
     int height = rect.height();
     double bitWidth = (static_cast<double>(rect.width()) - 2 * xMargin) / (8 * 8);
 

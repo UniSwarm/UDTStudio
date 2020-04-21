@@ -51,9 +51,6 @@ public:
     bool hasHeightForWidth() const override;
     QSize minimumSizeHint() const override;
 
-protected:
-    void paintEvent(QPaintEvent *event) override;
-
 protected slots:
     void updateMapping();
 
@@ -62,6 +59,17 @@ protected:
     QList<NodeObjectId> _nodeListMapping;
     QList<QString> _nodeListName;
     QList<QColor> _nodeListColor;
+
+    double _dragBytePos;
+
+    // QWidget interface
+protected:
+    void paintEvent(QPaintEvent *event) override;
+
+    void dropEvent(QDropEvent *event) override;
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
+    void dragLeaveEvent(QDragLeaveEvent *event) override;
 };
 
 #endif // PDOMAPPINGWIDGET_H
