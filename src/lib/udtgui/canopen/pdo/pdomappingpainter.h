@@ -30,7 +30,15 @@ class UDTGUI_EXPORT PDOMappingPainter : public QPainter
 public:
     PDOMappingPainter(QWidget *widget);
 
-    void drawMapping(const QRect &rect, const QList<NodeObjectId> &nodeListMapping);
+    void drawListMapping(const QRect &rect,
+                         const QList<NodeObjectId> &nodeListMapping,
+                         const QList<QString> &nodeListName = QList<QString>(),
+                         const QList<QColor> &nodeListColor = QList<QColor>());
+
+    void drawMapping(const QRect &objRect,
+                     const NodeObjectId &nodeObjectId,
+                     const QString &nodeName,
+                     const QColor &nodeColor);
 
 protected:
     QWidget *_widget;

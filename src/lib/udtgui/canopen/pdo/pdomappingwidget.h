@@ -33,8 +33,14 @@ public:
 
     PDO *pdo() const;
 
-    QList<NodeObjectId> nodeListMapping() const;
+    const QList<NodeObjectId> &nodeListMapping() const;
     void setNodeListMapping(const QList<NodeObjectId> &nodeListMapping);
+
+    const QList<QString> &nodeListName() const;
+    void setNodeListName(const QList<QString> &nodeListName);
+
+    const QList<QColor> &nodeListColor() const;
+    void setNodeListColor(const QList<QColor> &nodeListColor);
 
 public slots:
     void setPdo(PDO *pdo);
@@ -54,6 +60,8 @@ protected slots:
 protected:
     PDO *_pdo;
     QList<NodeObjectId> _nodeListMapping;
+    QList<QString> _nodeListName;
+    QList<QColor> _nodeListColor;
 };
 
 #endif // PDOMAPPINGWIDGET_H

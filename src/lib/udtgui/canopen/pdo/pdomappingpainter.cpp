@@ -26,7 +26,7 @@ PDOMappingPainter::PDOMappingPainter(QWidget *widget)
 {
 }
 
-void PDOMappingPainter::drawMapping(const QRect &rect, const QList<NodeObjectId> &nodeListMapping)
+void PDOMappingPainter::drawListMapping(const QRect &rect, const QList<NodeObjectId> &nodeListMapping, const QList<QString> &nodeListName, const QList<QColor> &nodeListColor)
 {
     setRenderHint(QPainter::Antialiasing);
     setViewport(rect);
@@ -46,50 +46,65 @@ void PDOMappingPainter::drawMapping(const QRect &rect, const QList<NodeObjectId>
     }
 
     // draw mapping
-    QColor color(Qt::blue);
-    setPen(QPen(color.darker(), 1));
+    double x = xMargin;
+    for (int i = 0; i < nodeListMapping.count(); i++)
+    {
+        const NodeObjectId &objId = nodeListMapping.at(i);
+
+        x += xMargin;
+        double width = objId.bitSize() * bitWidth - 2 * xMargin;
+        QRectF objRect(x, yMargin, width, height - yMargin * 2);
+
+        QString name;
+        if (i < nodeListName.count())
+        {
+            name = nodeListName.at(i);
+        }
+        QColor color(Qt::blue);
+        if (i < nodeListColor.count())
+        {
+            color = nodeListColor.at(i);
+        }
+
+        drawMapping(objRect.toRect(), objId, name, color);
+
+        x += width + xMargin;
+    }
+}
+
+void PDOMappingPainter::drawMapping(const QRect &objRect, const NodeObjectId &nodeObjectId, const QString &nodeName, const QColor &nodeColor)
+{
+    setPen(QPen(nodeColor.darker(), 1));
     QLinearGradient gradient;
     gradient.setStart(0, 50);
     gradient.setFinalStop(0, 150);
     gradient.setSpread(QGradient::ReflectSpread);
-    gradient.setColorAt(0, color.lighter(160));
-    gradient.setColorAt(1, color.lighter(130));
+    gradient.setColorAt(0, nodeColor.lighter(160));
+    gradient.setColorAt(1, nodeColor.lighter(130));
     setBrush(gradient);
-    double x = xMargin;
     QFontMetrics fontMetrics(font(), _widget);
-    for (const NodeObjectId &objId : nodeListMapping)
+    if (nodeObjectId.bitSize() == 0)
     {
-        if (objId.bitSize() == 0)
-        {
-            continue;
-        }
-        x += xMargin;
+        return;
+    }
 
-        double width = objId.bitSize() * bitWidth - 2 * xMargin;
-        QRectF objRect(x, yMargin, width, height - yMargin * 2);
+    drawRoundedRect(objRect, 5, 5);
 
-        drawRoundedRect(objRect, 5, 5);
+    QRectF textRext = objRect.adjusted(1, 1, -1, -1);
+    QString objName = nodeName;
+    objName = fontMetrics.elidedText(objName, Qt::ElideRight, static_cast<int>(textRext.width()));
 
-        QString objName;
-        NodeSubIndex *nodeSubIndex = objId.nodeSubIndex();
-        if (nodeSubIndex)
-        {
-            objName = fontMetrics.elidedText(nodeSubIndex->name(), Qt::ElideRight, static_cast<int>(width));
-        }
-
-        if (objName.isEmpty())
-        {
-            drawText(objRect, Qt::AlignCenter, QString("0x%1.%2")
-                                                   .arg(QString::number(objId.index, 16))
-                                                   .arg(objId.subIndex));
-        }
-        else
-        {
-            drawText(objRect, Qt::AlignCenter, QString("0x%1.%2\n%3")
-                                                   .arg(QString::number(objId.index, 16))
-                                                   .arg(objId.subIndex)
-                                                   .arg(objName));
-        }
-        x += width + xMargin;
+    if (objName.isEmpty() || textRext.height() < fontMetrics.height() * 2)
+    {
+        drawText(textRext, Qt::AlignCenter, QString("0x%1.%2")
+                                                .arg(QString::number(nodeObjectId.index, 16).toUpper())
+                                                .arg(QString::number(nodeObjectId.subIndex, 16).toUpper()));
+    }
+    else
+    {
+        drawText(textRext, Qt::AlignCenter, QString("0x%1.%2\n%3")
+                                                .arg(QString::number(nodeObjectId.index, 16).toUpper())
+                                                .arg(QString::number(nodeObjectId.subIndex, 16).toUpper())
+                                                .arg(objName));
     }
 }

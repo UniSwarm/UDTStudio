@@ -28,7 +28,7 @@ PDOMappingWidget::PDOMappingWidget(QWidget *parent)
     _pdo = nullptr;
 }
 
-QList<NodeObjectId> PDOMappingWidget::nodeListMapping() const
+const QList<NodeObjectId> &PDOMappingWidget::nodeListMapping() const
 {
     return _nodeListMapping;
 }
@@ -36,6 +36,28 @@ QList<NodeObjectId> PDOMappingWidget::nodeListMapping() const
 void PDOMappingWidget::setNodeListMapping(const QList<NodeObjectId> &nodeListMapping)
 {
     _nodeListMapping = nodeListMapping;
+    repaint();
+}
+
+const QList<QString> &PDOMappingWidget::nodeListName() const
+{
+    return _nodeListName;
+}
+
+void PDOMappingWidget::setNodeListName(const QList<QString> &nodeListName)
+{
+    _nodeListName = nodeListName;
+    repaint();
+}
+
+const QList<QColor> &PDOMappingWidget::nodeListColor() const
+{
+    return _nodeListColor;
+}
+
+void PDOMappingWidget::setNodeListColor(const QList<QColor> &nodeListColor)
+{
+    _nodeListColor = nodeListColor;
     repaint();
 }
 
@@ -54,7 +76,7 @@ void PDOMappingWidget::setPdo(PDO *pdo)
     if (_pdo)
     {
         connect(_pdo, &PDO::mappingChanged, this, &PDOMappingWidget::updateMapping);
-        setNodeListMapping(_pdo->currentMappind());
+        updateMapping();
     }
 }
 
@@ -79,13 +101,33 @@ void PDOMappingWidget::paintEvent(QPaintEvent *event)
 
     PDOMappingPainter painter(this);
     QRect rectPdo = rect().adjusted(1, 1, -1, -1);
-    painter.drawMapping(rectPdo, _nodeListMapping);
+    painter.drawListMapping(rectPdo, _nodeListMapping, _nodeListName, _nodeListColor);
 }
 
 void PDOMappingWidget::updateMapping()
 {
     if (_pdo)
     {
-        setNodeListMapping(_pdo->currentMappind());
+        const QList<NodeObjectId> &nodeListMapping = _pdo->currentMappind();
+        _nodeListName.clear();
+        _nodeListColor.clear();
+        for (int i = 0; i < nodeListMapping.count(); i++)
+        {
+            const NodeObjectId &objId = nodeListMapping.at(i);
+            QString objName;
+            QColor color = Qt::blue;
+            NodeSubIndex *nodeSubIndex = objId.nodeSubIndex();
+            if (nodeSubIndex)
+            {
+                objName = nodeSubIndex->name();
+                if (nodeSubIndex->isWritable())
+                {
+                    color = Qt::green;
+                }
+            }
+            _nodeListName.append(objName);
+            _nodeListColor.append(color);
+        }
+        setNodeListMapping(nodeListMapping);
     }
 }
