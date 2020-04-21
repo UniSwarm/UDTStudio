@@ -75,7 +75,7 @@ void DeviceIniParser::readIndexes(DeviceModel *deviceModel) const
  */
 void DeviceIniParser::readSubIndexes(DeviceModel *deviceModel) const
 {
-    QRegularExpression reSub("^([0-9A-F]{4})sub([0-9]+)");
+    QRegularExpression reSub("^([0-9A-F]{4})sub([0-9A-F]+)");
     for (const QString &group : _file->childGroups())
     {
         bool ok;
