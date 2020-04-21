@@ -25,7 +25,10 @@
 #include "services/rpdo.h"
 
 NodePDOMappingWidget::NodePDOMappingWidget(QWidget *parent)
+    : QScrollArea(parent)
 {
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    setWidgetResizable(true);
     createWidgets();
 }
 
@@ -68,6 +71,7 @@ void NodePDOMappingWidget::setNode(Node *node)
 
 void NodePDOMappingWidget::createWidgets()
 {
+    QWidget *widget = new QWidget();
     QFormLayout *layout = new QFormLayout();
 
     for (int tpdo = 0; tpdo < 4; tpdo++)
@@ -84,5 +88,6 @@ void NodePDOMappingWidget::createWidgets()
         layout->addRow(QString("RPDO%1").arg(rpdo + 1), mappingWidget);
     }
 
-    setLayout(layout);
+    widget->setLayout(layout);
+    setWidget(widget);
 }

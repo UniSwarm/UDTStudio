@@ -77,8 +77,9 @@ void PDOMappingWidget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
 
-    QPainter painter(this);
-    PDOMappingPainter::paintMapping(&painter, rect().adjusted(1, 1, -1, -1), _nodeListMapping);
+    PDOMappingPainter painter(this);
+    QRect rectPdo = rect().adjusted(1, 1, -1, -1);
+    painter.drawMapping(rectPdo, _nodeListMapping);
 }
 
 void PDOMappingWidget::updateMapping()

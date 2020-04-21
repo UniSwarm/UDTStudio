@@ -21,37 +21,42 @@
 #include <QPainter>
 #include <QDebug>
 
-void PDOMappingPainter::paintMapping(QPainter *painter, const QRect &rect, const QList<NodeObjectId> &nodeListMapping)
+PDOMappingPainter::PDOMappingPainter(QWidget *widget)
+    : QPainter(widget), _widget(widget)
 {
-    painter->setRenderHint(QPainter::Antialiasing);
-    painter->setViewport(rect);
+}
 
-    int yMargin = 3;
+void PDOMappingPainter::drawMapping(const QRect &rect, const QList<NodeObjectId> &nodeListMapping)
+{
+    setRenderHint(QPainter::Antialiasing);
+    setViewport(rect);
+
+    int yMargin = 5;
     int xMargin = 2;
     int height = rect.height();
     double bitWidth = (static_cast<double>(rect.width()) - 2 * xMargin) / (8 * 8);
 
     // draw ticks
-    painter->setPen(QPen(Qt::gray, 1));
+    setPen(QPen(Qt::gray, 1));
     for (int tick = 1; tick < 8; tick++)
     {
         int x = static_cast<int>(xMargin + tick * (bitWidth * 8));
-        painter->drawLine(x, 0, x, 3);
-        painter->drawLine(x, height - yMargin, x, height);
+        drawLine(x, 0, x, 3);
+        drawLine(x, height - 3, x, height);
     }
-
 
     // draw mapping
     QColor color(Qt::blue);
-    painter->setPen(QPen(color, 1));
+    setPen(QPen(color.darker(), 1));
     QLinearGradient gradient;
     gradient.setStart(0, 50);
     gradient.setFinalStop(0, 150);
     gradient.setSpread(QGradient::ReflectSpread);
     gradient.setColorAt(0, color.lighter(160));
     gradient.setColorAt(1, color.lighter(130));
-    painter->setBrush(gradient);
+    setBrush(gradient);
     double x = xMargin;
+    QFontMetrics fontMetrics(font(), _widget);
     for (const NodeObjectId &objId : nodeListMapping)
     {
         if (objId.bitSize() == 0)
@@ -63,9 +68,28 @@ void PDOMappingPainter::paintMapping(QPainter *painter, const QRect &rect, const
         double width = objId.bitSize() * bitWidth - 2 * xMargin;
         QRectF objRect(x, yMargin, width, height - yMargin * 2);
 
-        painter->drawRoundedRect(objRect, 5, 5);
+        drawRoundedRect(objRect, 5, 5);
 
-        painter->drawText(objRect, Qt::AlignCenter, QString("0x%1.%2").arg(QString::number(objId.index, 16)).arg(objId.subIndex));
+        QString objName;
+        NodeSubIndex *nodeSubIndex = objId.nodeSubIndex();
+        if (nodeSubIndex)
+        {
+            objName = fontMetrics.elidedText(nodeSubIndex->name(), Qt::ElideRight, static_cast<int>(width));
+        }
+
+        if (objName.isEmpty())
+        {
+            drawText(objRect, Qt::AlignCenter, QString("0x%1.%2")
+                                                   .arg(QString::number(objId.index, 16))
+                                                   .arg(objId.subIndex));
+        }
+        else
+        {
+            drawText(objRect, Qt::AlignCenter, QString("0x%1.%2\n%3")
+                                                   .arg(QString::number(objId.index, 16))
+                                                   .arg(objId.subIndex)
+                                                   .arg(objName));
+        }
         x += width + xMargin;
     }
 }

@@ -21,11 +21,11 @@
 
 #include "../../udtgui_global.h"
 
-#include <QWidget>
+#include <QScrollArea>
 
 #include "pdomappingwidget.h"
 
-class NodePDOMappingWidget : public QWidget
+class UDTGUI_EXPORT NodePDOMappingWidget : public QScrollArea
 {
     Q_OBJECT
 public:

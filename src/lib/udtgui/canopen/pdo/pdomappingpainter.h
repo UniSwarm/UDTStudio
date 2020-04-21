@@ -25,10 +25,15 @@
 
 #include "services/pdo.h"
 
-class UDTGUI_EXPORT PDOMappingPainter
+class UDTGUI_EXPORT PDOMappingPainter : public QPainter
 {
 public:
-    static void paintMapping(QPainter *painter, const QRect &rect, const QList<NodeObjectId> &nodeListMapping);
+    PDOMappingPainter(QWidget *widget);
+
+    void drawMapping(const QRect &rect, const QList<NodeObjectId> &nodeListMapping);
+
+protected:
+    QWidget *_widget;
 };
 
 #endif // PDOMAPPINGPAINTER_H
