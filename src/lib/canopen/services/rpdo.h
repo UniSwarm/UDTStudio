@@ -33,14 +33,6 @@ class CANOPEN_EXPORT RPDO : public PDO
 public:
     RPDO(Node *node, quint8 number);
 
-    QString type() const override;
-    void parseFrame(const QCanBusFrame &frame) override;
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
-    virtual void setBus(CanOpenBus *bus) override;
-
-    bool setTransmissionType(quint8  type);
-    quint8 transmissionType();
-
     enum TransmissionType
     {
         RPDO_SYNC_MIN = 0x00u, // synchronous (acyclic)
@@ -48,12 +40,29 @@ public:
         RPDO_EVENT_MS = 0xFEu, // event-driven (manufacturer-specific)
         RPDO_EVENT_DP = 0xFFu // event-driven (device profile and application profile specific)
     };
+    bool setTransmissionType(quint8 type);
+    quint8 transmissionType();
 
 protected slots:
     void receiveSync();
 
 private:
     void saveData();
+
+    // Service interface
+public:
+    QString type() const override;
+    void parseFrame(const QCanBusFrame &frame) override;
+    virtual void setBus(CanOpenBus *bus) override;
+
+    // PDO interface
+public:
+    bool isTPDO() const override;
+    bool isRPDO() const override;
+
+    // NodeOdSubscriber interface
+public:
+    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
 #endif // RPDO_H

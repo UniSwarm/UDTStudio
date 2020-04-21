@@ -91,6 +91,16 @@ void TPDO::setBus(CanOpenBus *bus)
     readMapping();
 }
 
+bool TPDO::isTPDO() const
+{
+    return true;
+}
+
+bool TPDO::isRPDO() const
+{
+    return false;
+}
+
 bool TPDO::setTransmissionType(quint8 type)
 {
     statusPdo = STATE_NONE;

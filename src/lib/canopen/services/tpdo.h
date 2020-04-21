@@ -31,11 +31,6 @@ class CANOPEN_EXPORT TPDO : public PDO
 public:
     TPDO(Node *node, quint8 number);
 
-    QString type() const override;
-    void parseFrame(const QCanBusFrame &frame) override;
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
-    virtual void setBus(CanOpenBus *bus) override;
-
     enum TransmissionType
     {
         TPDO_ACYCLIC = 0x00u, // synchronou,s (acyclic)
@@ -57,6 +52,21 @@ protected slots:
 
 private:
     QVariant convertQByteArrayToQVariant(QByteArray data, QMetaType::Type type);
+
+    // Service interface
+public:
+    QString type() const override;
+    void parseFrame(const QCanBusFrame &frame) override;
+    virtual void setBus(CanOpenBus *bus) override;
+
+    // PDO interface
+public:
+    bool isTPDO() const override;
+    bool isRPDO() const override;
+
+    // NodeOdSubscriber interface
+public:
+    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
 #endif // TPDO_H

@@ -77,7 +77,7 @@ void RPDO::setBus(CanOpenBus *bus)
 bool RPDO::setTransmissionType(quint8 type)
 {
     statusPdo = STATE_NONE;
-    if ((type <= RPDO_SYNC_MAX) || (type== RPDO_EVENT_MS) || (type == RPDO_EVENT_DP))
+    if ((type <= RPDO_SYNC_MAX) || (type == RPDO_EVENT_MS) || (type == RPDO_EVENT_DP))
     {
         _waitingConf.transType = type;
         _node->writeObject(_objectCommList[1].index, PDO_COMM_TRASMISSION_TYPE, _waitingConf.transType);
@@ -103,4 +103,14 @@ void RPDO::receiveSync()
         return;
     }
     sendData();
+}
+
+bool RPDO::isTPDO() const
+{
+    return false;
+}
+
+bool RPDO::isRPDO() const
+{
+    return true;
 }

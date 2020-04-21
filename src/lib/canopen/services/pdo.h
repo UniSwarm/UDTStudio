@@ -35,25 +35,27 @@ class CANOPEN_EXPORT PDO : public Service, public NodeOdSubscriber
 public:
     PDO(Node *node, quint8 number);
 
-    quint32 cobId();
-    quint8 pdoNumber();
+    quint32 cobId() const;
+    quint8 pdoNumber() const;
 
     const QList<NodeObjectId> &currentMappind() const;
+    bool hasMappedObject() const;
     bool isMappedObject(NodeObjectId object) const;
 
-    void writeMapping(const QList<NodeObjectId> &objectList);
     void readMapping();
+    void writeMapping(const QList<NodeObjectId> &objectList);
 
-    bool isEnabled();
-    void setEnabled(bool b);
+    bool isEnabled() const;
+    void setEnabled(bool enabled);
 
-    bool hasMappedObject();
+    virtual bool isTPDO() const = 0;
+    virtual bool isRPDO() const = 0;
 
+    quint32 inhibitTime() const;
     void setInhibitTime(quint32 inhibitTime);
-    quint32 inhibitTime();
 
+    quint32 eventTimer() const;
     void setEventTimer(quint32 eventTimer);
-    quint32 eventTimer();
 
     enum ErrorPdo
     {
@@ -139,7 +141,6 @@ protected:
     void setError(ErrorPdo error);
 
 private:
-
     void readCommParam();
     void readMappingParam();
     void processMapping();
