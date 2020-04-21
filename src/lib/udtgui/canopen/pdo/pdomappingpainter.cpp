@@ -18,7 +18,7 @@
 
 #include "pdomappingpainter.h"
 
-#include <QPainter>
+#include <QWidget>
 #include <QDebug>
 
 PDOMappingPainter::PDOMappingPainter(QWidget *widget)
