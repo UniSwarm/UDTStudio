@@ -21,6 +21,7 @@
 #include "canframemodel.h"
 
 #include <QFont>
+#include <QApplication>
 
 CanFrameModel::CanFrameModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -72,8 +73,6 @@ QVariant CanFrameModel::headerData(int section, Qt::Orientation orientation, int
             return QVariant(tr("CanId"));
         case Type:
             return QVariant(tr("Type"));
-        case DLC:
-            return QVariant(tr("DLC"));
         case DataByte:
             return QVariant(tr("DataByte"));
         }
@@ -112,7 +111,7 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
             case QCanBusFrame::UnknownFrame:
                 return QVariant(tr("unk"));
             case QCanBusFrame::DataFrame:
-                return QVariant(tr("Data"));
+                return QVariant(tr("Dat(%1)").arg(canFrame.payload().count()));
             case QCanBusFrame::ErrorFrame:
                 return QVariant(tr("Err"));
             case QCanBusFrame::RemoteRequestFrame:
@@ -121,9 +120,6 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
                 return QVariant(tr("NV"));
             }
             return QVariant();
-
-        case DLC:
-            return QVariant(canFrame.payload().count());
 
         case DataByte:
             return QVariant(canFrame.payload().toHex(' ').toUpper());
@@ -139,7 +135,6 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 
         case Type:
-        case DLC:
             return QVariant(Qt::AlignHCenter | Qt::AlignVCenter);
 
         default:
@@ -150,8 +145,11 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
         switch (index.column())
         {
         case DataByte:
-            return QVariant(QFont("monospace"));
-
+            {
+                QFont fontMono = QApplication::font();
+                fontMono.setStyleHint(QFont::Monospace);
+                return QVariant(fontMono);
+            }
         default:
             return QVariant();
         }

@@ -26,6 +26,7 @@
 #include <QClipboard>
 #include <QContextMenuEvent>
 #include <QMenu>
+#include <QFontMetrics>
 
 CanFrameListView::CanFrameListView(QWidget *parent)
     : QTableView(parent)
@@ -37,14 +38,20 @@ CanFrameListView::CanFrameListView(QWidget *parent)
 
     connect(selectionModel(), &QItemSelectionModel::selectionChanged, this, &CanFrameListView::updateSelect);
 
+    // columns width
     int w0 = QFontMetrics(font()).horizontalAdvance("0");
-    horizontalHeader()->resizeSection(0, 10 * w0);
-    horizontalHeader()->resizeSection(1, 12 * w0);
-    horizontalHeader()->resizeSection(2, 6 * w0);
-    horizontalHeader()->resizeSection(3, 6 * w0);
+    horizontalHeader()->resizeSection(CanFrameModel::Time, 10 * w0);
+    horizontalHeader()->resizeSection(CanFrameModel::CanId, 12 * w0);
+    horizontalHeader()->resizeSection(CanFrameModel::Type, 8 * w0);
 
-    int w1 = QFontMetrics(QFont("monospace")).horizontalAdvance("00 ");
-    horizontalHeader()->resizeSection(4, 8 * w1);
+    QFont fontMono = QApplication::font();
+    fontMono.setStyleHint(QFont::Monospace);
+    int w1 = QFontMetrics(fontMono).horizontalAdvance("00 ");
+    horizontalHeader()->resizeSection(CanFrameModel::DataByte, 9 * w1);
+
+    // rows height
+    verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    verticalHeader()->setDefaultSectionSize(QFontMetrics(font()).height() * 3 / 2);
 
     createActions();
 }

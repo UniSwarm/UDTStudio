@@ -40,7 +40,6 @@ public:
         Time,
         CanId,
         Type,
-        DLC,
         DataByte,
         ColumnCount
     };
