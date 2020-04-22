@@ -22,6 +22,10 @@
 #include <QHeaderView>
 #include <QFontMetrics>
 #include <QDebug>
+#include <QApplication>
+#include <QClipboard>
+#include <QContextMenuEvent>
+#include <QMenu>
 
 CanFrameListView::CanFrameListView(QWidget *parent)
     : QTableView(parent)
@@ -31,12 +35,18 @@ CanFrameListView::CanFrameListView(QWidget *parent)
     setModel(_canModel);
     setVerticalScrollMode(ScrollPerPixel);
 
+    connect(selectionModel(), &QItemSelectionModel::selectionChanged, this, &CanFrameListView::updateSelect);
+
     int w0 = QFontMetrics(font()).horizontalAdvance("0");
     horizontalHeader()->resizeSection(0, 10 * w0);
     horizontalHeader()->resizeSection(1, 12 * w0);
     horizontalHeader()->resizeSection(2, 6 * w0);
     horizontalHeader()->resizeSection(3, 6 * w0);
-    horizontalHeader()->resizeSection(4, 22 * w0);
+
+    int w1 = QFontMetrics(QFont("monospace")).horizontalAdvance("00 ");
+    horizontalHeader()->resizeSection(4, 8 * w1);
+
+    createActions();
 }
 
 void CanFrameListView::appendCanFrame(const QCanBusFrame &frame)
@@ -54,6 +64,79 @@ void CanFrameListView::appendCanFrame(const QCanBusFrame &frame)
 void CanFrameListView::clear()
 {
     _canModel->clear();
+}
+
+void CanFrameListView::copy()
+{
+    QString text;
+    if (selectionModel()->selection().isEmpty())
+    {
+        return;
+    }
+
+    QItemSelectionRange range = selectionModel()->selection().first();
+    for (int i = range.top(); i <= range.bottom(); ++i)
+    {
+        QStringList rowContents;
+        for (int j = range.left(); j <= range.right(); ++j)
+        {
+            rowContents << model()->index(i, j).data().toString();
+        }
+        text += rowContents.join("\t");
+        text += "\n";
+    }
+    QApplication::clipboard()->setText(text);
+}
+
+void CanFrameListView::updateSelect(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    Q_UNUSED(selected)
+    Q_UNUSED(deselected)
+
+    bool selectionEmpty = selectionModel()->selectedRows().isEmpty();
+    _copyAction->setEnabled(!selectionEmpty);
+}
+
+void CanFrameListView::createActions()
+{
+    _clearAction = new QAction(this);
+    _clearAction->setText(tr("Clear &all"));
+    _clearAction->setShortcut(QKeySequence::Delete);
+    _clearAction->setShortcutContext(Qt::WidgetShortcut);
+#if QT_VERSION >= 0x050A00
+    _clearAction->setShortcutVisibleInContextMenu(true);
+#endif
+    connect(_clearAction, &QAction::triggered, this, &CanFrameListView::clear);
+    addAction(_clearAction);
+
+    _copyAction = new QAction(this);
+    _copyAction->setText(tr("&Copy"));
+    _copyAction->setShortcut(QKeySequence::Copy);
+    _copyAction->setShortcutContext(Qt::WidgetShortcut);
+#if QT_VERSION >= 0x050A00
+    _copyAction->setShortcutVisibleInContextMenu(true);
+#endif
+    _copyAction->setEnabled(false);
+    connect(_copyAction, &QAction::triggered, this, &CanFrameListView::copy);
+    addAction(_copyAction);
+}
+
+QAction *CanFrameListView::copyAction() const
+{
+    return _copyAction;
+}
+
+QAction *CanFrameListView::clearAction() const
+{
+    return _clearAction;
+}
+
+void CanFrameListView::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu menu;
+    menu.addAction(_clearAction);
+    menu.addAction(_copyAction);
+    menu.exec(event->globalPos());
 }
 
 CanFrameListView::~CanFrameListView()

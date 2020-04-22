@@ -24,6 +24,7 @@
 #include <QTableView>
 #include <QCanBus>
 #include <QCanBusFrame>
+#include <QAction>
 
 #include "canframemodel.h"
 
@@ -32,14 +33,30 @@ class UDTGUI_EXPORT CanFrameListView : public QTableView
     Q_OBJECT
 public:
     CanFrameListView(QWidget *parent = nullptr);
-    ~CanFrameListView();
+    ~CanFrameListView() override;
+
+    QAction *clearAction() const;
+    QAction *copyAction() const;
 
 public slots:
     void appendCanFrame(const QCanBusFrame &frame);
     void clear();
+    void copy();
+
+protected slots:
+    void updateSelect(const QItemSelection &selected, const QItemSelection &deselected);
 
 protected:
     CanFrameModel *_canModel;
+
+    // Actions
+    void createActions();
+    QAction *_clearAction;
+    QAction *_copyAction;
+
+    // QWidget interface
+protected:
+    void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
 #endif // CANFRAMEVIEW_H

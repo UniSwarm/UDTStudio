@@ -19,7 +19,8 @@
 #include <QDebug>
 
 #include "canframemodel.h"
-#include "canframelistview.h"
+
+#include <QFont>
 
 CanFrameModel::CanFrameModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -101,8 +102,10 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
         {
         case Time:
             return QVariant(QString("%1.%2").arg(canFrame.timeStamp().seconds() - _startTime).arg(QString::number(canFrame.timeStamp().microSeconds() / 1000).rightJustified(3, '0')));
+
         case CanId:
             return QVariant(QString("0x%1 (%2)").arg(QString::number(canFrame.frameId(), 16)).arg(canFrame.frameId()));
+
         case Type:
             switch (canFrame.frameType())
             {
@@ -118,21 +121,37 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
                 return QVariant(tr("NV"));
             }
             return QVariant();
+
         case DLC:
             return QVariant(canFrame.payload().count());
+
         case DataByte:
             return QVariant(canFrame.payload().toHex(' ').toUpper());
+
         default:
             return QVariant();
         }
+
     case Qt::TextAlignmentRole:
         switch (index.column())
         {
         case Time:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+
         case Type:
         case DLC:
             return QVariant(Qt::AlignHCenter | Qt::AlignVCenter);
+
+        default:
+            return QVariant();
+        }
+
+    case Qt::FontRole:
+        switch (index.column())
+        {
+        case DataByte:
+            return QVariant(QFont("monospace"));
+
         default:
             return QVariant();
         }
