@@ -1,6 +1,7 @@
 #include "nodesubindex.h"
 
 #include "nodeindex.h"
+#include "nodeod.h"
 
 NodeSubIndex::NodeSubIndex(const quint8 subIndex)
 {
@@ -88,7 +89,7 @@ NodeIndex *NodeSubIndex::nodeIndex() const
 
 NodeObjectId NodeSubIndex::objectId() const
 {
-    return NodeObjectId(busId(), nodeId(), index(), _subIndex);
+    return NodeObjectId(busId(), nodeId(), index(), _subIndex, metaType());
 }
 
 /**
@@ -373,6 +374,11 @@ bool NodeSubIndex::isNumeric() const
     }
 }
 
+QMetaType::Type NodeSubIndex::metaType() const
+{
+    return NodeOd::dataTypeCiaToQt(_dataType);
+}
+
 /**
  * @brief low limit getter
  * @return low limit value
@@ -486,6 +492,67 @@ int NodeSubIndex::byteLength() const
     case NodeSubIndex::INTEGER64:
     case NodeSubIndex::REAL64:
         return 8;
+    }
+    return 0;
+}
+
+int NodeSubIndex::bitLength() const
+{
+    switch (_dataType)
+    {
+    case NodeSubIndex::NONE:
+        break;
+    case NodeSubIndex::VISIBLE_STRING:
+    case NodeSubIndex::OCTET_STRING:
+    case NodeSubIndex::UNICODE_STRING:
+        // TODO
+        break;
+    case NodeSubIndex::TIME_OF_DAY:
+        // TODO
+        break;
+    case NodeSubIndex::TIME_DIFFERENCE:
+        // TODO
+        break;
+    case NodeSubIndex::DDOMAIN:
+        // TODO
+        break;
+
+    case NodeSubIndex::BOOLEAN:
+        return 1;
+
+    case NodeSubIndex::UNSIGNED8:
+    case NodeSubIndex::INTEGER8:
+        return 8;
+
+    case NodeSubIndex::UNSIGNED16:
+    case NodeSubIndex::INTEGER16:
+        return 16;
+
+    case NodeSubIndex::UNSIGNED24:
+    case NodeSubIndex::INTEGER24:
+        return 24;
+
+    case NodeSubIndex::UNSIGNED32:
+    case NodeSubIndex::INTEGER32:
+    case NodeSubIndex::REAL32:
+        return 32;
+
+    case NodeSubIndex::UNSIGNED40:
+    case NodeSubIndex::INTEGER40:
+        return 40;
+
+    case NodeSubIndex::UNSIGNED48:
+    case NodeSubIndex::INTEGER48:
+        return 48;
+
+    case NodeSubIndex::UNSIGNED56:
+    case NodeSubIndex::INTEGER56:
+        return 56;
+
+    case NodeSubIndex::UNSIGNED64:
+    case NodeSubIndex::INTEGER64:
+    case NodeSubIndex::REAL64:
+        return 64;
     }
     return 0;
 }

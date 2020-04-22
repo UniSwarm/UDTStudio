@@ -92,6 +92,8 @@ public:
     void setDataType(const DataType &dataType);
     static QString dataTypeStr(const DataType &dataType);
     bool isNumeric() const;
+    static QMetaType::Type metaTypeFromDataType(const DataType &dataType);
+    QMetaType::Type metaType() const;
 
     const QVariant &lowLimit() const;
     void setLowLimit(const QVariant &lowLimit);
@@ -102,6 +104,7 @@ public:
     bool hasHighLimit() const;
 
     int byteLength() const;
+    int bitLength() const;
 
     const QDateTime &lastModification() const;
 

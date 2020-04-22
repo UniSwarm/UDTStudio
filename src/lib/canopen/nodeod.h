@@ -66,7 +66,7 @@ public:
     void subscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex);
     void unsubscribe(NodeOdSubscriber *object);
 
-    QMetaType::Type dataTypeCiaToQt(NodeSubIndex::DataType type);
+    static QMetaType::Type dataTypeCiaToQt(NodeSubIndex::DataType type);
 
 private:
     Node *_node;
