@@ -269,7 +269,7 @@ private:
         BLOCK_CRC = 0x04,   // CRC
         BLOCK_C_MORE_SEG = 0x80,    // C: indicates whether there are still more segments to be downloaded.
         BLOCK_N_NUMBER_MASK = 0x1C, // indicates the number of bytes that do not contain data
-
+        BLOCK_BLOCK_SIZE = 0x7Fu,   // size max by block
         BLOCK_SEQNO_MASK = 0x7F // Max segment by sub-block
     };
 };

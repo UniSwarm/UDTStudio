@@ -527,9 +527,9 @@ qint32 SDO::sdoBlockUploadSubBlock(const QCanBusFrame &frame)
  */
 quint8 SDO::calculateBlockSize(quint32 size)
 {
-    if (((size + SDO_SG_SIZE) / SDO_SG_SIZE) >= BLOCK_SEQNO_MASK)
+    if (((size + SDO_SG_SIZE) / SDO_SG_SIZE) >= BLOCK_BLOCK_SIZE)
     {
-        return BLOCK_SEQNO_MASK;
+        return BLOCK_BLOCK_SIZE;
     }
     else
     {
@@ -728,6 +728,12 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
         else
         {
             _request->blksize = static_cast<quint8>(frame.payload().at(4));
+            if (_request->blksize > BLOCK_BLOCK_SIZE)
+            {
+                errorManagement(CO_SDO_ABORT_CODE_INVALID_BLOCK_SIZE);
+                return 1;
+            }
+            qDebug() << ">>_request->blksize_1 : " << _request->blksize;
             _request->state = STATE_BLOCK_DOWNLOAD;
             sdoBlockDownloadSubBlock();
         }
@@ -735,8 +741,19 @@ qint32 SDO::sdoBlockDownload(const QCanBusFrame &frame)
     else if (ss == SS::SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_RESP)
     {
         _request->blksize = static_cast<quint8>(frame.payload().at(2));
+        if (_request->blksize > BLOCK_BLOCK_SIZE)
+        {
+            errorManagement(CO_SDO_ABORT_CODE_INVALID_BLOCK_SIZE);
+            return 1;
+        }
+
         quint8 ackseq = static_cast<quint8>(frame.payload().at(1));
-        if (ackseq == 0)
+        if (ackseq > BLOCK_BLOCK_SIZE)
+        {
+            errorManagement(CO_SDO_ABORT_CODE_INVALID_SEQ_NUMBER);
+            return 1;
+        }
+        if (ackseq != (_request->seqno - 1))
         {
             // ERROR sequence detection from server -> Re-Send block
             qDebug() << ">>SDO::sdoBlockDownload, ERROR sequence detection from server, ackseq : " << ackseq;
@@ -788,8 +805,7 @@ void SDO::sdoBlockDownloadSubBlock()
 
             sendSdoRequest(false, _request->seqno, buffer);
             _request->state = STATE_BLOCK_DOWNLOAD_END;
-            _timer->start(_time);
-
+            _request->seqno++;
             return;
         }
     }
