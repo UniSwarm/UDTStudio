@@ -810,6 +810,7 @@ void SDO::sdoBlockDownloadSubBlock()
         }
     }
     _request->state = STATE_BLOCK_DOWNLOAD;
+    _timer->start(_time);
     return;
 }
 
@@ -1166,6 +1167,7 @@ bool SDO::sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segD
 
     if (moreSegments == false)
     {
+        _timer->start(_time);
         seqno |= 0x80;
         request << static_cast<quint8>(seqno);
     }
