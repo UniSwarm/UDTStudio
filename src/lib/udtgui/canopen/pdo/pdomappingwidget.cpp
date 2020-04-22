@@ -24,12 +24,13 @@
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
 #include <QMimeData>
+#include <QFontMetrics>
 
 PDOMappingWidget::PDOMappingWidget(QWidget *parent)
     : QWidget(parent)
 {
     _pdo = nullptr;
-    _dragBytePos = -1;
+    _dragBitPos = -1;
     setAcceptDrops(true);
 }
 
@@ -87,7 +88,10 @@ void PDOMappingWidget::setPdo(PDO *pdo)
 
 int PDOMappingWidget::heightForWidth(int width) const
 {
-    return width / 10;
+    int height = width / 10;
+    int maxHeight = QFontMetrics(font()).height() * 4;
+    height = qMin(height, maxHeight);
+    return height;
 }
 
 bool PDOMappingWidget::hasHeightForWidth() const
@@ -108,9 +112,9 @@ void PDOMappingWidget::paintEvent(QPaintEvent *event)
     QRect rectPdo = rect().adjusted(1, 1, -1, -1);
     painter.drawListMapping(rectPdo, _nodeListMapping, _nodeListName, _nodeListColor);
 
-    if (_dragBytePos >= 0)
+    if (_dragBitPos >= 0)
     {
-        painter.drawDragPos(rectPdo, _dragBytePos);
+        painter.drawDragPos(rectPdo, _dragBitPos);
     }
 }
 
@@ -145,11 +149,31 @@ void PDOMappingWidget::updateMapping()
 void PDOMappingWidget::dropEvent(QDropEvent *event)
 {
     QRect rectPdo = rect().adjusted(1, 1, -1, -1);
-    qDebug() << __FUNCTION__ << PDOMappingPainter::byteFromX(rectPdo, event->pos().y());
+    _dragBitPos = PDOMappingPainter::bitFromX(rectPdo, event->posF().x());
 
-    // TODO drop and insert map
+    if (_pdo->canInsertObjectAtBitPos(_nodeListMapping, _dragObjId, _dragBitPos))
+    {
+        int insertIndex = PDO::indexAtBitPos(_nodeListMapping, _dragBitPos);
+        if (insertIndex <= _nodeListMapping.count())
+        {
+            QString objName;
+            QColor color = Qt::blue;
+            NodeSubIndex *nodeSubIndex = _dragObjId.nodeSubIndex();
+            if (nodeSubIndex)
+            {
+                objName = nodeSubIndex->name();
+                if (nodeSubIndex->isWritable())
+                {
+                    color = Qt::green;
+                }
+            }
+            _nodeListName.insert(insertIndex, objName);
+            _nodeListColor.insert(insertIndex, color);
+            _nodeListMapping.insert(insertIndex, _dragObjId);
+        }
+    }
 
-    _dragBytePos = -1;
+    _dragBitPos = -1;
     update();
 }
 
@@ -160,23 +184,25 @@ void PDOMappingWidget::dragEnterEvent(QDragEnterEvent *event)
         const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', QString::SkipEmptyParts);
         for (const QString &stringObjId : stringListObjId)
         {
-            NodeObjectId objId = NodeObjectId::fromMimeData(stringObjId);
-            NodeSubIndex *nodeSubIndex = objId.nodeSubIndex();
-            if (nodeSubIndex)
-            {
-                if (_pdo->isTPDO() != nodeSubIndex->hasTPDOAccess())
-                {
-                    return;
-                }
-                if (_pdo->isRPDO() != nodeSubIndex->hasRPDOAccess())
-                {
-                    return;
-                }
-            }
-            else
+            _dragObjId = NodeObjectId::fromMimeData(stringObjId);
+            NodeSubIndex *nodeSubIndex = _dragObjId.nodeSubIndex();
+            if (!nodeSubIndex)
             {
                 return;
             }
+            if (_pdo->isTPDO() != nodeSubIndex->hasTPDOAccess())
+            {
+                return;
+            }
+            if (_pdo->isRPDO() != nodeSubIndex->hasRPDOAccess())
+            {
+                return;
+            }
+            if (PDO::mappingBitSize(_nodeListMapping) + nodeSubIndex->bitLength() > _pdo->maxMappingBitSize())
+            {
+                return;
+            }
+            _dragObjId = nodeSubIndex->objectId();
         }
         event->acceptProposedAction();
     }
@@ -185,13 +211,20 @@ void PDOMappingWidget::dragEnterEvent(QDragEnterEvent *event)
 void PDOMappingWidget::dragMoveEvent(QDragMoveEvent *event)
 {
     QRect rectPdo = rect().adjusted(1, 1, -1, -1);
-    _dragBytePos = PDOMappingPainter::byteFromX(rectPdo, event->posF().x());
+    _dragBitPos = PDOMappingPainter::bitFromX(rectPdo, event->posF().x());
+    if (!_pdo->canInsertObjectAtBitPos(_nodeListMapping, _dragObjId, _dragBitPos))
+    {
+        _dragBitPos = -1;
+        update();
+        return;
+    }
+    event->acceptProposedAction();
     update();
 }
 
 void PDOMappingWidget::dragLeaveEvent(QDragLeaveEvent *event)
 {
     Q_UNUSED(event)
-    _dragBytePos = -1;
+    _dragBitPos = -1;
     update();
 }

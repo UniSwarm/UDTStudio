@@ -60,7 +60,8 @@ protected:
     QList<QString> _nodeListName;
     QList<QColor> _nodeListColor;
 
-    double _dragBytePos;
+    int _dragBitPos;
+    NodeObjectId _dragObjId;
 
     // QWidget interface
 protected:
