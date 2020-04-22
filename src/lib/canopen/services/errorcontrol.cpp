@@ -51,8 +51,7 @@ void ErrorControl::parseFrame(const QCanBusFrame &frame)
 
 void ErrorControl::receiveHeartBeat()
 {
-    QCanBusDevice *lcanDevice = canDevice();
-    if (!lcanDevice)
+    if (!bus()->canWrite())
     {
         return;
     }
@@ -61,13 +60,12 @@ void ErrorControl::receiveHeartBeat()
     QCanBusFrame frameNodeGuarding;
     frameNodeGuarding.setFrameId(_cobId + _node->nodeId());
     frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
-    lcanDevice->writeFrame(frameNodeGuarding);
+    bus()->writeFrame(frameNodeGuarding);
 }
 
 void ErrorControl::sendNodeGuarding()
 {
-    QCanBusDevice *lcanDevice = canDevice();
-    if (!lcanDevice)
+    if (!bus()->canWrite())
     {
         return;
     }
@@ -75,7 +73,7 @@ void ErrorControl::sendNodeGuarding()
     QCanBusFrame frameNodeGuarding;
     frameNodeGuarding.setFrameId(_cobId + _node->nodeId());
     frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
-    lcanDevice->writeFrame(frameNodeGuarding);
+    bus()->writeFrame(frameNodeGuarding);
 }
 
 void ErrorControl::manageErrorControl(const QCanBusFrame &frame)

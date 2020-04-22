@@ -39,6 +39,8 @@ CanOpenBus::CanOpenBus(QCanBusDevice *canDevice)
 
     _nodeDiscover = new NodeDiscover(this);
     _serviceDispatcher->addService(_nodeDiscover);
+
+    _spyMode = false;
 }
 
 CanOpenBus::~CanOpenBus()
@@ -148,13 +150,36 @@ void CanOpenBus::setCanDevice(QCanBusDevice *canDevice)
     }
 }
 
+bool CanOpenBus::canWrite() const
+{
+    if (!_canDevice || _spyMode)
+    {
+        return false;
+    }
+    return true;
+}
+
+bool CanOpenBus::writeFrame(const QCanBusFrame &frame)
+{
+    if (!canWrite())
+    {
+        return false;
+    }
+    _canDevice->writeFrame(frame);
+    QCanBusFrame emitFrame = frame;
+    emitFrame.setTimeStamp(QCanBusFrame::TimeStamp::fromMicroSeconds(QDateTime::currentMSecsSinceEpoch() * 1000));
+    emit frameAvailable(emitFrame, false);
+    return true;
+}
+
 void CanOpenBus::canFrameRec()
 {
     while (_canDevice->framesAvailable() > 0)
     {
-        const QCanBusFrame &frame = _canDevice->readFrame();
+        QCanBusFrame frame = _canDevice->readFrame();
+        frame.setTimeStamp(QCanBusFrame::TimeStamp::fromMicroSeconds(QDateTime::currentMSecsSinceEpoch() * 1000));
         _serviceDispatcher->parseFrame(frame);
-        emit frameAvailable(frame);
+        emit frameAvailable(frame, true);
     }
 }
 

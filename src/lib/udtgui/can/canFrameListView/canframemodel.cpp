@@ -22,6 +22,7 @@
 
 #include <QFont>
 #include <QApplication>
+#include <QColor>
 
 CanFrameModel::CanFrameModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -32,7 +33,7 @@ CanFrameModel::~CanFrameModel()
 {
 }
 
-void CanFrameModel::appendCanFrame(const QCanBusFrame &frame)
+void CanFrameModel::appendCanFrame(const QCanBusFrame &frame, bool received)
 {
     beginInsertRows(QModelIndex(), _frames.count(), _frames.count());
     if (_frames.isEmpty())
@@ -40,6 +41,7 @@ void CanFrameModel::appendCanFrame(const QCanBusFrame &frame)
         _startTime = frame.timeStamp().seconds();
     }
     _frames.append(frame);
+    _framesRec.append(received);
     endInsertRows();
 }
 
@@ -152,6 +154,16 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
             }
         default:
             return QVariant();
+        }
+
+    case Qt::BackgroundRole:
+        if (_framesRec.at(index.row()))
+        {
+            return QVariant();
+        }
+        else
+        {
+            return QVariant(QColor(Qt::lightGray));
         }
     }
     return QVariant();

@@ -77,8 +77,7 @@ void NMT::parseFrame(const QCanBusFrame &frame)
 
 void NMT::sendNmt(quint8 cmd)
 {
-    QCanBusDevice *lcanDevice = canDevice();
-    if (!lcanDevice)
+    if (!bus()->canWrite())
     {
         return;
     }
@@ -89,5 +88,5 @@ void NMT::sendNmt(quint8 cmd)
     QCanBusFrame frameNmt;
     frameNmt.setFrameId(_cobId);
     frameNmt.setPayload(nmtStopPayload);
-    lcanDevice->writeFrame(frameNmt);
+    bus()->writeFrame(frameNmt);
 }

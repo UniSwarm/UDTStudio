@@ -527,8 +527,7 @@ void PDO::processMapping()
 
 bool PDO::sendData()
 {
-    QCanBusDevice *lcanDevice = canDevice();
-    if (!lcanDevice)
+    if (!bus()->canWrite())
     {
         return false;
     }
@@ -551,8 +550,7 @@ bool PDO::sendData()
     QCanBusFrame frame;
     frame.setFrameId(_cobId);
     frame.setPayload(pdoWriteReqPayload);
-    lcanDevice->writeFrame(frame);
-    return lcanDevice->writeFrame(frame);
+    return bus()->writeFrame(frame);
 }
 
 void PDO::convertQVariantToQDataStream(QDataStream &request, const QVariant &data, QMetaType::Type type)

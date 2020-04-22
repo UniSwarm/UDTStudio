@@ -53,6 +53,8 @@ public:
 
     QCanBusDevice *canDevice() const;
     void setCanDevice(QCanBusDevice *canDevice);
+    bool canWrite() const;
+    bool writeFrame(const QCanBusFrame &frame);
 
 protected slots:
     void canFrameRec();
@@ -62,7 +64,7 @@ public slots:
     void exploreBus();
 
 signals:
-    void frameAvailable(const QCanBusFrame &frame);
+    void frameAvailable(const QCanBusFrame &frame, bool received);
     void frameErrorOccurred(QCanBusDevice::CanBusError error);
     void frameTransmit(qint64 framesCount);
     void stateCanOpenChanged(QCanBusDevice::CanBusDeviceState state);
@@ -83,6 +85,9 @@ protected:
     NodeDiscover *_nodeDiscover;
     Sync *_sync;
     TimeStamp *_timestamp;
+
+    // spy mode
+    bool _spyMode;
 };
 
 #endif // CANOPENBUS_H

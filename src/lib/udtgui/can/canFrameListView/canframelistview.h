@@ -39,7 +39,7 @@ public:
     QAction *copyAction() const;
 
 public slots:
-    void appendCanFrame(const QCanBusFrame &frame);
+    void appendCanFrame(const QCanBusFrame &frame, bool received);
     void clear();
     void copy();
 

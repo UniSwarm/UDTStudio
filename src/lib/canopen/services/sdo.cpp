@@ -900,8 +900,7 @@ void SDO::timeout()
  */
 bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex)
 {
-    QCanBusDevice *lcanDevice = canDevice();
-    if (!lcanDevice)
+    if (!bus()->canWrite())
     {
         return false;
     }
@@ -924,7 +923,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex)
     frame.setPayload(sdoWriteReqPayload);
 
     _timer->start(_time);
-    return lcanDevice->writeFrame(frame);
+    return bus()->writeFrame(frame);
 }
 
 /**
@@ -934,8 +933,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex)
  */
 bool SDO::sendSdoRequest(quint8 cmd)
 {
-    QCanBusDevice *lcanDevice = canDevice();
-    if (!lcanDevice)
+    if (!bus()->canWrite())
     {
         return false;
     }
@@ -956,7 +954,7 @@ bool SDO::sendSdoRequest(quint8 cmd)
     frame.setPayload(sdoWriteReqPayload);
 
     _timer->start(_time);
-    return lcanDevice->writeFrame(frame);
+    return bus()->writeFrame(frame);
 }
 
 /**
@@ -969,8 +967,7 @@ bool SDO::sendSdoRequest(quint8 cmd)
  */
 bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QByteArray &data)
 {
-    QCanBusDevice *lcanDevice = canDevice();
-    if (!lcanDevice)
+    if (!bus()->canWrite())
     {
         return false;
     }
@@ -994,7 +991,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QByte
     frame.setPayload(sdoWriteReqPayload);
 
     _timer->start(_time);
-    return lcanDevice->writeFrame(frame);
+    return bus()->writeFrame(frame);
 }
 
 /**
@@ -1005,8 +1002,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QByte
  */
 bool SDO::sendSdoRequest(quint8 cmd, const QByteArray &data)
 {
-    QCanBusDevice *lcanDevice = canDevice();
-    if (!lcanDevice)
+    if (!bus()->canWrite())
     {
         return false;
     }
@@ -1025,7 +1021,7 @@ bool SDO::sendSdoRequest(quint8 cmd, const QByteArray &data)
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
     _timer->start(_time);
-    return lcanDevice->writeFrame(frame);
+    return bus()->writeFrame(frame);
 }
 
 /**
@@ -1036,8 +1032,7 @@ bool SDO::sendSdoRequest(quint8 cmd, const QByteArray &data)
  */
 bool SDO::sendSdoRequest(quint8 cmd, quint16 &crc)
 {
-    QCanBusDevice *lcanDevice = canDevice();
-    if (!lcanDevice)
+    if (!bus()->canWrite())
     {
         return false;
     }
@@ -1059,7 +1054,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 &crc)
     frame.setPayload(sdoWriteReqPayload);
 
     _timer->start(_time);
-    return lcanDevice->writeFrame(frame);
+    return bus()->writeFrame(frame);
 }
 
 /**
@@ -1073,8 +1068,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 &crc)
  */
 bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blksize, quint8 pst)
 {
-    QCanBusDevice *lcanDevice = canDevice();
-    if (!lcanDevice)
+    if (!bus()->canWrite())
     {
         return false;
     }
@@ -1099,7 +1093,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blks
     frame.setPayload(sdoWriteReqPayload);
 
     _timer->start(_time);
-    return lcanDevice->writeFrame(frame);
+    return bus()->writeFrame(frame);
 }
 
 /**
@@ -1111,8 +1105,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blks
  */
 bool SDO::sendSdoRequest(quint8 cmd, quint8 &ackseq, quint8 blksize)
 {
-    QCanBusDevice *lcanDevice = canDevice();
-    if (!lcanDevice)
+    if (!bus()->canWrite())
     {
         return false;
     }
@@ -1134,7 +1127,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint8 &ackseq, quint8 blksize)
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    return lcanDevice->writeFrame(frame);
+    return bus()->writeFrame(frame);
 }
 
 /**
@@ -1146,8 +1139,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint8 &ackseq, quint8 blksize)
  */
 bool SDO::sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segData)
 {
-    QCanBusDevice *lcanDevice = canDevice();
-    if (!lcanDevice)
+    if (!bus()->canWrite())
     {
         return false;
     }
@@ -1175,7 +1167,7 @@ bool SDO::sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segD
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    return lcanDevice->writeFrame(frame);
+    return bus()->writeFrame(frame);
 }
 
 /**
@@ -1188,8 +1180,7 @@ bool SDO::sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segD
  */
 bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint32 error)
 {
-    QCanBusDevice *lcanDevice = canDevice();
-    if (!lcanDevice)
+    if (!bus()->canWrite())
     {
         return false;
     }
@@ -1207,7 +1198,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint32 err
     frame.setPayload(sdoWriteReqPayload);
 
     _timer->start(_time);
-    return lcanDevice->writeFrame(frame);
+    return bus()->writeFrame(frame);
 }
 
 /**

@@ -56,10 +56,10 @@ CanFrameListView::CanFrameListView(QWidget *parent)
     createActions();
 }
 
-void CanFrameListView::appendCanFrame(const QCanBusFrame &frame)
+void CanFrameListView::appendCanFrame(const QCanBusFrame &frame, bool received)
 {
     bool needToScroll = (verticalScrollBar()->value() >= verticalScrollBar()->maximum() - rowHeight(0));
-    _canModel->appendCanFrame(frame);
+    _canModel->appendCanFrame(frame, received);
     if (needToScroll)
     {
         int rowCount = model()->rowCount(rootIndex());

@@ -33,7 +33,7 @@ public:
     CanFrameModel(QObject *parent = nullptr);
     ~CanFrameModel();
 
-    void appendCanFrame(const QCanBusFrame &frame);
+    void appendCanFrame(const QCanBusFrame &frame, bool received);
     void clear();
 
     enum Column {
@@ -57,6 +57,7 @@ public:
 private:
     qint64 _startTime;
     QList<QCanBusFrame> _frames;
+    QList<bool> _framesRec;
 };
 
 #endif // CANFRAMEMODEL_H

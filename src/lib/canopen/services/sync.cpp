@@ -46,18 +46,14 @@ void Sync::stopSync()
 
 void Sync::sendSync()
 {
-    if (!bus())
-    {
-        return;
-    }
-    if (!bus()->canDevice())
+    if (!bus()->canWrite())
     {
         return;
     }
 
     QCanBusFrame frameSync;
     frameSync.setFrameId(_syncCobId);
-    bus()->canDevice()->writeFrame(frameSync);
+    bus()->writeFrame(frameSync);
     emit syncEmitted();
 }
 
