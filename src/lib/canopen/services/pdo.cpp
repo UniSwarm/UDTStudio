@@ -63,7 +63,7 @@ bool PDO::hasMappedObject() const
     return !_objectCurrentMapped.isEmpty();
 }
 
-bool PDO::isMappedObject(NodeObjectId object) const
+bool PDO::isMappedObject(const NodeObjectId &object) const
 {
     for (NodeObjectId objectIterator : _objectCurrentMapped)
     {
@@ -73,6 +73,101 @@ bool PDO::isMappedObject(NodeObjectId object) const
         }
     }
     return false;
+}
+
+bool PDO::canInsertObjectAtBitPos(const NodeObjectId &object, int bitPos) const
+{
+    return canInsertObjectAtBitPos(_objectCurrentMapped, object, bitPos);
+}
+
+bool PDO::canInsertObjectAtBitPos(const QList<NodeObjectId> &objectList, const NodeObjectId &object, int bitPos) const
+{
+    NodeSubIndex *nodeSubIndex = object.nodeSubIndex();
+    if (!nodeSubIndex)
+    {
+        return false;
+    }
+    if (isTPDO() != nodeSubIndex->hasTPDOAccess())
+    {
+        return false;
+    }
+    if (isRPDO() != nodeSubIndex->hasRPDOAccess())
+    {
+        return false;
+    }
+
+    if (bitPos < 0 || bitPos >= maxMappingBitSize())
+    {
+        return false;
+    }
+
+    int totalBitSize = 0;
+    for (const NodeObjectId &objId : objectList)
+    {
+        int bitSize = objId.bitSize();
+        if (bitPos > totalBitSize && bitPos < (totalBitSize + bitSize))
+        {
+            return false;
+        }
+        totalBitSize += bitSize;
+    }
+    if (totalBitSize + nodeSubIndex->bitLength() > maxMappingBitSize())
+    {
+        return false;
+    }
+    if (bitPos > totalBitSize)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+int PDO::maxMappingBitSize() const
+{
+    // TODO add CAN Fd mode case
+    return 64;
+}
+
+int PDO::mappingBitSize() const
+{
+    return PDO::mappingBitSize(_objectCurrentMapped);
+}
+
+int PDO::mappingBitSize(const QList<NodeObjectId> &objectList)
+{
+    int totalBitSize = 0;
+    for (const NodeObjectId &objId : objectList)
+    {
+        totalBitSize += objId.bitSize();
+    }
+    return totalBitSize;
+}
+
+int PDO::indexAtBitPos(int bitPos) const
+{
+    return PDO::indexAtBitPos(_objectCurrentMapped, bitPos);
+}
+
+int PDO::indexAtBitPos(const QList<NodeObjectId> &objectList, int bitPos)
+{
+    int totalBitSize = 0;
+    int index = 0;
+    for (const NodeObjectId &objId : objectList)
+    {
+        int bitSize = objId.bitSize();
+        if (bitPos >= totalBitSize && bitPos < (totalBitSize + bitSize))
+        {
+            return index;
+        }
+        totalBitSize += bitSize;
+        index++;
+    }
+    if (bitPos == totalBitSize)
+    {
+        return index;
+    }
+    return -1;
 }
 
 /**

@@ -40,7 +40,15 @@ public:
 
     const QList<NodeObjectId> &currentMappind() const;
     bool hasMappedObject() const;
-    bool isMappedObject(NodeObjectId object) const;
+    bool isMappedObject(const NodeObjectId &object) const;
+
+    bool canInsertObjectAtBitPos(const NodeObjectId &object, int bitPos) const;
+    bool canInsertObjectAtBitPos(const QList<NodeObjectId> &objectList, const NodeObjectId &object, int bitPos) const;
+    int maxMappingBitSize() const;
+    int mappingBitSize() const;
+    static int mappingBitSize(const QList<NodeObjectId> &objectList);
+    int indexAtBitPos(int bitPos) const;
+    static int indexAtBitPos(const QList<NodeObjectId> &objectList, int bitPos);
 
     void readMapping();
     void writeMapping(const QList<NodeObjectId> &objectList);
