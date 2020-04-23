@@ -222,6 +222,7 @@ bool NodeOd::loadEds(const QString &fileName)
     }
     qDebug() << ">NodeOd::loadEds :" << fileName;
     delete deviceDescription;
+    delete deviceConfiguration;
     return true;
 }
 

@@ -20,10 +20,10 @@
 
 #include <QDebug>
 
-DataLogger::DataLogger()
+DataLogger::DataLogger(QObject *parent)
+    : QObject(parent)
 {
     connect(&_timer, &QTimer::timeout, this, &DataLogger::readData);
-    start(100);
 }
 
 void DataLogger::addData(const NodeObjectId &objId)

@@ -59,6 +59,7 @@ void OdDb::searchFile()
         pair.second = _directory + "/" + file;
         _mapFile.insert(hash, pair);
 
+        delete deviceDescription;
         byte.clear();
     }
 }

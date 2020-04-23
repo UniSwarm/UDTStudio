@@ -30,7 +30,7 @@ class CANOPEN_EXPORT DataLogger : public QObject, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
-    DataLogger();
+    DataLogger(QObject *parent = nullptr);
 
     void addData(const NodeObjectId &objId);
     QList<DLData *> &dataList();

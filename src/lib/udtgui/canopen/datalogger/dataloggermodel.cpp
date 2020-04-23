@@ -66,8 +66,14 @@ void DataLoggerModel::updateDlData(int id)
 
 int DataLoggerModel::columnCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent)
-    return ColumnCount;
+    if (parent.isValid())
+    {
+        return ColumnCount;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 QVariant DataLoggerModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -172,6 +178,9 @@ int DataLoggerModel::rowCount(const QModelIndex &parent) const
 
 bool DataLoggerModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    Q_UNUSED(index)
+    Q_UNUSED(value)
+    Q_UNUSED(role)
     return false;
 }
 

@@ -29,6 +29,11 @@ Sync::Sync(CanOpenBus *bus)
     connect(_syncTimer, &QTimer::timeout, this, &Sync::sendSync);
 }
 
+Sync::~Sync()
+{
+    delete _syncTimer;
+}
+
 QString Sync::type() const
 {
     return QLatin1String("Sync");

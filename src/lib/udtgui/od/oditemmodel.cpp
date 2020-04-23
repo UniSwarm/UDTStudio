@@ -55,8 +55,14 @@ void ODItemModel::setEditable(bool editable)
 
 int ODItemModel::columnCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent)
-    return ColumnCount;
+    if (parent.isValid())
+    {
+        return ColumnCount;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 QVariant ODItemModel::headerData(int section, Qt::Orientation orientation, int role) const

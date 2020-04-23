@@ -26,7 +26,7 @@
 
 #include <QDirIterator>
 
-Node::Node(quint8 nodeId, const QString &name)
+Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
     : _nodeId(nodeId)
 {
     _status = INIT;
@@ -69,6 +69,11 @@ Node::Node(quint8 nodeId, const QString &name)
         _tpdos.append(tpdo);
         _services.append(tpdo);
     }
+
+    if (!edsFileName.isEmpty())
+    {
+        loadEds(edsFileName);
+    }
 }
 
 Node::~Node()
@@ -78,6 +83,8 @@ Node::~Node()
     qDeleteAll(_rpdos);
     delete _emergency;
     delete _nmt;
+    delete _errorControl;
+
     delete _nodeOd;
 }
 
@@ -154,6 +161,11 @@ void Node::setStatus(Status status)
     {
         emit statusChanged(_status);
     }
+}
+
+quint16 Node::profileNumber() const
+{
+    return static_cast<quint16>(nodeOd()->value(0x1000).toUInt() & 0xFFFF);
 }
 
 void Node::sendPreop()

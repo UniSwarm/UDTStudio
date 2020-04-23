@@ -110,6 +110,11 @@ void NodeDiscover::exploreNode(quint8 nodeId)
 
 void NodeDiscover::exploreBusNext()
 {
+    if (!bus()->canWrite())
+    {
+        return;
+    }
+
     if (_exploreBusNodeId > 127)
     {
         _exploreBusNodeId = 0;
@@ -120,7 +125,7 @@ void NodeDiscover::exploreBusNext()
     QCanBusFrame frameNodeGuarding;
     frameNodeGuarding.setFrameId(0x700 + _exploreBusNodeId);
     frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
-    canDevice()->writeFrame(frameNodeGuarding);
+    bus()->writeFrame(frameNodeGuarding);
 
     _exploreBusNodeId++;
 }

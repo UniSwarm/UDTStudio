@@ -110,8 +110,14 @@ void NodeOdItemModel::setEditable(bool editable)
 
 int NodeOdItemModel::columnCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent)
-    return ColumnCount;
+    if (parent.isValid())
+    {
+        return ColumnCount;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 QVariant NodeOdItemModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -351,6 +357,7 @@ bool NodeOdItemModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction act
 {
     Q_UNUSED(row)
     Q_UNUSED(column)
+    Q_UNUSED(parent)
     if (action == Qt::IgnoreAction)
     {
         return true;

@@ -30,7 +30,7 @@ DataLoggerWidget::DataLoggerWidget(DataLogger *dataLogger, QWidget *parent)
 {
     if (!_dataLogger)
     {
-        _dataLogger = new DataLogger();
+        _dataLogger = new DataLogger(this);
     }
     createWidgets();
 }

@@ -51,8 +51,7 @@ Index::Index(const Index &other)
  */
 Index::~Index()
 {
-    qDeleteAll(_subIndexes.begin(), _subIndexes.end());
-    _subIndexes.clear();
+    qDeleteAll(_subIndexes);
 }
 
 /**

@@ -27,7 +27,7 @@
 NodeOdTreeView::NodeOdTreeView(QWidget *parent)
     : QTreeView(parent)
 {
-    _odModel = new NodeOdItemModel();
+    _odModel = new NodeOdItemModel(this);
     _odModelSorter = new NodeOdFilterProxyModel(this);
     _odModelSorter->setSourceModel(_odModel);
     setModel(_odModelSorter);

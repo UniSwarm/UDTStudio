@@ -36,7 +36,7 @@ class CANOPEN_EXPORT Node : public QObject
 {
     Q_OBJECT
 public:
-    Node(quint8 nodeId, const QString &name = QString());
+    Node(quint8 nodeId, const QString &name = QString(), const QString &edsFileName = QString());
     ~Node();
 
     CanOpenBus *bus() const;
@@ -67,6 +67,8 @@ public:
     Status status() const;
     QString statusStr() const;
     void setStatus(Status status);
+
+    quint16 profileNumber() const;
 
     QList<TPDO *> tpdos() const;
     QList<RPDO *> rpdos() const;

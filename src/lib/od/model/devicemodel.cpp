@@ -31,7 +31,6 @@ DeviceModel::DeviceModel()
 DeviceModel::~DeviceModel()
 {
     qDeleteAll(_indexes);
-    _indexes.clear();
 }
 
 /**

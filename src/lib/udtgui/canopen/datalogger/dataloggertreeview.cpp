@@ -27,7 +27,7 @@
 DataLoggerTreeView::DataLoggerTreeView(QWidget *parent)
     : QTreeView(parent)
 {
-    _loggerModel = new DataLoggerModel();
+    _loggerModel = new DataLoggerModel(this);
     setModel(_loggerModel);
 
     int w0 = QFontMetrics(font()).horizontalAdvance("0");
