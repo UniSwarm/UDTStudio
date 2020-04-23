@@ -74,6 +74,9 @@ protected:
 
     QAction *_canSettingsAction;
 
+    void writeSettings();
+    void readSettings();
+
     // QObject interface
 public:
     bool event(QEvent *event) override;

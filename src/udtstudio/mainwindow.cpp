@@ -32,6 +32,7 @@
 #include <QAction>
 #include <QDockWidget>
 #include <QSplitter>
+#include <QSettings>
 
 #include <QDebug>
 
@@ -62,6 +63,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createMenus();
     resize(QApplication::screens()[0]->size() * 3 / 4);
+
+    readSettings();
 }
 
 MainWindow::~MainWindow()
@@ -188,10 +191,33 @@ void MainWindow::disconnectDevice()
     statusBar()->showMessage(tr("Disconnected"));
 }
 
+void MainWindow::writeSettings()
+{
+    QSettings settings(QApplication::organizationName(), QApplication::applicationName());
+
+    // MainWindow position/size/maximized
+    settings.beginGroup("MainWindow");
+    settings.setValue("geometry", saveGeometry());
+    settings.setValue("windowState", saveState());
+    settings.endGroup();
+}
+
+void MainWindow::readSettings()
+{
+    QSettings settings(QApplication::organizationName(), QApplication::applicationName());
+
+    // MainWindow position/size/maximized
+    settings.beginGroup("MainWindow");
+    restoreGeometry(settings.value("geometry").toByteArray());
+    restoreState(settings.value("windowState").toByteArray());
+    settings.endGroup();
+}
+
 bool MainWindow::event(QEvent *event)
 {
-    if (event->type()==QEvent::Close)
+    if (event->type() == QEvent::Close)
     {
+        writeSettings();
         QApplication::quit();
     }
     return QMainWindow::event(event);
