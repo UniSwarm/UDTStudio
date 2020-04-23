@@ -22,3 +22,5 @@ unix:{
     QMAKE_LFLAGS_RPATH=
     QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN\'"
 }
+
+RESOURCES += $$PWD/../../contrib/QDarkStyleSheet/qdarkstyle/style.qrc

@@ -1,5 +1,23 @@
 <RCC>
     <qresource prefix="/icons">
         <file>img/UNIdevkit.ico</file>
+        <file>img/icons8-cancel.png</file>
+        <file>img/icons8-checked-checkbox.png</file>
+        <file>img/icons8-connected.png</file>
+        <file>img/icons8-connection-status-on.png</file>
+        <file>img/icons8-delete.png</file>
+        <file>img/icons8-disconnected.png</file>
+        <file>img/icons8-import.png</file>
+        <file>img/icons8-play.png</file>
+        <file>img/icons8-process.png</file>
+        <file>img/icons8-record.png</file>
+        <file>img/icons8-reset.png</file>
+        <file>img/icons8-save-close.png</file>
+        <file>img/icons8-search-database.png</file>
+        <file>img/icons8-settings.png</file>
+        <file>img/icons8-stepper-motor.png</file>
+        <file>img/icons8-stop.png</file>
+        <file>img/icons8-sync1.png</file>
+        <file>img/icons8-sync.png</file>
     </qresource>
 </RCC>

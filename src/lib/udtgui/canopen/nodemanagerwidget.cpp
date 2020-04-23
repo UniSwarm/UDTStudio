@@ -19,6 +19,9 @@
 #include "nodemanagerwidget.h"
 
 #include <QFormLayout>
+#include <QDebug>
+
+#include "services/services.h"
 
 NodeManagerWidget::NodeManagerWidget(QWidget *parent)
     : NodeManagerWidget(nullptr, parent)
@@ -110,11 +113,6 @@ void NodeManagerWidget::resetNode()
     }
 }
 
-void NodeManagerWidget::test()
-{
-    readObject(0x1000, 0x00, QMetaType::Int);
-}
-
 void NodeManagerWidget::createWidgets()
 {
     QAction *action;
@@ -129,29 +127,35 @@ void NodeManagerWidget::createWidgets()
     QActionGroup *groupNmt = new QActionGroup(this);
     groupNmt->setExclusive(true);
 
-    action = groupNmt->addAction(tr("preop"));
+    action = groupNmt->addAction(tr("Pre operationnal"));
     action->setCheckable(true);
+    action->setIcon(QIcon(":/icons/img/icons8-connection-status-on.png"));
+    action->setStatusTip(tr("Request node to go in preop mode"));
     connect(action, &QAction::triggered, this, &NodeManagerWidget::preop);
 
-    action = groupNmt->addAction(tr("start"));
+    action = groupNmt->addAction(tr("Start"));
     action->setCheckable(true);
+    action->setIcon(QIcon(":/icons/img/icons8-play.png"));
+    action->setStatusTip(tr("Request node to go in started mode"));
     connect(action, &QAction::triggered, this, &NodeManagerWidget::start);
 
-    action = groupNmt->addAction(tr("stop"));
+    action = groupNmt->addAction(tr("Stop"));
     action->setCheckable(true);
+    action->setIcon(QIcon(":/icons/img/icons8-stop.png"));
+    action->setStatusTip(tr("Request node to go in stop mode"));
     connect(action, &QAction::triggered, this, &NodeManagerWidget::stop);
 
-    action = groupNmt->addAction(tr("rstCom"));
+    action = groupNmt->addAction(tr("Reset communication"));
     action->setCheckable(true);
+    action->setIcon(QIcon(":/icons/img/icons8-process.png"));
+    action->setStatusTip(tr("Request node to reset com. parameters"));
     connect(action, &QAction::triggered, this, &NodeManagerWidget::resetCom);
 
-    action = groupNmt->addAction(tr("rstNode"));
+    action = groupNmt->addAction(tr("Reset node"));
     action->setCheckable(true);
+    action->setIcon(QIcon(":/icons/img/icons8-reset.png"));
+    action->setStatusTip(tr("Request node to reset all values"));
     connect(action, &QAction::triggered, this, &NodeManagerWidget::resetNode);
-
-    action = groupNmt->addAction(tr("test"));
-    action->setCheckable(true);
-    connect(action, &QAction::triggered, this, &NodeManagerWidget::test);
 
     _toolBar->addActions(groupNmt->actions());
     layoutGroupBox->addRow(_toolBar);
@@ -161,9 +165,6 @@ void NodeManagerWidget::createWidgets()
 
     _nodeStatusLabel = new QLabel();
     layoutGroupBox->addRow(tr("Status :"), _nodeStatusLabel);
-
-    _index1000Label = new QLabel();
-    layoutGroupBox->addRow(tr("0x1000 :"), _index1000Label);
 
     _groupBox->setLayout(layoutGroupBox);
     layout->addWidget(_groupBox);
@@ -175,6 +176,6 @@ void NodeManagerWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fl
 {
     if (objId.index == 0x1000 && objId.subIndex == 0x00)
     {
-        _index1000Label->setNum(flags);
+        //_index1000Label->setNum(flags);
     }
 }

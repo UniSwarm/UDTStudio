@@ -70,6 +70,32 @@ void BusManagerWidget::sendSync()
     }
 }
 
+void BusManagerWidget::toggleSync(bool start)
+{
+    if (_bus)
+    {
+        if (start)
+        {
+            _bus->sync()->startSync(_syncTimerSpinBox->value());
+        }
+        else
+        {
+            _bus->sync()->stopSync();
+        }
+    }
+}
+
+void BusManagerWidget::setSyncTimer(int i)
+{
+    if (_syncStartAction->isChecked())
+    {
+        if (_bus)
+        {
+            _bus->sync()->startSync(i);
+        }
+    }
+}
+
 void BusManagerWidget::createWidgets()
 {
     QAction *action;
@@ -80,11 +106,35 @@ void BusManagerWidget::createWidgets()
     QFormLayout *layoutGroupBox = new QFormLayout();
 
     _toolBar = new QToolBar(tr("Bus commands"));
+
+    // explore
     action = _toolBar->addAction(tr("Explore"));
+    action->setIcon(QIcon(":/icons/img/icons8-search-database.png"));
     action->setShortcut(QKeySequence("Ctrl+E"));
+    action->setStatusTip(tr("Explore bus for new nodes"));
     connect(action, &QAction::triggered, this, &BusManagerWidget::exploreBus);
-    action = _toolBar->addAction(tr("Sync"));
+
+    // Sync one
+    action = _toolBar->addAction(tr("Sync one"));
+    action->setIcon(QIcon(":/icons/img/icons8-sync1.png"));
+    action->setStatusTip(tr("Send one sync command"));
     connect(action, &QAction::triggered, this, &BusManagerWidget::sendSync);
+
+    // Sync timer
+    _syncTimerSpinBox = new QSpinBox();
+    _syncTimerSpinBox->setRange(10, 5000);
+    _syncTimerSpinBox->setValue(1000);
+    _syncTimerSpinBox->setSuffix(" ms");
+    _syncTimerSpinBox->setStatusTip(tr("Sets the interval of sync timer in ms"));
+    _toolBar->addWidget(_syncTimerSpinBox);
+    connect(_syncTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),[=](int i){ setSyncTimer(i); });
+
+    _syncStartAction = _toolBar->addAction(tr("Start / stop sync"));
+    _syncStartAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    _syncStartAction->setCheckable(true);
+    _syncStartAction->setStatusTip(tr("Start / stop sync timer"));
+    connect(_syncStartAction, &QAction::triggered, this, &BusManagerWidget::toggleSync);
+
     layoutGroupBox->addRow(_toolBar);
 
     _busNameEdit = new QLineEdit();

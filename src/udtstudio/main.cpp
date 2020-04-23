@@ -18,12 +18,20 @@
 
 #include "mainwindow.h"
 #include <QApplication>
+#include <QTextStream>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    //Q_INIT_RESOURCE(img);
+    // apply dark style
+    QFile f(":qdarkstyle/style.qss");
+    if (f.exists())
+    {
+        f.open(QFile::ReadOnly | QFile::Text);
+        QTextStream ts(&f);
+        qApp->setStyleSheet(ts.readAll());
+    }
 
     MainWindow w;
     w.show();

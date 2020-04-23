@@ -27,6 +27,7 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QToolBar>
+#include <QSpinBox>
 
 #include "canopenbus.h"
 
@@ -47,6 +48,10 @@ public slots:
 
     void exploreBus();
     void sendSync();
+    void toggleSync(bool start);
+
+protected slots:
+    void setSyncTimer(int i);
 
 protected:
     void createWidgets();
@@ -55,8 +60,10 @@ protected:
     QLineEdit *_busNameEdit;
     QLabel *_busTypeLabel;
     QLabel *_busStatusLabel;
+    QSpinBox *_syncTimerSpinBox;
 
     CanOpenBus *_bus;
+    QAction *_syncStartAction;
 };
 
 #endif // BUSMANAGERWIDGET_H
