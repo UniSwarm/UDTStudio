@@ -42,8 +42,8 @@ public:
     quint32 cobIdClientToServer();
     quint32 cobIdServerToClient();
 
-    qint32 uploadData(quint16 index, quint8 subindex, QMetaType::Type dataType);
-    qint32 downloadData(quint16 index, quint8 subindex, const QVariant &data);
+    bool uploadData(quint16 index, quint8 subindex, QMetaType::Type dataType);
+    bool downloadData(quint16 index, quint8 subindex, const QVariant &data);
 
     enum FlagsRequest
     {
@@ -164,8 +164,9 @@ private:
     QQueue<RequestSdo *> _requestQueue;
     Status _state;
 
-    qint32 uploadDispatcher();
-    qint32 downloadDispatcher();
+
+    bool uploadDispatcher();
+    bool downloadDispatcher();
 
     void errorManagement(SDOAbortCodes error);
     void requestFinished();
@@ -175,15 +176,17 @@ private:
     QTimer *_timer;
     void timeout();
 
-    qint32 sdoUploadInitiate(const QCanBusFrame &frame);
-    qint32 sdoUploadSegment(const QCanBusFrame &frame);
-    qint32 sdoDownloadInitiate(const QCanBusFrame &frame);
-    qint32 sdoDownloadSegment(const QCanBusFrame &frame);
-    qint32 sdoBlockDownload(const QCanBusFrame &frame);
+    quint16 indexFromFrame(const QCanBusFrame &frame);
+    quint8 subIndexFromFrame(const QCanBusFrame &frame);
+    bool sdoUploadInitiate(const QCanBusFrame &frame);
+    bool sdoUploadSegment(const QCanBusFrame &frame);
+    bool sdoDownloadInitiate(const QCanBusFrame &frame);
+    bool sdoDownloadSegment(const QCanBusFrame &frame);
+    bool sdoBlockDownload(const QCanBusFrame &frame);
     void sdoBlockDownloadSubBlock();
     bool sdoBlockDownloadEnd();
-    qint32 sdoBlockUpload(const QCanBusFrame &frame);
-    qint32 sdoBlockUploadSubBlock(const QCanBusFrame &frame);
+    bool sdoBlockUpload(const QCanBusFrame &frame);
+    bool sdoBlockUploadSubBlock(const QCanBusFrame &frame);
 
     bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex);                            // SDO upload initiate
     bool sendSdoRequest(quint8 cmd);                                                            // SDO upload segment, SDO block upload initiate, SDO block upload ends
@@ -245,32 +248,28 @@ private:
 
     enum Flag : quint8
     {
-        SDO_E_MASK = 0x2,       // transfer type
-        SDO_E_NORMAL = 0x0,     // E: transfer type
-        SDO_E_EXPEDITED = 0x1,  // E: transfer type
-
-        SDO_S_SIZE_MASK = 0x1,  // size indicator mask
+        SDO_CSS_MASK = 0xE0,    // Mask for css
+        SDO_E_MASK = 0x2,       // Mask transfer type
+        SDO_E_NORMAL = 0x0,     // E: transfer type segmented/normal
+        SDO_E_EXPEDITED = 0x1,  // E: transfer type expedited
+        SDO_S_SIZE_MASK = 0x1,  // Mask size indicator mask
         SDO_S_SIZE = 0x1,       // S : size indicator
-
-        SDO_N_NUMBER_INIT_MASK = 0xC,   // indicates the number of bytes that do not contain data
-        SDO_N_NUMBER_SEG_MASK = 0xE,    // indicates the number of bytes that do not contain data
-
-        SDO_C_MORE_MASK = 0x1,
-        SDO_C_MORE = 0x1,   // C: indicates whether there are still more segments to be downloaded.
-
-        SDO_TOGGLE_MASK = 0x10,
-
-        SDO_SG_SIZE = 7 // size max by segment, used for SDO SEGMENT ant SDO BLOCK
+        SDO_N_NUMBER_INIT_MASK = 0xC,   // Mask indicates the number of bytes that do not contain data
+        SDO_N_NUMBER_SEG_MASK = 0xE,    // Mask indicates the number of bytes that do not contain data
+        SDO_C_MORE_MASK = 0x1,  // Mask C
+        SDO_C_MORE = 0x1,       // C: indicates whether there are still more segments to be downloaded.
+        SDO_TOGGLE_MASK = 0x10, // Mask toggle
+        SDO_SG_SIZE = 0x7       // size max by segment, used for SDO SEGMENT ant SDO BLOCK
     };
 
     enum FlagBlock : quint8
     {
-        BLOCK_SIZE = 0x2,   // s: size indicator
-        BLOCK_CRC = 0x04,   // CRC
+        BLOCK_SIZE = 0x2,           // s: size indicator
+        BLOCK_CRC = 0x04,           // CRC
         BLOCK_C_MORE_SEG = 0x80,    // C: indicates whether there are still more segments to be downloaded.
         BLOCK_N_NUMBER_MASK = 0x1C, // indicates the number of bytes that do not contain data
-        BLOCK_BLOCK_SIZE = 0x7Fu,   // size max by block
-        BLOCK_SEQNO_MASK = 0x7F // Max segment by sub-block
+        BLOCK_BLOCK_SIZE = 0x7F,    // size max by block
+        BLOCK_SEQNO_MASK = 0x7F     // Max segment by sub-block
     };
 };
 
