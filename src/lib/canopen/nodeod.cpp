@@ -97,16 +97,16 @@ void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, 
                 index(indexDevice)->subIndex(subindexDevice)->setValue(value);
             }
         }
-
-        quint32 key = (static_cast<quint32>(indexDevice) << 8) + subindexDevice;
-        notifySubscribers(key, indexDevice, subindexDevice, flags);   // notify subscribers to index/subindex
-
-        key = (static_cast<quint32>(indexDevice) << 8) + 0xFFu;
-        notifySubscribers(key, indexDevice, subindexDevice, flags);   // notify subscribers to index with all subindex
-
-        key = (static_cast<quint32>(0xFFFFu) << 8) + 0xFFu;
-        notifySubscribers(key, indexDevice, subindexDevice, flags);   // notify subscribers to the full od
     }
+
+    quint32 key = (static_cast<quint32>(indexDevice) << 8) + subindexDevice;
+    notifySubscribers(key, indexDevice, subindexDevice, flags);   // notify subscribers to index/subindex
+
+    key = (static_cast<quint32>(indexDevice) << 8) + 0xFFu;
+    notifySubscribers(key, indexDevice, subindexDevice, flags);   // notify subscribers to index with all subindex
+
+    key = (static_cast<quint32>(0xFFFFu) << 8) + 0xFFu;
+    notifySubscribers(key, indexDevice, subindexDevice, flags);   // notify subscribers to the full od
 }
 
 void NodeOd::setErrorObject(quint16 indexDevice, quint8 subindexDevice, quint32 error)
