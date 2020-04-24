@@ -140,11 +140,14 @@ void SDO::processingFrameFromServer(const QCanBusFrame &frame)
         break;
 
     case SCS::SDO_SCS_CLIENT_ABORT:
+    {
         qDebug() << "ABORT received : Index :" << QString::number(indexFromFrame(frame), 16).toUpper() << ", SubIndex :" << QString::number(subIndexFromFrame(frame), 16).toUpper()
                  << ", abort :" << QString::number(arrangeDataUpload(frame.payload().mid(4, 4), QMetaType::Type::UInt).toUInt(), 16).toUpper();
-        requestFinished();
-        break;
 
+        quint32 error = arrangeDataUpload(frame.payload().mid(4, 4), QMetaType::Type::UInt).toUInt();
+        errorManagement(static_cast<SDOAbortCodes>(error));
+        break;
+    }
     default:
         break;
     }
