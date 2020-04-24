@@ -28,18 +28,20 @@ CONFIG += c++11
 SOURCES += \
         hexfile.cpp \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        programdownload.cpp
 
 HEADERS += \
-        hexfile.h \
-        mainwindow.h
+	hexfile.h \
+        mainwindow.h \
+        programdownload.h
 
 FORMS +=
 
-INCLUDEPATH += $$PWD/../../lib/canopen/ $$PWD/../../lib/od/ $$PWD/../../lib/udtgui/can/canSettingsDialog/ $$PWD/../../lib/udtgui/can/canFrameListView/
+INCLUDEPATH += $$PWD/../../lib/canopen/ $$PWD/../../lib/od/ $$PWD/../../lib/udtgui/
 
-LIBS += -L"$$PWD/../../../bin" -lod -ludtgui -lcanopen
-#DEPENDPATH += $$PWD/../od/
+LIBS += -L"$$PWD/../../../bin" -lod -lcanopen -ludtgui
+DEPENDPATH += $$PWD/../lib/od/ $$PWD/../lib/udtgui/
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

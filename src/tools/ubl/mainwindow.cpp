@@ -1,4 +1,4 @@
-/**
+﻿/**
  ** This file is part of the UDTStudio project.
  ** Copyright 2019-2020 UniSwarm
  **
@@ -18,188 +18,154 @@
 
 #include "mainwindow.h"
 
-#include <QMenu>
-#include <QMenuBar>
-#include <QStatusBar>
+#include <QCanBus>
+#include <QDebug>
+#include <QFileDialog>
+#include <QFormLayout>
+#include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QPushButton>
-#include <QGroupBox>
-#include <QFormLayout>
-#include <QFileDialog>
-#include <QListView>
+#include <QMenu>
+#include <QMenuBar>
 #include <QMessageBox>
-#include <QDebug>
+#include <QPushButton>
+#include <QStatusBar>
 
+#include "model/deviceconfiguration.h"
 #include "node.h"
+#include "parser/edsparser.h"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
+#include "programdownload.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
 {
     _connectDialog = new CanSettingsDialog(nullptr, this);
+    statusBar()->setVisible(true);
 
-    widget = new QWidget;
-    setCentralWidget(widget);
+    CanOpenBus *bus;
+    if (QCanBus::instance()->plugins().contains("socketcan"))
+    {
+        bus = new CanOpenBus(QCanBus::instance()->createDevice("socketcan", "can0"));
+    }
+    else
+    {
+        bus = new CanOpenBus(QCanBus::instance()->createDevice("virtualcan", "can0"));
+    }
+    bus->setBusName("Bus 1");
+    CanOpen::addBus(bus);
 
-    createActions();
-    createMenus();
     createWidget();
+    createMenus();
 
     setWindowTitle(tr("UBL"));
-    setMinimumSize(200, 200);
-    resize(480, 320);
 }
 
-
-void MainWindow::createActions()
+void MainWindow::nodeChanged(Node *currentNode)
 {
-    _quitAction = new QAction(tr("&Quit"), this);
-    connect(_quitAction, &QAction::triggered, this, &MainWindow::close);
-
-    _connectAction = new QAction(tr("&Connect"), this);
-    connect(_connectAction, &QAction::triggered, this, &MainWindow::connectDevice);
-
-    _disconnectAction = new QAction(tr("&Disconnect"), this);
-    connect(_disconnectAction, &QAction::triggered, this, &MainWindow::disconnectDevice);
-
-    _canSettingsAction = new QAction(tr("&Can Settings"), this);
-    connect(_canSettingsAction, &QAction::triggered, _connectDialog, &CanSettingsDialog::show);
-    connect(_connectDialog, &QDialog::accepted, this, &MainWindow::connectDevice);
-
-    _connectAction->setEnabled(true);
-    _disconnectAction->setEnabled(false);
-}
-
-void MainWindow::exploreBus()
-{
-    if (!_canDevice)
+    if (!currentNode)
     {
-        statusBar()->showMessage(tr("No interface"));
+        statusBar()->showMessage(tr("No node selected"));
         return;
     }
-    _bus->exploreBus();
-}
-
-void MainWindow::refreshListNode()
-{
-    if (!_canDevice)
+    for (ProgramDownload *program : _programList)
     {
-        statusBar()->showMessage(tr("No interface"));
-        return;
+        if (program->nodeId() == currentNode->nodeId())
+        {
+            refreshInfo();
+            return;
+        }
     }
 
-    QStringList List;
-    for (int i = 0; i < _bus->nodes().size(); ++i)
-    {
-        List.append(QString::number(_bus->nodes().at(i)->nodeId()));
-    }
-    model->setStringList(List);
-    _tableView->setModel(model);
+    ProgramDownload *program = new ProgramDownload(currentNode);
+    _programList.append(program);
+    connect(program, &ProgramDownload::downloadFinished, this, &MainWindow::updateProgram);
+    connect(program, &ProgramDownload::downloadState, this, &MainWindow::downloadState);
+    refreshInfo();
 }
-
 void MainWindow::update()
 {
-    if (!_canDevice)
+    _iNodeListSelected = 0;
+    updateProgram();
+}
+
+void MainWindow::updateProgram()
+{
+    if (_iNodeListSelected < _programList.size())
     {
-        statusBar()->showMessage(tr("No interface"));
+        _programList.at(_iNodeListSelected)->update();
+    }
+    _iNodeListSelected++;
+}
+
+void MainWindow::downloadState(QString state)
+{
+    _statusLabel->setText(state);
+}
+
+void MainWindow::openHexFile()
+{
+    if (!_busNodesManagerView->currentNode())
+    {
+        statusBar()->showMessage(tr("No node selected"));
         return;
     }
 
-    //        // Savce file
-    //        QFile file("fileBeforeSend.hex");
-    //        if (!file.open(QFile::WriteOnly))
-    //        {
-    //            //      ...
-    //            //            return false;
-    //        }
-    //        else
-    //        {
-    //            file.write(hexFile->prog());
-    //            file.close();
-    if (!hexFile)
+    QString file = QFileDialog::getOpenFileName(this, "exemple.hex", "ex", "Hex (*.hex)");
+    for (ProgramDownload *program : _programList)
     {
-        openFile();
-    }
-    else
-    {
-        QItemSelectionModel *selection = _tableView->selectionModel();
-        QModelIndexList listeSelections = selection->selectedIndexes();
-        QStringList elementsSelectionnes;
-
-        for (int i = 0; i < listeSelections.size(); i++)
+        if (program->nodeId() == _busNodesManagerView->currentNode()->nodeId())
         {
-            qDebug() << " listeSelections.at(i).data(:" << listeSelections.at(i).data(Qt::DisplayRole).toInt();
-
-            int index = listeSelections.at(i).data(Qt::DisplayRole).toInt();
-            if (_bus->existNode(static_cast<uint8_t>(index)) == true)
-            {
-                _bus->node(static_cast<uint8_t>(index))->updateFirmware(hexFile->prog());
-            }
+            program->openHex(file);
+            _fileNameHexDataLabel->setText(program->fileNameHex());
         }
     }
-
-    //        }
 }
 
-void MainWindow::openFile()
+void MainWindow::openEdsFile()
 {
-    fileNameHex = QFileDialog::getOpenFileName(this, "exemple.hex", "ex", "Hex (*.hex)");
-    hexFile = new HexFile(fileNameHex);
-
-    QFileInfo fileInfo(fileNameHex);
-    _fileNameDataLabel->setText(fileInfo.fileName());
-    hexFile->read();
-    _updatePushButton->setEnabled(true);
-}
-
-void MainWindow::refreshOInfo()
-{
-    QItemSelectionModel *selection = _tableView->selectionModel();
-    QModelIndexList listeSelections = selection->selectedIndexes();
-    QStringList elementsSelectionnes;
-
-    int index = listeSelections.at(0).data(Qt::DisplayRole).toInt();
-    //_deviceDataLabel->setText(_bus->node(static_cast<uint8_t>(index))->device());
-    //_manuDeviceNameDataLabel->setText(_bus->node(static_cast<uint8_t>(index))->manuDeviceName());
-    //_manufacturerHardwareVersionDataLabel->setText(_bus->node(static_cast<uint8_t>(index))->manufacturerHardwareVersion());
-    //_manufacturerSoftwareVersionDataLabel->setText(_bus->node(static_cast<uint8_t>(index))->manufacturerSoftwareVersion());
-}
-
-void MainWindow::addEds()
-{
-    if (!_canDevice)
+    if (!_busNodesManagerView->currentNode())
     {
-        statusBar()->showMessage(tr("No interface"));
+        statusBar()->showMessage(tr("No node selected"));
         return;
     }
 
-    QItemSelectionModel *selection = _tableView->selectionModel();
-    if (selection == nullptr)
+    QString file = QFileDialog::getOpenFileName(this, "exemple.hex", "ex", "Hex (*.eds)");
+    for (ProgramDownload *program : _programList)
     {
-        return;
-    }
-
-    QModelIndexList listeSelections = selection->selectedIndexes();
-    if (listeSelections.size() == 0)
-    {
-        QMessageBox::warning(this, tr("UBL"), tr("Please select a Node"), QMessageBox::Cancel);
-        return;
-    }
-    else
-    {
-        fileNameEds = QFileDialog::getOpenFileName(this, "exemple.hex", "ex", "Hex (*.eds)");
-        QStringList elementsSelectionnes;
-
-        for (int i = 0; i < listeSelections.size(); i++)
+        if (program->nodeId() == _busNodesManagerView->currentNode()->nodeId())
         {
-            qDebug() << " listeSelections.at(i).data(:" << listeSelections.at(i).data(Qt::DisplayRole).toInt();
-
-            int index = listeSelections.at(i).data(Qt::DisplayRole).toInt();
-            if (_bus->existNode(static_cast<uint8_t>(index)) == true)
-            {
-                //_bus->node(static_cast<uint8_t>(index))->searchEds();
-            }
+            program->loadEds(file);
+            _fileNameEdsDataLabel->setText(program->fileNameEds());
         }
-        _refreshPushButton->setEnabled(true);
+    }
+}
+
+void MainWindow::refreshInfo()
+{
+    Node *currentNode = _busNodesManagerView->currentNode();
+    if (!currentNode)
+    {
+        statusBar()->showMessage(tr("No node selected"));
+        return;
+    }
+
+    _groupBoxInfo->setTitle("Information Node :" + QString::number(currentNode->nodeId(), 16) + ", Device : 0x" +
+                            QString("0x%1").arg(QString::number(currentNode->nodeOd()->value(0x1000, 0).toUInt(), 16).toUpper()));
+    _serialNumberLabel->setText(QString("0x%1").arg(QString::number(currentNode->nodeOd()->value(0x1018, 1).toUInt(), 16).toUpper()));
+    _vendorIdLabel->setText(QString("0x%1").arg(QString::number(currentNode->nodeOd()->value(0x1018, 2).toUInt(), 16).toUpper()));
+    _productCodeLabel->setText(QString("0x%1").arg(QString::number(currentNode->nodeOd()->value(0x1018, 3).toUInt(), 16).toUpper()));
+    _revisionNumberLabel->setText(QString("0x%1").arg(QString::number(currentNode->nodeOd()->value(0x1018, 4).toUInt(), 16).toUpper()));
+}
+
+void MainWindow::uploadEds()
+{
+    for (ProgramDownload *program : _programList)
+    {
+        if (program->nodeId() == _busNodesManagerView->currentNode()->nodeId())
+        {
+            program->uploadEds();
+        }
     }
 }
 
@@ -232,14 +198,11 @@ void MainWindow::connectDevice()
                 {
                     statusBar()->showMessage(tr("%1 - %2").arg(settings.interfaceName).arg(settings.deviceName));
                 }
-
-                _connectAction->setEnabled(false);
-                _disconnectAction->setEnabled(true);
             }
 
             _bus = new CanOpenBus(_canDevice);
             CanOpen::addBus(_bus);
-            connect(_bus, &CanOpenBus::nodeAdded, this, &MainWindow::refreshListNode);
+            _bus->setBusName(settings.interfaceName + ":" + settings.deviceName);
             statusBar()->showMessage(tr("%1 - %2").arg(settings.interfaceName).arg(settings.deviceName));
         }
     }
@@ -253,96 +216,118 @@ void MainWindow::disconnectDevice()
     }
 
     _canDevice->disconnectDevice();
-    _connectAction->setEnabled(true);
-    _disconnectAction->setEnabled(false);
     statusBar()->showMessage(tr("Disconnected"));
 }
 
-
 void MainWindow::createMenus()
 {
-    _fileMenu = menuBar()->addMenu(tr("&File"));
-    _fileMenu->addAction(_quitAction);
-    _fileMenu->addSeparator();
+    // ============= file =============
+    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
 
-    _connectMenu = menuBar()->addMenu(tr("&Connection"));
-    _connectMenu->addAction(_connectAction);
-    _connectMenu->addAction(_disconnectAction);
-    _connectMenu->addAction(_canSettingsAction);
-    _connectMenu->addSeparator();
+    QAction *exitAction = new QAction(tr("E&xit"), this);
+    exitAction->setStatusTip(tr("Exits UDTStudio"));
+    exitAction->setShortcut(QKeySequence::Quit);
+    fileMenu->addAction(exitAction);
+    connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
+
+    QAction *_connectAction = new QAction(tr("&Connect"), this);
+    connect(_connectAction, &QAction::triggered, this, &MainWindow::connectDevice);
+
+    QAction *_disconnectAction = new QAction(tr("&Disconnect"), this);
+    connect(_disconnectAction, &QAction::triggered, this, &MainWindow::disconnectDevice);
+
+    QAction *_canSettingsAction = new QAction(tr("&Can Settings"), this);
+    connect(_canSettingsAction, &QAction::triggered, _connectDialog, &CanSettingsDialog::show);
+
+    QMenu *menu;
+    menu = menuBar()->addMenu(tr("&Connection"));
+    menu->addAction(_connectAction);
+    menu->addAction(_disconnectAction);
+    menu->addAction(_canSettingsAction);
+    menu->addSeparator();
+
+    connect(_connectDialog, &QDialog::accepted, this, &MainWindow::connectDevice);
+    connect(_busNodesManagerView, &BusNodesTreeView::nodeSelected, this, &MainWindow::nodeChanged);
 }
 
 void MainWindow::createWidget()
 {
+    _busNodesManagerView = new BusNodesTreeView(CanOpen::instance());
+
     QLayout *infoLayout = new QVBoxLayout();
     // Information
 
-    _deviceDataLabel = new QLabel();
-    _manuDeviceNameDataLabel = new QLabel();
-    _manufacturerHardwareVersionDataLabel = new QLabel();
-    _manufacturerSoftwareVersionDataLabel = new QLabel();
+    _serialNumberLabel = new QLabel();
+    _vendorIdLabel = new QLabel();
+    _productCodeLabel = new QLabel();
+    _revisionNumberLabel = new QLabel();
 
     QFormLayout *formLayout = new QFormLayout;
-    formLayout->addRow(tr("&Device :"), _deviceDataLabel);
-    formLayout->addRow(tr("D&evice Name :"), _manuDeviceNameDataLabel);
-    formLayout->addRow(tr("&Hardware Version :"), _manufacturerHardwareVersionDataLabel);
-    formLayout->addRow(tr("&Software Version :"), _manufacturerSoftwareVersionDataLabel);
 
-    QPushButton *addEdsPushButton = new QPushButton(tr("Add Eds"), this);
-    _refreshPushButton = new QPushButton(tr("Refresh"), this);
+    formLayout->addRow(tr("Vendor ID :"), _vendorIdLabel);
+    formLayout->addRow(tr("Product Code :"), _productCodeLabel);
+    formLayout->addRow(tr("Revison number :"), _revisionNumberLabel);
+    formLayout->addRow(tr("Serial Number :"), _serialNumberLabel);
+    formLayout->setSpacing(5);
+    _uploadEdsPushButton = new QPushButton(tr("Upload EDS"), this);
     QHBoxLayout *infoButtonLayout = new QHBoxLayout();
-    infoButtonLayout->addWidget(addEdsPushButton);
-    infoButtonLayout->addWidget(_refreshPushButton);
+    infoButtonLayout->addWidget(_uploadEdsPushButton);
 
     infoLayout->addItem(formLayout);
     infoLayout->addItem(infoButtonLayout);
 
-    QGroupBox *groupBox = new QGroupBox("Information");
-    groupBox->setLayout(infoLayout);
+    _groupBoxInfo = new QGroupBox("Information");
+    _groupBoxInfo->setLayout(infoLayout);
 
-    // File Hex
-    QHBoxLayout *fileNameLayout = new QHBoxLayout();
-    QLabel *fileNameLabel = new QLabel(tr("File Name :"));
-    _fileNameDataLabel = new QLabel("");
-    fileNameLayout->addWidget(fileNameLabel);
-    fileNameLayout->addWidget(_fileNameDataLabel);
+    // File Eds
+    QHBoxLayout *fileNameEdsLayout = new QHBoxLayout();
+    QLabel *fileNameLabel = new QLabel(tr("EDS :"));
+    _fileNameEdsDataLabel = new QLabel("...");
+    QPushButton *openFileEdsPushButton = new QPushButton(tr("..."), this);
+    fileNameEdsLayout->addWidget(fileNameLabel);
+    fileNameEdsLayout->addWidget(_fileNameEdsDataLabel);
+    fileNameEdsLayout->addWidget(openFileEdsPushButton);
+    fileNameEdsLayout->setSpacing(5);
 
-    QPushButton *openFileHexPushButton = new QPushButton(tr("Open File"), this);
-    QLayout *fileLayout = new QVBoxLayout();
-    fileLayout->addItem(fileNameLayout);
-    fileLayout->addWidget(openFileHexPushButton);
+    // Hex
+    QHBoxLayout *fileNameHexLayout = new QHBoxLayout();
+    QLabel *fileNameHexLabel = new QLabel(tr("Hex :"));
+    _fileNameHexDataLabel = new QLabel("...");
+    QPushButton *openFileHexPushButton = new QPushButton(tr("..."), this);
+    fileNameHexLayout->addWidget(fileNameHexLabel);
+    fileNameHexLayout->addWidget(_fileNameHexDataLabel);
+    fileNameHexLayout->addWidget(openFileHexPushButton);
+    fileNameHexLayout->setSpacing(5);
 
     QGroupBox *fileBox = new QGroupBox("File");
-    fileBox->setLayout(fileLayout);
+    QVBoxLayout *fileNameLayout = new QVBoxLayout();
+    fileNameLayout->addItem(fileNameEdsLayout);
+    fileNameLayout->addItem(fileNameHexLayout);
+    fileBox->setLayout(fileNameLayout);
+
+    _statusLabel = new QLabel();
+    _statusLabel->setText("Status :");
 
     _updatePushButton = new QPushButton(tr("Update"));
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(groupBox);
     layout->addWidget(fileBox);
+    layout->addWidget(_groupBoxInfo);
+
+    layout->addWidget(_statusLabel);
     layout->setSpacing(10);
     layout->addWidget(_updatePushButton);
 
-    _tableView = new QListView();
-    QPushButton *exploreBusPushButton = new QPushButton(tr("Explore Bus"), this);
-    QLayout *busLayout = new QVBoxLayout();
-    busLayout->addWidget(_tableView);
-    busLayout->addWidget(exploreBusPushButton);
-
     QLayout *hLayout = new QHBoxLayout();
-    hLayout->addItem(busLayout);
+    hLayout->addWidget(_busNodesManagerView);
     hLayout->addItem(layout);
 
+    QWidget *widget = new QWidget;
     widget->setLayout(hLayout);
 
-    _updatePushButton->setEnabled(false);
-    _refreshPushButton->setEnabled(false);
-
-    connect(exploreBusPushButton, &QPushButton::clicked, this, &MainWindow::exploreBus);
+    setCentralWidget(widget);
     connect(_updatePushButton, &QPushButton::clicked, this, &MainWindow::update);
-    connect(openFileHexPushButton, &QPushButton::clicked, this, &MainWindow::openFile);
-    connect(addEdsPushButton, &QPushButton::clicked, this, &MainWindow::addEds);
-    connect(_refreshPushButton, &QPushButton::clicked, this, &MainWindow::refreshOInfo);
-
-    model = new QStringListModel(this);
+    connect(openFileHexPushButton, &QPushButton::clicked, this, &MainWindow::openHexFile);
+    connect(openFileEdsPushButton, &QPushButton::clicked, this, &MainWindow::openEdsFile);
+    connect(_uploadEdsPushButton, &QPushButton::clicked, this, &MainWindow::uploadEds);
 }

@@ -19,16 +19,19 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
 #include <QLabel>
-#include <QTableView>
-#include <QListView>
-#include <QStringListModel>
+#include <QMainWindow>
 
-#include "cansettingsdialog.h"
+#include "can/canSettingsDialog/cansettingsdialog.h"
 #include "canopen.h"
+#include "canopen/busnodesmanagerview.h"
+#include "canopen/nodeod/nodeodwidget.h"
+#include "canopenbus.h"
 #include "hexfile.h"
 
+#include "model/deviceconfiguration.h"
+#include "parser/edsparser.h"
+#include "programdownload.h"
 
 class MainWindow : public QMainWindow
 {
@@ -36,54 +39,51 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
 
-  signals:
+signals:
 
-  public slots:
+public slots:
 
-  private:
-    void createActions();
+private:
     void createMenus();
     void createWidget();
-    void openFile();
-    void exploreBus();
-    void addEds();
+
+    void openHexFile();
+    void openEdsFile();
+
     void update();
-    void refreshOInfo();
-    void refreshListNode();
+    void updateProgram();
+    void downloadState(QString state);
+
+    void refreshInfo();
+    void uploadEds();
+
+    void nodeChanged(Node *currentNode);
 
     CanSettingsDialog *_connectDialog = nullptr;
-    CanOpen *_canOpen;
+
     CanOpenBus *_bus;
     QCanBusDevice *_canDevice = nullptr;
-    HexFile *hexFile;
-    QString fileNameHex;
-    QString fileNameEds;
 
-    QWidget *widget;
-    QMenu *_fileMenu;
-    QMenu *_connectMenu;
-    QAction *_quitAction;
+    BusNodesTreeView *_busNodesManagerView;
 
-    QAction *_connectAction;
     void connectDevice();
-
-    QAction *_disconnectAction;
     void disconnectDevice();
 
-    QAction *_canSettingsAction;
+    QLabel *_serialNumberLabel;
+    QLabel *_vendorIdLabel;
+    QLabel *_productCodeLabel;
+    QLabel *_revisionNumberLabel;
+    QGroupBox *_groupBoxInfo;
+    QLabel *_fileNameEdsDataLabel;
+    QLabel *_fileNameHexDataLabel;
 
-    QLabel *_deviceDataLabel;
-    QLabel *_manuDeviceNameDataLabel;
-    QLabel *_manufacturerHardwareVersionDataLabel;
-    QLabel *_manufacturerSoftwareVersionDataLabel;
-
-    QLabel *_fileNameDataLabel;
     QPushButton *_updatePushButton;
-    QPushButton *_refreshPushButton;
+    QPushButton *_uploadEdsPushButton;
 
-    QListView *_tableView;
-    QStringListModel *model;
+    QLabel *_statusLabel;
 
+    quint8 _iNodeListSelected;
+    QList<ProgramDownload *> _programList;
 };
 
 #endif // MAINWINDOW_H
