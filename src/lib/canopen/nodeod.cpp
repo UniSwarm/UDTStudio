@@ -113,7 +113,10 @@ void NodeOd::setErrorObject(quint16 indexDevice, quint8 subindexDevice, quint32 
 {
     if (indexExist(indexDevice))
     {
-        index(indexDevice)->subIndex(subindexDevice)->setError(error);
+        if (index(indexDevice)->subIndexExist(subindexDevice))
+        {
+            index(indexDevice)->subIndex(subindexDevice)->setError(error);
+        }
     }
 }
 
@@ -126,7 +129,10 @@ quint32 NodeOd::errorObject(quint16 indexDevice, quint8 subindexDevice)
 {
     if (indexExist(indexDevice))
     {
-        return index(indexDevice)->subIndex(subindexDevice)->error();
+        if (index(indexDevice)->subIndexExist(subindexDevice))
+        {
+            return index(indexDevice)->subIndex(subindexDevice)->error();
+        }
     }
     return 0;
 }
@@ -250,7 +256,15 @@ QMetaType::Type NodeOd::dataType(quint16 index, quint8 subIndex)
 
 QVariant NodeOd::value(const NodeObjectId &id)
 {
-    return value(id.index, id.subIndex);
+    if (indexExist(id.index))
+    {
+        if (index(id.index)->subIndexExist(id.subIndex))
+        {
+            return value(id.index, id.subIndex);
+        }
+    }
+    return QVariant();
+
 }
 
 QVariant NodeOd::value(quint16 index, quint8 subIndex)
