@@ -50,9 +50,26 @@ void OdDb::searchFile()
         EdsParser parser;
         DeviceDescription *deviceDescription = parser.parse(_directory + "/" + file);
         QByteArray byte;
-        byte.append(deviceDescription->index(0x1000)->subIndex(0)->value().toByteArray());
-        byte.append(deviceDescription->index(0x1018)->subIndex(1)->value().toByteArray());
-        byte.append(deviceDescription->index(0x1018)->subIndex(2)->value().toByteArray());
+        if (!deviceDescription->indexExist(0x1000))
+        {
+            continue;
+        }
+        if (!deviceDescription->index(0x1000)->subIndexExist(0))
+        {
+            continue;
+        }
+
+        if (deviceDescription->indexExist(0x1018))
+        {
+            byte.append(deviceDescription->index(0x1000)->subIndex(0)->value().toByteArray());
+            byte.append(deviceDescription->index(0x1018)->subIndex(1)->value().toByteArray());
+            byte.append(deviceDescription->index(0x1018)->subIndex(2)->value().toByteArray());
+        }
+        else
+        {
+            continue;
+        }
+
         QByteArray hash = QCryptographicHash::hash(byte, QCryptographicHash::Md4);
         QPair<quint32, QString> pair;
         pair.first = deviceDescription->index(0x1018)->subIndex(3)->value().toUInt();
