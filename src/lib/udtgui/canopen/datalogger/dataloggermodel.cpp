@@ -57,7 +57,7 @@ void DataLoggerModel::updateDataLoggerList()
 void DataLoggerModel::updateDlData(int id)
 {
     QModelIndex modelIndexTL = index(id, Node, QModelIndex());
-    QModelIndex modelIndexBR = index(id, Value, QModelIndex());
+    QModelIndex modelIndexBR = index(id, ColumnCount - 1, QModelIndex());
     if (modelIndexTL.isValid() && modelIndexBR.isValid())
     {
         emit dataChanged(modelIndexTL, modelIndexBR);
@@ -66,14 +66,8 @@ void DataLoggerModel::updateDlData(int id)
 
 int DataLoggerModel::columnCount(const QModelIndex &parent) const
 {
-    if (parent.isValid())
-    {
-        return ColumnCount;
-    }
-    else
-    {
-        return 0;
-    }
+    Q_UNUSED(parent)
+    return ColumnCount;
 }
 
 QVariant DataLoggerModel::headerData(int section, Qt::Orientation orientation, int role) const

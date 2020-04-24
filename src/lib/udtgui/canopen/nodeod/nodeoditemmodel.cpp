@@ -110,14 +110,8 @@ void NodeOdItemModel::setEditable(bool editable)
 
 int NodeOdItemModel::columnCount(const QModelIndex &parent) const
 {
-    if (parent.isValid())
-    {
-        return ColumnCount;
-    }
-    else
-    {
-        return 0;
-    }
+    Q_UNUSED(parent)
+    return ColumnCount;
 }
 
 QVariant NodeOdItemModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -154,6 +148,11 @@ QModelIndex NodeOdItemModel::index(int row, int column, const QModelIndex &paren
         return QModelIndex();
     }
 
+    if (!hasIndex(row, column, parent))
+    {
+        return QModelIndex();
+    }
+
     NodeOdItem *parentItem;
     if (parent.internalPointer() == nullptr)
     {
@@ -185,7 +184,7 @@ QModelIndex NodeOdItemModel::parent(const QModelIndex &child) const
     NodeOdItem *childItem = static_cast<NodeOdItem *>(child.internalPointer());
     NodeOdItem *parentItem = childItem->parent();
 
-    if (parentItem == _root)
+    if (parentItem == _root || !parentItem)
     {
         return QModelIndex();
     }
