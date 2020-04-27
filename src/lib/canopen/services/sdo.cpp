@@ -251,7 +251,7 @@ bool SDO::downloadData(quint16 index, quint8 subindex, const QVariant &data)
 bool SDO::uploadDispatcher()
 {
     quint8 cmd = 0;
-    if (_request->size < 256) // TODO when type domain will create
+    if (_request->index != 0x1F50) // TODO when type domain will create
     {
         cmd = CCS::SDO_CCS_CLIENT_UPLOAD_INITIATE;
         sendSdoRequest(cmd, _request->index, _request->subIndex);
@@ -332,7 +332,12 @@ bool SDO::sdoUploadInitiate(const QCanBusFrame &frame)
             // NOT USED -> ERROR d is reserved for further use.
         }
 
-        _request->stay = static_cast<quint32>(frame.payload().at(4));
+        QByteArray sdoWriteReqPayload = frame.payload().mid(4, 4);
+        QDataStream request(&sdoWriteReqPayload, QIODevice::ReadOnly);
+        request.setByteOrder(QDataStream::LittleEndian);
+        request >> _request->size;
+        _request->stay = _request->size;
+
         cmd = CCS::SDO_CCS_CLIENT_UPLOAD_SEGMENT;
         _request->toggle = 0;
         cmd |= (_request->toggle << 4) & SDO_TOGGLE_MASK;
