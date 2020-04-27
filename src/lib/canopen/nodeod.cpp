@@ -18,11 +18,11 @@
 
 #include <QDebug>
 
+#include "model/deviceconfiguration.h"
+#include "node.h"
 #include "nodeod.h"
 #include "nodeodsubscriber.h"
 #include "parser/edsparser.h"
-#include "model/deviceconfiguration.h"
-#include "node.h"
 
 NodeOd::NodeOd(Node *node)
     : _node(node)
@@ -41,6 +41,11 @@ Node *NodeOd::node() const
     return _node;
 }
 
+const QMap<quint16, NodeIndex *> &NodeOd::indexes() const
+{
+    return _nodeIndexes;
+}
+
 /**
  * @brief returns the value associated with the key index
  * @param index
@@ -49,11 +54,6 @@ Node *NodeOd::node() const
 NodeIndex *NodeOd::index(quint16 index) const
 {
     return _nodeIndexes.value(index);
-}
-
-const QMap<quint16, NodeIndex *> &NodeOd::indexes() const
-{
-    return _nodeIndexes;
 }
 
 /**
@@ -80,9 +80,144 @@ int NodeOd::indexCount() const
  * @param key
  * @return boolean
  */
-bool NodeOd::indexExist(quint16 key) const
+bool NodeOd::indexExist(quint16 index) const
 {
-    return _nodeIndexes.contains(key);
+    return _nodeIndexes.contains(index);
+}
+
+NodeSubIndex *NodeOd::subIndex(quint16 index, quint8 subIndex) const
+{
+    NodeIndex *nodeIndex = this->index(index);
+    if (!nodeIndex)
+    {
+        return nullptr;
+    }
+
+    NodeSubIndex *nodeSubIndex = nodeIndex->subIndex(subIndex);
+    if (!nodeSubIndex)
+    {
+        return nullptr;
+    }
+
+    return nodeSubIndex;
+}
+
+bool NodeOd::subIndexExist(quint16 index, quint8 subIndex) const
+{
+    NodeIndex *nodeIndex = this->index(index);
+    if (!nodeIndex)
+    {
+        return false;
+    }
+
+    NodeSubIndex *nodeSubIndex = nodeIndex->subIndex(subIndex);
+    if (!nodeSubIndex)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+void NodeOd::setErrorObject(quint16 index, quint8 subIndex, quint32 error)
+{
+    NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
+    if (!nodeSubIndex)
+    {
+        return;
+    }
+
+    nodeSubIndex->setError(error);
+}
+
+quint32 NodeOd::errorObject(const NodeObjectId &id) const
+{
+    return errorObject(id.index, id.subIndex);
+}
+
+quint32 NodeOd::errorObject(quint16 index, quint8 subIndex) const
+{
+    NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
+    if (!nodeSubIndex)
+    {
+        return 0;
+    }
+
+    return nodeSubIndex->error();
+}
+
+QMetaType::Type NodeOd::dataType(const NodeObjectId &id) const
+{
+    return dataType(id.index, id.subIndex);
+}
+
+QMetaType::Type NodeOd::dataType(quint16 index, quint8 subIndex) const
+{
+    NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
+    if (!nodeSubIndex)
+    {
+        return QMetaType::UnknownType;
+    }
+
+    return dataTypeCiaToQt(nodeSubIndex->dataType());
+}
+
+QVariant NodeOd::value(const NodeObjectId &id) const
+{
+    return value(id.index, id.subIndex);
+}
+
+QVariant NodeOd::value(quint16 index, quint8 subIndex) const
+{
+    NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
+    if (!nodeSubIndex)
+    {
+        return QVariant();
+    }
+
+    return nodeSubIndex->value();
+}
+
+QDateTime NodeOd::lastModification(const NodeObjectId &id) const
+{
+    return lastModification(id.index, id.subIndex);
+}
+
+QDateTime NodeOd::lastModification(quint16 index, quint8 subIndex) const
+{
+    NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
+    if (!nodeSubIndex)
+    {
+        return QDateTime();
+    }
+
+    return nodeSubIndex->lastModification();
+}
+
+void NodeOd::subscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex)
+{
+    Subscriber subscriber;
+    subscriber.object = object;
+    subscriber.notifyIndex = notifyIndex;
+    subscriber.notifySubIndex = notifySubIndex;
+    quint32 key = (static_cast<quint32>(notifyIndex) << 8) + notifySubIndex;
+    _subscribers.insert(key, subscriber);
+}
+
+void NodeOd::unsubscribe(NodeOdSubscriber *object)
+{
+    QMultiMap<quint32, Subscriber>::iterator itSub = _subscribers.begin();
+    while (itSub != _subscribers.end())
+    {
+        if (itSub.value().object == object)
+        {
+            itSub = _subscribers.erase(itSub);
+        }
+        else
+        {
+            ++itSub;
+        }
+    }
 }
 
 void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, const QVariant &value, SDO::FlagsRequest flags)
@@ -100,41 +235,13 @@ void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, 
     }
 
     quint32 key = (static_cast<quint32>(indexDevice) << 8) + subindexDevice;
-    notifySubscribers(key, indexDevice, subindexDevice, flags);   // notify subscribers to index/subindex
+    notifySubscribers(key, indexDevice, subindexDevice, flags); // notify subscribers to index/subindex
 
     key = (static_cast<quint32>(indexDevice) << 8) + 0xFFu;
-    notifySubscribers(key, indexDevice, subindexDevice, flags);   // notify subscribers to index with all subindex
+    notifySubscribers(key, indexDevice, subindexDevice, flags); // notify subscribers to index with all subindex
 
     key = (static_cast<quint32>(0xFFFFu) << 8) + 0xFFu;
-    notifySubscribers(key, indexDevice, subindexDevice, flags);   // notify subscribers to the full od
-}
-
-void NodeOd::setErrorObject(quint16 indexDevice, quint8 subindexDevice, quint32 error)
-{
-    if (indexExist(indexDevice))
-    {
-        if (index(indexDevice)->subIndexExist(subindexDevice))
-        {
-            index(indexDevice)->subIndex(subindexDevice)->setError(error);
-        }
-    }
-}
-
-quint32 NodeOd::errorObject(const NodeObjectId &id)
-{
-    return errorObject(id.index, id.subIndex);
-}
-
-quint32 NodeOd::errorObject(quint16 indexDevice, quint8 subindexDevice)
-{
-    if (indexExist(indexDevice))
-    {
-        if (index(indexDevice)->subIndexExist(subindexDevice))
-        {
-            return index(indexDevice)->subIndex(subindexDevice)->error();
-        }
-    }
-    return 0;
+    notifySubscribers(key, indexDevice, subindexDevice, flags); // notify subscribers to the full od
 }
 
 void NodeOd::createMandatoryObject()
@@ -145,33 +252,39 @@ void NodeOd::createMandatoryObject()
     deviceType->addSubIndex(new NodeSubIndex(0));
     deviceType->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
     deviceType->subIndex(0)->setName("Device type");
-
-    this->addIndex(deviceType);
+    addIndex(deviceType);
 
     NodeIndex *identityObject = new NodeIndex(0x1018);
     identityObject->setName("Identity object");
     identityObject->setObjectType(NodeIndex::RECORD);
-    identityObject->addSubIndex(new NodeSubIndex(0));
-    identityObject->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
-    identityObject->subIndex(0)->setName("Highest sub-index supported");
 
-    identityObject->addSubIndex(new NodeSubIndex(1));
-    identityObject->subIndex(1)->setDataType(NodeSubIndex::UNSIGNED32);
-    identityObject->subIndex(1)->setName("Vendor-ID");
+    NodeSubIndex *subIndex;
+    subIndex = new NodeSubIndex(0);
+    subIndex->setDataType(NodeSubIndex::UNSIGNED32);
+    subIndex->setName("Highest sub-index supported");
+    identityObject->addSubIndex(subIndex);
 
-    identityObject->addSubIndex(new NodeSubIndex(2));
-    identityObject->subIndex(2)->setDataType(NodeSubIndex::UNSIGNED32);
-    identityObject->subIndex(2)->setName("Product code");
+    subIndex = new NodeSubIndex(1);
+    subIndex->setDataType(NodeSubIndex::UNSIGNED32);
+    subIndex->setName("Vendor-ID");
+    identityObject->addSubIndex(subIndex);
 
-    identityObject->addSubIndex(new NodeSubIndex(3));
-    identityObject->subIndex(3)->setDataType(NodeSubIndex::UNSIGNED32);
-    identityObject->subIndex(3)->setName("Revision number");
+    subIndex = new NodeSubIndex(2);
+    subIndex->setDataType(NodeSubIndex::UNSIGNED32);
+    subIndex->setName("Product code");
+    identityObject->addSubIndex(subIndex);
 
-    identityObject->addSubIndex(new NodeSubIndex(4));
-    identityObject->subIndex(4)->setDataType(NodeSubIndex::UNSIGNED32);
-    identityObject->subIndex(4)->setName("Serial number");
+    subIndex = new NodeSubIndex(3);
+    subIndex->setDataType(NodeSubIndex::UNSIGNED32);
+    subIndex->setName("Revision number");
+    identityObject->addSubIndex(subIndex);
 
-    this->addIndex(identityObject);
+    subIndex = new NodeSubIndex(4);
+    subIndex->setDataType(NodeSubIndex::UNSIGNED32);
+    subIndex->setName("Serial number");
+    identityObject->addSubIndex(subIndex);
+
+    addIndex(identityObject);
 }
 
 void NodeOd::notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySubIndex, SDO::FlagsRequest flags)
@@ -182,7 +295,7 @@ void NodeOd::notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySu
     {
         NodeOdSubscriber *nodeOdSubscriber = (*subscriber).object;
         NodeObjectId objId(_node->busId(), _node->nodeId(), notifyIndex, notifySubIndex);
-        nodeOdSubscriber->notifySubscriber(objId,  flags);
+        nodeOdSubscriber->notifySubscriber(objId, flags);
         ++subscriber;
     }
 }
@@ -226,110 +339,11 @@ bool NodeOd::loadEds(const QString &fileName)
             nodeIndex->addSubIndex(nodeSubIndex);
         }
     }
-    qDebug() << ">NodeOd::loadEds :" << fileName;
+
     delete deviceDescription;
     delete deviceConfiguration;
+
     return true;
-}
-
-QMetaType::Type NodeOd::dataType(const NodeObjectId &id)
-{
-    return dataType(id.index, id.subIndex);
-}
-
-QMetaType::Type NodeOd::dataType(quint16 index, quint8 subIndex)
-{
-    NodeIndex *nodeIndex = this->index(index);
-    if (!nodeIndex)
-    {
-        return QMetaType::UnknownType;
-    }
-
-    NodeSubIndex *nodeSubIndex = nodeIndex->subIndex(subIndex);
-    if (!nodeSubIndex)
-    {
-        return QMetaType::UnknownType;
-    }
-
-    return dataTypeCiaToQt(nodeSubIndex->dataType());
-}
-
-QVariant NodeOd::value(const NodeObjectId &id)
-{
-    if (indexExist(id.index))
-    {
-        if (index(id.index)->subIndexExist(id.subIndex))
-        {
-            return value(id.index, id.subIndex);
-        }
-    }
-    return QVariant();
-
-}
-
-QVariant NodeOd::value(quint16 index, quint8 subIndex)
-{
-    NodeIndex *nodeIndex = this->index(index);
-    if (!nodeIndex)
-    {
-        return QVariant();
-    }
-
-    NodeSubIndex *nodeSubIndex = nodeIndex->subIndex(subIndex);
-    if (!nodeSubIndex)
-    {
-        return QVariant();
-    }
-
-    return nodeSubIndex->value();
-}
-
-QDateTime NodeOd::lastModification(const NodeObjectId &id)
-{
-    return lastModification(id.index, id.subIndex);
-}
-
-QDateTime NodeOd::lastModification(quint16 index, quint8 subIndex)
-{
-    NodeIndex *nodeIndex = this->index(index);
-    if (!nodeIndex)
-    {
-        return QDateTime();
-    }
-
-    NodeSubIndex *nodeSubIndex = nodeIndex->subIndex(subIndex);
-    if (!nodeSubIndex)
-    {
-        return QDateTime();
-    }
-
-    return nodeSubIndex->lastModification();
-}
-
-void NodeOd::subscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex)
-{
-    Subscriber subscriber;
-    subscriber.object = object;
-    subscriber.notifyIndex = notifyIndex;
-    subscriber.notifySubIndex = notifySubIndex;
-    quint32 key = (static_cast<quint32>(notifyIndex) << 8) + notifySubIndex;
-    _subscribers.insert(key, subscriber);
-}
-
-void NodeOd::unsubscribe(NodeOdSubscriber *object)
-{
-    QMultiMap<quint32, Subscriber>::iterator itSub = _subscribers.begin();
-    while (itSub != _subscribers.end())
-    {
-        if (itSub.value().object == object)
-        {
-            itSub = _subscribers.erase(itSub);
-        }
-        else
-        {
-            ++itSub;
-        }
-    }
 }
 
 QMetaType::Type NodeOd::dataTypeCiaToQt(NodeSubIndex::DataType type)

@@ -39,32 +39,40 @@ public:
     virtual ~NodeOd();
 
     Node *node() const;
+    bool loadEds(const QString &fileName);
 
+    // index
     const QMap<quint16, NodeIndex *> &indexes() const;
     NodeIndex *index(quint16 index) const;
     void addIndex(NodeIndex *index);
     int indexCount() const;
-    bool indexExist(quint16 key) const;
+    bool indexExist(quint16 index) const;
 
-    void updateObjectFromDevice(quint16 index, quint8 subindex, const QVariant &value, SDO::FlagsRequest flags);
+    // subindex
+    NodeSubIndex *subIndex(quint16 index, quint8 subIndex) const;
+    bool subIndexExist(quint16 index, quint8 subIndex) const;
 
-    void setErrorObject(quint16 indexDevice, quint8 subindexDevice, quint32 error);
-    quint32 errorObject(const NodeObjectId &id);
-    quint32 errorObject(quint16 indexDevice, quint8 subindexDevice);
+    // error
+    void setErrorObject(quint16 index, quint8 subIndex, quint32 error);
+    quint32 errorObject(const NodeObjectId &id) const;
+    quint32 errorObject(quint16 index, quint8 subIndex = 0x00) const;
 
-    bool loadEds(const QString &fileName);
+    // value
+    QVariant value(const NodeObjectId &id) const;
+    QVariant value(quint16 index, quint8 subIndex = 0x00) const;
 
-    QMetaType::Type dataType(const NodeObjectId &id);
-    QMetaType::Type dataType(quint16 index, quint8 subIndex = 0x00);
+    // dataType
+    QMetaType::Type dataType(const NodeObjectId &id) const;
+    QMetaType::Type dataType(quint16 index, quint8 subIndex = 0x00) const;
 
-    QVariant value(const NodeObjectId &id);
-    QVariant value(quint16 index, quint8 subIndex = 0x00);
+    // modifications
+    QDateTime lastModification(const NodeObjectId &id) const;
+    QDateTime lastModification(quint16 index, quint8 subIndex = 0x00) const;
 
-    QDateTime lastModification(const NodeObjectId &id);
-    QDateTime lastModification(quint16 index, quint8 subIndex = 0x00);
-
+    // subscribe, notifier service
     void subscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex);
     void unsubscribe(NodeOdSubscriber *object);
+    void updateObjectFromDevice(quint16 index, quint8 subindex, const QVariant &value, SDO::FlagsRequest flags);
 
     static QMetaType::Type dataTypeCiaToQt(NodeSubIndex::DataType type);
 
