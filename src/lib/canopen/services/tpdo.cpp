@@ -36,8 +36,9 @@ TPDO::TPDO(Node *node, quint8 number)
     registerObjId({_objectMappingId, 255});
     setNodeInterrest(node);
 
-    _objectCommList = {{_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_COB_ID},
-                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_TRASMISSION_TYPE},
+    _objectCommList = {{_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_NUMBER},
+                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_COB_ID},
+                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_TRANSMISSION_TYPE},
                        {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_INHIBIT_TIME},
                        {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_EVENT_TIMER},
                        {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_SYNC_START_VALUE}};
@@ -88,7 +89,6 @@ void TPDO::setBus(CanOpenBus *bus)
 {
     _bus = bus;
     connect(_bus->sync(), &Sync::syncEmitted, this, &TPDO::receiveSync);
-    readMapping();
 }
 
 bool TPDO::isTPDO() const
@@ -107,7 +107,7 @@ bool TPDO::setTransmissionType(quint8 type)
     if ((type <= TPDO_CYCLIC_MAX) || (type == TPDO_RTR_SYNC) || (type == TPDO_RTR_EVENT) || (type == TPDO_EVENT_MS) || (type == TPDO_EVENT_DP))
     {
         _waitingConf.transType = type;
-        _node->writeObject(_objectCommList[1].index, PDO_COMM_TRASMISSION_TYPE, _waitingConf.transType);
+        _node->writeObject(_objectCommList[1].index, PDO_COMM_TRANSMISSION_TYPE, _waitingConf.transType);
         return true;
     }
     else
@@ -119,7 +119,7 @@ bool TPDO::setTransmissionType(quint8 type)
 
 quint8 TPDO::transmissionType()
 {
-    NodeObjectId object(_objectCommId, PDO_COMM_TRASMISSION_TYPE);
+    NodeObjectId object(_objectCommId, PDO_COMM_TRANSMISSION_TYPE);
     return static_cast<quint8>(_node->nodeOd()->value(object).toUInt());
 }
 
@@ -138,6 +138,7 @@ quint8 TPDO::syncStartValue()
 
 void TPDO::receiveSync()
 {
+
 }
 
 QVariant TPDO::convertQByteArrayToQVariant(QByteArray data, QMetaType::Type type)

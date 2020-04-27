@@ -128,8 +128,9 @@ protected:
 
     enum CommParam
     {
+        PDO_COMM_NUMBER = 0x0,
         PDO_COMM_COB_ID = 0x01,
-        PDO_COMM_TRASMISSION_TYPE = 0x02,
+        PDO_COMM_TRANSMISSION_TYPE = 0x02,
         PDO_COMM_INHIBIT_TIME = 0x03,
         PDO_COMM_RESERVED = 0x04,
         PDO_COMM_EVENT_TIMER = 0x05,

@@ -268,7 +268,7 @@ void PDO::notifyWriteParam(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (flags == SDO::FlagsRequest::Error)
     {
-        if (objId.subIndex == PDO_COMM_TRASMISSION_TYPE)
+        if (objId.subIndex == PDO_COMM_TRANSMISSION_TYPE)
         {
             _waitingConf.transType = static_cast<quint8>(_node->nodeOd()->value(objId).toUInt());
         }
@@ -306,7 +306,7 @@ void PDO::notifyReadPdo(const NodeObjectId &objId, SDO::FlagsRequest flags)
         }
         else
         {
-            if (objId.subIndex == PDO_COMM_TRASMISSION_TYPE)
+            if (objId.subIndex == PDO_COMM_TRANSMISSION_TYPE)
             {
                 _waitingConf.transType = static_cast<quint8>(_node->nodeOd()->value(objId).toUInt());
             }
@@ -324,7 +324,8 @@ void PDO::notifyReadPdo(const NodeObjectId &objId, SDO::FlagsRequest flags)
             }
         }
         _iFsm++;
-        if (_iFsm >= _objectCommList.size())
+        NodeObjectId objectComm(_objectCommList.at(0));
+        if (_iFsm > (static_cast<quint8>(_node->nodeOd()->value(objectComm).toUInt()) - 1))
         {
             _iFsm = 0;
             readMappingParam();

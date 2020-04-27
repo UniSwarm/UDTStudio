@@ -34,9 +34,11 @@ RPDO::RPDO(Node *node, quint8 number)
     registerObjId({_objectMappingId, 255});
     setNodeInterrest(node);
 
-    _objectCommList = {{_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_COB_ID},
-                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_TRASMISSION_TYPE},
-                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_INHIBIT_TIME}};
+    _objectCommList = {{_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_NUMBER},
+                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_COB_ID},
+                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_TRANSMISSION_TYPE},
+                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_INHIBIT_TIME},
+                       {_node->busId(), _node->nodeId(), _objectCommId, PDO_COMM_EVENT_TIMER}};
 }
 
 QString RPDO::type() const
@@ -71,7 +73,6 @@ void RPDO::setBus(CanOpenBus *bus)
 {
     _bus = bus;
     connect(_bus->sync(), &Sync::syncEmitted, this, &RPDO::receiveSync);
-    readMapping();
 }
 
 bool RPDO::setTransmissionType(quint8 type)
@@ -80,7 +81,7 @@ bool RPDO::setTransmissionType(quint8 type)
     if ((type <= RPDO_SYNC_MAX) || (type == RPDO_EVENT_MS) || (type == RPDO_EVENT_DP))
     {
         _waitingConf.transType = type;
-        _node->writeObject(_objectCommList[1].index, PDO_COMM_TRASMISSION_TYPE, _waitingConf.transType);
+        _node->writeObject(_objectCommList[1].index, PDO_COMM_TRANSMISSION_TYPE, _waitingConf.transType);
         return true;
     }
     else
@@ -92,7 +93,7 @@ bool RPDO::setTransmissionType(quint8 type)
 
 quint8 RPDO::transmissionType()
 {
-    NodeObjectId object(_objectCommId, PDO_COMM_TRASMISSION_TYPE);
+    NodeObjectId object(_objectCommId, PDO_COMM_TRANSMISSION_TYPE);
     return static_cast<quint8>(_node->nodeOd()->value(object).toUInt());
 }
 
