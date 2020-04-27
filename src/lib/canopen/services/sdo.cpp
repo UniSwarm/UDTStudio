@@ -260,7 +260,7 @@ bool SDO::uploadDispatcher()
     else
     {
         cmd = CCS::SDO_CCS_CLIENT_BLOCK_UPLOAD;
-        _request->blksize = BLOCK_SEQNO_MASK;
+        _request->blksize = BLOCK_BLOCK_SIZE;
         sendSdoRequest(cmd, _request->index, _request->subIndex, _request->blksize, 0);
         _request->state = STATE_UPLOAD;
     }
