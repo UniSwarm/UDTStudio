@@ -34,9 +34,19 @@ int main(int argc, char *argv[])
         f.open(QFile::ReadOnly | QFile::Text);
         QTextStream ts(&f);
         qApp->setStyleSheet(ts.readAll());
+
     }
 
     MainWindow w;
+    w.setStyleSheet(" \
+        QComboBox::item:checked { \
+            height: 12px; \
+            border: 1px solid #32414B; \
+                margin-top: 0px; \
+                margin-bottom: 0px; \
+            padding: 4px; \
+                padding-left: 0px; \
+        }");
     w.show();
 
     return app.exec();
