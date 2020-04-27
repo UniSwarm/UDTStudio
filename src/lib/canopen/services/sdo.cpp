@@ -398,7 +398,7 @@ bool SDO::sdoUploadSegment(const QCanBusFrame &frame)
             cmd |= (_request->toggle << 4) & SDO_TOGGLE_MASK;
 
             sendSdoRequest(cmd);
-            _request->stay = STATE_UPLOAD_SEGMENT;
+            _request->state = STATE_UPLOAD_SEGMENT;
         }
     }
     return true;
