@@ -26,7 +26,7 @@
 #define PDO_SUBINDEX_MASK 0x0000FF00
 #define PDO_DATASIZE_MASK 0x000000FF
 #define COBID_MASK 0x7FFFFFFF
-#define COBID_VALID_NOT_VALID 0x80000000
+#define COBID_VALID_NOT_VALID 0x80000000u
 
 PDO::PDO(Node *node, quint8 number)
     : Service(node)
@@ -478,12 +478,12 @@ void PDO::processMapping()
     case STATE_FREE:
     {
         // Deactivate the PDO
-        _node->writeObject(_objectCommList[0].index, _objectCommList[0].subIndex, QVariant(_cobId | COBID_VALID_NOT_VALID));
+        _node->writeObject(_objectCommList[PDO_COMM_COB_ID].index, _objectCommList[PDO_COMM_COB_ID].subIndex, QVariant(_cobId | COBID_VALID_NOT_VALID));
         break;
     }
     case STATE_DEACTIVATE:
         // Disable the mapping
-        if (((_node->nodeOd()->value(_objectCommList[0]).toUInt() & COBID_VALID_NOT_VALID) == COBID_VALID_NOT_VALID))
+        if (((_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toUInt() & COBID_VALID_NOT_VALID) == COBID_VALID_NOT_VALID))
         {
             _node->writeObject(_objectMappingId, 0x00, QVariant(quint8(0)));
         }
@@ -513,7 +513,7 @@ void PDO::processMapping()
     case STATE_ENABLE:
         // Activate the PDO
         _cobId = _cobId & ~COBID_VALID_NOT_VALID;
-        _node->writeObject(_objectCommId, 0x01, QVariant(_cobId));
+        _node->writeObject(_objectCommList[PDO_COMM_COB_ID].index, _objectCommList[PDO_COMM_COB_ID].subIndex, QVariant(_cobId));
         break;
 
     case STATE_ACTIVATE:
