@@ -35,6 +35,9 @@ public:
     DataLogger *dataLogger() const;
     void setDataLogger(DataLogger *dataLogger);
 
+    NodeObjectId objId(const QModelIndex &index);
+    DLData *dlData(const QModelIndex &index);
+
     enum Column {
         Node,
         Index,

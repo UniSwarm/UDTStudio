@@ -23,6 +23,8 @@
 #include <QFontMetrics>
 #include <QKeyEvent>
 #include <QItemSelectionModel>
+#include <QMessageBox>
+#include <QMenu>
 
 #include "node.h"
 
@@ -30,7 +32,9 @@ DataLoggerTreeView::DataLoggerTreeView(QWidget *parent)
     : QTreeView(parent)
 {
     _loggerModel = new DataLoggerModel(this);
-    setModel(_loggerModel);
+    _sortProxy = new QSortFilterProxyModel(this);
+    _sortProxy->setSourceModel(_loggerModel);
+    setModel(_sortProxy);
 
     int w0 = QFontMetrics(font()).horizontalAdvance("0");
     header()->resizeSection(DataLoggerModel::Node, 16 * w0);
@@ -41,9 +45,13 @@ DataLoggerTreeView::DataLoggerTreeView(QWidget *parent)
     header()->resizeSection(DataLoggerModel::Min, 8 * w0);
     header()->resizeSection(DataLoggerModel::Max, 8 * w0);
 
-    setSelectionMode(QAbstractItemView::SingleSelection);
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
     setDragEnabled(true);
     setDragDropMode(QAbstractItemView::DragDrop);
+    setSortingEnabled(true);
+
+    createActions();
+    connect(selectionModel(), &QItemSelectionModel::selectionChanged, this, &DataLoggerTreeView::updateSelect);
 }
 
 DataLoggerTreeView::~DataLoggerTreeView()
@@ -66,22 +74,67 @@ void DataLoggerTreeView::removeCurrent()
     {
         return;
     }
-    if (!selectionModel()->hasSelection())
+    QModelIndexList selection = selectionModel()->selectedRows();
+    if (selection.isEmpty())
     {
         return;
     }
-    int index = selectionModel()->selection().first().top();
-    if (index >= _loggerModel->dataLogger()->dataList().count())
+
+    if (!selection.isEmpty())
     {
-        return;
+        QList<QPersistentModelIndex> pindex;
+        for (QModelIndex selected : selection)
+        {
+            const QModelIndex &indexComponent = _sortProxy->mapToSource(selected);
+            if (!indexComponent.isValid())
+            {
+                continue;
+            }
+
+            pindex.append(indexComponent);
+        }
+        if (QMessageBox::question(this, tr("Remove log?"), tr("Do you realy want to remove theses %1 logs?").arg(pindex.count())) != QMessageBox::Yes)
+        {
+            return;
+        }
+        selectionModel()->clearSelection();
+        for (QPersistentModelIndex index : pindex)
+        {
+            _loggerModel->dataLogger()->removeData(_loggerModel->objId(index));
+        }
     }
-    _loggerModel->dataLogger()->removeData(_loggerModel->dataLogger()->data(index)->objectId());
 }
 
-void DataLoggerTreeView::keyPressEvent(QKeyEvent *event)
+void DataLoggerTreeView::updateSelect(const QItemSelection &selected, const QItemSelection &deselected)
 {
-    if (event->key() == Qt::Key_Delete)
-    {
-         removeCurrent();
-    }
+    Q_UNUSED(selected)
+    Q_UNUSED(deselected)
+
+    bool selectionEmpty = selectionModel()->selectedRows().isEmpty();
+    _removeAction->setEnabled(!selectionEmpty);
+}
+
+void DataLoggerTreeView::createActions()
+{
+    _removeAction = new QAction(this);
+    _removeAction->setText(tr("&Remove"));
+    _removeAction->setShortcut(QKeySequence::Delete);
+    _removeAction->setShortcutContext(Qt::WidgetShortcut);
+#if QT_VERSION >= 0x050A00
+    _removeAction->setShortcutVisibleInContextMenu(true);
+#endif
+    connect(_removeAction, &QAction::triggered, this, &DataLoggerTreeView::removeCurrent);
+    addAction(_removeAction);
+}
+
+QAction *DataLoggerTreeView::removeAction() const
+{
+    return _removeAction;
+}
+
+void DataLoggerTreeView::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu menu;
+    menu.addAction(_removeAction);
+    menu.exec(event->globalPos());
 }

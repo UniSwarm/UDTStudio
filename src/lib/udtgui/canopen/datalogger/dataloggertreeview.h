@@ -21,7 +21,9 @@
 
 #include "../../udtgui_global.h"
 
+#include <QSortFilterProxyModel>
 #include <QTreeView>
+#include <QAction>
 
 #include "dataloggermodel.h"
 
@@ -35,15 +37,24 @@ public:
     DataLogger *dataLogger() const;
     void setDataLogger(DataLogger *dataLogger);
 
+    QAction *removeAction() const;
+
 public slots:
     void removeCurrent();
 
+protected slots:
+    void updateSelect(const QItemSelection &selected, const QItemSelection &deselected);
+
 protected:
     DataLoggerModel *_loggerModel;
+    QSortFilterProxyModel *_sortProxy;
+
+    void createActions();
+    QAction *_removeAction;
 
     // QWidget interface
 protected:
-    void keyPressEvent(QKeyEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
 #endif // DATALOGGERTREEVIEW_H

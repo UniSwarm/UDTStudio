@@ -52,6 +52,30 @@ void DataLoggerModel::setDataLogger(DataLogger *dataLogger)
     emit layoutChanged();
 }
 
+NodeObjectId DataLoggerModel::objId(const QModelIndex &index)
+{
+    const DLData *dlData = this->dlData(index);
+    if (!dlData)
+    {
+        return NodeObjectId();
+    }
+    return dlData->objectId();
+}
+
+DLData *DataLoggerModel::dlData(const QModelIndex &index)
+{
+    if (!index.isValid() || !_dataLogger)
+    {
+        return nullptr;
+    }
+    if (index.row() >= _dataLogger->dataList().count())
+    {
+        return nullptr;
+    }
+
+    return _dataLogger->dataList().at(index.row());
+}
+
 void DataLoggerModel::updateDataLoggerList()
 {
     setDataLogger(_dataLogger);
