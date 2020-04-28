@@ -77,6 +77,11 @@ void RPDO::setBus(CanOpenBus *bus)
     connect(_bus->sync(), &Sync::syncOneRequested, this, &RPDO::receiveSyncOne);
 }
 
+/**
+ * @brief Set Transmission Type
+ * @param type Sync:0x00->0xF0; event-driven (manufacturer-specific):0xFE; event-driven (device profile and application profile specific):0xFF
+ * @return bool
+ */
 bool RPDO::setTransmissionType(quint8 type)
 {
     statusPdo = STATE_NONE;
@@ -93,12 +98,19 @@ bool RPDO::setTransmissionType(quint8 type)
     }
 }
 
+/**
+ * @brief Get Transmission Type
+ * @return quint8
+ */
 quint8 RPDO::transmissionType()
 {
     NodeObjectId object(_objectCommId, PDO_COMM_TRANSMISSION_TYPE);
     return static_cast<quint8>(_node->nodeOd()->value(object).toUInt());
 }
 
+/**
+ * @brief Sync management received
+ */
 void RPDO::receiveSync()
 {
     if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()))
@@ -109,6 +121,9 @@ void RPDO::receiveSync()
     sendData();
 }
 
+/**
+ * @brief Sync One management received
+ */
 void RPDO::receiveSyncOne()
 {
     if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()))
@@ -118,6 +133,10 @@ void RPDO::receiveSyncOne()
     prepareDataBeforeSync();
     _bus->sync()->sendSync();
 }
+
+/**
+ * @brief Prepares the data before the sync signal
+ */
 void RPDO::prepareDataBeforeSync()
 {
     if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()))
@@ -139,6 +158,9 @@ void RPDO::prepareDataBeforeSync()
     }
 }
 
+/**
+ * @brief Send data on bus
+ */
 bool RPDO::sendData()
 {
     if (!bus()->canWrite())
@@ -152,6 +174,12 @@ bool RPDO::sendData()
     return bus()->writeFrame(frame);
 }
 
+/**
+ * @brief Convert QVariant To QDataStream
+ * @param request -> value converted
+ * @param data value to convert
+ * @param data QMetaType
+ */
 void RPDO::convertQVariantToQDataStream(QDataStream &request, const QVariant &data, QMetaType::Type type)
 {
     switch (type)
