@@ -117,8 +117,6 @@ void RPDO::receiveSync()
     {
         return;
     }
-
-    sendData();
 }
 
 /**
@@ -156,6 +154,7 @@ void RPDO::prepareDataBeforeSync()
         }
         convertQVariantToQDataStream(request, _node->nodeOd()->value(object), _node->nodeOd()->dataType(object));
     }
+    sendData();
 }
 
 /**
