@@ -33,17 +33,28 @@ public:
     DataLogger(QObject *parent = nullptr);
 
     void addData(const NodeObjectId &objId);
+    void removeData(const NodeObjectId &objId);
     QList<DLData *> &dataList();
     DLData *data(int index) const;
     DLData *data(const NodeObjectId &objId) const;
+
+    qreal min() const;
+    qreal max() const;
+    void range(qreal &min, qreal &max) const;
+
+    QDateTime firstDateTime() const;
+    QDateTime lastDateTime() const;
 
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 
 signals:
-    void dataListChanged();
     void dataChanged(int id);
+    void dataAboutToBeAdded(int id);
+    void dataAdded();
+    void dataAboutToBeRemoved(int id);
+    void dataRemoved();
 
 public slots:
     void start(int ms);

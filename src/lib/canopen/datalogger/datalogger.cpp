@@ -33,12 +33,31 @@ void DataLogger::addData(const NodeObjectId &objId)
         return;
     }
 
-    DLData *data = new DLData(objId);
-    _dataMap.insert(data->key(), data);
-    _dataList.append(data);
-    registerObjId(data->objectId());
+    emit dataAboutToBeAdded(_dataList.count());
 
-    emit dataListChanged();
+    DLData *dlData = new DLData(objId);
+    _dataMap.insert(dlData->key(), dlData);
+    _dataList.append(dlData);
+    registerObjId(dlData->objectId());
+
+    emit dataAdded();
+}
+
+void DataLogger::removeData(const NodeObjectId &objId)
+{
+    DLData *dlData = data(objId);
+    if (!dlData)
+    {
+        return;
+    }
+
+    emit dataAboutToBeRemoved(_dataList.indexOf(dlData));
+
+    _dataMap.remove(dlData->key());
+    _dataList.removeOne(dlData);
+    registerObjId(dlData->objectId());
+
+    emit dataRemoved();
 }
 
 QList<DLData *> &DataLogger::dataList()
@@ -54,6 +73,75 @@ DLData *DataLogger::data(int index) const
 DLData *DataLogger::data(const NodeObjectId &objId) const
 {
     return _dataMap.value(objId.key());
+}
+
+qreal DataLogger::min() const
+{
+    qreal min = std::numeric_limits<int>::max();
+    for (DLData *dlData : _dataList)
+    {
+        min = qMin(dlData->min(), min);
+    }
+    return min;
+}
+
+qreal DataLogger::max() const
+{
+    qreal max = std::numeric_limits<int>::min();
+    for (DLData *dlData : _dataList)
+    {
+        max = qMax(dlData->max(), max);
+    }
+    return max;
+}
+
+void DataLogger::range(qreal &min, qreal &max) const
+{
+    min = std::numeric_limits<int>::max();
+    max = std::numeric_limits<int>::min();
+    for (DLData *dlData : _dataList)
+    {
+        min = qMin(dlData->min(), min);
+        max = qMax(dlData->max(), max);
+    }
+}
+
+QDateTime DataLogger::firstDateTime() const
+{
+    QDateTime first;
+    if (_dataList.isEmpty())
+    {
+        return QDateTime();
+    }
+    first = _dataList.first()->firstDateTime();
+    for (DLData *dlData : _dataList)
+    {
+        const QDateTime &dateTime = dlData->firstDateTime();
+        if (first > dateTime)
+        {
+            first = dateTime;
+        }
+    }
+    return first;
+}
+
+QDateTime DataLogger::lastDateTime() const
+{
+    QDateTime last;
+    if (_dataList.isEmpty())
+    {
+        return QDateTime();
+    }
+    last = _dataList.first()->firstDateTime();
+    for (DLData *dlData : _dataList)
+    {
+        const QDateTime &dateTime = dlData->firstDateTime();
+        if (last < dateTime)
+        {
+            last = dateTime;
+        }
+    }
+    return last;
 }
 
 void DataLogger::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

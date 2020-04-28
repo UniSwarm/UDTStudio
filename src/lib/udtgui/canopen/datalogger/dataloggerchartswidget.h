@@ -26,25 +26,39 @@
 
 #include "datalogger/datalogger.h"
 
+namespace QtCharts
+{
+    class QDateTimeAxis;
+    class QValueAxis;
+}
+
 class UDTGUI_EXPORT DataLoggerChartsWidget : public QtCharts::QChartView
 {
     Q_OBJECT
 public:
     DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *parent = nullptr);
+    ~DataLoggerChartsWidget();
 
     DataLogger *dataLogger() const;
     void setDataLogger(DataLogger *dataLogger);
 
 protected slots:
-    void updateDataLoggerList();
     void updateDlData(int id);
+
+    void addDataPrepare(int id);
+    void addDataOk();
+    void removeDataPrepare(int id);
+    void removeDataOk();
 
 private:
     DataLogger *_dataLogger;
 
     QtCharts::QChart *_chart;
     QList<QtCharts::QLineSeries *> _series;
-    double _time;
+    QtCharts::QDateTimeAxis *_axisX;
+    QtCharts::QValueAxis *_axisY;
+
+    int _idPending;
 };
 
 #endif // DATALOGGERCHARTSWIDGET_H

@@ -34,6 +34,8 @@ DLData::DLData(const NodeObjectId &objectId)
             _name = nodeSubIndex->name();
         }
     }
+
+    resetMinMax();
 }
 
 const NodeObjectId &DLData::objectId() const
@@ -61,10 +63,22 @@ void DLData::setName(const QString &name)
     _name = name;
 }
 
-void DLData::appendData(double value, const QDateTime &dateTime)
+void DLData::appendData(qreal value, const QDateTime &dateTime)
 {
     _values.append(value);
     _times.append(dateTime);
+
+    _min = qMin(_min, value);
+    _max = qMax(_max, value);
+}
+
+double DLData::firstValue() const
+{
+    if (_values.isEmpty())
+    {
+        return 0.0;
+    }
+    return _values.first();
 }
 
 double DLData::lastValue() const
@@ -74,4 +88,48 @@ double DLData::lastValue() const
         return 0.0;
     }
     return _values.last();
+}
+
+QDateTime DLData::firstDateTime() const
+{
+    if (_values.isEmpty())
+    {
+        return QDateTime();
+    }
+    return _times.first();
+}
+
+QDateTime DLData::lastDateTime() const
+{
+    if (_values.isEmpty())
+    {
+        return QDateTime();
+    }
+    return _times.last();
+}
+
+qreal DLData::min() const
+{
+    return _min;
+}
+
+qreal DLData::max() const
+{
+    return _max;
+}
+
+void DLData::resetMinMax()
+{
+    _min = std::numeric_limits<int>::max();
+    _max = std::numeric_limits<int>::min();
+}
+
+QList<qreal> DLData::values() const
+{
+    return _values;
+}
+
+QList<QDateTime> DLData::times() const
+{
+    return _times;
 }

@@ -42,7 +42,10 @@ void DataLoggerModel::setDataLogger(DataLogger *dataLogger)
 
     if (dataLogger != _dataLogger)
     {
-        connect(dataLogger, &DataLogger::dataListChanged, this, &DataLoggerModel::updateDataLoggerList);
+        connect(dataLogger, &DataLogger::dataAboutToBeAdded, this, &DataLoggerModel::addDataPrepare);
+        connect(dataLogger, &DataLogger::dataAdded, this, &DataLoggerModel::addDataOk);
+        connect(dataLogger, &DataLogger::dataAboutToBeRemoved, this, &DataLoggerModel::removeDataPrepare);
+        connect(dataLogger, &DataLogger::dataRemoved, this, &DataLoggerModel::removeDataOk);
         connect(dataLogger, &DataLogger::dataChanged, this, &DataLoggerModel::updateDlData);
     }
     _dataLogger = dataLogger;
@@ -62,6 +65,26 @@ void DataLoggerModel::updateDlData(int id)
     {
         emit dataChanged(modelIndexTL, modelIndexBR);
     }
+}
+
+void DataLoggerModel::addDataPrepare(int id)
+{
+    beginInsertRows(QModelIndex(), id, id);
+}
+
+void DataLoggerModel::addDataOk()
+{
+    endInsertRows();
+}
+
+void DataLoggerModel::removeDataPrepare(int id)
+{
+    beginRemoveRows(QModelIndex(), id, id);
+}
+
+void DataLoggerModel::removeDataOk()
+{
+    endRemoveRows();
 }
 
 int DataLoggerModel::columnCount(const QModelIndex &parent) const
@@ -86,11 +109,15 @@ QVariant DataLoggerModel::headerData(int section, Qt::Orientation orientation, i
         case Index:
             return QVariant(tr("Index"));
         case SubIndex:
-            return QVariant(tr("SubIndex"));
+            return QVariant(tr("Sub."));
         case Name:
             return QVariant(tr("Name"));
         case Value:
             return QVariant(tr("Value"));
+        case Min:
+            return QVariant(tr("Min"));
+        case Max:
+            return QVariant(tr("Max"));
         }
         break;
     }
@@ -129,6 +156,12 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
 
         case Value:
             return QVariant(dlData->lastValue());
+
+        case Min:
+            return QVariant(dlData->min());
+
+        case Max:
+            return QVariant(dlData->max());
 
         default:
             return QVariant();

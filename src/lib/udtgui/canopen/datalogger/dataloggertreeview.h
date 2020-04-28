@@ -35,8 +35,15 @@ public:
     DataLogger *dataLogger() const;
     void setDataLogger(DataLogger *dataLogger);
 
+public slots:
+    void removeCurrent();
+
 protected:
     DataLoggerModel *_loggerModel;
+
+    // QWidget interface
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
 };
 
 #endif // DATALOGGERTREEVIEW_H

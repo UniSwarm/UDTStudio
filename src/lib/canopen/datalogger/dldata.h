@@ -37,16 +37,29 @@ public:
     QString name() const;
     void setName(const QString &name);
 
-    void appendData(double value, const QDateTime &dateTime);
+    void appendData(qreal value, const QDateTime &dateTime);
+    double firstValue() const;
     double lastValue() const;
+    QDateTime firstDateTime() const;
+    QDateTime lastDateTime() const;
+
+    qreal min() const;
+    qreal max() const;
+    void resetMinMax();
+
+    QList<qreal> values() const;
+    QList<QDateTime> times() const;
 
 protected:
     NodeObjectId _objectId;
     Node *_node;
     QString _name;
 
-    QList <double> _values;
+    QList <qreal> _values;
     QList <QDateTime> _times;
+
+    qreal _min;
+    qreal _max;
 };
 
 #endif // DLDATA_H

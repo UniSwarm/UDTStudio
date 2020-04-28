@@ -41,12 +41,19 @@ public:
         SubIndex,
         Name,
         Value,
+        Min,
+        Max,
         ColumnCount
     };
 
 protected slots:
     void updateDataLoggerList();
     void updateDlData(int id);
+
+    void addDataPrepare(int id);
+    void addDataOk();
+    void removeDataPrepare(int id);
+    void removeDataOk();
 
     // QAbstractItemModel interface
 public:

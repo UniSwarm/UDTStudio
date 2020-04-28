@@ -21,6 +21,8 @@
 #include <QKeyEvent>
 #include <QHeaderView>
 #include <QFontMetrics>
+#include <QKeyEvent>
+#include <QItemSelectionModel>
 
 #include "node.h"
 
@@ -31,10 +33,13 @@ DataLoggerTreeView::DataLoggerTreeView(QWidget *parent)
     setModel(_loggerModel);
 
     int w0 = QFontMetrics(font()).horizontalAdvance("0");
-    header()->resizeSection(0, 16 * w0);
-    header()->resizeSection(1, 8 * w0);
-    header()->resizeSection(2, 8 * w0);
-    header()->resizeSection(3, 12 * w0);
+    header()->resizeSection(DataLoggerModel::Node, 16 * w0);
+    header()->resizeSection(DataLoggerModel::Index, 8 * w0);
+    header()->resizeSection(DataLoggerModel::SubIndex, 8 * w0);
+    header()->resizeSection(DataLoggerModel::Name, 20 * w0);
+    header()->resizeSection(DataLoggerModel::Value, 8 * w0);
+    header()->resizeSection(DataLoggerModel::Min, 8 * w0);
+    header()->resizeSection(DataLoggerModel::Max, 8 * w0);
 
     setSelectionMode(QAbstractItemView::SingleSelection);
     setDragEnabled(true);
@@ -53,4 +58,30 @@ DataLogger *DataLoggerTreeView::dataLogger() const
 void DataLoggerTreeView::setDataLogger(DataLogger *dataLogger)
 {
     _loggerModel->setDataLogger(dataLogger);
+}
+
+void DataLoggerTreeView::removeCurrent()
+{
+    if (!_loggerModel->dataLogger())
+    {
+        return;
+    }
+    if (!selectionModel()->hasSelection())
+    {
+        return;
+    }
+    int index = selectionModel()->selection().first().top();
+    if (index >= _loggerModel->dataLogger()->dataList().count())
+    {
+        return;
+    }
+    _loggerModel->dataLogger()->removeData(_loggerModel->dataLogger()->data(index)->objectId());
+}
+
+void DataLoggerTreeView::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Delete)
+    {
+         removeCurrent();
+    }
 }

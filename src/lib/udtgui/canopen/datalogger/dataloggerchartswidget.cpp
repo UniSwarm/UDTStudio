@@ -18,6 +18,9 @@
 
 #include "dataloggerchartswidget.h"
 
+#include <QDateTimeAxis>
+#include <QValueAxis>
+
 using namespace QtCharts;
 
 DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *parent)
@@ -34,7 +37,25 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
     setRenderHint(QPainter::Antialiasing);
     setChart(_chart);
 
+    _axisX = new QtCharts::QDateTimeAxis();
+    _axisX->setTickCount(10);
+    _axisX->setFormat("dd-MM-yyyy h:mm");
+    _axisX->setTitleText("Date");
+    _axisX->setVisible();
+    _chart->addAxis(_axisX, Qt::AlignBottom);
+
+    _axisY = new QtCharts::QValueAxis();
+    _axisY->setLabelFormat("%i");
+    _axisY->setTitleText("Sunspots count");
+    _chart->addAxis(_axisY, Qt::AlignLeft);
+
     setDataLogger(dataLogger);
+    _idPending = -1;
+}
+
+DataLoggerChartsWidget::~DataLoggerChartsWidget()
+{
+    delete _chart;
 }
 
 DataLogger *DataLoggerChartsWidget::dataLogger() const
@@ -48,36 +69,63 @@ void DataLoggerChartsWidget::setDataLogger(DataLogger *dataLogger)
     {
         if (dataLogger)
         {
-            connect(dataLogger, &DataLogger::dataListChanged, this, &DataLoggerChartsWidget::updateDataLoggerList);
+            connect(dataLogger, &DataLogger::dataAboutToBeAdded, this, &DataLoggerChartsWidget::addDataPrepare);
+            connect(dataLogger, &DataLogger::dataAdded, this, &DataLoggerChartsWidget::addDataOk);
+            connect(dataLogger, &DataLogger::dataAboutToBeRemoved, this, &DataLoggerChartsWidget::removeDataPrepare);
+            connect(dataLogger, &DataLogger::dataRemoved, this, &DataLoggerChartsWidget::removeDataOk);
             connect(dataLogger, &DataLogger::dataChanged, this, &DataLoggerChartsWidget::updateDlData);
         }
     }
     _dataLogger = dataLogger;
 }
 
-void DataLoggerChartsWidget::updateDataLoggerList()
-{
-    for (int i = _series.count(); i < _dataLogger->dataList().count(); i++)
-    {
-        QtCharts::QLineSeries *serie = new QtCharts::QLineSeries();
-        serie->setUseOpenGL(true);
-        serie->setName(QString("Axe %1").arg(i+1));
-        _chart->addSeries(serie);
-        _series.append(serie);
-    }
-    if (!_series.isEmpty())
-    {
-        _chart->createDefaultAxes();
-        _chart->axes(Qt::Vertical).first()->setRange(-180, 180);
-        _chart->axes(Qt::Horizontal).first()->setRange(0, 100);
-    }
-}
-
 void DataLoggerChartsWidget::updateDlData(int id)
 {
     if (id < _series.count())
     {
-        _time += 0.1;
-        _series[id]->append(_time, _dataLogger->data(id)->lastValue());
+        DLData *dlData = _dataLogger->data(id);
+        _series[id]->append(dlData->lastDateTime().toMSecsSinceEpoch(), dlData->lastValue());
+
+        _axisY->setRange(_dataLogger->min(), _dataLogger->max());
+        _axisX->setRange(dlData->firstDateTime(), dlData->lastDateTime());
+        _axisX->setVisible();
     }
+}
+
+void DataLoggerChartsWidget::addDataPrepare(int id)
+{
+    _idPending = id;
+}
+
+void DataLoggerChartsWidget::addDataOk()
+{
+    if (_idPending >= 0 && _idPending < _dataLogger->dataList().count())
+    {
+        DLData *dlData = _dataLogger->data(_idPending);
+        QtCharts::QLineSeries *serie = new QtCharts::QLineSeries();
+        serie->setUseOpenGL(true);
+        serie->setName(dlData->name());
+        _chart->addSeries(serie);
+        _series.append(serie);
+
+        serie->attachAxis(_axisX);
+        serie->attachAxis(_axisY);
+    }
+    _idPending = -1;
+}
+
+void DataLoggerChartsWidget::removeDataPrepare(int id)
+{
+    if (id >= 0 && id < _dataLogger->dataList().count())
+    {
+        QtCharts::QLineSeries *serie = _series.at(id);
+        _chart->removeSeries(serie);
+        _series.removeOne(serie);
+        serie->deleteLater();
+    }
+}
+
+void DataLoggerChartsWidget::removeDataOk()
+{
+    _idPending = -1;
 }
