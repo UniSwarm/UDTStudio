@@ -50,14 +50,19 @@ protected:
     void registerIndex(quint16 index);
     void registerFullOd();
 
+    void unRegisterObjId(const NodeObjectId &objId);
+    void unRegisterSubIndex(quint16 index, quint8 subindex);
+    void unRegisterIndex(quint16 index);
+    void unRegisterFullOd();
+
     virtual void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) =0;
 
 private:
     Node *_nodeInterrest;
     QSet<quint64> _indexSubIndexList;
     QList<NodeObjectId> _objIdList;
-    void registerKey(quint16 index = 0xFFFFu, quint8 subindex = 0xFFu);
     void registerKey(const NodeObjectId &objId);
+    void unRegisterKey(const NodeObjectId &objId);
 };
 
 #endif // NODEODSUBSCRIBER_H

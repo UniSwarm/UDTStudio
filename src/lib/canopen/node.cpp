@@ -24,8 +24,6 @@
 #include "parser/edsparser.h"
 #include "services/services.h"
 
-#include <QDirIterator>
-
 Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
     : _nodeId(nodeId)
 {

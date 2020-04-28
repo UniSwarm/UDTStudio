@@ -177,12 +177,7 @@ NodeSubIndex *NodeObjectId::nodeSubIndex() const
     {
         return nullptr;
     }
-    NodeIndex *nodeIndex = node->nodeOd()->index(index);
-    if (!nodeIndex)
-    {
-        return nullptr;
-    }
-    return nodeIndex->subIndex(subIndex);
+    return node->nodeOd()->subIndex(index, subIndex);
 }
 
 QString NodeObjectId::mimeData() const

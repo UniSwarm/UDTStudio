@@ -220,6 +220,24 @@ void NodeOd::unsubscribe(NodeOdSubscriber *object)
     }
 }
 
+void NodeOd::unsubscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex)
+{
+    QMultiMap<quint32, Subscriber>::iterator itSub = _subscribers.begin();
+    while (itSub != _subscribers.end())
+    {
+        if ((*itSub).object == object
+            && (*itSub).notifyIndex == notifyIndex
+            && (*itSub).notifySubIndex == notifySubIndex)
+        {
+            itSub = _subscribers.erase(itSub);
+        }
+        else
+        {
+            ++itSub;
+        }
+    }
+}
+
 void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, const QVariant &value, SDO::FlagsRequest flags)
 {
     if (indexExist(indexDevice))

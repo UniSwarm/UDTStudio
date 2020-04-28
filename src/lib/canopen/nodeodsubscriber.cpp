@@ -82,27 +82,42 @@ void NodeOdSubscriber::registerObjId(const NodeObjectId &objId)
 
 void NodeOdSubscriber::registerSubIndex(quint16 index, quint8 subindex)
 {
-    registerKey(index, subindex);
+    registerKey(NodeObjectId(index, subindex));
 }
 
 void NodeOdSubscriber::registerIndex(quint16 index)
 {
-    registerKey(index);
+    registerKey(NodeObjectId(index, 0xFFu));
 }
 
 void NodeOdSubscriber::registerFullOd()
 {
-    registerKey();
+    registerKey(NodeObjectId(0xFFFFu, 0xFFu));
+}
+
+void NodeOdSubscriber::unRegisterObjId(const NodeObjectId &objId)
+{
+    unRegisterKey(objId);
+}
+
+void NodeOdSubscriber::unRegisterSubIndex(quint16 index, quint8 subindex)
+{
+    unRegisterKey(NodeObjectId(index, subindex));
+}
+
+void NodeOdSubscriber::unRegisterIndex(quint16 index)
+{
+    unRegisterKey(NodeObjectId(index, 0xFFu));
+}
+
+void NodeOdSubscriber::unRegisterFullOd()
+{
+    unRegisterKey(NodeObjectId(0xFFFFu, 0xFFu));
 }
 
 QList<NodeObjectId> NodeOdSubscriber::objIdList() const
 {
     return _objIdList;
-}
-
-void NodeOdSubscriber::registerKey(quint16 index, quint8 subindex)
-{
-    registerKey({index, subindex});
 }
 
 void NodeOdSubscriber::registerKey(const NodeObjectId &objId)
@@ -121,6 +136,35 @@ void NodeOdSubscriber::registerKey(const NodeObjectId &objId)
         if (_nodeInterrest)
         {
             _nodeInterrest->nodeOd()->subscribe(this, objId.index, objId.subIndex);
+        }
+    }
+    else
+    {
+        Node *node = objId.node();
+        if (node)
+        {
+            NodeOd *nodeOd = node->nodeOd();
+            nodeOd->subscribe(this, objId.index, objId.subIndex);
+        }
+    }
+}
+
+void NodeOdSubscriber::unRegisterKey(const NodeObjectId &objId)
+{
+    quint64 key = objId.key();
+    if (!_indexSubIndexList.contains(key))
+    {
+        return;
+    }
+    _indexSubIndexList.remove(key);
+    _objIdList.removeOne(objId);
+
+    // unregister on nodeOd
+    if (objId.isNodeIndependant())
+    {
+        if (_nodeInterrest)
+        {
+            _nodeInterrest->nodeOd()->unsubscribe(this, objId.index, objId.subIndex);
         }
     }
     else

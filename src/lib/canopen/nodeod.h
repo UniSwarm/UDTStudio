@@ -72,6 +72,7 @@ public:
     // subscribe, notifier service
     void subscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex);
     void unsubscribe(NodeOdSubscriber *object);
+    void unsubscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex);
     void updateObjectFromDevice(quint16 index, quint8 subindex, const QVariant &value, SDO::FlagsRequest flags);
 
     static QMetaType::Type dataTypeCiaToQt(NodeSubIndex::DataType type);
