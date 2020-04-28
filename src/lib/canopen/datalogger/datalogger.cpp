@@ -55,7 +55,8 @@ void DataLogger::removeData(const NodeObjectId &objId)
 
     _dataMap.remove(dlData->key());
     _dataList.removeOne(dlData);
-    registerObjId(dlData->objectId());
+    unRegisterObjId(dlData->objectId());
+    delete dlData;
 
     emit dataRemoved();
 }
@@ -132,10 +133,10 @@ QDateTime DataLogger::lastDateTime() const
     {
         return QDateTime();
     }
-    last = _dataList.first()->firstDateTime();
+    last = _dataList.first()->lastDateTime();
     for (DLData *dlData : _dataList)
     {
-        const QDateTime &dateTime = dlData->firstDateTime();
+        const QDateTime &dateTime = dlData->lastDateTime();
         if (last < dateTime)
         {
             last = dateTime;

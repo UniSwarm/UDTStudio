@@ -20,6 +20,7 @@
 
 #include <QDateTimeAxis>
 #include <QValueAxis>
+#include <QDebug>
 
 using namespace QtCharts;
 
@@ -39,15 +40,12 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
 
     _axisX = new QtCharts::QDateTimeAxis();
     _axisX->setTickCount(10);
-    _axisX->setFormat("dd-MM-yyyy h:mm");
-    _axisX->setTitleText("Date");
-    _axisX->setVisible();
-    _chart->addAxis(_axisX, Qt::AlignBottom);
+    _axisX->setFormat("hh:mm:ss");
+    _axisX->setTitleText("Time");
 
     _axisY = new QtCharts::QValueAxis();
     _axisY->setLabelFormat("%i");
     _axisY->setTitleText("Sunspots count");
-    _chart->addAxis(_axisY, Qt::AlignLeft);
 
     setDataLogger(dataLogger);
     _idPending = -1;
@@ -87,8 +85,7 @@ void DataLoggerChartsWidget::updateDlData(int id)
         _series[id]->append(dlData->lastDateTime().toMSecsSinceEpoch(), dlData->lastValue());
 
         _axisY->setRange(_dataLogger->min(), _dataLogger->max());
-        _axisX->setRange(dlData->firstDateTime(), dlData->lastDateTime());
-        _axisX->setVisible();
+        _axisX->setRange(_dataLogger->firstDateTime(), _dataLogger->lastDateTime());
     }
 }
 
@@ -103,13 +100,19 @@ void DataLoggerChartsWidget::addDataOk()
     {
         DLData *dlData = _dataLogger->data(_idPending);
         QtCharts::QLineSeries *serie = new QtCharts::QLineSeries();
-        serie->setUseOpenGL(true);
+        serie->setUseOpenGL(false);
         serie->setName(dlData->name());
         _chart->addSeries(serie);
-        _series.append(serie);
+
+        if (!_chart->axes(Qt::Horizontal).contains(_axisX))
+        {
+            _chart->addAxis(_axisX, Qt::AlignBottom);
+            _chart->addAxis(_axisY, Qt::AlignLeft);
+        }
 
         serie->attachAxis(_axisX);
         serie->attachAxis(_axisY);
+        _series.append(serie);
     }
     _idPending = -1;
 }
