@@ -45,9 +45,12 @@ public:
 
 protected slots:
     void receiveSync();
+    void prepareDataBeforeSync();
 
 private:
-    void saveData();
+    QByteArray _rpdoDataToSendReqPayload;
+    bool sendData();
+    void convertQVariantToQDataStream(QDataStream &request, const QVariant &data, QMetaType::Type type);
 
     // Service interface
 public:

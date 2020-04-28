@@ -44,9 +44,11 @@ public slots:
 
 signals:
     void syncEmitted();
+    void signalBeforeSync();
 
 protected:
     QTimer *_syncTimer;
+    QTimer *_signalBeforeSync;
     uint32_t _syncCobId;
 };
 

@@ -73,6 +73,7 @@ void RPDO::setBus(CanOpenBus *bus)
 {
     _bus = bus;
     connect(_bus->sync(), &Sync::syncEmitted, this, &RPDO::receiveSync);
+    connect(_bus->sync(), &Sync::signalBeforeSync, this, &RPDO::prepareDataBeforeSync);
 }
 
 bool RPDO::setTransmissionType(quint8 type)
@@ -99,11 +100,103 @@ quint8 RPDO::transmissionType()
 
 void RPDO::receiveSync()
 {
-    if (_objectCurrentMapped.isEmpty())
+    if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()))
     {
         return;
     }
+
     sendData();
+}
+
+void RPDO::prepareDataBeforeSync()
+{
+    if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()))
+    {
+        return;
+    }
+
+    QDataStream request(&_rpdoDataToSendReqPayload, QIODevice::WriteOnly);
+    request.setByteOrder(QDataStream::LittleEndian);
+
+    for (NodeObjectId object : _objectCurrentMapped)
+    {
+        quint8 size = static_cast<quint8>(QMetaType::sizeOf(object.dataType));
+        if (size > 8)
+        {
+            setError(ERROR_EXCEED_PDO_LENGTH);
+        }
+        convertQVariantToQDataStream(request, _node->nodeOd()->value(object), _node->nodeOd()->dataType(object));
+    }
+}
+
+bool RPDO::sendData()
+{
+    if (!bus()->canWrite())
+    {
+        return false;
+    }
+
+    QCanBusFrame frame;
+    frame.setFrameId(_cobId);
+    frame.setPayload(_rpdoDataToSendReqPayload);
+    return bus()->writeFrame(frame);
+}
+
+void RPDO::convertQVariantToQDataStream(QDataStream &request, const QVariant &data, QMetaType::Type type)
+{
+    switch (type)
+    {
+    case QMetaType::Long:
+    case QMetaType::LongLong:
+    case QMetaType::Int:
+        request << data.value<int>();
+        break;
+
+    case QMetaType::ULong:
+    case QMetaType::ULongLong:
+    case QMetaType::UInt:
+        request << data.value<unsigned int>();
+        break;
+
+    case QMetaType::Double:
+        request << data.value<double>();
+        break;
+
+    case QMetaType::Short:
+        request << data.value<short>();
+        break;
+
+    case QMetaType::Char:
+        request << data.value<char>();
+        break;
+
+    case QMetaType::UShort:
+        request << data.value<unsigned short>();
+        break;
+
+    case QMetaType::UChar:
+        request << data.value<unsigned char>();
+        break;
+
+    case QMetaType::Float:
+        request << data.value<float>();
+        break;
+
+    case QMetaType::SChar:
+        request << data.value<signed char>();
+        break;
+
+    case QMetaType::QString:
+        request << data;
+        break;
+
+    case QMetaType::QByteArray:
+        request << data;
+        break;
+
+    default:
+        break;
+    }
 }
 
 bool RPDO::isTPDO() const

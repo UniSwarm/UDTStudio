@@ -123,9 +123,6 @@ protected:
     QList<NodeObjectId> _objectCurrentMapped;
     QList<NodeObjectId> _objectToMap;
 
-    bool sendData();
-    void convertQVariantToQDataStream(QDataStream &request, const QVariant &data, QMetaType::Type type);
-
     enum CommParam
     {
         PDO_COMM_NUMBER = 0x0,

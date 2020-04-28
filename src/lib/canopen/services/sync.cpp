@@ -26,7 +26,9 @@ Sync::Sync(CanOpenBus *bus)
     _syncCobId = 0x80;
     _cobIds.append(_syncCobId);
     _syncTimer = new QTimer();
+    _signalBeforeSync = new QTimer();
     connect(_syncTimer, &QTimer::timeout, this, &Sync::sendSync);
+    connect(_signalBeforeSync, &QTimer::timeout, this, &Sync::signalBeforeSync);
 }
 
 Sync::~Sync()
@@ -42,11 +44,13 @@ QString Sync::type() const
 void Sync::startSync(int ms)
 {
     _syncTimer->start(ms);
+    _signalBeforeSync->start((ms * 3) / 4);
 }
 
 void Sync::stopSync()
 {
     _syncTimer->stop();
+    _signalBeforeSync->stop();
 }
 
 void Sync::sendSync()
