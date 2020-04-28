@@ -46,6 +46,7 @@ public:
 protected slots:
     void receiveSync();
     void prepareDataBeforeSync();
+    void receiveSyncOne();
 
 private:
     QByteArray _rpdoDataToSendReqPayload;

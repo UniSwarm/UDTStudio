@@ -41,10 +41,12 @@ public:
 
 public slots:
     void sendSync();
+    void sendSyncOne();
 
 signals:
     void syncEmitted();
     void signalBeforeSync();
+    void syncOneRequested();
 
 protected:
     QTimer *_syncTimer;

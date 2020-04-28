@@ -48,6 +48,7 @@ public slots:
 
     void exploreBus();
     void sendSync();
+    void sendSyncOne();
     void toggleSync(bool start);
 
 protected slots:

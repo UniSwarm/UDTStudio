@@ -66,6 +66,11 @@ void Sync::sendSync()
     emit syncEmitted();
 }
 
+void Sync::sendSyncOne()
+{
+    emit syncOneRequested();
+}
+
 void Sync::parseFrame(const QCanBusFrame &frame)
 {
     if (frame.frameId() == _syncCobId && frame.payload().isEmpty())

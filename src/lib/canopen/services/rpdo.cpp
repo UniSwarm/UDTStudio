@@ -74,6 +74,7 @@ void RPDO::setBus(CanOpenBus *bus)
     _bus = bus;
     connect(_bus->sync(), &Sync::syncEmitted, this, &RPDO::receiveSync);
     connect(_bus->sync(), &Sync::signalBeforeSync, this, &RPDO::prepareDataBeforeSync);
+    connect(_bus->sync(), &Sync::syncOneRequested, this, &RPDO::receiveSyncOne);
 }
 
 bool RPDO::setTransmissionType(quint8 type)
@@ -108,6 +109,15 @@ void RPDO::receiveSync()
     sendData();
 }
 
+void RPDO::receiveSyncOne()
+{
+    if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()))
+    {
+        return;
+    }
+    prepareDataBeforeSync();
+    _bus->sync()->sendSync();
+}
 void RPDO::prepareDataBeforeSync()
 {
     if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()))

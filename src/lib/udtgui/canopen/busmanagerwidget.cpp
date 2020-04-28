@@ -70,6 +70,14 @@ void BusManagerWidget::sendSync()
     }
 }
 
+void BusManagerWidget::sendSyncOne()
+{
+    if (_bus)
+    {
+        _bus->sync()->sendSyncOne();
+    }
+}
+
 void BusManagerWidget::toggleSync(bool start)
 {
     if (_bus)
@@ -118,7 +126,7 @@ void BusManagerWidget::createWidgets()
     action = _toolBar->addAction(tr("Sync one"));
     action->setIcon(QIcon(":/icons/img/icons8-sync1.png"));
     action->setStatusTip(tr("Send one sync command"));
-    connect(action, &QAction::triggered, this, &BusManagerWidget::sendSync);
+    connect(action, &QAction::triggered, this, &BusManagerWidget::sendSyncOne);
 
     // Sync timer
     _syncTimerSpinBox = new QSpinBox();
