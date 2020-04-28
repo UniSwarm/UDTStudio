@@ -71,17 +71,17 @@ void TPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (statusPdo == STATE_NONE)
     {
-        notifyWriteParam(objId, flags);
+        managementRespProcessMapping(objId, flags);
     }
 
     if (statusPdo == STATE_READ)
     {
-        notifyReadPdo(objId, flags);
+        managementRespReadCommAndMapping(objId, flags);
     }
 
     if (statusPdo == STATE_WRITE)
     {
-        notifyWritePdo(objId, flags);
+        managementRespProcessMapping(objId, flags);
     }
 }
 

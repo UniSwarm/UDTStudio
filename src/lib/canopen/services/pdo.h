@@ -116,9 +116,9 @@ protected:
 
     QList<NodeObjectId> _objectCommList;
 
-    void notifyWriteParam(const NodeObjectId &objId, SDO::FlagsRequest flags);
-    void notifyReadPdo(const NodeObjectId &objId, SDO::FlagsRequest flags);
-    void notifyWritePdo(const NodeObjectId &objId, SDO::FlagsRequest flags);
+    void managementRespWriteCommParam(const NodeObjectId &objId, SDO::FlagsRequest flags);
+    void managementRespReadCommAndMapping(const NodeObjectId &objId, SDO::FlagsRequest flags);
+    void managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequest flags);
 
     QList<NodeObjectId> _objectCurrentMapped;
     QList<NodeObjectId> _objectToMap;

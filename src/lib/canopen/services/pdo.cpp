@@ -264,7 +264,7 @@ void PDO::setEventTimer(quint32 eventTimer)
 /**
  * @brief management response from device after setInhibitTime, setEventTimer, setTransmissionType and setSyncStartValue
  */
-void PDO::notifyWriteParam(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void PDO::managementRespWriteCommParam(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (flags == SDO::FlagsRequest::Error)
     {
@@ -292,9 +292,9 @@ void PDO::notifyWriteParam(const NodeObjectId &objId, SDO::FlagsRequest flags)
 }
 
 /**
- * @brief management response from device after readMappingFromDevice, readCommParam and readMappingParam
+ * @brief management response from device after readCommParam and readMappingParam
  */
-void PDO::notifyReadPdo(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void PDO::managementRespReadCommAndMapping(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (objId.index == _objectCommId)
     {
@@ -405,7 +405,7 @@ bool PDO::createListObjectMapped()
 /**
  * @brief management response from device after processMapping
  */
-void PDO::notifyWritePdo(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void PDO::managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if ((objId.index == _objectCommId) && (state == STATE_FREE))
     {
