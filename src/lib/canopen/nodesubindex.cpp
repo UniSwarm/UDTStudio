@@ -222,7 +222,7 @@ const QVariant &NodeSubIndex::value() const
 void NodeSubIndex::setValue(const QVariant &value)
 {
     _value.setValue(value);
-    _lastModification = QDateTime().currentDateTime();
+    _lastModification = QDateTime::currentDateTime();
 }
 
 /**
@@ -232,7 +232,7 @@ void NodeSubIndex::setValue(const QVariant &value)
 void NodeSubIndex::clearValue()
 {
     _value.clear();
-    _lastModification = QDateTime().currentDateTime();
+    _lastModification = QDateTime::currentDateTime();
 }
 
 /**

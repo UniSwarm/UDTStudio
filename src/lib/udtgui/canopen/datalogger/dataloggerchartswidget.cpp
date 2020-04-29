@@ -45,7 +45,7 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
 
     _axisY = new QtCharts::QValueAxis();
     _axisY->setLabelFormat("%i");
-    _axisY->setTitleText("Sunspots count");
+    _axisY->setTitleText("Value");
 
     setDataLogger(dataLogger);
     _idPending = -1;
@@ -84,8 +84,22 @@ void DataLoggerChartsWidget::updateDlData(int id)
         DLData *dlData = _dataLogger->data(id);
         _series[id]->append(dlData->lastDateTime().toMSecsSinceEpoch(), dlData->lastValue());
 
-        _axisY->setRange(_dataLogger->min(), _dataLogger->max());
-        _axisX->setRange(_dataLogger->firstDateTime(), _dataLogger->lastDateTime());
+        qreal min = _dataLogger->min();
+        qreal max = _dataLogger->max();
+        qreal border = (max - min) * .1;
+        if (min < _axisY->min() || min + border > _axisY->min()
+            || max > _axisY->max() || max - border < _axisY->max())
+        {
+            _axisY->setRange(min - border, max + border);
+        }
+
+        QDateTime firstDateTime = _dataLogger->firstDateTime();
+        QDateTime lastDateTime = _dataLogger->lastDateTime();
+        if (firstDateTime < _axisX->min() || lastDateTime > _axisX->max())
+        {
+            qint64 msDiff = firstDateTime.msecsTo(lastDateTime);
+            _axisX->setRange(firstDateTime, lastDateTime.addMSecs(msDiff / 5));
+        }
     }
 }
 
@@ -100,7 +114,7 @@ void DataLoggerChartsWidget::addDataOk()
     {
         DLData *dlData = _dataLogger->data(_idPending);
         QtCharts::QLineSeries *serie = new QtCharts::QLineSeries();
-        serie->setUseOpenGL(false);
+        serie->setUseOpenGL(true);
         serie->setName(dlData->name());
         _chart->addSeries(serie);
 

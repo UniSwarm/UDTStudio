@@ -214,7 +214,7 @@ bool Node::isMappedObjectInPdo(NodeObjectId object) const
 {
     for (RPDO *rpdo : _rpdos)
     {
-        if ( rpdo->isMappedObject(object))
+        if (rpdo->isMappedObject(object))
         {
             return true;
         }
@@ -260,6 +260,10 @@ void Node::readObject(const NodeObjectId &id)
 
 void Node::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
 {
+    if (isMappedObjectInPdo(NodeObjectId(index, subindex, dataType)) && status() == STARTED)
+    {
+        return;
+    }
     QMetaType::Type mdataType = dataType;
     if (mdataType == QMetaType::Type::UnknownType)
     {
