@@ -44,9 +44,7 @@ public:
     quint8 transmissionType();
 
 protected slots:
-    void receiveSync();
-    void prepareDataBeforeSync();
-    void receiveSyncOne();
+    void prepareAndSendData();
 
 private:
     QByteArray _rpdoDataToSendReqPayload;

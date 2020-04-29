@@ -20,6 +20,8 @@
 
 #include "canopenbus.h"
 
+const quint8 ONE_SHOT_TIMER = 20;
+
 Sync::Sync(CanOpenBus *bus)
     : Service (bus)
 {
@@ -27,6 +29,7 @@ Sync::Sync(CanOpenBus *bus)
     _cobIds.append(_syncCobId);
     _syncTimer = new QTimer();
     _signalBeforeSync = new QTimer();
+    _syncOneShotTimer = new QTimer();
     connect(_syncTimer, &QTimer::timeout, this, &Sync::sendSync);
     connect(_signalBeforeSync, &QTimer::timeout, this, &Sync::signalBeforeSync);
 }
@@ -68,7 +71,8 @@ void Sync::sendSync()
 
 void Sync::sendSyncOne()
 {
-    emit syncOneRequested();
+    emit signalBeforeSync();
+    _syncOneShotTimer->singleShot(ONE_SHOT_TIMER, this, SLOT(sendSync()));
 }
 
 void Sync::parseFrame(const QCanBusFrame &frame)

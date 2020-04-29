@@ -72,9 +72,7 @@ void RPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 void RPDO::setBus(CanOpenBus *bus)
 {
     _bus = bus;
-    connect(_bus->sync(), &Sync::syncEmitted, this, &RPDO::receiveSync);
-    connect(_bus->sync(), &Sync::signalBeforeSync, this, &RPDO::prepareDataBeforeSync);
-    connect(_bus->sync(), &Sync::syncOneRequested, this, &RPDO::receiveSyncOne);
+    connect(_bus->sync(), &Sync::signalBeforeSync, this, &RPDO::prepareAndSendData);
 }
 
 /**
@@ -109,33 +107,9 @@ quint8 RPDO::transmissionType()
 }
 
 /**
- * @brief Sync management received
- */
-void RPDO::receiveSync()
-{
-    if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()))
-    {
-        return;
-    }
-}
-
-/**
- * @brief Sync One management received
- */
-void RPDO::receiveSyncOne()
-{
-    if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()))
-    {
-        return;
-    }
-    prepareDataBeforeSync();
-    _bus->sync()->sendSync();
-}
-
-/**
  * @brief Prepares the data before the sync signal
  */
-void RPDO::prepareDataBeforeSync()
+void RPDO::prepareAndSendData()
 {
     if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()))
     {

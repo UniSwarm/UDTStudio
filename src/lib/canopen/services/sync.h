@@ -51,6 +51,7 @@ signals:
 protected:
     QTimer *_syncTimer;
     QTimer *_signalBeforeSync;
+    QTimer *_syncOneShotTimer;
     uint32_t _syncCobId;
 };
 
