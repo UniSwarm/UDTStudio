@@ -151,6 +151,7 @@ private:
     void readMappingParam();
     void processMapping();
     bool createListObjectMapped();
+    bool checkIndex(quint16 index);
 };
 
 #endif // PDO_H

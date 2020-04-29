@@ -394,14 +394,27 @@ bool PDO::createListObjectMapped()
         quint8 subIndexMapping = (mapping & PDO_SUBINDEX_MASK) >> 8;
         quint16 indexMapping = mapping >> 16;
 
-        NodeObjectId object(_node->busId(), _node->nodeId(), indexMapping, subIndexMapping, _node->nodeOd()->dataType(indexMapping, subIndexMapping));
-
-        _objectCurrentMapped.append(object);
+        if (checkIndex(indexMapping))
+        {
+            NodeObjectId object(_node->busId(), _node->nodeId(), indexMapping, subIndexMapping, _node->nodeOd()->dataType(indexMapping, subIndexMapping));
+            _objectCurrentMapped.append(object);
+        }
     }
+
+    numberEntries =  static_cast<quint8>(_objectCurrentMapped.size());
+    _node->nodeOd()->index(objectMapping.index)->subIndex(objectMapping.subIndex)->setValue(numberEntries);
     emit mappingChanged();
     return true;
 }
 
+bool PDO::checkIndex(quint16 index)
+{
+    if (index != 0)
+    {
+        return true;
+    }
+    return false;
+}
 /**
  * @brief management response from device after processMapping
  */
