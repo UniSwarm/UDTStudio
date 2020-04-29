@@ -39,7 +39,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    setWindowIcon(QIcon(":/icons/img/UNIdevkit.ico"));
+    setWindowIcon(QIcon(":/icons/img/udtstudio.ico"));
     _connectDialog = new CanSettingsDialog(nullptr, this);
     statusBar()->setVisible(true);
 

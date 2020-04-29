@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/icons">
-        <file>img/UNIdevkit.ico</file>
+        <file>img/udtstudio.ico</file>
         <file>img/icons8-cancel.png</file>
         <file>img/icons8-checked-checkbox.png</file>
         <file>img/icons8-connected.png</file>
