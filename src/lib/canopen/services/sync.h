@@ -35,6 +35,13 @@ public:
     void startSync(int ms);
     void stopSync();
 
+    enum Status
+    {
+        STARTED,
+        STOPPED
+    };
+
+    Status status();
     QString type() const override;
 
     void parseFrame(const QCanBusFrame &frame) override;
@@ -49,6 +56,7 @@ signals:
     void syncOneRequested();
 
 protected:
+    Status _status;
     QTimer *_syncTimer;
     QTimer *_signalBeforeSync;
     QTimer *_syncOneShotTimer;

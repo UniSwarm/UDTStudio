@@ -28,6 +28,7 @@ Sync::Sync(CanOpenBus *bus)
     _syncCobId = 0x80;
     _cobIds.append(_syncCobId);
     _syncTimer = new QTimer();
+    _status = STOPPED;
     _signalBeforeSync = new QTimer();
     _syncOneShotTimer = new QTimer();
     connect(_syncTimer, &QTimer::timeout, this, &Sync::sendSync);
@@ -48,12 +49,19 @@ void Sync::startSync(int ms)
 {
     _syncTimer->start(ms);
     _signalBeforeSync->start((ms * 3) / 4);
+    _status = STARTED;
 }
 
 void Sync::stopSync()
 {
     _syncTimer->stop();
     _signalBeforeSync->stop();
+    _status = STOPPED;
+}
+
+Sync::Status  Sync::status()
+{
+    return _status;
 }
 
 void Sync::sendSync()
