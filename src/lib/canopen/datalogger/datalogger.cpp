@@ -118,7 +118,7 @@ QDateTime DataLogger::firstDateTime() const
     for (DLData *dlData : _dataList)
     {
         const QDateTime &dateTime = dlData->firstDateTime();
-        if (first > dateTime)
+        if (dateTime.isValid() && first > dateTime)
         {
             first = dateTime;
         }

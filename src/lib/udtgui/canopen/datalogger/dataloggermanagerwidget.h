@@ -23,6 +23,9 @@
 
 #include <QWidget>
 
+#include <QSpinBox>
+#include <QToolBar>
+
 #include "dataloggertreeview.h"
 
 class UDTGUI_EXPORT DataLoggerManagerWidget : public QWidget
@@ -31,11 +34,19 @@ class UDTGUI_EXPORT DataLoggerManagerWidget : public QWidget
 public:
     DataLoggerManagerWidget(DataLogger *logger, QWidget *parent = nullptr);
 
+protected slots:
+    void toggleStartLogger(bool start);
+    void setLogTimer(int ms);
+
 protected:
     DataLogger *_logger;
 
     void createWidgets();
+    QToolBar *_toolBar;
     DataLoggerTreeView *_dataLoggerTreeView;
+
+    QSpinBox *_logTimerSpinBox;
+    QAction *_startStopAction;
 };
 
 #endif // DATALOGGERMANAGERWIDGET_H

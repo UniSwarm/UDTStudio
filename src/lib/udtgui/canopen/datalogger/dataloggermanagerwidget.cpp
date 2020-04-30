@@ -26,9 +26,52 @@ DataLoggerManagerWidget::DataLoggerManagerWidget(DataLogger *logger, QWidget *pa
     createWidgets();
 }
 
+void DataLoggerManagerWidget::toggleStartLogger(bool start)
+{
+    if (start)
+    {
+        _startStopAction->setIcon(QIcon(":/icons/img/icons8-stop.png"));
+        _logger->start(_logTimerSpinBox->value());
+    }
+    else
+    {
+        _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
+        _logger->stop();
+    }
+}
+
+void DataLoggerManagerWidget::setLogTimer(int ms)
+{
+    if (_startStopAction->isChecked())
+    {
+        _logger->start(ms);
+    }
+}
+
 void DataLoggerManagerWidget::createWidgets()
 {
+    QAction *action;
     QLayout *layout = new QVBoxLayout();
+
+    // toolbar nmt
+    _toolBar = new QToolBar(tr("Data logger commands"));
+
+    // start stop
+    _startStopAction = _toolBar->addAction(tr("Start / stop"));
+    _startStopAction->setCheckable(true);
+    _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
+    _startStopAction->setStatusTip(tr("Start or stop the data logger"));
+    connect(_startStopAction, &QAction::triggered, this, &DataLoggerManagerWidget::toggleStartLogger);
+
+    _logTimerSpinBox = new QSpinBox();
+    _logTimerSpinBox->setRange(10, 5000);
+    _logTimerSpinBox->setValue(1000);
+    _logTimerSpinBox->setSuffix(" ms");
+    _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
+    _toolBar->addWidget(_logTimerSpinBox);
+    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),[=](int i){ setLogTimer(i); });
+
+    layout->addWidget(_toolBar);
 
     _dataLoggerTreeView = new DataLoggerTreeView();
     _dataLoggerTreeView->setDataLogger(_logger);
