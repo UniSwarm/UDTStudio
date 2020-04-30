@@ -55,19 +55,31 @@ void ErrorControl::parseFrame(const QCanBusFrame &frame)
             // BootUp
             _node->setStatus(Node::Status::PREOP);
             _node->reset();
-            _guardTimeTimer->stop();
-            _lifeTimeTimer->stop();
             toggleBit = false;
+            return;
         }
     }
 
-    _lifeTimeTimer->stop();
+    if (_node->nodeOd()->indexExist(_lifeTime))
+    {
+        qint32 timer;
+        if (_node->nodeOd()->value(_lifeTime, 0).toUInt() != 0)
+        {
+            timer = (_node->nodeOd()->value(_lifeTime, 0).toInt()) * _node->nodeOd()->value(_guardTime, 0).toInt();
+            _lifeTimeTimer->start(timer);
+        }
+        else
+        {
+            timer = _node->nodeOd()->value(_guardTime, 0).toInt();
+            _lifeTimeTimer->start(timer + (timer / 2));
+        }
+    }
     manageErrorControl(frame);
 }
 
 void ErrorControl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if ((objId.index == _guardTime) || (objId.index == _lifeTime))
+    if ((objId.index == _guardTime) && _node->nodeOd()->indexExist(_guardTime))
     {
         if ((flags != SDO::FlagsRequest::Error) && (_node->nodeOd()->value(_guardTime, 0).toUInt() != 0))
         {
@@ -106,18 +118,6 @@ void ErrorControl::sendNodeGuarding()
     frameNodeGuarding.setFrameId(_cobId + _node->nodeId());
     frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
     bus()->writeFrame(frameNodeGuarding);
-
-    qint32 timer;
-    if (_node->nodeOd()->value(_lifeTime, 0).toUInt() != 0)
-    {
-        timer = _node->nodeOd()->value(_lifeTime, 0).toInt() * _node->nodeOd()->value(_guardTime, 0).toInt();
-        _lifeTimeTimer->start(timer + (timer / 2));
-    }
-    else
-    {
-        timer = _node->nodeOd()->value(_guardTime, 0).toInt();
-        _lifeTimeTimer->start(timer / 2);
-    }
 }
 
 void ErrorControl::lifeGuardingEvent()
