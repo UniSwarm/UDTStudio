@@ -401,8 +401,11 @@ bool PDO::createListObjectMapped()
         }
     }
 
-    numberEntries =  static_cast<quint8>(_objectCurrentMapped.size());
-    _node->nodeOd()->index(objectMapping.index)->subIndex(objectMapping.subIndex)->setValue(numberEntries);
+    if (_node->nodeOd()->indexExist(objectMapping.index))
+    {
+        numberEntries =  static_cast<quint8>(_objectCurrentMapped.size());
+        _node->nodeOd()->index(objectMapping.index)->subIndex(objectMapping.subIndex)->setValue(numberEntries);
+    }
     emit mappingChanged();
     return true;
 }
