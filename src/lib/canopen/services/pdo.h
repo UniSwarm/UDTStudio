@@ -38,6 +38,8 @@ public:
     quint32 cobId() const;
     quint8 pdoNumber() const;
 
+    void reset() override;
+
     const QList<NodeObjectId> &currentMappind() const;
     bool hasMappedObject() const;
     bool isMappedObject(const NodeObjectId &object) const;

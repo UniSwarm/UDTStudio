@@ -53,6 +53,16 @@ quint8 PDO::pdoNumber() const
     return _pdoNumber;
 }
 
+void PDO::reset()
+{
+    statusPdo = STATE_NONE;
+    state = STATE_FREE;
+
+    _objectCurrentMapped.clear();
+    _objectToMap.clear();
+    createListObjectMapped();
+}
+
 const QList<NodeObjectId> &PDO::currentMappind() const
 {
     return _objectCurrentMapped;

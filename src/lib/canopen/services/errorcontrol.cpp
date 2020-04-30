@@ -54,6 +54,7 @@ void ErrorControl::parseFrame(const QCanBusFrame &frame)
         {
             // BootUp
             _node->setStatus(Node::Status::PREOP);
+            _node->reset();
             _guardTimeTimer->stop();
             _lifeTimeTimer->stop();
             toggleBit = false;

@@ -78,6 +78,13 @@ void SDO::parseFrame(const QCanBusFrame &frame)
     }
 }
 
+void SDO::reset()
+{
+    _requestQueue.clear();
+    _request = nullptr;
+    _state = SDO_STATE_FREE;
+}
+
 /**
  * @brief Dispatcher frame SDO from client
  * @param frame

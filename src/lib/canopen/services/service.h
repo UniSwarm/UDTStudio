@@ -39,6 +39,8 @@ public:
 
     virtual void setBus(CanOpenBus *bus);
 
+    virtual void reset();
+
     virtual QString type() const = 0;
 
     virtual void parseFrame(const QCanBusFrame &frame) = 0;

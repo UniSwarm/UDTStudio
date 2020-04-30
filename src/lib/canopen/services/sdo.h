@@ -35,7 +35,10 @@ public:
 
     QString type() const override;
 
+    void reset() override;
+
     void parseFrame(const QCanBusFrame &frame) override;
+
     void processingFrameFromClient(const QCanBusFrame &frame);
     void processingFrameFromServer(const QCanBusFrame &frame);
 

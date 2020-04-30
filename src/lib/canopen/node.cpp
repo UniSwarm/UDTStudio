@@ -200,6 +200,14 @@ void Node::setBus(CanOpenBus *bus)
     }
 }
 
+void Node::reset()
+{
+    for (Service *service : _services)
+    {
+        service->reset();
+    }
+}
+
 QList<RPDO *> Node::rpdos() const
 {
     return _rpdos;

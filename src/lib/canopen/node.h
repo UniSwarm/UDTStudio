@@ -77,6 +77,8 @@ public:
     RPDO *isMappedObjectInRpdo(NodeObjectId object) const;
     TPDO *isMappedObjectInTpdo(NodeObjectId object) const;
 
+    void reset();
+
 signals:
     void statusChanged(Status status);
 
