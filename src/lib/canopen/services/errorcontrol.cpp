@@ -28,6 +28,17 @@ ErrorControl::ErrorControl(Node *node)
     _cobId = 0x700;
     _cobIds.append(_cobId + node->nodeId());
     toggleBit = false;
+
+    _guardTimeTimer = new QTimer();
+    _lifeTimeTimer = new QTimer();
+    connect(_guardTimeTimer, &QTimer::timeout, this, &ErrorControl::sendNodeGuarding);
+    connect(_lifeTimeTimer, &QTimer::timeout, this, &ErrorControl::lifeGuardingEvent);
+
+    _guardTime = 0x100C;
+    _lifeTime = 0x100D;
+
+    registerObjId({_guardTime, 0});
+    setNodeInterrest(node);
 }
 
 QString ErrorControl::type() const
@@ -43,11 +54,30 @@ void ErrorControl::parseFrame(const QCanBusFrame &frame)
         {
             // BootUp
             _node->setStatus(Node::Status::PREOP);
+            _guardTimeTimer->stop();
+            _lifeTimeTimer->stop();
             toggleBit = false;
         }
     }
 
+    _lifeTimeTimer->stop();
     manageErrorControl(frame);
+}
+
+void ErrorControl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+{
+    if ((objId.index == _guardTime) || (objId.index == _lifeTime))
+    {
+        if ((flags != SDO::FlagsRequest::Error) && (_node->nodeOd()->value(_guardTime, 0).toUInt() != 0))
+        {
+            _guardTimeTimer->start(_node->nodeOd()->value(_guardTime, 0).toInt());
+        }
+        else
+        {
+            _guardTimeTimer->stop();
+            _lifeTimeTimer->stop();
+        }
+    }
 }
 
 void ErrorControl::receiveHeartBeat()
@@ -75,6 +105,23 @@ void ErrorControl::sendNodeGuarding()
     frameNodeGuarding.setFrameId(_cobId + _node->nodeId());
     frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
     bus()->writeFrame(frameNodeGuarding);
+
+    qint32 timer;
+    if (_node->nodeOd()->value(_lifeTime, 0).toUInt() != 0)
+    {
+        timer = _node->nodeOd()->value(_lifeTime, 0).toInt() * _node->nodeOd()->value(_guardTime, 0).toInt();
+        _lifeTimeTimer->start(timer + (timer / 2));
+    }
+    else
+    {
+        timer = _node->nodeOd()->value(_guardTime, 0).toInt();
+        _lifeTimeTimer->start(timer / 2);
+    }
+}
+
+void ErrorControl::lifeGuardingEvent()
+{
+    qDebug() << ">>ErrorControl::lifeGuardingEvent : node error, dont answer";
 }
 
 void ErrorControl::manageErrorControl(const QCanBusFrame &frame)
@@ -91,17 +138,17 @@ void ErrorControl::manageErrorControl(const QCanBusFrame &frame)
 
         switch (frame.payload().at(0) & 0x7F)
         {
-        case 4:  // Stopped
+        case 4: // Stopped
             _node->setStatus(Node::Status::STOPPED);
             break;
-        case 5:  // Operational
+        case 5: // Operational
             _node->setStatus(Node::Status::STARTED);
             break;
-        case 127:  // Pre-operational
+        case 127: // Pre-operational
             _node->setStatus(Node::Status::PREOP);
             break;
         default:
-            qDebug()<< "Error control : error state" << QString::number(frame.frameId(), 16).toUpper() << frame.payload().toHex().toUpper();
+            qDebug() << "Error control : error state" << QString::number(frame.frameId(), 16).toUpper() << frame.payload().toHex().toUpper();
             break;
         }
     }

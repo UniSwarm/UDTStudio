@@ -20,12 +20,14 @@
 #define ERRORCONTROL_H
 
 #include "canopen_global.h"
+#include "nodeod.h"
+#include "nodeodsubscriber.h"
 #include "service.h"
 
-class CANOPEN_EXPORT ErrorControl : public Service
+class CANOPEN_EXPORT ErrorControl : public Service, public NodeOdSubscriber
 {
     Q_OBJECT
-  public:
+public:
     ErrorControl(Node *node);
 
     uint32_t cobId();
@@ -33,14 +35,26 @@ class CANOPEN_EXPORT ErrorControl : public Service
     QString type() const override;
 
     void parseFrame(const QCanBusFrame &frame) override;
-    void sendNodeGuarding();
 
-  private:
+private slots:
+    void sendNodeGuarding();
+    void lifeGuardingEvent();
+
+private:
     void receiveHeartBeat();
     void manageErrorControl(const QCanBusFrame &frame);
+
     uint32_t _cobId;
     bool toggleBit;
+
+    quint16 _guardTime;
+    quint16 _lifeTime;
+    QTimer *_guardTimeTimer;
+    QTimer *_lifeTimeTimer;
+
+    // NodeOdSubscriber interface
+public:
+    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
 #endif // ERRORCONTROL_H
-
