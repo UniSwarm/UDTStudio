@@ -48,16 +48,19 @@ uint32_t NMT::cobId()
 void NMT::sendPreop()
 {
     sendNmt(NMT_CS_PRE_OP);
+    _node->setStatus(Node::PREOP);
 }
 
 void NMT::sendStart()
 {
     sendNmt(NMT_CS_START);
+    _node->setStatus(Node::STARTED);
 }
 
 void NMT::sendStop()
 {
     sendNmt(NMT_CS_STOP);
+    _node->setStatus(Node::STOPPED);
 }
 
 void NMT::sendResetComm()

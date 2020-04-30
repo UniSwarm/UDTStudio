@@ -42,6 +42,7 @@ void ErrorControl::parseFrame(const QCanBusFrame &frame)
         if (static_cast<uint8_t>(frame.payload().at(0)) == 0x0)
         {
             // BootUp
+            _node->setStatus(Node::Status::PREOP);
             toggleBit = false;
         }
     }
