@@ -154,6 +154,7 @@ private:
     void processMapping();
     bool createListObjectMapped();
     bool checkIndex(quint16 index);
+    virtual void clearDataWaiting();
 };
 
 #endif // PDO_H

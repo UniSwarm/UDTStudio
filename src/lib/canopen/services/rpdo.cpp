@@ -106,12 +106,66 @@ quint8 RPDO::transmissionType()
     return static_cast<quint8>(_node->nodeOd()->value(object).toUInt());
 }
 
+void RPDO::receiveSync()
+{
+    if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()))
+    {
+        return;
+    }
+
+    // Update data of object in NodeOd after a sync
+    for (NodeObjectId objectIterator : _objectCurrentMapped)
+    {
+        if (_dataObjectCurrentMapped.contains(objectIterator.key())
+            && _node->nodeOd()->indexExist(objectIterator.index)
+            && _node->nodeOd()->subIndexExist(objectIterator.index, objectIterator.subIndex))
+        {
+            _node->nodeOd()->index(objectIterator.index)->subIndex(objectIterator.subIndex)->setValue(_dataObjectCurrentMapped.value(objectIterator.key()));
+        }
+    }
+}
+
+/**
+ * @brief Save data of object before send
+ * @param index
+ * @param subindex
+ * @param data
+ */
+void RPDO::write(const NodeObjectId &object, const QVariant &data)
+{
+    if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()))
+    {
+        return;
+    }
+
+    for (NodeObjectId objectIterator : _objectCurrentMapped)
+    {
+        if (objectIterator.index == object.index && objectIterator.subIndex == object.subIndex)
+        {
+            if (_dataObjectCurrentMapped.contains(objectIterator.key()))
+            {
+                _dataObjectCurrentMapped.remove(objectIterator.key());
+            }
+            _dataObjectCurrentMapped.insert(object.key(), data);
+            return;
+        }
+    }
+}
+
+/**
+ * @brief Clear list data waiting
+ */
+void RPDO::clearDataWaiting()
+{
+    _dataObjectCurrentMapped.clear();
+}
+
 /**
  * @brief Prepares the data before the sync signal
  */
 void RPDO::prepareAndSendData()
 {
-    if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()))
+    if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()) || _node->status() != Node::STARTED)
     {
         return;
     }
@@ -119,14 +173,21 @@ void RPDO::prepareAndSendData()
     QDataStream request(&_rpdoDataToSendReqPayload, QIODevice::WriteOnly);
     request.setByteOrder(QDataStream::LittleEndian);
 
-    for (NodeObjectId object : _objectCurrentMapped)
+    for (NodeObjectId objectIterator : _objectCurrentMapped)
     {
-        quint8 size = static_cast<quint8>(QMetaType::sizeOf(object.dataType));
+        quint8 size = static_cast<quint8>(QMetaType::sizeOf(objectIterator.dataType));
         if (size > 8)
         {
             setError(ERROR_EXCEED_PDO_LENGTH);
         }
-        convertQVariantToQDataStream(request, _node->nodeOd()->value(object), _node->nodeOd()->dataType(object));
+        if (_dataObjectCurrentMapped.contains(objectIterator.key()))
+        {
+           convertQVariantToQDataStream(request, _dataObjectCurrentMapped.value(objectIterator.key()), _node->nodeOd()->dataType(objectIterator));
+        }
+        else
+        {
+            convertQVariantToQDataStream(request, _node->nodeOd()->value(objectIterator), _node->nodeOd()->dataType(objectIterator));
+        }
     }
     sendData();
 }

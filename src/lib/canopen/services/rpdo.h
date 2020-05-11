@@ -43,10 +43,15 @@ public:
     bool setTransmissionType(quint8 type);
     quint8 transmissionType();
 
+    void write(const NodeObjectId &object, const QVariant &data);
+    void clearDataWaiting() override;
+
 protected slots:
+    void receiveSync();
     void prepareAndSendData();
 
 private:
+    QMap<quint64, QVariant> _dataObjectCurrentMapped;
     QByteArray _rpdoDataToSendReqPayload;
     bool sendData();
     void convertQVariantToQDataStream(QDataStream &request, const QVariant &data, QMetaType::Type type);

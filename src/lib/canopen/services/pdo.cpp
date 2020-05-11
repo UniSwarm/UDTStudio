@@ -392,6 +392,10 @@ bool PDO::createListObjectMapped()
         setError(ERROR_COBID_NOT_VALID);
         return false;
     }
+    if (isRPDO())
+    {
+        clearDataWaiting();
+    }
     _objectCurrentMapped.clear();
     NodeObjectId objectMapping(_objectMappingId, 0);
     quint8 numberEntries = static_cast<quint8>(_node->nodeOd()->value(objectMapping).toUInt());
@@ -555,4 +559,9 @@ void PDO::processMapping()
 void PDO::setError(ErrorPdo error)
 {
     emit errorOccurred(error);
+}
+
+void PDO::clearDataWaiting()
+{
+
 }

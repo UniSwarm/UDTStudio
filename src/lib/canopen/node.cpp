@@ -291,6 +291,19 @@ void Node::writeObject(quint16 index, quint8 subindex, const QVariant &data)
             mdata.convert(mdataType);
         }
     }
+
+    NodeObjectId object(busId(), nodeId(), index, subindex);
+    if (isMappedObjectInRpdo(NodeObjectId(index, subindex)) && status() == STARTED && (_bus->sync()->status() == Sync::STARTED))
+    {
+        for (RPDO *rpdo : _rpdos)
+        {
+            if (rpdo->isMappedObject(object))
+            {
+                rpdo->write(object, data);
+            }
+        }
+        return;
+    }
     _sdoClients.at(0)->downloadData(index, subindex, mdata);
 }
 
