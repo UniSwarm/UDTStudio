@@ -268,6 +268,10 @@ void Node::readObject(const NodeObjectId &id)
 
 void Node::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
 {
+    if (status() == STOPPED)
+    {
+        return;
+    }
     if (isMappedObjectInPdo(NodeObjectId(index, subindex, dataType)) && status() == STARTED && (_bus->sync()->status() == Sync::STARTED))
     {
         return;
@@ -282,6 +286,10 @@ void Node::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
 
 void Node::writeObject(quint16 index, quint8 subindex, const QVariant &data)
 {
+    if (status() == STOPPED)
+    {
+        return;
+    }
     QVariant mdata = data;
     QMetaType::Type mdataType = _nodeOd->dataType(index, subindex);
     if (mdataType != QMetaType::Type::UnknownType)
