@@ -77,10 +77,21 @@ void Sync::sendSync()
     emit syncEmitted();
 }
 
+void Sync::sendSyncOneTimeout()
+{
+    sendSync();
+    _status = STOPPED;
+}
+
 void Sync::sendSyncOne()
 {
+    if (_status == STARTED)
+    {
+        return;
+    }
+    _status = STARTED;
     emit signalBeforeSync();
-    _syncOneShotTimer->singleShot(ONE_SHOT_TIMER, this, SLOT(sendSync()));
+    _syncOneShotTimer->singleShot(ONE_SHOT_TIMER, this, SLOT(sendSyncOneTimeout()));
 }
 
 void Sync::parseFrame(const QCanBusFrame &frame)

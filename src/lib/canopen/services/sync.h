@@ -47,15 +47,18 @@ public:
     void parseFrame(const QCanBusFrame &frame) override;
 
 public slots:
-    void sendSync();
     void sendSyncOne();
+
+private slots:
+    void sendSync();
+    void sendSyncOneTimeout();
 
 signals:
     void syncEmitted();
     void signalBeforeSync();
     void syncOneRequested();
 
-protected:
+private:
     Status _status;
     QTimer *_syncTimer;
     QTimer *_signalBeforeSync;

@@ -62,14 +62,6 @@ void BusManagerWidget::exploreBus()
     }
 }
 
-void BusManagerWidget::sendSync()
-{
-    if (_bus)
-    {
-        _bus->sync()->sendSync();
-    }
-}
-
 void BusManagerWidget::sendSyncOne()
 {
     if (_bus)
