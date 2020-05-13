@@ -49,6 +49,10 @@ void NodeManagerWidget::setNode(Node *node)
     {
         if (_node)
         {
+            if (_widgetdebug)
+            {
+                delete _widgetdebug;
+            }
             disconnect(_node, &Node::statusChanged, this, &NodeManagerWidget::updateData);
         }
     }
@@ -59,8 +63,14 @@ void NodeManagerWidget::setNode(Node *node)
     if (_node)
     {
         connect(_node, &Node::statusChanged, this, &NodeManagerWidget::updateData);
+        if ((_node->nodeOd()->value(0x1000, 0x0).toUInt() & 0xFFFF) == 0x192)
+        {
+            _widgetdebug = new WidgetDebug(_node);
+            _widgetdebug->show();
+        }
     }
     _groupBox->setEnabled(_node);
+
     updateData();
 }
 

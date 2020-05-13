@@ -28,7 +28,7 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QToolBar>
-
+#include "widgetDebug/widgetdebug.h"
 #include "node.h"
 
 class UDTGUI_EXPORT NodeManagerWidget : public QWidget, public NodeOdSubscriber
@@ -58,6 +58,7 @@ protected:
     QGroupBox *_groupBox;
     QLineEdit *_nodeNameEdit;
     QLabel *_nodeStatusLabel;
+    WidgetDebug *_widgetdebug;
 
     Node *_node;
 
