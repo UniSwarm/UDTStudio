@@ -128,29 +128,34 @@ void WidgetDebug::stateMachineClicked(int id)
 {
     cmdControlWord = (cmdControlWord & ~CW_Mask);
 
+    // !! id is not the current state, it's id id groupbutton
     switch (id)
     {
-    case 1: // 1_Not ready to switch on
+    case STATE_NotReadyToSwitchOn: // 1_Not ready to switch on
         break;
-    case 2: // 2_Switch on disabled
-        cmdControlWord |= CW_FaultReset;
+    case STATE_SwitchOnDisabled: // 2_Switch on disabled
+        if (stateMachineCurrent == STATE_Fault)
+        {
+            cmdControlWord |= CW_FaultReset;
+            _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
+        }
+        cmdControlWord = (cmdControlWord & ~CW_Mask);
         break;
-    case 3: // 3_Ready to switch on
+    case STATE_ReadyToSwitchOn: // 3_Ready to switch on
         cmdControlWord |= (CW_EnableVoltage | CW_QuickStop);
         break;
-    case 4: // 4_Switched on
+    case STATE_SwitchedOn: // 4_Switched on
         cmdControlWord |= CW_EnableVoltage | CW_QuickStop | CW_SwitchOn;
         break;
-    case 5: // 5_Operation enabled
+    case STATE_OperationEnabled: // 5_Operation enabled
         cmdControlWord |= CW_EnableVoltage | CW_QuickStop | CW_SwitchOn | CW_EnableOperation;
         break;
-    case 6: // 6_Quick stop active
+    case STATE_QuickStopActive: // 6_Quick stop active
         cmdControlWord |= CW_EnableVoltage;
         break;
-    case 7: // 7_Fault reaction active
+    case STATE_FaultReactionActive: // 7_Fault reaction active
         break;
-    case 8: // 8_Fault
-        //cmdControlWord |= CW_FaultReset;
+    case STATE_Fault: // 8_Fault
         break;
     }
     _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
@@ -239,81 +244,90 @@ void WidgetDebug::manageNotificationStatusWordobject()
 
     if ((state & Mask1) == SW_StateNotReadyToSwitchOn)
     {
+        stateMachineCurrent = STATE_NotReadyToSwitchOn;
         _statusWordLabel->setText(tr("NotReadyToSwitchOn"));
-        setCheckableStateMachine(1);
+        setCheckableStateMachine(STATE_NotReadyToSwitchOn);
+
     }
     if ((state & Mask1) == SW_StateSwitchOnDisabled)
     {
+        stateMachineCurrent = STATE_SwitchOnDisabled;
         _statusWordLabel->setText(tr("SwitchOnDisabled"));
-        setCheckableStateMachine(2);
-        _stateMachineGroup->button(2)->setEnabled(true);
-        _stateMachineGroup->button(3)->setEnabled(true);
-        _stateMachineGroup->button(4)->setEnabled(false);
-        _stateMachineGroup->button(5)->setEnabled(false);
-        _stateMachineGroup->button(6)->setEnabled(false);
+        setCheckableStateMachine(STATE_SwitchOnDisabled);
+        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
+        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
+        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
+        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
 
     }
     if ((state & Mask2) == SW_StateReadyToSwitchOn)
     {
+        stateMachineCurrent = STATE_ReadyToSwitchOn;
         _statusWordLabel->setText(tr("ReadyToSwitchOn"));
-        setCheckableStateMachine(3);
-        _stateMachineGroup->button(2)->setEnabled(false);
-        _stateMachineGroup->button(3)->setEnabled(true);
-        _stateMachineGroup->button(4)->setEnabled(true);
-        _stateMachineGroup->button(5)->setEnabled(false);
-        _stateMachineGroup->button(6)->setEnabled(false);
+        setCheckableStateMachine(STATE_ReadyToSwitchOn);
+        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
+        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
+        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
+        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
     }
     if ((state & Mask2) == SW_StateSwitchedOn)
     {
+        stateMachineCurrent = STATE_SwitchedOn;
         _statusWordLabel->setText(tr("SwitchedOn"));
-        setCheckableStateMachine(4);
-        _stateMachineGroup->button(2)->setEnabled(false);
-        _stateMachineGroup->button(3)->setEnabled(true);
-        _stateMachineGroup->button(5)->setEnabled(true);
-        _stateMachineGroup->button(4)->setEnabled(true);
-        _stateMachineGroup->button(6)->setEnabled(false);
+        setCheckableStateMachine(STATE_SwitchedOn);
+        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
+        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
+        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
     }
     if ((state & Mask2) == SW_StateOperationEnabled)
     {
+        stateMachineCurrent = STATE_OperationEnabled;
         _statusWordLabel->setText(tr("OperationEnabled"));
-        setCheckableStateMachine(5);
-        _stateMachineGroup->button(2)->setEnabled(false);
-        _stateMachineGroup->button(3)->setEnabled(true);
-        _stateMachineGroup->button(4)->setEnabled(true);
-        _stateMachineGroup->button(5)->setEnabled(true);
-        _stateMachineGroup->button(6)->setEnabled(true);
+        setCheckableStateMachine(STATE_OperationEnabled);
+        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
+        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
+        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
     }
     if ((state & Mask2) == SW_StateQuickStopActive)
     {
+        stateMachineCurrent = STATE_QuickStopActive;
         _statusWordLabel->setText(tr("QuickStopActive"));
-        setCheckableStateMachine(6);
-        _stateMachineGroup->button(2)->setEnabled(true);
-        _stateMachineGroup->button(3)->setEnabled(false);
-        _stateMachineGroup->button(4)->setEnabled(false);
-        _stateMachineGroup->button(5)->setEnabled(false);
-        _stateMachineGroup->button(6)->setEnabled(true);
+        setCheckableStateMachine(STATE_QuickStopActive);
+        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
+        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
+        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
+        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
     }
     if ((state & Mask1) == SW_StateFaultReactionActive)
     {
+        stateMachineCurrent = STATE_FaultReactionActive;
         _statusWordLabel->setText(tr("FaultReactionActive"));
-        setCheckableStateMachine(7);
-        _stateMachineGroup->button(2)->setEnabled(false);
-        _stateMachineGroup->button(3)->setEnabled(false);
-        _stateMachineGroup->button(4)->setEnabled(false);
-        _stateMachineGroup->button(5)->setEnabled(false);
-        _stateMachineGroup->button(6)->setEnabled(false);
+        setCheckableStateMachine(STATE_FaultReactionActive);
+        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(false);
+        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
+        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
+        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
+        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
     }
     if ((state & Mask1) == SW_StateFault)
     {
+        stateMachineCurrent = STATE_Fault;
         _statusWordLabel->setText(tr("Fault"));
-        setCheckableStateMachine(8);
-        _stateMachineGroup->button(2)->setEnabled(true);
-        _stateMachineGroup->button(3)->setEnabled(false);
-        _stateMachineGroup->button(4)->setEnabled(false);
-        _stateMachineGroup->button(5)->setEnabled(false);
-        _stateMachineGroup->button(6)->setEnabled(false);
+        setCheckableStateMachine(STATE_Fault);
+        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
+        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
+        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
+        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
     }
-    this->update();
+    update();
 
     _voltageEnabledLabel->setText(tr("False"));
     _warningLabel->setText(tr("False"));
@@ -560,30 +574,30 @@ void WidgetDebug::createWidgets()
     QPushButton *stateNotReadyToSwitchOnPushButton = new QPushButton(tr("1_Not ready to switch on"));
     stateNotReadyToSwitchOnPushButton->setEnabled(false);
     stateMachineLayoutGroupBox->addRow(stateNotReadyToSwitchOnPushButton);
-    _stateMachineGroup->addButton(stateNotReadyToSwitchOnPushButton, 1);
+    _stateMachineGroup->addButton(stateNotReadyToSwitchOnPushButton, STATE_NotReadyToSwitchOn);
     QPushButton *stateSwitchOnDisabledPushButton = new QPushButton(tr("2_Switch on disabled"));
     stateMachineLayoutGroupBox->addRow(stateSwitchOnDisabledPushButton);
-    _stateMachineGroup->addButton(stateSwitchOnDisabledPushButton, 2);
+    _stateMachineGroup->addButton(stateSwitchOnDisabledPushButton, STATE_SwitchOnDisabled);
     QPushButton *stateReadyToSwitchOnPushButton = new QPushButton(tr("3_Ready to switch on"));
     stateMachineLayoutGroupBox->addRow(stateReadyToSwitchOnPushButton);
-    _stateMachineGroup->addButton(stateReadyToSwitchOnPushButton, 3);
+    _stateMachineGroup->addButton(stateReadyToSwitchOnPushButton, STATE_ReadyToSwitchOn);
     QPushButton *stateSwitchedOnPushButton = new QPushButton(tr("4_Switched on"));
     stateMachineLayoutGroupBox->addRow(stateSwitchedOnPushButton);
-    _stateMachineGroup->addButton(stateSwitchedOnPushButton, 4);
+    _stateMachineGroup->addButton(stateSwitchedOnPushButton, STATE_SwitchedOn);
     QPushButton *stateOperationEnabledPushButton = new QPushButton(tr("5_Operation enabled"));
     stateMachineLayoutGroupBox->addRow(stateOperationEnabledPushButton);
-    _stateMachineGroup->addButton(stateOperationEnabledPushButton, 5);
+    _stateMachineGroup->addButton(stateOperationEnabledPushButton, STATE_OperationEnabled);
     QPushButton *stateQuickStopActivePushButton = new QPushButton(tr("6_Quick stop active"));
     stateMachineLayoutGroupBox->addRow(stateQuickStopActivePushButton);
-    _stateMachineGroup->addButton(stateQuickStopActivePushButton, 6);
+    _stateMachineGroup->addButton(stateQuickStopActivePushButton, STATE_QuickStopActive);
     QPushButton *stateFaultReactionActivePushButton = new QPushButton(tr("7_Fault reaction active"));
     stateFaultReactionActivePushButton->setEnabled(false);
     stateMachineLayoutGroupBox->addRow(stateFaultReactionActivePushButton);
-    _stateMachineGroup->addButton(stateFaultReactionActivePushButton, 7);
+    _stateMachineGroup->addButton(stateFaultReactionActivePushButton, STATE_FaultReactionActive);
     QPushButton *stateFaultPushButton = new QPushButton(tr("8_Fault"));
     stateFaultPushButton->setEnabled(false);
     stateMachineLayoutGroupBox->addRow(stateFaultPushButton);
-    _stateMachineGroup->addButton(stateFaultPushButton, 8);
+    _stateMachineGroup->addButton(stateFaultPushButton, STATE_Fault);
 
     connect(_stateMachineGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { stateMachineClicked(id); });
     stateMachineGroupBox->setLayout(stateMachineLayoutGroupBox);

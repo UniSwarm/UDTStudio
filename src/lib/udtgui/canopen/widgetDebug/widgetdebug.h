@@ -55,6 +55,20 @@ private:
 
     Node *_node;
 
+    enum State
+    {
+        STATE_NotReadyToSwitchOn = 1,
+        STATE_SwitchOnDisabled = 2,
+        STATE_ReadyToSwitchOn = 3,
+        STATE_SwitchedOn = 4,
+        STATE_OperationEnabled = 5,
+        STATE_QuickStopActive = 6,
+        STATE_FaultReactionActive = 7,
+        STATE_Fault = 8,
+    };
+
+    State stateMachineCurrent;
+
     quint16 cmdControlWord;
     quint16 _controlWordObjectId;
     quint16 _statusWordObjectId;
