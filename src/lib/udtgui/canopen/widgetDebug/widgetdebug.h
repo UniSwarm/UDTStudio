@@ -29,6 +29,8 @@
 #include <QLabel>
 #include <QButtonGroup>
 #include <QSpinBox>
+#include <QToolBar>
+#include <QSlider>
 
 class WidgetDebug : public QWidget, public NodeOdSubscriber
 {
@@ -46,6 +48,11 @@ public slots:
 
 private:
     void createWidgets();
+    void toggleStart(bool start);
+    void setTimer(int ms);
+    void readData();
+    QTimer _timer;
+
     Node *_node;
 
     quint16 cmdControlWord;
@@ -55,6 +62,14 @@ private:
     quint16 _quickStopObjectId;
     quint16 _abortConnectionObjectId;
     quint16 _faultReactionObjectId;
+
+    // VL mode
+    quint16 _vlVelocityDemandObjectId;
+    quint16 _vlVelocityActualObjectId;
+
+    QToolBar *_toolBar;
+    QSpinBox *_logTimerSpinBox;
+    QAction *_startStopAction;
 
     QLabel *_controlWordLabel;
     QLabel *_statusWordRawLabel;
@@ -91,6 +106,7 @@ private:
     QButtonGroup *_vlReferenceRampButtonGroup;
     QButtonGroup *_vlHaltButtonGroup;
     QSpinBox *_vlTargetVelocitySpinBox;
+    QSlider *_vlTargetVelocitySlider;
     QLabel *_vlVelocityDemandLabel;
     QLabel *_vlVelocityActualLabel;
     QSpinBox *_vlMinVelocityMinMaxAmountSpinBox;
@@ -106,7 +122,8 @@ private:
     QSpinBox *_vlDimensionFactorNumeratorSpinBox;
     QSpinBox *_vlDimensionFactorDenominatorSpinBox;
 
-    void vlTargetVelocityFinished();
+    void vlTargetVelocitySpinboxFinished();
+    void vlTargetVelocitySliderChanged();
     void vlMinAmountEditingFinished();
     void vlMaxAmountEditingFinished();
     void vlAccelerationDeltaSpeedEditingFinished();

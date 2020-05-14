@@ -50,7 +50,7 @@ WidgetDebug::WidgetDebug(Node *node, QWidget *parent)
     _faultReactionObjectId = 0x605E;
 
     createWidgets();
-
+    setCheckableStateMachine(2);
     registerObjId({_controlWordObjectId, 0x00});
     registerObjId({_statusWordObjectId, 0x00});
     registerObjId({_haltObjectId, 0x00});
@@ -59,10 +59,10 @@ WidgetDebug::WidgetDebug(Node *node, QWidget *parent)
     registerObjId({_faultReactionObjectId, 0x00});
 
     // VL_MODE
-    registerObjId({0x6043, 0x00});
-    registerObjId({0x6044, 0x00});
-
-    this->setWindowTitle("402");
+    _vlVelocityDemandObjectId = 0x6043;
+    _vlVelocityActualObjectId = 0x6044;
+    registerObjId({_vlVelocityDemandObjectId, 0x00});
+    registerObjId({_vlVelocityActualObjectId, 0x00});
 
     setNode(node);
 }
@@ -85,12 +85,17 @@ void WidgetDebug::setNode(Node *node)
 
     if (_node)
     {
+        this->setWindowTitle("402 : " + _node->name() +  ", Status :" + _node->statusStr());
+
         connect(_node, &Node::statusChanged, this, &WidgetDebug::updateData);
         _node->readObject(_statusWordObjectId, 0x0);
         _node->readObject(_haltObjectId, 0x0);
         _node->readObject(_quickStopObjectId, 0x0);
         _node->readObject(_abortConnectionObjectId, 0x0);
         _node->readObject(_faultReactionObjectId, 0x0);
+
+        cmdControlWord = ControlWordVL::CW_VL_EnableRamp | ControlWordVL::CW_VL_UnlockRamp | ControlWordVL::CW_VL_ReferenceRamp;
+        _node->writeObject(_controlWordObjectId, 0x00, cmdControlWord);
 
         if (_node->status() != Node::STARTED)
         {
@@ -103,9 +108,12 @@ void WidgetDebug::updateData()
 {
     if (_node)
     {
+        this->setWindowTitle("402 : " + _node->name() +  ", Status :" + _node->statusStr());
         if (_node->status() == Node::STARTED)
         {
             this->setEnabled(true);
+            cmdControlWord = ControlWordVL::CW_VL_EnableRamp | ControlWordVL::CW_VL_UnlockRamp | ControlWordVL::CW_VL_ReferenceRamp;
+            _node->writeObject(_controlWordObjectId, 0x00, cmdControlWord);
         }
         else
         {
@@ -202,17 +210,18 @@ void WidgetDebug::manageNotificationControlWordObject(SDO::FlagsRequest flags)
     {
         _controlWordLabel->setText("Error SDO : 0x" + QString::number(_node->nodeOd()->errorObject(_controlWordObjectId, 0x0), 16));
     }
-    if (_vlEnableRampButtonGroup->button(_node->nodeOd()->value(_controlWordObjectId).toInt() & CW_VL_EnableRamp))
+    quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toInt());
+    if (_vlEnableRampButtonGroup->button((controlWord & CW_VL_EnableRamp) > 4))
     {
-        _vlEnableRampButtonGroup->button(_node->nodeOd()->value(_controlWordObjectId).toUInt() & CW_VL_EnableRamp)->setChecked(true);
+        _vlEnableRampButtonGroup->button((controlWord & CW_VL_EnableRamp) > 4)->setChecked(true);
     }
-    if (_vlUnlockRampButtonGroup->button(_node->nodeOd()->value(_controlWordObjectId).toInt() & CW_VL_UnlockRamp))
+    if (_vlUnlockRampButtonGroup->button((controlWord & CW_VL_UnlockRamp) > 5))
     {
-        _vlUnlockRampButtonGroup->button(_node->nodeOd()->value(_controlWordObjectId).toUInt() & CW_VL_UnlockRamp)->setChecked(true);
+        _vlUnlockRampButtonGroup->button((controlWord & CW_VL_UnlockRamp) > 5)->setChecked(true);
     }
-    if (_vlReferenceRampButtonGroup->button(_node->nodeOd()->value(_controlWordObjectId).toInt() & CW_VL_ReferenceRamp))
+    if (_vlReferenceRampButtonGroup->button((controlWord & CW_VL_ReferenceRamp) > 6))
     {
-        _vlReferenceRampButtonGroup->button(_node->nodeOd()->value(_controlWordObjectId).toUInt() & CW_VL_ReferenceRamp)->setChecked(true);
+        _vlReferenceRampButtonGroup->button((controlWord & CW_VL_ReferenceRamp) > 6)->setChecked(true);
     }
 }
 
@@ -315,7 +324,13 @@ void WidgetDebug::setCheckableStateMachine(int id)
     _stateMachineGroup->button(id)->setCheckable(true);
     _stateMachineGroup->button(id)->setChecked(true);
 }
-void WidgetDebug::vlTargetVelocityFinished()
+void WidgetDebug::vlTargetVelocitySpinboxFinished()
+{
+    qint16 value = static_cast<qint16>(_vlTargetVelocitySpinBox->value());
+    _node->writeObject(0x6042, 0x00, QVariant(value));
+    _vlTargetVelocitySlider->setValue(value);
+}
+void WidgetDebug::vlTargetVelocitySliderChanged()
 {
     qint16 value = static_cast<qint16>(_vlTargetVelocitySpinBox->value());
     _node->writeObject(0x6042, 0x00, QVariant(value));
@@ -454,8 +469,26 @@ void WidgetDebug::vlHaltClicked(int id)
 void WidgetDebug::createWidgets()
 {
     // FIRST COLUMM
-    QLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
+    QLayout *firstLayout = new QVBoxLayout();
+    firstLayout->setMargin(0);
+
+    // toolbar TIMER
+    _toolBar = new QToolBar(tr("Read Status Word"));
+    // start stop
+    _startStopAction = _toolBar->addAction(tr("Start / stop"));
+    _startStopAction->setCheckable(true);
+    _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
+    _startStopAction->setToolTip(tr("Start or stop"));
+    connect(_startStopAction, &QAction::triggered, this, &WidgetDebug::toggleStart);
+    _logTimerSpinBox = new QSpinBox();
+    _logTimerSpinBox->setRange(10, 5000);
+    _logTimerSpinBox->setValue(500);
+    _logTimerSpinBox->setSuffix(" ms");
+    _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
+    _toolBar->addWidget(_logTimerSpinBox);
+    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),[=](int i){ setTimer(i); });
+    connect(&_timer, &QTimer::timeout, this, &WidgetDebug::readData);
+    firstLayout->addWidget(_toolBar);
 
     // Group Box State Machine
     QGroupBox *stateMachineGroupBox = new QGroupBox(tr("State Machine"));
@@ -466,6 +499,7 @@ void WidgetDebug::createWidgets()
     _stateMachineGroup->setExclusive(true);
 
     QPushButton *stateNotReadyToSwitchOnPushButton = new QPushButton(tr("1_Not ready to switch on"));
+    stateNotReadyToSwitchOnPushButton->setEnabled(false);
     stateMachineLayoutGroupBox->addRow(stateNotReadyToSwitchOnPushButton);
     _stateMachineGroup->addButton(stateNotReadyToSwitchOnPushButton, 1);
     QPushButton *stateSwitchOnDisabledPushButton = new QPushButton(tr("2_Switch on disabled"));
@@ -484,9 +518,11 @@ void WidgetDebug::createWidgets()
     stateMachineLayoutGroupBox->addRow(stateQuickStopActivePushButton);
     _stateMachineGroup->addButton(stateQuickStopActivePushButton, 6);
     QPushButton *stateFaultReactionActivePushButton = new QPushButton(tr("7_Fault reaction active"));
+    stateFaultReactionActivePushButton->setEnabled(false);
     stateMachineLayoutGroupBox->addRow(stateFaultReactionActivePushButton);
     _stateMachineGroup->addButton(stateFaultReactionActivePushButton, 7);
     QPushButton *stateFaultPushButton = new QPushButton(tr("8_Fault"));
+
     stateMachineLayoutGroupBox->addRow(stateFaultPushButton);
     _stateMachineGroup->addButton(stateFaultPushButton, 8);
 
@@ -496,43 +532,44 @@ void WidgetDebug::createWidgets()
 
     // Group Box Control Word
     QGroupBox *controlWordGroupBox = new QGroupBox(tr("Control Word (0x6040)"));
-    QFormLayout *controlWordLayoutGroupBox = new QFormLayout();
+    QFormLayout *controlWordLayout = new QFormLayout();
 
     QPushButton *_haltPushButton = new QPushButton(tr("Halt"));
-    controlWordLayoutGroupBox->addRow(_haltPushButton);
-    controlWordGroupBox->setLayout(controlWordLayoutGroupBox);
+    controlWordLayout->addRow(_haltPushButton);
+    controlWordGroupBox->setLayout(controlWordLayout);
 
     _controlWordLabel = new QLabel();
-    controlWordLayoutGroupBox->addRow(tr("ControlWord sended:"), _controlWordLabel);
+    controlWordLayout->addRow(tr("ControlWord sended:"), _controlWordLabel);
     connect(_haltPushButton, &QPushButton::clicked, this, &WidgetDebug::controlWordHaltClicked);
     // END Group Box Control Word
 
     // Group Box Status Word
     QGroupBox *statusWordGroupBox = new QGroupBox(tr("Status Word (0x6041)"));
-    QFormLayout *statusWordLayoutGroupBox = new QFormLayout();
+    QFormLayout *statusWordLayout = new QFormLayout();
+
     _statusWordRawLabel = new QLabel();
-    statusWordLayoutGroupBox->addRow(tr("StatusWord raw:"), _statusWordRawLabel);
+    statusWordLayout->addRow(tr("StatusWord raw:"), _statusWordRawLabel);
     _statusWordLabel = new QLabel();
-    statusWordLayoutGroupBox->addRow(tr("StatusWord State:"), _statusWordLabel);
+    statusWordLayout->addRow(tr("StatusWord State:"), _statusWordLabel);
     _voltageEnabledLabel = new QLabel();
-    statusWordLayoutGroupBox->addRow(tr("Voltage Enabled :"), _voltageEnabledLabel);
+    statusWordLayout->addRow(tr("Voltage Enabled :"), _voltageEnabledLabel);
     _warningLabel = new QLabel();
-    statusWordLayoutGroupBox->addRow(tr("Warning :"), _warningLabel);
+    statusWordLayout->addRow(tr("Warning :"), _warningLabel);
     _remoteLabel = new QLabel();
-    statusWordLayoutGroupBox->addRow(tr("Remote :"), _remoteLabel);
+    statusWordLayout->addRow(tr("Remote :"), _remoteLabel);
     _targetReachedLabel = new QLabel();
-    statusWordLayoutGroupBox->addRow(tr("Target Reached :"), _targetReachedLabel);
+    statusWordLayout->addRow(tr("Target Reached :"), _targetReachedLabel);
     _internalLimitActiveLabel = new QLabel();
-    statusWordLayoutGroupBox->addRow(tr("Internal Limit Active :"), _internalLimitActiveLabel);
+    statusWordLayout->addRow(tr("Internal Limit Active :"), _internalLimitActiveLabel);
     _operationModeSpecificLabel = new QLabel();
-    statusWordLayoutGroupBox->addRow(tr("Operation Mode Specific:"), _operationModeSpecificLabel);
+    statusWordLayout->addRow(tr("Operation Mode Specific:"), _operationModeSpecificLabel);
     _manufacturerSpecificLabel = new QLabel();
-    statusWordLayoutGroupBox->addRow(tr("Manufacturer Specific:"), _manufacturerSpecificLabel);
-    statusWordGroupBox->setLayout(statusWordLayoutGroupBox);
+    statusWordLayout->addRow(tr("Manufacturer Specific:"), _manufacturerSpecificLabel);
+    statusWordGroupBox->setLayout(statusWordLayout);
     // END Group Box Status Word
-    layout->addWidget(stateMachineGroupBox);
-    layout->addWidget(controlWordGroupBox);
-    layout->addWidget(statusWordGroupBox);
+    firstLayout->addWidget(stateMachineGroupBox);
+    firstLayout->addWidget(controlWordGroupBox);
+    firstLayout->addWidget(statusWordGroupBox);
     // END FIRST COLUMM
 
     // SECOND COLUMM
@@ -628,21 +665,22 @@ void WidgetDebug::createWidgets()
     thirdColumnlayout->setMargin(0);
 
     // Group Box VL mode
-    QGroupBox *vlGroupBox = new QGroupBox(tr("VL mode"));
+    QGroupBox *vlGroupBox = new QGroupBox(tr("Velocity mode"));
     QFormLayout *vlLayout = new QFormLayout();
 
     _vlTargetVelocitySpinBox = new QSpinBox();
     _vlTargetVelocitySpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
     vlLayout->addRow("Target velocity (0x6042) :", _vlTargetVelocitySpinBox);
 
-    QSlider *vlTargetVelocitySlider = new QSlider(Qt::Horizontal);
-    vlTargetVelocitySlider->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    vlLayout->addRow(vlTargetVelocitySlider);
+    _vlTargetVelocitySlider = new QSlider(Qt::Horizontal);
+    _vlTargetVelocitySlider->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
+    vlLayout->addRow(_vlTargetVelocitySlider);
 
-    connect(vlTargetVelocitySlider, &QSlider::valueChanged, _vlTargetVelocitySpinBox, &QSpinBox::setValue);
-    connect(_vlTargetVelocitySpinBox, qOverload<int>(&QSpinBox::valueChanged), vlTargetVelocitySlider, &QSlider::setValue);
-    connect(vlTargetVelocitySlider, &QSlider::valueChanged, this, &WidgetDebug::vlTargetVelocityFinished);
-    connect(_vlTargetVelocitySpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlTargetVelocityFinished);
+    connect(_vlTargetVelocitySlider, &QSlider::valueChanged, _vlTargetVelocitySpinBox, &QSpinBox::setValue);
+    connect(_vlTargetVelocitySlider, &QSlider::valueChanged, this, &WidgetDebug::vlTargetVelocitySliderChanged);
+
+    //connect(_vlTargetVelocitySpinBox, &QSpinBox::editingFinished, vlTargetVelocitySlider, &QSlider::setValue);
+    connect(_vlTargetVelocitySpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlTargetVelocitySpinboxFinished);
 
     _vlVelocityDemandLabel = new QLabel();
     _vlVelocityDemandLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
@@ -652,91 +690,97 @@ void WidgetDebug::createWidgets()
     _vlVelocityActualLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     vlLayout->addRow("Velocity_actual_value (0x6044) :", _vlVelocityActualLabel);
 
-    QLabel *vlVelocityMinMaxAmountLabel = new QLabel(tr("vl velocity min max amount (0x6046) :"));
+    QLabel *vlVelocityMinMaxAmountLabel = new QLabel(tr("Velocity min max amount (0x6046) :"));
     vlLayout->addRow(vlVelocityMinMaxAmountLabel);
     QLayout *vlVelocityMinMaxAmountlayout = new QHBoxLayout();
     _vlMinVelocityMinMaxAmountSpinBox = new QSpinBox();
     _vlMinVelocityMinMaxAmountSpinBox->setToolTip("min ");
-    _vlMinVelocityMinMaxAmountSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<quint32>::min());
+    _vlMinVelocityMinMaxAmountSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
     vlVelocityMinMaxAmountlayout->addWidget(_vlMinVelocityMinMaxAmountSpinBox);
     _vlMaxVelocityMinMaxAmountSpinBox = new QSpinBox();
     _vlMaxVelocityMinMaxAmountSpinBox->setToolTip("max ");
-    _vlMaxVelocityMinMaxAmountSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<quint32>::min());
+    _vlMaxVelocityMinMaxAmountSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
     vlVelocityMinMaxAmountlayout->addWidget(_vlMaxVelocityMinMaxAmountSpinBox);
     vlLayout->addRow(vlVelocityMinMaxAmountlayout);
     connect(_vlMinVelocityMinMaxAmountSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlMinAmountEditingFinished);
     connect(_vlMaxVelocityMinMaxAmountSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlMaxAmountEditingFinished);
 
-    QLabel *vlVelocityAccelerationLabel = new QLabel(tr("vl velocity acceleration (0x6048) :"));
+    QLabel *vlVelocityAccelerationLabel = new QLabel(tr("Velocity acceleration (0x6048) :"));
     vlLayout->addRow(vlVelocityAccelerationLabel);
     QLayout *vlVelocityAccelerationlayout = new QHBoxLayout();
     _vlAccelerationDeltaSpeedSpinBox = new QSpinBox();
+    _vlAccelerationDeltaSpeedSpinBox->setSuffix(" inc/ms");
     _vlAccelerationDeltaSpeedSpinBox->setToolTip("Delta Speed");
-    _vlAccelerationDeltaSpeedSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<quint32>::min());
+    _vlAccelerationDeltaSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
     vlVelocityAccelerationlayout->addWidget(_vlAccelerationDeltaSpeedSpinBox);
     _vlAccelerationDeltaTimeSpinBox = new QSpinBox();
+    _vlAccelerationDeltaTimeSpinBox->setSuffix(" ms");
     _vlAccelerationDeltaTimeSpinBox->setToolTip("Delta Time");
-    _vlAccelerationDeltaTimeSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<quint32>::min());
+    _vlAccelerationDeltaTimeSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
     vlVelocityAccelerationlayout->addWidget(_vlAccelerationDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityAccelerationlayout);
     connect(_vlAccelerationDeltaSpeedSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlAccelerationDeltaSpeedEditingFinished);
     connect(_vlAccelerationDeltaTimeSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlAccelerationDeltaTimeEditingFinished);
 
-    QLabel *vlVelocityDecelerationLabel = new QLabel(tr("vl velocity deceleration (0x6049) :"));
+    QLabel *vlVelocityDecelerationLabel = new QLabel(tr("Velocity deceleration (0x6049) :"));
     vlLayout->addRow(vlVelocityDecelerationLabel);
     QLayout *vlVelocityDecelerationlayout = new QHBoxLayout();
     _vlDecelerationDeltaSpeedDecelerationSpinBox = new QSpinBox();
+    _vlDecelerationDeltaSpeedDecelerationSpinBox->setSuffix(" inc/ms");
     _vlDecelerationDeltaSpeedDecelerationSpinBox->setToolTip("Delta Speed");
-    _vlDecelerationDeltaSpeedDecelerationSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<quint32>::min());
+    _vlDecelerationDeltaSpeedDecelerationSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
     vlVelocityDecelerationlayout->addWidget(_vlDecelerationDeltaSpeedDecelerationSpinBox);
     _vlDecelerationDeltaTimeSpinBox = new QSpinBox();
+    _vlDecelerationDeltaTimeSpinBox->setSuffix(" ms");
     _vlDecelerationDeltaTimeSpinBox->setToolTip("Delta Time");
-    _vlDecelerationDeltaTimeSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<quint32>::min());
+    _vlDecelerationDeltaTimeSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
     vlVelocityDecelerationlayout->addWidget(_vlDecelerationDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityDecelerationlayout);
     connect(_vlDecelerationDeltaSpeedDecelerationSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlDecelerationDeltaSpeedEditingFinished);
     connect(_vlDecelerationDeltaTimeSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlDecelerationDeltaTimeEditingFinished);
 
-    QLabel *vlVelocityQuickStopLabel = new QLabel(tr("vl velocity quick stop (0x604A) :"));
+    QLabel *vlVelocityQuickStopLabel = new QLabel(tr("Velocity quick stop (0x604A) :"));
     vlLayout->addRow(vlVelocityQuickStopLabel);
     QLayout *vlVelocityQuickStoplayout = new QHBoxLayout();
     _vlQuickStopDeltaSpeedSpinBox = new QSpinBox();
+    _vlQuickStopDeltaSpeedSpinBox->setSuffix(" inc/ms");
     _vlQuickStopDeltaSpeedSpinBox->setToolTip("Delta Speed");
-    _vlQuickStopDeltaSpeedSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<quint32>::min());
+    _vlQuickStopDeltaSpeedSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
     vlVelocityQuickStoplayout->addWidget(_vlQuickStopDeltaSpeedSpinBox);
     _vlQuickStopDeltaTimeSpinBox = new QSpinBox();
+    _vlQuickStopDeltaTimeSpinBox->setSuffix(" ms");
     _vlQuickStopDeltaTimeSpinBox->setToolTip("Delta Time");
-    _vlQuickStopDeltaTimeSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<quint32>::min());
+    _vlQuickStopDeltaTimeSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
     vlVelocityQuickStoplayout->addWidget(_vlQuickStopDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityQuickStoplayout);
     connect(_vlQuickStopDeltaSpeedSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlQuickStopDeltaSpeedEditingFinished);
     connect(_vlQuickStopDeltaTimeSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlQuickStopDeltaTimeEditingFinished);
 
-    QLabel *vlSetPointFactorLabel = new QLabel(tr("vl set-point factor (0x604B) :"));
+    QLabel *vlSetPointFactorLabel = new QLabel(tr("Set-point factor (0x604B) :"));
     vlLayout->addRow(vlSetPointFactorLabel);
     QLayout *vlSetPointFactorlayout = new QHBoxLayout();
     _vlSetPointFactorNumeratorSpinBox = new QSpinBox();
     _vlSetPointFactorNumeratorSpinBox->setToolTip("Numerator");
-    _vlSetPointFactorNumeratorSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
+    _vlSetPointFactorNumeratorSpinBox->setRange(1, std::numeric_limits<qint32>::max());
     vlSetPointFactorlayout->addWidget(_vlSetPointFactorNumeratorSpinBox);
     _vlSetPointFactorDenominatorSpinBox = new QSpinBox();
     _vlSetPointFactorDenominatorSpinBox->setToolTip("Denominator");
-    _vlSetPointFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
+    _vlSetPointFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint32>::max());
     vlSetPointFactorlayout->addWidget(_vlSetPointFactorDenominatorSpinBox);
     vlLayout->addRow(vlSetPointFactorlayout);
     connect(_vlSetPointFactorNumeratorSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlSetPointFactorNumeratorEditingFinished);
     connect(_vlSetPointFactorDenominatorSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlSetPointFactorDenominatorEditingFinished);
 
-    QLabel *vlDimensionFactorLabel = new QLabel(tr("vl dimension factor (0x604C) :"));
+    QLabel *vlDimensionFactorLabel = new QLabel(tr("Dimension factor (0x604C) :"));
     vlLayout->addRow(vlDimensionFactorLabel);
     QLayout *vlDimensionFactorlayout = new QHBoxLayout();
     _vlDimensionFactorNumeratorSpinBox = new QSpinBox();
     _vlDimensionFactorNumeratorSpinBox->setToolTip("Numerator");
-    _vlDimensionFactorNumeratorSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
+    _vlDimensionFactorNumeratorSpinBox->setRange(1, std::numeric_limits<qint32>::max());
     vlDimensionFactorlayout->addWidget(_vlDimensionFactorNumeratorSpinBox);
     _vlDimensionFactorDenominatorSpinBox = new QSpinBox();
     _vlDimensionFactorDenominatorSpinBox->setToolTip("Denominator");
-    _vlDimensionFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
+    _vlDimensionFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint32>::max());
     vlDimensionFactorlayout->addWidget(_vlDimensionFactorDenominatorSpinBox);
     vlLayout->addRow(vlDimensionFactorlayout);
     connect(_vlDimensionFactorNumeratorSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlDimensionFactorNumeratorEditingFinished);
@@ -822,15 +866,45 @@ void WidgetDebug::createWidgets()
 
     QHBoxLayout *hBoxLayout = new QHBoxLayout();
     hBoxLayout->setMargin(0);
-    hBoxLayout->addLayout(layout);
+    hBoxLayout->addLayout(firstLayout);
     hBoxLayout->addLayout(secondColumnlayout);
     hBoxLayout->addLayout(thirdColumnlayout);
 
     setLayout(hBoxLayout);
 }
 
+void WidgetDebug::toggleStart(bool start)
+{
+    if (start)
+    {
+        _startStopAction->setIcon(QIcon(":/icons/img/icons8-stop.png"));
+        _timer.start(_logTimerSpinBox->value());
+    }
+    else
+    {
+        _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
+        _timer.stop();
+    }
+}
+
+void WidgetDebug::setTimer(int ms)
+{
+    if (_startStopAction->isChecked())
+    {
+        _timer.start(ms);
+    }
+}
+
+void WidgetDebug::readData()
+{
+    _node->readObject(_statusWordObjectId, 0x0);
+    _node->readObject(_vlVelocityDemandObjectId, 0x0);
+    _node->readObject(_vlVelocityActualObjectId, 0x0);
+}
+
 void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    int value;
     if (!_node)
     {
         return;
@@ -850,7 +924,8 @@ void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         {
             return;
         }
-        if (_haltOptionGroup->button(_node->nodeOd()->value(_haltObjectId).toInt()))
+        value = _node->nodeOd()->value(_haltObjectId).toInt();
+        if (_haltOptionGroup->button(value))
         {
             _haltOptionGroup->button(_node->nodeOd()->value(_haltObjectId).toInt())->setChecked(true);
         }
@@ -861,9 +936,10 @@ void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         {
             return;
         }
-        if (_quickStopOptionGroup->button(_node->nodeOd()->value(_quickStopObjectId).toInt()))
+        value = _node->nodeOd()->value(_quickStopObjectId).toInt();
+        if (_quickStopOptionGroup->button(value))
         {
-            _quickStopOptionGroup->button(_node->nodeOd()->value(_quickStopObjectId).toInt())->setChecked(true);
+            _quickStopOptionGroup->button(value)->setChecked(true);
         }
     }
     if (objId.index == _abortConnectionObjectId && objId.subIndex == 0x00)
@@ -872,9 +948,10 @@ void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         {
             return;
         }
-        if (_abortConnectionOptionGroup->button(_node->nodeOd()->value(_abortConnectionObjectId).toInt()))
+        value = _node->nodeOd()->value(_abortConnectionObjectId).toInt();
+        if (_abortConnectionOptionGroup->button(value))
         {
-            _abortConnectionOptionGroup->button(_node->nodeOd()->value(_abortConnectionObjectId).toInt())->setChecked(true);
+            _abortConnectionOptionGroup->button(value)->setChecked(true);
         }
     }
     if (objId.index == _faultReactionObjectId && objId.subIndex == 0x00)
@@ -883,33 +960,36 @@ void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         {
             return;
         }
-        if (_faultReactionOptionGroup->button(_node->nodeOd()->value(_faultReactionObjectId).toInt()))
+        value = _node->nodeOd()->value(_faultReactionObjectId).toInt();
+        if (_faultReactionOptionGroup->button(value))
         {
-            _faultReactionOptionGroup->button(_node->nodeOd()->value(_faultReactionObjectId).toInt())->setChecked(true);
+            _faultReactionOptionGroup->button(value)->setChecked(true);
         }
     }
 
-    if (objId.index == 0x6042 && objId.subIndex == 0x00)
+    if (objId.index == _vlVelocityDemandObjectId && objId.subIndex == 0x00)
     {
         if (flags == SDO::FlagsRequest::Error)
         {
             return;
         }
-        if (_node->nodeOd()->indexExist(0x6042))
+        if (_node->nodeOd()->indexExist(_vlVelocityDemandObjectId))
         {
-            _vlVelocityDemandLabel->setNum(_node->nodeOd()->value(0x6042).toInt());
+            value = _node->nodeOd()->value(_vlVelocityDemandObjectId).toInt();
+            _vlVelocityDemandLabel->setNum(value);
         }
     }
 
-    if (objId.index == 0x6043 && objId.subIndex == 0x00)
+    if (objId.index == _vlVelocityActualObjectId && objId.subIndex == 0x00)
     {
         if (flags == SDO::FlagsRequest::Error)
         {
             return;
         }
-        if (_node->nodeOd()->indexExist(0x6043))
+        if (_node->nodeOd()->indexExist(_vlVelocityActualObjectId))
         {
-            _vlVelocityActualLabel->setNum(_node->nodeOd()->value(0x6043).toInt());
+            value = _node->nodeOd()->value(_vlVelocityActualObjectId).toInt();
+            _vlVelocityActualLabel->setNum(value);
         }
     }
 }
