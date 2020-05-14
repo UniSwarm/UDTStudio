@@ -27,6 +27,7 @@
 #include <QRadioButton>
 #include <QSlider>
 #include <QDir>
+#include "canopen/datalogger/dataloggerwidget.h"
 
 WidgetDebug::WidgetDebug(QWidget *parent)
     : QWidget(parent)
@@ -61,6 +62,7 @@ WidgetDebug::WidgetDebug(Node *node, QWidget *parent)
     // VL_MODE
     _vlVelocityDemandObjectId = 0x6043;
     _vlVelocityActualObjectId = 0x6044;
+    _vlTargetVelocityObjectId = 0x6042;
     registerObjId({_vlVelocityDemandObjectId, 0x00});
     registerObjId({_vlVelocityActualObjectId, 0x00});
 
@@ -131,7 +133,7 @@ void WidgetDebug::stateMachineClicked(int id)
     case 1: // 1_Not ready to switch on
         break;
     case 2: // 2_Switch on disabled
-        // nothing = 0 cmdControlWord;
+        cmdControlWord |= CW_FaultReset;
         break;
     case 3: // 3_Ready to switch on
         cmdControlWord |= (CW_EnableVoltage | CW_QuickStop);
@@ -148,7 +150,7 @@ void WidgetDebug::stateMachineClicked(int id)
     case 7: // 7_Fault reaction active
         break;
     case 8: // 8_Fault
-        cmdControlWord |= CW_FaultReset;
+        //cmdControlWord |= CW_FaultReset;
         break;
     }
     _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
@@ -244,36 +246,72 @@ void WidgetDebug::manageNotificationStatusWordobject()
     {
         _statusWordLabel->setText(tr("SwitchOnDisabled"));
         setCheckableStateMachine(2);
+        _stateMachineGroup->button(2)->setEnabled(true);
+        _stateMachineGroup->button(3)->setEnabled(true);
+        _stateMachineGroup->button(4)->setEnabled(false);
+        _stateMachineGroup->button(5)->setEnabled(false);
+        _stateMachineGroup->button(6)->setEnabled(false);
+
     }
     if ((state & Mask2) == SW_StateReadyToSwitchOn)
     {
         _statusWordLabel->setText(tr("ReadyToSwitchOn"));
         setCheckableStateMachine(3);
+        _stateMachineGroup->button(2)->setEnabled(false);
+        _stateMachineGroup->button(3)->setEnabled(true);
+        _stateMachineGroup->button(4)->setEnabled(true);
+        _stateMachineGroup->button(5)->setEnabled(false);
+        _stateMachineGroup->button(6)->setEnabled(false);
     }
     if ((state & Mask2) == SW_StateSwitchedOn)
     {
         _statusWordLabel->setText(tr("SwitchedOn"));
         setCheckableStateMachine(4);
+        _stateMachineGroup->button(2)->setEnabled(false);
+        _stateMachineGroup->button(3)->setEnabled(true);
+        _stateMachineGroup->button(5)->setEnabled(true);
+        _stateMachineGroup->button(4)->setEnabled(true);
+        _stateMachineGroup->button(6)->setEnabled(false);
     }
     if ((state & Mask2) == SW_StateOperationEnabled)
     {
         _statusWordLabel->setText(tr("OperationEnabled"));
         setCheckableStateMachine(5);
+        _stateMachineGroup->button(2)->setEnabled(false);
+        _stateMachineGroup->button(3)->setEnabled(true);
+        _stateMachineGroup->button(4)->setEnabled(true);
+        _stateMachineGroup->button(5)->setEnabled(true);
+        _stateMachineGroup->button(6)->setEnabled(true);
     }
     if ((state & Mask2) == SW_StateQuickStopActive)
     {
         _statusWordLabel->setText(tr("QuickStopActive"));
         setCheckableStateMachine(6);
+        _stateMachineGroup->button(2)->setEnabled(true);
+        _stateMachineGroup->button(3)->setEnabled(false);
+        _stateMachineGroup->button(4)->setEnabled(false);
+        _stateMachineGroup->button(5)->setEnabled(false);
+        _stateMachineGroup->button(6)->setEnabled(true);
     }
     if ((state & Mask1) == SW_StateFaultReactionActive)
     {
         _statusWordLabel->setText(tr("FaultReactionActive"));
         setCheckableStateMachine(7);
+        _stateMachineGroup->button(2)->setEnabled(false);
+        _stateMachineGroup->button(3)->setEnabled(false);
+        _stateMachineGroup->button(4)->setEnabled(false);
+        _stateMachineGroup->button(5)->setEnabled(false);
+        _stateMachineGroup->button(6)->setEnabled(false);
     }
     if ((state & Mask1) == SW_StateFault)
     {
         _statusWordLabel->setText(tr("Fault"));
         setCheckableStateMachine(8);
+        _stateMachineGroup->button(2)->setEnabled(true);
+        _stateMachineGroup->button(3)->setEnabled(false);
+        _stateMachineGroup->button(4)->setEnabled(false);
+        _stateMachineGroup->button(5)->setEnabled(false);
+        _stateMachineGroup->button(6)->setEnabled(false);
     }
     this->update();
 
@@ -327,13 +365,13 @@ void WidgetDebug::setCheckableStateMachine(int id)
 void WidgetDebug::vlTargetVelocitySpinboxFinished()
 {
     qint16 value = static_cast<qint16>(_vlTargetVelocitySpinBox->value());
-    _node->writeObject(0x6042, 0x00, QVariant(value));
+    _node->writeObject(_vlTargetVelocityObjectId, 0x00, QVariant(value));
     _vlTargetVelocitySlider->setValue(value);
 }
 void WidgetDebug::vlTargetVelocitySliderChanged()
 {
     qint16 value = static_cast<qint16>(_vlTargetVelocitySpinBox->value());
-    _node->writeObject(0x6042, 0x00, QVariant(value));
+    _node->writeObject(_vlTargetVelocityObjectId, 0x00, QVariant(value));
 }
 void WidgetDebug::vlMinAmountEditingFinished()
 {
@@ -466,6 +504,27 @@ void WidgetDebug::vlHaltClicked(int id)
     _controlWordLabel->setText("0x" + QString::number(cmdControlWord, 16).toUpper());
 }
 
+void WidgetDebug::dataLogger()
+{
+    DataLogger *dataLogger = new DataLogger();
+    DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
+    dataLogger->addData({_node->busId(), _node->nodeId(), _vlVelocityActualObjectId, 0x0, QMetaType::Type::Short});
+    dataLogger->addData({_node->busId(), _node->nodeId(), _vlTargetVelocityObjectId, 0x0, QMetaType::Type::Short});
+    dataLogger->addData({_node->busId(), _node->nodeId(), _vlVelocityDemandObjectId, 0x0, QMetaType::Type::Short});
+    _dataLoggerWidget->show();
+}
+void WidgetDebug::pdoMapping()
+{
+    QList<NodeObjectId> vlRpdoObjectList = {{_node->busId(), _node->nodeId(), _controlWordObjectId, 0x0, QMetaType::Type::UShort},
+                                            {_node->busId(), _node->nodeId(), _vlTargetVelocityObjectId, 0x0, QMetaType::Type::Short}};
+
+    _node->rpdos().at(0)->writeMapping(vlRpdoObjectList);
+    QList<NodeObjectId> vlTpdoObjectList = {{_node->busId(), _node->nodeId(), _statusWordObjectId, 0x0, QMetaType::Type::UShort},
+                                            {_node->busId(), _node->nodeId(), _vlVelocityActualObjectId, 0x0, QMetaType::Type::Short}};
+
+    _node->tpdos().at(2)->writeMapping(vlTpdoObjectList);
+}
+
 void WidgetDebug::createWidgets()
 {
     // FIRST COLUMM
@@ -522,7 +581,7 @@ void WidgetDebug::createWidgets()
     stateMachineLayoutGroupBox->addRow(stateFaultReactionActivePushButton);
     _stateMachineGroup->addButton(stateFaultReactionActivePushButton, 7);
     QPushButton *stateFaultPushButton = new QPushButton(tr("8_Fault"));
-
+    stateFaultPushButton->setEnabled(false);
     stateMachineLayoutGroupBox->addRow(stateFaultPushButton);
     _stateMachineGroup->addButton(stateFaultPushButton, 8);
 
@@ -678,8 +737,6 @@ void WidgetDebug::createWidgets()
 
     connect(_vlTargetVelocitySlider, &QSlider::valueChanged, _vlTargetVelocitySpinBox, &QSpinBox::setValue);
     connect(_vlTargetVelocitySlider, &QSlider::valueChanged, this, &WidgetDebug::vlTargetVelocitySliderChanged);
-
-    //connect(_vlTargetVelocitySpinBox, &QSpinBox::editingFinished, vlTargetVelocitySlider, &QSlider::setValue);
     connect(_vlTargetVelocitySpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlTargetVelocitySpinboxFinished);
 
     _vlVelocityDemandLabel = new QLabel();
@@ -850,18 +907,27 @@ void WidgetDebug::createWidgets()
     //    connect(_vlHaltButtonGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id){ vlHaltClicked(id); });
     modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
+    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
+    connect(dataLoggerPushButton, &QPushButton::clicked, this, &WidgetDebug::dataLogger);
+
+    QPushButton *mappingPdoPushButton = new QPushButton(tr("Mapping Pdo"));
+    connect(mappingPdoPushButton, &QPushButton::clicked, this, &WidgetDebug::pdoMapping);
+
     QPixmap vlModePixmap;
     QLabel *vlModeLabel;
     vlModeLabel = new QLabel();
     vlModePixmap.load(QDir::homePath() + "/Seafile/Produits/1_UMC/VLDiagram.png");
     vlModeLabel->setPixmap(vlModePixmap);
-
     QPushButton *imgPushButton = new QPushButton(tr("Diagram VL mode"));
     connect(imgPushButton, SIGNAL(clicked()), vlModeLabel, SLOT(show()));
+    QHBoxLayout *vlButtonLayout = new QHBoxLayout();
+    vlButtonLayout->addWidget(dataLoggerPushButton);
+    vlButtonLayout->addWidget(mappingPdoPushButton);
+    vlButtonLayout->addWidget(imgPushButton);
 
     thirdColumnlayout->addWidget(vlGroupBox);
     thirdColumnlayout->addWidget(modeControlWordGroupBox);
-    thirdColumnlayout->addWidget(imgPushButton);
+    thirdColumnlayout->addItem(vlButtonLayout);
     // END THIRD COLUMM
 
     QHBoxLayout *hBoxLayout = new QHBoxLayout();

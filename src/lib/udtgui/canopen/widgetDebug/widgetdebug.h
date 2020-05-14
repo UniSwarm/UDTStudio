@@ -64,6 +64,7 @@ private:
     quint16 _faultReactionObjectId;
 
     // VL mode
+    quint16 _vlTargetVelocityObjectId;
     quint16 _vlVelocityDemandObjectId;
     quint16 _vlVelocityActualObjectId;
 
@@ -141,6 +142,8 @@ private:
     void vlUnlockRampClicked(int id);
     void vlReferenceRampClicked(int id);
     void vlHaltClicked(int id);
+    void dataLogger();
+    void pdoMapping();
 
     enum ControlWord : quint16
     {
