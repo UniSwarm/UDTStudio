@@ -80,8 +80,9 @@ void SDO::parseFrame(const QCanBusFrame &frame)
 
 void SDO::reset()
 {
+    _timer->stop();
     _requestQueue.clear();
-    _request = nullptr;
+    delete _request;
     _state = SDO_STATE_FREE;
 }
 
@@ -919,6 +920,10 @@ void SDO::nextRequest()
  */
 void SDO::timeout()
 {
+    if (_request == nullptr)
+    {
+        return;
+    }
     uint32_t error = 0x05040000;
 
     sendSdoRequest(CCS::SDO_CCS_CLIENT_ABORT, _request->index, _request->subIndex, error);
