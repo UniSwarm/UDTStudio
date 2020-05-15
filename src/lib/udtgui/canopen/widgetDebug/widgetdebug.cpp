@@ -18,6 +18,7 @@
 
 #include "widgetdebug.h"
 
+#include <QApplication>
 #include "services/services.h"
 #include <QButtonGroup>
 #include <QCheckBox>
@@ -28,6 +29,7 @@
 #include <QSlider>
 #include <QDir>
 #include "canopen/datalogger/dataloggerwidget.h"
+#include <QSettings>
 
 WidgetDebug::WidgetDebug(QWidget *parent)
     : QWidget(parent)
@@ -87,8 +89,8 @@ void WidgetDebug::setNode(Node *node)
 
     if (_node)
     {
-        this->setWindowTitle("402 : " + _node->name() +  ", Status :" + _node->statusStr());
-
+        setWindowTitle("402 : " + _node->name() +  ", Status :" + _node->statusStr());
+        readSettings();
         connect(_node, &Node::statusChanged, this, &WidgetDebug::updateData);
         _node->readObject(_statusWordObjectId, 0x0);
         _node->readObject(_haltObjectId, 0x0);
@@ -123,7 +125,45 @@ void WidgetDebug::updateData()
         }
     }
 }
+void WidgetDebug::preop()
+{
+    if (_node)
+    {
+        _node->sendPreop();
+    }
+}
 
+void WidgetDebug::start()
+{
+    if (_node)
+    {
+        _node->sendStart();
+    }
+}
+
+void WidgetDebug::stop()
+{
+    if (_node)
+    {
+        _node->sendStop();
+    }
+}
+
+void WidgetDebug::resetCom()
+{
+    if (_node)
+    {
+        _node->sendResetComm();
+    }
+}
+
+void WidgetDebug::resetNode()
+{
+    if (_node)
+    {
+        _node->sendResetNode();
+    }
+}
 void WidgetDebug::stateMachineClicked(int id)
 {
     cmdControlWord = (cmdControlWord & ~CW_Mask);
@@ -169,6 +209,24 @@ void WidgetDebug::controlWordHaltClicked()
     _controlWordLabel->setText("0x" + QString::number(cmdControlWord, 16).toUpper());
     // Initiate bit halt
     cmdControlWord = (cmdControlWord & ~CW_Halt);
+}
+
+void WidgetDebug::gotoStateOEClicked()
+{
+    if (stateMachineCurrent == STATE_SwitchOnDisabled)
+    {
+        stateMachineClicked(STATE_ReadyToSwitchOn);
+        _operationEnabledTimer.singleShot(50, this, SLOT(gotoStateOEClicked()));
+    }
+    if (stateMachineCurrent == STATE_ReadyToSwitchOn)
+    {
+        stateMachineClicked(STATE_SwitchedOn);
+        _operationEnabledTimer.singleShot(50, this, SLOT(gotoStateOEClicked()));
+    }
+    if (stateMachineCurrent == STATE_SwitchedOn)
+    {
+        stateMachineClicked(STATE_OperationEnabled);
+    }
 }
 
 void WidgetDebug::haltOptionClicked(int id)
@@ -545,10 +603,47 @@ void WidgetDebug::createWidgets()
     QLayout *firstLayout = new QVBoxLayout();
     firstLayout->setMargin(0);
 
+    // toolbar nmt
+    _nmtToolBar = new QToolBar(tr("Node commands"));
+    QActionGroup *groupNmt = new QActionGroup(this);
+    groupNmt->setExclusive(true);
+    QAction *action;
+    action = groupNmt->addAction(tr("Pre operationnal"));
+    action->setCheckable(true);
+    action->setIcon(QIcon(":/icons/img/icons8-connection-status-on.png"));
+    action->setStatusTip(tr("Request node to go in preop mode"));
+    connect(action, &QAction::triggered, this, &WidgetDebug::preop);
+
+    action = groupNmt->addAction(tr("Start"));
+    action->setCheckable(true);
+    action->setIcon(QIcon(":/icons/img/icons8-play.png"));
+    action->setStatusTip(tr("Request node to go in started mode"));
+    connect(action, &QAction::triggered, this, &WidgetDebug::start);
+
+    action = groupNmt->addAction(tr("Stop"));
+    action->setCheckable(true);
+    action->setIcon(QIcon(":/icons/img/icons8-stop.png"));
+    action->setStatusTip(tr("Request node to go in stop mode"));
+    connect(action, &QAction::triggered, this, &WidgetDebug::stop);
+
+    action = groupNmt->addAction(tr("Reset communication"));
+    action->setCheckable(true);
+    action->setIcon(QIcon(":/icons/img/icons8-process.png"));
+    action->setStatusTip(tr("Request node to reset com. parameters"));
+    connect(action, &QAction::triggered, this, &WidgetDebug::resetCom);
+
+    action = groupNmt->addAction(tr("Reset node"));
+    action->setCheckable(true);
+    action->setIcon(QIcon(":/icons/img/icons8-reset.png"));
+    action->setStatusTip(tr("Request node to reset all values"));
+    connect(action, &QAction::triggered, this, &WidgetDebug::resetNode);
+
+    _nmtToolBar->addActions(groupNmt->actions());
+    firstLayout->addWidget(_nmtToolBar);
     // toolbar TIMER
-    _toolBar = new QToolBar(tr("Read Status Word"));
+    _timerToolBar = new QToolBar(tr("Read Status Word"));
     // start stop
-    _startStopAction = _toolBar->addAction(tr("Start / stop"));
+    _startStopAction = _timerToolBar->addAction(tr("Start / stop"));
     _startStopAction->setCheckable(true);
     _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
     _startStopAction->setToolTip(tr("Start or stop"));
@@ -558,10 +653,10 @@ void WidgetDebug::createWidgets()
     _logTimerSpinBox->setValue(500);
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
-    _toolBar->addWidget(_logTimerSpinBox);
+    _timerToolBar->addWidget(_logTimerSpinBox);
     connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),[=](int i){ setTimer(i); });
     connect(&_timer, &QTimer::timeout, this, &WidgetDebug::readData);
-    firstLayout->addWidget(_toolBar);
+    firstLayout->addWidget(_timerToolBar);
 
     // Group Box State Machine
     QGroupBox *stateMachineGroupBox = new QGroupBox(tr("State Machine"));
@@ -610,10 +705,17 @@ void WidgetDebug::createWidgets()
     QPushButton *_haltPushButton = new QPushButton(tr("Halt"));
     controlWordLayout->addRow(_haltPushButton);
     controlWordGroupBox->setLayout(controlWordLayout);
+    connect(_haltPushButton, &QPushButton::clicked, this, &WidgetDebug::controlWordHaltClicked);
 
     _controlWordLabel = new QLabel();
     controlWordLayout->addRow(tr("ControlWord sended:"), _controlWordLabel);
-    connect(_haltPushButton, &QPushButton::clicked, this, &WidgetDebug::controlWordHaltClicked);
+
+
+    QPushButton *_gotoOEPushButton = new QPushButton(tr("Operation enabled quickly"));
+    controlWordLayout->addRow(_gotoOEPushButton);
+    connect(_gotoOEPushButton, &QPushButton::clicked, this, &WidgetDebug::gotoStateOEClicked);
+
+    controlWordGroupBox->setLayout(controlWordLayout);
     // END Group Box Control Word
 
     // Group Box Status Word
@@ -1071,5 +1173,61 @@ void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
             value = _node->nodeOd()->value(_vlVelocityActualObjectId).toInt();
             _vlVelocityActualLabel->setNum(value);
         }
+    }
+}
+
+void WidgetDebug::writeSettings()
+{
+    QSettings settings(QApplication::organizationName(), QApplication::applicationName());
+
+    QString string = "402." + QString::number(_node->nodeId());
+    settings.beginGroup(string);
+    settings.setValue("_vlTargetVelocitySpinBox", _vlTargetVelocitySpinBox->value());
+
+    settings.setValue("_vlMinVelocityMinMaxAmountSpinBox", _vlMinVelocityMinMaxAmountSpinBox->value());
+    settings.setValue("_vlMaxVelocityMinMaxAmountSpinBox", _vlMaxVelocityMinMaxAmountSpinBox->value());
+    settings.setValue("_vlAccelerationDeltaSpeedSpinBox", _vlAccelerationDeltaSpeedSpinBox->value());
+    settings.setValue("_vlAccelerationDeltaTimeSpinBox", _vlAccelerationDeltaTimeSpinBox->value());
+    settings.setValue("_vlDecelerationDeltaSpeedDecelerationSpinBox", _vlDecelerationDeltaSpeedDecelerationSpinBox->value());
+    settings.setValue("_vlDecelerationDeltaTimeSpinBox", _vlDecelerationDeltaTimeSpinBox->value());
+    settings.setValue("_vlQuickStopDeltaSpeedSpinBox", _vlQuickStopDeltaSpeedSpinBox->value());
+    settings.setValue("_vlQuickStopDeltaTimeSpinBox", _vlQuickStopDeltaTimeSpinBox->value());
+    settings.setValue("_vlSetPointFactorNumeratorSpinBox", _vlSetPointFactorNumeratorSpinBox->value());
+    settings.setValue("_vlSetPointFactorDenominatorSpinBox", _vlSetPointFactorDenominatorSpinBox->value());
+    settings.setValue("_vlDimensionFactorNumeratorSpinBox", _vlDimensionFactorNumeratorSpinBox->value());
+    settings.setValue("_vlDimensionFactorDenominatorSpinBox", _vlDimensionFactorDenominatorSpinBox->value());
+
+    settings.endGroup();
+}
+
+void WidgetDebug::readSettings()
+{
+    QSettings settings(QApplication::organizationName(), QApplication::applicationName());
+
+    QString string = "402." + QString::number(_node->nodeId());
+    settings.beginGroup(string);
+
+    _vlTargetVelocitySpinBox->setValue(settings.value("_vlTargetVelocitySpinBox").toInt());
+    _vlMinVelocityMinMaxAmountSpinBox->setValue(settings.value("_vlMinVelocityMinMaxAmountSpinBox").toInt());
+    _vlMaxVelocityMinMaxAmountSpinBox->setValue(settings.value("_vlMaxVelocityMinMaxAmountSpinBox").toInt());
+    _vlAccelerationDeltaSpeedSpinBox->setValue(settings.value("_vlAccelerationDeltaSpeedSpinBox").toInt());
+    _vlAccelerationDeltaTimeSpinBox->setValue(settings.value("_vlAccelerationDeltaTimeSpinBox").toInt());
+    _vlDecelerationDeltaSpeedDecelerationSpinBox->setValue(settings.value("_vlDecelerationDeltaSpeedDecelerationSpinBox").toInt());
+    _vlDecelerationDeltaTimeSpinBox->setValue(settings.value("_vlDecelerationDeltaTimeSpinBox").toInt());
+    _vlQuickStopDeltaSpeedSpinBox->setValue(settings.value("_vlQuickStopDeltaSpeedSpinBox").toInt());
+    _vlQuickStopDeltaTimeSpinBox->setValue(settings.value("_vlQuickStopDeltaTimeSpinBox").toInt());
+    _vlSetPointFactorNumeratorSpinBox->setValue(settings.value("_vlSetPointFactorNumeratorSpinBox").toInt());
+    _vlSetPointFactorDenominatorSpinBox->setValue(settings.value("_vlSetPointFactorDenominatorSpinBox").toInt());
+    _vlDimensionFactorNumeratorSpinBox->setValue(settings.value("_vlDimensionFactorNumeratorSpinBox").toInt());
+    _vlDimensionFactorDenominatorSpinBox->setValue(settings.value("_vlDimensionFactorDenominatorSpinBox").toInt());
+
+    settings.endGroup();
+}
+
+void WidgetDebug::closeEvent(QCloseEvent *event)
+{
+    if (event->type() == QEvent::Close)
+    {
+        writeSettings();
     }
 }

@@ -46,12 +46,23 @@ public slots:
     void setNode(Node *value);
     void updateData();
 
+    void preop();
+    void start();
+    void stop();
+    void resetCom();
+    void resetNode();
+    void gotoStateOEClicked();
+
 private:
     void createWidgets();
     void toggleStart(bool start);
     void setTimer(int ms);
     void readData();
     QTimer _timer;
+    QTimer _operationEnabledTimer;
+
+    void readSettings();
+    void writeSettings();
 
     Node *_node;
 
@@ -82,7 +93,8 @@ private:
     quint16 _vlVelocityDemandObjectId;
     quint16 _vlVelocityActualObjectId;
 
-    QToolBar *_toolBar;
+    QToolBar *_nmtToolBar;
+    QToolBar *_timerToolBar;
     QSpinBox *_logTimerSpinBox;
     QAction *_startStopAction;
 
@@ -114,6 +126,7 @@ private:
 
     void setCheckableStateMachine(int id);
     void controlWordHaltClicked();
+
 
     // VL MODE
     QButtonGroup *_vlEnableRampButtonGroup;
@@ -209,6 +222,9 @@ private:
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+    // QObject interface
+public:
+    void closeEvent(QCloseEvent *event) override;
 };
 
 #endif // WIDGETDEBUG_H
