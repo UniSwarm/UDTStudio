@@ -103,7 +103,7 @@ void WidgetDebug::setNode(Node *node)
 
         if (_node->status() != Node::STARTED)
         {
-            this->setEnabled(false);
+            //this->setEnabled(false);
         }
     }
 }
@@ -213,6 +213,11 @@ void WidgetDebug::controlWordHaltClicked()
 
 void WidgetDebug::gotoStateOEClicked()
 {
+    if (stateMachineCurrent == STATE_Fault)
+    {
+        stateMachineClicked(STATE_SwitchOnDisabled);
+        _operationEnabledTimer.singleShot(50, this, SLOT(gotoStateOEClicked()));
+    }
     if (stateMachineCurrent == STATE_SwitchOnDisabled)
     {
         stateMachineClicked(STATE_ReadyToSwitchOn);
@@ -592,7 +597,7 @@ void WidgetDebug::pdoMapping()
 
     _node->rpdos().at(0)->writeMapping(vlRpdoObjectList);
     QList<NodeObjectId> vlTpdoObjectList = {{_node->busId(), _node->nodeId(), _statusWordObjectId, 0x0, QMetaType::Type::UShort},
-                                            {_node->busId(), _node->nodeId(), _vlVelocityActualObjectId, 0x0, QMetaType::Type::Short}};
+                                            {_node->busId(), _node->nodeId(), _vlVelocityDemandObjectId, 0x0, QMetaType::Type::Short}};
 
     _node->tpdos().at(2)->writeMapping(vlTpdoObjectList);
 }
@@ -889,7 +894,7 @@ void WidgetDebug::createWidgets()
     _vlAccelerationDeltaTimeSpinBox = new QSpinBox();
     _vlAccelerationDeltaTimeSpinBox->setSuffix(" ms");
     _vlAccelerationDeltaTimeSpinBox->setToolTip("Delta Time");
-    _vlAccelerationDeltaTimeSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
+    _vlAccelerationDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
     vlVelocityAccelerationlayout->addWidget(_vlAccelerationDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityAccelerationlayout);
     connect(_vlAccelerationDeltaSpeedSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlAccelerationDeltaSpeedEditingFinished);
@@ -901,12 +906,12 @@ void WidgetDebug::createWidgets()
     _vlDecelerationDeltaSpeedDecelerationSpinBox = new QSpinBox();
     _vlDecelerationDeltaSpeedDecelerationSpinBox->setSuffix(" inc/ms");
     _vlDecelerationDeltaSpeedDecelerationSpinBox->setToolTip("Delta Speed");
-    _vlDecelerationDeltaSpeedDecelerationSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
+    _vlDecelerationDeltaSpeedDecelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
     vlVelocityDecelerationlayout->addWidget(_vlDecelerationDeltaSpeedDecelerationSpinBox);
     _vlDecelerationDeltaTimeSpinBox = new QSpinBox();
     _vlDecelerationDeltaTimeSpinBox->setSuffix(" ms");
     _vlDecelerationDeltaTimeSpinBox->setToolTip("Delta Time");
-    _vlDecelerationDeltaTimeSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
+    _vlDecelerationDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
     vlVelocityDecelerationlayout->addWidget(_vlDecelerationDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityDecelerationlayout);
     connect(_vlDecelerationDeltaSpeedDecelerationSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlDecelerationDeltaSpeedEditingFinished);
@@ -918,12 +923,12 @@ void WidgetDebug::createWidgets()
     _vlQuickStopDeltaSpeedSpinBox = new QSpinBox();
     _vlQuickStopDeltaSpeedSpinBox->setSuffix(" inc/ms");
     _vlQuickStopDeltaSpeedSpinBox->setToolTip("Delta Speed");
-    _vlQuickStopDeltaSpeedSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
+    _vlQuickStopDeltaSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
     vlVelocityQuickStoplayout->addWidget(_vlQuickStopDeltaSpeedSpinBox);
     _vlQuickStopDeltaTimeSpinBox = new QSpinBox();
     _vlQuickStopDeltaTimeSpinBox->setSuffix(" ms");
     _vlQuickStopDeltaTimeSpinBox->setToolTip("Delta Time");
-    _vlQuickStopDeltaTimeSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
+    _vlQuickStopDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
     vlVelocityQuickStoplayout->addWidget(_vlQuickStopDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityQuickStoplayout);
     connect(_vlQuickStopDeltaSpeedSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlQuickStopDeltaSpeedEditingFinished);
@@ -934,11 +939,11 @@ void WidgetDebug::createWidgets()
     QLayout *vlSetPointFactorlayout = new QHBoxLayout();
     _vlSetPointFactorNumeratorSpinBox = new QSpinBox();
     _vlSetPointFactorNumeratorSpinBox->setToolTip("Numerator");
-    _vlSetPointFactorNumeratorSpinBox->setRange(1, std::numeric_limits<qint32>::max());
+    _vlSetPointFactorNumeratorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
     vlSetPointFactorlayout->addWidget(_vlSetPointFactorNumeratorSpinBox);
     _vlSetPointFactorDenominatorSpinBox = new QSpinBox();
     _vlSetPointFactorDenominatorSpinBox->setToolTip("Denominator");
-    _vlSetPointFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint32>::max());
+    _vlSetPointFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
     vlSetPointFactorlayout->addWidget(_vlSetPointFactorDenominatorSpinBox);
     vlLayout->addRow(vlSetPointFactorlayout);
     connect(_vlSetPointFactorNumeratorSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlSetPointFactorNumeratorEditingFinished);
@@ -949,11 +954,11 @@ void WidgetDebug::createWidgets()
     QLayout *vlDimensionFactorlayout = new QHBoxLayout();
     _vlDimensionFactorNumeratorSpinBox = new QSpinBox();
     _vlDimensionFactorNumeratorSpinBox->setToolTip("Numerator");
-    _vlDimensionFactorNumeratorSpinBox->setRange(1, std::numeric_limits<qint32>::max());
+    _vlDimensionFactorNumeratorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
     vlDimensionFactorlayout->addWidget(_vlDimensionFactorNumeratorSpinBox);
     _vlDimensionFactorDenominatorSpinBox = new QSpinBox();
     _vlDimensionFactorDenominatorSpinBox->setToolTip("Denominator");
-    _vlDimensionFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint32>::max());
+    _vlDimensionFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
     vlDimensionFactorlayout->addWidget(_vlDimensionFactorDenominatorSpinBox);
     vlLayout->addRow(vlDimensionFactorlayout);
     connect(_vlDimensionFactorNumeratorSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlDimensionFactorNumeratorEditingFinished);
