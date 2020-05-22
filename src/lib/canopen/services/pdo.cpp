@@ -186,6 +186,7 @@ int PDO::indexAtBitPos(const QList<NodeObjectId> &objectList, int bitPos)
 void PDO::readMapping()
 {
     statusPdo = STATE_READ;
+    _iFsm = 0;
     readCommParam();
 }
 
@@ -387,6 +388,10 @@ void PDO::readMappingParam()
 
 bool PDO::createListObjectMapped()
 {
+    if (!_node->nodeOd()->indexExist(_objectCommList[0].index))
+    {
+        return false;
+    }
     if ((_node->nodeOd()->value(_objectCommList[0]).toUInt() & COBID_VALID_NOT_VALID) == COBID_VALID_NOT_VALID)
     {
         setError(ERROR_COBID_NOT_VALID);

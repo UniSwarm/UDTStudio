@@ -53,9 +53,12 @@ void RPDO::parseFrame(const QCanBusFrame &frame)
 
 void RPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if (statusPdo == STATE_NONE)
+    if (statusPdo == STATE_NONE && objId.index == _objectMappingId)
     {
-        managementRespProcessMapping(objId, flags);
+        if (_objectCommList.size() != 0)
+        {
+            createListObjectMapped();
+        }
     }
 
     if (statusPdo == STATE_READ)

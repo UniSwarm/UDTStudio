@@ -121,6 +121,7 @@ protected:
     void managementRespWriteCommParam(const NodeObjectId &objId, SDO::FlagsRequest flags);
     void managementRespReadCommAndMapping(const NodeObjectId &objId, SDO::FlagsRequest flags);
     void managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequest flags);
+    bool createListObjectMapped();
 
     QList<NodeObjectId> _objectCurrentMapped;
     QList<NodeObjectId> _objectToMap;
@@ -152,7 +153,7 @@ private:
     void readCommParam();
     void readMappingParam();
     void processMapping();
-    bool createListObjectMapped();
+
     bool checkIndex(quint16 index);
     virtual void clearDataWaiting();
 };
