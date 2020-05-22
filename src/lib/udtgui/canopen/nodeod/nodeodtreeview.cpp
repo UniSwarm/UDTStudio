@@ -21,6 +21,7 @@
 #include <QKeyEvent>
 #include <QHeaderView>
 #include <QFontMetrics>
+#include <QMenu>
 
 #include "node.h"
 
@@ -47,6 +48,11 @@ NodeOdTreeView::NodeOdTreeView(QWidget *parent)
     setSelectionMode(QAbstractItemView::ExtendedSelection);
     setDragEnabled(true);
     setDragDropMode(QAbstractItemView::DragDrop);
+
+    _delegate = new NodeOdItemDelegate(this);
+    setItemDelegate(_delegate);
+
+    createActions();
 }
 
 NodeOdTreeView::~NodeOdTreeView()
@@ -87,27 +93,43 @@ void NodeOdTreeView::setFilter(const QString filterText)
     }
 }
 
-void NodeOdTreeView::keyPressEvent(QKeyEvent *event)
+void NodeOdTreeView::readCurrent()
 {
-    if (event->key() == Qt::Key_F5)
+    const QModelIndex &curentIndex = _odModelSorter->mapToSource(selectionModel()->currentIndex());
+    NodeSubIndex *nodeSubIndex = _odModel->nodeSubIndex(curentIndex);
+    if (nodeSubIndex)
     {
-        const QModelIndex &curentIndex = _odModelSorter->mapToSource(selectionModel()->currentIndex());
-        NodeSubIndex *nodeSubIndex = _odModel->nodeSubIndex(curentIndex);
-        if (nodeSubIndex)
-        {
-            _odModel->node()->readObject(nodeSubIndex->index(), nodeSubIndex->subIndex());
-            return;
-        }
-
-        NodeIndex *nodeIndex = _odModel->nodeIndex(curentIndex);
-        if (nodeIndex)
-        {
-            for (NodeSubIndex *subIndexN : nodeIndex->subIndexes())
-            {
-                _odModel->node()->readObject(nodeIndex->index(), subIndexN->subIndex());
-            }
-            return;
-        }
+        _odModel->node()->readObject(nodeSubIndex->index(), nodeSubIndex->subIndex());
+        return;
     }
-    QTreeView::keyPressEvent(event);
+
+    NodeIndex *nodeIndex = _odModel->nodeIndex(curentIndex);
+    if (nodeIndex)
+    {
+        for (NodeSubIndex *subIndexN : nodeIndex->subIndexes())
+        {
+            _odModel->node()->readObject(nodeIndex->index(), subIndexN->subIndex());
+        }
+        return;
+    }
+}
+
+void NodeOdTreeView::createActions()
+{
+    _readAction = new QAction(this);
+    _readAction->setText(tr("&Read"));
+    _readAction->setShortcut(Qt::Key_F5);
+    _readAction->setShortcutContext(Qt::WidgetShortcut);
+#if QT_VERSION >= 0x050A00
+    _readAction->setShortcutVisibleInContextMenu(true);
+#endif
+    connect(_readAction, &QAction::triggered, this, &NodeOdTreeView::readCurrent);
+    addAction(_readAction);
+}
+
+void NodeOdTreeView::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu menu;
+    menu.addAction(_readAction);
+    menu.exec(event->globalPos());
 }

@@ -138,14 +138,7 @@ QVariant NodeOdItem::data(int column, int role) const
             case NodeOdItemModel::Value:
                 if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
                 {
-                    QVariant value = _index->subIndex(0)->value();
-                    if (QMetaType::Type(value.type()) == QMetaType::UChar
-                        || QMetaType::Type(value.type()) == QMetaType::SChar
-                        || QMetaType::Type(value.type()) == QMetaType::QChar)
-                    {
-                        value.convert(QMetaType::Int);
-                    }
-                    return value;
+                    return formatValue(_index->subIndex(0)->value(), _index->subIndex(0)->dataType());
                 }
                 else
                 {
@@ -160,13 +153,8 @@ QVariant NodeOdItem::data(int column, int role) const
             case NodeOdItemModel::Value:
                 if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
                 {
-                    QVariant value = _index->subIndex(0)->value();
-                    if (QMetaType::Type(value.type()) == QMetaType::UChar
-                        || QMetaType::Type(value.type()) == QMetaType::SChar
-                        || QMetaType::Type(value.type()) == QMetaType::QChar)
-                    {
-                        value.convert(QMetaType::Int);
-                    }
+                    QVariant value = formatEditValue(_index->subIndex(0)->value());
+                    value.convert(QMetaType::QString);
                     return value;
                 }
                 break;
@@ -202,14 +190,7 @@ QVariant NodeOdItem::data(int column, int role) const
                 return QVariant(_subIndex->accessString());
 
             case NodeOdItemModel::Value:
-                QVariant value = _subIndex->value();
-                if (QMetaType::Type(value.type()) == QMetaType::UChar
-                    || QMetaType::Type(value.type()) == QMetaType::SChar
-                    || QMetaType::Type(value.type()) == QMetaType::QChar)
-                {
-                    value.convert(QMetaType::Int);
-                }
-                return value;
+                return formatValue(_subIndex->value(), _subIndex->dataType());
             }
             break;
 
@@ -217,13 +198,8 @@ QVariant NodeOdItem::data(int column, int role) const
             switch (column)
             {
             case NodeOdItemModel::Value:
-                QVariant value = _subIndex->value();
-                if (QMetaType::Type(value.type()) == QMetaType::UChar
-                    || QMetaType::Type(value.type()) == QMetaType::SChar
-                    || QMetaType::Type(value.type()) == QMetaType::QChar)
-                {
-                    value.convert(QMetaType::Int);
-                }
+                QVariant value = formatEditValue(_subIndex->value());
+                value.convert(QMetaType::QString);
                 return value;
             }
             break;
@@ -244,37 +220,80 @@ QVariant NodeOdItem::data(int column, int role) const
 bool NodeOdItem::setData(int column, const QVariant &value, int role, Node *node)
 {
     Q_UNUSED(role)
+
+    if (column != NodeOdItemModel::Value)
+    {
+        return false;
+    }
+
+    NodeSubIndex *subIndex = nullptr;
+
     switch (_type)
     {
-    case NodeOdItem::TOD:
+    case TOD:
         break;
 
     case NodeOdItem::TIndex:
-        switch (column)
+        if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
         {
-        case NodeOdItemModel::Value:
-            if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
+            if (_index->subIndex(0)->isWritable())
             {
-                if (_index->subIndex(0)->isWritable())
-                {
-                    node->writeObject(_index->index(), _index->subIndex(0)->subIndex(), value);
-                }
+                subIndex = _index->subIndex(0);
             }
-            break;
         }
         break;
 
     case NodeOdItem::TSubIndex:
-        switch (column)
+        if (_subIndex->isWritable())
         {
-        case NodeOdItemModel::Value:
-            if (_subIndex->isWritable())
-            {
-                node->writeObject(_subIndex->index(), _subIndex->subIndex(), value);
-            }
-            break;
+            subIndex = _subIndex;
         }
         break;
+    }
+
+    if (subIndex)
+    {
+        QVariant valueToWrite = value;
+
+        if (subIndex->isNumeric())
+        {
+            QString valueStr = valueToWrite.toString();
+            if (valueStr.startsWith("0x", Qt::CaseInsensitive))
+            {
+                bool ok;
+                valueStr = valueStr.mid(2);
+                switch (subIndex->dataType())
+                {
+                case NodeSubIndex::BOOLEAN:
+                case NodeSubIndex::INTEGER8:
+                case NodeSubIndex::INTEGER16:
+                case NodeSubIndex::INTEGER24:
+                case NodeSubIndex::INTEGER32:
+                case NodeSubIndex::INTEGER40:
+                case NodeSubIndex::INTEGER48:
+                case NodeSubIndex::INTEGER56:
+                case NodeSubIndex::INTEGER64:
+                    valueToWrite.setValue(valueStr.toInt(&ok, 16));
+                    break;
+
+                case NodeSubIndex::UNSIGNED8:
+                case NodeSubIndex::UNSIGNED16:
+                case NodeSubIndex::UNSIGNED24:
+                case NodeSubIndex::UNSIGNED32:
+                case NodeSubIndex::UNSIGNED40:
+                case NodeSubIndex::UNSIGNED48:
+                case NodeSubIndex::UNSIGNED56:
+                case NodeSubIndex::UNSIGNED64:
+                    valueToWrite.setValue(valueStr.toUInt(&ok, 16));
+                    break;
+
+                default:
+                    break;
+                }
+            }
+        }
+
+        node->writeObject(subIndex->index(), subIndex->subIndex(), valueToWrite);
     }
     return false;
 }
@@ -418,5 +437,88 @@ void NodeOdItem::createChildren()
 
     default:
         break;
+    }
+}
+
+QVariant NodeOdItem::formatValue(const QVariant &value, NodeSubIndex::DataType dataType) const
+{
+    QVariant mvalue = value;
+    int zero = 0;
+    switch (dataType)
+    {
+        case NodeSubIndex::BOOLEAN:
+            if (value.toInt() == 1)
+            {
+                return QVariant(true);
+            }
+            else
+            {
+                return QVariant(false);
+            }
+
+        case NodeSubIndex::UNSIGNED8:
+        case NodeSubIndex::INTEGER8:
+            zero = 2;
+            break;
+
+        case NodeSubIndex::UNSIGNED16:
+        case NodeSubIndex::INTEGER16:
+            zero = 4;
+            break;
+
+        case NodeSubIndex::UNSIGNED24:
+        case NodeSubIndex::INTEGER24:
+            zero = 6;
+            break;
+
+        case NodeSubIndex::UNSIGNED32:
+        case NodeSubIndex::INTEGER32:
+            zero = 8;
+            break;
+
+        case NodeSubIndex::UNSIGNED40:
+        case NodeSubIndex::INTEGER40:
+            zero = 10;
+            break;
+
+        case NodeSubIndex::UNSIGNED48:
+        case NodeSubIndex::INTEGER48:
+            zero = 12;
+            break;
+
+        case NodeSubIndex::UNSIGNED56:
+        case NodeSubIndex::INTEGER56:
+            zero = 14;
+            break;
+
+        case NodeSubIndex::UNSIGNED64:
+        case NodeSubIndex::INTEGER64:
+            zero = 16;
+            break;
+
+    default:
+        return value;
+    }
+    return QVariant(QString("%1 (0x%2)").arg(mvalue.toUInt()).arg(QString::number(mvalue.toUInt(), 16).rightJustified(zero, '0').toUpper()));
+}
+
+QVariant NodeOdItem::formatEditValue(const QVariant &value) const
+{
+    QVariant mvalue = value;
+    switch (QMetaType::Type(value.type()))
+    {
+    case QMetaType::UChar:
+    case QMetaType::SChar:
+    case QMetaType::UShort:
+    case QMetaType::Short:
+    case QMetaType::UInt:
+    case QMetaType::Int:
+    case QMetaType::ULongLong:
+    case QMetaType::LongLong:
+    case QMetaType::Double:
+        return QVariant(QString("%1").arg(mvalue.toUInt()));
+
+    default:
+        return value;
     }
 }

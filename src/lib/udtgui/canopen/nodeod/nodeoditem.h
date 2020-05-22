@@ -68,6 +68,9 @@ protected:
     QMap<quint16, NodeOdItem *> _childrenMap;
     void addChild(quint16 index, NodeOdItem *child);
     void createChildren();
+
+    QVariant formatValue(const QVariant &value, NodeSubIndex::DataType dataType) const;
+    QVariant formatEditValue(const QVariant &value) const;
 };
 
 #endif // NODEODITEM_H

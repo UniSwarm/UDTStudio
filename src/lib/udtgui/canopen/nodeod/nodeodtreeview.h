@@ -24,7 +24,10 @@
 #include <QTreeView>
 
 #include "nodeoditemmodel.h"
+#include "nodeoditemdelegate.h"
 #include "nodeodfilterproxymodel.h"
+
+#include <QAction>
 
 class UDTGUI_EXPORT NodeOdTreeView : public QTreeView
 {
@@ -41,14 +44,19 @@ public:
 
 public slots:
     void setFilter(const QString filterText);
+    void readCurrent();
 
 protected:
     NodeOdItemModel *_odModel;
     NodeOdFilterProxyModel *_odModelSorter;
+    NodeOdItemDelegate *_delegate;
+
+    void createActions();
+    QAction *_readAction;
 
     // QWidget interface
 protected:
-    void keyPressEvent(QKeyEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
 #endif // NODEODTREEVIEW_H

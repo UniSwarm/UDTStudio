@@ -229,11 +229,20 @@ QVariant NodeOdItemModel::data(const QModelIndex &index, int role) const
 
 bool NodeOdItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    qDebug() << "setData" << value;
     if (!_root)
     {
         return false;
     }
     if (!index.isValid())
+    {
+        return false;
+    }
+    if (!value.isValid())
+    {
+        return false;
+    }
+    if (value.toString().isEmpty())
     {
         return false;
     }

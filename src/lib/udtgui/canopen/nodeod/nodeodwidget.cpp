@@ -53,7 +53,7 @@ void NodeOdWidget::setNode(Node *node)
     _nodeOdTreeView->setNode(node);
     if (node)
     {
-        createDefaultFilters(node->nodeOd()->value(0x1000).toUInt() & 0xFFFF);
+        createDefaultFilters(node->profileNumber());
     }
 }
 
@@ -80,6 +80,9 @@ void NodeOdWidget::createWidgets()
     _filterCombobox = new QComboBox();
     _toolBar->addWidget(_filterCombobox);
     _filterLineEdit = new QLineEdit();
+    _filterLineEdit->setPlaceholderText(tr("Regexp filter..."));
+    _filterLineEdit->setClearButtonEnabled(true);
+    _filterLineEdit->setToolTip(tr("Start filter with '0x' to match index, otherwise, it will match object name column."));
     _toolBar->addWidget(_filterLineEdit);
     layout->addWidget(_toolBar);
 
