@@ -45,6 +45,8 @@ public:
     quint32 cobIdClientToServer();
     quint32 cobIdServerToClient();
 
+    bool hasRequestPending();
+
     bool uploadData(quint16 index, quint8 subindex, QMetaType::Type dataType);
     bool downloadData(quint16 index, quint8 subindex, const QVariant &data);
 
@@ -163,10 +165,9 @@ private:
         bool error;
     };
 
-    RequestSdo *_request;
+    RequestSdo *_requestCurrent;
     QQueue<RequestSdo *> _requestQueue;
     Status _state;
-
 
     bool uploadDispatcher();
     bool downloadDispatcher();
