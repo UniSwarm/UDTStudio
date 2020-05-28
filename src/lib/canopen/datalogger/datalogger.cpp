@@ -170,6 +170,17 @@ void DataLogger::stop()
     _timer.stop();
 }
 
+void DataLogger::clear()
+{
+    QMap<quint64, DLData *>::iterator i = _dataMap.begin();
+    while (i != _dataMap.end())
+    {
+        i.value()->clear();
+        emit dataChanged(i.key());
+        ++i;
+    }
+}
+
 void DataLogger::readData()
 {
     for (DLData *dlData : _dataList)

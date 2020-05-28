@@ -71,6 +71,12 @@ void DataLoggerManagerWidget::createWidgets()
     _toolBar->addWidget(_logTimerSpinBox);
     connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),[=](int i){ setLogTimer(i); });
 
+    // clear
+    action = _toolBar->addAction(tr("Clear"));
+    action->setIcon(QIcon(":/icons/img/icons8-broom.png"));
+    action->setStatusTip(tr("Clear all data"));
+    connect(action, &QAction::triggered, _logger, &DataLogger::clear);
+
     layout->addWidget(_toolBar);
 
     _dataLoggerTreeView = new DataLoggerTreeView();

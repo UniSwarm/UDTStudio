@@ -95,7 +95,7 @@ void DataLoggerChartsWidget::updateDlData(int id)
 
         QDateTime firstDateTime = _dataLogger->firstDateTime();
         QDateTime lastDateTime = _dataLogger->lastDateTime();
-        if (firstDateTime < _axisX->min() || lastDateTime > _axisX->max())
+        if (firstDateTime != _axisX->min() || lastDateTime > _axisX->max())
         {
             qint64 msDiff = firstDateTime.msecsTo(lastDateTime);
             _axisX->setRange(firstDateTime, lastDateTime.addMSecs(msDiff / 5));

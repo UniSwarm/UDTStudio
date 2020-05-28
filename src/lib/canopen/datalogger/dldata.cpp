@@ -108,6 +108,13 @@ QDateTime DLData::lastDateTime() const
     return _times.last();
 }
 
+void DLData::clear()
+{
+    _values.clear();
+    _times.clear();
+    resetMinMax();
+}
+
 qreal DLData::min() const
 {
     return _min;

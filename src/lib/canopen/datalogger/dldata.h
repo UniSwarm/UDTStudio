@@ -42,6 +42,7 @@ public:
     double lastValue() const;
     QDateTime firstDateTime() const;
     QDateTime lastDateTime() const;
+    void clear();
 
     qreal min() const;
     qreal max() const;

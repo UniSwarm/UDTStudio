@@ -59,6 +59,7 @@ signals:
 public slots:
     void start(int ms);
     void stop();
+    void clear();
 
 protected slots:
     void readData();
