@@ -153,7 +153,7 @@ void SDO::processingFrameFromServer(const QCanBusFrame &frame)
                  << ", abort :" << QString::number(arrangeDataUpload(frame.payload().mid(4, 4), QMetaType::Type::UInt).toUInt(), 16).toUpper();
 
         quint32 error = arrangeDataUpload(frame.payload().mid(4, 4), QMetaType::Type::UInt).toUInt();
-        errorManagement(static_cast<SDOAbortCodes>(error));
+        abortManagement(static_cast<SDOAbortCodes>(error));
         break;
     }
     default:
@@ -868,6 +868,26 @@ bool SDO::sdoBlockDownloadEnd()
 void SDO::errorManagement(SDOAbortCodes error)
 {
     sendSdoRequest(CCS::SDO_CCS_CLIENT_ABORT, _requestCurrent->index, _requestCurrent->subIndex, error);
+    setErrorObject(error);
+}
+
+/**
+ * @brief manage error abort
+ * @param error SDO/CIA
+ * @return bool value successful or not
+ */
+void SDO::abortManagement(SDOAbortCodes error)
+{
+    setErrorObject(error);
+}
+
+/**
+ * @brief Set error in object
+ * @param error SDO/CIA
+ * @return bool value successful or not
+ */
+void SDO::setErrorObject(SDOAbortCodes error)
+{
     _node->nodeOd()->updateObjectFromDevice(_requestCurrent->index, _requestCurrent->subIndex, QVariant(), FlagsRequest::Error);
     _node->nodeOd()->setErrorObject(_requestCurrent->index, _requestCurrent->subIndex, error);
 

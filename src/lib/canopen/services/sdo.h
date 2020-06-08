@@ -173,6 +173,8 @@ private:
     bool downloadDispatcher();
 
     void errorManagement(SDOAbortCodes error);
+    void abortManagement(SDOAbortCodes error);
+    void setErrorObject(SDOAbortCodes error);
     void requestFinished();
     void nextRequest();
 
