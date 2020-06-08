@@ -47,18 +47,22 @@ WidgetDebug::WidgetDebug(Node *node, QWidget *parent)
 
     _controlWordObjectId = 0x6040;
     _statusWordObjectId = 0x6041;
-    _haltObjectId = 0x605D;
-    _quickStopObjectId = 0x605A;
     _abortConnectionObjectId = 0x6007;
+    _quickStopObjectId = 0x605A;
+    _shutdownObjectId = 0x605B;
+    _disableObjectId = 0x605C;
+    _haltObjectId = 0x605D;
     _faultReactionObjectId = 0x605E;
 
     createWidgets();
     setCheckableStateMachine(2);
     registerObjId({_controlWordObjectId, 0x00});
     registerObjId({_statusWordObjectId, 0x00});
-    registerObjId({_haltObjectId, 0x00});
-    registerObjId({_quickStopObjectId, 0x00});
     registerObjId({_abortConnectionObjectId, 0x00});
+    registerObjId({_quickStopObjectId, 0x00});
+    registerObjId({_shutdownObjectId, 0x00});
+    registerObjId({_disableObjectId, 0x00});
+    registerObjId({_haltObjectId, 0x00});
     registerObjId({_faultReactionObjectId, 0x00});
 
     // VL_MODE
@@ -93,9 +97,11 @@ void WidgetDebug::setNode(Node *node)
         readSettings();
         connect(_node, &Node::statusChanged, this, &WidgetDebug::updateData);
         _node->readObject(_statusWordObjectId, 0x0);
-        _node->readObject(_haltObjectId, 0x0);
-        _node->readObject(_quickStopObjectId, 0x0);
         _node->readObject(_abortConnectionObjectId, 0x0);
+        _node->readObject(_quickStopObjectId, 0x0);
+        _node->readObject(_shutdownObjectId, 0x0);
+        _node->readObject(_disableObjectId, 0x0);
+        _node->readObject(_haltObjectId, 0x0);
         _node->readObject(_faultReactionObjectId, 0x0);
 
         cmdControlWord = ControlWordVL::CW_VL_EnableRamp | ControlWordVL::CW_VL_UnlockRamp | ControlWordVL::CW_VL_ReferenceRamp;
@@ -234,14 +240,14 @@ void WidgetDebug::gotoStateOEClicked()
     }
 }
 
-void WidgetDebug::haltOptionClicked(int id)
+void WidgetDebug::abortConnectionOptionClicked(int id)
 {
     if (!_node)
     {
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_haltObjectId, 0x00, QVariant(value));
+    _node->writeObject(_abortConnectionObjectId, 0x00, QVariant(value));
 }
 
 void WidgetDebug::quickStopOptionClicked(int id)
@@ -254,14 +260,34 @@ void WidgetDebug::quickStopOptionClicked(int id)
     _node->writeObject(_quickStopObjectId, 0x00, QVariant(value));
 }
 
-void WidgetDebug::abortConnectionOptionClicked(int id)
+void WidgetDebug::shutdownOptionClicked(int id)
 {
     if (!_node)
     {
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_abortConnectionObjectId, 0x00, QVariant(value));
+    _node->writeObject(_shutdownObjectId, 0x00, QVariant(value));
+}
+
+void WidgetDebug::disableOptionClicked(int id)
+{
+    if (!_node)
+    {
+        return;
+    }
+    quint16 value = static_cast<quint16>(id);
+    _node->writeObject(_disableObjectId, 0x00, QVariant(value));
+}
+
+void WidgetDebug::haltOptionClicked(int id)
+{
+    if (!_node)
+    {
+        return;
+    }
+    quint16 value = static_cast<quint16>(id);
+    _node->writeObject(_haltObjectId, 0x00, QVariant(value));
 }
 
 void WidgetDebug::faultReactionOptionClicked(int id)
@@ -756,20 +782,26 @@ void WidgetDebug::createWidgets()
     QLayout *secondColumnlayout = new QVBoxLayout();
     secondColumnlayout->setMargin(0);
 
-    // Group Box Halt option
-    QGroupBox *haltOptionGroupBox = new QGroupBox(tr("Halt option (0x605D)"));
-    QFormLayout *haltOptionLayout = new QFormLayout();
-    _haltOptionGroup = new QButtonGroup(this);
-    _haltOptionGroup->setExclusive(true);
-    QRadioButton *_slowDownRampCheckBox = new QRadioButton(tr("+1 Slow down on slow down ramp and stay in operation enabled"));
-    haltOptionLayout->addRow(_slowDownRampCheckBox);
-    _haltOptionGroup->addButton(_slowDownRampCheckBox, 1);
-    QRadioButton *_quickStopRampCheckBox = new QRadioButton(tr("+2 Slow down on quick stop ramp and stay in operation enabled"));
-    haltOptionLayout->addRow(_quickStopRampCheckBox);
-    _haltOptionGroup->addButton(_quickStopRampCheckBox, 2);
-    haltOptionGroupBox->setLayout(haltOptionLayout);
-    connect(_haltOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { haltOptionClicked(id); });
-    // END Group Box Halt option
+    // Group Box Abort connection option
+    QGroupBox *abortConnectionOptionGroupBox = new QGroupBox(tr("Abort connection option (0x6007)"));
+    QFormLayout *abortConnectionOptionLayout = new QFormLayout();
+    _abortConnectionOptionGroup = new QButtonGroup(this);
+    _abortConnectionOptionGroup->setExclusive(true);
+    QRadioButton *_0AbortConnectionOptionCheckBox = new QRadioButton(tr("0 No action"));
+    abortConnectionOptionLayout->addRow(_0AbortConnectionOptionCheckBox);
+    _abortConnectionOptionGroup->addButton(_0AbortConnectionOptionCheckBox, 0);
+    QRadioButton *_1AbortConnectionOptionCheckBox = new QRadioButton(tr("+1 Fault signal"));
+    abortConnectionOptionLayout->addRow(_1AbortConnectionOptionCheckBox);
+    _abortConnectionOptionGroup->addButton(_1AbortConnectionOptionCheckBox, 1);
+    QRadioButton *_2AbortConnectionOptionCheckBox = new QRadioButton(tr("+2 Disable voltage command"));
+    abortConnectionOptionLayout->addRow(_2AbortConnectionOptionCheckBox);
+    _abortConnectionOptionGroup->addButton(_2AbortConnectionOptionCheckBox, 2);
+    QRadioButton *_3AbortConnectionOptionCheckBox = new QRadioButton(tr("+3 Quick stop command"));
+    abortConnectionOptionLayout->addRow(_3AbortConnectionOptionCheckBox);
+    _abortConnectionOptionGroup->addButton(_3AbortConnectionOptionCheckBox, 3);
+    abortConnectionOptionGroupBox->setLayout(abortConnectionOptionLayout);
+    connect(_abortConnectionOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { abortConnectionOptionClicked(id); });
+    // END Group Box Abort connection option
 
     // Group Box Quick stop option
     QGroupBox *quickStopOptionGroupBox = new QGroupBox(tr("Quick stop option (0x605A)"));
@@ -795,26 +827,50 @@ void WidgetDebug::createWidgets()
     connect(_quickStopOptionGroup, QOverload<int>::of(&QButtonGroup::buttonPressed), [=](int id) { quickStopOptionClicked(id); });
     // END Group Box Quick stop option
 
-    // Group Box Quick stop option
-    QGroupBox *abortConnectionOptionGroupBox = new QGroupBox(tr("Abort connection option (0x6007)"));
-    QFormLayout *abortConnectionOptionLayout = new QFormLayout();
-    _abortConnectionOptionGroup = new QButtonGroup(this);
-    _abortConnectionOptionGroup->setExclusive(true);
-    QRadioButton *_0AbortConnectionOptionCheckBox = new QRadioButton(tr("0 No action"));
-    abortConnectionOptionLayout->addRow(_0AbortConnectionOptionCheckBox);
-    _abortConnectionOptionGroup->addButton(_0AbortConnectionOptionCheckBox, 0);
-    QRadioButton *_1AbortConnectionOptionCheckBox = new QRadioButton(tr("+1 Fault signal"));
-    abortConnectionOptionLayout->addRow(_1AbortConnectionOptionCheckBox);
-    _abortConnectionOptionGroup->addButton(_1AbortConnectionOptionCheckBox, 1);
-    QRadioButton *_2AbortConnectionOptionCheckBox = new QRadioButton(tr("+2 Disable voltage command"));
-    abortConnectionOptionLayout->addRow(_2AbortConnectionOptionCheckBox);
-    _abortConnectionOptionGroup->addButton(_2AbortConnectionOptionCheckBox, 2);
-    QRadioButton *_3AbortConnectionOptionCheckBox = new QRadioButton(tr("+3 Quick stop command"));
-    abortConnectionOptionLayout->addRow(_3AbortConnectionOptionCheckBox);
-    _abortConnectionOptionGroup->addButton(_3AbortConnectionOptionCheckBox, 3);
-    abortConnectionOptionGroupBox->setLayout(abortConnectionOptionLayout);
-    connect(_abortConnectionOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { abortConnectionOptionClicked(id); });
-    // END Group Box Quick stop option
+    // Group Box Shutdown option code
+    QGroupBox *shutdownOptionGroupBox = new QGroupBox(tr("Shutdown option code (0x605B)"));
+    QFormLayout *shutdownOptionLayout = new QFormLayout();
+    _shutdownOptionGroup = new QButtonGroup(this);
+    _shutdownOptionGroup->setExclusive(true);
+    QRadioButton *_0ShutdownOptionCheckBox = new QRadioButton(tr("0 Disable drive function (switch-off the drive power stage)"));
+    shutdownOptionLayout->addRow(_0ShutdownOptionCheckBox);
+    _shutdownOptionGroup->addButton(_0ShutdownOptionCheckBox, 0);
+    QRadioButton *_1ShutdownOptionCheckBox = new QRadioButton(tr("+1 Slow down with slow down ramp; disable of the drive function"));
+    shutdownOptionLayout->addRow(_1ShutdownOptionCheckBox);
+    _shutdownOptionGroup->addButton(_1ShutdownOptionCheckBox, 1);
+    shutdownOptionGroupBox->setLayout(shutdownOptionLayout);
+    connect(_shutdownOptionGroup, QOverload<int>::of(&QButtonGroup::buttonPressed), [=](int id) { shutdownOptionClicked(id); });
+    // END Group Box Shutdown option code
+
+    // Group Box Disable operation option code
+    QGroupBox *disableOptionGroupBox = new QGroupBox(tr("Disable operation option code (0x605C)"));
+    QFormLayout *disableOptionLayout = new QFormLayout();
+    _disableOptionGroup = new QButtonGroup(this);
+    _disableOptionGroup->setExclusive(true);
+    QRadioButton *_0DisableOptionCheckBox = new QRadioButton(tr("0 Disable drive function (switch-off the drive power stage)"));
+    disableOptionLayout->addRow(_0DisableOptionCheckBox);
+    _disableOptionGroup->addButton(_0DisableOptionCheckBox, 0);
+    QRadioButton *_1DisableOptionCheckBox = new QRadioButton(tr("+1 Slow down with slow down ramp; disable of the drive function"));
+    disableOptionLayout->addRow(_1DisableOptionCheckBox);
+    _disableOptionGroup->addButton(_1DisableOptionCheckBox, 1);
+    disableOptionGroupBox->setLayout(disableOptionLayout);
+    connect(_disableOptionGroup, QOverload<int>::of(&QButtonGroup::buttonPressed), [=](int id) { disableOptionClicked(id); });
+    // END Group Box Disable operation option code
+
+    // Group Box Halt option
+    QGroupBox *haltOptionGroupBox = new QGroupBox(tr("Halt option (0x605D)"));
+    QFormLayout *haltOptionLayout = new QFormLayout();
+    _haltOptionGroup = new QButtonGroup(this);
+    _haltOptionGroup->setExclusive(true);
+    QRadioButton *_slowDownRampCheckBox = new QRadioButton(tr("+1 Slow down on slow down ramp and stay in operation enabled"));
+    haltOptionLayout->addRow(_slowDownRampCheckBox);
+    _haltOptionGroup->addButton(_slowDownRampCheckBox, 1);
+    QRadioButton *_quickStopRampCheckBox = new QRadioButton(tr("+2 Slow down on quick stop ramp and stay in operation enabled"));
+    haltOptionLayout->addRow(_quickStopRampCheckBox);
+    _haltOptionGroup->addButton(_quickStopRampCheckBox, 2);
+    haltOptionGroupBox->setLayout(haltOptionLayout);
+    connect(_haltOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { haltOptionClicked(id); });
+    // END Group Box Halt option
 
     // Group Box Fault reaction option
     QGroupBox *faultReactionOptionGroupBox = new QGroupBox(tr("Fault reaction option (0x605E)"));
@@ -834,9 +890,11 @@ void WidgetDebug::createWidgets()
     connect(_faultReactionOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { faultReactionOptionClicked(id); });
     // END Group Box Quick stop option
 
-    secondColumnlayout->addWidget(haltOptionGroupBox);
-    secondColumnlayout->addWidget(quickStopOptionGroupBox);
     secondColumnlayout->addWidget(abortConnectionOptionGroupBox);
+    secondColumnlayout->addWidget(quickStopOptionGroupBox);
+    secondColumnlayout->addWidget(shutdownOptionGroupBox);
+    secondColumnlayout->addWidget(disableOptionGroupBox);
+    secondColumnlayout->addWidget(haltOptionGroupBox);
     secondColumnlayout->addWidget(faultReactionOptionGroupBox);
     // END SECOND COLUMM
 
@@ -1104,31 +1162,7 @@ void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     {
         manageNotificationStatusWordobject();
     }
-
-    if (objId.index == _haltObjectId && objId.subIndex == 0x00)
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            return;
-        }
-        value = _node->nodeOd()->value(_haltObjectId).toInt();
-        if (_haltOptionGroup->button(value))
-        {
-            _haltOptionGroup->button(_node->nodeOd()->value(_haltObjectId).toInt())->setChecked(true);
-        }
-    }
-    if (objId.index == _quickStopObjectId && objId.subIndex == 0x00)
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            return;
-        }
-        value = _node->nodeOd()->value(_quickStopObjectId).toInt();
-        if (_quickStopOptionGroup->button(value))
-        {
-            _quickStopOptionGroup->button(value)->setChecked(true);
-        }
-    }
+    // Abort connection option code
     if (objId.index == _abortConnectionObjectId && objId.subIndex == 0x00)
     {
         if (flags == SDO::FlagsRequest::Error)
@@ -1141,6 +1175,59 @@ void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
             _abortConnectionOptionGroup->button(value)->setChecked(true);
         }
     }
+    // Quick stop option code
+    if (objId.index == _quickStopObjectId && objId.subIndex == 0x00)
+    {
+        if (flags == SDO::FlagsRequest::Error)
+        {
+            return;
+        }
+        value = _node->nodeOd()->value(_quickStopObjectId).toInt();
+        if (_quickStopOptionGroup->button(value))
+        {
+            _quickStopOptionGroup->button(value)->setChecked(true);
+        }
+    }
+    // Shutdown option code
+    if (objId.index == _shutdownObjectId && objId.subIndex == 0x00)
+    {
+        if (flags == SDO::FlagsRequest::Error)
+        {
+            return;
+        }
+        value = _node->nodeOd()->value(_shutdownObjectId).toInt();
+        if (_shutdownOptionGroup->button(value))
+        {
+            _shutdownOptionGroup->button(value)->setChecked(true);
+        }
+    }
+    // Disable operation option code
+    if (objId.index == _disableObjectId && objId.subIndex == 0x00)
+    {
+        if (flags == SDO::FlagsRequest::Error)
+        {
+            return;
+        }
+        value = _node->nodeOd()->value(_disableObjectId).toInt();
+        if (_disableOptionGroup->button(value))
+        {
+            _disableOptionGroup->button(value)->setChecked(true);
+        }
+    }
+    // Halt option code
+    if (objId.index == _haltObjectId && objId.subIndex == 0x00)
+    {
+        if (flags == SDO::FlagsRequest::Error)
+        {
+            return;
+        }
+        value = _node->nodeOd()->value(_haltObjectId).toInt();
+        if (_haltOptionGroup->button(value))
+        {
+            _haltOptionGroup->button(_node->nodeOd()->value(_haltObjectId).toInt())->setChecked(true);
+        }
+    }
+    // Fault reaction option code
     if (objId.index == _faultReactionObjectId && objId.subIndex == 0x00)
     {
         if (flags == SDO::FlagsRequest::Error)

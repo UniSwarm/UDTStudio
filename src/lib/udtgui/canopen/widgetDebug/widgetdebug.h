@@ -83,9 +83,11 @@ private:
     quint16 cmdControlWord;
     quint16 _controlWordObjectId;
     quint16 _statusWordObjectId;
-    quint16 _haltObjectId;
-    quint16 _quickStopObjectId;
     quint16 _abortConnectionObjectId;
+    quint16 _quickStopObjectId;
+    quint16 _shutdownObjectId;
+    quint16 _disableObjectId;
+    quint16 _haltObjectId;
     quint16 _faultReactionObjectId;
 
     // VL mode
@@ -110,15 +112,19 @@ private:
     QLabel *_manufacturerSpecificLabel;
 
     QButtonGroup *_stateMachineGroup;
-    QButtonGroup *_haltOptionGroup;
-    QButtonGroup *_quickStopOptionGroup;
     QButtonGroup *_abortConnectionOptionGroup;
+    QButtonGroup *_quickStopOptionGroup;
+    QButtonGroup *_shutdownOptionGroup;
+    QButtonGroup *_disableOptionGroup;
+    QButtonGroup *_haltOptionGroup;
     QButtonGroup *_faultReactionOptionGroup;
 
     void stateMachineClicked(int id);
-    void haltOptionClicked(int id);
-    void quickStopOptionClicked(int id);
     void abortConnectionOptionClicked(int id);
+    void quickStopOptionClicked(int id);
+    void shutdownOptionClicked(int id);
+    void disableOptionClicked(int id);
+    void haltOptionClicked(int id);
     void faultReactionOptionClicked(int id);
 
     void manageNotificationControlWordObject(SDO::FlagsRequest flags);
