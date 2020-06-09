@@ -51,7 +51,11 @@ public:
     Index *index(uint16_t index) const;
     void addIndex(Index *index);
     int indexCount() const;
-    bool indexExist(uint16_t key) const;
+    bool indexExist(uint16_t index) const;
+
+    SubIndex *subIndex(uint16_t index, uint8_t subIndex) const;
+    bool subIndexExist(uint16_t index, uint8_t subIndex) const;
+    QVariant subIndexValue(uint16_t index, uint8_t subIndex, const QVariant &defaultValue = QVariant()) const;
 
     QString fileName() const;
     void setFileName(const QString &name);

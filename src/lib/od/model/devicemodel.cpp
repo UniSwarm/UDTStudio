@@ -132,9 +132,35 @@ int DeviceModel::indexCount() const
  * @param key
  * @return boolean
  */
-bool DeviceModel::indexExist(uint16_t key) const
+bool DeviceModel::indexExist(uint16_t index) const
 {
-    return _indexes.contains(key);
+    return _indexes.contains(index);
+}
+
+SubIndex *DeviceModel::subIndex(uint16_t index, uint8_t subIndex) const
+{
+    Index *mindex = _indexes.value(index);
+    if (!mindex)
+    {
+        return nullptr;
+    }
+
+    return mindex->subIndex(subIndex);
+}
+
+bool DeviceModel::subIndexExist(uint16_t index, uint8_t subIndex) const
+{
+    return (this->subIndex(index, subIndex) != 0);
+}
+
+QVariant DeviceModel::subIndexValue(uint16_t index, uint8_t subIndex, const QVariant &defaultValue) const
+{
+    SubIndex *msubIndex = this->subIndex(index, subIndex);
+    if (!msubIndex)
+    {
+        return defaultValue;
+    }
+    return msubIndex->value();
 }
 
 /**
