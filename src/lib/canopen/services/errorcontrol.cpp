@@ -60,7 +60,7 @@ void ErrorControl::parseFrame(const QCanBusFrame &frame)
         }
     }
 
-    if (_node->nodeOd()->indexExist(_lifeTime))
+    /*if (_node->nodeOd()->indexExist(_lifeTime))
     {
         qint32 timer;
         if (_node->nodeOd()->value(_lifeTime, 0).toUInt() != 0)
@@ -73,7 +73,7 @@ void ErrorControl::parseFrame(const QCanBusFrame &frame)
             timer = _node->nodeOd()->value(_guardTime, 0).toInt();
             _lifeTimeTimer->start(timer + (timer / 2));
         }
-    }
+    }*/
     manageErrorControl(frame);
 }
 
@@ -83,7 +83,7 @@ void ErrorControl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     {
         if ((flags != SDO::FlagsRequest::Error) && (_node->nodeOd()->value(_guardTime, 0).toUInt() != 0))
         {
-            _guardTimeTimer->start(_node->nodeOd()->value(_guardTime, 0).toInt());
+            //_guardTimeTimer->start(_node->nodeOd()->value(_guardTime, 0).toInt());
         }
         else
         {
@@ -122,7 +122,7 @@ void ErrorControl::sendNodeGuarding()
 
 void ErrorControl::lifeGuardingEvent()
 {
-    qDebug() << ">>ErrorControl::lifeGuardingEvent : node error, dont answer";
+    //qDebug() << ">>ErrorControl::lifeGuardingEvent : node error, dont answer";
 }
 
 void ErrorControl::manageErrorControl(const QCanBusFrame &frame)
@@ -149,7 +149,7 @@ void ErrorControl::manageErrorControl(const QCanBusFrame &frame)
             _node->setStatus(Node::Status::PREOP);
             break;
         default:
-            qDebug() << "Error control : error state" << QString::number(frame.frameId(), 16).toUpper() << frame.payload().toHex().toUpper();
+            //qDebug() << "Error control : error state" << QString::number(frame.frameId(), 16).toUpper() << frame.payload().toHex().toUpper();
             break;
         }
     }
