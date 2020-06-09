@@ -31,9 +31,10 @@ NodeDiscover::NodeDiscover(CanOpenBus *bus)
         _cobIds.append(0x700u + nodeId);
     }
 
+    // TODO make it static to avoid load every thinks, every time...
     _db = new OdDb();
-    _db->setDirectory(QDir::homePath() + "/Seafile/Produits/4_UIO/");
-    _db->setDirectory(QDir::homePath() + "/Seafile/Produits/1_UMC/");
+    _db->addDirectory(QDir::homePath() + "/Seafile/Produits/4_UIO/");
+    _db->addDirectory(QDir::homePath() + "/Seafile/Produits/1_UMC/");
 
     _exploreBusNodeId = 0;
     connect(&_exploreBusTimer, &QTimer::timeout, this, &NodeDiscover::exploreBusNext);
@@ -135,7 +136,9 @@ void NodeDiscover::exploreNodeNext()
     QList<NodeObjectId> _objectsId{{0x1000, 0x0}, {0x1018, 0x1}, {0x1018, 0x2}, {0x1018, 0x3}};
 
     Node *node = bus()->node(_exploreNodeCurrentId);
-    if (_exploreNodeState >= _objectsId.size() && node->nodeOd()->value(_objectsId[_exploreNodeState - 1]).isValid())
+    if (_exploreNodeState >= _objectsId.size()
+        && (node->nodeOd()->value(_objectsId[_exploreNodeState - 1]).isValid()
+            || node->nodeOd()->errorObject(_objectsId[_exploreNodeState - 1]) != 0))
     {
         // explore node finished
         Node *node = bus()->node(_exploreNodeCurrentId);
@@ -163,7 +166,8 @@ void NodeDiscover::exploreNodeNext()
     }
     else
     {
-        if ((_exploreNodeState == 0) || (_exploreNodeState >= 1 && node->nodeOd()->value(_objectsId[_exploreNodeState - 1]).isValid()))
+        if ((_exploreNodeState == 0) || (_exploreNodeState >= 1 && (node->nodeOd()->value(_objectsId[_exploreNodeState - 1]).isValid()
+                                                                    || node->nodeOd()->errorObject(_objectsId[_exploreNodeState - 1]) != 0)))
         {
             node->readObject(_objectsId[_exploreNodeState]);
             _exploreNodeState++;

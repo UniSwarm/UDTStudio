@@ -28,7 +28,7 @@ class OD_EXPORT OdDb
 public:
     OdDb(QString directory = ".");
 
-    void setDirectory(QString directory);
+    void addDirectory(const QString &directory);
     QString file(quint32 deviceType, quint32 vendorID, quint32 productCode, quint32 revisionNumber);
     void refreshFile();
 
@@ -39,9 +39,6 @@ private:
     quint32 _revisionNumber;
 
     QMultiMap<QByteArray, QPair<quint32, QString>> _mapFile;
-    QString _directory;
-    QString _fileName;
-    QString _path;
     QList<QString> _directoryList;
 
     void searchFile();
