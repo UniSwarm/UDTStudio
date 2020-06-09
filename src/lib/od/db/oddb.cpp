@@ -25,20 +25,26 @@
 
 OdDb::OdDb(QString directory)
 {
-    _directoryList.append(directory);
-
-    searchFile();
+    addDirectory(directory);
 }
 
 void OdDb::addDirectory(const QString &directory)
 {
-    _directoryList.append(directory);
-    searchFile();
+    addDirectory(QStringList(directory));
 }
 
-void OdDb::searchFile()
+void OdDb::addDirectory(const QStringList &directories)
 {
-    QDir dir(_directoryList.last());
+    for (const QString &directory : directories)
+    {
+        searchFile(directory);
+    }
+    _directoryList.append(directories);
+}
+
+void OdDb::searchFile(const QString &directory)
+{
+    QDir dir(directory);
     QStringList list = dir.entryList(QStringList() << "*.eds", QDir::Files | QDir::NoSymLinks);
 
     for (const QString &file : list)
@@ -91,5 +97,8 @@ QString OdDb::file(quint32 deviceType, quint32 vendorID, quint32 productCode, qu
 void OdDb::refreshFile()
 {
     _mapFile.clear();
-    searchFile();
+    for (const QString &directory : _directoryList)
+    {
+        searchFile(directory);
+    }
 }

@@ -29,6 +29,7 @@ public:
     OdDb(QString directory = ".");
 
     void addDirectory(const QString &directory);
+    void addDirectory(const QStringList &directories);
     QString file(quint32 deviceType, quint32 vendorID, quint32 productCode, quint32 revisionNumber);
     void refreshFile();
 
@@ -41,7 +42,7 @@ private:
     QMultiMap<QByteArray, QPair<quint32, QString>> _mapFile;
     QList<QString> _directoryList;
 
-    void searchFile();
+    void searchFile(const QString &directory);
 };
 
 #endif // ODDB_H

@@ -20,6 +20,7 @@
 
 #include <QDebug>
 #include <QDir>
+#include <QProcessEnvironment>
 
 #include "canopenbus.h"
 
@@ -33,8 +34,7 @@ NodeDiscover::NodeDiscover(CanOpenBus *bus)
 
     // TODO make it static to avoid load every thinks, every time...
     _db = new OdDb();
-    _db->addDirectory(QDir::homePath() + "/Seafile/Produits/4_UIO/");
-    _db->addDirectory(QDir::homePath() + "/Seafile/Produits/1_UMC/");
+    _db->addDirectory(QProcessEnvironment::systemEnvironment().value("EDS_PATH").split(QDir::listSeparator()));
 
     _exploreBusNodeId = 0;
     connect(&_exploreBusTimer, &QTimer::timeout, this, &NodeDiscover::exploreBusNext);
