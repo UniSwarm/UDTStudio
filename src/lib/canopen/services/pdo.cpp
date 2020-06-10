@@ -476,45 +476,51 @@ void PDO::managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequ
         _stateMapping = STATE_DEACTIVATE;
         processMapping();
     }
-    if ((objId.index == _objectMappingId) && (objId.subIndex == 0x00) && (_stateMapping == STATE_DEACTIVATE))
+    if ((objId.index == _objectMappingId) && (objId.subIndex == 0x00))
     {
-        _stateMapping = STATE_DISABLE;
-        _objectIdFsm = 0;
-        if (_objectToMap.isEmpty())
+        if (_stateMapping == STATE_DEACTIVATE)
         {
-            _stateMapping = STATE_MODIFY;
+            _objectIdFsm = 0;
+            if (_objectToMap.isEmpty())
+            {
+                _stateMapping = STATE_MODIFY;
+            }
+            else
+            {
+                _stateMapping = STATE_DISABLE;
+            }
+            processMapping();
         }
-        processMapping();
-    }
-    if ((objId.index == _objectMappingId) && (objId.subIndex != 0x00) && (_stateMapping == STATE_DISABLE))
-    {
-        if (flags == SDO::FlagsRequest::Error)
+        if (_stateMapping == STATE_DISABLE)
         {
-            // ERROR so cobId is invalid and mapping is disable
-            qDebug() << ">TPDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index, 16)) << ":" << objId.subIndex << ", Error : " << _node->nodeOd()->errorObject(objId);
-            setError(ERROR_MODIFY_MAPPING);
-            _stateMapping = STATE_FREE;
-            return;
+            if (flags == SDO::FlagsRequest::Error)
+            {
+                // ERROR so cobId is invalid and mapping is disable
+                qDebug() << ">TPDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index, 16)) << ":" << objId.subIndex << ", Error : " << _node->nodeOd()->errorObject(objId);
+                setError(ERROR_MODIFY_MAPPING);
+                _stateMapping = STATE_FREE;
+                return;
+            }
+            _objectIdFsm++;
+            if (_objectIdFsm == _objectToMap.size())
+            {
+                _stateMapping = STATE_MODIFY;
+            }
+            processMapping();
         }
-        _objectIdFsm++;
-        if (_objectIdFsm == _objectToMap.size())
+        if (_stateMapping == STATE_MODIFY)
         {
-            _stateMapping = STATE_MODIFY;
+            if (flags == SDO::FlagsRequest::Error)
+            {
+                // ERROR so cobId is invalid and mapping is disable
+                qDebug() << ">TPDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index, 16)) << ":" << objId.subIndex << ", Error : " << _node->nodeOd()->errorObject(objId);
+                setError(ERROR_GENERAL_ERROR);
+                _stateMapping = STATE_FREE;
+                return;
+            }
+            _stateMapping = STATE_ENABLE;
+            processMapping();
         }
-        processMapping();
-    }
-    if ((objId.index == _objectMappingId) && (objId.subIndex == 0x00) && (_stateMapping == STATE_MODIFY))
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            // ERROR so cobId is invalid and mapping is disable
-            qDebug() << ">TPDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index, 16)) << ":" << objId.subIndex << ", Error : " << _node->nodeOd()->errorObject(objId);
-            setError(ERROR_GENERAL_ERROR);
-            _stateMapping = STATE_FREE;
-            return;
-        }
-        _stateMapping = STATE_ENABLE;
-        processMapping();
     }
     if ((objId.index == _objectCommId) && objId.subIndex == 0x01 && (_stateMapping == STATE_ENABLE))
     {

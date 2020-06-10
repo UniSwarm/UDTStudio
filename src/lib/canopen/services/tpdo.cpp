@@ -69,6 +69,11 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
 
 void TPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if ((objId.index == _objectCommId) && (objId.subIndex == 0x01))
+    {
+        emit enabledChanged(isEnabled());
+    }
+
     if (_statusPdo == STATE_NONE && objId.index == _objectMappingId)
     {
         if (_objectCommList.size() != 0)

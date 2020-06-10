@@ -88,6 +88,7 @@ public:
 
 signals:
     void mappingChanged();
+    void enabledChanged(bool enabled);
     void errorOccurred(ErrorPdo error);
 
 protected:
