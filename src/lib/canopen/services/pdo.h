@@ -48,6 +48,8 @@ public:
     bool canInsertObjectAtBitPos(const QList<NodeObjectId> &objectList, const NodeObjectId &object, int bitPos) const;
     int maxMappingBitSize() const;
     int mappingBitSize() const;
+    int maxMappingObjectCount() const;
+    int mappingObjectCount() const;
     static int mappingBitSize(const QList<NodeObjectId> &objectList);
     int indexAtBitPos(int bitPos) const;
     static int indexAtBitPos(const QList<NodeObjectId> &objectList, int bitPos);

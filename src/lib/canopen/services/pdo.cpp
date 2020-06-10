@@ -105,6 +105,10 @@ bool PDO::canInsertObjectAtBitPos(const QList<NodeObjectId> &objectList, const N
     {
         return false;
     }
+    if (objectList.count() + 1 > maxMappingObjectCount())
+    {
+        return false;
+    }
 
     if (bitPos < 0 || bitPos >= maxMappingBitSize())
     {
@@ -142,6 +146,21 @@ int PDO::maxMappingBitSize() const
 int PDO::mappingBitSize() const
 {
     return PDO::mappingBitSize(_objectCurrentMapped);
+}
+
+int PDO::maxMappingObjectCount() const
+{
+    NodeIndex *mappingParam = _node->nodeOd()->index(_objectMappingId);
+    if (!mappingParam)
+    {
+        return 0;
+    }
+    return mappingParam->subIndexesCount() - 1;
+}
+
+int PDO::mappingObjectCount() const
+{
+    return _objectCurrentMapped.count();
 }
 
 int PDO::mappingBitSize(const QList<NodeObjectId> &objectList)
