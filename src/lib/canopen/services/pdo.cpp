@@ -238,11 +238,11 @@ void PDO::setEnabled(bool enabled)
     NodeObjectId object(_objectCommId, PDO_COMM_COB_ID);
     if (enabled)
     {
-        _node->writeObject(object.index, object.subIndex, QVariant(_cobId & COBID_MASK));
+        _node->writeObject(object.index, object.subIndex, QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toInt() & COBID_MASK));
     }
     else
     {
-        _node->writeObject(object.index, object.subIndex, QVariant(_cobId | COBID_VALID_NOT_VALID));
+        _node->writeObject(object.index, object.subIndex, QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toInt() | COBID_VALID_NOT_VALID));
     }
 }
 
@@ -373,7 +373,10 @@ void PDO::managementRespReadCommAndMapping(const NodeObjectId &objId, SDO::Flags
  */
 void PDO::readCommParam()
 {
-    _node->readObject(_objectCommList[_iFsm]);
+    if (_iFsm < _objectCommList.size())
+    {
+        _node->readObject(_objectCommList[_iFsm]);
+    }
 }
 
 /**
@@ -458,6 +461,10 @@ void PDO::managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequ
     {
         state = STATE_DISABLE;
         _iFsm = 0;
+        if (_objectToMap.isEmpty())
+        {
+            state = STATE_MODIFY;
+        }
         processMapping();
     }
     if ((objId.index == _objectMappingId) && (objId.subIndex != 0x00) && (state == STATE_DISABLE))
@@ -503,17 +510,13 @@ void PDO::processMapping()
     {
         return;
     }
-    if (_objectToMap.isEmpty())
-    {
-        return;
-    }
 
     switch (state)
     {
     case STATE_FREE:
     {
         // Deactivate the PDO
-        _node->writeObject(_objectCommList[PDO_COMM_COB_ID].index, _objectCommList[PDO_COMM_COB_ID].subIndex, QVariant(_cobId | COBID_VALID_NOT_VALID));
+        _node->writeObject(_objectCommList[PDO_COMM_COB_ID].index, _objectCommList[PDO_COMM_COB_ID].subIndex, QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toInt() | COBID_VALID_NOT_VALID));
         break;
     }
     case STATE_DEACTIVATE:
@@ -533,9 +536,12 @@ void PDO::processMapping()
     {
         // Modify the mapping
         quint32 map = 0;
-        map = static_cast<quint32>(_objectToMap.at(_iFsm).index << 16);
-        map = map | (static_cast<quint16>(_objectToMap.at(_iFsm).subIndex << 8));
-        map = map | _objectToMap.at(_iFsm).bitSize();
+        if (_iFsm < _objectToMap.size())
+        {
+            map = static_cast<quint32>(_objectToMap.at(_iFsm).index << 16);
+            map = map | (static_cast<quint16>(_objectToMap.at(_iFsm).subIndex << 8));
+            map = map | _objectToMap.at(_iFsm).bitSize();
+        }
         _node->writeObject(_objectMappingId, _iFsm + 1, map);
         break;
     }
@@ -547,8 +553,7 @@ void PDO::processMapping()
 
     case STATE_ENABLE:
         // Activate the PDO
-        _cobId = _cobId & ~COBID_VALID_NOT_VALID;
-        _node->writeObject(_objectCommList[PDO_COMM_COB_ID].index, _objectCommList[PDO_COMM_COB_ID].subIndex, QVariant(_cobId));
+        _node->writeObject(_objectCommList[PDO_COMM_COB_ID].index, _objectCommList[PDO_COMM_COB_ID].subIndex, QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toInt() & COBID_MASK));
         break;
 
     case STATE_ACTIVATE:
