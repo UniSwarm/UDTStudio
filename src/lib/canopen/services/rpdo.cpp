@@ -53,7 +53,7 @@ void RPDO::parseFrame(const QCanBusFrame &frame)
 
 void RPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if (statusPdo == STATE_NONE && objId.index == _objectMappingId)
+    if (_statusPdo == STATE_NONE && objId.index == _objectMappingId)
     {
         if (_objectCommList.size() != 0)
         {
@@ -61,12 +61,12 @@ void RPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         }
     }
 
-    if (statusPdo == STATE_READ)
+    if (_statusPdo == STATE_READ)
     {
         managementRespReadCommAndMapping(objId, flags);
     }
 
-    if (statusPdo == STATE_WRITE)
+    if (_statusPdo == STATE_WRITE)
     {
         managementRespProcessMapping(objId, flags);
     }
@@ -85,7 +85,7 @@ void RPDO::setBus(CanOpenBus *bus)
  */
 bool RPDO::setTransmissionType(quint8 type)
 {
-    statusPdo = STATE_NONE;
+    _statusPdo = STATE_NONE;
     if ((type <= RPDO_SYNC_MAX) || (type == RPDO_EVENT_MS) || (type == RPDO_EVENT_DP))
     {
         _waitingConf.transType = type;

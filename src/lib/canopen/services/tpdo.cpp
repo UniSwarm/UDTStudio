@@ -69,7 +69,7 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
 
 void TPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if (statusPdo == STATE_NONE && objId.index == _objectMappingId)
+    if (_statusPdo == STATE_NONE && objId.index == _objectMappingId)
     {
         if (_objectCommList.size() != 0)
         {
@@ -77,12 +77,12 @@ void TPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         }
     }
 
-    if (statusPdo == STATE_READ)
+    if (_statusPdo == STATE_READ)
     {
         managementRespReadCommAndMapping(objId, flags);
     }
 
-    if (statusPdo == STATE_WRITE)
+    if (_statusPdo == STATE_WRITE)
     {
         managementRespProcessMapping(objId, flags);
     }
@@ -106,7 +106,7 @@ bool TPDO::isRPDO() const
 
 bool TPDO::setTransmissionType(quint8 type)
 {
-    statusPdo = STATE_NONE;
+    _statusPdo = STATE_NONE;
     if ((type <= TPDO_CYCLIC_MAX) || (type == TPDO_RTR_SYNC) || (type == TPDO_RTR_EVENT) || (type == TPDO_EVENT_MS) || (type == TPDO_EVENT_DP))
     {
         _waitingConf.transType = type;
@@ -128,7 +128,7 @@ quint8 TPDO::transmissionType()
 
 void TPDO::setSyncStartValue(quint8 syncStartValue)
 {
-    statusPdo = STATE_NONE;
+    _statusPdo = STATE_NONE;
     _waitingConf.syncStartValue = syncStartValue;
     _node->writeObject(_objectCommList[4].index, PDO_COMM_SYNC_START_VALUE, _waitingConf.syncStartValue);
 }

@@ -92,13 +92,13 @@ protected:
     quint32 _cobId;
     quint8 _pdoNumber;
 
-    enum StatePdo
+    enum StatusPdo
     {
         STATE_NONE,
         STATE_READ,
         STATE_WRITE
     };
-    StatePdo statusPdo;
+    StatusPdo _statusPdo;
 
     enum StateMapping
     {
@@ -109,9 +109,9 @@ protected:
         STATE_ENABLE,
         STATE_ACTIVATE
     };
-    StateMapping state;
+    StateMapping _stateMapping;
 
-    quint8 _iFsm;
+    quint8 _objectIdFsm;
 
     quint16 _objectMappingId;
     quint16 _objectCommId;
@@ -128,7 +128,7 @@ protected:
 
     enum CommParam
     {
-        PDO_COMM_NUMBER = 0x0,
+        PDO_COMM_NUMBER = 0x00,
         PDO_COMM_COB_ID = 0x01,
         PDO_COMM_TRANSMISSION_TYPE = 0x02,
         PDO_COMM_INHIBIT_TIME = 0x03,
@@ -144,7 +144,6 @@ protected:
         quint32 eventTimer; // The value is defined as multiple of 1 ms. The value of 0 shall disable the event-timer.
         quint8 syncStartValue;
     };
-
     PDO_conf _waitingConf;
 
     void setError(ErrorPdo error);
