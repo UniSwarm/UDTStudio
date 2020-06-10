@@ -34,6 +34,7 @@ HEADERS += \
     $$PWD/canopen/datalogger/dataloggerchartswidget.h \
     $$PWD/canopen/pdo/nodepdomappingwidget.h \
     $$PWD/canopen/pdo/pdomappingpainter.h \
+    $$PWD/canopen/pdo/pdomappingview.h \
     $$PWD/canopen/pdo/pdomappingwidget.h \
     $$PWD/canopen/widgetDebug/widgetdebug.h
 
@@ -63,6 +64,7 @@ SOURCES += \
     $$PWD/canopen/datalogger/dataloggerchartswidget.cpp \
     $$PWD/canopen/pdo/nodepdomappingwidget.cpp \
     $$PWD/canopen/pdo/pdomappingpainter.cpp \
+    $$PWD/canopen/pdo/pdomappingview.cpp \
     $$PWD/canopen/pdo/pdomappingwidget.cpp \
     $$PWD/canopen/widgetDebug/widgetdebug.cpp
 

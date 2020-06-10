@@ -64,7 +64,7 @@ void PDOMappingPainter::drawListMapping(const QRect &rect, const QList<NodeObjec
 
     // draw ticks
     setPen(QPen(Qt::gray, 1));
-    for (int tick = 1; tick < 8; tick++)
+    for (int tick = 0; tick <= 8; tick++)
     {
         int x = static_cast<int>(xMargin + tick * (bitWidth * 8));
         drawLine(x, 0, x, 3);

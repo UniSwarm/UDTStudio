@@ -1,4 +1,4 @@
-/**
+﻿/**
  ** This file is part of the UDTStudio project.
  ** Copyright 2019-2020 UniSwarm
  **
@@ -18,7 +18,7 @@
 
 #include "nodepdomappingwidget.h"
 
-#include <QFormLayout>
+#include <QVBoxLayout>
 
 #include "node.h"
 #include "services/tpdo.h"
@@ -42,18 +42,6 @@ void NodePDOMappingWidget::setNode(Node *node)
     _node = node;
     if (node)
     {
-        for (int tpdo = 0; tpdo < 4; tpdo++)
-        {
-            if (node->tpdos().count() >= tpdo)
-            {
-                node->tpdos()[tpdo]->readMapping();
-                _tpdoMappingWidgets[tpdo]->setPdo(node->tpdos()[tpdo]);
-            }
-            else
-            {
-                _tpdoMappingWidgets[tpdo]->setPdo(nullptr);
-            }
-        }
         for (int rpdo = 0; rpdo < 4; rpdo++)
         {
             if (node->rpdos().count() >= rpdo)
@@ -66,27 +54,41 @@ void NodePDOMappingWidget::setNode(Node *node)
                 _rpdoMappingWidgets[rpdo]->setPdo(nullptr);
             }
         }
+        for (int tpdo = 0; tpdo < 4; tpdo++)
+        {
+            if (node->tpdos().count() >= tpdo)
+            {
+                node->tpdos()[tpdo]->readMapping();
+                _tpdoMappingWidgets[tpdo]->setPdo(node->tpdos()[tpdo]);
+            }
+            else
+            {
+                _tpdoMappingWidgets[tpdo]->setPdo(nullptr);
+            }
+        }
     }
 }
 
 void NodePDOMappingWidget::createWidgets()
 {
     QWidget *widget = new QWidget();
-    QFormLayout *layout = new QFormLayout();
-
-    for (int tpdo = 0; tpdo < 4; tpdo++)
-    {
-        PDOMappingWidget *mappingWidget = new PDOMappingWidget();
-        _tpdoMappingWidgets.append(mappingWidget);
-        layout->addRow(QString("TPDO%1").arg(tpdo + 1), mappingWidget);
-    }
+    QVBoxLayout *layout = new QVBoxLayout();
 
     for (int rpdo = 0; rpdo < 4; rpdo++)
     {
         PDOMappingWidget *mappingWidget = new PDOMappingWidget();
         _rpdoMappingWidgets.append(mappingWidget);
-        layout->addRow(QString("RPDO%1").arg(rpdo + 1), mappingWidget);
+        layout->addWidget(mappingWidget);
     }
+
+    for (int tpdo = 0; tpdo < 4; tpdo++)
+    {
+        PDOMappingWidget *mappingWidget = new PDOMappingWidget();
+        _tpdoMappingWidgets.append(mappingWidget);
+        layout->addWidget(mappingWidget);
+    }
+
+    layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
 
     widget->setLayout(layout);
     setWidget(widget);
