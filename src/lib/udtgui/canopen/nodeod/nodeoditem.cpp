@@ -19,6 +19,7 @@
 #include "nodeoditem.h"
 
 #include <QDebug>
+#include <QFont>
 
 #include "nodeoditemmodel.h"
 #include "node.h"
@@ -138,7 +139,12 @@ QVariant NodeOdItem::data(int column, int role) const
             case NodeOdItemModel::Value:
                 if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
                 {
-                    return formatValue(_index->subIndex(0)->value(), _index->subIndex(0)->dataType());
+                    QVariant value = formatValue(_index->subIndex(0)->value(), _index->subIndex(0)->dataType());
+                    if (_index->subIndex(0)->error() != 0)
+                    {
+                        return "*" + value.toString();
+                    }
+                    return value;
                 }
                 else
                 {
@@ -168,6 +174,18 @@ QVariant NodeOdItem::data(int column, int role) const
                 return QVariant(Qt::AlignRight);
             }
             break;
+
+        case Qt::FontRole:
+            if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
+            {
+                if (_index->subIndex(0)->error())
+                {
+                    QFont font;
+                    font.setItalic(true);
+                    return font;
+                }
+            }
+            break;
         }
         break;
 
@@ -190,7 +208,12 @@ QVariant NodeOdItem::data(int column, int role) const
                 return QVariant(_subIndex->accessString());
 
             case NodeOdItemModel::Value:
-                return formatValue(_subIndex->value(), _subIndex->dataType());
+                QVariant value = formatValue(_subIndex->value(), _subIndex->dataType());
+                if (_subIndex->error() != 0)
+                {
+                    return "*" + value.toString();
+                }
+                return value;
             }
             break;
 
@@ -209,6 +232,15 @@ QVariant NodeOdItem::data(int column, int role) const
             {
             case NodeOdItemModel::OdIndex:
                 return QVariant(Qt::AlignRight);
+            }
+            break;
+
+        case Qt::FontRole:
+            if (_subIndex->error())
+            {
+                QFont font;
+                font.setItalic(true);
+                return font;
             }
             break;
         }

@@ -45,6 +45,10 @@ public:
 public slots:
     void setFilter(const QString filterText);
     void readCurrent();
+    void readAll();
+
+protected slots:
+    void updateSelect(const QItemSelection &selected, const QItemSelection &deselected);
 
 protected:
     NodeOdItemModel *_odModel;
@@ -53,6 +57,7 @@ protected:
 
     void createActions();
     QAction *_readAction;
+    QAction *_readAllAction;
 
     // QWidget interface
 protected:

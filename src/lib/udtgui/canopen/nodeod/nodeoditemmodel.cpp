@@ -229,7 +229,6 @@ QVariant NodeOdItemModel::data(const QModelIndex &index, int role) const
 
 bool NodeOdItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    qDebug() << "setData" << value;
     if (!_root)
     {
         return false;
@@ -314,10 +313,11 @@ QModelIndex NodeOdItemModel::subIndexItem(quint16 index, quint8 subindex, int co
 void NodeOdItemModel::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     Q_UNUSED(flags)
-    QModelIndex modelIndex = subIndexItem(objId.index, objId.subIndex, Value);
-    if (modelIndex.isValid())
+    QModelIndex modelIndexStart = subIndexItem(objId.index, objId.subIndex, OdIndex);
+    QModelIndex modelIndexEnd = subIndexItem(objId.index, objId.subIndex, ColumnCount - 1);
+    if (modelIndexStart.isValid() && modelIndexEnd.isValid())
     {
-        emit dataChanged(modelIndex, modelIndex);
+        emit dataChanged(modelIndexStart, modelIndexEnd);
     }
 }
 

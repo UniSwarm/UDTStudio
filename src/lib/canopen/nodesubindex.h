@@ -92,7 +92,6 @@ public:
     void setDataType(const DataType &dataType);
     static QString dataTypeStr(const DataType &dataType);
     bool isNumeric() const;
-    static QMetaType::Type metaTypeFromDataType(const DataType &dataType);
     QMetaType::Type metaType() const;
 
     const QVariant &lowLimit() const;

@@ -10,6 +10,8 @@ NodeSubIndex::NodeSubIndex(const quint8 subIndex)
     _subIndex = subIndex;
     _accessType = NOACESS;
     _dataType = NONE;
+
+    _error = 0;
 }
 
 NodeSubIndex::NodeSubIndex(const NodeSubIndex &other)

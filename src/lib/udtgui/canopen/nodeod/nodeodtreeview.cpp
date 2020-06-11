@@ -53,6 +53,7 @@ NodeOdTreeView::NodeOdTreeView(QWidget *parent)
     setItemDelegate(_delegate);
 
     createActions();
+    connect(selectionModel(), &QItemSelectionModel::selectionChanged, this, &NodeOdTreeView::updateSelect);
 }
 
 NodeOdTreeView::~NodeOdTreeView()
@@ -114,22 +115,62 @@ void NodeOdTreeView::readCurrent()
     }
 }
 
+void NodeOdTreeView::readAll()
+{
+    for (int i = 0; i < _odModelSorter->rowCount(); i++)
+    {
+        const QModelIndex &firstIndex = _odModelSorter->mapToSource(_odModelSorter->index(i, 0));
+
+        NodeIndex *nodeIndex = _odModel->nodeIndex(firstIndex);
+        if (nodeIndex)
+        {
+            for (NodeSubIndex *subIndexN : nodeIndex->subIndexes())
+            {
+                _odModel->node()->readObject(nodeIndex->index(), subIndexN->subIndex());
+            }
+        }
+    }
+}
+
 void NodeOdTreeView::createActions()
 {
     _readAction = new QAction(this);
     _readAction->setText(tr("&Read"));
     _readAction->setShortcut(Qt::Key_F5);
     _readAction->setShortcutContext(Qt::WidgetShortcut);
+    _readAction->setIcon(QIcon(":/icons/img/icons8-import.png"));
+    _readAction->setEnabled(false);
 #if QT_VERSION >= 0x050A00
     _readAction->setShortcutVisibleInContextMenu(true);
 #endif
     connect(_readAction, &QAction::triggered, this, &NodeOdTreeView::readCurrent);
     addAction(_readAction);
+
+    _readAllAction = new QAction(this);
+    _readAllAction->setText(tr("Read &all"));
+    _readAllAction->setShortcut(QKeySequence(Qt::SHIFT, Qt::Key_F5));
+    _readAllAction->setShortcutContext(Qt::WidgetShortcut);
+    _readAllAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+#if QT_VERSION >= 0x050A00
+    _readAllAction->setShortcutVisibleInContextMenu(true);
+#endif
+    connect(_readAllAction, &QAction::triggered, this, &NodeOdTreeView::readAll);
+    addAction(_readAllAction);
+}
+
+void NodeOdTreeView::updateSelect(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    Q_UNUSED(selected)
+    Q_UNUSED(deselected)
+
+    bool selectionEmpty = selectionModel()->selectedRows().isEmpty();
+    _readAction->setEnabled(!selectionEmpty);
 }
 
 void NodeOdTreeView::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu menu;
     menu.addAction(_readAction);
+    menu.addAction(_readAllAction);
     menu.exec(event->globalPos());
 }

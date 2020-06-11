@@ -125,16 +125,16 @@ void NodeOdWidget::createDefaultFilters(uint profile)
         break;
 
     case 402:
-        _filterCombobox->addItem(tr("402 FSA"), QVariant("0x60(0[27]|3F|4[01]|5[A-E]|6[01])"));
-        _filterCombobox->addItem(tr("402 pp"), QVariant("0x60(7[ABD]|8[0-6]|A[34]|C[56])"));
-        _filterCombobox->addItem(tr("402 hm"), QVariant("0x60(9[89A]|7C|E3)"));
-        _filterCombobox->addItem(tr("402 tp"), QVariant("0x60(B[8-D]|D0)"));
-        _filterCombobox->addItem(tr("402 pc"), QVariant("0x60(6[2-8]|F[24AC])"));
-        _filterCombobox->addItem(tr("402 ip"), QVariant("0x60C[0-4]"));
-        _filterCombobox->addItem(tr("402 pv"), QVariant("0x60(6[9-F]|70|F[8F])"));
-        _filterCombobox->addItem(tr("402 pt"), QVariant("0x60(7[1-9]|E[01])"));
-        _filterCombobox->addItem(tr("402 vl"), QVariant("0x604[2-F]"));
-        _filterCombobox->addItem(tr("402 factors"), QVariant("0x60(8F|9[0-267]|A[8-B])"));
+        _filterCombobox->addItem(tr("402 FSA"), QVariant("0x[6-A][08](0[27]|3F|4[01]|5[A-E]|6[01])"));
+        _filterCombobox->addItem(tr("402 pp"), QVariant("0x[6-A][08](7[ABD]|8[0-6]|A[34]|C[56])"));
+        _filterCombobox->addItem(tr("402 hm"), QVariant("0x[6-A][08](9[89A]|7C|E3)"));
+        _filterCombobox->addItem(tr("402 tp"), QVariant("0x[6-A][08](B[8-D]|D0)"));
+        _filterCombobox->addItem(tr("402 pc"), QVariant("0x[6-A][08](6[2-8]|F[24AC])"));
+        _filterCombobox->addItem(tr("402 ip"), QVariant("0x[6-A][08]C[0-4]"));
+        _filterCombobox->addItem(tr("402 pv"), QVariant("0x[6-A][08](6[9-F]|70|F[8F])"));
+        _filterCombobox->addItem(tr("402 pt"), QVariant("0x[6-A][08](7[1-9]|E[01])"));
+        _filterCombobox->addItem(tr("402 vl"), QVariant("0x[6-A][08]4[2-F]"));
+        _filterCombobox->addItem(tr("402 factors"), QVariant("0x[6-A][08](8F|9[0-267]|A[8-B])"));
         break;
     }
     _oldProfile = profile;
