@@ -21,4 +21,7 @@
         <file>img/icons8-sync.png</file>
         <file>img/icons8-broom.png</file>
     </qresource>
+    <qresource prefix="/diagram">
+        <file>img/402VLDiagram.png</file>
+    </qresource>
 </RCC>
