@@ -46,43 +46,11 @@ WidgetDebug::WidgetDebug(Node *node, QWidget *parent)
 
     _controlWordObjectId = 0x6040;
     _statusWordObjectId = 0x6041;
-    _abortConnectionObjectId = 0x6007;
-    _quickStopObjectId = 0x605A;
-    _shutdownObjectId = 0x605B;
-    _disableObjectId = 0x605C;
-    _haltObjectId = 0x605D;
-    _faultReactionObjectId = 0x605E;
 
     createWidgets();
     setCheckableStateMachine(2);
     registerObjId({_controlWordObjectId, 0x00});
     registerObjId({_statusWordObjectId, 0x00});
-    registerObjId({_abortConnectionObjectId, 0x00});
-    registerObjId({_quickStopObjectId, 0x00});
-    registerObjId({_shutdownObjectId, 0x00});
-    registerObjId({_disableObjectId, 0x00});
-    registerObjId({_haltObjectId, 0x00});
-    registerObjId({_faultReactionObjectId, 0x00});
-
-    // VL_MODE
-    _vlVelocityDemandObjectId = 0x6043;
-    _vlVelocityActualObjectId = 0x6044;
-    _vlTargetVelocityObjectId = 0x6042;
-    _vlVelocityMinMaxAmountObjectId = 0x6046;
-    _vlAccelerationObjectId = 0x6048;
-    _vlDecelerationObjectId = 0x6049;
-    _vlQuickStopObjectId = 0x604A;
-    _vlSetPointFactorObjectId = 0x604B;
-    _vlDimensionFactorObjectId = 0x604C;
-    registerObjId({_vlVelocityDemandObjectId, 0xFF});
-    registerObjId({_vlVelocityActualObjectId, 0xFF});
-    registerObjId({_vlTargetVelocityObjectId, 0xFF});
-    registerObjId({_vlVelocityMinMaxAmountObjectId, 0xFF});
-    registerObjId({_vlAccelerationObjectId, 0xFF});
-    registerObjId({_vlDecelerationObjectId, 0xFF});
-    registerObjId({_vlQuickStopObjectId, 0xFF});
-    registerObjId({_vlSetPointFactorObjectId, 0xFF});
-    registerObjId({_vlDimensionFactorObjectId, 0xFF});
 
     setNode(node);
 }
@@ -92,6 +60,11 @@ WidgetDebug::~WidgetDebug()
 }
 void WidgetDebug::setNode(Node *node)
 {
+    if ((node->nodeOd()->value(0x1000, 0x0).toUInt() & 0xFFFF) != 0x192)
+    {
+        return;
+    }
+
     if (node != _node)
     {
         if (_node)
@@ -109,36 +82,14 @@ void WidgetDebug::setNode(Node *node)
 
         connect(_node, &Node::statusChanged, this, &WidgetDebug::updateData);
         _node->readObject(_statusWordObjectId, 0x0);
-        _node->readObject(_abortConnectionObjectId, 0x0);
-        _node->readObject(_quickStopObjectId, 0x0);
-        _node->readObject(_shutdownObjectId, 0x0);
-        _node->readObject(_disableObjectId, 0x0);
-        _node->readObject(_haltObjectId, 0x0);
-        _node->readObject(_faultReactionObjectId, 0x0);
-
         _node->readObject(_controlWordObjectId, 0x00);
 
         if (_node->status() != Node::STARTED)
         {
             //this->setEnabled(false);
         }
-
-        // VL_MODE
-        readData();
-
-        _node->readObject(_vlTargetVelocityObjectId, 0);
-        _node->readObject(_vlVelocityMinMaxAmountObjectId, 1);
-        _node->readObject(_vlVelocityMinMaxAmountObjectId, 2);
-        _node->readObject(_vlAccelerationObjectId, 1);
-        _node->readObject(_vlAccelerationObjectId, 2);
-        _node->readObject(_vlDecelerationObjectId, 1);
-        _node->readObject(_vlDecelerationObjectId, 2);
-        _node->readObject(_vlQuickStopObjectId, 1);
-        _node->readObject(_vlQuickStopObjectId, 2);
-        _node->readObject(_vlSetPointFactorObjectId, 1);
-        _node->readObject(_vlSetPointFactorObjectId, 2);
-        _node->readObject(_vlDimensionFactorObjectId, 1);
-        _node->readObject(_vlDimensionFactorObjectId, 2);
+        _p402Option->setNode(_node);
+        _p402vl->setNode(_node);
     }
 }
 
@@ -150,8 +101,7 @@ void WidgetDebug::updateData()
         if (_node->status() == Node::STARTED)
         {
             this->setEnabled(true);
-            cmdControlWord = ControlWordVL::CW_VL_EnableRamp | ControlWordVL::CW_VL_UnlockRamp | ControlWordVL::CW_VL_ReferenceRamp;
-            _node->writeObject(_controlWordObjectId, 0x00, cmdControlWord);
+            _node->readObject(_controlWordObjectId, 0x00);
         }
         else
         {
@@ -232,17 +182,27 @@ void WidgetDebug::stateMachineClicked(int id)
     case STATE_Fault: // 8_Fault
         break;
     }
+    cmdControlWord = (cmdControlWord & ~CW_Halt);
+    _haltPushButton->setChecked(false);
     _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
     _controlWordLabel->setText("0x" + QString::number(cmdControlWord, 16).toUpper());
 }
 
 void WidgetDebug::controlWordHaltClicked()
 {
-    cmdControlWord |= CW_Halt;
+    _haltPushButton->setCheckable(true);
+    if ((cmdControlWord & CW_Halt) != 0)
+    {
+        cmdControlWord = (cmdControlWord & ~CW_Halt);
+        _haltPushButton->setChecked(false);
+    }
+    else
+    {
+        cmdControlWord |= CW_Halt;
+        _haltPushButton->setChecked(true);
+    }
     _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
     _controlWordLabel->setText("0x" + QString::number(cmdControlWord, 16).toUpper());
-    // Initiate bit halt
-    cmdControlWord = (cmdControlWord & ~CW_Halt);
 }
 
 void WidgetDebug::gotoStateOEClicked()
@@ -268,66 +228,6 @@ void WidgetDebug::gotoStateOEClicked()
     }
 }
 
-void WidgetDebug::abortConnectionOptionClicked(int id)
-{
-    if (!_node)
-    {
-        return;
-    }
-    quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_abortConnectionObjectId, 0x00, QVariant(value));
-}
-
-void WidgetDebug::quickStopOptionClicked(int id)
-{
-    if (!_node)
-    {
-        return;
-    }
-    quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_quickStopObjectId, 0x00, QVariant(value));
-}
-
-void WidgetDebug::shutdownOptionClicked(int id)
-{
-    if (!_node)
-    {
-        return;
-    }
-    quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_shutdownObjectId, 0x00, QVariant(value));
-}
-
-void WidgetDebug::disableOptionClicked(int id)
-{
-    if (!_node)
-    {
-        return;
-    }
-    quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_disableObjectId, 0x00, QVariant(value));
-}
-
-void WidgetDebug::haltOptionClicked(int id)
-{
-    if (!_node)
-    {
-        return;
-    }
-    quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_haltObjectId, 0x00, QVariant(value));
-}
-
-void WidgetDebug::faultReactionOptionClicked(int id)
-{
-    if (!_node)
-    {
-        return;
-    }
-    quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_faultReactionObjectId, 0x00, QVariant(value));
-}
-
 void WidgetDebug::manageNotificationControlWordObject(SDO::FlagsRequest flags)
 {
     if (flags == SDO::FlagsRequest::Error)
@@ -336,19 +236,6 @@ void WidgetDebug::manageNotificationControlWordObject(SDO::FlagsRequest flags)
     }
     quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toInt());
     cmdControlWord = controlWord;
-
-    if (_vlEnableRampButtonGroup->button((controlWord & CW_VL_EnableRamp) > 4))
-    {
-        _vlEnableRampButtonGroup->button((controlWord & CW_VL_EnableRamp) > 4)->setChecked(true);
-    }
-    if (_vlUnlockRampButtonGroup->button((controlWord & CW_VL_UnlockRamp) > 5))
-    {
-        _vlUnlockRampButtonGroup->button((controlWord & CW_VL_UnlockRamp) > 5)->setChecked(true);
-    }
-    if (_vlReferenceRampButtonGroup->button((controlWord & CW_VL_ReferenceRamp) > 6))
-    {
-        _vlReferenceRampButtonGroup->button((controlWord & CW_VL_ReferenceRamp) > 6)->setChecked(true);
-    }
 }
 
 void WidgetDebug::manageNotificationStatusWordobject()
@@ -378,6 +265,7 @@ void WidgetDebug::manageNotificationStatusWordobject()
         _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
         _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
         _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+        _haltPushButton->setEnabled(false);
 
     }
     if ((state & Mask2) == SW_StateReadyToSwitchOn)
@@ -390,6 +278,7 @@ void WidgetDebug::manageNotificationStatusWordobject()
         _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
         _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
         _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+        _haltPushButton->setEnabled(false);
     }
     if ((state & Mask2) == SW_StateSwitchedOn)
     {
@@ -401,6 +290,7 @@ void WidgetDebug::manageNotificationStatusWordobject()
         _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
         _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
         _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+        _haltPushButton->setEnabled(false);
     }
     if ((state & Mask2) == SW_StateOperationEnabled)
     {
@@ -412,6 +302,7 @@ void WidgetDebug::manageNotificationStatusWordobject()
         _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
         _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
         _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
+        _haltPushButton->setEnabled(true);
     }
     if ((state & Mask2) == SW_StateQuickStopActive)
     {
@@ -423,6 +314,7 @@ void WidgetDebug::manageNotificationStatusWordobject()
         _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
         _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
         _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
+        _haltPushButton->setEnabled(false);
     }
     if ((state & Mask1) == SW_StateFaultReactionActive)
     {
@@ -434,6 +326,7 @@ void WidgetDebug::manageNotificationStatusWordobject()
         _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
         _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
         _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+        _haltPushButton->setEnabled(false);
     }
     if ((state & Mask1) == SW_StateFault)
     {
@@ -445,6 +338,7 @@ void WidgetDebug::manageNotificationStatusWordobject()
         _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
         _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
         _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+        _haltPushButton->setEnabled(false);
     }
     update();
 
@@ -495,174 +389,12 @@ void WidgetDebug::setCheckableStateMachine(int id)
     _stateMachineGroup->button(id)->setCheckable(true);
     _stateMachineGroup->button(id)->setChecked(true);
 }
-void WidgetDebug::vlTargetVelocitySpinboxFinished()
-{
-    qint16 value = static_cast<qint16>(_vlTargetVelocitySpinBox->value());
-    _node->writeObject(_vlTargetVelocityObjectId, 0x00, QVariant(value));
-    _vlTargetVelocitySlider->setValue(value);
-}
-void WidgetDebug::vlTargetVelocitySliderChanged()
-{
-    qint16 value = static_cast<qint16>(_vlTargetVelocitySpinBox->value());
-    _node->writeObject(_vlTargetVelocityObjectId, 0x00, QVariant(value));
-}
-void WidgetDebug::vlMinAmountEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlMinVelocityMinMaxAmountSpinBox->value());
-    _node->writeObject(0x6046, 0x01, QVariant(value));
-}
-void WidgetDebug::vlMaxAmountEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlMaxVelocityMinMaxAmountSpinBox->value());
-    _node->writeObject(0x6046, 0x02, QVariant(value));
-}
-void WidgetDebug::vlAccelerationDeltaSpeedEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlAccelerationDeltaSpeedSpinBox->value());
-    _node->writeObject(0x6048, 0x01, QVariant(value));
-}
-void WidgetDebug::vlAccelerationDeltaTimeEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlAccelerationDeltaTimeSpinBox->value());
-    _node->writeObject(0x6048, 0x02, QVariant(value));
-}
-void WidgetDebug::vlDecelerationDeltaSpeedEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlDecelerationDeltaSpeedSpinBox->value());
-    _node->writeObject(0x6049, 0x01, QVariant(value));
-}
-void WidgetDebug::vlDecelerationDeltaTimeEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlDecelerationDeltaTimeSpinBox->value());
-    _node->writeObject(0x6049, 0x02, QVariant(value));
-}
-void WidgetDebug::vlQuickStopDeltaSpeedEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlQuickStopDeltaSpeedSpinBox->value());
-    _node->writeObject(0x604A, 0x01, QVariant(value));
-}
-void WidgetDebug::vlQuickStopDeltaTimeEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlQuickStopDeltaTimeSpinBox->value());
-    _node->writeObject(0x604A, 0x02, QVariant(value));
-}
-void WidgetDebug::vlSetPointFactorNumeratorEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlSetPointFactorNumeratorSpinBox->value());
-    _node->writeObject(0x604B, 0x01, QVariant(value));
-}
-void WidgetDebug::vlSetPointFactorDenominatorEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlSetPointFactorDenominatorSpinBox->value());
-    _node->writeObject(0x604B, 0x02, QVariant(value));
-}
 
-void WidgetDebug::vlDimensionFactorNumeratorEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlDimensionFactorNumeratorSpinBox->value());
-    _node->writeObject(0x604C, 0x01, QVariant(value));
-}
-void WidgetDebug::vlDimensionFactorDenominatorEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlDimensionFactorDenominatorSpinBox->value());
-    _node->writeObject(0x604C, 0x02, QVariant(value));
-}
-
-void WidgetDebug::vlEnableRampClicked(int id)
-{
-    if (id == 0)
-    {
-        cmdControlWord = (cmdControlWord & ~ControlWordVL::CW_VL_EnableRamp);
-    }
-    else if (id == 1)
-    {
-        cmdControlWord |= CW_VL_EnableRamp;
-    }
-    else
-    {
-        return;
-    }
-    _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
-    _controlWordLabel->setText("0x" + QString::number(cmdControlWord, 16).toUpper());
-}
-void WidgetDebug::vlUnlockRampClicked(int id)
-{
-    if (id == 0)
-    {
-        cmdControlWord = (cmdControlWord & ~ControlWordVL::CW_VL_UnlockRamp);
-    }
-    else if (id == 1)
-    {
-        cmdControlWord |= CW_VL_UnlockRamp;
-    }
-    else
-    {
-        return;
-    }
-    _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
-    _controlWordLabel->setText("0x" + QString::number(cmdControlWord, 16).toUpper());
-}
-void WidgetDebug::vlReferenceRampClicked(int id)
-{
-    if (id == 0)
-    {
-        cmdControlWord = (cmdControlWord & ~ControlWordVL::CW_VL_ReferenceRamp);
-    }
-    else if (id == 1)
-    {
-        cmdControlWord |= CW_VL_ReferenceRamp;
-    }
-    else
-    {
-        return;
-    }
-    _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
-    _controlWordLabel->setText("0x" + QString::number(cmdControlWord, 16).toUpper());
-}
-void WidgetDebug::vlHaltClicked(int id)
-{
-    if (id == 0)
-    {
-        cmdControlWord = (cmdControlWord & ~CW_Halt);
-    }
-    else if (id == 1)
-    {
-        cmdControlWord |= CW_Halt;
-    }
-    else
-    {
-        return;
-    }
-    _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
-    _controlWordLabel->setText("0x" + QString::number(cmdControlWord, 16).toUpper());
-}
-
-void WidgetDebug::dataLogger()
-{
-    DataLogger *dataLogger = new DataLogger();
-    DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    dataLogger->addData({_node->busId(), _node->nodeId(), _vlVelocityActualObjectId, 0x0, QMetaType::Type::Short});
-    dataLogger->addData({_node->busId(), _node->nodeId(), _vlTargetVelocityObjectId, 0x0, QMetaType::Type::Short});
-    dataLogger->addData({_node->busId(), _node->nodeId(), _vlVelocityDemandObjectId, 0x0, QMetaType::Type::Short});
-    _dataLoggerWidget->show();
-}
-void WidgetDebug::pdoMapping()
-{
-    QList<NodeObjectId> vlRpdoObjectList = {{_node->busId(), _node->nodeId(), _controlWordObjectId, 0x0, QMetaType::Type::UShort},
-                                            {_node->busId(), _node->nodeId(), _vlTargetVelocityObjectId, 0x0, QMetaType::Type::Short}};
-
-    _node->rpdos().at(0)->writeMapping(vlRpdoObjectList);
-    QList<NodeObjectId> vlTpdoObjectList = {{_node->busId(), _node->nodeId(), _statusWordObjectId, 0x0, QMetaType::Type::UShort},
-                                            {_node->busId(), _node->nodeId(), _vlVelocityDemandObjectId, 0x0, QMetaType::Type::Short}};
-
-    _node->tpdos().at(2)->writeMapping(vlTpdoObjectList);
-}
 
 void WidgetDebug::createWidgets()
 {
-    // FIRST COLUMM
-    QLayout *firstLayout = new QVBoxLayout();
-    firstLayout->setMargin(0);
+    QLayout *Layout = new QVBoxLayout();
+    Layout->setMargin(0);
 
     // toolbar nmt
     _nmtToolBar = new QToolBar(tr("Node commands"));
@@ -700,7 +432,7 @@ void WidgetDebug::createWidgets()
     connect(action, &QAction::triggered, this, &WidgetDebug::resetNode);
 
     _nmtToolBar->addActions(groupNmt->actions());
-    firstLayout->addWidget(_nmtToolBar);
+    Layout->addWidget(_nmtToolBar);
     // toolbar TIMER
     _timerToolBar = new QToolBar(tr("Read Status Word"));
     // start stop
@@ -717,7 +449,7 @@ void WidgetDebug::createWidgets()
     _timerToolBar->addWidget(_logTimerSpinBox);
     connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),[=](int i){ setTimer(i); });
     connect(&_timer, &QTimer::timeout, this, &WidgetDebug::readData);
-    firstLayout->addWidget(_timerToolBar);
+    Layout->addWidget(_timerToolBar);
 
     // Group Box State Machine
     QGroupBox *stateMachineGroupBox = new QGroupBox(tr("State Machine"));
@@ -763,7 +495,9 @@ void WidgetDebug::createWidgets()
     QGroupBox *controlWordGroupBox = new QGroupBox(tr("Control Word (0x6040)"));
     QFormLayout *controlWordLayout = new QFormLayout();
 
-    QPushButton *_haltPushButton = new QPushButton(tr("Halt"));
+    _haltPushButton = new QPushButton(tr("Halt"));
+    _haltPushButton->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
+    _haltPushButton->setEnabled(false);
     controlWordLayout->addRow(_haltPushButton);
     controlWordGroupBox->setLayout(controlWordLayout);
     connect(_haltPushButton, &QPushButton::clicked, this, &WidgetDebug::controlWordHaltClicked);
@@ -803,347 +537,18 @@ void WidgetDebug::createWidgets()
     statusWordLayout->addRow(tr("Manufacturer Specific:"), _manufacturerSpecificLabel);
     statusWordGroupBox->setLayout(statusWordLayout);
     // END Group Box Status Word
-    firstLayout->addWidget(stateMachineGroupBox);
-    firstLayout->addWidget(controlWordGroupBox);
-    firstLayout->addWidget(statusWordGroupBox);
-    // END FIRST COLUMM
+    Layout->addWidget(stateMachineGroupBox);
+    Layout->addWidget(controlWordGroupBox);
+    Layout->addWidget(statusWordGroupBox);
 
-    // SECOND COLUMM
-    QLayout *secondColumnlayout = new QVBoxLayout();
-    secondColumnlayout->setMargin(0);
 
-    // Group Box Abort connection option
-    QGroupBox *abortConnectionOptionGroupBox = new QGroupBox(tr("Abort connection option (0x6007)"));
-    QFormLayout *abortConnectionOptionLayout = new QFormLayout();
-    _abortConnectionOptionGroup = new QButtonGroup(this);
-    _abortConnectionOptionGroup->setExclusive(true);
-    QRadioButton *_0AbortConnectionOptionCheckBox = new QRadioButton(tr("0 No action"));
-    abortConnectionOptionLayout->addRow(_0AbortConnectionOptionCheckBox);
-    _abortConnectionOptionGroup->addButton(_0AbortConnectionOptionCheckBox, 0);
-    QRadioButton *_1AbortConnectionOptionCheckBox = new QRadioButton(tr("+1 Fault signal"));
-    abortConnectionOptionLayout->addRow(_1AbortConnectionOptionCheckBox);
-    _abortConnectionOptionGroup->addButton(_1AbortConnectionOptionCheckBox, 1);
-    QRadioButton *_2AbortConnectionOptionCheckBox = new QRadioButton(tr("+2 Disable voltage command"));
-    abortConnectionOptionLayout->addRow(_2AbortConnectionOptionCheckBox);
-    _abortConnectionOptionGroup->addButton(_2AbortConnectionOptionCheckBox, 2);
-    QRadioButton *_3AbortConnectionOptionCheckBox = new QRadioButton(tr("+3 Quick stop command"));
-    abortConnectionOptionLayout->addRow(_3AbortConnectionOptionCheckBox);
-    _abortConnectionOptionGroup->addButton(_3AbortConnectionOptionCheckBox, 3);
-    abortConnectionOptionGroupBox->setLayout(abortConnectionOptionLayout);
-    connect(_abortConnectionOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { abortConnectionOptionClicked(id); });
-    // END Group Box Abort connection option
-
-    // Group Box Quick stop option
-    QGroupBox *quickStopOptionGroupBox = new QGroupBox(tr("Quick stop option (0x605A)"));
-    QFormLayout *quickStopOptionLayout = new QFormLayout();
-    _quickStopOptionGroup = new QButtonGroup(this);
-    _quickStopOptionGroup->setExclusive(true);
-    QRadioButton *_0QuickStopOptionCheckBox = new QRadioButton(tr("0 Disable drive function"));
-    quickStopOptionLayout->addRow(_0QuickStopOptionCheckBox);
-    _quickStopOptionGroup->addButton(_0QuickStopOptionCheckBox, 0);
-    QRadioButton *_1QuickStopOptionCheckBox = new QRadioButton(tr("+1 Slow down on slow down ramp and transit into switch on disabled"));
-    quickStopOptionLayout->addRow(_1QuickStopOptionCheckBox);
-    _quickStopOptionGroup->addButton(_1QuickStopOptionCheckBox, 1);
-    QRadioButton *_2QuickStopOptionCheckBox = new QRadioButton(tr("+2 Slow down on quick stop ramp and transit into switch on disabled"));
-    quickStopOptionLayout->addRow(_2QuickStopOptionCheckBox);
-    _quickStopOptionGroup->addButton(_2QuickStopOptionCheckBox, 2);
-    QRadioButton *_5QuickStopOptionCheckBox = new QRadioButton(tr("+5 Slow down on slow down ramp and stay in quick stop active"));
-    quickStopOptionLayout->addRow(_5QuickStopOptionCheckBox);
-    _quickStopOptionGroup->addButton(_5QuickStopOptionCheckBox, 5);
-    QRadioButton *_6QuickStopOptionCheckBox = new QRadioButton(tr("+6 Slow down on quick stop ramp and stay in quick stop active"));
-    quickStopOptionLayout->addRow(_6QuickStopOptionCheckBox);
-    _quickStopOptionGroup->addButton(_6QuickStopOptionCheckBox, 6);
-    quickStopOptionGroupBox->setLayout(quickStopOptionLayout);
-    connect(_quickStopOptionGroup, QOverload<int>::of(&QButtonGroup::buttonPressed), [=](int id) { quickStopOptionClicked(id); });
-    // END Group Box Quick stop option
-
-    // Group Box Shutdown option code
-    QGroupBox *shutdownOptionGroupBox = new QGroupBox(tr("Shutdown option code (0x605B)"));
-    QFormLayout *shutdownOptionLayout = new QFormLayout();
-    _shutdownOptionGroup = new QButtonGroup(this);
-    _shutdownOptionGroup->setExclusive(true);
-    QRadioButton *_0ShutdownOptionCheckBox = new QRadioButton(tr("0 Disable drive function (switch-off the drive power stage)"));
-    shutdownOptionLayout->addRow(_0ShutdownOptionCheckBox);
-    _shutdownOptionGroup->addButton(_0ShutdownOptionCheckBox, 0);
-    QRadioButton *_1ShutdownOptionCheckBox = new QRadioButton(tr("+1 Slow down with slow down ramp; disable of the drive function"));
-    shutdownOptionLayout->addRow(_1ShutdownOptionCheckBox);
-    _shutdownOptionGroup->addButton(_1ShutdownOptionCheckBox, 1);
-    shutdownOptionGroupBox->setLayout(shutdownOptionLayout);
-    connect(_shutdownOptionGroup, QOverload<int>::of(&QButtonGroup::buttonPressed), [=](int id) { shutdownOptionClicked(id); });
-    // END Group Box Shutdown option code
-
-    // Group Box Disable operation option code
-    QGroupBox *disableOptionGroupBox = new QGroupBox(tr("Disable operation option code (0x605C)"));
-    QFormLayout *disableOptionLayout = new QFormLayout();
-    _disableOptionGroup = new QButtonGroup(this);
-    _disableOptionGroup->setExclusive(true);
-    QRadioButton *_0DisableOptionCheckBox = new QRadioButton(tr("0 Disable drive function (switch-off the drive power stage)"));
-    disableOptionLayout->addRow(_0DisableOptionCheckBox);
-    _disableOptionGroup->addButton(_0DisableOptionCheckBox, 0);
-    QRadioButton *_1DisableOptionCheckBox = new QRadioButton(tr("+1 Slow down with slow down ramp; disable of the drive function"));
-    disableOptionLayout->addRow(_1DisableOptionCheckBox);
-    _disableOptionGroup->addButton(_1DisableOptionCheckBox, 1);
-    disableOptionGroupBox->setLayout(disableOptionLayout);
-    connect(_disableOptionGroup, QOverload<int>::of(&QButtonGroup::buttonPressed), [=](int id) { disableOptionClicked(id); });
-    // END Group Box Disable operation option code
-
-    // Group Box Halt option
-    QGroupBox *haltOptionGroupBox = new QGroupBox(tr("Halt option (0x605D)"));
-    QFormLayout *haltOptionLayout = new QFormLayout();
-    _haltOptionGroup = new QButtonGroup(this);
-    _haltOptionGroup->setExclusive(true);
-    QRadioButton *_slowDownRampCheckBox = new QRadioButton(tr("+1 Slow down on slow down ramp and stay in operation enabled"));
-    haltOptionLayout->addRow(_slowDownRampCheckBox);
-    _haltOptionGroup->addButton(_slowDownRampCheckBox, 1);
-    QRadioButton *_quickStopRampCheckBox = new QRadioButton(tr("+2 Slow down on quick stop ramp and stay in operation enabled"));
-    haltOptionLayout->addRow(_quickStopRampCheckBox);
-    _haltOptionGroup->addButton(_quickStopRampCheckBox, 2);
-    haltOptionGroupBox->setLayout(haltOptionLayout);
-    connect(_haltOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { haltOptionClicked(id); });
-    // END Group Box Halt option
-
-    // Group Box Fault reaction option
-    QGroupBox *faultReactionOptionGroupBox = new QGroupBox(tr("Fault reaction option (0x605E)"));
-    QFormLayout *faultReactionOptionLayout = new QFormLayout();
-    _faultReactionOptionGroup = new QButtonGroup(this);
-    _faultReactionOptionGroup->setExclusive(true);
-    QRadioButton *_0FaultReactionOptionCheckBox = new QRadioButton(tr("0 Disable drive function, motor is free to rotate"));
-    faultReactionOptionLayout->addRow(_0FaultReactionOptionCheckBox);
-    _faultReactionOptionGroup->addButton(_0FaultReactionOptionCheckBox, 0);
-    QRadioButton *_1FaultReactionOptionCheckBox = new QRadioButton(tr("+1 Slow down on slow down ramp"));
-    faultReactionOptionLayout->addRow(_1FaultReactionOptionCheckBox);
-    _faultReactionOptionGroup->addButton(_1FaultReactionOptionCheckBox, 1);
-    QRadioButton *_2FaultReactionOptionCheckBox = new QRadioButton(tr("+2 Slow down on quick stop ramp"));
-    faultReactionOptionLayout->addRow(_2FaultReactionOptionCheckBox);
-    _faultReactionOptionGroup->addButton(_2FaultReactionOptionCheckBox, 2);
-    faultReactionOptionGroupBox->setLayout(faultReactionOptionLayout);
-    connect(_faultReactionOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { faultReactionOptionClicked(id); });
-    // END Group Box Quick stop option
-
-    secondColumnlayout->addWidget(abortConnectionOptionGroupBox);
-    secondColumnlayout->addWidget(quickStopOptionGroupBox);
-    secondColumnlayout->addWidget(shutdownOptionGroupBox);
-    secondColumnlayout->addWidget(disableOptionGroupBox);
-    secondColumnlayout->addWidget(haltOptionGroupBox);
-    secondColumnlayout->addWidget(faultReactionOptionGroupBox);
-    // END SECOND COLUMM
-
-    // THIRD COLUMM
-    QLayout *thirdColumnlayout = new QVBoxLayout();
-    thirdColumnlayout->setMargin(0);
-
-    // Group Box VL mode
-    QGroupBox *vlGroupBox = new QGroupBox(tr("Velocity mode"));
-    QFormLayout *vlLayout = new QFormLayout();
-
-    _vlTargetVelocitySpinBox = new QSpinBox();
-    _vlTargetVelocitySpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    vlLayout->addRow("Target velocity (0x6042) :", _vlTargetVelocitySpinBox);
-
-    _vlTargetVelocitySlider = new QSlider(Qt::Horizontal);
-    _vlTargetVelocitySlider->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    vlLayout->addRow(_vlTargetVelocitySlider);
-
-    connect(_vlTargetVelocitySlider, &QSlider::valueChanged, _vlTargetVelocitySpinBox, &QSpinBox::setValue);
-    connect(_vlTargetVelocitySlider, &QSlider::valueChanged, this, &WidgetDebug::vlTargetVelocitySliderChanged);
-    connect(_vlTargetVelocitySpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlTargetVelocitySpinboxFinished);
-
-    _vlVelocityDemandLabel = new QLabel();
-    _vlVelocityDemandLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    vlLayout->addRow("Velocity_demand (0x6043) :", _vlVelocityDemandLabel);
-
-    _vlVelocityActualLabel = new QLabel();
-    _vlVelocityActualLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    vlLayout->addRow("Velocity_actual_value (0x6044) :", _vlVelocityActualLabel);
-
-    QLabel *vlVelocityMinMaxAmountLabel = new QLabel(tr("Velocity min max amount (0x6046) :"));
-    vlLayout->addRow(vlVelocityMinMaxAmountLabel);
-    QLayout *vlVelocityMinMaxAmountlayout = new QHBoxLayout();
-    _vlMinVelocityMinMaxAmountSpinBox = new QSpinBox();
-    _vlMinVelocityMinMaxAmountSpinBox->setToolTip("min ");
-    _vlMinVelocityMinMaxAmountSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
-    vlVelocityMinMaxAmountlayout->addWidget(_vlMinVelocityMinMaxAmountSpinBox);
-    _vlMaxVelocityMinMaxAmountSpinBox = new QSpinBox();
-    _vlMaxVelocityMinMaxAmountSpinBox->setToolTip("max ");
-    _vlMaxVelocityMinMaxAmountSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
-    vlVelocityMinMaxAmountlayout->addWidget(_vlMaxVelocityMinMaxAmountSpinBox);
-    vlLayout->addRow(vlVelocityMinMaxAmountlayout);
-    connect(_vlMinVelocityMinMaxAmountSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlMinAmountEditingFinished);
-    connect(_vlMaxVelocityMinMaxAmountSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlMaxAmountEditingFinished);
-
-    QLabel *vlVelocityAccelerationLabel = new QLabel(tr("Velocity acceleration (0x6048) :"));
-    vlLayout->addRow(vlVelocityAccelerationLabel);
-    QLayout *vlVelocityAccelerationlayout = new QHBoxLayout();
-    _vlAccelerationDeltaSpeedSpinBox = new QSpinBox();
-    _vlAccelerationDeltaSpeedSpinBox->setSuffix(" inc/ms");
-    _vlAccelerationDeltaSpeedSpinBox->setToolTip("Delta Speed");
-    _vlAccelerationDeltaSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
-    vlVelocityAccelerationlayout->addWidget(_vlAccelerationDeltaSpeedSpinBox);
-    _vlAccelerationDeltaTimeSpinBox = new QSpinBox();
-    _vlAccelerationDeltaTimeSpinBox->setSuffix(" ms");
-    _vlAccelerationDeltaTimeSpinBox->setToolTip("Delta Time");
-    _vlAccelerationDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
-    vlVelocityAccelerationlayout->addWidget(_vlAccelerationDeltaTimeSpinBox);
-    vlLayout->addRow(vlVelocityAccelerationlayout);
-    connect(_vlAccelerationDeltaSpeedSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlAccelerationDeltaSpeedEditingFinished);
-    connect(_vlAccelerationDeltaTimeSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlAccelerationDeltaTimeEditingFinished);
-
-    QLabel *vlVelocityDecelerationLabel = new QLabel(tr("Velocity deceleration (0x6049) :"));
-    vlLayout->addRow(vlVelocityDecelerationLabel);
-    QLayout *vlVelocityDecelerationlayout = new QHBoxLayout();
-    _vlDecelerationDeltaSpeedSpinBox = new QSpinBox();
-    _vlDecelerationDeltaSpeedSpinBox->setSuffix(" inc/ms");
-    _vlDecelerationDeltaSpeedSpinBox->setToolTip("Delta Speed");
-    _vlDecelerationDeltaSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
-    vlVelocityDecelerationlayout->addWidget(_vlDecelerationDeltaSpeedSpinBox);
-    _vlDecelerationDeltaTimeSpinBox = new QSpinBox();
-    _vlDecelerationDeltaTimeSpinBox->setSuffix(" ms");
-    _vlDecelerationDeltaTimeSpinBox->setToolTip("Delta Time");
-    _vlDecelerationDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
-    vlVelocityDecelerationlayout->addWidget(_vlDecelerationDeltaTimeSpinBox);
-    vlLayout->addRow(vlVelocityDecelerationlayout);
-    connect(_vlDecelerationDeltaSpeedSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlDecelerationDeltaSpeedEditingFinished);
-    connect(_vlDecelerationDeltaTimeSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlDecelerationDeltaTimeEditingFinished);
-
-    QLabel *vlVelocityQuickStopLabel = new QLabel(tr("Velocity quick stop (0x604A) :"));
-    vlLayout->addRow(vlVelocityQuickStopLabel);
-    QLayout *vlVelocityQuickStoplayout = new QHBoxLayout();
-    _vlQuickStopDeltaSpeedSpinBox = new QSpinBox();
-    _vlQuickStopDeltaSpeedSpinBox->setSuffix(" inc/ms");
-    _vlQuickStopDeltaSpeedSpinBox->setToolTip("Delta Speed");
-    _vlQuickStopDeltaSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
-    vlVelocityQuickStoplayout->addWidget(_vlQuickStopDeltaSpeedSpinBox);
-    _vlQuickStopDeltaTimeSpinBox = new QSpinBox();
-    _vlQuickStopDeltaTimeSpinBox->setSuffix(" ms");
-    _vlQuickStopDeltaTimeSpinBox->setToolTip("Delta Time");
-    _vlQuickStopDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
-    vlVelocityQuickStoplayout->addWidget(_vlQuickStopDeltaTimeSpinBox);
-    vlLayout->addRow(vlVelocityQuickStoplayout);
-    connect(_vlQuickStopDeltaSpeedSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlQuickStopDeltaSpeedEditingFinished);
-    connect(_vlQuickStopDeltaTimeSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlQuickStopDeltaTimeEditingFinished);
-
-    QLabel *vlSetPointFactorLabel = new QLabel(tr("Set-point factor (0x604B) :"));
-    vlLayout->addRow(vlSetPointFactorLabel);
-    QLayout *vlSetPointFactorlayout = new QHBoxLayout();
-    _vlSetPointFactorNumeratorSpinBox = new QSpinBox();
-    _vlSetPointFactorNumeratorSpinBox->setToolTip("Numerator");
-    _vlSetPointFactorNumeratorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
-    vlSetPointFactorlayout->addWidget(_vlSetPointFactorNumeratorSpinBox);
-    _vlSetPointFactorDenominatorSpinBox = new QSpinBox();
-    _vlSetPointFactorDenominatorSpinBox->setToolTip("Denominator");
-    _vlSetPointFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
-    vlSetPointFactorlayout->addWidget(_vlSetPointFactorDenominatorSpinBox);
-    vlLayout->addRow(vlSetPointFactorlayout);
-    connect(_vlSetPointFactorNumeratorSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlSetPointFactorNumeratorEditingFinished);
-    connect(_vlSetPointFactorDenominatorSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlSetPointFactorDenominatorEditingFinished);
-
-    QLabel *vlDimensionFactorLabel = new QLabel(tr("Dimension factor (0x604C) :"));
-    vlLayout->addRow(vlDimensionFactorLabel);
-    QLayout *vlDimensionFactorlayout = new QHBoxLayout();
-    _vlDimensionFactorNumeratorSpinBox = new QSpinBox();
-    _vlDimensionFactorNumeratorSpinBox->setToolTip("Numerator");
-    _vlDimensionFactorNumeratorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
-    vlDimensionFactorlayout->addWidget(_vlDimensionFactorNumeratorSpinBox);
-    _vlDimensionFactorDenominatorSpinBox = new QSpinBox();
-    _vlDimensionFactorDenominatorSpinBox->setToolTip("Denominator");
-    _vlDimensionFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
-    vlDimensionFactorlayout->addWidget(_vlDimensionFactorDenominatorSpinBox);
-    vlLayout->addRow(vlDimensionFactorlayout);
-    connect(_vlDimensionFactorNumeratorSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlDimensionFactorNumeratorEditingFinished);
-    connect(_vlDimensionFactorDenominatorSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlDimensionFactorDenominatorEditingFinished);
-
-    vlGroupBox->setLayout(vlLayout);
-
-    // Group Box Control Word
-    QGroupBox *modeControlWordGroupBox = new QGroupBox(tr("Control Word (0x6040) bit 4, bit 5, bit 6, bit 8"));
-    QFormLayout *modeControlWordLayout = new QFormLayout();
-
-    QLabel *vlEnableRampLabel = new QLabel(tr("Enable ramp (bit 4) :"));
-    modeControlWordLayout->addRow(vlEnableRampLabel);
-    _vlEnableRampButtonGroup = new QButtonGroup(this);
-    _vlEnableRampButtonGroup->setExclusive(true);
-    QVBoxLayout *vlEnableRamplayout = new QVBoxLayout();
-    QRadioButton *vl0EnableRamp = new QRadioButton(tr("Velocity demand value shall be controlled in any other"));
-    vlEnableRamplayout->addWidget(vl0EnableRamp);
-    QRadioButton *vl1EnableRamp = new QRadioButton(tr("Velocity demand value shall accord with ramp output value"));
-    vlEnableRamplayout->addWidget(vl1EnableRamp);
-    _vlEnableRampButtonGroup->addButton(vl0EnableRamp, 0);
-    _vlEnableRampButtonGroup->addButton(vl1EnableRamp, 1);
-    modeControlWordLayout->addRow(vlEnableRamplayout);
-    connect(_vlEnableRampButtonGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { vlEnableRampClicked(id); });
-
-    QLabel *vlUnlockRampLabel = new QLabel(tr("Unlock ramp (bit 5) :"));
-    modeControlWordLayout->addRow(vlUnlockRampLabel);
-    _vlUnlockRampButtonGroup = new QButtonGroup(this);
-    _vlUnlockRampButtonGroup->setExclusive(true);
-    QVBoxLayout *vlUnlockRamplayout = new QVBoxLayout();
-    _vlUnlockRampButtonGroup = new QButtonGroup(this);
-    QRadioButton *vl0UnlockRamp = new QRadioButton(tr("Ramp output value shall be locked to current output value"));
-    vlUnlockRamplayout->addWidget(vl0UnlockRamp);
-    QRadioButton *vl1UnlockRamp = new QRadioButton(tr("Ramp output value shall follow ramp input value"));
-    vlUnlockRamplayout->addWidget(vl1UnlockRamp);
-    _vlUnlockRampButtonGroup->addButton(vl0UnlockRamp, 0);
-    _vlUnlockRampButtonGroup->addButton(vl1UnlockRamp, 1);
-    modeControlWordLayout->addRow(vlUnlockRamplayout);
-    connect(_vlUnlockRampButtonGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { vlUnlockRampClicked(id); });
-
-    QLabel *_vlReferenceRampLabel = new QLabel(tr("Reference ramp (bit 6) :"));
-    modeControlWordLayout->addRow(_vlReferenceRampLabel);
-    _vlReferenceRampButtonGroup = new QButtonGroup(this);
-    _vlReferenceRampButtonGroup->setExclusive(true);
-    QVBoxLayout *_vlReferenceRamplayout = new QVBoxLayout();
-    QRadioButton *vl0ReferenceRamp = new QRadioButton(tr("Ramp input value shall be set to zero"));
-    _vlReferenceRamplayout->addWidget(vl0ReferenceRamp);
-    QRadioButton *vl1ReferenceRamp = new QRadioButton(tr("Ramp input value shall accord with ramp reference"));
-    _vlReferenceRamplayout->addWidget(vl1ReferenceRamp);
-    _vlReferenceRampButtonGroup->addButton(vl0ReferenceRamp, 0);
-    _vlReferenceRampButtonGroup->addButton(vl1ReferenceRamp, 1);
-    modeControlWordLayout->addRow(_vlReferenceRamplayout);
-    connect(_vlReferenceRampButtonGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { vlReferenceRampClicked(id); });
-
-    QLabel *vlHaltLabel = new QLabel(tr("Halt ramp (bit 8) : Motor stopped"));
-    modeControlWordLayout->addRow(vlHaltLabel);
-    //    _vlHaltButtonGroup = new QButtonGroup(this);
-    //    _vlHaltButtonGroup->setExclusive(true);
-    //    QVBoxLayout *vlHaltlayout = new QVBoxLayout();
-    //    QRadioButton *vl0Halt = new QRadioButton(tr("No command"));
-    //    vlHaltlayout->addWidget(vl0Halt);
-    //    QRadioButton *vl1Halt = new QRadioButton(tr("Motor shall be stopped"));
-    //    vlHaltlayout->addWidget(vl1Halt);
-    //    _vlHaltButtonGroup->addButton(vl0Halt, 0);
-    //    _vlHaltButtonGroup->addButton(vl1Halt, 1);
-    //    modeControlWordLayout->addRow(vlHaltlayout);
-    //    connect(_vlHaltButtonGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id){ vlHaltClicked(id); });
-    modeControlWordGroupBox->setLayout(modeControlWordLayout);
-
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &WidgetDebug::dataLogger);
-
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Mapping Pdo"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &WidgetDebug::pdoMapping);
-
-    QPixmap vlModePixmap;
-    QLabel *vlModeLabel;
-    vlModeLabel = new QLabel();
-    vlModePixmap.load(":/diagram/img/402VLDiagram.png");
-    vlModeLabel->setPixmap(vlModePixmap);
-    QPushButton *imgPushButton = new QPushButton(tr("Diagram VL mode"));
-    connect(imgPushButton, SIGNAL(clicked()), vlModeLabel, SLOT(show()));
-    QHBoxLayout *vlButtonLayout = new QHBoxLayout();
-    vlButtonLayout->addWidget(dataLoggerPushButton);
-    vlButtonLayout->addWidget(mappingPdoPushButton);
-    vlButtonLayout->addWidget(imgPushButton);
-
-    thirdColumnlayout->addWidget(vlGroupBox);
-    thirdColumnlayout->addWidget(modeControlWordGroupBox);
-    thirdColumnlayout->addItem(vlButtonLayout);
-    // END THIRD COLUMM
-
+    _p402Option = new P402OptionWidget() ;
+    _p402vl = new P402VlWidget();
     QHBoxLayout *hBoxLayout = new QHBoxLayout();
     hBoxLayout->setMargin(0);
-    hBoxLayout->addLayout(firstLayout);
-    hBoxLayout->addLayout(secondColumnlayout);
-    hBoxLayout->addLayout(thirdColumnlayout);
+    hBoxLayout->addLayout(Layout);
+    hBoxLayout->addWidget(_p402Option);
+    hBoxLayout->addWidget(_p402vl);
 
     setLayout(hBoxLayout);
 }
@@ -1173,137 +578,9 @@ void WidgetDebug::setTimer(int ms)
 void WidgetDebug::readData()
 {
     _node->readObject(_statusWordObjectId, 0x0);
-    _node->readObject(_vlVelocityDemandObjectId, 0x0);
-    _node->readObject(_vlVelocityActualObjectId, 0x0);
+    _p402vl->readData();
 }
 
-void WidgetDebug::update402OptionData(quint16 object)
-{
-    if (_node->nodeOd()->indexExist(object))
-    {
-        int value = _node->nodeOd()->value(_abortConnectionObjectId).toInt();
-
-        // Abort connection option code
-        if (_abortConnectionOptionGroup->button(value))
-        {
-            _abortConnectionOptionGroup->button(value)->setChecked(true);
-        }
-
-        // Quick stop option code
-        if (_quickStopOptionGroup->button(value))
-        {
-            _quickStopOptionGroup->button(value)->setChecked(true);
-        }
-
-        // Shutdown option code
-        if (_shutdownOptionGroup->button(value))
-        {
-            _shutdownOptionGroup->button(value)->setChecked(true);
-        }
-
-        // Disable operation option code
-        if (_disableOptionGroup->button(value))
-        {
-            _disableOptionGroup->button(value)->setChecked(true);
-        }
-
-        // Halt option code
-        if (_haltOptionGroup->button(value))
-        {
-            _haltOptionGroup->button(_node->nodeOd()->value(_haltObjectId).toInt())->setChecked(true);
-        }
-
-        // Fault reaction option code
-        if (_faultReactionOptionGroup->button(value))
-        {
-            _faultReactionOptionGroup->button(value)->setChecked(true);
-        }
-    }
-}
-
-void WidgetDebug::update402VLData(quint16 object)
-{
-    int value;
-    if (_node->nodeOd()->indexExist(object))
-    {
-        if (object == _vlTargetVelocityObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _vlTargetVelocitySpinBox->setValue(value);
-        }
-        if (object == _vlVelocityDemandObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _vlVelocityDemandLabel->setNum(value);
-        }
-        if (object == _vlVelocityActualObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _vlVelocityActualLabel->setNum(value);
-        }
-        if (object == _vlVelocityMinMaxAmountObjectId)
-        {
-            value = _node->nodeOd()->value(object, 1).toInt();
-            _vlMinVelocityMinMaxAmountSpinBox->setValue(value);
-        }
-        if (object == _vlVelocityMinMaxAmountObjectId)
-        {
-            value = _node->nodeOd()->value(object, 2).toInt();
-            _vlMaxVelocityMinMaxAmountSpinBox->setValue(value);
-        }
-        if (object == _vlAccelerationObjectId)
-        {
-            value = _node->nodeOd()->value(object, 1).toInt();
-            _vlAccelerationDeltaSpeedSpinBox->setValue(value);
-        }
-        if (object == _vlAccelerationObjectId)
-        {
-            value = _node->nodeOd()->value(object, 2).toInt();
-            _vlAccelerationDeltaTimeSpinBox->setValue(value);
-        }
-        if (object == _vlDecelerationObjectId)
-        {
-            value = _node->nodeOd()->value(object, 1).toInt();
-            _vlDecelerationDeltaSpeedSpinBox->setValue(value);
-        }
-        if (object == _vlDecelerationObjectId)
-        {
-            value = _node->nodeOd()->value(object, 2).toInt();
-            _vlDecelerationDeltaTimeSpinBox->setValue(value);
-        }
-        if (object == _vlQuickStopObjectId)
-        {
-            value = _node->nodeOd()->value(object, 1).toInt();
-            _vlQuickStopDeltaSpeedSpinBox->setValue(value);
-        }
-        if (object == _vlQuickStopObjectId)
-        {
-            value = _node->nodeOd()->value(object, 2).toInt();
-            _vlQuickStopDeltaTimeSpinBox->setValue(value);
-        }
-
-        if (object == _vlSetPointFactorObjectId)
-        {
-            value = _node->nodeOd()->value(object, 1).toInt();
-            _vlSetPointFactorNumeratorSpinBox->setValue(value);
-        }
-        if (object == _vlSetPointFactorObjectId)
-        {
-            value = _node->nodeOd()->value(object, 2).toInt();
-            _vlSetPointFactorDenominatorSpinBox->setValue(value);
-        }
-        if (object == _vlDimensionFactorObjectId)
-        {
-            value = _node->nodeOd()->value(object, 1).toInt();
-            _vlDimensionFactorNumeratorSpinBox->setValue(value);
-        }
-        if (object == _vlDimensionFactorObjectId)
-        {
-            value = _node->nodeOd()->value(object, 2).toInt();
-            _vlDimensionFactorDenominatorSpinBox->setValue(value);
-        }
-    }
-}
 void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (!_node)
@@ -1317,37 +594,6 @@ void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     if (objId.index == _statusWordObjectId && objId.subIndex == 0x00)
     {
         manageNotificationStatusWordobject();
-    }
-
-    if ((objId.index == _abortConnectionObjectId)
-        || (objId.index == _quickStopObjectId)
-        || (objId.index == _shutdownObjectId)
-        || (objId.index == _disableObjectId)
-        || (objId.index == _haltObjectId)
-        || (objId.index == _faultReactionObjectId))
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            return;
-        }
-        update402OptionData(objId.index);
-    }
-
-    if ((objId.index == _vlTargetVelocityObjectId)
-        || (objId.index == _vlVelocityDemandObjectId)
-        || (objId.index == _vlVelocityActualObjectId)
-        || (objId.index == _vlVelocityMinMaxAmountObjectId)
-        || (objId.index == _vlAccelerationObjectId)
-        || (objId.index == _vlDecelerationObjectId)
-        || (objId.index == _vlQuickStopObjectId)
-        || (objId.index == _vlSetPointFactorObjectId)
-        || (objId.index == _vlDimensionFactorObjectId))
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            return;
-        }
-        update402VLData(objId.index);
     }
 }
 

@@ -22,6 +22,8 @@
 #include "../../udtgui_global.h"
 
 #include "nodeodsubscriber.h"
+#include "p402vlwidget.h"
+#include "p402optionwidget.h"
 #include <QWidget>
 
 #include "node.h"
@@ -31,6 +33,7 @@
 #include <QSpinBox>
 #include <QToolBar>
 #include <QSlider>
+#include <QPushButton>
 
 class WidgetDebug : public QWidget, public NodeOdSubscriber
 {
@@ -58,8 +61,7 @@ private:
     void toggleStart(bool start);
     void setTimer(int ms);
     void readData();
-    void update402OptionData(quint16 object);
-    void update402VLData(quint16 object);
+
     QTimer _timer;
     QTimer _operationEnabledTimer;
 
@@ -82,23 +84,9 @@ private:
     quint16 cmdControlWord;
     quint16 _controlWordObjectId;
     quint16 _statusWordObjectId;
-    quint16 _abortConnectionObjectId;
-    quint16 _quickStopObjectId;
-    quint16 _shutdownObjectId;
-    quint16 _disableObjectId;
-    quint16 _haltObjectId;
-    quint16 _faultReactionObjectId;
 
-    // VL mode
-    quint16 _vlTargetVelocityObjectId;
-    quint16 _vlVelocityDemandObjectId;
-    quint16 _vlVelocityActualObjectId;
-    quint16 _vlVelocityMinMaxAmountObjectId;
-    quint16 _vlAccelerationObjectId;
-    quint16 _vlDecelerationObjectId;
-    quint16 _vlQuickStopObjectId;
-    quint16 _vlSetPointFactorObjectId;
-    quint16 _vlDimensionFactorObjectId;
+    P402OptionWidget *_p402Option;
+    P402VlWidget *_p402vl;
 
     QToolBar *_nmtToolBar;
     QToolBar *_timerToolBar;
@@ -106,6 +94,7 @@ private:
     QAction *_startStopAction;
 
     QLabel *_controlWordLabel;
+    QPushButton *_haltPushButton;
     QLabel *_statusWordRawLabel;
     QLabel *_statusWordLabel;
     QLabel *_voltageEnabledLabel;
@@ -117,71 +106,14 @@ private:
     QLabel *_manufacturerSpecificLabel;
 
     QButtonGroup *_stateMachineGroup;
-    QButtonGroup *_abortConnectionOptionGroup;
-    QButtonGroup *_quickStopOptionGroup;
-    QButtonGroup *_shutdownOptionGroup;
-    QButtonGroup *_disableOptionGroup;
-    QButtonGroup *_haltOptionGroup;
-    QButtonGroup *_faultReactionOptionGroup;
 
     void stateMachineClicked(int id);
-    void abortConnectionOptionClicked(int id);
-    void quickStopOptionClicked(int id);
-    void shutdownOptionClicked(int id);
-    void disableOptionClicked(int id);
-    void haltOptionClicked(int id);
-    void faultReactionOptionClicked(int id);
 
     void manageNotificationControlWordObject(SDO::FlagsRequest flags);
     void manageNotificationStatusWordobject();
 
     void setCheckableStateMachine(int id);
     void controlWordHaltClicked();
-
-
-    // VL MODE
-    QButtonGroup *_vlEnableRampButtonGroup;
-    QButtonGroup *_vlUnlockRampButtonGroup;
-    QButtonGroup *_vlReferenceRampButtonGroup;
-    QButtonGroup *_vlHaltButtonGroup;
-    QSpinBox *_vlTargetVelocitySpinBox;
-    QSlider *_vlTargetVelocitySlider;
-    QLabel *_vlVelocityDemandLabel;
-    QLabel *_vlVelocityActualLabel;
-    QSpinBox *_vlMinVelocityMinMaxAmountSpinBox;
-    QSpinBox *_vlMaxVelocityMinMaxAmountSpinBox;
-    QSpinBox *_vlAccelerationDeltaSpeedSpinBox;
-    QSpinBox *_vlAccelerationDeltaTimeSpinBox;
-    QSpinBox *_vlDecelerationDeltaSpeedSpinBox;
-    QSpinBox *_vlDecelerationDeltaTimeSpinBox;
-    QSpinBox *_vlQuickStopDeltaSpeedSpinBox;
-    QSpinBox *_vlQuickStopDeltaTimeSpinBox;
-    QSpinBox *_vlSetPointFactorNumeratorSpinBox;
-    QSpinBox *_vlSetPointFactorDenominatorSpinBox;
-    QSpinBox *_vlDimensionFactorNumeratorSpinBox;
-    QSpinBox *_vlDimensionFactorDenominatorSpinBox;
-
-    void vlTargetVelocitySpinboxFinished();
-    void vlTargetVelocitySliderChanged();
-    void vlMinAmountEditingFinished();
-    void vlMaxAmountEditingFinished();
-    void vlAccelerationDeltaSpeedEditingFinished();
-    void vlAccelerationDeltaTimeEditingFinished();
-    void vlDecelerationDeltaSpeedEditingFinished();
-    void vlDecelerationDeltaTimeEditingFinished();
-    void vlQuickStopDeltaSpeedEditingFinished();
-    void vlQuickStopDeltaTimeEditingFinished();
-    void vlSetPointFactorNumeratorEditingFinished();
-    void vlSetPointFactorDenominatorEditingFinished();
-    void vlDimensionFactorNumeratorEditingFinished();
-    void vlDimensionFactorDenominatorEditingFinished();
-
-    void vlEnableRampClicked(int id);
-    void vlUnlockRampClicked(int id);
-    void vlReferenceRampClicked(int id);
-    void vlHaltClicked(int id);
-    void dataLogger();
-    void pdoMapping();
 
     enum ControlWord : quint16
     {
@@ -221,13 +153,6 @@ private:
     {
         Mask1 = 0x4F,
         Mask2 = 0x6f
-    };
-
-    enum ControlWordVL : quint16
-    {
-        CW_VL_EnableRamp = 0x10,
-        CW_VL_UnlockRamp = 0x20,
-        CW_VL_ReferenceRamp = 0x40
     };
 
     // NodeOdSubscriber interface
