@@ -30,6 +30,19 @@ public:
     NodeOdFilterProxyModel(QObject *parent = nullptr);
     ~NodeOdFilterProxyModel();
 
+    enum PDOFilter
+    {
+        PDOFILTER_ALL,
+        PDOFILTER_PDO,
+        PDOFILTER_RPDO,
+        PDOFILTER_TPDO
+    };
+    PDOFilter pdoFilter() const;
+    void setPdoFilter(PDOFilter pdoFilter);
+
+protected:
+    PDOFilter _pdoFilter;
+
     // QSortFilterProxyModel interface
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
