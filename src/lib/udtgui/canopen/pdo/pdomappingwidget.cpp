@@ -20,7 +20,7 @@ void PDOMappingWidget::setPdo(PDO *pdo)
     if (_pdo)
     {
         _pdoNameLabel->setText(_pdo->type());
-        //updateEnabled(pdo->isEnabled());
+        updateEnabled(pdo->isEnabled());
         connect(_pdo, &PDO::enabledChanged, this, &PDOMappingWidget::updateEnabled);
     }
 }
@@ -78,7 +78,10 @@ void PDOMappingWidget::createWidget()
     connect(action, &QAction::triggered, this, &PDOMappingWidget::clearMapping);
 
     _enableAction = _toolBar->addAction(tr("Enable"));
-    _enableAction->setIcon(QIcon(":/icons/img/icons8-checked-checkbox.png"));
+    QIcon iconCheck;
+    iconCheck.addFile(":/icons/img/icons8-checked-checkbox.png", QSize(), QIcon::Normal, QIcon::On);
+    iconCheck.addFile(":/icons/img/icons8-unchecked-checkbox.png", QSize(), QIcon::Normal, QIcon::Off);
+    _enableAction->setIcon(iconCheck);
     _enableAction->setStatusTip(tr("Enable pdo"));
     _enableAction->setCheckable(true);
     connect(_enableAction, &QAction::triggered, this, &PDOMappingWidget::setEnabled);
