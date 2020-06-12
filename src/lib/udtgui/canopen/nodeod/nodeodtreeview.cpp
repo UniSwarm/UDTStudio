@@ -22,6 +22,7 @@
 #include <QHeaderView>
 #include <QFontMetrics>
 #include <QMenu>
+#include <QDebug>
 
 #include "node.h"
 
@@ -82,15 +83,32 @@ void NodeOdTreeView::setEditable(bool editable)
 
 void NodeOdTreeView::setFilter(const QString filterText)
 {
+    QRegularExpression filterRegExp("(?:pdo:(?<pdo>[^ ]*) *)*(.*)");
+    QRegularExpressionMatch match = filterRegExp.match(filterText);
+
+    // pdo
+    QString pdoFilter = match.captured("pdo");
+    QStringList pdoMatch = {"all", "pdo", "rpdo", "tpdo"};
+    int idMatch = pdoMatch.indexOf(pdoFilter);
+    if (idMatch != -1)
+    {
+        _odModelSorter->setPdoFilter(static_cast<NodeOdFilterProxyModel::PDOFilter>(idMatch));
+    }
+    else
+    {
+        _odModelSorter->setPdoFilter(NodeOdFilterProxyModel::PDOFILTER_ALL);
+    }
+
+    QString textFilter = match.capturedTexts().at(match.lastCapturedIndex());
     if (filterText.startsWith("0x", Qt::CaseInsensitive))
     {
         _odModelSorter->setFilterKeyColumn(NodeOdItemModel::OdIndex);
-        _odModelSorter->setFilterRegularExpression(QRegularExpression(filterText, QRegularExpression::CaseInsensitiveOption));
+        _odModelSorter->setFilterRegularExpression(QRegularExpression(textFilter, QRegularExpression::CaseInsensitiveOption));
     }
     else
     {
         _odModelSorter->setFilterKeyColumn(NodeOdItemModel::Name);
-        _odModelSorter->setFilterRegularExpression(QRegularExpression(filterText, QRegularExpression::CaseInsensitiveOption));
+        _odModelSorter->setFilterRegularExpression(QRegularExpression(textFilter, QRegularExpression::CaseInsensitiveOption));
     }
 }
 
