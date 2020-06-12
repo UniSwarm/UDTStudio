@@ -29,7 +29,6 @@
 #include <QSlider>
 #include <QDir>
 #include "canopen/datalogger/dataloggerwidget.h"
-#include <QSettings>
 
 WidgetDebug::WidgetDebug(QWidget *parent)
     : QWidget(parent)
@@ -69,8 +68,21 @@ WidgetDebug::WidgetDebug(Node *node, QWidget *parent)
     _vlVelocityDemandObjectId = 0x6043;
     _vlVelocityActualObjectId = 0x6044;
     _vlTargetVelocityObjectId = 0x6042;
-    registerObjId({_vlVelocityDemandObjectId, 0x00});
-    registerObjId({_vlVelocityActualObjectId, 0x00});
+    _vlVelocityMinMaxAmountObjectId = 0x6046;
+    _vlAccelerationObjectId = 0x6048;
+    _vlDecelerationObjectId = 0x6049;
+    _vlQuickStopObjectId = 0x604A;
+    _vlSetPointFactorObjectId = 0x604B;
+    _vlDimensionFactorObjectId = 0x604C;
+    registerObjId({_vlVelocityDemandObjectId, 0xFF});
+    registerObjId({_vlVelocityActualObjectId, 0xFF});
+    registerObjId({_vlTargetVelocityObjectId, 0xFF});
+    registerObjId({_vlVelocityMinMaxAmountObjectId, 0xFF});
+    registerObjId({_vlAccelerationObjectId, 0xFF});
+    registerObjId({_vlDecelerationObjectId, 0xFF});
+    registerObjId({_vlQuickStopObjectId, 0xFF});
+    registerObjId({_vlSetPointFactorObjectId, 0xFF});
+    registerObjId({_vlDimensionFactorObjectId, 0xFF});
 
     setNode(node);
 }
@@ -94,7 +106,7 @@ void WidgetDebug::setNode(Node *node)
     if (_node)
     {
         setWindowTitle("402 : " + _node->name() +  ", Status :" + _node->statusStr());
-        readSettings();
+
         connect(_node, &Node::statusChanged, this, &WidgetDebug::updateData);
         _node->readObject(_statusWordObjectId, 0x0);
         _node->readObject(_abortConnectionObjectId, 0x0);
@@ -104,13 +116,29 @@ void WidgetDebug::setNode(Node *node)
         _node->readObject(_haltObjectId, 0x0);
         _node->readObject(_faultReactionObjectId, 0x0);
 
-        cmdControlWord = ControlWordVL::CW_VL_EnableRamp | ControlWordVL::CW_VL_UnlockRamp | ControlWordVL::CW_VL_ReferenceRamp;
-        _node->writeObject(_controlWordObjectId, 0x00, cmdControlWord);
+        _node->readObject(_controlWordObjectId, 0x00);
 
         if (_node->status() != Node::STARTED)
         {
             //this->setEnabled(false);
         }
+
+        // VL_MODE
+        readData();
+
+        _node->readObject(_vlTargetVelocityObjectId, 0);
+        _node->readObject(_vlVelocityMinMaxAmountObjectId, 1);
+        _node->readObject(_vlVelocityMinMaxAmountObjectId, 2);
+        _node->readObject(_vlAccelerationObjectId, 1);
+        _node->readObject(_vlAccelerationObjectId, 2);
+        _node->readObject(_vlDecelerationObjectId, 1);
+        _node->readObject(_vlDecelerationObjectId, 2);
+        _node->readObject(_vlQuickStopObjectId, 1);
+        _node->readObject(_vlQuickStopObjectId, 2);
+        _node->readObject(_vlSetPointFactorObjectId, 1);
+        _node->readObject(_vlSetPointFactorObjectId, 2);
+        _node->readObject(_vlDimensionFactorObjectId, 1);
+        _node->readObject(_vlDimensionFactorObjectId, 2);
     }
 }
 
@@ -222,17 +250,17 @@ void WidgetDebug::gotoStateOEClicked()
     if (stateMachineCurrent == STATE_Fault)
     {
         stateMachineClicked(STATE_SwitchOnDisabled);
-        _operationEnabledTimer.singleShot(50, this, SLOT(gotoStateOEClicked()));
+        _operationEnabledTimer.singleShot(70, this, SLOT(gotoStateOEClicked()));
     }
     if (stateMachineCurrent == STATE_SwitchOnDisabled)
     {
         stateMachineClicked(STATE_ReadyToSwitchOn);
-        _operationEnabledTimer.singleShot(50, this, SLOT(gotoStateOEClicked()));
+        _operationEnabledTimer.singleShot(70, this, SLOT(gotoStateOEClicked()));
     }
     if (stateMachineCurrent == STATE_ReadyToSwitchOn)
     {
         stateMachineClicked(STATE_SwitchedOn);
-        _operationEnabledTimer.singleShot(50, this, SLOT(gotoStateOEClicked()));
+        _operationEnabledTimer.singleShot(70, this, SLOT(gotoStateOEClicked()));
     }
     if (stateMachineCurrent == STATE_SwitchedOn)
     {
@@ -307,6 +335,8 @@ void WidgetDebug::manageNotificationControlWordObject(SDO::FlagsRequest flags)
         _controlWordLabel->setText("Error SDO : 0x" + QString::number(_node->nodeOd()->errorObject(_controlWordObjectId, 0x0), 16));
     }
     quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toInt());
+    cmdControlWord = controlWord;
+
     if (_vlEnableRampButtonGroup->button((controlWord & CW_VL_EnableRamp) > 4))
     {
         _vlEnableRampButtonGroup->button((controlWord & CW_VL_EnableRamp) > 4)->setChecked(true);
@@ -498,7 +528,7 @@ void WidgetDebug::vlAccelerationDeltaTimeEditingFinished()
 }
 void WidgetDebug::vlDecelerationDeltaSpeedEditingFinished()
 {
-    quint32 value = static_cast<quint32>(_vlDecelerationDeltaSpeedDecelerationSpinBox->value());
+    quint32 value = static_cast<quint32>(_vlDecelerationDeltaSpeedSpinBox->value());
     _node->writeObject(0x6049, 0x01, QVariant(value));
 }
 void WidgetDebug::vlDecelerationDeltaTimeEditingFinished()
@@ -961,18 +991,18 @@ void WidgetDebug::createWidgets()
     QLabel *vlVelocityDecelerationLabel = new QLabel(tr("Velocity deceleration (0x6049) :"));
     vlLayout->addRow(vlVelocityDecelerationLabel);
     QLayout *vlVelocityDecelerationlayout = new QHBoxLayout();
-    _vlDecelerationDeltaSpeedDecelerationSpinBox = new QSpinBox();
-    _vlDecelerationDeltaSpeedDecelerationSpinBox->setSuffix(" inc/ms");
-    _vlDecelerationDeltaSpeedDecelerationSpinBox->setToolTip("Delta Speed");
-    _vlDecelerationDeltaSpeedDecelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
-    vlVelocityDecelerationlayout->addWidget(_vlDecelerationDeltaSpeedDecelerationSpinBox);
+    _vlDecelerationDeltaSpeedSpinBox = new QSpinBox();
+    _vlDecelerationDeltaSpeedSpinBox->setSuffix(" inc/ms");
+    _vlDecelerationDeltaSpeedSpinBox->setToolTip("Delta Speed");
+    _vlDecelerationDeltaSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
+    vlVelocityDecelerationlayout->addWidget(_vlDecelerationDeltaSpeedSpinBox);
     _vlDecelerationDeltaTimeSpinBox = new QSpinBox();
     _vlDecelerationDeltaTimeSpinBox->setSuffix(" ms");
     _vlDecelerationDeltaTimeSpinBox->setToolTip("Delta Time");
     _vlDecelerationDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
     vlVelocityDecelerationlayout->addWidget(_vlDecelerationDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityDecelerationlayout);
-    connect(_vlDecelerationDeltaSpeedDecelerationSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlDecelerationDeltaSpeedEditingFinished);
+    connect(_vlDecelerationDeltaSpeedSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlDecelerationDeltaSpeedEditingFinished);
     connect(_vlDecelerationDeltaTimeSpinBox, &QSpinBox::editingFinished, this, &WidgetDebug::vlDecelerationDeltaTimeEditingFinished);
 
     QLabel *vlVelocityQuickStopLabel = new QLabel(tr("Velocity quick stop (0x604A) :"));
@@ -1147,9 +1177,135 @@ void WidgetDebug::readData()
     _node->readObject(_vlVelocityActualObjectId, 0x0);
 }
 
-void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void WidgetDebug::update402OptionData(quint16 object)
+{
+    if (_node->nodeOd()->indexExist(object))
+    {
+        int value = _node->nodeOd()->value(_abortConnectionObjectId).toInt();
+
+        // Abort connection option code
+        if (_abortConnectionOptionGroup->button(value))
+        {
+            _abortConnectionOptionGroup->button(value)->setChecked(true);
+        }
+
+        // Quick stop option code
+        if (_quickStopOptionGroup->button(value))
+        {
+            _quickStopOptionGroup->button(value)->setChecked(true);
+        }
+
+        // Shutdown option code
+        if (_shutdownOptionGroup->button(value))
+        {
+            _shutdownOptionGroup->button(value)->setChecked(true);
+        }
+
+        // Disable operation option code
+        if (_disableOptionGroup->button(value))
+        {
+            _disableOptionGroup->button(value)->setChecked(true);
+        }
+
+        // Halt option code
+        if (_haltOptionGroup->button(value))
+        {
+            _haltOptionGroup->button(_node->nodeOd()->value(_haltObjectId).toInt())->setChecked(true);
+        }
+
+        // Fault reaction option code
+        if (_faultReactionOptionGroup->button(value))
+        {
+            _faultReactionOptionGroup->button(value)->setChecked(true);
+        }
+    }
+}
+
+void WidgetDebug::update402VLData(quint16 object)
 {
     int value;
+    if (_node->nodeOd()->indexExist(object))
+    {
+        if (object == _vlTargetVelocityObjectId)
+        {
+            value = _node->nodeOd()->value(object).toInt();
+            _vlTargetVelocitySpinBox->setValue(value);
+        }
+        if (object == _vlVelocityDemandObjectId)
+        {
+            value = _node->nodeOd()->value(object).toInt();
+            _vlVelocityDemandLabel->setNum(value);
+        }
+        if (object == _vlVelocityActualObjectId)
+        {
+            value = _node->nodeOd()->value(object).toInt();
+            _vlVelocityActualLabel->setNum(value);
+        }
+        if (object == _vlVelocityMinMaxAmountObjectId)
+        {
+            value = _node->nodeOd()->value(object, 1).toInt();
+            _vlMinVelocityMinMaxAmountSpinBox->setValue(value);
+        }
+        if (object == _vlVelocityMinMaxAmountObjectId)
+        {
+            value = _node->nodeOd()->value(object, 2).toInt();
+            _vlMaxVelocityMinMaxAmountSpinBox->setValue(value);
+        }
+        if (object == _vlAccelerationObjectId)
+        {
+            value = _node->nodeOd()->value(object, 1).toInt();
+            _vlAccelerationDeltaSpeedSpinBox->setValue(value);
+        }
+        if (object == _vlAccelerationObjectId)
+        {
+            value = _node->nodeOd()->value(object, 2).toInt();
+            _vlAccelerationDeltaTimeSpinBox->setValue(value);
+        }
+        if (object == _vlDecelerationObjectId)
+        {
+            value = _node->nodeOd()->value(object, 1).toInt();
+            _vlDecelerationDeltaSpeedSpinBox->setValue(value);
+        }
+        if (object == _vlDecelerationObjectId)
+        {
+            value = _node->nodeOd()->value(object, 2).toInt();
+            _vlDecelerationDeltaTimeSpinBox->setValue(value);
+        }
+        if (object == _vlQuickStopObjectId)
+        {
+            value = _node->nodeOd()->value(object, 1).toInt();
+            _vlQuickStopDeltaSpeedSpinBox->setValue(value);
+        }
+        if (object == _vlQuickStopObjectId)
+        {
+            value = _node->nodeOd()->value(object, 2).toInt();
+            _vlQuickStopDeltaTimeSpinBox->setValue(value);
+        }
+
+        if (object == _vlSetPointFactorObjectId)
+        {
+            value = _node->nodeOd()->value(object, 1).toInt();
+            _vlSetPointFactorNumeratorSpinBox->setValue(value);
+        }
+        if (object == _vlSetPointFactorObjectId)
+        {
+            value = _node->nodeOd()->value(object, 2).toInt();
+            _vlSetPointFactorDenominatorSpinBox->setValue(value);
+        }
+        if (object == _vlDimensionFactorObjectId)
+        {
+            value = _node->nodeOd()->value(object, 1).toInt();
+            _vlDimensionFactorNumeratorSpinBox->setValue(value);
+        }
+        if (object == _vlDimensionFactorObjectId)
+        {
+            value = _node->nodeOd()->value(object, 2).toInt();
+            _vlDimensionFactorDenominatorSpinBox->setValue(value);
+        }
+    }
+}
+void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+{
     if (!_node)
     {
         return;
@@ -1162,164 +1318,43 @@ void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     {
         manageNotificationStatusWordobject();
     }
-    // Abort connection option code
-    if (objId.index == _abortConnectionObjectId && objId.subIndex == 0x00)
+
+    if ((objId.index == _abortConnectionObjectId)
+        || (objId.index == _quickStopObjectId)
+        || (objId.index == _shutdownObjectId)
+        || (objId.index == _disableObjectId)
+        || (objId.index == _haltObjectId)
+        || (objId.index == _faultReactionObjectId))
     {
         if (flags == SDO::FlagsRequest::Error)
         {
             return;
         }
-        value = _node->nodeOd()->value(_abortConnectionObjectId).toInt();
-        if (_abortConnectionOptionGroup->button(value))
-        {
-            _abortConnectionOptionGroup->button(value)->setChecked(true);
-        }
+        update402OptionData(objId.index);
     }
-    // Quick stop option code
-    if (objId.index == _quickStopObjectId && objId.subIndex == 0x00)
+
+    if ((objId.index == _vlTargetVelocityObjectId)
+        || (objId.index == _vlVelocityDemandObjectId)
+        || (objId.index == _vlVelocityActualObjectId)
+        || (objId.index == _vlVelocityMinMaxAmountObjectId)
+        || (objId.index == _vlAccelerationObjectId)
+        || (objId.index == _vlDecelerationObjectId)
+        || (objId.index == _vlQuickStopObjectId)
+        || (objId.index == _vlSetPointFactorObjectId)
+        || (objId.index == _vlDimensionFactorObjectId))
     {
         if (flags == SDO::FlagsRequest::Error)
         {
             return;
         }
-        value = _node->nodeOd()->value(_quickStopObjectId).toInt();
-        if (_quickStopOptionGroup->button(value))
-        {
-            _quickStopOptionGroup->button(value)->setChecked(true);
-        }
+        update402VLData(objId.index);
     }
-    // Shutdown option code
-    if (objId.index == _shutdownObjectId && objId.subIndex == 0x00)
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            return;
-        }
-        value = _node->nodeOd()->value(_shutdownObjectId).toInt();
-        if (_shutdownOptionGroup->button(value))
-        {
-            _shutdownOptionGroup->button(value)->setChecked(true);
-        }
-    }
-    // Disable operation option code
-    if (objId.index == _disableObjectId && objId.subIndex == 0x00)
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            return;
-        }
-        value = _node->nodeOd()->value(_disableObjectId).toInt();
-        if (_disableOptionGroup->button(value))
-        {
-            _disableOptionGroup->button(value)->setChecked(true);
-        }
-    }
-    // Halt option code
-    if (objId.index == _haltObjectId && objId.subIndex == 0x00)
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            return;
-        }
-        value = _node->nodeOd()->value(_haltObjectId).toInt();
-        if (_haltOptionGroup->button(value))
-        {
-            _haltOptionGroup->button(_node->nodeOd()->value(_haltObjectId).toInt())->setChecked(true);
-        }
-    }
-    // Fault reaction option code
-    if (objId.index == _faultReactionObjectId && objId.subIndex == 0x00)
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            return;
-        }
-        value = _node->nodeOd()->value(_faultReactionObjectId).toInt();
-        if (_faultReactionOptionGroup->button(value))
-        {
-            _faultReactionOptionGroup->button(value)->setChecked(true);
-        }
-    }
-
-    if (objId.index == _vlVelocityDemandObjectId && objId.subIndex == 0x00)
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            return;
-        }
-        if (_node->nodeOd()->indexExist(_vlVelocityDemandObjectId))
-        {
-            value = _node->nodeOd()->value(_vlVelocityDemandObjectId).toInt();
-            _vlVelocityDemandLabel->setNum(value);
-        }
-    }
-
-    if (objId.index == _vlVelocityActualObjectId && objId.subIndex == 0x00)
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            return;
-        }
-        if (_node->nodeOd()->indexExist(_vlVelocityActualObjectId))
-        {
-            value = _node->nodeOd()->value(_vlVelocityActualObjectId).toInt();
-            _vlVelocityActualLabel->setNum(value);
-        }
-    }
-}
-
-void WidgetDebug::writeSettings()
-{
-    QSettings settings(QApplication::organizationName(), QApplication::applicationName());
-
-    QString string = "402." + QString::number(_node->nodeId());
-    settings.beginGroup(string);
-    settings.setValue("_vlTargetVelocitySpinBox", _vlTargetVelocitySpinBox->value());
-
-    settings.setValue("_vlMinVelocityMinMaxAmountSpinBox", _vlMinVelocityMinMaxAmountSpinBox->value());
-    settings.setValue("_vlMaxVelocityMinMaxAmountSpinBox", _vlMaxVelocityMinMaxAmountSpinBox->value());
-    settings.setValue("_vlAccelerationDeltaSpeedSpinBox", _vlAccelerationDeltaSpeedSpinBox->value());
-    settings.setValue("_vlAccelerationDeltaTimeSpinBox", _vlAccelerationDeltaTimeSpinBox->value());
-    settings.setValue("_vlDecelerationDeltaSpeedDecelerationSpinBox", _vlDecelerationDeltaSpeedDecelerationSpinBox->value());
-    settings.setValue("_vlDecelerationDeltaTimeSpinBox", _vlDecelerationDeltaTimeSpinBox->value());
-    settings.setValue("_vlQuickStopDeltaSpeedSpinBox", _vlQuickStopDeltaSpeedSpinBox->value());
-    settings.setValue("_vlQuickStopDeltaTimeSpinBox", _vlQuickStopDeltaTimeSpinBox->value());
-    settings.setValue("_vlSetPointFactorNumeratorSpinBox", _vlSetPointFactorNumeratorSpinBox->value());
-    settings.setValue("_vlSetPointFactorDenominatorSpinBox", _vlSetPointFactorDenominatorSpinBox->value());
-    settings.setValue("_vlDimensionFactorNumeratorSpinBox", _vlDimensionFactorNumeratorSpinBox->value());
-    settings.setValue("_vlDimensionFactorDenominatorSpinBox", _vlDimensionFactorDenominatorSpinBox->value());
-
-    settings.endGroup();
-}
-
-void WidgetDebug::readSettings()
-{
-    QSettings settings(QApplication::organizationName(), QApplication::applicationName());
-
-    QString string = "402." + QString::number(_node->nodeId());
-    settings.beginGroup(string);
-
-    _vlTargetVelocitySpinBox->setValue(settings.value("_vlTargetVelocitySpinBox").toInt());
-    _vlMinVelocityMinMaxAmountSpinBox->setValue(settings.value("_vlMinVelocityMinMaxAmountSpinBox").toInt());
-    _vlMaxVelocityMinMaxAmountSpinBox->setValue(settings.value("_vlMaxVelocityMinMaxAmountSpinBox").toInt());
-    _vlAccelerationDeltaSpeedSpinBox->setValue(settings.value("_vlAccelerationDeltaSpeedSpinBox").toInt());
-    _vlAccelerationDeltaTimeSpinBox->setValue(settings.value("_vlAccelerationDeltaTimeSpinBox").toInt());
-    _vlDecelerationDeltaSpeedDecelerationSpinBox->setValue(settings.value("_vlDecelerationDeltaSpeedDecelerationSpinBox").toInt());
-    _vlDecelerationDeltaTimeSpinBox->setValue(settings.value("_vlDecelerationDeltaTimeSpinBox").toInt());
-    _vlQuickStopDeltaSpeedSpinBox->setValue(settings.value("_vlQuickStopDeltaSpeedSpinBox").toInt());
-    _vlQuickStopDeltaTimeSpinBox->setValue(settings.value("_vlQuickStopDeltaTimeSpinBox").toInt());
-    _vlSetPointFactorNumeratorSpinBox->setValue(settings.value("_vlSetPointFactorNumeratorSpinBox").toInt());
-    _vlSetPointFactorDenominatorSpinBox->setValue(settings.value("_vlSetPointFactorDenominatorSpinBox").toInt());
-    _vlDimensionFactorNumeratorSpinBox->setValue(settings.value("_vlDimensionFactorNumeratorSpinBox").toInt());
-    _vlDimensionFactorDenominatorSpinBox->setValue(settings.value("_vlDimensionFactorDenominatorSpinBox").toInt());
-
-    settings.endGroup();
 }
 
 void WidgetDebug::closeEvent(QCloseEvent *event)
 {
     if (event->type() == QEvent::Close)
     {
-        writeSettings();
+
     }
 }

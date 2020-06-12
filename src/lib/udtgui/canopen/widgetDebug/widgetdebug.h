@@ -58,11 +58,10 @@ private:
     void toggleStart(bool start);
     void setTimer(int ms);
     void readData();
+    void update402OptionData(quint16 object);
+    void update402VLData(quint16 object);
     QTimer _timer;
     QTimer _operationEnabledTimer;
-
-    void readSettings();
-    void writeSettings();
 
     Node *_node;
 
@@ -94,6 +93,12 @@ private:
     quint16 _vlTargetVelocityObjectId;
     quint16 _vlVelocityDemandObjectId;
     quint16 _vlVelocityActualObjectId;
+    quint16 _vlVelocityMinMaxAmountObjectId;
+    quint16 _vlAccelerationObjectId;
+    quint16 _vlDecelerationObjectId;
+    quint16 _vlQuickStopObjectId;
+    quint16 _vlSetPointFactorObjectId;
+    quint16 _vlDimensionFactorObjectId;
 
     QToolBar *_nmtToolBar;
     QToolBar *_timerToolBar;
@@ -147,7 +152,7 @@ private:
     QSpinBox *_vlMaxVelocityMinMaxAmountSpinBox;
     QSpinBox *_vlAccelerationDeltaSpeedSpinBox;
     QSpinBox *_vlAccelerationDeltaTimeSpinBox;
-    QSpinBox *_vlDecelerationDeltaSpeedDecelerationSpinBox;
+    QSpinBox *_vlDecelerationDeltaSpeedSpinBox;
     QSpinBox *_vlDecelerationDeltaTimeSpinBox;
     QSpinBox *_vlQuickStopDeltaSpeedSpinBox;
     QSpinBox *_vlQuickStopDeltaTimeSpinBox;
