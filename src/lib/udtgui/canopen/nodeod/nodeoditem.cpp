@@ -476,6 +476,7 @@ QVariant NodeOdItem::formatValue(const QVariant &value, NodeSubIndex::DataType d
 {
     QVariant mvalue = value;
     int zero = 0;
+    bool sign = true;
     switch (dataType)
     {
         case NodeSubIndex::BOOLEAN:
@@ -489,41 +490,49 @@ QVariant NodeOdItem::formatValue(const QVariant &value, NodeSubIndex::DataType d
             }
 
         case NodeSubIndex::UNSIGNED8:
+            sign = false;
         case NodeSubIndex::INTEGER8:
             zero = 2;
             break;
 
         case NodeSubIndex::UNSIGNED16:
+            sign = false;
         case NodeSubIndex::INTEGER16:
             zero = 4;
             break;
 
         case NodeSubIndex::UNSIGNED24:
+            sign = false;
         case NodeSubIndex::INTEGER24:
             zero = 6;
             break;
 
         case NodeSubIndex::UNSIGNED32:
+            sign = false;
         case NodeSubIndex::INTEGER32:
             zero = 8;
             break;
 
         case NodeSubIndex::UNSIGNED40:
+            sign = false;
         case NodeSubIndex::INTEGER40:
             zero = 10;
             break;
 
         case NodeSubIndex::UNSIGNED48:
+            sign = false;
         case NodeSubIndex::INTEGER48:
             zero = 12;
             break;
 
         case NodeSubIndex::UNSIGNED56:
+            sign = false;
         case NodeSubIndex::INTEGER56:
             zero = 14;
             break;
 
         case NodeSubIndex::UNSIGNED64:
+            sign = false;
         case NodeSubIndex::INTEGER64:
             zero = 16;
             break;
@@ -531,7 +540,14 @@ QVariant NodeOdItem::formatValue(const QVariant &value, NodeSubIndex::DataType d
     default:
         return value;
     }
-    return QVariant(QString("%1 (0x%2)").arg(mvalue.toUInt()).arg(QString::number(mvalue.toUInt(), 16).rightJustified(zero, '0').toUpper()));
+    if (sign)
+    {
+        return QVariant(QString("%1 (0x%2)").arg(mvalue.toInt()).arg(QString::number(mvalue.toInt(), 16).right(zero).toUpper()));
+    }
+    else
+    {
+        return QVariant(QString("%1 (0x%2)").arg(mvalue.toUInt()).arg(QString::number(mvalue.toUInt(), 16).rightJustified(zero, '0').toUpper()));
+    }
 }
 
 QVariant NodeOdItem::formatEditValue(const QVariant &value) const
@@ -540,15 +556,17 @@ QVariant NodeOdItem::formatEditValue(const QVariant &value) const
     switch (QMetaType::Type(value.type()))
     {
     case QMetaType::UChar:
-    case QMetaType::SChar:
     case QMetaType::UShort:
-    case QMetaType::Short:
     case QMetaType::UInt:
-    case QMetaType::Int:
     case QMetaType::ULongLong:
-    case QMetaType::LongLong:
     case QMetaType::Double:
         return QVariant(QString("%1").arg(mvalue.toUInt()));
+
+    case QMetaType::SChar:
+    case QMetaType::Short:
+    case QMetaType::Int:
+    case QMetaType::LongLong:
+        return QVariant(QString("%1").arg(mvalue.toInt()));
 
     default:
         return value;
