@@ -142,3 +142,28 @@ void PDOMappingPainter::drawMapping(const QRect &objRect, const NodeObjectId &no
                                                 .arg(objName));
     }
 }
+
+int PDOMappingPainter::objIdAtPos(const QRect &rect, const QList<NodeObjectId> &nodeListMapping, const QPoint &pos)
+{
+    int height = rect.height();
+    double bitWidth = (static_cast<double>(rect.width()) - 2 * xMargin) / (8 * 8);
+
+    // draw mapping
+    double x = xMargin;
+    for (int i = 0; i < nodeListMapping.count(); i++)
+    {
+        const NodeObjectId &objId = nodeListMapping.at(i);
+
+        x += xMargin;
+        double width = objId.bitSize() * bitWidth - 2 * xMargin;
+        QRectF objRect(x, yMargin, width, height - yMargin * 2);
+
+        if (objRect.contains(pos))
+        {
+            return i;
+        }
+
+        x += width + xMargin;
+    }
+    return -1;
+}

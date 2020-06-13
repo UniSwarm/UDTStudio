@@ -27,6 +27,7 @@
 #include <QDragMoveEvent>
 #include <QMimeData>
 #include <QFontMetrics>
+#include <QToolTip>
 
 PDOMappingView::PDOMappingView(QWidget *parent)
     : QWidget(parent)
@@ -70,6 +71,12 @@ void PDOMappingView::setNodeListColor(const QList<QColor> &nodeListColor)
 {
     _nodeListColor = nodeListColor;
     update();
+}
+
+int PDOMappingView::objIdAtPos(const QPoint &pos)
+{
+    QRect rectPdo = rect().adjusted(1, 1, -1, -1);
+    return PDOMappingPainter::objIdAtPos(rectPdo, _nodeListMapping, pos);
 }
 
 PDO *PDOMappingView::pdo() const
@@ -241,4 +248,31 @@ void PDOMappingView::dragLeaveEvent(QDragLeaveEvent *event)
     Q_UNUSED(event)
     _dragBitPos = -1;
     update();
+}
+
+
+bool PDOMappingView::event(QEvent *event)
+{
+    if (event->type() == QEvent::ToolTip)
+    {
+        QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
+        int objId = objIdAtPos(helpEvent->pos());
+        if (objId == -1)
+        {
+            return false;
+        }
+        QString objName;
+        if (objId < _nodeListName.count())
+        {
+            objName = _nodeListName.at(objId);
+        }
+        NodeObjectId nodeObjectId = _nodeListMapping.at(objId);
+        QString toolTipText = QString("0x%1.%2\n%3")
+                                .arg(QString::number(nodeObjectId.index, 16).toUpper())
+                                .arg(QString::number(nodeObjectId.subIndex, 16).toUpper())
+                                .arg(objName);
+        QToolTip::showText(helpEvent->globalPos(), toolTipText);
+        return true;
+    }
+    return QWidget::event(event);
 }

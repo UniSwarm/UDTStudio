@@ -45,6 +45,9 @@ public:
                      const QString &nodeName,
                      const QColor &nodeColor);
 
+    static int objIdAtPos(const QRect &rect,
+                   const QList<NodeObjectId> &nodeListMapping,
+                   const QPoint &pos);
 protected:
     QWidget *_widget;
 };

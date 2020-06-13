@@ -26,6 +26,7 @@
 #include "nodeobjectid.h"
 
 class PDO;
+class PDOMappingPainter;
 
 class UDTGUI_EXPORT PDOMappingView : public QWidget
 {
@@ -44,6 +45,8 @@ public:
     const QList<QColor> &nodeListColor() const;
     void setNodeListColor(const QList<QColor> &nodeListColor);
 
+    int objIdAtPos(const QPoint &pos);
+
 public slots:
     void setPdo(PDO *pdo);
 
@@ -60,6 +63,7 @@ protected slots:
 protected:
     PDO *_pdo;
     bool _enabled;
+
     QList<NodeObjectId> _nodeListMapping;
     QList<QString> _nodeListName;
     QList<QColor> _nodeListColor;
@@ -75,6 +79,10 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dragLeaveEvent(QDragLeaveEvent *event) override;
+
+    // QObject interface
+public:
+    bool event(QEvent *event) override;
 };
 
 #endif // PDOMAPPINGVIEW_H
