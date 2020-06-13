@@ -20,6 +20,8 @@
 
 #include "pdomappingpainter.h"
 
+#include "services/pdo.h"
+
 #include <QDebug>
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
@@ -30,6 +32,7 @@ PDOMappingView::PDOMappingView(QWidget *parent)
     : QWidget(parent)
 {
     _pdo = nullptr;
+    _enabled = true;
     _dragBitPos = -1;
     setAcceptDrops(true);
     setMaximumHeight(QFontMetrics(font()).height() * 5);
@@ -84,6 +87,8 @@ void PDOMappingView::setPdo(PDO *pdo)
     if (_pdo)
     {
         connect(_pdo, &PDO::mappingChanged, this, &PDOMappingView::updateMapping);
+        connect(_pdo, &PDO::enabledChanged, this, &PDOMappingView::updateEnabled);
+        _enabled = _pdo->isEnabled();
         updateMapping();
     }
 }
@@ -112,7 +117,7 @@ void PDOMappingView::paintEvent(QPaintEvent *event)
 
     PDOMappingPainter painter(this);
     QRect rectPdo = rect().adjusted(1, 1, -1, -1);
-    painter.drawListMapping(rectPdo, _nodeListMapping, _nodeListName, _nodeListColor);
+    painter.drawListMapping(rectPdo, _nodeListMapping, _nodeListName, _nodeListColor, _enabled);
 
     if (_dragBitPos >= 0)
     {
@@ -146,6 +151,12 @@ void PDOMappingView::updateMapping()
         }
         setNodeListMapping(nodeListMapping);
     }
+}
+
+void PDOMappingView::updateEnabled(bool enabled)
+{
+    _enabled = enabled;
+    update();
 }
 
 void PDOMappingView::dropEvent(QDropEvent *event)

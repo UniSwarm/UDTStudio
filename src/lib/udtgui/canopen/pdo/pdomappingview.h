@@ -23,7 +23,9 @@
 
 #include <QWidget>
 
-#include "services/pdo.h"
+#include "nodeobjectid.h"
+
+class PDO;
 
 class UDTGUI_EXPORT PDOMappingView : public QWidget
 {
@@ -53,9 +55,11 @@ public:
 
 protected slots:
     void updateMapping();
+    void updateEnabled(bool enabled);
 
 protected:
     PDO *_pdo;
+    bool _enabled;
     QList<NodeObjectId> _nodeListMapping;
     QList<QString> _nodeListName;
     QList<QColor> _nodeListColor;

@@ -37,7 +37,8 @@ public:
     void drawListMapping(const QRect &rect,
                          const QList<NodeObjectId> &nodeListMapping,
                          const QList<QString> &nodeListName = QList<QString>(),
-                         const QList<QColor> &nodeListColor = QList<QColor>());
+                         const QList<QColor> &nodeListColor = QList<QColor>(),
+                         bool enabled = true);
 
     void drawMapping(const QRect &objRect,
                      const NodeObjectId &nodeObjectId,

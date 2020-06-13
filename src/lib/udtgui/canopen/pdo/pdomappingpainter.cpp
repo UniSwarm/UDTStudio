@@ -55,7 +55,7 @@ void PDOMappingPainter::drawDragPos(const QRect &rect, double pos)
     drawPolygon(arrow);
 }
 
-void PDOMappingPainter::drawListMapping(const QRect &rect, const QList<NodeObjectId> &nodeListMapping, const QList<QString> &nodeListName, const QList<QColor> &nodeListColor)
+void PDOMappingPainter::drawListMapping(const QRect &rect, const QList<NodeObjectId> &nodeListMapping, const QList<QString> &nodeListName, const QList<QColor> &nodeListColor, bool enabled)
 {
     setViewport(rect);
 
@@ -90,6 +90,14 @@ void PDOMappingPainter::drawListMapping(const QRect &rect, const QList<NodeObjec
         if (i < nodeListColor.count())
         {
             color = nodeListColor.at(i);
+        }
+        if (!enabled)
+        {
+            int h, s, v;
+            color.getHsv(&h, &s, &v);
+            v /= 4;
+            s /= 4;
+            color.setHsv(h, s, v);
         }
 
         drawMapping(objRect.toRect(), objId, name, color);
