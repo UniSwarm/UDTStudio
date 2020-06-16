@@ -11,6 +11,7 @@ P402VlWidget::P402VlWidget(QWidget *parent) : QWidget(parent)
     _node = nullptr;
     createWidgets();
     _controlWordObjectId = 0x6040;
+    _statusWordObjectId = 0x6041;
     _vlVelocityDemandObjectId = 0x6043;
     _vlVelocityActualObjectId = 0x6044;
     _vlTargetVelocityObjectId = 0x6042;
