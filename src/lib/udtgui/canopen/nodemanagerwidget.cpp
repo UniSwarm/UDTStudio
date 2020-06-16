@@ -22,7 +22,7 @@
 #include <QDebug>
 
 #include "services/services.h"
-#include "widgetDebug/widgetdebug.h"
+
 
 NodeManagerWidget::NodeManagerWidget(QWidget *parent)
     : NodeManagerWidget(nullptr, parent)
@@ -33,6 +33,8 @@ NodeManagerWidget::NodeManagerWidget(Node *node, QWidget *parent)
     : QWidget(parent)
 {
     _node = nullptr;
+    _widgetDebug = nullptr;
+    _action402 = nullptr;
     createWidgets();
     setNode(node);
 
@@ -62,8 +64,13 @@ void NodeManagerWidget::setNode(Node *node)
         connect(_node, &Node::statusChanged, this, &NodeManagerWidget::updateData);
         if ((_node->profileNumber()) == 0x192)
         {
-            WidgetDebug *widgetdebug = new WidgetDebug(_node);
-            widgetdebug->show();
+            _widgetDebug = new WidgetDebug(_node);
+            _action402->setVisible(true);
+
+        }
+        else if (_action402)
+        {
+            _action402->setVisible(false);
         }
     }
     _groupBox->setEnabled(_node);
@@ -120,6 +127,17 @@ void NodeManagerWidget::resetNode()
     }
 }
 
+void NodeManagerWidget::displayMode()
+{
+    if (_node)
+    {
+        if (_widgetDebug)
+        {
+            _widgetDebug->show();
+        }
+    }
+}
+
 void NodeManagerWidget::createWidgets()
 {
     QAction *action;
@@ -164,7 +182,15 @@ void NodeManagerWidget::createWidgets()
     action->setStatusTip(tr("Request node to reset all values"));
     connect(action, &QAction::triggered, this, &NodeManagerWidget::resetNode);
 
+    _action402 = new QAction();
+    _action402->setCheckable(true);
+    _action402->setIcon(QIcon(":/icons/img/icons8-stepper-motor.png"));
+    _action402->setStatusTip(tr("402 Management"));
+    connect(_action402, &QAction::triggered, this, &NodeManagerWidget::displayMode);
+
     _toolBar->addActions(groupNmt->actions());
+    _toolBar->addSeparator();
+    _toolBar->addAction(_action402);
     layoutGroupBox->addRow(_toolBar);
 
     _nodeNameEdit = new QLineEdit();
