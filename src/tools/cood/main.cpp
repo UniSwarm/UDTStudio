@@ -28,6 +28,7 @@
 #include "writer/dcfwriter.h"
 #include "writer/edswriter.h"
 #include "generator/texgenerator.h"
+#include "generator/csvgenerator.h"
 
 /**
  * @brief main
@@ -125,6 +126,11 @@ int main(int argc, char *argv[])
         TexGenerator texGenerator;
         texGenerator.generate(deviceDescription, outputFile);
     }
+    else if (outSuffix == "csv" && deviceDescription)
+    {
+        CsvGenerator csvGenerator;
+        csvGenerator.generate(deviceDescription, outputFile);
+    }
     else if (QFileInfo(outputFile).isDir())
     {
         cgenerator.generateC(deviceConfiguration, QString(outputFile + "/od_data.c"));
@@ -135,7 +141,7 @@ int main(int argc, char *argv[])
     {
         delete deviceDescription;
         delete deviceConfiguration;
-        out << "error (4): invalid output file format, .c, .h, .dcf, .eds or .tex accepted" << endl;
+        out << "error (4): invalid output file format, .c, .h, .dcf, .eds, .csv or .tex accepted" << endl;
         return -4;
     }
     out << "nodeId" << nodeid;

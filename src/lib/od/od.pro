@@ -28,7 +28,8 @@ HEADERS += \
     $$PWD/parser/devicedescriptionparser.h \
     $$PWD/parser/edsparser.h \
     $$PWD/db/oddb.h \
-    $$PWD/db/odindexdb.h
+    $$PWD/db/odindexdb.h \
+    $$PWD/generator/csvgenerator.h
 
 SOURCES += \
     $$PWD/model/index.cpp \
@@ -50,4 +51,5 @@ SOURCES += \
     $$PWD/parser/devicedescriptionparser.cpp \
     $$PWD/parser/edsparser.cpp \
     $$PWD/db/oddb.cpp \
-    $$PWD/db/odindexdb.cpp
+    $$PWD/db/odindexdb.cpp \
+    $$PWD/generator/csvgenerator.cpp
