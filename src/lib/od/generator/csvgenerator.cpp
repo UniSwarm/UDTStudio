@@ -177,7 +177,7 @@ void CsvGenerator::writeRecord(Index *index, QTextStream *out) const
         *out << QString::number(index->index(), base).toUpper() << ","; // index
         *out << ",";                                                   // subNumber
         *out << subIndex->subIndex() << ",";                            // subIndex
-        QString name = index->name();
+        QString name = subIndex->name();
         *out << name.replace("_"," ") << ",";                           // Name
         *out << index->objectTypeStr(Index::Object::VAR) << ",";        // objectType
         *out << subIndex->dataTypeStr(subIndex->dataType()) << ",";     // dataType
@@ -264,8 +264,8 @@ QString CsvGenerator::pdoToString(uint8_t accessType) const
 {
     if ((accessType & SubIndex::TPDO) == SubIndex::TPDO || (accessType & SubIndex::RPDO) == SubIndex::RPDO)
     {
-        return QString::number(1);
+        return "yes";
     }
 
-    return QString::number(0);
+    return "-";
 }
