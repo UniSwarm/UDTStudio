@@ -38,7 +38,8 @@ HEADERS += \
     $$PWD/canopen/pdo/pdomappingwidget.h \
     $$PWD/canopen/widgetDebug/widgetdebug.h \
     $$PWD/canopen/widgetDebug/p402optionwidget.h \
-    $$PWD/canopen/widgetDebug/p402vlwidget.h
+    $$PWD/canopen/widgetDebug/p402vlwidget.h \
+    $$PWD/canopen/widgetDebug/p402ipwidget.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -70,7 +71,8 @@ SOURCES += \
     $$PWD/canopen/pdo/pdomappingwidget.cpp \
     $$PWD/canopen/widgetDebug/widgetdebug.cpp \
     $$PWD/canopen/widgetDebug/p402optionwidget.cpp \
-    $$PWD/canopen/widgetDebug/p402vlwidget.cpp
+    $$PWD/canopen/widgetDebug/p402vlwidget.cpp \
+    $$PWD/canopen/widgetDebug/p402ipwidget.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 

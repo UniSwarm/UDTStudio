@@ -65,7 +65,6 @@ class P402IpWidget : public QWidget, public NodeOdSubscriber
     quint16 _ipQuickStopDecelerationObjectId;
 
     int _iteratorForSendDataRecord;
-    QTimer _ipSendDataRecordTimer;
     QStringList _listDataRecord;
 
     enum ControlWordIP : quint16

@@ -24,5 +24,6 @@
     </qresource>
     <qresource prefix="/diagram">
         <file>img/402VLDiagram.png</file>
+        <file>img/402IPDiagram.png</file>
     </qresource>
 </RCC>
