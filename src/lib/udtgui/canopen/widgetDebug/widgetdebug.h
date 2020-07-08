@@ -23,6 +23,7 @@
 
 #include "nodeodsubscriber.h"
 #include "p402vlwidget.h"
+#include "p402ipwidget.h"
 #include "p402optionwidget.h"
 #include <QWidget>
 
@@ -34,6 +35,7 @@
 #include <QToolBar>
 #include <QSlider>
 #include <QPushButton>
+#include <QStackedWidget>
 
 class WidgetDebug : public QWidget, public NodeOdSubscriber
 {
@@ -84,9 +86,13 @@ private:
     quint16 cmdControlWord;
     quint16 _controlWordObjectId;
     quint16 _statusWordObjectId;
+    quint16 _modesOfOperationObjectId;
+    quint16 _modesOfOperationDisplayObjectId;
 
     P402OptionWidget *_p402Option;
+    QStackedWidget *_stackedWidget;
     P402VlWidget *_p402vl;
+    P402IpWidget *_p402ip;
 
     QToolBar *_nmtToolBar;
     QToolBar *_timerToolBar;
@@ -111,6 +117,7 @@ private:
 
     void manageNotificationControlWordObject(SDO::FlagsRequest flags);
     void manageNotificationStatusWordobject();
+    void manageModeOfOperationObject();
 
     void setCheckableStateMachine(int id);
     void controlWordHaltClicked();

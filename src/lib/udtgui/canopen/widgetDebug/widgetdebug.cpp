@@ -28,6 +28,7 @@
 #include <QRadioButton>
 #include <QSlider>
 #include <QDir>
+
 #include "canopen/datalogger/dataloggerwidget.h"
 
 WidgetDebug::WidgetDebug(QWidget *parent)
@@ -46,11 +47,15 @@ WidgetDebug::WidgetDebug(Node *node, QWidget *parent)
 
     _controlWordObjectId = 0x6040;
     _statusWordObjectId = 0x6041;
+    _modesOfOperationObjectId = 0x6060;
+    _modesOfOperationDisplayObjectId = 0x6061;
 
     createWidgets();
     setCheckableStateMachine(2);
     registerObjId({_controlWordObjectId, 0x00});
     registerObjId({_statusWordObjectId, 0x00});
+    registerObjId({_modesOfOperationObjectId, 0x00});
+    registerObjId({_modesOfOperationDisplayObjectId, 0x00});
 
     setNode(node);
 }
@@ -83,6 +88,7 @@ void WidgetDebug::setNode(Node *node)
         connect(_node, &Node::statusChanged, this, &WidgetDebug::updateData);
         _node->readObject(_statusWordObjectId, 0x0);
         _node->readObject(_controlWordObjectId, 0x00);
+        _node->readObject(_modesOfOperationDisplayObjectId, 0x00);
 
         if (_node->status() != Node::STARTED)
         {
@@ -90,6 +96,7 @@ void WidgetDebug::setNode(Node *node)
         }
         _p402Option->setNode(_node);
         _p402vl->setNode(_node);
+        _p402ip->setNode(_node);
     }
 }
 
@@ -380,6 +387,19 @@ void WidgetDebug::manageNotificationStatusWordobject()
     }
 }
 
+void WidgetDebug::manageModeOfOperationObject()
+{
+    quint16 mode = static_cast<quint16>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
+    if (mode == 7)
+    {
+        _stackedWidget->setCurrentIndex(1);
+    }
+    else if(mode == 2)
+    {
+        _stackedWidget->setCurrentIndex(0);
+    }
+}
+
 void WidgetDebug::setCheckableStateMachine(int id)
 {
     for (int i = 1; i <= 8; i++)
@@ -544,11 +564,16 @@ void WidgetDebug::createWidgets()
 
     _p402Option = new P402OptionWidget() ;
     _p402vl = new P402VlWidget();
+    _p402ip = new P402IpWidget();
+    _stackedWidget = new QStackedWidget;
+    _stackedWidget->addWidget(_p402vl);
+    _stackedWidget->addWidget(_p402ip);
+
     QHBoxLayout *hBoxLayout = new QHBoxLayout();
     hBoxLayout->setMargin(0);
     hBoxLayout->addLayout(Layout);
     hBoxLayout->addWidget(_p402Option);
-    hBoxLayout->addWidget(_p402vl);
+    hBoxLayout->addWidget(_stackedWidget);
 
     setLayout(hBoxLayout);
 }
@@ -578,7 +603,7 @@ void WidgetDebug::setTimer(int ms)
 void WidgetDebug::readData()
 {
     _node->readObject(_statusWordObjectId, 0x0);
-    _p402vl->readData();
+    _p402ip->readData();
 }
 
 void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
@@ -594,6 +619,14 @@ void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     if (objId.index == _statusWordObjectId && objId.subIndex == 0x00)
     {
         manageNotificationStatusWordobject();
+    }
+    if (objId.index == _modesOfOperationObjectId)
+    {
+        _node->readObject(_modesOfOperationDisplayObjectId, 0x00);
+    }
+    if (objId.index == _modesOfOperationDisplayObjectId)
+    {
+        manageModeOfOperationObject();
     }
 }
 
