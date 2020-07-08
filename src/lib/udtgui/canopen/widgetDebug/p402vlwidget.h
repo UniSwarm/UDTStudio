@@ -55,28 +55,6 @@ private:
         CW_Halt = 0x100
     };
 
-    QSpinBox *_logTimerSpinBox;
-    QAction *_startStopAction;
-
-    QLabel *_controlWordLabel;
-    QLabel *_statusWordRawLabel;
-    QLabel *_statusWordLabel;
-    QLabel *_voltageEnabledLabel;
-    QLabel *_warningLabel;
-    QLabel *_remoteLabel;
-    QLabel *_targetReachedLabel;
-    QLabel *_internalLimitActiveLabel;
-    QLabel *_operationModeSpecificLabel;
-    QLabel *_manufacturerSpecificLabel;
-
-    QButtonGroup *_stateMachineGroup;
-    QButtonGroup *_abortConnectionOptionGroup;
-    QButtonGroup *_quickStopOptionGroup;
-    QButtonGroup *_shutdownOptionGroup;
-    QButtonGroup *_disableOptionGroup;
-    QButtonGroup *_haltOptionGroup;
-    QButtonGroup *_faultReactionOptionGroup;
-
     // VL MODE
     QButtonGroup *_vlEnableRampButtonGroup;
     QButtonGroup *_vlUnlockRampButtonGroup;
