@@ -255,19 +255,9 @@ void P402IpWidget::ipQuickStopDecelerationFinished()
 void P402IpWidget::ipClearBufferClicked()
 {
     quint8 value = 0;
-    _clearBufferPushButton->setCheckable(true);
-    if (_clearBufferPushButton->isChecked())
-    {
-        value = 0;
-        _node->writeObject(0x60C4, 0x06, QVariant(value));
-        _clearBufferPushButton->setChecked(true);
-    }
-    else
-    {
-        value = 1;
-        _node->writeObject(0x60C4, 0x06, QVariant(value));
-        _clearBufferPushButton->setChecked(false);
-    }
+    _node->writeObject(0x60C4, 0x06, QVariant(value));
+    value = 1;
+    _node->writeObject(0x60C4, 0x06, QVariant(value));
 }
 
 void P402IpWidget::ipEnableRampClicked(int id)
@@ -605,18 +595,6 @@ void P402IpWidget::refreshData(quint16 object)
     int value;
     if (_node->nodeOd()->indexExist(object))
     {
-        if (object == _ipDataConfigurationObjectId)
-        {
-            value = _node->nodeOd()->value(object, 6).toInt();
-            if (value == 0)
-            {
-                _clearBufferPushButton->setChecked(true);
-            }
-            else
-            {
-                _clearBufferPushButton->setChecked(false);
-            }
-        }
         if (object == _ipPositionDemandValueObjectId)
         {
             value = _node->nodeOd()->value(object).toInt();
