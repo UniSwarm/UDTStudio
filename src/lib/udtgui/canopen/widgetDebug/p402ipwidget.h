@@ -1,35 +1,35 @@
 #ifndef P402IP_H
 #define P402IP_H
 
-#include <QWidget>
 #include "../../udtgui_global.h"
-#include "nodeodsubscriber.h"
 #include "node.h"
+#include "nodeodsubscriber.h"
+#include <QButtonGroup>
 #include <QGroupBox>
 #include <QLabel>
-#include <QButtonGroup>
-#include <QSpinBox>
-#include <QSlider>
-#include <QPushButton>
 #include <QLineEdit>
+#include <QPushButton>
+#include <QSlider>
+#include <QSpinBox>
+#include <QWidget>
 
 class P402IpWidget : public QWidget, public NodeOdSubscriber
 {
     Q_OBJECT
-  public:
+public:
     P402IpWidget(QWidget *parent = nullptr);
     ~P402IpWidget() override;
 
     Node *node() const;
 
     void readData();
-  signals:
+signals:
 
-  public slots:
+public slots:
     void setNode(Node *value);
     void updateData();
-  private:
 
+private:
     Node *_node;
 
     void createWidgets();
@@ -151,7 +151,7 @@ class P402IpWidget : public QWidget, public NodeOdSubscriber
     void refreshData(quint16 object);
 
     // NodeOdSubscriber interface
-  protected:
+protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 

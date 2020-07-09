@@ -6,7 +6,8 @@
 #include <QPushButton>
 #include <QRadioButton>
 
-P402VlWidget::P402VlWidget(QWidget *parent) : QWidget(parent)
+P402VlWidget::P402VlWidget(QWidget *parent)
+    : QWidget(parent)
 {
     _node = nullptr;
     createWidgets();
@@ -96,7 +97,6 @@ void P402VlWidget::updateData()
             _node->readObject(_vlSetPointFactorObjectId, 2);
             _node->readObject(_vlDimensionFactorObjectId, 1);
             _node->readObject(_vlDimensionFactorObjectId, 2);
-
         }
         else
         {
@@ -104,7 +104,6 @@ void P402VlWidget::updateData()
         }
     }
 }
-
 
 void P402VlWidget::vlTargetVelocitySpinboxFinished()
 {
@@ -450,7 +449,6 @@ void P402VlWidget::createWidgets()
     setLayout(layout);
 }
 
-
 void P402VlWidget::dataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
@@ -477,7 +475,6 @@ void P402VlWidget::manageNotificationControlWordObject(SDO::FlagsRequest flags)
 {
     if (flags == SDO::FlagsRequest::Error)
     {
-
     }
     quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toInt());
     _cmdControlWord = controlWord;

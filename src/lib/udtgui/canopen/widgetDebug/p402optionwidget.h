@@ -1,11 +1,11 @@
 #ifndef P402OPTION_H
 #define P402OPTION_H
 
-#include <QWidget>
 #include "../../udtgui_global.h"
-#include "nodeodsubscriber.h"
 #include "node.h"
+#include "nodeodsubscriber.h"
 #include <QButtonGroup>
+#include <QWidget>
 
 class P402OptionWidget : public QWidget, public NodeOdSubscriber
 {
@@ -28,7 +28,6 @@ public slots:
     void faultReactionOptionClicked(int id);
 
 private:
-
     Node *_node;
 
     quint16 _controlWordObjectId;
@@ -52,7 +51,7 @@ private:
     void createWidgets();
 
     // NodeOdSubscriber interface
-  protected:
+protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 

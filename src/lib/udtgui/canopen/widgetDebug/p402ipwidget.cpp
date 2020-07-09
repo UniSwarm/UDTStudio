@@ -3,13 +3,14 @@
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "services/services.h"
 #include <QFormLayout>
+#include <QLineEdit>
 #include <QPushButton>
 #include <QRadioButton>
-#include <QLineEdit>
-#include <QStringList>
 #include <QString>
+#include <QStringList>
 
-P402IpWidget::P402IpWidget(QWidget *parent) : QWidget(parent)
+P402IpWidget::P402IpWidget(QWidget *parent)
+    : QWidget(parent)
 {
     _node = nullptr;
     createWidgets();
@@ -134,7 +135,6 @@ void P402IpWidget::updateData()
             _node->readObject(_ipMaxDecelerationObjectId, 0);
 
             _node->readObject(_ipQuickStopDecelerationObjectId, 0);
-
         }
         else
         {
@@ -335,7 +335,6 @@ void P402IpWidget::createWidgets()
     ipLayout->addRow(ipTimePeriodlayout);
     connect(_ipTimePeriodUnitSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipTimePeriodUnitEditingFinished);
     connect(_ipTimePeriodIndexSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipTimePeriodIndexEditingFinished);
-
 
     _clearBufferPushButton = new QPushButton(tr("Clear Buffer"));
     _clearBufferPushButton->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
@@ -567,7 +566,6 @@ void P402IpWidget::createWidgets()
     setLayout(layout);
 }
 
-
 void P402IpWidget::dataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
@@ -578,10 +576,10 @@ void P402IpWidget::dataLogger()
 
 void P402IpWidget::pdoMapping()
 {
-//    QList<NodeObjectId> ipRpdoObjectList = {{_node->busId(), _node->nodeId(), _controlWordObjectId, 0x0, QMetaType::Type::UShort},
-//                                            {_node->busId(), _node->nodeId(), _ipTargetVelocityObjectId, 0x0, QMetaType::Type::Short}};
+    //    QList<NodeObjectId> ipRpdoObjectList = {{_node->busId(), _node->nodeId(), _controlWordObjectId, 0x0, QMetaType::Type::UShort},
+    //                                            {_node->busId(), _node->nodeId(), _ipTargetVelocityObjectId, 0x0, QMetaType::Type::Short}};
 
-//    _node->rpdos().at(0)->writeMapping(ipRpdoObjectList);
+    //    _node->rpdos().at(0)->writeMapping(ipRpdoObjectList);
     QList<NodeObjectId> ipTpdoObjectList = {{_node->busId(), _node->nodeId(), _statusWordObjectId, 0x0, QMetaType::Type::UShort},
                                             {_node->busId(), _node->nodeId(), _ipPositionDemandValueObjectId, 0x0, QMetaType::Type::Short}};
 
@@ -592,7 +590,6 @@ void P402IpWidget::manageNotificationControlWordObject(SDO::FlagsRequest flags)
 {
     if (flags == SDO::FlagsRequest::Error)
     {
-
     }
     quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toInt());
     _cmdControlWord = controlWord;
@@ -619,7 +616,6 @@ void P402IpWidget::refreshData(quint16 object)
             {
                 _clearBufferPushButton->setChecked(false);
             }
-
         }
         if (object == _ipPositionDemandValueObjectId)
         {
@@ -692,7 +688,7 @@ void P402IpWidget::refreshData(quint16 object)
         if (object == _ipProfileDecelerationObjectId)
         {
             value = _node->nodeOd()->value(object).toInt();
-             _ipProfileDecelerationSpinBox->setValue(value);
+            _ipProfileDecelerationSpinBox->setValue(value);
         }
         if (object == _ipMaxDecelerationObjectId)
         {

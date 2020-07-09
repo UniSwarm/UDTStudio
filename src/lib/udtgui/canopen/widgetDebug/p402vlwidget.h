@@ -1,33 +1,33 @@
 #ifndef P402VL_H
 #define P402VL_H
 
-#include <QWidget>
 #include "../../udtgui_global.h"
-#include "nodeodsubscriber.h"
 #include "node.h"
+#include "nodeodsubscriber.h"
+#include <QButtonGroup>
 #include <QGroupBox>
 #include <QLabel>
-#include <QButtonGroup>
-#include <QSpinBox>
 #include <QSlider>
+#include <QSpinBox>
+#include <QWidget>
 
 class P402VlWidget : public QWidget, public NodeOdSubscriber
 {
     Q_OBJECT
-  public:
+public:
     P402VlWidget(QWidget *parent = nullptr);
     ~P402VlWidget() override;
 
     Node *node() const;
 
     void readData();
-  signals:
+signals:
 
 public slots:
     void setNode(Node *value);
     void updateData();
-private:
 
+private:
     Node *_node;
 
     void createWidgets();
