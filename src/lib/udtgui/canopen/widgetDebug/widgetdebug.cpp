@@ -18,16 +18,12 @@
 
 #include "widgetdebug.h"
 
-#include <QApplication>
 #include "services/services.h"
+#include <QApplication>
 #include <QButtonGroup>
-#include <QCheckBox>
 #include <QDebug>
 #include <QFormLayout>
 #include <QPushButton>
-#include <QRadioButton>
-#include <QSlider>
-#include <QDir>
 
 #include "canopen/datalogger/dataloggerwidget.h"
 
@@ -83,20 +79,20 @@ void WidgetDebug::setNode(Node *node)
 
     if (_node)
     {
-        setWindowTitle("402 : " + _node->name() +  ", Status :" + _node->statusStr());
+        setWindowTitle("402 : " + _node->name() + ", Status :" + _node->statusStr());
 
         connect(_node, &Node::statusChanged, this, &WidgetDebug::updateData);
         _node->readObject(_statusWordObjectId, 0x0);
         _node->readObject(_controlWordObjectId, 0x00);
         _node->readObject(_modesOfOperationDisplayObjectId, 0x00);
 
-        if (_node->status() != Node::STARTED)
-        {
-            //this->setEnabled(false);
-        }
         _p402Option->setNode(_node);
         _p402vl->setNode(_node);
         _p402ip->setNode(_node);
+        _modeComboBox->insertItem(0, "2 Velocity (VL)");
+        _modeComboBox->insertItem(1, "7 Interpolated position (IP)");
+
+        updateData();
     }
 }
 
@@ -104,15 +100,26 @@ void WidgetDebug::updateData()
 {
     if (_node)
     {
-        this->setWindowTitle("402 : " + _node->name() +  ", Status :" + _node->statusStr());
+        this->setWindowTitle("402 : " + _node->name() + ", Status :" + _node->statusStr());
         if (_node->status() == Node::STARTED)
         {
-            this->setEnabled(true);
+            _stackedWidget->setEnabled(true);
             _node->readObject(_controlWordObjectId, 0x00);
+            _timer.start(_logTimerSpinBox->value());
+            _modeGroupBox->setEnabled(true);
+            _stateMachineGroupBox->setEnabled(true);
+            _controlWordGroupBox->setEnabled(true);
+            _statusWordGroupBox->setEnabled(true);
         }
-        else
+        else if ((_node->status() == Node::STOPPED) || (_node->status() == Node::PREOP))
         {
-            // this->setEnabled(false);
+            _timer.stop();
+            _stackedWidget->setEnabled(false);
+            _nmtToolBar->setEnabled(true);
+            _modeGroupBox->setEnabled(false);
+            _stateMachineGroupBox->setEnabled(false);
+            _controlWordGroupBox->setEnabled(false);
+            _statusWordGroupBox->setEnabled(false);
         }
     }
 }
@@ -129,6 +136,7 @@ void WidgetDebug::start()
     if (_node)
     {
         _node->sendStart();
+        _timer.start(_logTimerSpinBox->value());
     }
 }
 
@@ -137,6 +145,7 @@ void WidgetDebug::stop()
     if (_node)
     {
         _node->sendStop();
+        _timer.stop();
     }
 }
 
@@ -155,6 +164,43 @@ void WidgetDebug::resetNode()
         _node->sendResetNode();
     }
 }
+
+void WidgetDebug::setTimer(int ms)
+{
+    _timer.start(ms);
+}
+
+void WidgetDebug::readData()
+{
+    _node->readObject(_statusWordObjectId, 0x0);
+    _p402ip->readData();
+}
+void WidgetDebug::displayOption402()
+{
+    if (_stackedWidget->currentWidget() == _p402Option)
+    {
+        manageModeOfOperationObject(SDO::FlagsRequest::Sdo);
+    }
+    else
+    {
+        _stackedWidget->setCurrentWidget(_p402Option);
+    }
+}
+void WidgetDebug::modeIndexChanged(int id)
+{
+    qint8 mode = 0;
+    if (id == 0)
+    {
+        mode = 2;
+        _node->writeObject(_modesOfOperationObjectId, 0x00, QVariant(mode));
+    }
+    if (id == 1)
+    {
+        mode = 7;
+        _node->writeObject(_modesOfOperationObjectId, 0x00, QVariant(mode));
+    }
+}
+
 void WidgetDebug::stateMachineClicked(int id)
 {
     cmdControlWord = (cmdControlWord & ~CW_Mask);
@@ -243,13 +289,14 @@ void WidgetDebug::manageNotificationControlWordObject(SDO::FlagsRequest flags)
     }
     quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toInt());
     cmdControlWord = controlWord;
+    _node->readObject(_statusWordObjectId, 0x0);
 }
 
-void WidgetDebug::manageNotificationStatusWordobject()
+void WidgetDebug::manageNotificationStatusWordobject(SDO::FlagsRequest flags)
 {
-    if (!_node)
+    if (flags == SDO::FlagsRequest::Error)
     {
-        return;
+        _controlWordLabel->setText("Error SDO : 0x" + QString::number(_node->nodeOd()->errorObject(_controlWordObjectId, 0x0), 16));
     }
 
     _statusWordRawLabel->setText("0x" + QString::number(_node->nodeOd()->value(_statusWordObjectId, 0x00).toUInt(), 16));
@@ -260,7 +307,6 @@ void WidgetDebug::manageNotificationStatusWordobject()
         stateMachineCurrent = STATE_NotReadyToSwitchOn;
         _statusWordLabel->setText(tr("NotReadyToSwitchOn"));
         setCheckableStateMachine(STATE_NotReadyToSwitchOn);
-
     }
     if ((state & Mask1) == SW_StateSwitchOnDisabled)
     {
@@ -273,7 +319,6 @@ void WidgetDebug::manageNotificationStatusWordobject()
         _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
         _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
         _haltPushButton->setEnabled(false);
-
     }
     if ((state & Mask2) == SW_StateReadyToSwitchOn)
     {
@@ -387,16 +432,23 @@ void WidgetDebug::manageNotificationStatusWordobject()
     }
 }
 
-void WidgetDebug::manageModeOfOperationObject()
+void WidgetDebug::manageModeOfOperationObject(SDO::FlagsRequest flags)
 {
+    if (flags == SDO::FlagsRequest::Error)
+    {
+        _controlWordLabel->setText("Error SDO : 0x" + QString::number(_node->nodeOd()->errorObject(_controlWordObjectId, 0x0), 16));
+    }
+
     quint16 mode = static_cast<quint16>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
     if (mode == 7)
     {
-        _stackedWidget->setCurrentIndex(1);
+        _stackedWidget->setCurrentWidget(_p402ip);
+        _modeComboBox->setCurrentIndex(1);
     }
-    else if(mode == 2)
+    else if (mode == 2)
     {
-        _stackedWidget->setCurrentIndex(0);
+        _stackedWidget->setCurrentWidget(_p402vl);
+        _modeComboBox->setCurrentIndex(0);
     }
 }
 
@@ -410,11 +462,10 @@ void WidgetDebug::setCheckableStateMachine(int id)
     _stateMachineGroup->button(id)->setChecked(true);
 }
 
-
 void WidgetDebug::createWidgets()
 {
-    QLayout *Layout = new QVBoxLayout();
-    Layout->setMargin(0);
+    QLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
 
     // toolbar nmt
     _nmtToolBar = new QToolBar(tr("Node commands"));
@@ -450,30 +501,38 @@ void WidgetDebug::createWidgets()
     action->setIcon(QIcon(":/icons/img/icons8-reset.png"));
     action->setStatusTip(tr("Request node to reset all values"));
     connect(action, &QAction::triggered, this, &WidgetDebug::resetNode);
-
     _nmtToolBar->addActions(groupNmt->actions());
-    Layout->addWidget(_nmtToolBar);
-    // toolbar TIMER
-    _timerToolBar = new QToolBar(tr("Read Status Word"));
-    // start stop
-    _startStopAction = _timerToolBar->addAction(tr("Start / stop"));
-    _startStopAction->setCheckable(true);
-    _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
-    _startStopAction->setToolTip(tr("Start or stop"));
-    connect(_startStopAction, &QAction::triggered, this, &WidgetDebug::toggleStart);
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
     _logTimerSpinBox->setValue(500);
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
-    _timerToolBar->addWidget(_logTimerSpinBox);
-    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),[=](int i){ setTimer(i); });
+    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setTimer(i); });
     connect(&_timer, &QTimer::timeout, this, &WidgetDebug::readData);
-    Layout->addWidget(_timerToolBar);
+    _nmtToolBar->addWidget(_logTimerSpinBox);
+
+    _nmtToolBar->addSeparator();
+
+    QAction *option402 = new QAction();
+    option402->setCheckable(true);
+    option402->setIcon(QIcon(":/icons/img/icons8-settings.png"));
+    option402->setStatusTip(tr("402 Management"));
+    connect(option402, &QAction::triggered, this, &WidgetDebug::displayOption402);
+    _nmtToolBar->addAction(option402);
+
+    layout->addWidget(_nmtToolBar);
+
+    _modeGroupBox = new QGroupBox(tr("Mode"));
+    QFormLayout *modeLayout = new QFormLayout();
+    _modeComboBox = new QComboBox();
+    modeLayout->addRow(tr("Modes of operation (0x6060) :"), _modeComboBox);
+    _modeGroupBox->setLayout(modeLayout);
+    layout->addWidget(_modeGroupBox);
+    connect(_modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int id) { modeIndexChanged(id); });
 
     // Group Box State Machine
-    QGroupBox *stateMachineGroupBox = new QGroupBox(tr("State Machine"));
-    stateMachineGroupBox->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
+    _stateMachineGroupBox = new QGroupBox(tr("State Machine"));
+    _stateMachineGroupBox->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
     QFormLayout *stateMachineLayoutGroupBox = new QFormLayout();
 
     _stateMachineGroup = new QButtonGroup(this);
@@ -508,33 +567,32 @@ void WidgetDebug::createWidgets()
     _stateMachineGroup->addButton(stateFaultPushButton, STATE_Fault);
 
     connect(_stateMachineGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { stateMachineClicked(id); });
-    stateMachineGroupBox->setLayout(stateMachineLayoutGroupBox);
+    _stateMachineGroupBox->setLayout(stateMachineLayoutGroupBox);
     // END Group Box State Machine
 
     // Group Box Control Word
-    QGroupBox *controlWordGroupBox = new QGroupBox(tr("Control Word (0x6040)"));
+    _controlWordGroupBox = new QGroupBox(tr("Control Word (0x6040)"));
     QFormLayout *controlWordLayout = new QFormLayout();
 
     _haltPushButton = new QPushButton(tr("Halt"));
     _haltPushButton->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
     _haltPushButton->setEnabled(false);
     controlWordLayout->addRow(_haltPushButton);
-    controlWordGroupBox->setLayout(controlWordLayout);
+    _controlWordGroupBox->setLayout(controlWordLayout);
     connect(_haltPushButton, &QPushButton::clicked, this, &WidgetDebug::controlWordHaltClicked);
 
     _controlWordLabel = new QLabel();
     controlWordLayout->addRow(tr("ControlWord sended:"), _controlWordLabel);
 
-
     QPushButton *_gotoOEPushButton = new QPushButton(tr("Operation enabled quickly"));
     controlWordLayout->addRow(_gotoOEPushButton);
     connect(_gotoOEPushButton, &QPushButton::clicked, this, &WidgetDebug::gotoStateOEClicked);
 
-    controlWordGroupBox->setLayout(controlWordLayout);
+    _controlWordGroupBox->setLayout(controlWordLayout);
     // END Group Box Control Word
 
     // Group Box Status Word
-    QGroupBox *statusWordGroupBox = new QGroupBox(tr("Status Word (0x6041)"));
+    _statusWordGroupBox = new QGroupBox(tr("Status Word (0x6041)"));
     QFormLayout *statusWordLayout = new QFormLayout();
 
     _statusWordRawLabel = new QLabel();
@@ -555,55 +613,26 @@ void WidgetDebug::createWidgets()
     statusWordLayout->addRow(tr("Operation Mode Specific:"), _operationModeSpecificLabel);
     _manufacturerSpecificLabel = new QLabel();
     statusWordLayout->addRow(tr("Manufacturer Specific:"), _manufacturerSpecificLabel);
-    statusWordGroupBox->setLayout(statusWordLayout);
+    _statusWordGroupBox->setLayout(statusWordLayout);
     // END Group Box Status Word
-    Layout->addWidget(stateMachineGroupBox);
-    Layout->addWidget(controlWordGroupBox);
-    Layout->addWidget(statusWordGroupBox);
+    layout->addWidget(_stateMachineGroupBox);
+    layout->addWidget(_controlWordGroupBox);
+    layout->addWidget(_statusWordGroupBox);
 
-
-    _p402Option = new P402OptionWidget() ;
+    _p402Option = new P402OptionWidget();
     _p402vl = new P402VlWidget();
     _p402ip = new P402IpWidget();
     _stackedWidget = new QStackedWidget;
+    _stackedWidget->addWidget(_p402Option);
     _stackedWidget->addWidget(_p402vl);
     _stackedWidget->addWidget(_p402ip);
 
     QHBoxLayout *hBoxLayout = new QHBoxLayout();
     hBoxLayout->setMargin(0);
-    hBoxLayout->addLayout(Layout);
-    hBoxLayout->addWidget(_p402Option);
+    hBoxLayout->addLayout(layout);
     hBoxLayout->addWidget(_stackedWidget);
 
     setLayout(hBoxLayout);
-}
-
-void WidgetDebug::toggleStart(bool start)
-{
-    if (start)
-    {
-        _startStopAction->setIcon(QIcon(":/icons/img/icons8-stop.png"));
-        _timer.start(_logTimerSpinBox->value());
-    }
-    else
-    {
-        _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
-        _timer.stop();
-    }
-}
-
-void WidgetDebug::setTimer(int ms)
-{
-    if (_startStopAction->isChecked())
-    {
-        _timer.start(ms);
-    }
-}
-
-void WidgetDebug::readData()
-{
-    _node->readObject(_statusWordObjectId, 0x0);
-    _p402ip->readData();
 }
 
 void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
@@ -618,7 +647,7 @@ void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     }
     if (objId.index == _statusWordObjectId && objId.subIndex == 0x00)
     {
-        manageNotificationStatusWordobject();
+        manageNotificationStatusWordobject(flags);
     }
     if (objId.index == _modesOfOperationObjectId)
     {
@@ -626,7 +655,7 @@ void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     }
     if (objId.index == _modesOfOperationDisplayObjectId)
     {
-        manageModeOfOperationObject();
+        manageModeOfOperationObject(flags);
     }
 }
 
@@ -634,6 +663,5 @@ void WidgetDebug::closeEvent(QCloseEvent *event)
 {
     if (event->type() == QEvent::Close)
     {
-
     }
 }

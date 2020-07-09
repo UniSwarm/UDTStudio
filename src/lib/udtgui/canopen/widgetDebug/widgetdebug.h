@@ -21,21 +21,21 @@
 
 #include "../../udtgui_global.h"
 
+#include "node.h"
 #include "nodeodsubscriber.h"
-#include "p402vlwidget.h"
 #include "p402ipwidget.h"
 #include "p402optionwidget.h"
-#include <QWidget>
+#include "p402vlwidget.h"
 
-#include "node.h"
+#include <QButtonGroup>
+#include <QComboBox>
 #include <QGroupBox>
 #include <QLabel>
-#include <QButtonGroup>
-#include <QSpinBox>
-#include <QToolBar>
-#include <QSlider>
 #include <QPushButton>
+#include <QSpinBox>
 #include <QStackedWidget>
+#include <QToolBar>
+#include <QWidget>
 
 class WidgetDebug : public QWidget, public NodeOdSubscriber
 {
@@ -60,7 +60,6 @@ public slots:
 
 private:
     void createWidgets();
-    void toggleStart(bool start);
     void setTimer(int ms);
     void readData();
 
@@ -89,18 +88,24 @@ private:
     quint16 _modesOfOperationObjectId;
     quint16 _modesOfOperationDisplayObjectId;
 
-    P402OptionWidget *_p402Option;
     QStackedWidget *_stackedWidget;
+    P402OptionWidget *_p402Option;
     P402VlWidget *_p402vl;
     P402IpWidget *_p402ip;
 
     QToolBar *_nmtToolBar;
-    QToolBar *_timerToolBar;
     QSpinBox *_logTimerSpinBox;
-    QAction *_startStopAction;
+
+    QGroupBox *_modeGroupBox;
+    QGroupBox *_stateMachineGroupBox;
+    QGroupBox *_controlWordGroupBox;
+    QGroupBox *_statusWordGroupBox;
+
+    QComboBox *_modeComboBox;
 
     QLabel *_controlWordLabel;
     QPushButton *_haltPushButton;
+
     QLabel *_statusWordRawLabel;
     QLabel *_statusWordLabel;
     QLabel *_voltageEnabledLabel;
@@ -110,14 +115,15 @@ private:
     QLabel *_internalLimitActiveLabel;
     QLabel *_operationModeSpecificLabel;
     QLabel *_manufacturerSpecificLabel;
-
     QButtonGroup *_stateMachineGroup;
 
+    void displayOption402();
+    void modeIndexChanged(int id);
     void stateMachineClicked(int id);
 
     void manageNotificationControlWordObject(SDO::FlagsRequest flags);
-    void manageNotificationStatusWordobject();
-    void manageModeOfOperationObject();
+    void manageNotificationStatusWordobject(SDO::FlagsRequest flags);
+    void manageModeOfOperationObject(SDO::FlagsRequest flags);
 
     void setCheckableStateMachine(int id);
     void controlWordHaltClicked();
