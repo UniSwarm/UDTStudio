@@ -84,7 +84,7 @@ void WidgetDebug::setNode(Node *node)
         connect(_node, &Node::statusChanged, this, &WidgetDebug::updateData);
         _node->readObject(_statusWordObjectId, 0x0);
         _node->readObject(_controlWordObjectId, 0x00);
-        _node->readObject(_modesOfOperationDisplayObjectId, 0x00);
+        _node->readObject(_modesOfOperationObjectId, 0x00);
 
         _p402Option->setNode(_node);
         _p402vl->setNode(_node);
