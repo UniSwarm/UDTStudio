@@ -108,11 +108,8 @@ private:
 
     QLabel *_statusWordRawLabel;
     QLabel *_statusWordLabel;
-    QLabel *_voltageEnabledLabel;
+    QLabel *_informationLabel;
     QLabel *_warningLabel;
-    QLabel *_remoteLabel;
-    QLabel *_targetReachedLabel;
-    QLabel *_internalLimitActiveLabel;
     QLabel *_operationModeSpecificLabel;
     QLabel *_manufacturerSpecificLabel;
     QButtonGroup *_stateMachineGroup;
@@ -123,6 +120,7 @@ private:
 
     void manageNotificationControlWordObject(SDO::FlagsRequest flags);
     void manageNotificationStatusWordobject(SDO::FlagsRequest flags);
+    void manageStatusWordInformation();
     void manageModeOfOperationObject(SDO::FlagsRequest flags);
 
     void setCheckableStateMachine(int id);

@@ -173,6 +173,7 @@ void WidgetDebug::setTimer(int ms)
 void WidgetDebug::readData()
 {
     _node->readObject(_statusWordObjectId, 0x0);
+    _p402vl->readData();
     _p402ip->readData();
 }
 void WidgetDebug::displayOption402()
@@ -238,7 +239,7 @@ void WidgetDebug::stateMachineClicked(int id)
     cmdControlWord = (cmdControlWord & ~CW_Halt);
     _haltPushButton->setChecked(false);
     _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
-    _controlWordLabel->setText("0x" + QString::number(cmdControlWord, 16).toUpper());
+    _controlWordLabel->setText(QLatin1String("0x") + QString::number(cmdControlWord, 16).toUpper().rightJustified(4, '0'));
 }
 
 void WidgetDebug::controlWordHaltClicked()
@@ -255,7 +256,7 @@ void WidgetDebug::controlWordHaltClicked()
         _haltPushButton->setChecked(true);
     }
     _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
-    _controlWordLabel->setText("0x" + QString::number(cmdControlWord, 16).toUpper());
+    _controlWordLabel->setText(QLatin1String("0x") + QString::number(cmdControlWord, 16).toUpper().rightJustified(4, '0'));
 }
 
 void WidgetDebug::gotoStateOEClicked()
@@ -299,7 +300,7 @@ void WidgetDebug::manageNotificationStatusWordobject(SDO::FlagsRequest flags)
         _controlWordLabel->setText("Error SDO : 0x" + QString::number(_node->nodeOd()->errorObject(_controlWordObjectId, 0x0), 16));
     }
 
-    _statusWordRawLabel->setText("0x" + QString::number(_node->nodeOd()->value(_statusWordObjectId, 0x00).toUInt(), 16));
+    _statusWordRawLabel->setText(QLatin1String("0x") + QString::number(_node->nodeOd()->value(_statusWordObjectId, 0x00).toUInt(), 16).toUpper().rightJustified(4, '0'));
     quint16 state = static_cast<quint16>(_node->nodeOd()->value(_statusWordObjectId, 0x00).toUInt());
 
     if ((state & Mask1) == SW_StateNotReadyToSwitchOn)
@@ -393,43 +394,67 @@ void WidgetDebug::manageNotificationStatusWordobject(SDO::FlagsRequest flags)
         _haltPushButton->setEnabled(false);
     }
     update();
+    manageStatusWordInformation();
+}
 
-    _voltageEnabledLabel->setText(tr("False"));
+void WidgetDebug::manageStatusWordInformation()
+{
+    quint16 state = static_cast<quint16>(_node->nodeOd()->value(_statusWordObjectId, 0x00).toUInt());
+
+    _informationLabel->setText(tr("False"));
     _warningLabel->setText(tr("False"));
-    _remoteLabel->setText(tr("False"));
-    _targetReachedLabel->setText(tr("False"));
-    _internalLimitActiveLabel->setText(tr("False"));
     _operationModeSpecificLabel->setText("0x0");
     _manufacturerSpecificLabel->setText("0x0");
 
-    if ((state & SW_VoltageEnabled) == SW_VoltageEnabled)
-    {
-        _voltageEnabledLabel->setText(tr("True"));
-    }
-    if ((state & SW_Warning) == SW_Warning)
-    {
-        _warningLabel->setText(tr("True"));
-    }
-    if ((state & SW_Remote) == SW_Remote)
-    {
-        _remoteLabel->setText(tr("True"));
-    }
-    if ((state & SW_TargetReached) == SW_TargetReached)
-    {
-        _targetReachedLabel->setText(tr("True"));
-    }
-    if ((state & SW_InternalLimitActive) == SW_InternalLimitActive)
-    {
-        _internalLimitActiveLabel->setText(tr("True"));
-    }
     if ((state & SW_OperationModeSpecific) == SW_OperationModeSpecific)
     {
-        _operationModeSpecificLabel->setText("0x" + QString::number(state & SW_OperationModeSpecific, 16));
+        _operationModeSpecificLabel->setText("0x" + QString::number(state & SW_OperationModeSpecific, 16).toUpper());
     }
     if ((state & SW_ManufacturerSpecific) == SW_ManufacturerSpecific)
     {
-        _manufacturerSpecificLabel->setText("0x" + QString::number(state & SW_ManufacturerSpecific, 16));
+        _manufacturerSpecificLabel->setText("0x" + QString::number(state & SW_ManufacturerSpecific, 16).toUpper());
     }
+
+    QString text;
+    if ((state & SW_VoltageEnabled) == SW_VoltageEnabled)
+    {
+        text = "Voltage Enabled";
+    }
+
+    if ((state & SW_Remote) == SW_Remote)
+    {
+        if (!text.isEmpty())
+        {
+            text.append(", ");
+        }
+        text.append("Remote");
+    }
+    if ((state & SW_TargetReached) == SW_TargetReached)
+    {
+        if (!text.isEmpty())
+        {
+            text.append(", ");
+        }
+        text.append("Target Reached");
+    }
+    _informationLabel->clear();
+    _informationLabel->setText(text);
+
+    if ((state & SW_InternalLimitActive) == SW_InternalLimitActive)
+    {
+        text = "Internal Limit Active";
+    }
+
+    if ((state & SW_Warning) == SW_Warning)
+    {
+        if (!text.isEmpty())
+        {
+            text.append(", ");
+        }
+        text.append("Warning");
+    }
+    _warningLabel->clear();
+    _warningLabel->setText(text);
 }
 
 void WidgetDebug::manageModeOfOperationObject(SDO::FlagsRequest flags)
@@ -520,8 +545,7 @@ void WidgetDebug::createWidgets()
     connect(option402, &QAction::triggered, this, &WidgetDebug::displayOption402);
     _nmtToolBar->addAction(option402);
 
-    layout->addWidget(_nmtToolBar);
-
+    // Group Box Mode
     _modeGroupBox = new QGroupBox(tr("Mode"));
     QFormLayout *modeLayout = new QFormLayout();
     _modeComboBox = new QComboBox();
@@ -529,6 +553,7 @@ void WidgetDebug::createWidgets()
     _modeGroupBox->setLayout(modeLayout);
     layout->addWidget(_modeGroupBox);
     connect(_modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int id) { modeIndexChanged(id); });
+    // End Group Box State Machine
 
     // Group Box State Machine
     _stateMachineGroupBox = new QGroupBox(tr("State Machine"));
@@ -581,7 +606,7 @@ void WidgetDebug::createWidgets()
     _controlWordGroupBox->setLayout(controlWordLayout);
     connect(_haltPushButton, &QPushButton::clicked, this, &WidgetDebug::controlWordHaltClicked);
 
-    _controlWordLabel = new QLabel();
+    _controlWordLabel = new QLabel("0x0000");
     controlWordLayout->addRow(tr("ControlWord sended:"), _controlWordLabel);
 
     QPushButton *_gotoOEPushButton = new QPushButton(tr("Operation enabled quickly"));
@@ -599,22 +624,19 @@ void WidgetDebug::createWidgets()
     statusWordLayout->addRow(tr("StatusWord raw:"), _statusWordRawLabel);
     _statusWordLabel = new QLabel();
     statusWordLayout->addRow(tr("StatusWord State:"), _statusWordLabel);
-    _voltageEnabledLabel = new QLabel();
-    statusWordLayout->addRow(tr("Voltage Enabled :"), _voltageEnabledLabel);
-    _warningLabel = new QLabel();
-    statusWordLayout->addRow(tr("Warning :"), _warningLabel);
-    _remoteLabel = new QLabel();
-    statusWordLayout->addRow(tr("Remote :"), _remoteLabel);
-    _targetReachedLabel = new QLabel();
-    statusWordLayout->addRow(tr("Target Reached :"), _targetReachedLabel);
-    _internalLimitActiveLabel = new QLabel();
-    statusWordLayout->addRow(tr("Internal Limit Active :"), _internalLimitActiveLabel);
     _operationModeSpecificLabel = new QLabel();
     statusWordLayout->addRow(tr("Operation Mode Specific:"), _operationModeSpecificLabel);
     _manufacturerSpecificLabel = new QLabel();
     statusWordLayout->addRow(tr("Manufacturer Specific:"), _manufacturerSpecificLabel);
+
+    _informationLabel = new QLabel();
+    statusWordLayout->addRow(tr("Information :"), _informationLabel);
+    _warningLabel = new QLabel();
+    _warningLabel->setStyleSheet("QLabel { color : red; }");
+    statusWordLayout->addRow(tr("Warning :"), _warningLabel);
     _statusWordGroupBox->setLayout(statusWordLayout);
     // END Group Box Status Word
+
     layout->addWidget(_stateMachineGroupBox);
     layout->addWidget(_controlWordGroupBox);
     layout->addWidget(_statusWordGroupBox);
@@ -632,7 +654,10 @@ void WidgetDebug::createWidgets()
     hBoxLayout->addLayout(layout);
     hBoxLayout->addWidget(_stackedWidget);
 
-    setLayout(hBoxLayout);
+    QVBoxLayout *vBoxLayout = new QVBoxLayout();
+    vBoxLayout->addWidget(_nmtToolBar);
+    vBoxLayout->addLayout(hBoxLayout);
+    setLayout(vBoxLayout);
 }
 
 void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

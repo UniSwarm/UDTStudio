@@ -528,9 +528,9 @@ void P402IpWidget::createWidgets()
     _ipEnableRampButtonGroup = new QButtonGroup(this);
     _ipEnableRampButtonGroup->setExclusive(true);
     QVBoxLayout *ipEnableRamplayout = new QVBoxLayout();
-    QRadioButton *ip0EnableRamp = new QRadioButton(tr("Disable interpolation"));
+    QRadioButton *ip0EnableRamp = new QRadioButton(tr("0 Disable interpolation"));
     ipEnableRamplayout->addWidget(ip0EnableRamp);
-    QRadioButton *ip1EnableRamp = new QRadioButton(tr("Enable interpolation"));
+    QRadioButton *ip1EnableRamp = new QRadioButton(tr("1 Enable interpolation"));
     ipEnableRamplayout->addWidget(ip1EnableRamp);
     _ipEnableRampButtonGroup->addButton(ip0EnableRamp, 0);
     _ipEnableRampButtonGroup->addButton(ip1EnableRamp, 1);
