@@ -83,6 +83,15 @@ void P402IpWidget::setNode(Node *node)
     {
         connect(_node, &Node::statusChanged, this, &P402IpWidget::updateData);
         updateData();
+        // Init button clear buffer
+        if (_node->nodeOd()->index(_ipDataConfigurationObjectId)->subIndex(0x06)->value().toInt() == 0)
+        {
+            _clearBufferPushButton->setChecked(true);
+        }
+        else
+        {
+            _clearBufferPushButton->setChecked(false);
+        }
     }
 }
 
@@ -264,9 +273,19 @@ void P402IpWidget::ipQuickStopDecelerationFinished()
 void P402IpWidget::ipClearBufferClicked()
 {
     quint8 value = 0;
-    _node->writeObject(0x60C4, 0x06, QVariant(value));
-    value = 1;
-    _node->writeObject(0x60C4, 0x06, QVariant(value));
+
+    if (_clearBufferPushButton->isChecked())
+    {
+        value = 0;
+        _node->writeObject(_ipDataConfigurationObjectId, 0x06, QVariant(value));
+        _clearBufferPushButton->setChecked(false);
+    }
+    else
+    {
+        value = 1;
+        _node->writeObject(_ipDataConfigurationObjectId, 0x06, QVariant(value));
+        _clearBufferPushButton->setChecked(true);
+    }
 }
 
 void P402IpWidget::ipEnableRampClicked(int id)
@@ -336,6 +355,7 @@ void P402IpWidget::createWidgets()
     connect(_ipTimePeriodIndexSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipTimePeriodIndexEditingFinished);
 
     _clearBufferPushButton = new QPushButton(tr("Clear Buffer"));
+    _clearBufferPushButton->setCheckable(true);
     _clearBufferPushButton->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
     ipLayout->addRow(_clearBufferPushButton);
     connect(_clearBufferPushButton, &QPushButton::clicked, this, &P402IpWidget::ipClearBufferClicked);
@@ -701,8 +721,7 @@ void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         manageNotificationControlWordObject(flags);
     }
 
-    if ((objId.index == _ipDataConfigurationObjectId)
-        || (objId.index == _ipPositionDemandValueObjectId)
+    if ((objId.index == _ipPositionDemandValueObjectId)
         || (objId.index == _ipVelocityActualObjectId)
         || (objId.index == _ipTimePeriodObjectId)
         || (objId.index == _ipPositionRangelLimitObjectId)
@@ -732,5 +751,23 @@ void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
             return;
         }
         ipSendDataRecord();
+    }
+    if ((objId.index == _ipDataConfigurationObjectId) && (objId.subIndex == 0x06))
+    {
+        if (flags == SDO::FlagsRequest::Error)
+        {
+            return;
+        }
+        else
+        {
+            if (_clearBufferPushButton->isChecked())
+            {
+                _clearBufferPushButton->setChecked(false);
+            }
+            else
+            {
+                _clearBufferPushButton->setChecked(true);
+            }
+        }
     }
 }
