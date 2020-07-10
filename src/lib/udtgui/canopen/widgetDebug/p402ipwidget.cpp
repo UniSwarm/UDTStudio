@@ -198,58 +198,67 @@ void P402IpWidget::ipSoftwarePositionLimitMaxFinished()
 void P402IpWidget::ipHomeOffsetEditingFinished()
 {
     quint32 value = static_cast<quint32>(_ipHomeOffsetSpinBox->value());
-    _node->writeObject(_ipHomeOffsetObjectId, 0x01, QVariant(value));
+    _node->writeObject(_ipHomeOffsetObjectId, 0x00, QVariant(value));
 }
 void P402IpWidget::ipPolarityEditingFinished()
 {
-    quint32 value = static_cast<quint32>(_ipPolaritySpinBox->value());
-    _node->writeObject(_ipPolarityObjectId, 0x02, QVariant(value));
+    quint8 value = static_cast<quint8>(_node->nodeOd()->index(_ipPolarityObjectId)->subIndex(0)->value().toInt());
+
+    if (_ipPolaritySpinBox->value() == 0)
+    {
+        value = value & 0x7F;
+    }
+    else
+    {
+        value = value | 0x80;
+    }
+    _node->writeObject(_ipPolarityObjectId, 0x00, QVariant(value));
 }
 void P402IpWidget::ipProfileVelocityFinished()
 {
     quint32 value = static_cast<quint32>(_ipProfileVelocitySpinBox->value());
-    _node->writeObject(_ipProfileVelocityObjectId, 0x01, QVariant(value));
+    _node->writeObject(_ipProfileVelocityObjectId, 0x00, QVariant(value));
 }
 void P402IpWidget::ipEndVelocityFinished()
 {
     quint32 value = static_cast<quint32>(_ipEndVelocitySpinBox->value());
-    _node->writeObject(_ipEndVelocityObjectId, 0x02, QVariant(value));
+    _node->writeObject(_ipEndVelocityObjectId, 0x00, QVariant(value));
 }
 void P402IpWidget::ipMaxProfileVelocityFinished()
 {
     quint32 value = static_cast<quint32>(_ipMaxProfileVelocitySpinBox->value());
-    _node->writeObject(_ipMaxProfileVelocityObjectId, 0x01, QVariant(value));
+    _node->writeObject(_ipMaxProfileVelocityObjectId, 0x00, QVariant(value));
 }
 void P402IpWidget::ipMaxMotorSpeedFinished()
 {
     quint32 value = static_cast<quint32>(_ipMaxMotorSpeedSpinBox->value());
-    _node->writeObject(_ipMaxMotorSpeedObjectId, 0x02, QVariant(value));
+    _node->writeObject(_ipMaxMotorSpeedObjectId, 0x00, QVariant(value));
 }
 void P402IpWidget::ipProfileAccelerationFinished()
 {
     quint32 value = static_cast<quint32>(_ipProfileAccelerationSpinBox->value());
-    _node->writeObject(_ipProfileAccelerationObjectId, 0x01, QVariant(value));
+    _node->writeObject(_ipProfileAccelerationObjectId, 0x00, QVariant(value));
 }
 void P402IpWidget::ipMaxAccelerationFinished()
 {
     quint32 value = static_cast<quint32>(_ipMaxAccelerationSpinBox->value());
-    _node->writeObject(_ipMaxAccelerationObjectId, 0x02, QVariant(value));
+    _node->writeObject(_ipMaxAccelerationObjectId, 0x00, QVariant(value));
 }
 
 void P402IpWidget::ipProfileDecelerationFinished()
 {
     quint32 value = static_cast<quint32>(_ipProfileDecelerationSpinBox->value());
-    _node->writeObject(_ipProfileDecelerationObjectId, 0x01, QVariant(value));
+    _node->writeObject(_ipProfileDecelerationObjectId, 0x00, QVariant(value));
 }
 void P402IpWidget::ipMaxDecelerationFinished()
 {
     quint32 value = static_cast<quint32>(_ipMaxDecelerationSpinBox->value());
-    _node->writeObject(_ipMaxDecelerationObjectId, 0x02, QVariant(value));
+    _node->writeObject(_ipMaxDecelerationObjectId, 0x00, QVariant(value));
 }
 void P402IpWidget::ipQuickStopDecelerationFinished()
 {
     quint32 value = static_cast<quint32>(_ipQuickStopDecelerationSpinBox->value());
-    _node->writeObject(_ipQuickStopDecelerationObjectId, 0x02, QVariant(value));
+    _node->writeObject(_ipQuickStopDecelerationObjectId, 0x00, QVariant(value));
 }
 
 void P402IpWidget::ipClearBufferClicked()
@@ -377,11 +386,10 @@ void P402IpWidget::createWidgets()
     connect(_ipHomeOffsetSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipHomeOffsetEditingFinished);
 
     QLayout *ipPolaritylayout = new QVBoxLayout();
-    QLabel *ipPolarityLabel = new QLabel(tr("Polarity (0x607E) :"));
+    QLabel *ipPolarityLabel = new QLabel(tr("Polarity (0x607E bit 7) :"));
     _ipPolaritySpinBox = new QSpinBox();
-    _ipPolaritySpinBox->setSuffix(" inc/s");
-    _ipPolaritySpinBox->setToolTip("");
-    _ipPolaritySpinBox->setRange(0, std::numeric_limits<int>::max());
+    _ipPolaritySpinBox->setToolTip("0 = x1, 1 = x(-1)");
+    _ipPolaritySpinBox->setRange(0, 1);
     ipPolaritylayout->addWidget(ipPolarityLabel);
     ipPolaritylayout->addWidget(_ipPolaritySpinBox);
     connect(_ipPolaritySpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipPolarityEditingFinished);
