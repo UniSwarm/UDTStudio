@@ -105,6 +105,7 @@ void WidgetDebug::updateData()
         {
             _stackedWidget->setEnabled(true);
             _node->readObject(_controlWordObjectId, 0x00);
+            _node->readObject(_modesOfOperationObjectId, 0x00);
             _timer.start(_logTimerSpinBox->value());
             _modeGroupBox->setEnabled(true);
             _stateMachineGroupBox->setEnabled(true);
