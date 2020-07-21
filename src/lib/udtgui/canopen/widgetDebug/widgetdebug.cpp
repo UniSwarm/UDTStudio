@@ -174,8 +174,15 @@ void WidgetDebug::setTimer(int ms)
 void WidgetDebug::readData()
 {
     _node->readObject(_statusWordObjectId, 0x0);
-    _p402vl->readData();
-    _p402ip->readData();
+    quint16 mode = static_cast<quint16>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
+    if (mode == 7)
+    {
+        _p402ip->readData();
+    }
+    else if (mode == 2)
+    {
+        _p402vl->readData();
+    }
 }
 void WidgetDebug::displayOption402()
 {
