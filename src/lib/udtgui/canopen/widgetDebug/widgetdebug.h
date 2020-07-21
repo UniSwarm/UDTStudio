@@ -51,11 +51,8 @@ public slots:
     void setNode(Node *value);
     void updateData();
 
-    void preop();
     void start();
     void stop();
-    void resetCom();
-    void resetNode();
     void gotoStateOEClicked();
 
 private:

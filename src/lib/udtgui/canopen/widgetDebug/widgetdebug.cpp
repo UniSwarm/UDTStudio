@@ -124,20 +124,20 @@ void WidgetDebug::updateData()
         }
     }
 }
-void WidgetDebug::preop()
-{
-    if (_node)
-    {
-        _node->sendPreop();
-    }
-}
 
 void WidgetDebug::start()
 {
     if (_node)
     {
         _node->sendStart();
+        _stackedWidget->setEnabled(true);
+        _node->readObject(_controlWordObjectId, 0x00);
+        _node->readObject(_modesOfOperationObjectId, 0x00);
         _timer.start(_logTimerSpinBox->value());
+        _modeGroupBox->setEnabled(true);
+        _stateMachineGroupBox->setEnabled(true);
+        _controlWordGroupBox->setEnabled(true);
+        _statusWordGroupBox->setEnabled(true);
     }
 }
 
@@ -145,24 +145,20 @@ void WidgetDebug::stop()
 {
     if (_node)
     {
-        _node->sendStop();
+        cmdControlWord = (cmdControlWord & ~CW_Mask);
+        cmdControlWord = (cmdControlWord & ~CW_Halt);
+        _haltPushButton->setChecked(false);
+        _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
+        _controlWordLabel->setText(QLatin1String("0x") + QString::number(cmdControlWord, 16).toUpper().rightJustified(4, '0'));
+
+        _stackedWidget->setEnabled(false);
+        _nmtToolBar->setEnabled(true);
+        _modeGroupBox->setEnabled(false);
+        _stateMachineGroupBox->setEnabled(false);
+        _controlWordGroupBox->setEnabled(false);
+        _statusWordGroupBox->setEnabled(false);
+
         _timer.stop();
-    }
-}
-
-void WidgetDebug::resetCom()
-{
-    if (_node)
-    {
-        _node->sendResetComm();
-    }
-}
-
-void WidgetDebug::resetNode()
-{
-    if (_node)
-    {
-        _node->sendResetNode();
     }
 }
 
@@ -505,12 +501,6 @@ void WidgetDebug::createWidgets()
     QActionGroup *groupNmt = new QActionGroup(this);
     groupNmt->setExclusive(true);
     QAction *action;
-    action = groupNmt->addAction(tr("Pre operationnal"));
-    action->setCheckable(true);
-    action->setIcon(QIcon(":/icons/img/icons8-connection-status-on.png"));
-    action->setStatusTip(tr("Request node to go in preop mode"));
-    connect(action, &QAction::triggered, this, &WidgetDebug::preop);
-
     action = groupNmt->addAction(tr("Start"));
     action->setCheckable(true);
     action->setIcon(QIcon(":/icons/img/icons8-play.png"));
@@ -523,17 +513,6 @@ void WidgetDebug::createWidgets()
     action->setStatusTip(tr("Request node to go in stop mode"));
     connect(action, &QAction::triggered, this, &WidgetDebug::stop);
 
-    action = groupNmt->addAction(tr("Reset communication"));
-    action->setCheckable(true);
-    action->setIcon(QIcon(":/icons/img/icons8-process.png"));
-    action->setStatusTip(tr("Request node to reset com. parameters"));
-    connect(action, &QAction::triggered, this, &WidgetDebug::resetCom);
-
-    action = groupNmt->addAction(tr("Reset node"));
-    action->setCheckable(true);
-    action->setIcon(QIcon(":/icons/img/icons8-reset.png"));
-    action->setStatusTip(tr("Request node to reset all values"));
-    connect(action, &QAction::triggered, this, &WidgetDebug::resetNode);
     _nmtToolBar->addActions(groupNmt->actions());
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
@@ -549,7 +528,7 @@ void WidgetDebug::createWidgets()
     QAction *option402 = new QAction();
     option402->setCheckable(true);
     option402->setIcon(QIcon(":/icons/img/icons8-settings.png"));
-    option402->setStatusTip(tr("402 Management"));
+    option402->setToolTip(tr("Option code"));
     connect(option402, &QAction::triggered, this, &WidgetDebug::displayOption402);
     _nmtToolBar->addAction(option402);
 
