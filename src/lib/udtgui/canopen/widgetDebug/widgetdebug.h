@@ -172,6 +172,7 @@ protected:
     // QObject interface
 public:
     void closeEvent(QCloseEvent *event) override;
+    void showEvent(QShowEvent *event) override;
 };
 
 #endif // WIDGETDEBUG_H

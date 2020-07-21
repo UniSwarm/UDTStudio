@@ -699,3 +699,14 @@ void WidgetDebug::closeEvent(QCloseEvent *event)
         _timer.stop();
     }
 }
+
+void WidgetDebug::showEvent(QShowEvent *event)
+{
+    if (event->type() == QEvent::Show)
+    {
+        if (_node->status() ==  Node::STARTED)
+        {
+           _timer.start();
+        }
+    }
+}
