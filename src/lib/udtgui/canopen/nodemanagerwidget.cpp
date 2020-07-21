@@ -64,9 +64,7 @@ void NodeManagerWidget::setNode(Node *node)
         connect(_node, &Node::statusChanged, this, &NodeManagerWidget::updateData);
         if ((_node->profileNumber()) == 0x192)
         {
-            _widgetDebug = new WidgetDebug(_node);
             _action402->setVisible(true);
-
         }
         else if (_action402)
         {
@@ -131,10 +129,11 @@ void NodeManagerWidget::displayMode()
 {
     if (_node)
     {
-        if (_widgetDebug)
+        if (!_widgetDebug)
         {
-            _widgetDebug->show();
+            _widgetDebug = new WidgetDebug(_node);
         }
+        _widgetDebug->show();
     }
 }
 
