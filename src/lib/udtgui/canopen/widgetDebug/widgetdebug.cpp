@@ -689,5 +689,6 @@ void WidgetDebug::closeEvent(QCloseEvent *event)
 {
     if (event->type() == QEvent::Close)
     {
+        _timer.stop();
     }
 }
