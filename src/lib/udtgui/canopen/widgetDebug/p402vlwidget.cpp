@@ -78,30 +78,28 @@ void P402VlWidget::updateData()
 {
     if (_node)
     {
-        if (_node->status() == Node::STARTED)
-        {
-            this->setEnabled(true);
-            _node->readObject(_controlWordObjectId, 0x00);
-            _node->readObject(_vlTargetVelocityObjectId, 0);
-            _node->readObject(_vlVelocityDemandObjectId, 0x0);
-            _node->readObject(_vlVelocityActualObjectId, 0x0);
-            _node->readObject(_vlVelocityMinMaxAmountObjectId, 1);
-            _node->readObject(_vlVelocityMinMaxAmountObjectId, 2);
-            _node->readObject(_vlAccelerationObjectId, 1);
-            _node->readObject(_vlAccelerationObjectId, 2);
-            _node->readObject(_vlDecelerationObjectId, 1);
-            _node->readObject(_vlDecelerationObjectId, 2);
-            _node->readObject(_vlQuickStopObjectId, 1);
-            _node->readObject(_vlQuickStopObjectId, 2);
-            _node->readObject(_vlSetPointFactorObjectId, 1);
-            _node->readObject(_vlSetPointFactorObjectId, 2);
-            _node->readObject(_vlDimensionFactorObjectId, 1);
-            _node->readObject(_vlDimensionFactorObjectId, 2);
-        }
-        else
-        {
-            // this->setEnabled(false);
-        }
+        this->setEnabled(true);
+        _node->readObject(_controlWordObjectId, 0x00);
+        _node->readObject(_vlTargetVelocityObjectId, 0);
+        _node->readObject(_vlVelocityDemandObjectId, 0x0);
+        _node->readObject(_vlVelocityActualObjectId, 0x0);
+        _node->readObject(_vlVelocityMinMaxAmountObjectId, 1);
+        _node->readObject(_vlVelocityMinMaxAmountObjectId, 2);
+        _node->readObject(_vlAccelerationObjectId, 1);
+        _node->readObject(_vlAccelerationObjectId, 2);
+        _node->readObject(_vlDecelerationObjectId, 1);
+        _node->readObject(_vlDecelerationObjectId, 2);
+        _node->readObject(_vlQuickStopObjectId, 1);
+        _node->readObject(_vlQuickStopObjectId, 2);
+        _node->readObject(_vlSetPointFactorObjectId, 1);
+        _node->readObject(_vlSetPointFactorObjectId, 2);
+        _node->readObject(_vlDimensionFactorObjectId, 1);
+        _node->readObject(_vlDimensionFactorObjectId, 2);
+
+        _cmdControlWord |= CW_VL_EnableRamp;
+        _cmdControlWord |= CW_VL_UnlockRamp;
+        _cmdControlWord |= CW_VL_ReferenceRamp;
+        _node->writeObject(_controlWordObjectId, 0x00, QVariant(_cmdControlWord));
     }
 }
 
@@ -490,6 +488,41 @@ void P402VlWidget::manageNotificationControlWordObject(SDO::FlagsRequest flags)
     if (_vlReferenceRampButtonGroup->button((controlWord & CW_VL_ReferenceRamp) > 6))
     {
         _vlReferenceRampButtonGroup->button((controlWord & CW_VL_ReferenceRamp) > 6)->setChecked(true);
+    }
+
+    if ((controlWord & CW_VL_EnableRamp) &&  (controlWord & CW_VL_UnlockRamp) && (controlWord & CW_VL_ReferenceRamp))
+    {
+        _vlMinVelocityMinMaxAmountSpinBox->setEnabled(true);
+        _vlMinVelocityMinMaxAmountSpinBox->setToolTip("min ");
+
+        _vlMaxVelocityMinMaxAmountSpinBox->setEnabled(true);
+        _vlMaxVelocityMinMaxAmountSpinBox->setToolTip("max ");
+
+        _vlAccelerationDeltaSpeedSpinBox->setEnabled(true);
+        _vlAccelerationDeltaSpeedSpinBox->setToolTip("Delta Speed");
+
+        _vlAccelerationDeltaTimeSpinBox->setEnabled(true);
+        _vlAccelerationDeltaTimeSpinBox->setToolTip("Delta Time");
+
+        _vlDecelerationDeltaSpeedSpinBox->setEnabled(true);
+        _vlDecelerationDeltaSpeedSpinBox->setToolTip("Delta Speed");
+        _vlDecelerationDeltaTimeSpinBox->setEnabled(true);
+        _vlDecelerationDeltaTimeSpinBox->setToolTip("Delta Time");
+    }
+    else
+    {
+        _vlMinVelocityMinMaxAmountSpinBox->setEnabled(false);
+        _vlMinVelocityMinMaxAmountSpinBox->setToolTip("Deactive because one bit (4,5,6) of ControlWord is deactivate");
+        _vlMaxVelocityMinMaxAmountSpinBox->setEnabled(false);
+        _vlMaxVelocityMinMaxAmountSpinBox->setToolTip("Deactive because one bit (4,5,6) of ControlWord is deactivate");
+        _vlAccelerationDeltaSpeedSpinBox->setEnabled(false);
+        _vlAccelerationDeltaSpeedSpinBox->setToolTip("Deactive because one bit (4,5,6) of ControlWord is deactivate");
+        _vlAccelerationDeltaTimeSpinBox->setEnabled(false);
+        _vlAccelerationDeltaTimeSpinBox->setToolTip("Deactive because one bit (4,5,6) of ControlWord is deactivate");
+        _vlDecelerationDeltaSpeedSpinBox->setEnabled(false);
+        _vlDecelerationDeltaSpeedSpinBox->setToolTip("Deactive because one bit (4,5,6) of ControlWord is deactivate");
+        _vlDecelerationDeltaTimeSpinBox->setEnabled(false);
+        _vlDecelerationDeltaTimeSpinBox->setToolTip("Deactive because one bit (4,5,6) of ControlWord is deactivate");
     }
 }
 
