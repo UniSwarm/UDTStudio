@@ -84,7 +84,7 @@ void P402IpWidget::setNode(Node *node)
         connect(_node, &Node::statusChanged, this, &P402IpWidget::updateData);
         updateData();
         // Init button clear buffer
-        if (_node->nodeOd()->index(_ipDataConfigurationObjectId)->subIndex(0x06)->value().toInt() == 0)
+        if (_node->nodeOd()->value(_ipDataConfigurationObjectId, 0x06).toInt() == 0)
         {
             _clearBufferPushButton->setChecked(true);
         }
