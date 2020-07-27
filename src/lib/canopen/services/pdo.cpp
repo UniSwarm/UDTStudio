@@ -257,11 +257,11 @@ void PDO::setEnabled(bool enabled)
     NodeObjectId object(_objectCommId, PDO_COMM_COB_ID);
     if (enabled)
     {
-        _node->writeObject(object.index, object.subIndex, QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toInt() & COBID_MASK));
+        _node->writeObject(object.index, object.subIndex, QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toUInt() & COBID_MASK));
     }
     else
     {
-        _node->writeObject(object.index, object.subIndex, QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toInt() | COBID_VALID_NOT_VALID));
+        _node->writeObject(object.index, object.subIndex, QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toUInt() | COBID_VALID_NOT_VALID));
     }
 }
 
@@ -315,7 +315,10 @@ void PDO::managementRespWriteCommParam(const NodeObjectId &objId, SDO::FlagsRequ
             _waitingConf.syncStartValue = static_cast<quint8>(_node->nodeOd()->value(objId).toUInt());
         }
 
-        qDebug() << ">PDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index, 16)) << ":" << objId.subIndex << ", Error : " << _node->nodeOd()->errorObject(objId);
+        qDebug() << ">PDO::odNotify : Index:SubIndex"
+                 << QString("0x%1").arg(QString::number(objId.index, 16))
+                 << ":" << objId.subIndex
+                 << ", Error : " << _node->nodeOd()->errorObject(objId);
         setError(ERROR_WRITE_PARAM);
         return;
     }
@@ -330,7 +333,11 @@ void PDO::managementRespReadCommAndMapping(const NodeObjectId &objId, SDO::Flags
     {
         if (flags == SDO::FlagsRequest::Error)
         {
-            qDebug() << ">PDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index, 16)) << ":" << objId.subIndex << ", Error : " << _node->nodeOd()->errorObject(objId);
+            qDebug() << ">PDO::odNotify : Index:SubIndex"
+                     << QString("0x%1").arg(QString::number(objId.index, 16))
+                     << ":" << objId.subIndex
+                     << ", Error : " << _node->nodeOd()->errorObject(objId);
+
             setError(ERROR_GENERAL_ERROR);
             _objectIdFsm++;
         }
@@ -368,7 +375,10 @@ void PDO::managementRespReadCommAndMapping(const NodeObjectId &objId, SDO::Flags
     {
         if (flags == SDO::FlagsRequest::Error)
         {
-            qDebug() << ">PDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index, 16)) << ":" << objId.subIndex << ", Error : " << _node->nodeOd()->errorObject(objId);
+            qDebug() << ">PDO::odNotify : Index:SubIndex"
+                     << QString("0x%1").arg(QString::number(objId.index, 16))
+                     << ":" << objId.subIndex
+                     << ", Error : " << _node->nodeOd()->errorObject(objId);
             setError(ERROR_GENERAL_ERROR);
             _stateMapping = STATE_FREE;
             return;
@@ -476,7 +486,7 @@ void PDO::managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequ
         _stateMapping = STATE_DEACTIVATE;
         processMapping();
     }
-    if ((objId.index == _objectMappingId) && (objId.subIndex == 0x00))
+    if (objId.index == _objectMappingId)
     {
         if (_stateMapping == STATE_DEACTIVATE)
         {
@@ -496,7 +506,10 @@ void PDO::managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequ
             if (flags == SDO::FlagsRequest::Error)
             {
                 // ERROR so cobId is invalid and mapping is disable
-                qDebug() << ">TPDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index, 16)) << ":" << objId.subIndex << ", Error : " << _node->nodeOd()->errorObject(objId);
+                qDebug() << ">TPDO::odNotify : Index:SubIndex"
+                         << QString("0x%1").arg(QString::number(objId.index, 16))
+                         << ":" << objId.subIndex << ", Error : "
+                         << _node->nodeOd()->errorObject(objId);
                 setError(ERROR_MODIFY_MAPPING);
                 _stateMapping = STATE_FREE;
                 return;
@@ -513,7 +526,10 @@ void PDO::managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequ
             if (flags == SDO::FlagsRequest::Error)
             {
                 // ERROR so cobId is invalid and mapping is disable
-                qDebug() << ">TPDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index, 16)) << ":" << objId.subIndex << ", Error : " << _node->nodeOd()->errorObject(objId);
+                qDebug() << ">TPDO::odNotify : Index:SubIndex"
+                         << QString("0x%1").arg(QString::number(objId.index, 16))
+                         << ":" << objId.subIndex << ", Error : "
+                         << _node->nodeOd()->errorObject(objId);
                 setError(ERROR_GENERAL_ERROR);
                 _stateMapping = STATE_FREE;
                 return;
@@ -541,7 +557,9 @@ void PDO::processMapping()
     case STATE_FREE:
     {
         // Deactivate the PDO
-        _node->writeObject(_objectCommList[PDO_COMM_COB_ID].index, _objectCommList[PDO_COMM_COB_ID].subIndex, QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toInt() | COBID_VALID_NOT_VALID));
+        _node->writeObject(_objectCommList[PDO_COMM_COB_ID].index,
+                           _objectCommList[PDO_COMM_COB_ID].subIndex,
+                           QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toUInt() | COBID_VALID_NOT_VALID));
         break;
     }
     case STATE_DEACTIVATE:
@@ -578,7 +596,9 @@ void PDO::processMapping()
 
     case STATE_ENABLE:
         // Activate the PDO
-        _node->writeObject(_objectCommList[PDO_COMM_COB_ID].index, _objectCommList[PDO_COMM_COB_ID].subIndex, QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toInt() & COBID_MASK));
+        _node->writeObject(_objectCommList[PDO_COMM_COB_ID].index,
+                           _objectCommList[PDO_COMM_COB_ID].subIndex,
+                           QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toInt() & COBID_MASK));
         break;
 
     case STATE_ACTIVATE:
