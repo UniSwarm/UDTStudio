@@ -272,7 +272,7 @@ void Node::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
     {
         return;
     }
-    if (isMappedObjectInPdo(NodeObjectId(index, subindex, dataType)) && status() == STARTED && (_bus->sync()->status() == Sync::STARTED))
+    if (isMappedObjectInTpdo(NodeObjectId(index, subindex, dataType)) && status() == STARTED && (_bus->sync()->status() == Sync::STARTED))
     {
         return;
     }
