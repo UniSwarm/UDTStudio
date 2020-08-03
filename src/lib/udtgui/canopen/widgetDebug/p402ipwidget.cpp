@@ -2,6 +2,7 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "services/services.h"
+#include "canopenbus.h"
 #include <QFormLayout>
 #include <QLineEdit>
 #include <QPushButton>
@@ -15,7 +16,6 @@ P402IpWidget::P402IpWidget(QWidget *parent)
 {
     _node = nullptr;
     createWidgets();
-    createGeneratorRampWidgets();
 
     _controlWordObjectId = 0x6040;
     _statusWordObjectId = 0x6041;
@@ -89,6 +89,9 @@ void P402IpWidget::setNode(Node *node)
         updateData();
 
         connect(&_readActualBuffetSize, &QTimer::timeout, this, &P402IpWidget::readActualBufferSize);
+
+        _bus = _node->bus();
+        connect(_bus->sync(), &Sync::signalBeforeSync, this, &P402IpWidget::sendDataRecordTargetWithPdo);
     }
 }
 
@@ -537,6 +540,29 @@ void P402IpWidget::createWidgets()
 
     ipGroupBox->setLayout(ipLayout);
 
+    // Group Box GeneratorSinusoidal
+    QGroupBox *generatorSinusoidalGroupBox = new QGroupBox(tr("Sinusoidal Motion Profile"));
+    QFormLayout *generatorSinusoidalLayout = new QFormLayout();
+
+    _targetPositionSpinBox = new QSpinBox();
+    generatorSinusoidalLayout->addRow(tr("Target position :"), _targetPositionSpinBox);
+    _targetPositionSpinBox->setRange(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+
+    _relativeTargetpositionSpinBox = new QCheckBox();
+    generatorSinusoidalLayout->addRow(tr("Relative target position :"), _relativeTargetpositionSpinBox);
+
+    _durationSpinBox = new QSpinBox();
+    generatorSinusoidalLayout->addRow(tr("Duration :"), _durationSpinBox);
+    _durationSpinBox->setSuffix(" ms");
+    _durationSpinBox->setRange(0, std::numeric_limits<int>::max());
+
+    _goTargetPushButton = new QPushButton(tr("GO"));
+    connect(_goTargetPushButton, &QPushButton::clicked, this, &P402IpWidget::goTargetPosition);
+
+    generatorSinusoidalLayout->addRow(_goTargetPushButton);
+    generatorSinusoidalGroupBox->setLayout(generatorSinusoidalLayout);
+
+
     // Group Box Control Word
     QGroupBox *modeControlWordGroupBox = new QGroupBox(tr("Control Word (0x6040) bit 4, bit 8"));
     QFormLayout *modeControlWordLayout = new QFormLayout();
@@ -578,36 +604,11 @@ void P402IpWidget::createWidgets()
     ipButtonLayout->addWidget(imgPushButton);
 
     layout->addWidget(ipGroupBox);
+    layout->addWidget(generatorSinusoidalGroupBox);
     layout->addWidget(modeControlWordGroupBox);
     layout->addItem(ipButtonLayout);
 
     setLayout(layout);
-}
-
-void P402IpWidget::createGeneratorRampWidgets()
-{
-    QGroupBox *modeControlWordGroupBox = new QGroupBox(tr("Sinusoidal Motion Profile"));
-    QFormLayout *modeControlWordLayout = new QFormLayout();
-
-    _targetPositionSpinBox = new QSpinBox();
-    modeControlWordLayout->addRow(tr("Target position :"), _targetPositionSpinBox);
-    _targetPositionSpinBox->setRange(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
-
-    _relativeTargetpositionSpinBox = new QCheckBox();
-    modeControlWordLayout->addRow(tr("Relative target position :"), _relativeTargetpositionSpinBox);
-
-    _durationSpinBox = new QSpinBox();
-    modeControlWordLayout->addRow(tr("Duration :"), _durationSpinBox);
-    _durationSpinBox->setSuffix(" ms");
-    _durationSpinBox->setRange(0, std::numeric_limits<int>::max());
-
-    QPushButton *goTargetPushButton = new QPushButton(tr("GO"));
-    connect(goTargetPushButton, &QPushButton::clicked, this, &P402IpWidget::goTargetPosition);
-
-    modeControlWordLayout->addRow(goTargetPushButton);
-    modeControlWordGroupBox->setLayout(modeControlWordLayout);
-
-    modeControlWordGroupBox->show();
 }
 
 void P402IpWidget::goTargetPosition()
@@ -628,8 +629,12 @@ void P402IpWidget::goTargetPosition()
     period = qPow(10, index);
     period = unit * period * 1000;
 
-    sendDataRecordTarget();
-    _readActualBuffetSize.start(static_cast<int>(period) * 15);
+    if (_bus->sync()->status() == Sync::Status::STOPPED)
+    {
+        sendDataRecordTargetWithSdo();
+        _readActualBuffetSize.start(static_cast<int>(period) * 15);
+    }
+    _goTargetPushButton->setEnabled(false);
 }
 
 void P402IpWidget::readActualBufferSize()
@@ -637,12 +642,25 @@ void P402IpWidget::readActualBufferSize()
     _node->readObject(_ipDataConfigurationObjectId, 0x2);
 }
 
-void P402IpWidget::sendDataRecordTarget()
+void P402IpWidget::sendDataRecordTargetWithPdo()
+{
+    int i = 0;
+    if (_pointSinusoidal.isEmpty())
+    {
+        _goTargetPushButton->setEnabled(true);
+        return;
+    }
+    _node->writeObject(_ipDataRecordObjectId, 0x01, QVariant(_pointSinusoidal.at(0)));
+    _pointSinusoidal.remove(0);
+}
+
+void P402IpWidget::sendDataRecordTargetWithSdo()
 {
     int i = 0;
 
     if (_pointSinusoidal.isEmpty())
     {
+        _goTargetPushButton->setEnabled(true);
         _readActualBuffetSize.stop();
         return;
     }
@@ -890,7 +908,7 @@ void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
             quint32 actualBufferSize = _node->nodeOd()->value(_ipDataConfigurationObjectId, 0x02).toUInt();
             if (actualBufferSize < 5)
             {
-                sendDataRecordTarget();
+                sendDataRecordTargetWithSdo();
             }
         }
     }

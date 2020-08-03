@@ -32,9 +32,9 @@ public slots:
 
 private:
     Node *_node;
+    CanOpenBus *_bus;
 
     void createWidgets();
-    void createGeneratorRampWidgets();
 
     quint16 _cmdControlWord;
     quint16 _controlWordObjectId;
@@ -114,13 +114,15 @@ private:
     QSpinBox *_targetPositionSpinBox;
     QCheckBox *_relativeTargetpositionSpinBox;
     QSpinBox *_durationSpinBox;
+    QPushButton *_goTargetPushButton;
 
     QVector<int> _pointSinusoidal;
     QTimer _readActualBuffetSize;
 
     void goTargetPosition();
     void calculatePointSinusoidalMotionProfile(qint32 initialPosition);
-    void sendDataRecordTarget();
+    void sendDataRecordTargetWithPdo();
+    void sendDataRecordTargetWithSdo();
     void readActualBufferSize();
 
     void ipDataRecordLineEditFinished();
