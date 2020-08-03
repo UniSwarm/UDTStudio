@@ -11,6 +11,7 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QSpinBox>
+#include <QCheckBox>
 #include <QWidget>
 
 class P402IpWidget : public QWidget, public NodeOdSubscriber
@@ -33,6 +34,7 @@ private:
     Node *_node;
 
     void createWidgets();
+    void createGeneratorRampWidgets();
 
     quint16 _cmdControlWord;
     quint16 _controlWordObjectId;
@@ -108,6 +110,18 @@ private:
     QSpinBox *_ipMaxDecelerationSpinBox;
 
     QSpinBox *_ipQuickStopDecelerationSpinBox;
+
+    QSpinBox *_targetPositionSpinBox;
+    QCheckBox *_relativeTargetpositionSpinBox;
+    QSpinBox *_durationSpinBox;
+
+    QVector<int> _pointSinusoidal;
+    QTimer _readActualBuffetSize;
+
+    void goTargetPosition();
+    void calculatePointSinusoidalMotionProfile(qint32 initialPosition);
+    void sendDataRecordTarget();
+    void readActualBufferSize();
 
     void ipDataRecordLineEditFinished();
     void ipSendDataRecord();

@@ -8,12 +8,15 @@
 #include <QRadioButton>
 #include <QString>
 #include <QStringList>
+#include <QtMath>
 
 P402IpWidget::P402IpWidget(QWidget *parent)
     : QWidget(parent)
 {
     _node = nullptr;
     createWidgets();
+    createGeneratorRampWidgets();
+
     _controlWordObjectId = 0x6040;
     _statusWordObjectId = 0x6041;
     _ipPositionDemandValueObjectId = 0x6062;
@@ -61,6 +64,7 @@ void P402IpWidget::setNode(Node *node)
     registerObjId({_ipDataRecordObjectId, 0xFF});
     registerObjId({_ipPositionDemandValueObjectId, 0x00});
     registerObjId({_ipDataConfigurationObjectId, 0x06});
+    registerObjId({_ipDataConfigurationObjectId, 0x02});
     registerObjId({_ipTimePeriodObjectId, 0xFF});
     registerObjId({_ipPositionRangelLimitObjectId, 0xFF});
     registerObjId({_ipSoftwarePositionLimitObjectId, 0xFF});
@@ -83,15 +87,8 @@ void P402IpWidget::setNode(Node *node)
     {
         connect(_node, &Node::statusChanged, this, &P402IpWidget::updateData);
         updateData();
-        // Init button clear buffer
-        if (_node->nodeOd()->value(_ipDataConfigurationObjectId, 0x06).toInt() == 0)
-        {
-            _clearBufferPushButton->setChecked(true);
-        }
-        else
-        {
-            _clearBufferPushButton->setChecked(false);
-        }
+
+        connect(&_readActualBuffetSize, &QTimer::timeout, this, &P402IpWidget::readActualBufferSize);
     }
 }
 
@@ -117,7 +114,6 @@ void P402IpWidget::updateData()
             this->setEnabled(true);
             _node->readObject(_controlWordObjectId, 0x00);
             _node->readObject(_ipPositionDemandValueObjectId, 0x0);
-            _node->readObject(_ipDataConfigurationObjectId, 0x6);
 
             _node->readObject(_ipTimePeriodObjectId, 1);
             _node->readObject(_ipTimePeriodObjectId, 2);
@@ -144,6 +140,9 @@ void P402IpWidget::updateData()
             _node->readObject(_ipMaxDecelerationObjectId, 0);
 
             _node->readObject(_ipQuickStopDecelerationObjectId, 0);
+
+            quint8 value = 1;
+            _node->writeObject(_ipDataConfigurationObjectId, 0x06, QVariant(value));
         }
         else
         {
@@ -333,6 +332,7 @@ void P402IpWidget::createWidgets()
 
     _ipDataRecordLineEdit = new QLineEdit();
     ipLayout->addRow(tr("Data record (0x60C1) :"), _ipDataRecordLineEdit);
+    _ipDataRecordLineEdit->setToolTip("Separated by ,");
     connect(_ipDataRecordLineEdit, &QLineEdit::editingFinished, this, &P402IpWidget::ipDataRecordLineEditFinished);
 
     _ipPositionDemandValueLabel = new QLabel();
@@ -347,7 +347,7 @@ void P402IpWidget::createWidgets()
     _ipTimePeriodUnitSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
     ipTimePeriodlayout->addWidget(_ipTimePeriodUnitSpinBox);
     _ipTimePeriodIndexSpinBox = new QSpinBox();
-    _ipTimePeriodIndexSpinBox->setToolTip("index ");
+    _ipTimePeriodIndexSpinBox->setToolTip("index");
     _ipTimePeriodIndexSpinBox->setRange(-3, 63);
     ipTimePeriodlayout->addWidget(_ipTimePeriodIndexSpinBox);
     ipLayout->addRow(ipTimePeriodlayout);
@@ -584,6 +584,119 @@ void P402IpWidget::createWidgets()
     setLayout(layout);
 }
 
+void P402IpWidget::createGeneratorRampWidgets()
+{
+    QGroupBox *modeControlWordGroupBox = new QGroupBox(tr("Sinusoidal Motion Profile"));
+    QFormLayout *modeControlWordLayout = new QFormLayout();
+
+    _targetPositionSpinBox = new QSpinBox();
+    modeControlWordLayout->addRow(tr("Target position :"), _targetPositionSpinBox);
+    _targetPositionSpinBox->setRange(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+
+    _relativeTargetpositionSpinBox = new QCheckBox();
+    modeControlWordLayout->addRow(tr("Relative target position :"), _relativeTargetpositionSpinBox);
+
+    _durationSpinBox = new QSpinBox();
+    modeControlWordLayout->addRow(tr("Duration :"), _durationSpinBox);
+    _durationSpinBox->setSuffix(" ms");
+    _durationSpinBox->setRange(0, std::numeric_limits<int>::max());
+
+    QPushButton *goTargetPushButton = new QPushButton(tr("GO"));
+    connect(goTargetPushButton, &QPushButton::clicked, this, &P402IpWidget::goTargetPosition);
+
+    modeControlWordLayout->addRow(goTargetPushButton);
+    modeControlWordGroupBox->setLayout(modeControlWordLayout);
+
+    modeControlWordGroupBox->show();
+}
+
+void P402IpWidget::goTargetPosition()
+{
+    quint32 unit = 0;
+    qint32 index = 0;
+    qreal period = 0;
+
+    qint32 initialPosition = _node->nodeOd()->value(_ipPositionDemandValueObjectId).toInt();
+    calculatePointSinusoidalMotionProfile(initialPosition);
+
+    quint8 value = 1;
+    _node->writeObject(_ipDataConfigurationObjectId, 0x06, QVariant(value));
+
+    unit = static_cast<quint32>(_ipTimePeriodUnitSpinBox->value());
+    index = static_cast<qint32>(_ipTimePeriodIndexSpinBox->value());
+
+    period = qPow(10, index);
+    period = unit * period * 1000;
+
+    sendDataRecordTarget();
+    _readActualBuffetSize.start(static_cast<int>(period) * 15);
+}
+
+void P402IpWidget::readActualBufferSize()
+{
+    _node->readObject(_ipDataConfigurationObjectId, 0x2);
+}
+
+void P402IpWidget::sendDataRecordTarget()
+{
+    int i = 0;
+
+    if (_pointSinusoidal.isEmpty())
+    {
+        _readActualBuffetSize.stop();
+        return;
+    }
+
+    for (i = 0; i < 20; i++)
+    {
+        if (i > (_pointSinusoidal.size() - 1))
+        {
+            break;
+        }
+        _node->writeObject(_ipDataRecordObjectId, 0x01, QVariant(_pointSinusoidal.at(i)));
+    }
+    _pointSinusoidal.remove(0, i);
+}
+
+void P402IpWidget::calculatePointSinusoidalMotionProfile(qint32 initialPosition)
+{
+    qint32 target = 0;
+    quint32 duration = 0;
+    quint32 unit = 0;
+    qint32 index = 0;
+    qreal period = 0;
+
+    if (_relativeTargetpositionSpinBox->isChecked())
+    {
+        target = _targetPositionSpinBox->value();
+    }
+    else
+    {
+        target = _targetPositionSpinBox->value() - initialPosition;
+    }
+
+    duration = static_cast<quint32>(_durationSpinBox->value());
+    unit = static_cast<quint32>(_ipTimePeriodUnitSpinBox->value());
+    index = static_cast<qint32>(_ipTimePeriodIndexSpinBox->value());
+
+    period = qPow(10, index);
+    period = unit * period * 1000;
+
+    _pointSinusoidal.clear();
+
+    int j = 0;
+    for(quint32 i = 0; i <= duration; i++)
+    {
+        qreal pos = ((M_PI * i) / duration) + M_PI;
+        pos = (((target / 2) * qCos(pos)) + (target / 2)) + initialPosition;
+        if (((i % static_cast<quint32>(period)) == 0) && (i != 0))
+        {
+            _pointSinusoidal.insert(static_cast<int>(j), static_cast<qint32>(pos));
+            j++;
+        }
+    }
+}
+
 void P402IpWidget::dataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
@@ -594,10 +707,6 @@ void P402IpWidget::dataLogger()
 
 void P402IpWidget::pdoMapping()
 {
-    //    QList<NodeObjectId> ipRpdoObjectList = {{_node->busId(), _node->nodeId(), _controlWordObjectId, 0x0, QMetaType::Type::UShort},
-    //                                            {_node->busId(), _node->nodeId(), _ipTargetVelocityObjectId, 0x0, QMetaType::Type::Short}};
-
-    //    _node->rpdos().at(0)->writeMapping(ipRpdoObjectList);
     QList<NodeObjectId> ipTpdoObjectList = {{_node->busId(), _node->nodeId(), _statusWordObjectId, 0x0, QMetaType::Type::UShort},
                                             {_node->busId(), _node->nodeId(), _ipPositionDemandValueObjectId, 0x0, QMetaType::Type::Short}};
 
@@ -760,13 +869,28 @@ void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         }
         else
         {
-            if (_clearBufferPushButton->isChecked())
+//            if (_clearBufferPushButton->isChecked())
+//            {
+//                _clearBufferPushButton->setChecked(false);
+//            }
+//            else
+//            {
+//                _clearBufferPushButton->setChecked(true);
+//            }
+        }
+    }
+    if ((objId.index == _ipDataConfigurationObjectId) && (objId.subIndex == 0x02))
+    {
+        if (flags == SDO::FlagsRequest::Error)
+        {
+            return;
+        }
+        else
+        {
+            quint32 actualBufferSize = _node->nodeOd()->value(_ipDataConfigurationObjectId, 0x02).toUInt();
+            if (actualBufferSize < 5)
             {
-                _clearBufferPushButton->setChecked(false);
-            }
-            else
-            {
-                _clearBufferPushButton->setChecked(true);
+                sendDataRecordTarget();
             }
         }
     }
