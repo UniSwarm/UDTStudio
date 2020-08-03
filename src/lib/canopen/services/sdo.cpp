@@ -243,20 +243,7 @@ bool SDO::downloadData(quint16 index, quint8 subindex, const QVariant &data)
         request->size = static_cast<quint32>(request->dataByte.size());
     }
 
-    bool existing = false;
-    for (RequestSdo *req : _requestQueue)
-    {
-        if (req->index == index && req->subIndex == subindex)
-        {
-            existing = true;
-        }
-    }
-
-    if (!existing)
-    {
-        _requestQueue.enqueue(request);
-    }
-
+    _requestQueue.enqueue(request);
     nextRequest();
     return true;
 }
