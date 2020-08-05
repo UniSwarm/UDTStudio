@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationVersion("1.0");
 
     QTextStream out(stdout);
+    QTextStream err(stderr);
 
     QCommandLineParser cliParser;
     cliParser.setApplicationDescription(QCoreApplication::translate("main", "Object Dicitonary command line interface."));
@@ -64,7 +65,7 @@ int main(int argc, char *argv[])
     const QStringList files = cliParser.positionalArguments();
     if (files.isEmpty())
     {
-        out << "error (1): input file is needed" << endl;
+        err << "error (1): input file is needed" << endl;
         cliParser.showHelp(-1);
     }
     const QString &inputFile = files.at(0);
@@ -73,7 +74,9 @@ int main(int argc, char *argv[])
     // output file
     QString outputFile = cliParser.value("out");
     if (outputFile.isEmpty())
+    {
         outputFile = QFileInfo(inputFile).path();
+    }
 
     // node Id
     uint8_t nodeid = 0;
@@ -82,7 +85,7 @@ int main(int argc, char *argv[])
         nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
         if (nodeid == 0 || nodeid >= 126)
         {
-            out << "error (2): invalid node id, nodeId > 0 && nodeId < 126" << endl;
+            err << "error (2): invalid node id, nodeId > 0 && nodeId < 126" << endl;
             return -2;
         }
     }
@@ -103,7 +106,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        out << "error (3): invalid input file format, .eds or .dcf accepted" << endl;
+        err << "error (3): invalid input file format, .eds or .dcf accepted" << endl;
         return -3;
     }
 
@@ -111,11 +114,17 @@ int main(int argc, char *argv[])
     CGenerator cgenerator;
     DcfWriter dcfWriter;
     if (outSuffix == "c")
+    {
         cgenerator.generateC(deviceConfiguration, outputFile);
+    }
     else if (outSuffix == "h")
+    {
         cgenerator.generateH(deviceConfiguration, outputFile);
+    }
     else if (outSuffix == "dcf")
+    {
         dcfWriter.write(deviceConfiguration, outputFile);
+    }
     else if (outSuffix == "eds" && deviceDescription)
     {
         EdsWriter edsWriter;
@@ -141,10 +150,9 @@ int main(int argc, char *argv[])
     {
         delete deviceDescription;
         delete deviceConfiguration;
-        out << "error (4): invalid output file format, .c, .h, .dcf, .eds, .csv or .tex accepted" << endl;
+        err << "error (4): invalid output file format, .c, .h, .dcf, .eds, .csv or .tex accepted" << endl;
         return -4;
     }
-    out << "nodeId" << nodeid;
 
     delete deviceDescription;
     delete deviceConfiguration;
