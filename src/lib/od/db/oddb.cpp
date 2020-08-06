@@ -44,14 +44,14 @@ void OdDb::addDirectory(const QStringList &directories)
 
 void OdDb::searchFile(const QString &directory)
 {
-    QDir dir(directory);
-    QStringList list = dir.entryList(QStringList() << "*.eds", QDir::Files | QDir::NoSymLinks);
+    QDirIterator it(directory, QStringList() << "*.eds", QDir::Files | QDir::NoSymLinks, QDirIterator::Subdirectories);
 
-    for (const QString &file : list)
+    while (it.hasNext())
     {
+        const QString &file = it.next();
         EdsParser parser;
 
-        DeviceDescription *deviceDescription = parser.parse(dir.path() + "/" + file);
+        DeviceDescription *deviceDescription = parser.parse(file);
 
         QByteArray byte;
         byte.append(deviceDescription->subIndexValue(0x1000, 0, "0").toByteArray());
@@ -61,7 +61,7 @@ void OdDb::searchFile(const QString &directory)
         QByteArray hash = QCryptographicHash::hash(byte, QCryptographicHash::Md4);
         QPair<quint32, QString> pair;
         pair.first = deviceDescription->subIndexValue(0x1018, 3).toUInt();
-        pair.second = dir.path() + "/" + file;
+        pair.second = file;
         _mapFile.insert(hash, pair);
 
         delete deviceDescription;
