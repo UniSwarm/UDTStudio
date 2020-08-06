@@ -78,18 +78,26 @@ QString OdDb::file(quint32 deviceType, quint32 vendorID, quint32 productCode, qu
 
     QList<QPair<quint32, QString>> values = _mapFile.values(hash);
 
-    quint32 rev = revisionNumber;
-    do
+    if (!values.isEmpty())
     {
-        for (int i = 0; i < values.size(); i++)
+        quint32 rev = revisionNumber;
+        do
         {
-            if (values.at(i).first == rev)
+            for (int i = 0; i < values.size(); i++)
             {
-                qDebug() << "deviceType :" << deviceType << ", vendorID :" << vendorID << ", productCode :" << productCode << ", revisionNumber :" << rev;
-                return values.at(i).second;
+                if (values.at(i).first == rev)
+                {
+                    qDebug() << "deviceType :" << deviceType << ", vendorID :" << vendorID << ", productCode :" << productCode << ", revisionNumber :" << rev;
+                    return values.at(i).second;
+                }
             }
-        }
-    } while (rev != 0);
+            if (rev == 0)
+            {
+                break;
+            }
+            rev--;
+        } while (1);
+    }
 
     return QString();
 }
