@@ -251,7 +251,7 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
         }
     }
 
-    out << "void od_initCommIndexes()"
+    out << "void od_initCommIndexes(void)"
         << "\n";
     out << "{";
     writeInitRamC(commIndexes, out);
@@ -259,7 +259,7 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
         << "\n";
     out << "\n";
 
-    out << "void od_initAppIndexes()"
+    out << "void od_initAppIndexes(void)"
         << "\n";
     out << "{";
     writeInitRamC(appIndexes, out);
