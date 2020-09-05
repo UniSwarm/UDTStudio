@@ -4,5 +4,6 @@
 #include "nodeprofile402.h"
 
 NodeProfile::NodeProfile(Node *node)
+    : _node(node)
 {
 }

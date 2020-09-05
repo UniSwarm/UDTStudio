@@ -58,7 +58,6 @@ private:
     {
         STATE_NONE,
         STATE_CHANGE_MODE
-
     };
     State _state;
 
@@ -70,7 +69,6 @@ private:
 
     Error _currentError;
 
-    Node *_node;
     qint8 _currentMode;
     QList<Mode> _supportedModes;
 

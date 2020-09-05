@@ -5,8 +5,6 @@
 NodeProfile402::NodeProfile402(Node *node)
     : NodeProfile(node)
 {
-    _node = node;
-
     _modesOfOperationObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6060, 0);
     _modesOfOperationDisplayObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6061, 0);
     _supportedDriveModesObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6502, 0);
@@ -95,6 +93,11 @@ bool NodeProfile402::setMode(Mode mode)
 void NodeProfile402::checkModeOperationDisplay()
 {
     _node->readObject(_modesOfOperationDisplayObjectId.index, _modesOfOperationDisplayObjectId.subIndex);
+}
+
+bool NodeProfile402::status() const
+{
+    return true;
 }
 
 void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

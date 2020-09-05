@@ -20,6 +20,7 @@ SOURCES += \
     $$PWD/canopen.cpp \
     $$PWD/services/emergency.cpp \
     $$PWD/services/nmt.cpp \
+    $$PWD/services/pdo.cpp \
     $$PWD/services/tpdo.cpp \
     $$PWD/services/rpdo.cpp \
     $$PWD/services/sdo.cpp \
@@ -31,7 +32,8 @@ SOURCES += \
     $$PWD/services/nodediscover.cpp \
     $$PWD/datalogger/datalogger.cpp \
     $$PWD/datalogger/dldata.cpp \
-    services/pdo.cpp
+    $$PWD/profile/nodeprofile402.cpp \
+    $$PWD/profile/nodeprofile.cpp
 
 
 HEADERS += \
@@ -46,6 +48,7 @@ HEADERS += \
     $$PWD/canopen.h \
     $$PWD/services/emergency.h \
     $$PWD/services/nmt.h \
+    $$PWD/services/pdo.h \
     $$PWD/services/tpdo.h \
     $$PWD/services/rpdo.h \
     $$PWD/services/sdo.h \
@@ -58,7 +61,8 @@ HEADERS += \
     $$PWD/services/nodediscover.h \
     $$PWD/datalogger/datalogger.h \
     $$PWD/datalogger/dldata.h \
-    services/pdo.h
+    $$PWD/profile/nodeprofile402.h \
+    $$PWD/profile/nodeprofile.h
 
 INCLUDEPATH += $$PWD/../od/
 

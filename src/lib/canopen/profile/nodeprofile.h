@@ -12,10 +12,12 @@ class NodeProfile402;
 
 class CANOPEN_EXPORT NodeProfile : public QObject, public NodeOdSubscriber
 {
-
 public:
     NodeProfile(Node *node);
     virtual bool status() const = 0;
+
+protected:
+    Node *_node;
 };
 
 #endif // NODEPROFILE_H
