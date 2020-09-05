@@ -188,13 +188,6 @@ SDO::Status SDO::status() const
  */
 bool SDO::uploadData(quint16 index, quint8 subindex, QMetaType::Type dataType)
 {
-    RequestSdo *request = new RequestSdo();
-    request->index = index;
-    request->subIndex = subindex;
-    request->dataType = dataType;
-    request->size = static_cast<quint32>(QMetaType::sizeOf(QMetaType::Type(dataType)));
-    request->state = STATE_UPLOAD;
-
     bool existing = false;
     for (RequestSdo *req : _requestQueue)
     {
@@ -206,6 +199,12 @@ bool SDO::uploadData(quint16 index, quint8 subindex, QMetaType::Type dataType)
 
     if (!existing)
     {
+        RequestSdo *request = new RequestSdo();
+        request->index = index;
+        request->subIndex = subindex;
+        request->dataType = dataType;
+        request->size = static_cast<quint32>(QMetaType::sizeOf(QMetaType::Type(dataType)));
+        request->state = STATE_UPLOAD;
         _requestQueue.enqueue(request);
     }
 
