@@ -18,6 +18,7 @@
 
 #include <QDebug>
 #include <QMimeData>
+#include <QPixmap>
 
 #include "dataloggermodel.h"
 
@@ -132,8 +133,6 @@ QVariant DataLoggerModel::headerData(int section, Qt::Orientation orientation, i
             return QVariant(tr("Node"));
         case Index:
             return QVariant(tr("Index"));
-        case SubIndex:
-            return QVariant(tr("Sub."));
         case Name:
             return QVariant(tr("Name"));
         case Value:
@@ -170,10 +169,8 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
             return QVariant(QString("%1.%2 %3").arg(dlData->node()->busId()).arg(dlData->node()->nodeId()).arg(dlData->node()->name()));
 
         case Index:
-            return QVariant(QString("0x%1").arg(QString::number(dlData->objectId().index, 16)));
-
-        case SubIndex:
-            return QVariant(QString("0x%1").arg(QString::number(dlData->objectId().subIndex, 16)));
+            return QVariant(QString("0x%1.%2").arg(QString::number(dlData->objectId().index, 16))
+                                .arg(QString::number(dlData->objectId().subIndex, 16)));
 
         case Name:
             return QVariant(dlData->name());
@@ -189,6 +186,14 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
 
         default:
             return QVariant();
+        }
+
+    case Qt::DecorationRole:
+        if (index.column() == Node)
+        {
+            QPixmap pix(24, 24);
+            pix.fill(dlData->color());
+            return pix;
         }
     }
     return QVariant();

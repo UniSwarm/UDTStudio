@@ -20,7 +20,9 @@
 
 #include <QDateTimeAxis>
 #include <QValueAxis>
+#include <QScatterSeries>
 #include <QDebug>
+#include <qmath.h>
 
 using namespace QtCharts;
 
@@ -82,16 +84,28 @@ void DataLoggerChartsWidget::updateDlData(int id)
     if (id < _series.count())
     {
         DLData *dlData = _dataLogger->data(id);
-        _series[id]->append(dlData->lastDateTime().toMSecsSinceEpoch(), dlData->lastValue());
+        QtCharts::QXYSeries *serie = _series[id];
+        serie->append(dlData->lastDateTime().toMSecsSinceEpoch(), dlData->lastValue());
 
-        qreal min = _dataLogger->min();
-        qreal max = _dataLogger->max();
-        qreal border = (max - min) * .1;
+        if (serie->color() != dlData->color())
+        {
+            serie->setPen(QPen(dlData->color(), 2));
+        }
+
+        qreal min = qFloor(_dataLogger->min());
+        qreal max = qCeil(_dataLogger->max());
+        qreal border = qCeil((max - min) * .1);
+        qreal range = max - min + 2 * border;
         if (min < _axisY->min() || min + border > _axisY->min()
             || max > _axisY->max() || max - border < _axisY->max())
         {
             _axisY->setRange(min - border, max + border);
+            if (range < 10.0)
+            {
+                _axisY->setTickCount(range + 1);
+            }
         }
+        //qDebug() << min - border << max + border << dlData->lastValue() << range << qCeil(range / 10.0);
 
         QDateTime firstDateTime = _dataLogger->firstDateTime();
         QDateTime lastDateTime = _dataLogger->lastDateTime();
@@ -116,6 +130,9 @@ void DataLoggerChartsWidget::addDataOk()
         QtCharts::QLineSeries *serie = new QtCharts::QLineSeries();
         serie->setUseOpenGL(true);
         serie->setName(dlData->name());
+        serie->setPen(QPen(dlData->color(), 2));
+        serie->setBrush(QBrush(dlData->color()));
+        serie->setPointsVisible();
         _chart->addSeries(serie);
 
         if (!_chart->axes(Qt::Horizontal).contains(_axisX))
@@ -135,7 +152,7 @@ void DataLoggerChartsWidget::removeDataPrepare(int id)
 {
     if (id >= 0 && id < _dataLogger->dataList().count())
     {
-        QtCharts::QLineSeries *serie = _series.at(id);
+        QtCharts::QXYSeries *serie = _series.at(id);
         _chart->removeSeries(serie);
         _series.removeOne(serie);
         serie->deleteLater();

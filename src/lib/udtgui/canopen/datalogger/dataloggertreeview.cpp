@@ -37,9 +37,8 @@ DataLoggerTreeView::DataLoggerTreeView(QWidget *parent)
     setModel(_sortProxy);
 
     int w0 = QFontMetrics(font()).horizontalAdvance("0");
-    header()->resizeSection(DataLoggerModel::Node, 16 * w0);
-    header()->resizeSection(DataLoggerModel::Index, 8 * w0);
-    header()->resizeSection(DataLoggerModel::SubIndex, 8 * w0);
+    header()->resizeSection(DataLoggerModel::Node, 22 * w0);
+    header()->resizeSection(DataLoggerModel::Index, 10 * w0);
     header()->resizeSection(DataLoggerModel::Name, 20 * w0);
     header()->resizeSection(DataLoggerModel::Value, 8 * w0);
     header()->resizeSection(DataLoggerModel::Min, 8 * w0);
@@ -120,6 +119,7 @@ void DataLoggerTreeView::createActions()
     _removeAction->setText(tr("&Remove"));
     _removeAction->setShortcut(QKeySequence::Delete);
     _removeAction->setShortcutContext(Qt::WidgetShortcut);
+    _removeAction->setIcon(QIcon(":/icons/img/icons8-delete.png"));
 #if QT_VERSION >= 0x050A00
     _removeAction->setShortcutVisibleInContextMenu(true);
 #endif

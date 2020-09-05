@@ -63,13 +63,14 @@ void DLData::setName(const QString &name)
     _name = name;
 }
 
-void DLData::appendData(qreal value, const QDateTime &dateTime)
+QColor DLData::color() const
 {
-    _values.append(value);
-    _times.append(dateTime);
+    return _color;
+}
 
-    _min = qMin(_min, value);
-    _max = qMax(_max, value);
+void DLData::setColor(const QColor &color)
+{
+    _color = color;
 }
 
 double DLData::firstValue() const
@@ -108,6 +109,25 @@ QDateTime DLData::lastDateTime() const
     return _times.last();
 }
 
+QList<qreal> DLData::values() const
+{
+    return _values;
+}
+
+QList<QDateTime> DLData::times() const
+{
+    return _times;
+}
+
+void DLData::appendData(qreal value, const QDateTime &dateTime)
+{
+    _values.append(value);
+    _times.append(dateTime);
+
+    _min = qMin(_min, value);
+    _max = qMax(_max, value);
+}
+
 void DLData::clear()
 {
     _values.clear();
@@ -129,14 +149,4 @@ void DLData::resetMinMax()
 {
     _min = std::numeric_limits<int>::max();
     _max = std::numeric_limits<int>::min();
-}
-
-QList<qreal> DLData::values() const
-{
-    return _values;
-}
-
-QList<QDateTime> DLData::times() const
-{
-    return _times;
 }

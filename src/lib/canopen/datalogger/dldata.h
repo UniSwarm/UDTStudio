@@ -25,6 +25,8 @@
 
 #include "node.h"
 
+#include <QColor>
+
 class CANOPEN_EXPORT DLData
 {
 public:
@@ -34,27 +36,37 @@ public:
     quint64 key() const;
     Node *node() const;
 
+    // apparence attributes
     QString name() const;
     void setName(const QString &name);
 
-    void appendData(qreal value, const QDateTime &dateTime);
+    QColor color() const;
+    void setColor(const QColor &color);
+
+    // values and times access
+    QList<qreal> values() const;
     double firstValue() const;
     double lastValue() const;
+
+    QList<QDateTime> times() const;
     QDateTime firstDateTime() const;
     QDateTime lastDateTime() const;
+
+    // add / remove dada
+    void appendData(qreal value, const QDateTime &dateTime);
     void clear();
 
+    // stats
     qreal min() const;
     qreal max() const;
     void resetMinMax();
 
-    QList<qreal> values() const;
-    QList<QDateTime> times() const;
-
 protected:
     NodeObjectId _objectId;
     Node *_node;
+
     QString _name;
+    QColor _color;
 
     QList <qreal> _values;
     QList <QDateTime> _times;

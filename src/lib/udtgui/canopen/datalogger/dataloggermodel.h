@@ -41,7 +41,6 @@ public:
     enum Column {
         Node,
         Index,
-        SubIndex,
         Name,
         Value,
         Min,

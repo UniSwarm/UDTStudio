@@ -36,8 +36,10 @@ void DataLogger::addData(const NodeObjectId &objId)
     emit dataAboutToBeAdded(_dataList.count());
 
     DLData *dlData = new DLData(objId);
+    dlData->setColor(QColor::fromHsv(_dataList.count() * 50, 255, 255));
     _dataMap.insert(dlData->key(), dlData);
     _dataList.append(dlData);
+
     registerObjId(dlData->objectId());
 
     emit dataAdded();

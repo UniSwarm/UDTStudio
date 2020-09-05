@@ -54,7 +54,7 @@ private:
     DataLogger *_dataLogger;
 
     QtCharts::QChart *_chart;
-    QList<QtCharts::QLineSeries *> _series;
+    QList<QtCharts::QXYSeries *> _series;
     QtCharts::QDateTimeAxis *_axisX;
     QtCharts::QValueAxis *_axisY;
 
