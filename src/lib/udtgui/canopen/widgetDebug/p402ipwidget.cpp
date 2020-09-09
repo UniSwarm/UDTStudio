@@ -88,7 +88,7 @@ void P402IpWidget::setNode(Node *node)
         connect(_node, &Node::statusChanged, this, &P402IpWidget::updateData);
         updateData();
 
-        connect(&_readActualBuffetSize, &QTimer::timeout, this, &P402IpWidget::readActualBufferSize);
+        connect(&_readActualBuffetSize, &QTimer::timeout, this, &P402IpWidget::sendDataRecordTargetWithSdo);
 
         _bus = _node->bus();
         connect(_bus->sync(), &Sync::signalBeforeSync, this, &P402IpWidget::sendDataRecordTargetWithPdo);
@@ -556,10 +556,16 @@ void P402IpWidget::createWidgets()
     _durationSpinBox->setSuffix(" ms");
     _durationSpinBox->setRange(0, std::numeric_limits<int>::max());
 
+    QHBoxLayout *buttonGoStoplayout = new QHBoxLayout();
+
     _goTargetPushButton = new QPushButton(tr("GO"));
     connect(_goTargetPushButton, &QPushButton::clicked, this, &P402IpWidget::goTargetPosition);
+    _stopTargetPushButton = new QPushButton(tr("STOP"));
+    connect(_stopTargetPushButton, &QPushButton::clicked, this, &P402IpWidget::stopTargetPosition);
+    buttonGoStoplayout->addWidget(_stopTargetPushButton);
+    buttonGoStoplayout->addWidget(_goTargetPushButton);
 
-    generatorSinusoidalLayout->addRow(_goTargetPushButton);
+    generatorSinusoidalLayout->addRow(buttonGoStoplayout);
     generatorSinusoidalGroupBox->setLayout(generatorSinusoidalLayout);
 
 
@@ -611,6 +617,7 @@ void P402IpWidget::createWidgets()
     setLayout(layout);
 }
 
+// each period * 15 -> we send 20 set-point, for have always value in buffer in device
 void P402IpWidget::goTargetPosition()
 {
     quint32 unit = 0;
@@ -637,6 +644,13 @@ void P402IpWidget::goTargetPosition()
     _goTargetPushButton->setEnabled(false);
 }
 
+void P402IpWidget::stopTargetPosition()
+{
+    _pointSinusoidal.clear();
+    _readActualBuffetSize.stop();
+    _goTargetPushButton->setEnabled(true);
+}
+
 void P402IpWidget::readActualBufferSize()
 {
     _node->readObject(_ipDataConfigurationObjectId, 0x2);
@@ -644,10 +658,9 @@ void P402IpWidget::readActualBufferSize()
 
 void P402IpWidget::sendDataRecordTargetWithPdo()
 {
-    int i = 0;
     if (_pointSinusoidal.isEmpty())
     {
-        _goTargetPushButton->setEnabled(true);
+        stopTargetPosition();
         return;
     }
     _node->writeObject(_ipDataRecordObjectId, 0x01, QVariant(_pointSinusoidal.at(0)));
@@ -665,7 +678,7 @@ void P402IpWidget::sendDataRecordTargetWithSdo()
         return;
     }
 
-    for (i = 0; i < 20; i++)
+    for (i = 0; i < 15; i++)
     {
         if (i > (_pointSinusoidal.size() - 1))
         {
@@ -675,6 +688,7 @@ void P402IpWidget::sendDataRecordTargetWithSdo()
     }
     _pointSinusoidal.remove(0, i);
 }
+
 
 void P402IpWidget::calculatePointSinusoidalMotionProfile(qint32 initialPosition)
 {
@@ -879,7 +893,7 @@ void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         }
         ipSendDataRecord();
     }
-    if ((objId.index == _ipDataConfigurationObjectId) && (objId.subIndex == 0x06))
+    if ((objId.index == _ipDataConfigurationObjectId) && (objId.subIndex == 0x06)) // object BUFFER_CLEAR
     {
         if (flags == SDO::FlagsRequest::Error)
         {

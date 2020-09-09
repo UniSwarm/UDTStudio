@@ -115,11 +115,13 @@ private:
     QCheckBox *_relativeTargetpositionSpinBox;
     QSpinBox *_durationSpinBox;
     QPushButton *_goTargetPushButton;
+    QPushButton *_stopTargetPushButton;
 
     QVector<int> _pointSinusoidal;
     QTimer _readActualBuffetSize;
 
     void goTargetPosition();
+    void stopTargetPosition();
     void calculatePointSinusoidalMotionProfile(qint32 initialPosition);
     void sendDataRecordTargetWithPdo();
     void sendDataRecordTargetWithSdo();
