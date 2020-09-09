@@ -534,7 +534,14 @@ void P402VlWidget::refreshData(quint16 object)
         if (object == _vlTargetVelocityObjectId)
         {
             value = _node->nodeOd()->value(object).toInt();
-            _vlTargetVelocitySpinBox->setValue(value);
+            if (!_vlTargetVelocitySpinBox->hasFocus())
+            {
+                _vlTargetVelocitySpinBox->setValue(value);
+            }
+            if (!_vlTargetVelocitySlider->isSliderDown())
+            {
+                //_vlTargetVelocitySlider->setValue(value);
+            }
         }
         if (object == _vlVelocityDemandObjectId)
         {
@@ -550,19 +557,15 @@ void P402VlWidget::refreshData(quint16 object)
         {
             value = _node->nodeOd()->value(object, 1).toInt();
             _vlMinVelocityMinMaxAmountSpinBox->setValue(value);
-        }
-        if (object == _vlVelocityMinMaxAmountObjectId)
-        {
             value = _node->nodeOd()->value(object, 2).toInt();
             _vlMaxVelocityMinMaxAmountSpinBox->setValue(value);
+            _vlTargetVelocitySlider->setMinimum(-value);
+            _vlTargetVelocitySlider->setMaximum(value);
         }
         if (object == _vlAccelerationObjectId)
         {
             value = _node->nodeOd()->value(object, 1).toInt();
             _vlAccelerationDeltaSpeedSpinBox->setValue(value);
-        }
-        if (object == _vlAccelerationObjectId)
-        {
             value = _node->nodeOd()->value(object, 2).toInt();
             _vlAccelerationDeltaTimeSpinBox->setValue(value);
         }
@@ -570,9 +573,6 @@ void P402VlWidget::refreshData(quint16 object)
         {
             value = _node->nodeOd()->value(object, 1).toInt();
             _vlDecelerationDeltaSpeedSpinBox->setValue(value);
-        }
-        if (object == _vlDecelerationObjectId)
-        {
             value = _node->nodeOd()->value(object, 2).toInt();
             _vlDecelerationDeltaTimeSpinBox->setValue(value);
         }
@@ -580,9 +580,6 @@ void P402VlWidget::refreshData(quint16 object)
         {
             value = _node->nodeOd()->value(object, 1).toInt();
             _vlQuickStopDeltaSpeedSpinBox->setValue(value);
-        }
-        if (object == _vlQuickStopObjectId)
-        {
             value = _node->nodeOd()->value(object, 2).toInt();
             _vlQuickStopDeltaTimeSpinBox->setValue(value);
         }
@@ -591,9 +588,6 @@ void P402VlWidget::refreshData(quint16 object)
         {
             value = _node->nodeOd()->value(object, 1).toInt();
             _vlSetPointFactorNumeratorSpinBox->setValue(value);
-        }
-        if (object == _vlSetPointFactorObjectId)
-        {
             value = _node->nodeOd()->value(object, 2).toInt();
             _vlSetPointFactorDenominatorSpinBox->setValue(value);
         }
@@ -601,9 +595,6 @@ void P402VlWidget::refreshData(quint16 object)
         {
             value = _node->nodeOd()->value(object, 1).toInt();
             _vlDimensionFactorNumeratorSpinBox->setValue(value);
-        }
-        if (object == _vlDimensionFactorObjectId)
-        {
             value = _node->nodeOd()->value(object, 2).toInt();
             _vlDimensionFactorDenominatorSpinBox->setValue(value);
         }
