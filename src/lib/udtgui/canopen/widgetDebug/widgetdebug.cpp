@@ -53,6 +53,9 @@ WidgetDebug::WidgetDebug(Node *node, QWidget *parent)
     registerObjId({_modesOfOperationObjectId, 0x00});
     registerObjId({_modesOfOperationDisplayObjectId, 0x00});
 
+    _modeComboBox->insertItem(0, "2 Velocity (VL)");
+    _modeComboBox->insertItem(1, "7 Interpolated position (IP)");
+
     setNode(node);
 }
 WidgetDebug::~WidgetDebug()
@@ -89,8 +92,6 @@ void WidgetDebug::setNode(Node *node)
         _p402Option->setNode(_node);
         _p402vl->setNode(_node);
         _p402ip->setNode(_node);
-        _modeComboBox->insertItem(0, "2 Velocity (VL)");
-        _modeComboBox->insertItem(1, "7 Interpolated position (IP)");
 
         updateData();
     }
@@ -169,15 +170,18 @@ void WidgetDebug::setTimer(int ms)
 
 void WidgetDebug::readData()
 {
-    _node->readObject(_statusWordObjectId, 0x0);
-    quint16 mode = static_cast<quint16>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
-    if (mode == 7)
+    if (_node)
     {
-        _p402ip->readData();
-    }
-    else if (mode == 2)
-    {
-        _p402vl->readData();
+        _node->readObject(_statusWordObjectId, 0x0);
+        quint16 mode = static_cast<quint16>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
+        if (mode == 7)
+        {
+            _p402ip->readData();
+        }
+        else if (mode == 2)
+        {
+            _p402vl->readData();
+        }
     }
 }
 void WidgetDebug::displayOption402()
@@ -194,6 +198,11 @@ void WidgetDebug::displayOption402()
 void WidgetDebug::modeIndexChanged(int id)
 {
     qint8 mode = 0;
+    if (!_node)
+    {
+        return;
+    }
+
     if (id == 0)
     {
         mode = 2;
@@ -208,6 +217,10 @@ void WidgetDebug::modeIndexChanged(int id)
 
 void WidgetDebug::stateMachineClicked(int id)
 {
+    if (!_node)
+    {
+        return;
+    }
     cmdControlWord = (cmdControlWord & ~CW_Mask);
 
     // !! id is not the current state, it's id id groupbutton
