@@ -64,6 +64,15 @@ void NodeManagerWidget::setNode(Node *node)
         connect(_node, &Node::statusChanged, this, &NodeManagerWidget::updateData);
         if ((_node->profileNumber()) == 0x192)
         {
+            if (!_widgetDebug)
+            {
+                _widgetDebug = new WidgetDebug(_node);
+            }
+            else
+            {
+                _widgetDebug->setNode(_node);
+            }
+
             _action402->setVisible(true);
         }
         else if (_action402)
