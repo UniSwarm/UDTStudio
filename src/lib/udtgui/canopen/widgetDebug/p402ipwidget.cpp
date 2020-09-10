@@ -10,6 +10,7 @@
 #include <QString>
 #include <QStringList>
 #include <QtMath>
+#include <QDebug>
 
 P402IpWidget::P402IpWidget(QWidget *parent)
     : QWidget(parent)
@@ -88,7 +89,7 @@ void P402IpWidget::setNode(Node *node)
         connect(_node, &Node::statusChanged, this, &P402IpWidget::updateData);
         updateData();
 
-        connect(&_readActualBuffetSize, &QTimer::timeout, this, &P402IpWidget::sendDataRecordTargetWithSdo);
+        connect(&_sendPointSinusoidalTimer, &QTimer::timeout, this, &P402IpWidget::sendDataRecordTargetWithSdo);
 
         _bus = _node->bus();
         connect(_bus->sync(), &Sync::signalBeforeSync, this, &P402IpWidget::sendDataRecordTargetWithPdo);
@@ -401,7 +402,7 @@ void P402IpWidget::createWidgets()
     QLayout *ipHomeOffsetlayout = new QVBoxLayout();
     QLabel *ipHomeOffsetLabel = new QLabel(tr("Home offset (0x607C) :"));
     _ipHomeOffsetSpinBox = new QSpinBox();
-    _ipHomeOffsetSpinBox->setSuffix(" inc/s");
+    _ipHomeOffsetSpinBox->setSuffix(" inc");
     _ipHomeOffsetSpinBox->setToolTip("");
     _ipHomeOffsetSpinBox->setRange(0, std::numeric_limits<int>::max());
     ipHomeOffsetlayout->addWidget(ipHomeOffsetLabel);
@@ -452,7 +453,7 @@ void P402IpWidget::createWidgets()
     QLayout *ipMaxProfileVelocitylayout = new QVBoxLayout();
     QLabel *ipMaxProfileVelocityLabel = new QLabel(tr("Max profile velocity (0x607F) :"));
     _ipMaxProfileVelocitySpinBox = new QSpinBox();
-    _ipMaxProfileVelocitySpinBox->setSuffix(" inc/s");
+    _ipMaxProfileVelocitySpinBox->setSuffix(" inc/period");
     _ipMaxProfileVelocitySpinBox->setToolTip("");
     _ipMaxProfileVelocitySpinBox->setRange(0, std::numeric_limits<int>::max());
     ipMaxProfileVelocitylayout->addWidget(ipMaxProfileVelocityLabel);
@@ -462,7 +463,7 @@ void P402IpWidget::createWidgets()
     QLayout *ipMaxMotorSpeedlayout = new QVBoxLayout();
     QLabel *ipMaxMotorSpeedLabel = new QLabel(tr("Max motor speed (0x6080) :"));
     _ipMaxMotorSpeedSpinBox = new QSpinBox();
-    _ipMaxMotorSpeedSpinBox->setSuffix(" inc/s");
+    _ipMaxMotorSpeedSpinBox->setSuffix(" inc/period");
     _ipMaxMotorSpeedSpinBox->setToolTip("");
     _ipMaxMotorSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
     ipMaxMotorSpeedlayout->addWidget(ipMaxMotorSpeedLabel);
@@ -639,16 +640,18 @@ void P402IpWidget::goTargetPosition()
     if (_bus->sync()->status() == Sync::Status::STOPPED)
     {
         sendDataRecordTargetWithSdo();
-        _readActualBuffetSize.start(static_cast<int>(period) * 15);
+        _sendPointSinusoidalTimer.start(static_cast<int>(period) * 5);
     }
     _goTargetPushButton->setEnabled(false);
+    _ipDataRecordLineEdit->setEnabled(false);
 }
 
 void P402IpWidget::stopTargetPosition()
 {
-    _pointSinusoidal.clear();
-    _readActualBuffetSize.stop();
+    _pointSinusoidalVector.clear();
+    _sendPointSinusoidalTimer.stop();
     _goTargetPushButton->setEnabled(true);
+    _ipDataRecordLineEdit->setEnabled(true);
 }
 
 void P402IpWidget::readActualBufferSize()
@@ -658,35 +661,34 @@ void P402IpWidget::readActualBufferSize()
 
 void P402IpWidget::sendDataRecordTargetWithPdo()
 {
-    if (_pointSinusoidal.isEmpty())
+    if (_pointSinusoidalVector.isEmpty())
     {
         stopTargetPosition();
         return;
     }
-    _node->writeObject(_ipDataRecordObjectId, 0x01, QVariant(_pointSinusoidal.at(0)));
-    _pointSinusoidal.remove(0);
+    _node->writeObject(_ipDataRecordObjectId, 0x01, QVariant(_pointSinusoidalVector.at(0)));
+    _pointSinusoidalVector.remove(0);
 }
 
 void P402IpWidget::sendDataRecordTargetWithSdo()
 {
     int i = 0;
 
-    if (_pointSinusoidal.isEmpty())
+    if (_pointSinusoidalVector.isEmpty())
     {
-        _goTargetPushButton->setEnabled(true);
-        _readActualBuffetSize.stop();
+        stopTargetPosition();
         return;
     }
 
-    for (i = 0; i < 15; i++)
+    for (i = 0; i < 5; i++)
     {
-        if (i > (_pointSinusoidal.size() - 1))
+        if (i > (_pointSinusoidalVector.size() - 1))
         {
             break;
         }
-        _node->writeObject(_ipDataRecordObjectId, 0x01, QVariant(_pointSinusoidal.at(i)));
+        _node->writeObject(_ipDataRecordObjectId, 0x01, QVariant(_pointSinusoidalVector.at(i)));
     }
-    _pointSinusoidal.remove(0, i);
+    _pointSinusoidalVector.remove(0, i);
 }
 
 
@@ -713,8 +715,11 @@ void P402IpWidget::calculatePointSinusoidalMotionProfile(qint32 initialPosition)
 
     period = qPow(10, index);
     period = unit * period * 1000;
-
-    _pointSinusoidal.clear();
+    if (period == 0.0)
+    {
+        return;
+    }
+    _pointSinusoidalVector.clear();
 
     int j = 0;
     for(quint32 i = 0; i <= duration; i++)
@@ -723,7 +728,7 @@ void P402IpWidget::calculatePointSinusoidalMotionProfile(qint32 initialPosition)
         pos = (((target / 2) * qCos(pos)) + (target / 2)) + initialPosition;
         if (((i % static_cast<quint32>(period)) == 0) && (i != 0))
         {
-            _pointSinusoidal.insert(static_cast<int>(j), static_cast<qint32>(pos));
+            _pointSinusoidalVector.insert(static_cast<int>(j), static_cast<qint32>(pos));
             j++;
         }
     }
@@ -891,24 +896,16 @@ void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         {
             return;
         }
-        ipSendDataRecord();
+        if (!_listDataRecord.isEmpty())
+        {
+            ipSendDataRecord();
+        }
     }
     if ((objId.index == _ipDataConfigurationObjectId) && (objId.subIndex == 0x06)) // object BUFFER_CLEAR
     {
         if (flags == SDO::FlagsRequest::Error)
         {
             return;
-        }
-        else
-        {
-//            if (_clearBufferPushButton->isChecked())
-//            {
-//                _clearBufferPushButton->setChecked(false);
-//            }
-//            else
-//            {
-//                _clearBufferPushButton->setChecked(true);
-//            }
         }
     }
     if ((objId.index == _ipDataConfigurationObjectId) && (objId.subIndex == 0x02))

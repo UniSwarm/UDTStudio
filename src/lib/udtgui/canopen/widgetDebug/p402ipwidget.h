@@ -117,8 +117,8 @@ private:
     QPushButton *_goTargetPushButton;
     QPushButton *_stopTargetPushButton;
 
-    QVector<int> _pointSinusoidal;
-    QTimer _readActualBuffetSize;
+    QVector<int> _pointSinusoidalVector;
+    QTimer _sendPointSinusoidalTimer;
 
     void goTargetPosition();
     void stopTargetPosition();
