@@ -359,8 +359,8 @@ bool NodeOd::loadEds(const QString &fileName)
             if (!nodeSubIndex->value().isValid())
             {
                 nodeSubIndex->setValue(odSubIndex->value());
-                nodeSubIndex->setDefaultValue(odSubIndex->value());
             }
+            nodeSubIndex->setDefaultValue(odSubIndex->value());
             nodeSubIndex->setName(odSubIndex->name());
             nodeSubIndex->setAccessType(static_cast<NodeSubIndex::AccessType>(odSubIndex->accessType()));
             nodeSubIndex->setDataType(static_cast<NodeSubIndex::DataType>(odSubIndex->dataType()));
