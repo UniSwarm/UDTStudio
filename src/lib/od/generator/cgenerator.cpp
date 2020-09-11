@@ -167,6 +167,8 @@ void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
         << "\n";
     out << "void od_initCommIndexes(void);"
         << "\n";
+    out << "void od_initMSIndexes(void);"
+        << "\n";
     out << "void od_initAppIndexes(void);"
         << "\n";
     out << "void od_setNodeId(uint8_t nodeId);"
@@ -232,8 +234,13 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
         }
     }
 
-    QList<Index *> appIndexes;
-    QList<Index *> commIndexes;
+    out << "\n";
+
+    QList<Index *> commIndexes; //Communication profile area
+    QList<Index *> msIndexes;   //Manufacturer-specific profile area
+    QList<Index *> appIndexes;  //Standardized profile area
+
+
 
     for (Index *index : indexes)
     {
@@ -245,20 +252,36 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
         {
             commIndexes.append(index);
         }
+        else if (index->index() < 0x6000)
+        {
+            msIndexes.append(index);
+        }
         else
         {
             appIndexes.append(index);
         }
     }
 
+    out << "//Communication profile area, Indexes 0x1000 to 0x1FFF"
+        << "\n";
     out << "void od_initCommIndexes(void)"
         << "\n";
     out << "{";
     writeInitRamC(commIndexes, out);
     out << "}"
+        << "\n";    
+    out << "\n";
+    out << "//Manufacturer-specific profile area, Indexes 0x2000 to 0x5FFF"
+        << "\n";
+    out << "void od_initMSIndexes(void)"
+        << "\n";
+    out << "{";
+    writeInitRamC(msIndexes, out);
+    out << "}"
         << "\n";
     out << "\n";
-
+    out << "//Standardized profile area, Indexes 0x6000 to 0x9FFF"
+        << "\n";
     out << "void od_initAppIndexes(void)"
         << "\n";
     out << "{";
