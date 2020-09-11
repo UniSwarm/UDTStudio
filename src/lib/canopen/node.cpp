@@ -202,7 +202,7 @@ void Node::setBus(CanOpenBus *bus)
 
 void Node::reset()
 {
-    _nodeOd->reset();
+    _nodeOd->resetValue();
 
     for (Service *service : _services)
     {
