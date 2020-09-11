@@ -155,6 +155,11 @@ void P402IpWidget::updateData()
     }
 }
 
+void P402IpWidget::stop()
+{
+    stopTargetPosition();
+}
+
 void P402IpWidget::ipDataRecordLineEditFinished()
 {
     _listDataRecord = _ipDataRecordLineEdit->text().split(QLatin1Char(','), QString::SkipEmptyParts);
@@ -618,7 +623,7 @@ void P402IpWidget::createWidgets()
     setLayout(layout);
 }
 
-// each period * 15 -> we send 20 set-point, for have always value in buffer in device
+// each period * 5 -> we send 5 set-point, for have always value in buffer in device
 void P402IpWidget::goTargetPosition()
 {
     quint32 unit = 0;
@@ -913,14 +918,6 @@ void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         if (flags == SDO::FlagsRequest::Error)
         {
             return;
-        }
-        else
-        {
-            quint32 actualBufferSize = _node->nodeOd()->value(_ipDataConfigurationObjectId, 0x02).toUInt();
-            if (actualBufferSize < 5)
-            {
-                sendDataRecordTargetWithSdo();
-            }
         }
     }
 }

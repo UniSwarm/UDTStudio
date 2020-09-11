@@ -454,9 +454,11 @@ void WidgetDebug::manageStatusWordInformation()
         }
         text.append("Target Reached");
     }
+
     _informationLabel->clear();
     _informationLabel->setText(text);
 
+    text.clear();
     if ((state & SW_InternalLimitActive) == SW_InternalLimitActive)
     {
         text = "Internal Limit Active";
@@ -469,6 +471,18 @@ void WidgetDebug::manageStatusWordInformation()
             text.append(", ");
         }
         text.append("Warning");
+    }
+    quint16 mode = static_cast<quint16>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
+    if (mode == 7)
+    {
+        if ((state & SW_FollowingError) == SW_FollowingError)
+        {
+            if (!text.isEmpty())
+            {
+                text.append(", ");
+            }
+            text.append("Following error");
+        }
     }
     _warningLabel->clear();
     _warningLabel->setText(text);
@@ -489,6 +503,7 @@ void WidgetDebug::manageModeOfOperationObject(SDO::FlagsRequest flags)
     }
     else if (mode == 2)
     {
+        _p402ip->stop();
         _stackedWidget->setCurrentWidget(_p402vl);
         _modeComboBox->setCurrentIndex(0);
     }

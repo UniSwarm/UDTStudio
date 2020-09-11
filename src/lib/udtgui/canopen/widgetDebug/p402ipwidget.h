@@ -29,6 +29,7 @@ signals:
 public slots:
     void setNode(Node *value);
     void updateData();
+    void stop();
 
 private:
     Node *_node;

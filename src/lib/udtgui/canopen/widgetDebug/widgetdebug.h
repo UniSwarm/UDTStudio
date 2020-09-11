@@ -152,6 +152,7 @@ private:
         SW_Warning = 0x80,
         SW_Remote = 0x200,
         SW_TargetReached = 0x400,
+        SW_FollowingError = 0x2000,
         SW_InternalLimitActive = 0x800,
         SW_OperationModeSpecific = 0x3000,
         SW_ManufacturerSpecific = 0xC000
