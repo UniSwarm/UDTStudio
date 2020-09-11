@@ -178,6 +178,17 @@ QVariant NodeOd::value(quint16 index, quint8 subIndex) const
     return nodeSubIndex->value();
 }
 
+void NodeOd::resetValue()
+{
+    for (NodeIndex *index : _nodeIndexes)
+    {
+        for (NodeSubIndex *subIndex : index->subIndexes())
+        {
+            subIndex->resetValue();
+        }
+    }
+}
+
 QDateTime NodeOd::lastModification(const NodeObjectId &id) const
 {
     return lastModification(id.index, id.subIndex);
@@ -348,6 +359,7 @@ bool NodeOd::loadEds(const QString &fileName)
             if (!nodeSubIndex->value().isValid())
             {
                 nodeSubIndex->setValue(odSubIndex->value());
+                nodeSubIndex->setDefaultValue(odSubIndex->value());
             }
             nodeSubIndex->setName(odSubIndex->name());
             nodeSubIndex->setAccessType(static_cast<NodeSubIndex::AccessType>(odSubIndex->accessType()));

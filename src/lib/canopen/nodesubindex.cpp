@@ -238,6 +238,25 @@ void NodeSubIndex::clearValue()
 }
 
 /**
+ * @brief set Default Value
+ * @param value new DefaultValue
+ */
+void NodeSubIndex::setDefaultValue(const QVariant &value)
+{
+    _defaultValue.setValue(value);
+}
+
+/**
+ * @brief Reset Value with defalut value
+ * @param new sub-index value
+ */
+void NodeSubIndex::resetValue()
+{
+    _value.setValue(_defaultValue);
+    _lastModification = QDateTime::currentDateTime();
+}
+
+/**
  * @brief _error getter
  * @return return sub-index value
  */

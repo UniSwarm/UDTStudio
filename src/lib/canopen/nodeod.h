@@ -60,6 +60,7 @@ public:
     // value
     QVariant value(const NodeObjectId &id) const;
     QVariant value(quint16 index, quint8 subIndex = 0x00) const;
+    void resetValue();
 
     // dataType
     QMetaType::Type dataType(const NodeObjectId &id) const;

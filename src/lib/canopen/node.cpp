@@ -202,6 +202,8 @@ void Node::setBus(CanOpenBus *bus)
 
 void Node::reset()
 {
+    _nodeOd->reset();
+
     for (Service *service : _services)
     {
         service->reset();

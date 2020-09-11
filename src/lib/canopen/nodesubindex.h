@@ -53,6 +53,8 @@ public:
     const QVariant &value() const;
     void setValue(const QVariant &value);
     void clearValue();
+    void setDefaultValue(const QVariant &value);
+    void resetValue();
 
     const quint32 &error() const;
     void setError(const quint32 &value);
