@@ -151,12 +151,17 @@ void NodeManagerWidget::createWidgets()
     QAction *action;
     QLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     _groupBox = new QGroupBox(tr("Node"));
     QFormLayout *layoutGroupBox = new QFormLayout();
+    layoutGroupBox->setSpacing(2);
+    layoutGroupBox->setContentsMargins(5, 5, 5, 5);
 
     // toolbar nmt
     _toolBar = new QToolBar(tr("Node commands"));
+    _toolBar->setIconSize(QSize(20, 20));
+
     QActionGroup *groupNmt = new QActionGroup(this);
     groupNmt->setExclusive(true);
 

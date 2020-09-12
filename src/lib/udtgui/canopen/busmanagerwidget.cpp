@@ -49,8 +49,6 @@ void BusManagerWidget::updateData()
     if (_bus)
     {
         _busNameEdit->setText(_bus->busName());
-        // _busTypeLabel->setText();
-        // _busStatusLabel->setText(_bus->);
     }
 }
 
@@ -101,11 +99,15 @@ void BusManagerWidget::createWidgets()
     QAction *action;
     QLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     _groupBox = new QGroupBox(tr("Bus"));
     QFormLayout *layoutGroupBox = new QFormLayout();
+    layoutGroupBox->setSpacing(2);
+    layoutGroupBox->setContentsMargins(5, 5, 5, 5);
 
     _toolBar = new QToolBar(tr("Bus commands"));
+    _toolBar->setIconSize(QSize(20, 20));
 
     // explore
     action = _toolBar->addAction(tr("Explore"));
@@ -122,7 +124,7 @@ void BusManagerWidget::createWidgets()
 
     // Sync timer
     _syncTimerSpinBox = new QSpinBox();
-    _syncTimerSpinBox->setRange(10, 5000);
+    _syncTimerSpinBox->setRange(1, 5000);
     _syncTimerSpinBox->setValue(1000);
     _syncTimerSpinBox->setSuffix(" ms");
     _syncTimerSpinBox->setStatusTip(tr("Sets the interval of sync timer in ms"));
@@ -139,12 +141,6 @@ void BusManagerWidget::createWidgets()
 
     _busNameEdit = new QLineEdit();
     layoutGroupBox->addRow(tr("Name :"), _busNameEdit);
-
-    _busTypeLabel = new QLabel();
-    layoutGroupBox->addRow(tr("Type :"), _busTypeLabel);
-
-    _busStatusLabel = new QLabel();
-    layoutGroupBox->addRow(tr("Status :"), _busStatusLabel);
 
     _groupBox->setLayout(layoutGroupBox);
     layout->addWidget(_groupBox);

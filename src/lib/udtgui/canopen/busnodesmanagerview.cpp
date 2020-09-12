@@ -53,6 +53,8 @@ void BusNodesManagerView::setCanOpen(CanOpen *canOpen)
 void BusNodesManagerView::createWidgets()
 {
     QLayout *layout = new QVBoxLayout();
+    layout->setSpacing(0);
+    layout->setContentsMargins(5, 5, 5, 5);
 
     _busNodeTreeView = new BusNodesTreeView();
     layout->addWidget(_busNodeTreeView);

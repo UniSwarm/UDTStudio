@@ -19,15 +19,25 @@
 #include "busnodestreeview.h"
 
 #include <QDebug>
+#include <QHeaderView>
 
 BusNodesTreeView::BusNodesTreeView(QWidget *parent)
     : BusNodesTreeView(nullptr, parent)
 {
+    int w0 = QFontMetrics(font()).horizontalAdvance("0");
+    header()->resizeSection(BusNodesModel::NodeId, 10 * w0);
+    header()->resizeSection(BusNodesModel::Name, 18 * w0);
+    header()->resizeSection(BusNodesModel::Status, 10 * w0);
 }
 
 BusNodesTreeView::BusNodesTreeView(CanOpen *canOpen, QWidget *parent)
     : QTreeView(parent)
 {
+    int w0 = QFontMetrics(font()).horizontalAdvance("0");
+    header()->resizeSection(BusNodesModel::NodeId, 10 * w0);
+    header()->resizeSection(BusNodesModel::Name, 18 * w0);
+    header()->resizeSection(BusNodesModel::Status, 10 * w0);
+
     _busNodesModel = new BusNodesModel();
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setCanOpen(canOpen);

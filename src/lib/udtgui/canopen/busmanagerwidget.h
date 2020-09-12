@@ -58,8 +58,6 @@ protected:
     QGroupBox *_groupBox;
     QToolBar *_toolBar;
     QLineEdit *_busNameEdit;
-    QLabel *_busTypeLabel;
-    QLabel *_busStatusLabel;
     QSpinBox *_syncTimerSpinBox;
 
     CanOpenBus *_bus;
