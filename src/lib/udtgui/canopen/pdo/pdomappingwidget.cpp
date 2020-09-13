@@ -40,6 +40,7 @@ void PDOMappingWidget::setPdo(PDO *pdo)
     if (_pdo)
     {
         _pdoNameLabel->setText(_pdo->type());
+        _pdoIndexLabel->setText(QString("0x%1").arg(_pdo->cobId(), 0, 16));
         updateEnabled(pdo->isEnabled());
         connect(_pdo, &PDO::enabledChanged, this, &PDOMappingWidget::updateEnabled);
     }
@@ -80,11 +81,14 @@ PDO *PDOMappingWidget::pdo() const
 void PDOMappingWidget::createWidget()
 {
     QLayout *layout = new QHBoxLayout();
+    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     QLayout *layoutHeader = new QVBoxLayout();
     layoutHeader->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
 
     _pdoNameLabel = new QLabel();
+    _pdoNameLabel->setAlignment(Qt::AlignCenter);
     layoutHeader->addWidget(_pdoNameLabel);
 
     _toolBar = new QToolBar(tr("Mapping commands"));
@@ -107,6 +111,10 @@ void PDOMappingWidget::createWidget()
     connect(_enableAction, &QAction::triggered, this, &PDOMappingWidget::setEnabled);
 
     layoutHeader->addWidget(_toolBar);
+
+    _pdoIndexLabel = new QLabel();
+    _pdoIndexLabel->setAlignment(Qt::AlignCenter);
+    layoutHeader->addWidget(_pdoIndexLabel);
 
     layoutHeader->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
     layout->addItem(layoutHeader);

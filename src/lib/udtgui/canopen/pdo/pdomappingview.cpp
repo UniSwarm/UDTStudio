@@ -250,7 +250,6 @@ void PDOMappingView::dragLeaveEvent(QDragLeaveEvent *event)
     update();
 }
 
-
 bool PDOMappingView::event(QEvent *event)
 {
     if (event->type() == QEvent::ToolTip)

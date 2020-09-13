@@ -73,6 +73,8 @@ void NodePDOMappingWidget::createWidgets()
 {
     QWidget *widget = new QWidget();
     QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     for (int rpdo = 0; rpdo < 4; rpdo++)
     {

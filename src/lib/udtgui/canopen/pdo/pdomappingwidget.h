@@ -52,6 +52,7 @@ protected:
     QLabel *_pdoNameLabel;
     QToolBar *_toolBar;
     QAction *_enableAction;
+    QLabel *_pdoIndexLabel;
     PDOMappingView *_pdoMappingView;
 };
 
