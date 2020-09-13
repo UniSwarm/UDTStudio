@@ -28,21 +28,43 @@ DataLogger::DataLogger(QObject *parent)
 
 void DataLogger::addData(const NodeObjectId &objId)
 {
-    if (!objId.isValid() || _dataMap.contains(objId.key()))
+    if (_dataMap.contains(objId.key()) || (!objId.isAnIndex() && !objId.isASubIndex()))
     {
         return;
     }
 
-    emit dataAboutToBeAdded(_dataList.count());
+    QList<NodeObjectId> objToAdd;
+    if (objId.isAnIndex())
+    {
+        NodeIndex *nodeIndex = objId.nodeIndex();
+        if (!nodeIndex)
+        {
+            return;
+        }
+        for (NodeSubIndex *nodeSubIndex : nodeIndex->subIndexes())
+        {
+            if (nodeSubIndex->subIndex() != 0 && nodeSubIndex->isReadable())
+            {
+                objToAdd.append(nodeSubIndex->objectId());
+            }
+        }
+    }
+    else
+    {
+        objToAdd.append(objId);
+    }
 
-    DLData *dlData = new DLData(objId);
-    dlData->setColor(QColor::fromHsv(_dataList.count() * 50, 255, 255));
-    _dataMap.insert(dlData->key(), dlData);
-    _dataList.append(dlData);
-
-    registerObjId(dlData->objectId());
-
-    emit dataAdded();
+    for (const NodeObjectId &mobjId : objToAdd)
+    {
+        // TODO optimize emit signal
+        emit dataAboutToBeAdded(_dataList.count());
+        DLData *dlData = new DLData(mobjId);
+        dlData->setColor(QColor::fromHsv((_dataList.count() * 50) % 360, 255, 255));
+        _dataMap.insert(dlData->key(), dlData);
+        _dataList.append(dlData);
+        registerObjId(dlData->objectId());
+        emit dataAdded();
+    }
 }
 
 void DataLogger::removeData(const NodeObjectId &objId)
