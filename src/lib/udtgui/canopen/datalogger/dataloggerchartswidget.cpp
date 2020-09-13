@@ -85,6 +85,12 @@ void DataLoggerChartsWidget::updateDlData(int id)
     {
         DLData *dlData = _dataLogger->data(id);
         QtCharts::QXYSeries *serie = _series[id];
+        if (dlData->values().isEmpty())
+        {
+            serie->clear();
+            return;
+        }
+
         serie->append(dlData->lastDateTime().toMSecsSinceEpoch(), dlData->lastValue());
 
         if (serie->color() != dlData->color())

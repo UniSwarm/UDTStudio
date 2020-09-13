@@ -200,7 +200,7 @@ void DataLogger::clear()
     while (i != _dataMap.end())
     {
         i.value()->clear();
-        emit dataChanged(i.key());
+        emit dataChanged(_dataList.indexOf(i.value()));
         ++i;
     }
 }
