@@ -55,6 +55,7 @@ WidgetDebug::WidgetDebug(Node *node, QWidget *parent)
 
     _modeComboBox->insertItem(0, "2 Velocity (VL)");
     _modeComboBox->insertItem(1, "7 Interpolated position (IP)");
+    _modeComboBox->insertItem(2, "4 Torque profile (TQ)");
 
     setNode(node);
 }
@@ -92,7 +93,7 @@ void WidgetDebug::setNode(Node *node)
         _p402Option->setNode(_node);
         _p402vl->setNode(_node);
         _p402ip->setNode(_node);
-
+        _p402tq->setNode(_node);
         updateData();
     }
 }
@@ -182,6 +183,10 @@ void WidgetDebug::readData()
         {
             _p402vl->readData();
         }
+        else if (mode == 4)
+        {
+            _p402tq->readData();
+        }
     }
 }
 void WidgetDebug::displayOption402()
@@ -208,9 +213,14 @@ void WidgetDebug::modeIndexChanged(int id)
         mode = 2;
         _node->writeObject(_modesOfOperationObjectId, 0x00, QVariant(mode));
     }
-    if (id == 1)
+    else if (id == 1)
     {
         mode = 7;
+        _node->writeObject(_modesOfOperationObjectId, 0x00, QVariant(mode));
+    }
+    else if (id == 2)
+    {
+        mode = 4;
         _node->writeObject(_modesOfOperationObjectId, 0x00, QVariant(mode));
     }
 }
@@ -507,6 +517,11 @@ void WidgetDebug::manageModeOfOperationObject(SDO::FlagsRequest flags)
         _stackedWidget->setCurrentWidget(_p402vl);
         _modeComboBox->setCurrentIndex(0);
     }
+    else if (mode == 4)
+    {
+        _stackedWidget->setCurrentWidget(_p402tq);
+        _modeComboBox->setCurrentIndex(2);
+    }
 }
 
 void WidgetDebug::setCheckableStateMachine(int id)
@@ -659,10 +674,12 @@ void WidgetDebug::createWidgets()
     _p402Option = new P402OptionWidget();
     _p402vl = new P402VlWidget();
     _p402ip = new P402IpWidget();
+    _p402tq = new P402TqWidget();
     _stackedWidget = new QStackedWidget;
     _stackedWidget->addWidget(_p402Option);
     _stackedWidget->addWidget(_p402vl);
     _stackedWidget->addWidget(_p402ip);
+    _stackedWidget->addWidget(_p402tq);
 
     QHBoxLayout *hBoxLayout = new QHBoxLayout();
     hBoxLayout->setMargin(0);

@@ -26,6 +26,7 @@
 #include "p402ipwidget.h"
 #include "p402optionwidget.h"
 #include "p402vlwidget.h"
+#include "p402tqwidget.h"
 
 #include <QButtonGroup>
 #include <QComboBox>
@@ -89,6 +90,7 @@ private:
     P402OptionWidget *_p402Option;
     P402VlWidget *_p402vl;
     P402IpWidget *_p402ip;
+    P402TqWidget *_p402tq;
 
     QToolBar *_nmtToolBar;
     QSpinBox *_logTimerSpinBox;
