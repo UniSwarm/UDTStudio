@@ -221,16 +221,15 @@ void PDO::writeMapping(const QList<NodeObjectId> &objectList)
             return;
         }
     }
-
-    for (NodeObjectId objectId : objectList)
+    _objectToMap = objectList;
+    for (NodeObjectId &objectId : _objectToMap)
     {
         if (objectId.dataType == QMetaType::Type::UnknownType)
         {
-            objectId.dataType = _node->nodeOd()->dataType(objectId.index, objectId.subIndex);
+            objectId.dataType = _node->nodeOd()->dataType(objectId);
         }
     }
 
-    _objectToMap = objectList;
     _statusPdo = STATE_WRITE;
     _stateMapping = STATE_FREE;
     processMapping();
