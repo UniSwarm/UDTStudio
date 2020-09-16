@@ -286,6 +286,11 @@ void Node::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
     _sdoClients.at(0)->uploadData(index, subindex, mdataType);
 }
 
+void Node::writeObject(const NodeObjectId &id, const QVariant &data)
+{
+    writeObject(id.index, id.subIndex, data);
+}
+
 void Node::writeObject(quint16 index, quint8 subindex, const QVariant &data)
 {
     if (status() == STOPPED)
