@@ -128,6 +128,7 @@ void NodeOdWidget::createDefaultFilters(uint profile)
         _filterCombobox->addItem(tr("402 FSA"), QVariant("0x[6-A][08](0[27]|3F|4[01]|5[A-E]|6[01])"));
         _filterCombobox->addItem(tr("402 pp"), QVariant("0x[6-A][08](7[ABDE]|8[0-6]|A[34]|C[56])"));
         _filterCombobox->addItem(tr("402 hm"), QVariant("0x[6-A][08](9[89A]|7C|E3)"));
+        _filterCombobox->addItem(tr("402 tq"), QVariant("0x[6-A][0](7[1-9]|8[7-8])"));
         _filterCombobox->addItem(tr("402 tp"), QVariant("0x[6-A][08](B[8-D]|D0)"));
         _filterCombobox->addItem(tr("402 pc"), QVariant("0x[6-A][08](6[2-8]|F[24AC])"));
         _filterCombobox->addItem(tr("402 ip"), QVariant("0x[6-A][08](C[0-4]|7[B-F]|8[0-5]|C[5-6])"));
