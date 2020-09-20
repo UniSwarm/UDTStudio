@@ -24,3 +24,8 @@ unix:{
 }
 
 RESOURCES += $$PWD/../../contrib/QDarkStyleSheet/qdarkstyle/style.qrc
+
+win32|win64
+{
+    RC_FILE = udtstudio.rc
+}
