@@ -21,6 +21,8 @@
         <file>img/icons8-sync1.png</file>
         <file>img/icons8-sync.png</file>
         <file>img/icons8-broom.png</file>
+        <file>img/icons8-speed.png</file>
+        <file>img/icons8-line-chart.png</file>
     </qresource>
     <qresource prefix="/diagram">
         <file>img/402VLDiagram.png</file>

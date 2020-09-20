@@ -120,6 +120,7 @@ void DataLoggerTreeView::createActions()
     _removeAction->setShortcut(QKeySequence::Delete);
     _removeAction->setShortcutContext(Qt::WidgetShortcut);
     _removeAction->setIcon(QIcon(":/icons/img/icons8-delete.png"));
+    _removeAction->setEnabled(false);
 #if QT_VERSION >= 0x050A00
     _removeAction->setShortcutVisibleInContextMenu(true);
 #endif

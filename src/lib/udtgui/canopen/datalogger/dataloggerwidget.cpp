@@ -19,6 +19,7 @@
 #include "dataloggerwidget.h"
 
 #include <QHBoxLayout>
+#include <QSplitter>
 
 DataLoggerWidget::DataLoggerWidget(QWidget *parent)
     : DataLoggerWidget(nullptr, parent)
@@ -44,12 +45,19 @@ void DataLoggerWidget::createWidgets()
 {
     QLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
+
+    QSplitter *splitter = new QSplitter();
 
     _dataLoggerManagerWidget = new DataLoggerManagerWidget(_dataLogger);
-    layout->addWidget(_dataLoggerManagerWidget);
+    splitter->addWidget(_dataLoggerManagerWidget);
 
     _chartView = new DataLoggerChartsWidget(_dataLogger);
-    layout->addWidget(_chartView);
+    splitter->addWidget(_chartView);
 
+    _dataLoggerManagerWidget->setChartWidget(_chartView);
+
+    splitter->setSizes({70, 130});
+    layout->addWidget(splitter);
     setLayout(layout);
 }

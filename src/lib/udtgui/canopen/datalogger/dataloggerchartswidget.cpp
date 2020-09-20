@@ -23,6 +23,7 @@
 #include <QScatterSeries>
 #include <QDebug>
 #include <qmath.h>
+#include <QOpenGLWidget>
 
 using namespace QtCharts;
 
@@ -138,7 +139,6 @@ void DataLoggerChartsWidget::addDataOk()
         serie->setName(dlData->name());
         serie->setPen(QPen(dlData->color(), 2));
         serie->setBrush(QBrush(dlData->color()));
-        serie->setPointsVisible();
         _chart->addSeries(serie);
 
         if (!_chart->axes(Qt::Horizontal).contains(_axisX))
@@ -168,4 +168,39 @@ void DataLoggerChartsWidget::removeDataPrepare(int id)
 void DataLoggerChartsWidget::removeDataOk()
 {
     _idPending = -1;
+}
+
+bool DataLoggerChartsWidget::viewCross() const
+{
+    return _viewCross;
+}
+
+void DataLoggerChartsWidget::setViewCross(bool viewCross)
+{
+    _viewCross = viewCross;
+    for (QXYSeries *serie : _series)
+    {
+        serie->setPointsVisible(viewCross);
+    }
+}
+
+bool DataLoggerChartsWidget::useOpenGL() const
+{
+    return _useOpenGL;
+}
+
+void DataLoggerChartsWidget::setUseOpenGL(bool useOpenGL)
+{
+    _useOpenGL = useOpenGL;
+    for (QXYSeries *serie : _series)
+    {
+        serie->setUseOpenGL(useOpenGL);
+    }
+    QList<QOpenGLWidget *>glWidgets = findChildren<QOpenGLWidget*>();
+    for (QOpenGLWidget *glWidget : glWidgets)
+    {
+        glWidget->update();
+    }
+    invalidateScene();
+    update();
 }

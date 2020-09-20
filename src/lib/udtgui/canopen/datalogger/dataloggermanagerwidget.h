@@ -27,6 +27,7 @@
 #include <QToolBar>
 
 #include "dataloggertreeview.h"
+#include "dataloggerchartswidget.h"
 
 class UDTGUI_EXPORT DataLoggerManagerWidget : public QWidget
 {
@@ -34,12 +35,18 @@ class UDTGUI_EXPORT DataLoggerManagerWidget : public QWidget
 public:
     DataLoggerManagerWidget(DataLogger *logger, QWidget *parent = nullptr);
 
+    DataLoggerChartsWidget *chartWidget() const;
+    void setChartWidget(DataLoggerChartsWidget *chartWidget);
+
 protected slots:
     void toggleStartLogger(bool start);
     void setLogTimer(int ms);
+    void setUseOpenGL(bool useOpenGL);
+    void setViewCross(bool viewCross);
 
 protected:
     DataLogger *_logger;
+    DataLoggerChartsWidget *_chartWidget;
 
     void createWidgets();
     QToolBar *_toolBar;
@@ -47,6 +54,8 @@ protected:
 
     QSpinBox *_logTimerSpinBox;
     QAction *_startStopAction;
+    QAction *_openGLAction;
+    QAction *_crossAction;
 };
 
 #endif // DATALOGGERMANAGERWIDGET_H

@@ -24,6 +24,7 @@ DataLoggerManagerWidget::DataLoggerManagerWidget(DataLogger *logger, QWidget *pa
     : QWidget(parent), _logger(logger)
 {
     createWidgets();
+    _chartWidget = nullptr;
 }
 
 void DataLoggerManagerWidget::toggleStartLogger(bool start)
@@ -48,13 +49,43 @@ void DataLoggerManagerWidget::setLogTimer(int ms)
     }
 }
 
+void DataLoggerManagerWidget::setUseOpenGL(bool useOpenGL)
+{
+    if (_chartWidget)
+    {
+        _chartWidget->setUseOpenGL(useOpenGL);
+    }
+    _crossAction->setEnabled(!useOpenGL);
+}
+
+void DataLoggerManagerWidget::setViewCross(bool viewCross)
+{
+    if (_chartWidget)
+    {
+        _chartWidget->setViewCross(viewCross);
+    }
+}
+
+DataLoggerChartsWidget *DataLoggerManagerWidget::chartWidget() const
+{
+    return _chartWidget;
+}
+
+void DataLoggerManagerWidget::setChartWidget(DataLoggerChartsWidget *chartWidget)
+{
+    _chartWidget = chartWidget;
+}
+
 void DataLoggerManagerWidget::createWidgets()
 {
     QAction *action;
     QLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     // toolbar nmt
     _toolBar = new QToolBar(tr("Data logger commands"));
+    _toolBar->setIconSize(QSize(20, 20));
 
     // start stop
     _startStopAction = _toolBar->addAction(tr("Start / stop"));
@@ -76,6 +107,24 @@ void DataLoggerManagerWidget::createWidgets()
     action->setIcon(QIcon(":/icons/img/icons8-broom.png"));
     action->setStatusTip(tr("Clear all data"));
     connect(action, &QAction::triggered, _logger, &DataLogger::clear);
+
+    _toolBar->addSeparator();
+
+    // speed
+    _openGLAction = _toolBar->addAction(tr("Open-GL"));
+    _openGLAction->setCheckable(true);
+    _openGLAction->setChecked(true);
+    _openGLAction->setIcon(QIcon(":/icons/img/icons8-speed.png"));
+    _openGLAction->setStatusTip(tr("Set render to open GL for fast rendering"));
+    connect(_openGLAction, &QAction::triggered, this, &DataLoggerManagerWidget::setUseOpenGL);
+
+    // linechart
+    _crossAction = _toolBar->addAction(tr("Cross"));
+    _crossAction->setCheckable(true);
+    _crossAction->setEnabled(false);
+    _crossAction->setIcon(QIcon(":/icons/img/icons8-line-chart.png"));
+    _crossAction->setStatusTip(tr("Adds cross to line chart"));
+    connect(_crossAction, &QAction::triggered, this, &DataLoggerManagerWidget::setViewCross);
 
     layout->addWidget(_toolBar);
 

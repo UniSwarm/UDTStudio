@@ -42,6 +42,13 @@ public:
     DataLogger *dataLogger() const;
     void setDataLogger(DataLogger *dataLogger);
 
+    bool useOpenGL() const;
+    bool viewCross() const;
+
+public slots:
+    void setUseOpenGL(bool useOpenGL);
+    void setViewCross(bool viewCross);
+
 protected slots:
     void updateDlData(int id);
 
@@ -59,6 +66,9 @@ private:
     QtCharts::QValueAxis *_axisY;
 
     int _idPending;
+
+    bool _useOpenGL;
+    bool _viewCross;
 };
 
 #endif // DATALOGGERCHARTSWIDGET_H
