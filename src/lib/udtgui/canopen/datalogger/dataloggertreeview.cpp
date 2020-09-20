@@ -25,6 +25,7 @@
 #include <QItemSelectionModel>
 #include <QMessageBox>
 #include <QMenu>
+#include <QColorDialog>
 
 #include "node.h"
 
@@ -79,28 +80,49 @@ void DataLoggerTreeView::removeCurrent()
         return;
     }
 
-    if (!selection.isEmpty())
+    QList<QPersistentModelIndex> pindex;
+    for (QModelIndex selected : selection)
     {
-        QList<QPersistentModelIndex> pindex;
-        for (QModelIndex selected : selection)
+        const QModelIndex &indexComponent = _sortProxy->mapToSource(selected);
+        if (!indexComponent.isValid())
         {
-            const QModelIndex &indexComponent = _sortProxy->mapToSource(selected);
-            if (!indexComponent.isValid())
-            {
-                continue;
-            }
+            continue;
+        }
 
-            pindex.append(indexComponent);
-        }
-        if (QMessageBox::question(this, tr("Remove log?"), tr("Do you realy want to remove theses %1 logs?").arg(pindex.count())) != QMessageBox::Yes)
-        {
-            return;
-        }
-        selectionModel()->clearSelection();
-        for (QPersistentModelIndex index : pindex)
-        {
-            _loggerModel->dataLogger()->removeData(_loggerModel->objId(index));
-        }
+        pindex.append(indexComponent);
+    }
+    if (QMessageBox::question(this, tr("Remove log?"), tr("Do you realy want to remove theses %1 logs?").arg(pindex.count())) != QMessageBox::Yes)
+    {
+        return;
+    }
+    selectionModel()->clearSelection();
+    for (QPersistentModelIndex index : pindex)
+    {
+        _loggerModel->dataLogger()->removeData(_loggerModel->objId(index));
+    }
+}
+
+void DataLoggerTreeView::setColorCurrent()
+{
+    if (!_loggerModel->dataLogger())
+    {
+        return;
+    }
+    QModelIndexList selection = selectionModel()->selectedRows();
+    if (selection.isEmpty())
+    {
+        return;
+    }
+    const QModelIndex &indexComponent = _sortProxy->mapToSource(selection.first());
+    DLData *dlData = _loggerModel->dlData(indexComponent);
+    if (!dlData)
+    {
+        return;
+    }
+    QColor color = QColorDialog::getColor(dlData->color(), this);
+    if (color.isValid())
+    {
+        dlData->setColor(color);
     }
 }
 
@@ -111,6 +133,7 @@ void DataLoggerTreeView::updateSelect(const QItemSelection &selected, const QIte
 
     bool selectionEmpty = selectionModel()->selectedRows().isEmpty();
     _removeAction->setEnabled(!selectionEmpty);
+    _setColorAction->setEnabled(!selectionEmpty);
 }
 
 void DataLoggerTreeView::createActions()
@@ -126,6 +149,12 @@ void DataLoggerTreeView::createActions()
 #endif
     connect(_removeAction, &QAction::triggered, this, &DataLoggerTreeView::removeCurrent);
     addAction(_removeAction);
+
+    _setColorAction = new QAction(this);
+    _setColorAction->setText(tr("&Set color"));
+    _setColorAction->setEnabled(false);
+    connect(_setColorAction, &QAction::triggered, this, &DataLoggerTreeView::setColorCurrent);
+    addAction(_setColorAction);
 }
 
 QAction *DataLoggerTreeView::removeAction() const
@@ -137,5 +166,6 @@ void DataLoggerTreeView::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu menu;
     menu.addAction(_removeAction);
+    menu.addAction(_setColorAction);
     menu.exec(event->globalPos());
 }

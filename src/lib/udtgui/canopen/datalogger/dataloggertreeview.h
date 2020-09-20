@@ -41,6 +41,7 @@ public:
 
 public slots:
     void removeCurrent();
+    void setColorCurrent();
 
 protected slots:
     void updateSelect(const QItemSelection &selected, const QItemSelection &deselected);
@@ -51,6 +52,7 @@ protected:
 
     void createActions();
     QAction *_removeAction;
+    QAction *_setColorAction;
 
     // QWidget interface
 protected:
