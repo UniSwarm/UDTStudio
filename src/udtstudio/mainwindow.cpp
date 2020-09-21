@@ -45,23 +45,27 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createDocks();
     createWidgets();
+    createMenus();
     connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, _nodeOdWidget, &NodeOdWidget::setNode);
     connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, _nodePdoMappingWidget, &NodePDOMappingWidget::setNode);
 
-    CanOpenBus *bus;
+    CanOpenBus *bus = nullptr;
     if (QCanBus::instance()->plugins().contains("socketcan"))
     {
         bus = new CanOpenBus(QCanBus::instance()->createDevice("socketcan", "can0"));
     }
-    else
+    else if (QCanBus::instance()->plugins().contains("virtualcan"))
     {
         bus = new CanOpenBus(QCanBus::instance()->createDevice("virtualcan", "can0"));
+        //bus->addNode(new Node(1, "Node 1", "C:/Users/sebas/Seafile/my_lib_uniswarm/fw/UIOfw/UIO44/uio44.eds"));
     }
-    bus->setBusName("Bus 1");
-    CanOpen::addBus(bus);
-    connect(bus, &CanOpenBus::frameAvailable, _canFrameListView, &CanFrameListView::appendCanFrame);
+    if (bus)
+    {
+        bus->setBusName("Bus 1");
+        CanOpen::addBus(bus);
+        _canFrameListView->setBus(bus);
+    }
 
-    createMenus();
     resize(QApplication::screens()[0]->size() * 3 / 4);
 
     readSettings();
@@ -173,7 +177,7 @@ void MainWindow::connectDevice()
             bus->setBusName(settings.interfaceName + ":" + settings.deviceName);
             statusBar()->showMessage(tr("%1 - %2").arg(settings.interfaceName).arg(settings.deviceName));
             CanOpen::addBus(bus);
-            connect(bus, &CanOpenBus::frameAvailable, _canFrameListView, &CanFrameListView::appendCanFrame);
+            //connect(bus, &CanOpenBus::frameAvailable, _canFrameListView, &CanFrameListView::appendCanFrame);
         }
     }
 }
