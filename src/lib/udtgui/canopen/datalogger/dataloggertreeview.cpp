@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QColorDialog>
+#include <QTextStream>
 
 #include "node.h"
 
@@ -56,6 +57,21 @@ DataLoggerTreeView::DataLoggerTreeView(QWidget *parent)
 
 DataLoggerTreeView::~DataLoggerTreeView()
 {
+}
+
+DLData *DataLoggerTreeView::currentData() const
+{
+    if (!_loggerModel->dataLogger())
+    {
+        return nullptr;
+    }
+    QModelIndexList selection = selectionModel()->selectedRows();
+    if (selection.isEmpty())
+    {
+        return nullptr;
+    }
+    const QModelIndex &indexComponent = _sortProxy->mapToSource(selection.first());
+    return _loggerModel->dlData(indexComponent);
 }
 
 DataLogger *DataLoggerTreeView::dataLogger() const
@@ -104,17 +120,7 @@ void DataLoggerTreeView::removeCurrent()
 
 void DataLoggerTreeView::setColorCurrent()
 {
-    if (!_loggerModel->dataLogger())
-    {
-        return;
-    }
-    QModelIndexList selection = selectionModel()->selectedRows();
-    if (selection.isEmpty())
-    {
-        return;
-    }
-    const QModelIndex &indexComponent = _sortProxy->mapToSource(selection.first());
-    DLData *dlData = _loggerModel->dlData(indexComponent);
+    DLData *dlData = currentData();
     if (!dlData)
     {
         return;
@@ -126,6 +132,27 @@ void DataLoggerTreeView::setColorCurrent()
     }
 }
 
+void DataLoggerTreeView::exportOneCurrent()
+{
+    DLData *dlData = currentData();
+    if (!dlData)
+    {
+        return;
+    }
+    QFile file(QString("%1_export_%2").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz").arg(dlData->name())));
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        return;
+    }
+    QTextStream stream(&file);
+    int minCount = qMin(dlData->values().count(), dlData->times().count());
+    for (int i = 0; i < minCount; i++)
+    {
+        stream << dlData->times()[i].toString("yyyy-MM-dd_hh:mm:ss.zzz") << ';' << dlData->values()[i] << '\n';
+    }
+    file.close();
+}
+
 void DataLoggerTreeView::updateSelect(const QItemSelection &selected, const QItemSelection &deselected)
 {
     Q_UNUSED(selected)
@@ -134,6 +161,7 @@ void DataLoggerTreeView::updateSelect(const QItemSelection &selected, const QIte
     bool selectionEmpty = selectionModel()->selectedRows().isEmpty();
     _removeAction->setEnabled(!selectionEmpty);
     _setColorAction->setEnabled(!selectionEmpty);
+    _exportOneAction->setEnabled(!selectionEmpty);
 }
 
 void DataLoggerTreeView::createActions()
@@ -155,6 +183,17 @@ void DataLoggerTreeView::createActions()
     _setColorAction->setEnabled(false);
     connect(_setColorAction, &QAction::triggered, this, &DataLoggerTreeView::setColorCurrent);
     addAction(_setColorAction);
+
+    _exportOneAction = new QAction(this);
+    _exportOneAction->setText(tr("&Export"));
+    _exportOneAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
+    _exportOneAction->setShortcutContext(Qt::WidgetShortcut);
+    _exportOneAction->setEnabled(false);
+#if QT_VERSION >= 0x050A00
+    _exportOneAction->setShortcutVisibleInContextMenu(true);
+#endif
+    connect(_exportOneAction, &QAction::triggered, this, &DataLoggerTreeView::exportOneCurrent);
+    addAction(_exportOneAction);
 }
 
 QAction *DataLoggerTreeView::removeAction() const
@@ -167,5 +206,6 @@ void DataLoggerTreeView::contextMenuEvent(QContextMenuEvent *event)
     QMenu menu;
     menu.addAction(_removeAction);
     menu.addAction(_setColorAction);
+    menu.addAction(_exportOneAction);
     menu.exec(event->globalPos());
 }

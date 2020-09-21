@@ -34,6 +34,8 @@ public:
     DataLoggerTreeView(QWidget *parent = nullptr);
     ~DataLoggerTreeView();
 
+    DLData *currentData() const;
+
     DataLogger *dataLogger() const;
     void setDataLogger(DataLogger *dataLogger);
 
@@ -42,6 +44,7 @@ public:
 public slots:
     void removeCurrent();
     void setColorCurrent();
+    void exportOneCurrent();
 
 protected slots:
     void updateSelect(const QItemSelection &selected, const QItemSelection &deselected);
@@ -53,6 +56,7 @@ protected:
     void createActions();
     QAction *_removeAction;
     QAction *_setColorAction;
+    QAction *_exportOneAction;
 
     // QWidget interface
 protected:
