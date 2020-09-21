@@ -36,6 +36,8 @@ HEADERS += \
     $$PWD/canopen/pdo/pdomappingpainter.h \
     $$PWD/canopen/pdo/pdomappingview.h \
     $$PWD/canopen/pdo/pdomappingwidget.h \
+    $$PWD/canopen/widget/abstractindexwidget.h \
+    $$PWD/canopen/widget/indexspinbox.h \
     $$PWD/canopen/widgetDebug/widgetdebug.h \
     $$PWD/canopen/widgetDebug/p402optionwidget.h \
     $$PWD/canopen/widgetDebug/p402vlwidget.h \
@@ -70,6 +72,8 @@ SOURCES += \
     $$PWD/canopen/pdo/pdomappingpainter.cpp \
     $$PWD/canopen/pdo/pdomappingview.cpp \
     $$PWD/canopen/pdo/pdomappingwidget.cpp \
+    $$PWD/canopen/widget/abstractindexwidget.cpp \
+    $$PWD/canopen/widget/indexspinbox.cpp \
     $$PWD/canopen/widgetDebug/widgetdebug.cpp \
     $$PWD/canopen/widgetDebug/p402optionwidget.cpp \
     $$PWD/canopen/widgetDebug/p402vlwidget.cpp \
