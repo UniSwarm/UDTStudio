@@ -27,13 +27,15 @@
 CanFrameModel::CanFrameModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
+    _bus = nullptr;
+    _frameId = 0;
 }
 
 CanFrameModel::~CanFrameModel()
 {
 }
 
-void CanFrameModel::appendCanFrame(const QCanBusFrame &frame, bool received)
+void CanFrameModel::appendCanFrame(const QCanBusFrame &frame)
 {
     beginInsertRows(QModelIndex(), _frames.count(), _frames.count());
     if (_frames.isEmpty())
@@ -41,7 +43,6 @@ void CanFrameModel::appendCanFrame(const QCanBusFrame &frame, bool received)
         _startTime = frame.timeStamp().seconds();
     }
     _frames.append(frame);
-    _framesRec.append(received);
     endInsertRows();
 }
 
@@ -50,6 +51,27 @@ void CanFrameModel::clear()
     emit layoutAboutToBeChanged();
     _frames.clear();
     emit layoutChanged();
+}
+
+CanOpenBus *CanFrameModel::bus() const
+{
+    return _bus;
+}
+
+void CanFrameModel::setBus(CanOpenBus *bus)
+{
+    emit layoutAboutToBeChanged();
+    _bus = bus;
+    _frameId = _bus->canFramesLog().count();
+    connect(bus, &CanOpenBus::frameAvailable, this, &CanFrameModel::updateFrames);
+    emit layoutChanged();
+}
+
+void CanFrameModel::updateFrames(int id)
+{
+    beginInsertRows(QModelIndex(), _frameId, id - 1);
+    _frameId = id;
+    endInsertRows();
 }
 
 int CanFrameModel::columnCount(const QModelIndex &parent) const
@@ -89,12 +111,24 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
     {
         return QVariant();
     }
-    if (index.row() >= _frames.count())
-    {
-        return QVariant();
-    }
 
-    const QCanBusFrame &canFrame = _frames.at(index.row());
+    if (!_bus)
+    {
+        // internal data mode
+        if (index.row() >= _frames.count())
+        {
+            return QVariant();
+        }
+    }
+    else
+    {
+        // bus data mode
+        if (index.row() >= _frameId)
+        {
+            return QVariant();
+        }
+    }
+    const QCanBusFrame &canFrame = (!_bus) ? _frames.at(index.row()) : _bus->canFramesLog().at(index.row());
 
     switch (role)
     {
@@ -157,7 +191,7 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
         }
 
     case Qt::BackgroundRole:
-        if (_framesRec.at(index.row()))
+        if (canFrame.hasLocalEcho())
         {
             return QVariant();
         }
@@ -172,9 +206,21 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
 QModelIndex CanFrameModel::index(int row, int column, const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    if (row >= _frames.count())
+    if (!_bus)
     {
-        return QModelIndex();
+        // internal data mode
+        if (row >= _frames.count())
+        {
+            return QModelIndex();
+        }
+    }
+    else
+    {
+        // bus data mode
+        if (row >= _frameId)
+        {
+            return QModelIndex();
+        }
     }
     return createIndex(row, column, nullptr);
 }
@@ -189,7 +235,14 @@ int CanFrameModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid())
     {
-        return _frames.count();
+        if (!_bus)
+        {
+            return _frames.count();
+        }
+        else
+        {
+            return _frameId;
+        }
     }
     return 0;
 }

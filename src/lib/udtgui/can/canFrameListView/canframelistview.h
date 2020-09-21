@@ -35,11 +35,14 @@ public:
     CanFrameListView(QWidget *parent = nullptr);
     ~CanFrameListView() override;
 
+    CanOpenBus *bus() const;
+    void setBus(CanOpenBus *bus);
+
     QAction *clearAction() const;
     QAction *copyAction() const;
 
 public slots:
-    void appendCanFrame(const QCanBusFrame &frame, bool received);
+    void appendCanFrame(const QCanBusFrame &frame);
     void clear();
     void copy();
 

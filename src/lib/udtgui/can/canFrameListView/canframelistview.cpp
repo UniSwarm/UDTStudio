@@ -50,16 +50,17 @@ CanFrameListView::CanFrameListView(QWidget *parent)
     horizontalHeader()->resizeSection(CanFrameModel::DataByte, 9 * w1);
 
     // rows height
+    verticalHeader()->hide();
     verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     verticalHeader()->setDefaultSectionSize(QFontMetrics(font()).height() * 3 / 2);
 
     createActions();
 }
 
-void CanFrameListView::appendCanFrame(const QCanBusFrame &frame, bool received)
+void CanFrameListView::appendCanFrame(const QCanBusFrame &frame)
 {
     bool needToScroll = (verticalScrollBar()->value() >= verticalScrollBar()->maximum() - rowHeight(0));
-    _canModel->appendCanFrame(frame, received);
+    _canModel->appendCanFrame(frame);
     if (needToScroll)
     {
         int rowCount = model()->rowCount(rootIndex());
@@ -149,4 +150,14 @@ void CanFrameListView::contextMenuEvent(QContextMenuEvent *event)
 CanFrameListView::~CanFrameListView()
 {
     delete _canModel;
+}
+
+CanOpenBus *CanFrameListView::bus() const
+{
+    return _canModel->bus();
+}
+
+void CanFrameListView::setBus(CanOpenBus *bus)
+{
+    _canModel->setBus(bus);
 }

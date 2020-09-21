@@ -56,17 +56,19 @@ public:
     bool canWrite() const;
     bool writeFrame(const QCanBusFrame &frame);
 
+    const QList<QCanBusFrame> &canFramesLog() const;
+
 protected slots:
     void canFrameRec();
     void canState(QCanBusDevice::CanBusDeviceState state);
+    void notifyForNewFrames();
 
 public slots:
     void exploreBus();
 
 signals:
-    void frameAvailable(const QCanBusFrame &frame, bool received);
+    void frameAvailable(int id);
     void frameErrorOccurred(QCanBusDevice::CanBusError error);
-    void frameTransmit(qint64 framesCount);
     void stateCanOpenChanged(QCanBusDevice::CanBusDeviceState state);
 
     void nodeAdded();
@@ -79,6 +81,11 @@ protected:
     QMap<quint8, Node *> _nodesMap;
     QList<Node *> _nodes;
     QCanBusDevice *_canDevice;
+
+    // CAN frames logger
+    QList<QCanBusFrame> _canFramesLog;
+    int _canFrameLogId;
+    QTimer *_canFramesLogTimer;
 
     // services
     ServiceDispatcher *_serviceDispatcher;

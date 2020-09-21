@@ -27,6 +27,7 @@ CanOpenBus::CanOpenBus(QCanBusDevice *canDevice)
     _canOpen = nullptr;
     _canDevice = nullptr;
     setCanDevice(canDevice);
+    _spyMode = false;
 
     // services
     _serviceDispatcher = new ServiceDispatcher(this);
@@ -40,7 +41,11 @@ CanOpenBus::CanOpenBus(QCanBusDevice *canDevice)
     _nodeDiscover = new NodeDiscover(this);
     _serviceDispatcher->addService(_nodeDiscover);
 
-    _spyMode = false;
+    // can frame logger
+    _canFrameLogId = 0;
+    _canFramesLogTimer = new QTimer();
+    connect(_canFramesLogTimer, &QTimer::timeout, this, &CanOpenBus::notifyForNewFrames);
+    _canFramesLogTimer->start(100);
 }
 
 CanOpenBus::~CanOpenBus()
@@ -129,6 +134,11 @@ void CanOpenBus::exploreBus()
     _nodeDiscover->exploreBus();
 }
 
+const QList<QCanBusFrame> &CanOpenBus::canFramesLog() const
+{
+    return _canFramesLog;
+}
+
 QCanBusDevice *CanOpenBus::canDevice() const
 {
     return _canDevice;
@@ -145,7 +155,6 @@ void CanOpenBus::setCanDevice(QCanBusDevice *canDevice)
         }
         connect(_canDevice, &QCanBusDevice::framesReceived, this, &CanOpenBus::canFrameRec);
         connect(_canDevice, &QCanBusDevice::errorOccurred, this, &CanOpenBus::frameErrorOccurred);
-        connect(_canDevice, &QCanBusDevice::framesWritten, this, &CanOpenBus::frameTransmit);
         connect(_canDevice, &QCanBusDevice::stateChanged, this, &CanOpenBus::canState);
     }
 }
@@ -168,7 +177,8 @@ bool CanOpenBus::writeFrame(const QCanBusFrame &frame)
     _canDevice->writeFrame(frame);
     QCanBusFrame emitFrame = frame;
     emitFrame.setTimeStamp(QCanBusFrame::TimeStamp::fromMicroSeconds(QDateTime::currentMSecsSinceEpoch() * 1000));
-    emit frameAvailable(emitFrame, false);
+    emitFrame.setLocalEcho(true);
+    _canFramesLog.append(emitFrame);
     return true;
 }
 
@@ -179,11 +189,20 @@ void CanOpenBus::canFrameRec()
         QCanBusFrame frame = _canDevice->readFrame();
         frame.setTimeStamp(QCanBusFrame::TimeStamp::fromMicroSeconds(QDateTime::currentMSecsSinceEpoch() * 1000));
         _serviceDispatcher->parseFrame(frame);
-        emit frameAvailable(frame, true);
+        _canFramesLog.append(frame);
     }
 }
 
 void CanOpenBus::canState(QCanBusDevice::CanBusDeviceState state)
 {
     emit stateCanOpenChanged(state);
+}
+
+void CanOpenBus::notifyForNewFrames()
+{
+    if (_canFrameLogId < _canFramesLog.count())
+    {
+        _canFrameLogId = _canFramesLog.count();
+        emit frameAvailable(_canFrameLogId);
+    }
 }

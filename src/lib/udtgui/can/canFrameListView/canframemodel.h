@@ -26,6 +26,8 @@
 #include <QCanBus>
 #include <QCanBusFrame>
 
+#include "canopenbus.h"
+
 class UDTGUI_EXPORT CanFrameModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -33,8 +35,11 @@ public:
     CanFrameModel(QObject *parent = nullptr);
     ~CanFrameModel();
 
-    void appendCanFrame(const QCanBusFrame &frame, bool received);
+    void appendCanFrame(const QCanBusFrame &frame);
     void clear();
+
+    CanOpenBus *bus() const;
+    void setBus(CanOpenBus *bus);
 
     enum Column {
         Time,
@@ -43,6 +48,9 @@ public:
         DataByte,
         ColumnCount
     };
+
+protected slots:
+    void updateFrames(int id);
 
     // QAbstractItemModel interface
 public:
@@ -56,8 +64,11 @@ public:
 
 private:
     qint64 _startTime;
+
     QList<QCanBusFrame> _frames;
-    QList<bool> _framesRec;
+
+    int _frameId;
+    CanOpenBus *_bus;
 };
 
 #endif // CANFRAMEMODEL_H
