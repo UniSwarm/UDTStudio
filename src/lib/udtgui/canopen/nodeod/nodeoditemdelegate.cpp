@@ -18,3 +18,12 @@ bool NodeOdItemDelegate::eventFilter(QObject *watched, QEvent *event)
     bool ok = QItemDelegate::eventFilter(watched, event);
     return ok;
 }
+
+
+void NodeOdItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+    if (!editor->hasFocus())
+    {
+        QItemDelegate::setEditorData(editor, index);
+    }
+}
