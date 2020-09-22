@@ -109,7 +109,7 @@ void SDO::processingFrameFromServer(const QCanBusFrame &frame)
 
     if (frame.payload().size() != 8)
     {
-        errorManagement(SDOAbortCodes::CO_SDO_ABORT_CODE_GENERAL_ERROR);
+        sendErrorSdoToDevice(SDOAbortCodes::CO_SDO_ABORT_CODE_GENERAL_ERROR);
         return;
     }
     if (_requestCurrent->state == STATE_BLOCK_UPLOAD)
@@ -153,7 +153,7 @@ void SDO::processingFrameFromServer(const QCanBusFrame &frame)
                  << ", abort :" << QString::number(arrangeDataUpload(frame.payload().mid(4, 4), QMetaType::Type::UInt).toUInt(), 16).toUpper();
 
         quint32 error = arrangeDataUpload(frame.payload().mid(4, 4), QMetaType::Type::UInt).toUInt();
-        abortManagement(static_cast<SDOAbortCodes>(error));
+        setErrorToObject(static_cast<SDOAbortCodes>(error));
         break;
     }
     default:
@@ -311,7 +311,7 @@ bool SDO::sdoUploadInitiate(const QCanBusFrame &frame)
 
     if ((index != _requestCurrent->index) || (subindex != _requestCurrent->subIndex))
     {
-        errorManagement(CO_SDO_ABORT_CODE_CMD_NOT_VALID);
+        sendErrorSdoToDevice(CO_SDO_ABORT_CODE_CMD_NOT_VALID);
         return false;
     }
 
@@ -352,7 +352,7 @@ bool SDO::sdoUploadInitiate(const QCanBusFrame &frame)
     {
         // ERROR
         _requestCurrent->state = STATE_FREE;
-        errorManagement(CO_SDO_ABORT_CODE_CMD_NOT_VALID);
+        sendErrorSdoToDevice(CO_SDO_ABORT_CODE_CMD_NOT_VALID);
         return false;
     }
 
@@ -379,7 +379,7 @@ bool SDO::sdoUploadSegment(const QCanBusFrame &frame)
 
     if (toggle != (_requestCurrent->toggle & SDO_TOGGLE_MASK))
     {
-        errorManagement(CO_SDO_ABORT_CODE_BIT_NOT_ALTERNATED);
+        sendErrorSdoToDevice(CO_SDO_ABORT_CODE_BIT_NOT_ALTERNATED);
         return false;
     }
     else
@@ -423,7 +423,7 @@ bool SDO::sdoBlockUpload(const QCanBusFrame &frame)
     {
         if ((index != _requestCurrent->index) || (subindex != _requestCurrent->subIndex))
         {
-            errorManagement(CO_SDO_ABORT_CODE_CMD_NOT_VALID);
+            sendErrorSdoToDevice(CO_SDO_ABORT_CODE_CMD_NOT_VALID);
             return false;
         }
         if (static_cast<quint8>(frame.payload().at(0) & BLOCK_SIZE) == BLOCK_SIZE)
@@ -436,7 +436,7 @@ bool SDO::sdoBlockUpload(const QCanBusFrame &frame)
         }
         else
         {
-            errorManagement(CO_SDO_ABORT_CODE_LENGTH_DOESNT_MATCH);
+            sendErrorSdoToDevice(CO_SDO_ABORT_CODE_LENGTH_DOESNT_MATCH);
             return false;
         }
 
@@ -455,7 +455,7 @@ bool SDO::sdoBlockUpload(const QCanBusFrame &frame)
         quint8 n = (frame.payload().at(0) & BLOCK_N_NUMBER_MASK) >> 2;
         if (n != _requestCurrent->stay)
         {
-            errorManagement(CO_SDO_ABORT_CODE_INVALID_BLOCK_SIZE);
+            sendErrorSdoToDevice(CO_SDO_ABORT_CODE_INVALID_BLOCK_SIZE);
             return false;
         }
         else
@@ -464,7 +464,7 @@ bool SDO::sdoBlockUpload(const QCanBusFrame &frame)
         }
         if (static_cast<quint32>(_requestCurrent->dataByte.size()) != _requestCurrent->size)
         {
-            errorManagement(CO_SDO_ABORT_CODE_INVALID_BLOCK_SIZE);
+            sendErrorSdoToDevice(CO_SDO_ABORT_CODE_INVALID_BLOCK_SIZE);
             return false;
         }
         cmd = CCS::SDO_CCS_CLIENT_BLOCK_UPLOAD;
@@ -622,7 +622,7 @@ bool SDO::sdoDownloadInitiate(const QCanBusFrame &frame)
 
     if ((index != _requestCurrent->index) || (subindex != _requestCurrent->subIndex))
     {
-        errorManagement(CO_SDO_ABORT_CODE_CMD_NOT_VALID);
+        sendErrorSdoToDevice(CO_SDO_ABORT_CODE_CMD_NOT_VALID);
         return false;
     }
     else
@@ -687,7 +687,7 @@ bool SDO::sdoDownloadSegment(const QCanBusFrame &frame)
     toggle = static_cast<quint8>((frame.payload().at(0) & SDO_TOGGLE_MASK));
     if (toggle != _requestCurrent->toggle)
     {
-        errorManagement(CO_SDO_ABORT_CODE_BIT_NOT_ALTERNATED);
+        sendErrorSdoToDevice(CO_SDO_ABORT_CODE_BIT_NOT_ALTERNATED);
         return false;
     }
     else
@@ -740,7 +740,7 @@ bool SDO::sdoBlockDownload(const QCanBusFrame &frame)
         if (index != _requestCurrent->index || subindex != _requestCurrent->subIndex)
         {
             qDebug() << ">>SDO::sdoBlockDownload, Error index, subindex not corresponding";
-            errorManagement(CO_SDO_ABORT_CODE_CMD_NOT_VALID);
+            sendErrorSdoToDevice(CO_SDO_ABORT_CODE_CMD_NOT_VALID);
             return false;
         }
         else
@@ -748,7 +748,7 @@ bool SDO::sdoBlockDownload(const QCanBusFrame &frame)
             _requestCurrent->blksize = static_cast<quint8>(frame.payload().at(4));
             if (_requestCurrent->blksize > BLOCK_BLOCK_SIZE)
             {
-                errorManagement(CO_SDO_ABORT_CODE_INVALID_BLOCK_SIZE);
+                sendErrorSdoToDevice(CO_SDO_ABORT_CODE_INVALID_BLOCK_SIZE);
                 return false;
             }
 
@@ -761,14 +761,14 @@ bool SDO::sdoBlockDownload(const QCanBusFrame &frame)
         _requestCurrent->blksize = static_cast<quint8>(frame.payload().at(2));
         if (_requestCurrent->blksize > BLOCK_BLOCK_SIZE)
         {
-            errorManagement(CO_SDO_ABORT_CODE_INVALID_BLOCK_SIZE);
+            sendErrorSdoToDevice(CO_SDO_ABORT_CODE_INVALID_BLOCK_SIZE);
             return false;
         }
 
         quint8 ackseq = static_cast<quint8>(frame.payload().at(1));
         if (ackseq > BLOCK_BLOCK_SIZE)
         {
-            errorManagement(CO_SDO_ABORT_CODE_INVALID_SEQ_NUMBER);
+            sendErrorSdoToDevice(CO_SDO_ABORT_CODE_INVALID_SEQ_NUMBER);
             return false;
         }
         if (ackseq != (_requestCurrent->seqno - 1))
@@ -847,24 +847,14 @@ bool SDO::sdoBlockDownloadEnd()
 }
 
 /**
- * @brief Send error
+ * @brief Send error sdo to device
  * @param error SDO/CIA
  * @return bool value successful or not
  */
-void SDO::errorManagement(SDOAbortCodes error)
+void SDO::sendErrorSdoToDevice(SDOAbortCodes error)
 {
     sendSdoRequest(CCS::SDO_CCS_CLIENT_ABORT, _requestCurrent->index, _requestCurrent->subIndex, error);
-    setErrorObject(error);
-}
-
-/**
- * @brief manage error abort
- * @param error SDO/CIA
- * @return bool value successful or not
- */
-void SDO::abortManagement(SDOAbortCodes error)
-{
-    setErrorObject(error);
+    setErrorToObject(error);
 }
 
 /**
@@ -872,10 +862,19 @@ void SDO::abortManagement(SDOAbortCodes error)
  * @param error SDO/CIA
  * @return bool value successful or not
  */
-void SDO::setErrorObject(SDOAbortCodes error)
+void SDO::setErrorToObject(SDOAbortCodes error)
 {
-    _node->nodeOd()->updateObjectFromDevice(_requestCurrent->index, _requestCurrent->subIndex, QVariant(), FlagsRequest::Error);
-    _node->nodeOd()->setErrorObject(_requestCurrent->index, _requestCurrent->subIndex, error);
+    uint8_t flags = FlagsRequest::Error;
+    if (_requestCurrent->state == STATE_UPLOAD)
+    {
+        flags += SDO::FlagsRequest::Read;
+    }
+    else if (_requestCurrent->state == STATE_DOWNLOAD)
+    {
+        flags += SDO::FlagsRequest::Write;
+    }
+
+    _node->nodeOd()->updateObjectFromDevice(_requestCurrent->index, _requestCurrent->subIndex, QVariant(error), static_cast<SDO::FlagsRequest>(flags));
 
     _state = SDO_STATE_FREE;
     _requestCurrent->state = STATE_FREE;
@@ -935,20 +934,9 @@ void SDO::nextRequest()
  */
 void SDO::timeout()
 {
-    if (_requestCurrent == nullptr)
-    {
-        return;
-    }
     uint32_t error = 0x05040000;
-
     sendSdoRequest(CCS::SDO_CCS_CLIENT_ABORT, _requestCurrent->index, _requestCurrent->subIndex, error);
-    _node->nodeOd()->updateObjectFromDevice(_requestCurrent->index, _requestCurrent->subIndex, QVariant(), FlagsRequest::Error);
-    _node->nodeOd()->setErrorObject(_requestCurrent->index, _requestCurrent->subIndex, error);
-
-    _state = SDO_STATE_FREE;
-    _requestCurrent->state = STATE_FREE;
-    _timer->stop();
-    nextRequest();
+    setErrorToObject(static_cast<SDOAbortCodes>(error));
 }
 
 /**

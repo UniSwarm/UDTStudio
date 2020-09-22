@@ -253,12 +253,16 @@ void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, 
 {
     if (indexExist(indexDevice))
     {
-        if (flags != SDO::Error)
+        if (index(indexDevice)->subIndexExist(subindexDevice))
         {
-            if (index(indexDevice)->subIndexExist(subindexDevice))
+            if ((flags & SDO::Error) != SDO::Error)
             {
                 index(indexDevice)->subIndex(subindexDevice)->clearError();
                 index(indexDevice)->subIndex(subindexDevice)->setValue(value);
+            }
+            else
+            {
+                index(indexDevice)->subIndex(subindexDevice)->setError(static_cast<quint32>(value.toUInt()));
             }
         }
     }

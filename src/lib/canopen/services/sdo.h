@@ -65,21 +65,6 @@ public:
         SDO_STATE_NOT_FREE
     };
 
-    enum RequestState
-    {
-        STATE_FREE,
-        STATE_UPLOAD,
-        STATE_UPLOAD_SEGMENT,
-        STATE_DOWNLOAD,
-        STATE_DOWNLOAD_SEGMENT,
-        STATE_BLOCK_DOWNLOAD,
-        STATE_BLOCK_DOWNLOAD_END_SUB,
-        STATE_BLOCK_DOWNLOAD_END,
-        STATE_BLOCK_UPLOAD,
-        STATE_BLOCK_UPLOAD_END_SUB,
-        STATE_BLOCK_UPLOAD_END
-    };
-
     Status status() const;
 
     // ================= sdo abort codes ====================
@@ -144,6 +129,21 @@ private:
     quint32 _cobIdServerToClient;
     quint8 _nodeId;
 
+    enum RequestState
+    {
+        STATE_FREE,
+        STATE_UPLOAD,
+        STATE_UPLOAD_SEGMENT,
+        STATE_DOWNLOAD,
+        STATE_DOWNLOAD_SEGMENT,
+        STATE_BLOCK_DOWNLOAD,
+        STATE_BLOCK_DOWNLOAD_END_SUB,
+        STATE_BLOCK_DOWNLOAD_END,
+        STATE_BLOCK_UPLOAD,
+        STATE_BLOCK_UPLOAD_END_SUB,
+        STATE_BLOCK_UPLOAD_END
+    };
+
     struct RequestSdo
     {
         RequestState state;
@@ -172,9 +172,8 @@ private:
     bool uploadDispatcher();
     bool downloadDispatcher();
 
-    void errorManagement(SDOAbortCodes error);
-    void abortManagement(SDOAbortCodes error);
-    void setErrorObject(SDOAbortCodes error);
+    void sendErrorSdoToDevice(SDOAbortCodes error);
+    void setErrorToObject(SDOAbortCodes error);
     void requestFinished();
     void nextRequest();
 
