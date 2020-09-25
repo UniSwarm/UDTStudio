@@ -45,7 +45,11 @@ void DataLogger::addData(const NodeObjectId &objId)
         {
             if (nodeSubIndex->subIndex() != 0 && nodeSubIndex->isReadable())
             {
-                objToAdd.append(nodeSubIndex->objectId());
+                NodeObjectId objectId = nodeSubIndex->objectId();
+                if (!_dataMap.contains(objectId.key()))
+                {
+                    objToAdd.append(objectId);
+                }
             }
         }
     }

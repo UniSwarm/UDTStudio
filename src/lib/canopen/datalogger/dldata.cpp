@@ -109,12 +109,12 @@ QDateTime DLData::lastDateTime() const
     return _times.last();
 }
 
-QList<qreal> DLData::values() const
+const QList<qreal> &DLData::values() const
 {
     return _values;
 }
 
-QList<QDateTime> DLData::times() const
+const QList<QDateTime> &DLData::times() const
 {
     return _times;
 }

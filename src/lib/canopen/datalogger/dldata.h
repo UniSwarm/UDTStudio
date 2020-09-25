@@ -44,11 +44,11 @@ public:
     void setColor(const QColor &color);
 
     // values and times access
-    QList<qreal> values() const;
+    const QList<qreal> &values() const;
     double firstValue() const;
     double lastValue() const;
 
-    QList<QDateTime> times() const;
+    const QList<QDateTime> &times() const;
     QDateTime firstDateTime() const;
     QDateTime lastDateTime() const;
 
