@@ -58,14 +58,15 @@ public slots:
 protected:
     void createWidgets();
     QToolBar *_toolBar;
+    QActionGroup *_groupNmt;
     QGroupBox *_groupBox;
     QLineEdit *_nodeNameEdit;
     QLabel *_nodeStatusLabel;
 
     Node *_node;
+
     WidgetDebug *_widgetDebug;
     QAction *_action402;
-
 
     // NodeOdSubscriber interface
 protected:
