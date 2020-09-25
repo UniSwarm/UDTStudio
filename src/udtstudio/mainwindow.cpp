@@ -33,6 +33,7 @@
 #include <QDockWidget>
 #include <QSplitter>
 #include <QSettings>
+#include <QMessageBox>
 
 #include <QDebug>
 
@@ -120,23 +121,58 @@ void MainWindow::createWidgets()
 
 void MainWindow::createMenus()
 {
+    QAction *action;
     // ============= file =============
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
 
-    QAction *exitAction = new QAction(tr("E&xit"), this);
-    exitAction->setStatusTip(tr("Exits UDTStudio"));
-    exitAction->setShortcut(QKeySequence::Quit);
-    fileMenu->addAction(exitAction);
-    connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
+    action = new QAction(tr("E&xit"), this);
+    action->setIcon(QIcon(":/icons/img/icons8-exit.png"));
+    action->setStatusTip(tr("Exits UDTStudio"));
+    action->setShortcut(QKeySequence::Quit);
+    fileMenu->addAction(action);
+    connect(action, &QAction::triggered, this, &MainWindow::close);
 
     // ============= Bus =============
     QMenu *busMenu = menuBar()->addMenu(tr("&Bus"));
+    busMenu->addAction(_busNodesManagerView->busManagerWidget()->actionExplore());
+    busMenu->addAction(_busNodesManagerView->busManagerWidget()->actionSyncOne());
+    busMenu->addAction(_busNodesManagerView->busManagerWidget()->actionSyncStart());
+
+    // ============= Node =============
+    QMenu *nodeMenu = menuBar()->addMenu(tr("&Node"));
+    nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionPreop());
+    nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionStart());
+    nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionStop());
+    nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionReset());
+    nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionResetCom());
 
     // ============= View =============
     QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
-    viewMenu->addAction(_busNodesManagerDock->toggleViewAction());
-    viewMenu->addAction(_canFrameListDock->toggleViewAction());
-    viewMenu->addAction(_dataLoggerDock->toggleViewAction());
+
+    action = _busNodesManagerDock->toggleViewAction();
+    action->setStatusTip(tr("View/hide node manager dock"));
+    viewMenu->addAction(action);
+
+    action = _canFrameListDock->toggleViewAction();
+    action->setStatusTip(tr("View/hide CAN frame viewer"));
+    viewMenu->addAction(action);
+
+    action = _dataLoggerDock->toggleViewAction();
+    action->setStatusTip(tr("View/hide data logger"));
+    viewMenu->addAction(action);
+
+    // ============= Help =============
+    QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
+
+    QAction *aboutAction = new QAction(tr("&About"), this);
+    aboutAction->setIcon(QIcon(":/icons/img/icons8-about.png"));
+    connect(aboutAction, &QAction::triggered, this, &MainWindow::about);
+    helpMenu->addAction(aboutAction);
+
+    QAction *aboutQtAction = new QAction(tr("About &Qt"), this);
+    aboutQtAction->setIcon(QIcon(":/icons/img/icons8-system-information.png"));
+    connect(aboutQtAction, &QAction::triggered, qApp, &QApplication::aboutQt);
+    helpMenu->addAction(aboutQtAction);
 }
 
 void MainWindow::connectDevice()
@@ -225,4 +261,36 @@ bool MainWindow::event(QEvent *event)
         QApplication::quit();
     }
     return QMainWindow::event(event);
+}
+
+void MainWindow::about()
+{
+    QMessageBox::about(this,
+                       "UDTStudio v0",
+                       QString("Copyright (C) 2019-2020 UniSwarm (<a href=\"https://uniswarm.eu\">uniswarm.eu</a>)<br>\
+<br>\
+This sofware is part of uDevkit distribution. To check for new version, please visit <a href=\"https://github.com/UniSwarm/UDTStudio\">github.com/UniSwarm/UDTStudio</a><br>\
+<br>\
+Written by <a href=\"https://github.com/sebcaux\">Sébastien CAUX (sebcaux)</a><br>\
+<br>\
+UDTStudio is a free software: you can redistribute it and/or modify \
+it under the terms of the GNU General Public License as published by \
+the Free Software Foundation, either version 3 of the License, or \
+(at your option) any later version.<br>\
+<br>\
+This program is distributed in the hope that it will be useful, \
+but WITHOUT ANY WARRANTY; without even the implied warranty of \
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the \
+GNU General Public License for more details.<br>\
+<br>\
+You should have received a copy of the GNU General Public License \
+along with this program. If not, see <a href=\"http://www.gnu.org/licenses/\">www.gnu.org/licenses</a><br>\
+<br>\
+Build date: ") + __DATE__ + QString(" time: ") +
+                           __TIME__ + QString("<br>\
+<br>\
+UDTStudio use others open libraries :<br>\
+- QDarkStyleSheet, a nice dark theme for Qt (dark theme) <a href=\"https://github.com/ColinDuquesnoy/QDarkStyleSheet\">github.com/ColinDuquesnoy/QDarkStyleSheet</a> [MIT]<br>\
+- icons8, online icons library (menu and tool buttons) <a href=\"https://icons8.com\">icons8.com</a> [Free for Open]<br>\
+"));
 }

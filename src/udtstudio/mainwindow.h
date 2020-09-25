@@ -80,6 +80,8 @@ protected:
     // QObject interface
 public:
     bool event(QEvent *event) override;
+public slots:
+    void about();
 };
 
 #endif // MAINWINDOW_H
