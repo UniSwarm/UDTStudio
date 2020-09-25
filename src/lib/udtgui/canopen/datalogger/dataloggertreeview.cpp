@@ -139,7 +139,7 @@ void DataLoggerTreeView::exportOneCurrent()
     {
         return;
     }
-    QFile file(QString("%1_export_%2").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz").arg(dlData->name())));
+    QFile file(QString("%1_export_%2.csv").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz")).arg(dlData->name()));
     if (!file.open(QIODevice::WriteOnly))
     {
         return;
@@ -180,6 +180,7 @@ void DataLoggerTreeView::createActions()
 
     _setColorAction = new QAction(this);
     _setColorAction->setText(tr("&Set color"));
+    _setColorAction->setIcon(QIcon(":/icons/img/icons8-paint-palette.png"));
     _setColorAction->setEnabled(false);
     connect(_setColorAction, &QAction::triggered, this, &DataLoggerTreeView::setColorCurrent);
     addAction(_setColorAction);
@@ -188,6 +189,7 @@ void DataLoggerTreeView::createActions()
     _exportOneAction->setText(tr("&Export"));
     _exportOneAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
     _exportOneAction->setShortcutContext(Qt::WidgetShortcut);
+    _exportOneAction->setIcon(QIcon(":/icons/img/icons8-export.png"));
     _exportOneAction->setEnabled(false);
 #if QT_VERSION >= 0x050A00
     _exportOneAction->setShortcutVisibleInContextMenu(true);

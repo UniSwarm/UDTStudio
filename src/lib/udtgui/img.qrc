@@ -23,6 +23,12 @@
         <file>img/icons8-broom.png</file>
         <file>img/icons8-speed.png</file>
         <file>img/icons8-line-chart.png</file>
+        <file>img/icons8-about.png</file>
+        <file>img/icons8-export.png</file>
+        <file>img/icons8-exit.png</file>
+        <file>img/icons8-paint-palette.png</file>
+        <file>img/icons8-system-information.png</file>
+        <file>img/icons8-exit.png</file>
     </qresource>
     <qresource prefix="/diagram">
         <file>img/402VLDiagram.png</file>
