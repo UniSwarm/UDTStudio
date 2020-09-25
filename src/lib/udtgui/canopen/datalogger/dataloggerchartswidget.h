@@ -69,6 +69,12 @@ private:
 
     bool _useOpenGL;
     bool _viewCross;
+
+    // QWidget interface
+protected:
+    void dropEvent(QDropEvent *event) override;
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
 };
 
 #endif // DATALOGGERCHARTSWIDGET_H

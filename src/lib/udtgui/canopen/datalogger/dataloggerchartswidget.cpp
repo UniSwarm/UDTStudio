@@ -24,6 +24,7 @@
 #include <QDebug>
 #include <qmath.h>
 #include <QOpenGLWidget>
+#include <QMimeData>
 
 using namespace QtCharts;
 
@@ -203,4 +204,36 @@ void DataLoggerChartsWidget::setUseOpenGL(bool useOpenGL)
     }
     invalidateScene();
     update();
+}
+
+void DataLoggerChartsWidget::dropEvent(QDropEvent *event)
+{
+    QChartView::dropEvent(event);
+    if (event->mimeData()->hasFormat("index/subindex"))
+    {
+        const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', QString::SkipEmptyParts);
+        for (const QString &stringObjId : stringListObjId)
+        {
+            NodeObjectId objId = NodeObjectId::fromMimeData(stringObjId);
+            _dataLogger->addData(objId);
+        }
+        event->accept();
+    }
+}
+
+void DataLoggerChartsWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+    QChartView::dragEnterEvent(event);
+    if (event->mimeData()->hasFormat("index/subindex"))
+    {
+        event->accept();
+        event->acceptProposedAction();
+    }
+}
+
+void DataLoggerChartsWidget::dragMoveEvent(QDragMoveEvent *event)
+{
+    QChartView::dragMoveEvent(event);
+    event->accept();
+    event->acceptProposedAction();
 }
