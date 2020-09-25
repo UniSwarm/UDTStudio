@@ -41,6 +41,9 @@ void BusManagerWidget::setBus(CanOpenBus *bus)
 {
     _bus = bus;
     _groupBox->setEnabled(_bus);
+    _actionExplore->setEnabled(_bus);
+    _actionSyncOne->setEnabled(_bus);
+    _actionSyncStart->setEnabled(_bus);
     updateData();
 }
 
@@ -85,7 +88,7 @@ void BusManagerWidget::toggleSync(bool start)
 
 void BusManagerWidget::setSyncTimer(int i)
 {
-    if (_syncStartAction->isChecked())
+    if (_actionSyncStart->isChecked())
     {
         if (_bus)
         {
@@ -96,7 +99,6 @@ void BusManagerWidget::setSyncTimer(int i)
 
 void BusManagerWidget::createWidgets()
 {
-    QAction *action;
     QLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -110,17 +112,17 @@ void BusManagerWidget::createWidgets()
     _toolBar->setIconSize(QSize(20, 20));
 
     // explore
-    action = _toolBar->addAction(tr("Explore"));
-    action->setIcon(QIcon(":/icons/img/icons8-search-database.png"));
-    action->setShortcut(QKeySequence("Ctrl+E"));
-    action->setStatusTip(tr("Explore bus for new nodes"));
-    connect(action, &QAction::triggered, this, &BusManagerWidget::exploreBus);
+    _actionExplore = _toolBar->addAction(tr("Explore"));
+    _actionExplore->setIcon(QIcon(":/icons/img/icons8-search-database.png"));
+    _actionExplore->setShortcut(QKeySequence("Ctrl+E"));
+    _actionExplore->setStatusTip(tr("Explore bus for new nodes"));
+    connect(_actionExplore, &QAction::triggered, this, &BusManagerWidget::exploreBus);
 
     // Sync one
-    action = _toolBar->addAction(tr("Sync one"));
-    action->setIcon(QIcon(":/icons/img/icons8-sync1.png"));
-    action->setStatusTip(tr("Send one sync command"));
-    connect(action, &QAction::triggered, this, &BusManagerWidget::sendSyncOne);
+    _actionSyncOne = _toolBar->addAction(tr("Sync one"));
+    _actionSyncOne->setIcon(QIcon(":/icons/img/icons8-sync1.png"));
+    _actionSyncOne->setStatusTip(tr("Send one sync command"));
+    connect(_actionSyncOne, &QAction::triggered, this, &BusManagerWidget::sendSyncOne);
 
     // Sync timer
     _syncTimerSpinBox = new QSpinBox();
@@ -131,11 +133,11 @@ void BusManagerWidget::createWidgets()
     _toolBar->addWidget(_syncTimerSpinBox);
     connect(_syncTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),[=](int i){ setSyncTimer(i); });
 
-    _syncStartAction = _toolBar->addAction(tr("Start / stop sync"));
-    _syncStartAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
-    _syncStartAction->setCheckable(true);
-    _syncStartAction->setStatusTip(tr("Start / stop sync timer"));
-    connect(_syncStartAction, &QAction::triggered, this, &BusManagerWidget::toggleSync);
+    _actionSyncStart = _toolBar->addAction(tr("Start / stop sync"));
+    _actionSyncStart->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    _actionSyncStart->setCheckable(true);
+    _actionSyncStart->setStatusTip(tr("Start / stop sync timer"));
+    connect(_actionSyncStart, &QAction::triggered, this, &BusManagerWidget::toggleSync);
 
     layoutGroupBox->addRow(_toolBar);
 
@@ -146,4 +148,19 @@ void BusManagerWidget::createWidgets()
     layout->addWidget(_groupBox);
 
     setLayout(layout);
+}
+
+QAction *BusManagerWidget::actionSyncStart() const
+{
+    return _actionSyncStart;
+}
+
+QAction *BusManagerWidget::actionSyncOne() const
+{
+    return _actionSyncOne;
+}
+
+QAction *BusManagerWidget::actionExplore() const
+{
+    return _actionExplore;
 }

@@ -81,6 +81,7 @@ void NodeManagerWidget::setNode(Node *node)
         }
     }
     _groupBox->setEnabled(_node);
+    _groupNmt->setEnabled(_node);
 
     updateData();
 }
@@ -96,7 +97,7 @@ void NodeManagerWidget::updateData()
         _groupNmt->blockSignals(true);
         for (QAction *action : _groupNmt->actions())
         {
-            action->setCheckable(false);
+            action->setChecked(false);
         }
         int idAction = _node->status() - 1;
         if (idAction < 0)
@@ -139,6 +140,7 @@ void NodeManagerWidget::resetCom()
     if (_node)
     {
         _node->sendResetComm();
+        updateData();
     }
 }
 
@@ -165,7 +167,6 @@ void NodeManagerWidget::displayMode()
 
 void NodeManagerWidget::createWidgets()
 {
-    QAction *action;
     QLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -182,30 +183,35 @@ void NodeManagerWidget::createWidgets()
     _groupNmt = new QActionGroup(this);
     _groupNmt->setExclusive(true);
 
-    action = _groupNmt->addAction(tr("Pre operationnal"));
-    action->setIcon(QIcon(":/icons/img/icons8-connection-status-on.png"));
-    action->setStatusTip(tr("Request node to go in preop mode"));
-    connect(action, &QAction::triggered, this, &NodeManagerWidget::preop);
+    _actionPreop = _groupNmt->addAction(tr("Pre operationnal"));
+    _actionPreop->setCheckable(true);
+    _actionPreop->setIcon(QIcon(":/icons/img/icons8-connection-status-on.png"));
+    _actionPreop->setStatusTip(tr("Request node to go in preop mode"));
+    connect(_actionPreop, &QAction::triggered, this, &NodeManagerWidget::preop);
 
-    action = _groupNmt->addAction(tr("Start"));
-    action->setIcon(QIcon(":/icons/img/icons8-play.png"));
-    action->setStatusTip(tr("Request node to go in started mode"));
-    connect(action, &QAction::triggered, this, &NodeManagerWidget::start);
+    _actionStart = _groupNmt->addAction(tr("Start"));
+    _actionStart->setCheckable(true);
+    _actionStart->setIcon(QIcon(":/icons/img/icons8-play.png"));
+    _actionStart->setStatusTip(tr("Request node to go in started mode"));
+    connect(_actionStart, &QAction::triggered, this, &NodeManagerWidget::start);
 
-    action = _groupNmt->addAction(tr("Stop"));
-    action->setIcon(QIcon(":/icons/img/icons8-stop.png"));
-    action->setStatusTip(tr("Request node to go in stop mode"));
-    connect(action, &QAction::triggered, this, &NodeManagerWidget::stop);
+    _actionStop = _groupNmt->addAction(tr("Stop"));
+    _actionStop->setCheckable(true);
+    _actionStop->setIcon(QIcon(":/icons/img/icons8-stop.png"));
+    _actionStop->setStatusTip(tr("Request node to go in stop mode"));
+    connect(_actionStop, &QAction::triggered, this, &NodeManagerWidget::stop);
 
-    action = _groupNmt->addAction(tr("Reset communication"));
-    action->setIcon(QIcon(":/icons/img/icons8-process.png"));
-    action->setStatusTip(tr("Request node to reset com. parameters"));
-    connect(action, &QAction::triggered, this, &NodeManagerWidget::resetCom);
+    _actionResetCom = _groupNmt->addAction(tr("Reset communication"));
+    _actionResetCom->setCheckable(true);
+    _actionResetCom->setIcon(QIcon(":/icons/img/icons8-process.png"));
+    _actionResetCom->setStatusTip(tr("Request node to reset com. parameters"));
+    connect(_actionResetCom, &QAction::triggered, this, &NodeManagerWidget::resetCom);
 
-    action = _groupNmt->addAction(tr("Reset node"));
-    action->setIcon(QIcon(":/icons/img/icons8-reset.png"));
-    action->setStatusTip(tr("Request node to reset all values"));
-    connect(action, &QAction::triggered, this, &NodeManagerWidget::resetNode);
+    _actionReset = _groupNmt->addAction(tr("Reset node"));
+    _actionReset->setCheckable(true);
+    _actionReset->setIcon(QIcon(":/icons/img/icons8-reset.png"));
+    _actionReset->setStatusTip(tr("Request node to reset all values"));
+    connect(_actionReset, &QAction::triggered, this, &NodeManagerWidget::resetNode);
 
     _action402 = new QAction();
     _action402->setCheckable(true);
@@ -228,6 +234,31 @@ void NodeManagerWidget::createWidgets()
     layout->addWidget(_groupBox);
 
     setLayout(layout);
+}
+
+QAction *NodeManagerWidget::actionReset() const
+{
+    return _actionReset;
+}
+
+QAction *NodeManagerWidget::actionResetCom() const
+{
+    return _actionResetCom;
+}
+
+QAction *NodeManagerWidget::actionStop() const
+{
+    return _actionStop;
+}
+
+QAction *NodeManagerWidget::actionStart() const
+{
+    return _actionStart;
+}
+
+QAction *NodeManagerWidget::actionPreop() const
+{
+    return _actionPreop;
 }
 
 void NodeManagerWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

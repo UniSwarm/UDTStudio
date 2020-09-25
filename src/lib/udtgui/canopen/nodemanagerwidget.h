@@ -41,6 +41,12 @@ public:
 
     Node *node() const;
 
+    QAction *actionPreop() const;
+    QAction *actionStart() const;
+    QAction *actionStop() const;
+    QAction *actionResetCom() const;
+    QAction *actionReset() const;
+
 signals:
 
 public slots:
@@ -59,6 +65,11 @@ protected:
     void createWidgets();
     QToolBar *_toolBar;
     QActionGroup *_groupNmt;
+    QAction *_actionPreop;
+    QAction *_actionStart;
+    QAction *_actionStop;
+    QAction *_actionResetCom;
+    QAction *_actionReset;
     QGroupBox *_groupBox;
     QLineEdit *_nodeNameEdit;
     QLabel *_nodeStatusLabel;

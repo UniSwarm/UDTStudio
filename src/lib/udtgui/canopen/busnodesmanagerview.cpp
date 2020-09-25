@@ -67,3 +67,18 @@ void BusNodesManagerView::createWidgets()
 
     setLayout(layout);
 }
+
+NodeManagerWidget *BusNodesManagerView::nodeManagerWidget() const
+{
+    return _nodeManagerWidget;
+}
+
+BusManagerWidget *BusNodesManagerView::busManagerWidget() const
+{
+    return _busManagerWidget;
+}
+
+BusNodesTreeView *BusNodesManagerView::busNodeTreeView() const
+{
+    return _busNodeTreeView;
+}

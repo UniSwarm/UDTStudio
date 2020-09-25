@@ -40,6 +40,10 @@ public:
 
     CanOpenBus *bus() const;
 
+    QAction *actionExplore() const;
+    QAction *actionSyncOne() const;
+    QAction *actionSyncStart() const;
+
 signals:
 
 public slots:
@@ -61,7 +65,9 @@ protected:
     QSpinBox *_syncTimerSpinBox;
 
     CanOpenBus *_bus;
-    QAction *_syncStartAction;
+    QAction *_actionExplore;
+    QAction *_actionSyncOne;
+    QAction *_actionSyncStart;
 };
 
 #endif // BUSMANAGERWIDGET_H
