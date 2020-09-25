@@ -43,7 +43,7 @@ public slots:
 
 protected slots:
     void selectFilter(int index);
-    void applyFilter(const QString &filterText);
+    void applyFilterCustom(const QString &filterText);
 
 signals:
 

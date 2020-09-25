@@ -59,12 +59,17 @@ void NodeOdWidget::setNode(Node *node)
 
 void NodeOdWidget::selectFilter(int index)
 {
-    _filterLineEdit->setText(_filterCombobox->itemData(index).toString());
+    QSignalBlocker block(_filterLineEdit);
+    QString filterString = _filterCombobox->itemData(index).toString();
+    _filterLineEdit->setText(filterString);
+    _nodeOdTreeView->setFilter(filterString);
 }
 
-void NodeOdWidget::applyFilter(const QString &filterText)
+void NodeOdWidget::applyFilterCustom(const QString &filterText)
 {
+    QSignalBlocker block(_filterCombobox);
     _nodeOdTreeView->setFilter(filterText);
+    _filterCombobox->setCurrentIndex(0);
 }
 
 void NodeOdWidget::createWidgets()
@@ -76,7 +81,9 @@ void NodeOdWidget::createWidgets()
     _toolBar = new QToolBar(tr("Node commands"));
 
     // filter preset combo
-    _toolBar->addWidget(new QLabel(tr("Filter ")));
+    QLabel *filterLabel = new QLabel(tr("Filter "));
+    filterLabel->setStyleSheet("QLabel {background: none}");
+    _toolBar->addWidget(filterLabel);
     _filterCombobox = new QComboBox();
     _toolBar->addWidget(_filterCombobox);
     _filterLineEdit = new QLineEdit();
@@ -93,7 +100,7 @@ void NodeOdWidget::createWidgets()
     _filterCombobox->addItem(tr("Profile objects"), QVariant("0x[6-9][0-9A-F]{3}"));
     _filterCombobox->insertSeparator(20);
     connect(_filterCombobox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index){this->selectFilter(index);});
-    connect(_filterLineEdit, &QLineEdit::textChanged, this, &NodeOdWidget::applyFilter);
+    connect(_filterLineEdit, &QLineEdit::textChanged, this, &NodeOdWidget::applyFilterCustom);
 
     _nodeOdTreeView = new NodeOdTreeView();
     layout->addWidget(_nodeOdTreeView);
@@ -126,15 +133,15 @@ void NodeOdWidget::createDefaultFilters(uint profile)
 
     case 402:
         _filterCombobox->addItem(tr("402 FSA"), QVariant("0x[6-A][08](0[27]|3F|4[01]|5[A-E]|6[01])"));
-        _filterCombobox->addItem(tr("402 pp"), QVariant("0x[6-A][08](7[ABDE]|8[0-6]|A[34]|C[56])"));
-        _filterCombobox->addItem(tr("402 hm"), QVariant("0x[6-A][08](9[89A]|7C|E3)"));
-        _filterCombobox->addItem(tr("402 tq"), QVariant("0x[6-A][0](7[1-9]|8[7-8])"));
-        _filterCombobox->addItem(tr("402 tp"), QVariant("0x[6-A][08](B[8-D]|D0)"));
-        _filterCombobox->addItem(tr("402 pc"), QVariant("0x[6-A][08](6[2-8]|F[24AC])"));
-        _filterCombobox->addItem(tr("402 ip"), QVariant("0x[6-A][08](C[0-4]|7[B-F]|8[0-5]|C[5-6])"));
-        _filterCombobox->addItem(tr("402 pv"), QVariant("0x[6-A][08](6[9-F]|70|F[8F])"));
-        _filterCombobox->addItem(tr("402 pt"), QVariant("0x[6-A][08](7[1-9]|E[01])"));
-        _filterCombobox->addItem(tr("402 vl"), QVariant("0x[6-A][08]4[2-F]"));
+        _filterCombobox->addItem(tr("402 tq (Torque)"), QVariant("0x[6-A][0](7[1-9]|8[7-8])"));
+        _filterCombobox->addItem(tr("402 tp (Torque profile)"), QVariant("0x[6-A][08](B[8-D]|D0)"));
+        _filterCombobox->addItem(tr("402 pt (Profile Torque)"), QVariant("0x[6-A][08](7[1-9]|E[01])"));
+        _filterCombobox->addItem(tr("402 hm (Homming)"), QVariant("0x[6-A][08](9[89A]|7C|E3)"));
+        _filterCombobox->addItem(tr("402 pc (Position Control)"), QVariant("0x[6-A][08](6[2-8]|F[24AC])"));
+        _filterCombobox->addItem(tr("402 pp (Profile Position)"), QVariant("0x[6-A][08](7[ABDE]|8[0-6]|A[34]|C[56])"));
+        _filterCombobox->addItem(tr("402 ip (Interpolated Position)"), QVariant("0x[6-A][08](C[0-4]|7[B-F]|8[0-5]|C[5-6])"));
+        _filterCombobox->addItem(tr("402 pv (Profile Velocity"), QVariant("0x[6-A][08](6[9-F]|70|F[8F])"));
+        _filterCombobox->addItem(tr("402 vl (Velocity)"), QVariant("0x[6-A][08]4[2-F]"));
         _filterCombobox->addItem(tr("402 factors"), QVariant("0x[6-A][08](8F|9[0-267]|A[8-B])"));
         break;
     }
