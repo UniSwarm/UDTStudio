@@ -47,8 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createDocks();
     createWidgets();
     createMenus();
-    connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, _nodeOdWidget, &NodeOdWidget::setNode);
-    connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, _nodePdoMappingWidget, &NodePDOMappingWidget::setNode);
+    connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, _nodeScreens, &NodeScreens::setNode);
 
     CanOpenBus *bus = nullptr;
     if (QCanBus::instance()->plugins().contains("socketcan"))
@@ -58,7 +57,6 @@ MainWindow::MainWindow(QWidget *parent) :
     else if (QCanBus::instance()->plugins().contains("virtualcan"))
     {
         bus = new CanOpenBus(QCanBus::instance()->createDevice("virtualcan", "can0"));
-        //bus->addNode(new Node(1, "Node 1", "C:/Users/sebas/Seafile/my_lib_uniswarm/fw/UIOfw/UIO44/uio44.eds"));
     }
     if (bus)
     {
@@ -108,15 +106,8 @@ void MainWindow::createDocks()
 
 void MainWindow::createWidgets()
 {
-    QSplitter *splitter = new QSplitter();
-
-    _nodeOdWidget = new NodeOdWidget();
-    splitter->addWidget(_nodeOdWidget);
-
-    _nodePdoMappingWidget = new NodePDOMappingWidget();
-    splitter->addWidget(_nodePdoMappingWidget);
-
-    setCentralWidget(splitter);
+    _nodeScreens = new NodeScreens();
+    setCentralWidget(_nodeScreens);
 }
 
 void MainWindow::createMenus()

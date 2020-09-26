@@ -24,16 +24,15 @@
 #include <QTreeView>
 #include <QSortFilterProxyModel>
 
-#include "od/odtreeview.h"
-#include "canopen/nodeod/nodeodwidget.h"
 #include "canopenbus.h"
+#include "can/canSettingsDialog/cansettingsdialog.h"
 
 #include "can/canFrameListView/canframelistview.h"
 #include "canopen/busnodesmanagerview.h"
-#include "can/canSettingsDialog/cansettingsdialog.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
-#include "canopen/pdo/nodepdomappingwidget.h"
+
+#include "screen/nodescreens.h"
 
 class MainWindow : public QMainWindow
 {
@@ -59,9 +58,7 @@ protected:
     DataLoggerWidget *_dataLoggerWidget;
 
     void createWidgets();
-    ODTreeView *_odView;
-    NodeOdWidget *_nodeOdWidget;
-    NodePDOMappingWidget *_nodePdoMappingWidget;
+    NodeScreens *_nodeScreens;
 
     // actions / menu
     void createMenus();
