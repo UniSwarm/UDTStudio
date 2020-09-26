@@ -47,6 +47,22 @@ Node *NodeOdWidget::node() const
     return _node;
 }
 
+NodeOdWidget::Filter NodeOdWidget::filter() const
+{
+    return _filter;
+}
+
+void NodeOdWidget::setFilter(NodeOdWidget::Filter filter)
+{
+    _filter = filter;
+    if (_filter == FilterPDO)
+    {
+        QSignalBlocker block(_filterLineEdit);
+        _filterLineEdit->setText("pdo:pdo");
+        _nodeOdTreeView->setFilter("pdo:pdo");
+    }
+}
+
 void NodeOdWidget::setNode(Node *node)
 {
     _node = node;
@@ -61,6 +77,10 @@ void NodeOdWidget::selectFilter(int index)
 {
     QSignalBlocker block(_filterLineEdit);
     QString filterString = _filterCombobox->itemData(index).toString();
+    if (_filter == FilterPDO)
+    {
+        filterString.prepend("pdo:pdo ");
+    }
     _filterLineEdit->setText(filterString);
     _nodeOdTreeView->setFilter(filterString);
 }

@@ -38,14 +38,20 @@ public:
 
     Node *node() const;
 
+    enum Filter
+    {
+        FilterNone,
+        FilterPDO
+    };
+    Filter filter() const;
+    void setFilter(Filter filter);
+
 public slots:
     void setNode(Node *node);
 
 protected slots:
     void selectFilter(int index);
     void applyFilterCustom(const QString &filterText);
-
-signals:
 
 protected:
     void createWidgets();
@@ -58,6 +64,7 @@ protected:
     uint _oldProfile;
 
     Node *_node;
+    Filter _filter;
 };
 
 #endif // NODEODWIDGET_H
