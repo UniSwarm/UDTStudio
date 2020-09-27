@@ -25,7 +25,7 @@
 AbstractIndexWidget::AbstractIndexWidget(const NodeObjectId &objId)
     :_objId(objId)
 {
-    registerObjId(objId);
+    setObjId(objId);
     _requestRead = false;
 }
 
@@ -58,6 +58,40 @@ void AbstractIndexWidget::requestReadValue()
     }
     _requestRead = true;
     nodeInterrest()->readObject(_objId);
+}
+
+void AbstractIndexWidget::cancelEdit()
+{
+    if (!nodeInterrest())
+    {
+        setDisplayValue(QVariant(), DisplayAttribute::Error);
+        return;
+    }
+    setDisplayValue(nodeInterrest()->nodeOd()->value(_objId), DisplayAttribute::Normal);
+}
+
+NodeObjectId AbstractIndexWidget::objId() const
+{
+    return _objId;
+}
+
+void AbstractIndexWidget::setObjId(const NodeObjectId &objId)
+{
+    if (_objId.isValid())
+    {
+        unRegisterObjId(_objId);
+    }
+    _objId = objId;
+
+    if (objId.isASubIndex())
+    {
+        registerObjId(_objId);
+    }
+    Node *node = _objId.node();
+    if (node)
+    {
+        setNode(node);
+    }
 }
 
 void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

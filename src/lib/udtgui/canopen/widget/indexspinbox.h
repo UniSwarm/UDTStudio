@@ -38,6 +38,7 @@ public:
     // QWidget interface
 protected:
     void keyPressEvent(QKeyEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
 };
 
 #endif // INDEXSPINBOX_H

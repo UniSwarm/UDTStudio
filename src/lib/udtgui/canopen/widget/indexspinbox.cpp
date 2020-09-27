@@ -64,3 +64,9 @@ void IndexSpinBox::keyPressEvent(QKeyEvent *event)
         requestReadValue();
     }
 }
+
+void IndexSpinBox::focusOutEvent(QFocusEvent *event)
+{
+    cancelEdit();
+    QSpinBox::focusOutEvent(event);
+}

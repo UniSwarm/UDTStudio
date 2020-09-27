@@ -32,6 +32,9 @@ public:
     Node *node() const;
     void setNode(Node *node);
 
+    NodeObjectId objId() const;
+    void setObjId(const NodeObjectId &objId);
+
 protected:
     enum DisplayAttribute
     {
@@ -44,6 +47,7 @@ protected:
     void requestWriteValue(const QVariant &value);
     void requestReadValue();
     virtual bool isEditing() const =0;
+    void cancelEdit();
 
 protected:
     NodeObjectId _objId;
