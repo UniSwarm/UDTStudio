@@ -51,7 +51,7 @@ const QMap<quint16, NodeIndex *> &NodeOd::indexes() const
  * @param index
  * @return an Index*
  */
-NodeIndex *NodeOd::index(quint16 index) const
+NodeIndex *NodeOd::index(const quint16 index) const
 {
     return _nodeIndexes.value(index);
 }
@@ -80,12 +80,12 @@ int NodeOd::indexCount() const
  * @param key
  * @return boolean
  */
-bool NodeOd::indexExist(quint16 index) const
+bool NodeOd::indexExist(const quint16 index) const
 {
     return _nodeIndexes.contains(index);
 }
 
-NodeSubIndex *NodeOd::subIndex(quint16 index, quint8 subIndex) const
+NodeSubIndex *NodeOd::subIndex(const quint16 index, const quint8 subIndex) const
 {
     NodeIndex *nodeIndex = this->index(index);
     if (!nodeIndex)
@@ -102,7 +102,7 @@ NodeSubIndex *NodeOd::subIndex(quint16 index, quint8 subIndex) const
     return nodeSubIndex;
 }
 
-bool NodeOd::subIndexExist(quint16 index, quint8 subIndex) const
+bool NodeOd::subIndexExist(const quint16 index, const quint8 subIndex) const
 {
     NodeIndex *nodeIndex = this->index(index);
     if (!nodeIndex)
@@ -119,7 +119,7 @@ bool NodeOd::subIndexExist(quint16 index, quint8 subIndex) const
     return true;
 }
 
-void NodeOd::setErrorObject(quint16 index, quint8 subIndex, quint32 error)
+void NodeOd::setErrorObject(const quint16 index, const quint8 subIndex, const quint32 error)
 {
     NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
     if (!nodeSubIndex)
@@ -135,7 +135,7 @@ quint32 NodeOd::errorObject(const NodeObjectId &id) const
     return errorObject(id.index, id.subIndex);
 }
 
-quint32 NodeOd::errorObject(quint16 index, quint8 subIndex) const
+quint32 NodeOd::errorObject(const quint16 index, const quint8 subIndex) const
 {
     NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
     if (!nodeSubIndex)
@@ -151,7 +151,7 @@ QMetaType::Type NodeOd::dataType(const NodeObjectId &id) const
     return dataType(id.index, id.subIndex);
 }
 
-QMetaType::Type NodeOd::dataType(quint16 index, quint8 subIndex) const
+QMetaType::Type NodeOd::dataType(const quint16 index, const quint8 subIndex) const
 {
     NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
     if (!nodeSubIndex)
@@ -167,7 +167,7 @@ QVariant NodeOd::value(const NodeObjectId &id) const
     return value(id.index, id.subIndex);
 }
 
-QVariant NodeOd::value(quint16 index, quint8 subIndex) const
+QVariant NodeOd::value(const quint16 index, const quint8 subIndex) const
 {
     NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
     if (!nodeSubIndex)
@@ -194,7 +194,7 @@ QDateTime NodeOd::lastModification(const NodeObjectId &id) const
     return lastModification(id.index, id.subIndex);
 }
 
-QDateTime NodeOd::lastModification(quint16 index, quint8 subIndex) const
+QDateTime NodeOd::lastModification(const quint16 index, const quint8 subIndex) const
 {
     NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
     if (!nodeSubIndex)
@@ -205,7 +205,7 @@ QDateTime NodeOd::lastModification(quint16 index, quint8 subIndex) const
     return nodeSubIndex->lastModification();
 }
 
-void NodeOd::subscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex)
+void NodeOd::subscribe(NodeOdSubscriber *object, const quint16 notifyIndex, const quint8 notifySubIndex)
 {
     Subscriber subscriber;
     subscriber.object = object;
@@ -231,7 +231,7 @@ void NodeOd::unsubscribe(NodeOdSubscriber *object)
     }
 }
 
-void NodeOd::unsubscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex)
+void NodeOd::unsubscribe(NodeOdSubscriber *object, const quint16 notifyIndex, const quint8 notifySubIndex)
 {
     QMultiMap<quint32, Subscriber>::iterator itSub = _subscribers.begin();
     while (itSub != _subscribers.end())
@@ -249,7 +249,7 @@ void NodeOd::unsubscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 n
     }
 }
 
-void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, const QVariant &value, SDO::FlagsRequest flags)
+void NodeOd::updateObjectFromDevice(const quint16 indexDevice, const quint8 subindexDevice, const QVariant &value, const SDO::FlagsRequest flags)
 {
     if (indexExist(indexDevice))
     {
@@ -293,8 +293,9 @@ void NodeOd::createMandatoryObject()
 
     NodeSubIndex *subIndex;
     subIndex = new NodeSubIndex(0);
-    subIndex->setDataType(NodeSubIndex::UNSIGNED32);
+    subIndex->setDataType(NodeSubIndex::UNSIGNED8);
     subIndex->setName("Highest sub-index supported");
+    subIndex->setValue(4);
     identityObject->addSubIndex(subIndex);
 
     subIndex = new NodeSubIndex(1);
@@ -380,7 +381,7 @@ bool NodeOd::loadEds(const QString &fileName)
     return true;
 }
 
-QMetaType::Type NodeOd::dataTypeCiaToQt(NodeSubIndex::DataType type)
+QMetaType::Type NodeOd::dataTypeCiaToQt(const NodeSubIndex::DataType type)
 {
     switch (type)
     {

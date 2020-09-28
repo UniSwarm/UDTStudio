@@ -115,12 +115,12 @@ quint8 Node::nodeId() const
     return _nodeId;
 }
 
-void Node::setNodeId(const quint8 &nodeId)
+void Node::setNodeId(const quint8 nodeId)
 {
     _nodeId = nodeId;
 }
 
-QString Node::name() const
+const QString &Node::name() const
 {
     return _name;
 }
@@ -151,7 +151,7 @@ QString Node::statusStr() const
     return QString();
 }
 
-void Node::setStatus(Status status)
+void Node::setStatus(const Status status)
 {
     bool changed = (status != _status);
     _status = status;
@@ -210,17 +210,17 @@ void Node::reset()
     }
 }
 
-QList<RPDO *> Node::rpdos() const
+const QList<RPDO *> &Node::rpdos() const
 {
     return _rpdos;
 }
 
-QList<TPDO *> Node::tpdos() const
+const QList<TPDO *> &Node::tpdos() const
 {
     return _tpdos;
 }
 
-bool Node::isMappedObjectInPdo(NodeObjectId object) const
+bool Node::isMappedObjectInPdo(const NodeObjectId &object) const
 {
     for (RPDO *rpdo : _rpdos)
     {
@@ -239,7 +239,7 @@ bool Node::isMappedObjectInPdo(NodeObjectId object) const
     return false;
 }
 
-RPDO *Node::isMappedObjectInRpdo(NodeObjectId object) const
+RPDO *Node::isMappedObjectInRpdo(const NodeObjectId &object) const
 {
     for (RPDO *rpdo : _rpdos)
     {
@@ -251,7 +251,7 @@ RPDO *Node::isMappedObjectInRpdo(NodeObjectId object) const
     return nullptr;
 }
 
-TPDO *Node::isMappedObjectInTpdo(NodeObjectId object) const
+TPDO *Node::isMappedObjectInTpdo(const NodeObjectId &object) const
 {
     for (TPDO *tpdo : _tpdos)
     {
@@ -268,7 +268,7 @@ void Node::readObject(const NodeObjectId &id)
     readObject(id.index, id.subIndex, id.dataType);
 }
 
-void Node::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
+void Node::readObject(const quint16 index, const quint8 subindex, const QMetaType::Type dataType)
 {
     if (status() == STOPPED)
     {
@@ -291,7 +291,7 @@ void Node::writeObject(const NodeObjectId &id, const QVariant &data)
     writeObject(id.index, id.subIndex, data);
 }
 
-void Node::writeObject(quint16 index, quint8 subindex, const QVariant &data)
+void Node::writeObject(const quint16 index, const quint8 subindex, const QVariant &data)
 {
     if (status() == STOPPED)
     {

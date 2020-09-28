@@ -39,6 +39,7 @@ public:
     CanOpen *canOpen() const;
     quint8 busId() const;
     ServiceDispatcher *dispatcher() const;
+
     Sync *sync() const;
 
     QString busName() const;
@@ -47,9 +48,9 @@ public:
     bool isConnected() const;
 
     const QList<Node *> &nodes() const;
-    Node *node(quint8 nodeId);
+    Node *node(const quint8 nodeId);
     void addNode(Node *node);
-    bool existNode(quint8 nodeId);
+    bool existNode(const quint8 nodeId);
 
     QCanBusDevice *canDevice() const;
     void setCanDevice(QCanBusDevice *canDevice);

@@ -33,7 +33,7 @@ NodeOdSubscriber::~NodeOdSubscriber()
     unRegisterFullOd();
 }
 
-void NodeOdSubscriber::notifySubscriber(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void NodeOdSubscriber::notifySubscriber(const NodeObjectId &objId, const SDO::FlagsRequest flags)
 {
     this->odNotify(objId, flags);
 }
@@ -68,7 +68,7 @@ void NodeOdSubscriber::setNodeInterrest(Node *nodeInterrest)
     }
 }
 
-void NodeOdSubscriber::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
+void NodeOdSubscriber::readObject(const quint16 index, const quint8 subindex, const QMetaType::Type dataType)
 {
     if (_nodeInterrest)
     {
@@ -81,12 +81,12 @@ void NodeOdSubscriber::registerObjId(const NodeObjectId &objId)
     registerKey(objId);
 }
 
-void NodeOdSubscriber::registerSubIndex(quint16 index, quint8 subindex)
+void NodeOdSubscriber::registerSubIndex(const quint16 index, const quint8 subindex)
 {
     registerKey(NodeObjectId(index, subindex));
 }
 
-void NodeOdSubscriber::registerIndex(quint16 index)
+void NodeOdSubscriber::registerIndex(const quint16 index)
 {
     registerKey(NodeObjectId(index, 0xFFu));
 }
@@ -101,12 +101,12 @@ void NodeOdSubscriber::unRegisterObjId(const NodeObjectId &objId)
     unRegisterKey(objId);
 }
 
-void NodeOdSubscriber::unRegisterSubIndex(quint16 index, quint8 subindex)
+void NodeOdSubscriber::unRegisterSubIndex(const quint16 index, const quint8 subindex)
 {
     unRegisterKey(NodeObjectId(index, subindex));
 }
 
-void NodeOdSubscriber::unRegisterIndex(quint16 index)
+void NodeOdSubscriber::unRegisterIndex(const quint16 index)
 {
     unRegisterKey(NodeObjectId(index, 0xFFu));
 }

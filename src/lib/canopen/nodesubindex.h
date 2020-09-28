@@ -28,7 +28,7 @@ public:
     NodeObjectId objectId() const;
 
     quint8 subIndex() const;
-    void setSubIndex(const quint8 &subIndex);
+    void setSubIndex(const quint8 subIndex);
 
     const QString &name() const;
     void setName(const QString &name);
@@ -56,8 +56,8 @@ public:
     void setDefaultValue(const QVariant &value);
     void resetValue();
 
-    const quint32 &error() const;
-    void setError(const quint32 &value);
+    quint32 error() const;
+    void setError(const quint32 value);
     void clearError();
 
     // =============== Data type ==================
@@ -91,8 +91,8 @@ public:
         UNSIGNED64 = 0x001B
     };
     DataType dataType() const;
-    void setDataType(const DataType &dataType);
-    static QString dataTypeStr(const DataType &dataType);
+    void setDataType(const DataType dataType);
+    static QString dataTypeStr(const DataType dataType);
     bool isNumeric() const;
     QMetaType::Type metaType() const;
 

@@ -45,15 +45,15 @@ public:
     NodeOd *nodeOd() const;
 
     quint8 nodeId() const;
-    void setNodeId(const quint8 &nodeId);
+    void setNodeId(const quint8 nodeId);
 
-    QString name() const;
+    const QString &name() const;
     void setName(const QString &name);
 
     void readObject(const NodeObjectId &id);
-    void readObject(quint16 index, quint8 subindex, QMetaType::Type dataType = QMetaType::Type::UnknownType);
+    void readObject(const quint16 index, const quint8 subindex, const QMetaType::Type dataType = QMetaType::Type::UnknownType);
     void writeObject(const NodeObjectId &id, const QVariant &data);
-    void writeObject(quint16 index, quint8 subindex, const QVariant &data);
+    void writeObject(const quint16 index, const quint8 subindex, const QVariant &data);
 
     void loadEds(const QString &fileName);
     void updateFirmware(const QByteArray &prog);
@@ -67,16 +67,16 @@ public:
     };
     Status status() const;
     QString statusStr() const;
-    void setStatus(Status status);
+    void setStatus(const Status status);
 
     quint16 profileNumber() const;
 
-    QList<TPDO *> tpdos() const;
-    QList<RPDO *> rpdos() const;
+    const QList<TPDO *> &tpdos() const;
+    const QList<RPDO *> &rpdos() const;
 
-    bool isMappedObjectInPdo(NodeObjectId object) const;
-    RPDO *isMappedObjectInRpdo(NodeObjectId object) const;
-    TPDO *isMappedObjectInTpdo(NodeObjectId object) const;
+    bool isMappedObjectInPdo(const NodeObjectId &object) const;
+    RPDO *isMappedObjectInRpdo(const NodeObjectId &object) const;
+    TPDO *isMappedObjectInTpdo(const NodeObjectId &object) const;
 
     void reset();
 
