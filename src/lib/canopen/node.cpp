@@ -83,7 +83,7 @@ Node::~Node()
     delete _nmt;
     delete _errorControl;
 
-    delete _nodeOd;
+    _nodeOd->deleteLater();
 }
 
 CanOpenBus *Node::bus() const

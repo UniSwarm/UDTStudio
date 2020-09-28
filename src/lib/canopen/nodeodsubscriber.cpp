@@ -30,6 +30,7 @@ NodeOdSubscriber::NodeOdSubscriber()
 
 NodeOdSubscriber::~NodeOdSubscriber()
 {
+    unRegisterFullOd();
 }
 
 void NodeOdSubscriber::notifySubscriber(const NodeObjectId &objId, SDO::FlagsRequest flags)
