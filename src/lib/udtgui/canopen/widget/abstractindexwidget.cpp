@@ -85,6 +85,11 @@ void AbstractIndexWidget::setDisplayHint(const AbstractIndexWidget::DisplayHint 
     if (_hint != hint)
     {
         _hint = hint;
+        updateHint();
+        if (!nodeInterrest())
+        {
+            return;
+        }
         setDisplayValue(nodeInterrest()->nodeOd()->value(_objId), DisplayAttribute::Normal);
     }
 }
