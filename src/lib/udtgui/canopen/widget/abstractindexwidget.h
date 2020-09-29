@@ -35,6 +35,21 @@ public:
     NodeObjectId objId() const;
     void setObjId(const NodeObjectId &objId);
 
+    enum DisplayHint
+    {
+        DisplayDirectValue = 0x00,
+        DisplayHexa = 0x01,
+        DisplayQ15_16 = 0x02,
+        DisplayQ1_15 = 0x04,
+        DisplayFloat = 0x08,
+    };
+    DisplayHint hint() const;
+    void setDisplayHint(const DisplayHint hint);
+
+    //min max
+    //tooltip
+    //setunit
+
 protected:
     enum DisplayAttribute
     {
@@ -48,11 +63,14 @@ protected:
     void requestReadValue();
     virtual bool isEditing() const =0;
     void cancelEdit();
+    virtual void updateHint();
 
 protected:
     NodeObjectId _objId;
     QVariant _pendingValue;
     bool _requestRead;
+
+    DisplayHint _hint;
 
     // NodeOdSubscriber interface
 protected:

@@ -22,9 +22,9 @@
 #include "../../udtgui_global.h"
 
 #include "abstractindexwidget.h"
-#include <QSpinBox>
+#include <QAbstractSpinBox>
 
-class UDTGUI_EXPORT IndexSpinBox : public QSpinBox, public AbstractIndexWidget
+class UDTGUI_EXPORT IndexSpinBox : public QAbstractSpinBox, public AbstractIndexWidget
 {
     Q_OBJECT
 public:
@@ -34,11 +34,21 @@ public:
 public:
     void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
     bool isEditing() const override;
+    void updateHint() override;
+
+protected:
+    void setValue(const QVariant &value);
+    QVariant value() const;
 
     // QWidget interface
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void focusOutEvent(QFocusEvent *event) override;
+
+    // QAbstractSpinBox interface
+public:
+    void stepBy(int steps) override;
+    StepEnabled stepEnabled() const override;
 };
 
 #endif // INDEXSPINBOX_H

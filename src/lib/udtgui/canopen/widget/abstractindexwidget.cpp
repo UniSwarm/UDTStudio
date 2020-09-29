@@ -26,6 +26,7 @@ AbstractIndexWidget::AbstractIndexWidget(const NodeObjectId &objId)
     :_objId(objId)
 {
     setObjId(objId);
+    _hint = DisplayDirectValue;
     _requestRead = false;
 }
 
@@ -68,6 +69,24 @@ void AbstractIndexWidget::cancelEdit()
         return;
     }
     setDisplayValue(nodeInterrest()->nodeOd()->value(_objId), DisplayAttribute::Normal);
+}
+
+void AbstractIndexWidget::updateHint()
+{
+}
+
+AbstractIndexWidget::DisplayHint AbstractIndexWidget::hint() const
+{
+    return _hint;
+}
+
+void AbstractIndexWidget::setDisplayHint(const AbstractIndexWidget::DisplayHint hint)
+{
+    if (_hint != hint)
+    {
+        _hint = hint;
+        setDisplayValue(nodeInterrest()->nodeOd()->value(_objId), DisplayAttribute::Normal);
+    }
 }
 
 NodeObjectId AbstractIndexWidget::objId() const
