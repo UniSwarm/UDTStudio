@@ -16,42 +16,17 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "nodescreens.h"
-
-#include "nodescreenod.h"
-#include "nodescreenpdo.h"
 #include "nodescreenumcmotor.h"
 
-#include <QHBoxLayout>
+#include <QLayout>
 
-NodeScreens::NodeScreens(QWidget *parent)
-    : QWidget(parent)
+NodeScreenUmcMotor::NodeScreenUmcMotor(QWidget *parent)
+    : NodeScreen(parent)
 {
-    _node = nullptr;
     createWidgets();
 }
 
-Node *NodeScreens::node() const
-{
-    return _node;
-}
-
-void NodeScreens::addScreen(NodeScreen *screen)
-{
-    _tabWidget->addTab(screen, " " + screen->title() + " ");
-    _screens.append(screen);
-}
-
-void NodeScreens::setNode(Node *node)
-{
-    _node = node;
-    for (NodeScreen *screen : _screens)
-    {
-        screen->setNode(node);
-    }
-}
-
-void NodeScreens::createWidgets()
+void NodeScreenUmcMotor::createWidgets()
 {
     QLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
@@ -59,16 +34,29 @@ void NodeScreens::createWidgets()
     _tabWidget = new QTabWidget();
     layout->addWidget(_tabWidget);
 
-    NodeScreen *screen;
+    _pidVelocityWidget = new PidWidget();
+    _pidVelocityWidget->setMode(NodeProfile402::VL);
+    _tabWidget->addTab(_pidVelocityWidget, " " + _pidVelocityWidget->title() + " ");
 
-    screen = new NodeScreenOD();
-    addScreen(screen);
+    _pidTorqueWidget = new PidWidget();
+    _pidTorqueWidget->setMode(NodeProfile402::TQ);
+    _tabWidget->addTab(_pidTorqueWidget, " " + _pidTorqueWidget->title() + " ");
 
-    screen = new NodeScreenPDO();
-    addScreen(screen);
-
-    screen = new NodeScreenUmcMotor();
-    addScreen(screen);
+    _pidPositionWidget = new PidWidget();
+    _pidPositionWidget->setMode(NodeProfile402::PP);
+    _tabWidget->addTab(_pidPositionWidget, " " + _pidPositionWidget->title() + " ");
 
     setLayout(layout);
+}
+
+QString NodeScreenUmcMotor::title() const
+{
+    return QString(tr("UMC Motor"));
+}
+
+void NodeScreenUmcMotor::setNodeInternal(Node *node)
+{
+    _pidVelocityWidget->setNode(node);
+    _pidTorqueWidget->setNode(node);
+    _pidPositionWidget->setNode(node);
 }

@@ -46,7 +46,9 @@ HEADERS += \
     $$PWD/screen/nodescreens.h \
     $$PWD/screen/nodescreen.h \
     $$PWD/screen/nodescreenod.h \
-    $$PWD/screen/nodescreenpdo.h
+    $$PWD/screen/nodescreenpdo.h \
+    $$PWD/canopen/compositeWidget/pidwidget.h \
+    $$PWD/screen/nodescreenumcmotor.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -86,7 +88,9 @@ SOURCES += \
     $$PWD/screen/nodescreens.cpp \
     $$PWD/screen/nodescreen.cpp \
     $$PWD/screen/nodescreenod.cpp \
-    $$PWD/screen/nodescreenpdo.cpp
+    $$PWD/screen/nodescreenpdo.cpp \
+    $$PWD/canopen/compositeWidget/pidwidget.cpp \
+    $$PWD/screen/nodescreenumcmotor.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 
