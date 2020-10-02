@@ -20,16 +20,20 @@
 #define NODESCREENUMCMOTOR_H
 
 #include "udtgui_global.h"
+
 #include "nodescreen.h"
-#include <canopen/compositeWidget/pidwidget.h>
+
+#include <QTabWidget>
+
+class PidWidget;
 
 class UDTGUI_EXPORT NodeScreenUmcMotor : public NodeScreen
 {
     Q_OBJECT
-  public:
+public:
     NodeScreenUmcMotor(QWidget *parent = nullptr);
 
-  protected:
+protected:
     void createWidgets();
     PidWidget *_pidVelocityWidget;
     PidWidget *_pidPositionWidget;
@@ -38,9 +42,9 @@ class UDTGUI_EXPORT NodeScreenUmcMotor : public NodeScreen
     QTabWidget *_tabWidget;
 
     // NodeScreen interface
-  public:
+public:
     QString title() const override;
     void setNodeInternal(Node *node) override;
 };
 
-#endif // NODESCREENUMCMOTOR_H
+#endif  // NODESCREENUMCMOTOR_H

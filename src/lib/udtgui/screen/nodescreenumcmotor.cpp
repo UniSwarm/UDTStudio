@@ -18,10 +18,11 @@
 
 #include "nodescreenumcmotor.h"
 
+#include "canopen/compositeWidget/pidwidget.h"
+
 #include <QLayout>
 
-NodeScreenUmcMotor::NodeScreenUmcMotor(QWidget *parent)
-    : NodeScreen(parent)
+NodeScreenUmcMotor::NodeScreenUmcMotor(QWidget *parent) : NodeScreen(parent)
 {
     createWidgets();
 }
@@ -35,16 +36,8 @@ void NodeScreenUmcMotor::createWidgets()
     layout->addWidget(_tabWidget);
 
     _pidVelocityWidget = new PidWidget();
-    _pidVelocityWidget->setMode(NodeProfile402::VL);
-    _tabWidget->addTab(_pidVelocityWidget, " " + _pidVelocityWidget->title() + " ");
-
     _pidTorqueWidget = new PidWidget();
-    _pidTorqueWidget->setMode(NodeProfile402::TQ);
-    _tabWidget->addTab(_pidTorqueWidget, " " + _pidTorqueWidget->title() + " ");
-
     _pidPositionWidget = new PidWidget();
-    _pidPositionWidget->setMode(NodeProfile402::PP);
-    _tabWidget->addTab(_pidPositionWidget, " " + _pidPositionWidget->title() + " ");
 
     setLayout(layout);
 }
@@ -56,7 +49,18 @@ QString NodeScreenUmcMotor::title() const
 
 void NodeScreenUmcMotor::setNodeInternal(Node *node)
 {
+    if (!_node)
+    {
+        return;
+    }
+
     _pidVelocityWidget->setNode(node);
+    _pidVelocityWidget->setMode(NodeProfile402::VL);
+    _tabWidget->addTab(_pidVelocityWidget, " " + _pidVelocityWidget->title() + " ");
     _pidTorqueWidget->setNode(node);
+    _pidTorqueWidget->setMode(NodeProfile402::TQ);
+    _tabWidget->addTab(_pidTorqueWidget, " " + _pidTorqueWidget->title() + " ");
     _pidPositionWidget->setNode(node);
+    _pidPositionWidget->setMode(NodeProfile402::PP);
+    _tabWidget->addTab(_pidPositionWidget, " " + _pidPositionWidget->title() + " ");
 }
