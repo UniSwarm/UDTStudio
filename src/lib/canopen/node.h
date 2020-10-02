@@ -31,6 +31,7 @@ class RPDO;
 class Emergency;
 class NMT;
 class ErrorControl;
+class NodeProfile;
 
 class CANOPEN_EXPORT Node : public QObject
 {
@@ -70,6 +71,8 @@ public:
     void setStatus(const Status status);
 
     quint16 profileNumber() const;
+    void addProfile(NodeProfile *nodeProfile);
+    const QList<NodeProfile *> &profiles() const;
 
     const QList<TPDO *> &tpdos() const;
     const QList<RPDO *> &rpdos() const;
@@ -107,6 +110,8 @@ protected:
     NMT *_nmt;
     ErrorControl *_errorControl;
     QList<Service *> _services;
+
+    QList<NodeProfile *> _nodeProfiles;
 
     NodeOd *_nodeOd;
 };

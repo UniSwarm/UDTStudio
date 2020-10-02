@@ -25,8 +25,10 @@
 
 class NodeObjectId;
 class NodeProfile402Vl;
+class NodeProfile402Ip;
+class NodeProfile402Tq;
 
-#define TIMER_FOR_CHANGE_MODE 10 // in ms
+#define TIMER_FOR_CHANGE_MODE 10  // in ms
 
 class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
 {
@@ -37,24 +39,25 @@ public:
     enum Mode
     {
         MS = -1,
-        NoMode = 0, //
-        PP = 1, // Profile position mode
-        VL = 2, // Velocity mode
-        PV = 3, // Profile velocity mode
-        TQ = 4, // Torque profile mode
-        HM = 6, // Homing mode
-        IP = 7, // Interpolated position mode
-        CSP = 8, // Cyclic sync position mode
-        CSV = 9, // Cyclic sync velocity mode
-        CST = 10, // Cyclic sync torque mode
-        CSTCA = 11, // Cyclic sync torque mode with commutation angle
+        NoMode = 0,  //
+        PP = 1,      // Profile position mode
+        VL = 2,      // Velocity mode
+        PV = 3,      // Profile velocity mode
+        TQ = 4,      // Torque profile mode
+        HM = 6,      // Homing mode
+        IP = 7,      // Interpolated position mode
+        CSP = 8,     // Cyclic sync position mode
+        CSV = 9,     // Cyclic sync velocity mode
+        CST = 10,    // Cyclic sync torque mode
+        CSTCA = 11,  // Cyclic sync torque mode with commutation angle
         Reserved = 12
     };
 
     Mode actualMode();
-    QString actualModeStr();
-    QString modeStr(NodeProfile402::Mode mode);
     bool setMode(Mode mode);
+
+    QString modeStr(NodeProfile402::Mode mode);
+
     bool isModeSupported(Mode mode);
     QList<Mode> modesSupported();
 
@@ -70,35 +73,26 @@ public:
         STATE_Fault = 8,
     };
 
-    StateOf402 currentStateOf402() const;
-    void changeStateOf402(const StateOf402 stateOf402);
-    QString currentStateOf402Str() const;
-    QString stateOf402Str(StateOf402 stateOf402) const;
-    quint16 rawStatusWord();
-    quint16 rawControlWord();
+    StateOf402 currentState() const;
+    void goToState(const StateOf402 stateOf402);
 
-    bool haltToggle();
+    QString stateStr(StateOf402 stateOf402) const;
 
-    enum WarningStatusWord : quint8
+    bool toggleHalt();
+
+    enum informationStatusWord : quint8
     {
-        WarningNone = 0x00,
+        None = 0x00,
         InternalLimitActive = 0x01,
         Warning = 0x02,
-        FollowingError = 0x08
+        FollowingError = 0x04,
+        VoltageEnabled = 0x8,
+        Remote = 0x10,
+        TargetReached = 0x20
     };
+    quint8 informationStatusWord();
 
-    enum InformationStatusWord : quint8
-    {
-        InformationNone = 0x0,
-        VoltageEnabled = 0x1,
-        Remote = 0x2,
-        TargetReached = 0x4
-    };
-
-    uint8_t msFieldStatusWord();
-    uint8_t omsFieldStatusWord();
-    uint8_t warningStatusWord();
-    uint8_t informationStatusWord();
+    void target(qint32 target);
 
     enum Error
     {
@@ -130,58 +124,24 @@ private:
     Mode _currentMode;
     QList<Mode> _supportedModes;
 
-//    ControlWord/StatusWord
+    //    ControlWord/StatusWord
     NodeObjectId _controlWordObjectId;
     NodeObjectId _statusWordObjectId;
     quint16 _cmdControlWord;
     StateOf402 _stateMachineCurrent;
+    StateOf402 _requestedStateMachine;
+
     quint8 _msFieldStatusWord;
     quint8 _omsFieldStatusWord;
-
-
-    enum ControlWord : quint16
-    {
-        CW_SwitchOn = 0x01,
-        CW_EnableVoltage = 0x02,
-        CW_QuickStop = 0x04,
-        CW_EnableOperation = 0x08,
-        CW_FaultReset = 0x80,
-        CW_Halt = 0x100,
-        CW_OperationModeSpecific = 0x70,
-        CW_ManufacturerSpecific = 0xF800,
-
-        CW_Mask = 0x8F
-    };
-
-    enum StatusWord : quint16
-    {
-        SW_StateNotReadyToSwitchOn = 0x00,
-        SW_StateSwitchOnDisabled = 0x40,
-        SW_StateReadyToSwitchOn = 0x21,
-        SW_StateSwitchedOn = 0x23,
-        SW_StateOperationEnabled = 0x27,
-        SW_StateQuickStopActive = 0x07,
-        SW_StateFaultReactionActive = 0x0F,
-        SW_StateFault = 0x08,
-
-        SW_VoltageEnabled = 0x10,
-        SW_Warning = 0x80,
-        SW_Remote = 0x200,
-        SW_TargetReached = 0x400,
-        SW_FollowingError = 0x2000,
-        SW_InternalLimitActive = 0x800,
-        SW_OperationModeSpecific = 0x3000,
-        SW_ManufacturerSpecific = 0xC000
-    };
-
-    enum StatusWordStateMask
-    {
-        Mask1 = 0x4F,
-        Mask2 = 0x6f
-    };
-
-    uint8_t _warningFieldStatusWord;
     uint8_t _informationFieldStatusWord;
+
+    NodeProfile402Ip *_p402Ip;
+    NodeProfile402Tq *_p402Tq;
+    NodeProfile402Vl *_p402Vl;
+
+    void enableRamp(void);
+    void manageState(const StateOf402 stateOf402);
+    void changeState(void);
 
 public:
     bool status() const override;
@@ -193,4 +153,4 @@ public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // NODEPROFILE402_H
+#endif  // NODEPROFILE402_H

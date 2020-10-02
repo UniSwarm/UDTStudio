@@ -23,6 +23,7 @@
 #include "model/deviceconfiguration.h"
 #include "parser/edsparser.h"
 #include "services/services.h"
+#include "profile/nodeprofile402.h"
 
 Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
     : _nodeId(nodeId)
@@ -72,6 +73,7 @@ Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
     {
         loadEds(edsFileName);
     }
+    _nodeProfiles.clear();
 }
 
 Node::~Node()
@@ -164,6 +166,17 @@ void Node::setStatus(const Status status)
 quint16 Node::profileNumber() const
 {
     return static_cast<quint16>(nodeOd()->value(0x1000).toUInt() & 0xFFFF);
+}
+
+void Node::addProfile(NodeProfile *nodeProfile)
+{
+    // TODO mamagement multi-axis
+    _nodeProfiles.append(nodeProfile);
+}
+
+const QList<NodeProfile *> &Node::profiles() const
+{
+    return _nodeProfiles;
 }
 
 void Node::sendPreop()

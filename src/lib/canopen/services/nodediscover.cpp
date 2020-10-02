@@ -151,6 +151,12 @@ void NodeDiscover::exploreNodeNext()
         if (!file.isEmpty())
         {
             node->nodeOd()->loadEds(file);
+            // TODO to rethink : the instanciation of profile
+            if ((node->profileNumber()) == 0x192)
+            {
+                NodeProfile402 *nodeProfile402 = new NodeProfile402(node);
+                node->addProfile(nodeProfile402);
+            }
         }
 
         if (_nodeIdToExplore.isEmpty())
