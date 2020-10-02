@@ -23,6 +23,7 @@
 #include <QProcessEnvironment>
 
 #include "canopenbus.h"
+#include "../profile/nodeprofile402.h"
 
 NodeDiscover::NodeDiscover(CanOpenBus *bus)
     : Service(bus)
