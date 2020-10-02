@@ -33,7 +33,11 @@ SOURCES += \
     $$PWD/datalogger/datalogger.cpp \
     $$PWD/datalogger/dldata.cpp \
     $$PWD/profile/nodeprofile402.cpp \
-    $$PWD/profile/nodeprofile.cpp
+    $$PWD/profile/nodeprofile.cpp \
+    $$PWD/profile/p402/nodeprofile402ip.cpp \
+    $$PWD/profile/p402/nodeprofile402tq.cpp \
+    $$PWD/profile/p402/nodeprofile402vl.cpp \
+    $$PWD/profile/p402/p402ip.cpp
 
 
 HEADERS += \
@@ -62,7 +66,11 @@ HEADERS += \
     $$PWD/datalogger/datalogger.h \
     $$PWD/datalogger/dldata.h \
     $$PWD/profile/nodeprofile402.h \
-    $$PWD/profile/nodeprofile.h
+    $$PWD/profile/nodeprofile.h \
+    $$PWD/profile/p402/nodeprofile402ip.h \
+    $$PWD/profile/p402/nodeprofile402tq.h \
+    $$PWD/profile/p402/nodeprofile402vl.h \
+    $$PWD/profile/p402/p402ip.h
 
 INCLUDEPATH += $$PWD/../od/
 
