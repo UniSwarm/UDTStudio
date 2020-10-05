@@ -21,7 +21,7 @@
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/widget/indexspinbox.h"
 #include "node.h"
-#include "profile/nodeprofile402.h"
+#include "profile/p402/nodeprofile402.h"
 
 #include <QFormLayout>
 #include <QGroupBox>

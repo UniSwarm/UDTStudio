@@ -26,6 +26,7 @@
 #include <QTabWidget>
 
 class PidWidget;
+class NodeProfile402;
 
 class UDTGUI_EXPORT NodeScreenUmcMotor : public NodeScreen
 {

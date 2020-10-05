@@ -23,7 +23,7 @@
 #include "model/deviceconfiguration.h"
 #include "parser/edsparser.h"
 #include "services/services.h"
-#include "profile/nodeprofile402.h"
+#include "profile/p402/nodeprofile402.h"
 
 Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
     : _nodeId(nodeId)

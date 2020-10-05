@@ -19,6 +19,7 @@
 #include "nodescreenumcmotor.h"
 
 #include "canopen/compositeWidget/pidwidget.h"
+#include "profile/p402/nodeprofile402.h"
 
 #include <QLayout>
 

@@ -21,7 +21,7 @@
 
 #include "canopen_global.h"
 
-#include "nodeprofile.h"
+#include "../nodeprofile.h"
 
 class NodeObjectId;
 class NodeProfile402Vl;
@@ -55,9 +55,7 @@ public:
 
     Mode actualMode();
     bool setMode(Mode mode);
-
     QString modeStr(NodeProfile402::Mode mode);
-
     bool isModeSupported(Mode mode);
     QList<Mode> modesSupported();
 
@@ -75,7 +73,6 @@ public:
 
     StateOf402 currentState() const;
     void goToState(const StateOf402 stateOf402);
-
     QString stateStr(StateOf402 stateOf402) const;
 
     bool toggleHalt();
@@ -92,7 +89,7 @@ public:
     };
     quint8 informationStatusWord();
 
-    void target(qint32 target);
+    void setTarget(qint32 setTarget);
 
     enum Error
     {

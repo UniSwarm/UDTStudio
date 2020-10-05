@@ -24,14 +24,13 @@
 #include <QWidget>
 
 #include "nodeobjectid.h"
-#include "profile/nodeprofile402.h"
-
+#include "profile/p402/nodeprofile402.h"
 #include <QPushButton>
 #include <QTabWidget>
 
 class Node;
 class NodeObjectId;
-class NodeProfile402;
+//class NodeProfile402;
 class DataLogger;
 class DataLoggerChartsWidget;
 class IndexSpinBox;

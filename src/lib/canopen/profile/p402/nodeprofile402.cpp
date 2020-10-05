@@ -20,9 +20,9 @@
 #include "node.h"
 #include "nodeobjectid.h"
 #include "nodeodsubscriber.h"
-#include "p402/nodeprofile402ip.h"
-#include "p402/nodeprofile402tq.h"
-#include "p402/nodeprofile402vl.h"
+#include "nodeprofile402ip.h"
+#include "nodeprofile402tq.h"
+#include "nodeprofile402vl.h"
 
 enum ControlWord : quint16
 {
@@ -317,7 +317,7 @@ QString NodeProfile402::stateStr(StateOf402 stateOf402) const
     return QString();
 }
 
-void NodeProfile402::target(qint32 target)
+void NodeProfile402::setTarget(qint32 target)
 {
     switch (_currentMode)
     {
