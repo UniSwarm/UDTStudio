@@ -1,4 +1,4 @@
-/**
+﻿/**
  ** This file is part of the UDTStudio project.
  ** Copyright 2019-2020 UniSwarm
  **
@@ -48,21 +48,19 @@ enum StatusWord : quint16
     SW_StateQuickStopActive = 0x07,
     SW_StateFaultReactionActive = 0x0F,
     SW_StateFault = 0x08,
+    SW_StateMask1 = 0x4F,
+    SW_StateMask2 = 0x6F,
 
-    SW_VoltageEnabled = 0x10,
-    SW_Warning = 0x80,
-    SW_Remote = 0x200,
-    SW_TargetReached = 0x400,
-    SW_FollowingError = 0x2000,
-    SW_InternalLimitActive = 0x800,
+    SW_EventVoltageEnabled = 0x10,
+    SW_EventWarning = 0x80,
+    SW_EventRemote = 0x200,
+    SW_EventTargetReached = 0x400,
+    SW_EventFollowingError = 0x2000,
+    SW_EventInternalLimitActive = 0x800,
+    SW_EventMask = 0xE90,
+
     SW_OperationModeSpecific = 0x3000,
     SW_ManufacturerSpecific = 0xC000
-};
-
-enum StatusWordStateMask
-{
-    Mask1 = 0x4F,
-    Mask2 = 0x6f
 };
 
 NodeProfile402::NodeProfile402(Node *node) : NodeProfile(node)
@@ -189,18 +187,18 @@ QList<NodeProfile402::Mode> NodeProfile402::modesSupported()
     return _supportedModes;
 }
 
-NodeProfile402::StateOf402 NodeProfile402::currentState() const
+NodeProfile402::State402 NodeProfile402::currentState() const
 {
     return _stateMachineCurrent;
 }
 
-void NodeProfile402::goToState(const StateOf402 stateOf402)
+void NodeProfile402::goToState(const State402 state)
 {
-    _requestedStateMachine = stateOf402;
+    _requestedStateMachine = state;
     manageState(_requestedStateMachine);
 }
 
-void NodeProfile402::manageState(const StateOf402 stateOf402)
+void NodeProfile402::manageState(const State402 state)
 {
     if (!_node)
     {
@@ -212,23 +210,23 @@ void NodeProfile402::manageState(const StateOf402 stateOf402)
         case STATE_NotReadyToSwitchOn:
             break;
         case STATE_SwitchOnDisabled:
-            if (stateOf402 >= STATE_ReadyToSwitchOn)
+            if (state >= STATE_ReadyToSwitchOn)
             {
                 _cmdControlWord = (_cmdControlWord & ~CW_Mask);
                 _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop);
             }
             break;
         case STATE_ReadyToSwitchOn:
-            if (stateOf402 == STATE_SwitchOnDisabled)
+            if (state == STATE_SwitchOnDisabled)
             {
                 _cmdControlWord = (_cmdControlWord & ~CW_Mask);
             }
-            else if (stateOf402 >= STATE_SwitchedOn)
+            else if (state >= STATE_SwitchedOn)
             {
                 _cmdControlWord = (_cmdControlWord & ~CW_Mask);
                 _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn);
             }
-            else if (stateOf402 >= STATE_OperationEnabled)
+            else if (state >= STATE_OperationEnabled)
             {
                 _cmdControlWord = (_cmdControlWord & ~CW_Mask);
                 _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn | CW_EnableOperation);
@@ -236,46 +234,46 @@ void NodeProfile402::manageState(const StateOf402 stateOf402)
             }
             break;
         case STATE_SwitchedOn:
-            if (stateOf402 == STATE_OperationEnabled)
+            if (state == STATE_OperationEnabled)
             {
                 _cmdControlWord = (_cmdControlWord & ~CW_Mask);
                 _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn | CW_EnableOperation);
                 enableRamp();
             }
-            if (stateOf402 == STATE_ReadyToSwitchOn)
+            if (state == STATE_ReadyToSwitchOn)
             {
                 _cmdControlWord = (_cmdControlWord & ~CW_Mask);
                 _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop);
             }
-            if (stateOf402 == STATE_SwitchOnDisabled)
+            if (state == STATE_SwitchOnDisabled)
             {
                 _cmdControlWord = (_cmdControlWord & ~CW_Mask);
             }
             break;
         case STATE_OperationEnabled:
-            if (stateOf402 == STATE_SwitchOnDisabled)
+            if (state == STATE_SwitchOnDisabled)
             {
                 _cmdControlWord = (_cmdControlWord & ~CW_Mask);
                 _cmdControlWord = (_cmdControlWord & ~CW_Mask);
             }
-            if (stateOf402 == STATE_ReadyToSwitchOn)
+            if (state == STATE_ReadyToSwitchOn)
             {
                 _cmdControlWord = (_cmdControlWord & ~CW_Mask);
                 _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop);
             }
-            if (stateOf402 == STATE_SwitchedOn)
+            if (state == STATE_SwitchedOn)
             {
                 _cmdControlWord = (_cmdControlWord & ~CW_Mask);
                 _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn);
             }
-            if (stateOf402 == STATE_QuickStopActive)
+            if (state == STATE_QuickStopActive)
             {
                 _cmdControlWord = (_cmdControlWord & ~CW_Mask);
                 _cmdControlWord |= (CW_EnableVoltage);
             }
             break;
         case STATE_QuickStopActive:
-            if (stateOf402 == STATE_SwitchOnDisabled)
+            if (state == STATE_SwitchOnDisabled)
             {
                 _cmdControlWord = (_cmdControlWord & ~CW_Mask);
             }
@@ -283,7 +281,7 @@ void NodeProfile402::manageState(const StateOf402 stateOf402)
         case STATE_FaultReactionActive:
             break;
         case STATE_Fault:
-            if (stateOf402 == STATE_SwitchOnDisabled)
+            if (state == STATE_SwitchOnDisabled)
             {
                 _cmdControlWord -= (CW_FaultReset);
             }
@@ -293,25 +291,25 @@ void NodeProfile402::manageState(const StateOf402 stateOf402)
     _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
 }
 
-QString NodeProfile402::stateStr(StateOf402 stateOf402) const
+QString NodeProfile402::stateStr(State402 state) const
 {
-    switch (stateOf402)
+    switch (state)
     {
-        case StateOf402::STATE_NotReadyToSwitchOn:
+        case State402::STATE_NotReadyToSwitchOn:
             return tr("1_Not ready to switch on");
-        case StateOf402::STATE_SwitchOnDisabled:
+        case State402::STATE_SwitchOnDisabled:
             return tr("2_Switch on disabled");
-        case StateOf402::STATE_ReadyToSwitchOn:
+        case State402::STATE_ReadyToSwitchOn:
             return tr("3_Ready to switch on");
-        case StateOf402::STATE_SwitchedOn:
+        case State402::STATE_SwitchedOn:
             return tr("4_Switched on");
-        case StateOf402::STATE_OperationEnabled:
+        case State402::STATE_OperationEnabled:
             return tr("5_Operation enabled");
-        case StateOf402::STATE_QuickStopActive:
+        case State402::STATE_QuickStopActive:
             return tr("6_Quick stop active");
-        case StateOf402::STATE_FaultReactionActive:
+        case State402::STATE_FaultReactionActive:
             return tr("7_Fault reaction active");
-        case StateOf402::STATE_Fault:
+        case State402::STATE_Fault:
             return tr("8_Fault");
     }
     return QString();
@@ -372,9 +370,27 @@ bool NodeProfile402::toggleHalt()
     return 0;
 }
 
-quint8 NodeProfile402::informationStatusWord()
+QString NodeProfile402::event402Str(quint8 event402)
 {
-    return _informationFieldStatusWord;
+    switch (event402)
+    {
+    case Event402::None:
+        return tr("None");
+    case Event402::InternalLimitActive:
+        return tr("Internal Limit Active");
+    case Event402::Warning:
+        return tr("Warning");
+    case Event402::FollowingError:
+        return tr("Following Error");
+    case Event402::VoltageEnabled:
+        return tr("Voltage Enabled");
+    case Event402::Remote:
+        return tr("Remote");
+    case Event402::TargetReached:
+        return tr("Target Reached");
+    default:
+        return QString();
+    }
 }
 
 bool NodeProfile402::status() const
@@ -465,7 +481,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
     {
         if (flags == SDO::FlagsRequest::Error)
         {
-            //_currentError = MODE_NOT_APPLY;
+            _currentError = FAILED_READ;
         }
         else
         {
@@ -519,7 +535,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
     {
         if (flags == SDO::FlagsRequest::Error)
         {
-            //_currentError = MODE_NOT_APPLY;
+            _currentError = FAILED_WRITE;
         }
         else
         {
@@ -537,40 +553,40 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
     {
         if (flags == SDO::FlagsRequest::Error)
         {
-            //_currentError = MODE_NOT_APPLY;
+            _currentError = FAILED_READ;
         }
         else
         {
             quint16 state = static_cast<quint16>(_node->nodeOd()->value(_statusWordObjectId).toUInt());
-            if ((state & Mask1) == SW_StateNotReadyToSwitchOn)
+            if ((state & SW_StateMask1) == SW_StateNotReadyToSwitchOn)
             {
                 _stateMachineCurrent = STATE_NotReadyToSwitchOn;
             }
-            if ((state & Mask1) == SW_StateSwitchOnDisabled)
+            if ((state & SW_StateMask1) == SW_StateSwitchOnDisabled)
             {
                 _stateMachineCurrent = STATE_SwitchOnDisabled;
             }
-            if ((state & Mask2) == SW_StateReadyToSwitchOn)
+            if ((state & SW_StateMask2) == SW_StateReadyToSwitchOn)
             {
                 _stateMachineCurrent = STATE_ReadyToSwitchOn;
             }
-            if ((state & Mask2) == SW_StateSwitchedOn)
+            if ((state & SW_StateMask2) == SW_StateSwitchedOn)
             {
                 _stateMachineCurrent = STATE_SwitchedOn;
             }
-            if ((state & Mask2) == SW_StateOperationEnabled)
+            if ((state & SW_StateMask2) == SW_StateOperationEnabled)
             {
                 _stateMachineCurrent = STATE_OperationEnabled;
             }
-            if ((state & Mask2) == SW_StateQuickStopActive)
+            if ((state & SW_StateMask2) == SW_StateQuickStopActive)
             {
                 _stateMachineCurrent = STATE_QuickStopActive;
             }
-            if ((state & Mask1) == SW_StateFaultReactionActive)
+            if ((state & SW_StateMask1) == SW_StateFaultReactionActive)
             {
                 _stateMachineCurrent = STATE_FaultReactionActive;
             }
-            if ((state & Mask1) == SW_StateFault)
+            if ((state & SW_StateMask1) == SW_StateFault)
             {
                 _stateMachineCurrent = STATE_Fault;
             }
@@ -578,30 +594,35 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
             _omsFieldStatusWord = (state & SW_OperationModeSpecific) >> 0xC;
             _msFieldStatusWord = (state & SW_ManufacturerSpecific) >> 0xE;
 
-            _informationFieldStatusWord = None;
-            if (state & SW_VoltageEnabled)
+            quint8 eventStatusWord = 0;
+            if (state & SW_EventVoltageEnabled)
             {
-                _informationFieldStatusWord += VoltageEnabled;
+                eventStatusWord += VoltageEnabled;
             }
-            if (state & SW_Remote)
+            if (state & SW_EventRemote)
             {
-                _informationFieldStatusWord += Remote;
+                eventStatusWord += Remote;
             }
-            if (state & SW_TargetReached)
+            if (state & SW_EventTargetReached)
             {
-                _informationFieldStatusWord += TargetReached;
+                eventStatusWord += TargetReached;
             }
-            if (state & SW_InternalLimitActive)
+            if (state & SW_EventInternalLimitActive)
             {
-                _informationFieldStatusWord += InternalLimitActive;
+                eventStatusWord += InternalLimitActive;
             }
-            if (state & SW_Warning)
+            if (state & SW_EventWarning)
             {
-                _informationFieldStatusWord += Warning;
+                eventStatusWord += Warning;
             }
-            if (state & SW_FollowingError)
+            if (state & SW_EventFollowingError)
             {
-                _informationFieldStatusWord += FollowingError;
+                eventStatusWord += FollowingError;
+            }
+            if (eventStatusWord != _eventStatusWord)
+            {
+                _eventStatusWord = eventStatusWord;
+                emit eventHappened(_eventStatusWord);
             }
 
             if (_requestedStateMachine != _stateMachineCurrent)

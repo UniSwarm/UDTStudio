@@ -59,7 +59,7 @@ public:
     bool isModeSupported(Mode mode);
     QList<Mode> modesSupported();
 
-    enum StateOf402
+    enum State402
     {
         STATE_NotReadyToSwitchOn = 1,
         STATE_SwitchOnDisabled = 2,
@@ -71,13 +71,15 @@ public:
         STATE_Fault = 8,
     };
 
-    StateOf402 currentState() const;
-    void goToState(const StateOf402 stateOf402);
-    QString stateStr(StateOf402 stateOf402) const;
+    State402 currentState() const;
+    void goToState(const State402 state);
+    QString stateStr(State402 state) const;
 
     bool toggleHalt();
 
-    enum informationStatusWord : quint8
+    void setTarget(qint32 setTarget);
+
+    enum Event402 : quint8
     {
         None = 0x00,
         InternalLimitActive = 0x01,
@@ -87,15 +89,16 @@ public:
         Remote = 0x10,
         TargetReached = 0x20
     };
-    quint8 informationStatusWord();
 
-    void setTarget(qint32 setTarget);
+    QString event402Str(quint8 Event402);
 
     enum Error
     {
         NO_ERROR,
         WRONG_MODE,
-        MODE_NOT_APPLY
+        MODE_NOT_APPLY,
+        FAILED_READ,
+        FAILED_WRITE
     };
 
     Error errorOccurred();
@@ -104,6 +107,7 @@ signals:
     void modeChanged();
     void stateChanged();
     void isHalted(bool state);
+    void eventHappened(quint8 Event402);
 
 private:
     enum State
@@ -125,19 +129,19 @@ private:
     NodeObjectId _controlWordObjectId;
     NodeObjectId _statusWordObjectId;
     quint16 _cmdControlWord;
-    StateOf402 _stateMachineCurrent;
-    StateOf402 _requestedStateMachine;
+    State402 _stateMachineCurrent;
+    State402 _requestedStateMachine;
 
     quint8 _msFieldStatusWord;
     quint8 _omsFieldStatusWord;
-    uint8_t _informationFieldStatusWord;
+    uint8_t _eventStatusWord;
 
     NodeProfile402Ip *_p402Ip;
     NodeProfile402Tq *_p402Tq;
     NodeProfile402Vl *_p402Vl;
 
     void enableRamp(void);
-    void manageState(const StateOf402 stateOf402);
+    void manageState(const State402 state);
     void changeState(void);
 
 public:
