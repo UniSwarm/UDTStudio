@@ -21,16 +21,15 @@
 
 #include "../../udtgui_global.h"
 
-#include <QWidget>
-
 #include "nodeobjectid.h"
 #include "profile/p402/nodeprofile402.h"
+
+#include <QWidget>
 #include <QPushButton>
 #include <QTabWidget>
 
 class Node;
 class NodeObjectId;
-//class NodeProfile402;
 class DataLogger;
 class DataLoggerChartsWidget;
 class IndexSpinBox;
@@ -79,7 +78,7 @@ protected:
     IndexSpinBox *_iSpinBox;
     IndexSpinBox *_dSpinBox;
     IndexSpinBox *_periodSpinBox;
-    IndexSpinBox *_targetSpinBox;
+    QSpinBox *_targetSpinBox;
     QSpinBox *_windowSpinBox;
 
     QPushButton *_goTargetPushButton;

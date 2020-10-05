@@ -53,7 +53,6 @@ void PidWidget::setNode(Node *node)
     _iSpinBox->setNode(node);
     _dSpinBox->setNode(node);
     _periodSpinBox->setNode(node);
-    _targetSpinBox->setNode(node);
 
     _nodeProfile402 = static_cast<NodeProfile402 *>(_node->profiles()[0]);
 }
@@ -66,17 +65,6 @@ void PidWidget::setMode(NodeProfile402::Mode mode)
             break;
         case NodeProfile402::Mode::PP:
         {
-            _pidP_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4041, 1);
-            _pidI_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4041, 2);
-            _pidD_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4041, 3);
-            _period_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4041, 4);
-            _target_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x607A, 0);
-            _pidInputStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4040, 1);
-            _pidErrorStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4040, 2);
-            _pidIntegratorStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4040, 3);
-            _pidOutputStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4040, 4);
-
-            _nodeProfile402->setMode(NodeProfile402::PP);
             break;
         }
         case NodeProfile402::Mode::VL:
@@ -112,6 +100,18 @@ void PidWidget::setMode(NodeProfile402::Mode mode)
         }
         case NodeProfile402::Mode::HM:
         case NodeProfile402::Mode::IP:
+            _pidP_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4041, 1);
+            _pidI_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4041, 2);
+            _pidD_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4041, 3);
+            _period_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4041, 4);
+            _target_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x607A, 0);
+            _pidInputStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4040, 1);
+            _pidErrorStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4040, 2);
+            _pidIntegratorStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4040, 3);
+            _pidOutputStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4040, 4);
+
+            _nodeProfile402->setMode(NodeProfile402::PP);
+            break;
         case NodeProfile402::Mode::CSP:
         case NodeProfile402::Mode::CSV:
         case NodeProfile402::Mode::CST:
@@ -124,7 +124,6 @@ void PidWidget::setMode(NodeProfile402::Mode mode)
     _iSpinBox->setObjId(_pidI_ObjId);
     _dSpinBox->setObjId(_pidD_ObjId);
     _periodSpinBox->setObjId(_period_ObjId);
-    _targetSpinBox->setObjId(_target_ObjId);
     _dataLogger->addData(_pidInputStatus_ObjId);
     _dataLogger->addData(_pidErrorStatus_ObjId);
     _dataLogger->addData(_pidIntegratorStatus_ObjId);
@@ -141,46 +140,23 @@ void PidWidget::savePosition()
 
 void PidWidget::goTargetPosition()
 {
+    _savePushButton->setEnabled(false);
+    _goTargetPushButton->setEnabled(false);
     _dataLogger->clear();
     _dataLogger->start(10);
-    switch (_mode)
-    {
-        case NodeProfile402::Mode::PP:
-        {
-            _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
-            break;
-        }
-        case NodeProfile402::Mode::VL:
-        {
 
-            _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
-            break;
-        }
-        case NodeProfile402::Mode::PV:
-        case NodeProfile402::Mode::TQ:
-        {
-
-            _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
-            break;
-        }
-        case NodeProfile402::Mode::NoMode:
-        case NodeProfile402::Mode::HM:
-        case NodeProfile402::Mode::IP:
-        case NodeProfile402::Mode::CSP:
-        case NodeProfile402::Mode::CSV:
-        case NodeProfile402::Mode::CST:
-        case NodeProfile402::Mode::CSTCA:
-        default:
-            break;
-    }
+    _nodeProfile402->setTarget(_targetSpinBox->value());
+    _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
 
     _measurementTimer.singleShot(_windowSpinBox->value(), this, SLOT(stopMeasurementTimer()));
 }
 
 void PidWidget::stopMeasurementTimer()
 {
-    _nodeProfile402->goToState(NodeProfile402::STATE_SwitchedOn);
+    _nodeProfile402->setTarget(0);
     _dataLogger->stop();
+    _savePushButton->setEnabled(true);
+    _goTargetPushButton->setEnabled(true);
 }
 
 void PidWidget::createWidgets()
@@ -217,7 +193,8 @@ void PidWidget::createWidgets()
     QGroupBox *targetGroupBox = new QGroupBox(tr("Target"));
     QFormLayout *targetLayout = new QFormLayout();
 
-    _targetSpinBox = new IndexSpinBox(_target_ObjId);
+    _targetSpinBox = new QSpinBox();
+    _targetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
     targetLayout->addRow(tr("Target :"), _targetSpinBox);
 
     _windowSpinBox = new QSpinBox();

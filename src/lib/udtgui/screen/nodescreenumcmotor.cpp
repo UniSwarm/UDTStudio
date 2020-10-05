@@ -62,6 +62,6 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node)
     _pidTorqueWidget->setMode(NodeProfile402::TQ);
     _tabWidget->addTab(_pidTorqueWidget, " " + _pidTorqueWidget->title() + " ");
     _pidPositionWidget->setNode(node);
-    _pidPositionWidget->setMode(NodeProfile402::PP);
+    _pidPositionWidget->setMode(NodeProfile402::IP);
     _tabWidget->addTab(_pidPositionWidget, " " + _pidPositionWidget->title() + " ");
 }
