@@ -53,19 +53,9 @@ class P402TqWidget : public QWidget, public NodeOdSubscriber
 
     void createWidgets();
 
-    quint16 _cmdControlWord;
-
-
     // TQ mode
     NodeObjectId _tqTorqueDemandObjectId;
     NodeObjectId _tqTargetTorqueObjectId;
-    NodeObjectId _tqTargetSlopeObjectId;
-    NodeObjectId _tqTorqueProfileTypeObjectId;
-    NodeObjectId _tqMaxTorqueObjectId;
-
-    NodeObjectId _tqMaxCurrentObjectId;
-    NodeObjectId _tqMotorRatedTorqueObjectId;
-    NodeObjectId _tqMotorRatedCurrentObjectId;
 
     NodeObjectId _tqTorqueActualValueObjectId;
     NodeObjectId _tqCurrentActualValueObjectId;
@@ -89,12 +79,6 @@ class P402TqWidget : public QWidget, public NodeOdSubscriber
 
     void tqTargetTorqueSpinboxFinished();
     void tqTargetTorqueSliderChanged();
-    void tqTargetSlopeEditingFinished();
-    void tqMaxTorqueEditingFinished();
-    void tqTorqueProfileTypeEditingFinished();
-    void tqMaxCurrentEditingFinished();
-    void tqMotorRatedTorqueEditingFinished();
-    void tqMotorRatedCurrentEditingFinished();
 
     void dataLogger();
     void pdoMapping();

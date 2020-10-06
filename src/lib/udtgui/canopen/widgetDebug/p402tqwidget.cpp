@@ -39,6 +39,14 @@ P402TqWidget::~P402TqWidget()
 
 void P402TqWidget::setNode(Node *node)
 {
+    _tqTargetSlopeSpinBox->setNode(node);
+    _tqTorqueProfileTypeSpinBox->setNode(node);
+    _tqMaxTorqueSpinBox->setNode(node);
+
+    _tqMaxCurrentSpinBox->setNode(node);
+    _tqMotorRatedTorqueSpinBox->setNode(node);
+    _tqMotorRatedCurrentSpinBox->setNode(node);
+
     if (node != _node)
     {
         if (_node)
@@ -50,27 +58,19 @@ void P402TqWidget::setNode(Node *node)
     _node = node;
     if (_node)
     {
-        _tqTargetSlopeSpinBox->setNode(node);
-        _tqTorqueProfileTypeSpinBox->setNode(node);
-        _tqMaxTorqueSpinBox->setNode(node);
+        _tqTorqueDemandObjectId = NodeObjectId(0x6074, 0);
+        _tqTargetTorqueObjectId = NodeObjectId(0x6071, 0);
 
-        _tqMaxCurrentSpinBox->setNode(node);
-        _tqMotorRatedTorqueSpinBox->setNode(node);
-        _tqMotorRatedCurrentSpinBox->setNode(node);
+        NodeObjectId _tqTargetSlopeObjectId = NodeObjectId(0x6087, 0);
+        NodeObjectId _tqTorqueProfileTypeObjectId = NodeObjectId(0x6088, 0);
+        NodeObjectId _tqMaxTorqueObjectId = NodeObjectId(0x6072, 0);
+        NodeObjectId _tqMaxCurrentObjectId = NodeObjectId(0x6073, 0);
+        NodeObjectId _tqMotorRatedTorqueObjectId = NodeObjectId(0x6076, 0);
+        NodeObjectId _tqMotorRatedCurrentObjectId = NodeObjectId(0x6075, 0);
 
-        _tqTorqueDemandObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6074, 0);
-        _tqTargetTorqueObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6071, 0);
-        _tqTargetSlopeObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6087, 0);
-        _tqTorqueProfileTypeObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6088, 0);
-        _tqMaxTorqueObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6072, 0);
-
-        _tqMaxCurrentObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6073, 0);
-        _tqMotorRatedTorqueObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6076, 0);
-        _tqMotorRatedCurrentObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6075, 0);
-
-        _tqTorqueActualValueObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6077, 0);
-        _tqCurrentActualValueObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6078, 0);
-        _tqDCLinkVoltageObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6079, 0);
+        _tqTorqueActualValueObjectId = NodeObjectId(0x6077, 0);
+        _tqCurrentActualValueObjectId = NodeObjectId(0x6078, 0);
+        _tqDCLinkVoltageObjectId = NodeObjectId(0x6079, 0);
 
         registerObjId({_tqTargetTorqueObjectId});
         registerObjId({_tqTorqueDemandObjectId});
@@ -80,6 +80,14 @@ void P402TqWidget::setNode(Node *node)
         registerObjId({_tqDCLinkVoltageObjectId});
 
         setNodeInterrest(_node);
+
+        _tqTargetSlopeSpinBox->setObjId(_tqTargetSlopeObjectId);
+        _tqTorqueProfileTypeSpinBox->setObjId(_tqTorqueProfileTypeObjectId);
+        _tqMaxTorqueSpinBox->setObjId(_tqMaxTorqueObjectId);
+
+        _tqMaxCurrentSpinBox->setObjId(_tqMaxCurrentObjectId);
+        _tqMotorRatedTorqueSpinBox->setObjId(_tqMotorRatedTorqueObjectId);
+        _tqMotorRatedCurrentSpinBox->setObjId(_tqMotorRatedCurrentObjectId);
 
         connect(_node, &Node::statusChanged, this, &P402TqWidget::updateData);
     }
@@ -106,12 +114,6 @@ void P402TqWidget::updateData()
         this->setEnabled(true);
         _node->readObject(_tqTargetTorqueObjectId);
         _node->readObject(_tqTorqueDemandObjectId);
-        _node->readObject(_tqTargetSlopeObjectId);
-        _node->readObject(_tqTorqueProfileTypeObjectId);
-        _node->readObject(_tqMaxTorqueObjectId);
-        _node->readObject(_tqMaxCurrentObjectId);
-        _node->readObject(_tqMotorRatedTorqueObjectId);
-        _node->readObject(_tqMotorRatedCurrentObjectId);
         _node->readObject(_tqTorqueActualValueObjectId);
         _node->readObject(_tqCurrentActualValueObjectId);
         _node->readObject(_tqDCLinkVoltageObjectId);
@@ -167,27 +169,27 @@ void P402TqWidget::createWidgets()
     _tqDCLinkVoltageLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     tqLayout->addRow("DC Link Voltage (0x6079) :", _tqDCLinkVoltageLabel);
 
-    _tqTargetSlopeSpinBox = new IndexSpinBox(_tqTargetSlopeObjectId);
+    _tqTargetSlopeSpinBox = new IndexSpinBox();
     _tqTargetSlopeSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     tqLayout->addRow(tr("T&arget Slope (0x6087) :"), _tqTargetSlopeSpinBox);
 
-    _tqMaxTorqueSpinBox = new IndexSpinBox(_tqMaxTorqueObjectId);
+    _tqMaxTorqueSpinBox = new IndexSpinBox();
     _tqMaxTorqueSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     tqLayout->addRow(tr("Ma&x torque (0x6072) :"), _tqMaxTorqueSpinBox);
 
-    _tqTorqueProfileTypeSpinBox = new IndexSpinBox(_tqTorqueProfileTypeObjectId);
+    _tqTorqueProfileTypeSpinBox = new IndexSpinBox();
     _tqTorqueProfileTypeSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     tqLayout->addRow(tr("To&rque Profile Type (0x6088) :"), _tqTorqueProfileTypeSpinBox);
 
-    _tqMaxCurrentSpinBox = new IndexSpinBox(_tqMaxCurrentObjectId);
+    _tqMaxCurrentSpinBox = new IndexSpinBox();
     _tqMaxCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     tqLayout->addRow(tr("Max &Current (0x6073) :"), _tqMaxCurrentSpinBox);
 
-    _tqMotorRatedTorqueSpinBox = new IndexSpinBox(_tqMotorRatedTorqueObjectId);
+    _tqMotorRatedTorqueSpinBox = new IndexSpinBox();
     _tqMotorRatedTorqueSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     tqLayout->addRow(tr("Mot&or Rated Torque (0x6076) :"), _tqMotorRatedTorqueSpinBox);
 
-    _tqMotorRatedCurrentSpinBox = new IndexSpinBox(_tqMotorRatedCurrentObjectId);
+    _tqMotorRatedCurrentSpinBox = new IndexSpinBox();
     _tqMotorRatedCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     tqLayout->addRow(tr("Motor Rate&d Current (0x6075) :"), _tqMotorRatedCurrentSpinBox);
 
@@ -238,8 +240,8 @@ void P402TqWidget::dataLogger()
 
 void P402TqWidget::pdoMapping()
 {
-    NodeObjectId controlWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0, QMetaType::Type::UShort);
-    NodeObjectId statusWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6041, 0, QMetaType::Type::UShort);
+    NodeObjectId controlWordObjectId = NodeObjectId(0x6040, 0, QMetaType::Type::UShort);
+    NodeObjectId statusWordObjectId = NodeObjectId(0x6041, 0, QMetaType::Type::UShort);
 
     QList<NodeObjectId> tqRpdoObjectList = {{controlWordObjectId},
                                             {_tqTargetTorqueObjectId}};
