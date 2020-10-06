@@ -28,7 +28,7 @@ class UDTGUI_EXPORT IndexSpinBox : public QAbstractSpinBox, public AbstractIndex
 {
     Q_OBJECT
 public:
-    IndexSpinBox(const NodeObjectId &objId);
+    IndexSpinBox(const NodeObjectId &objId = NodeObjectId());
 
     // AbstractIndexWidget interface
 public:

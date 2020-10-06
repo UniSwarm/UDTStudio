@@ -58,7 +58,7 @@ void NodeOdSubscriber::setNodeInterrest(Node *nodeInterrest)
     {
         for (const NodeObjectId &objId : _objIdList)
         {
-            if (objId.isNodeIndependant())
+            //if (objId.isNodeIndependant())
             {
                 _nodeInterrest->nodeOd()->subscribe(this, objId.index, objId.subIndex);
 

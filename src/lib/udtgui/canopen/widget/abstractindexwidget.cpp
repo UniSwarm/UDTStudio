@@ -149,6 +149,10 @@ void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest 
             return;
         }
     }
+    if (flags & SDO::Read && isEditing() && !_requestRead)
+    {
+        return;
+    }
     setDisplayValue(newValue, DisplayAttribute::Normal);
     _requestRead = false;
     _pendingValue = QVariant();
