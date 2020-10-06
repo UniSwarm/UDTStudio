@@ -33,6 +33,7 @@ NodeProfile402Ip::NodeProfile402Ip(Node *node) : _node(node)
     registerObjId({_controlWordObjectId});
 
     setNodeInterrest(_node);
+    _enableRamp = false;
 }
 
 void NodeProfile402Ip::enableMode(void)

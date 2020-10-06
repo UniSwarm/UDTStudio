@@ -81,15 +81,17 @@ NodeProfile402::NodeProfile402(Node *node) : NodeProfile(node)
 
     setNodeInterrest(node);
     connect(_node, &Node::statusChanged, this, &NodeProfile402::statusNodeChanged);
-    // Mode
-    _node->readObject(_modesOfOperationDisplayObjectId);
+//    // Mode
+//    _node->readObject(_modesOfOperationDisplayObjectId);
     _node->readObject(_supportedDriveModesObjectId);
-    // ControlWord/StatusWord
-    _node->readObject(_controlWordObjectId);
+//    // ControlWord/StatusWord
+//    _node->readObject(_controlWordObjectId);
 
     _p402Ip = new NodeProfile402Ip(_node);
     _p402Tq = new NodeProfile402Tq(_node);
     _p402Vl = new NodeProfile402Vl(_node);
+
+    _requestedStateMachine = STATE_SwitchOnDisabled;
 }
 
 void NodeProfile402::statusNodeChanged(Node::Status status)
@@ -658,6 +660,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
             if (_requestedStateMachine != _stateMachineCurrent)
             {
                 manageState(_requestedStateMachine);
+                return;
             }
 
             emit stateChanged();
