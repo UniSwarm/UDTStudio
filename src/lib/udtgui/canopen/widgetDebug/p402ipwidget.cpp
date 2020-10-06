@@ -110,8 +110,6 @@ void P402IpWidget::setNode(Node *node)
         enableRampEvent(_nodeProfile402Ip->isEnableRamp());
 
         connect(_node, &Node::statusChanged, this, &P402IpWidget::updateData);
-        updateData();
-
         connect(&_sendPointSinusoidalTimer, &QTimer::timeout, this, &P402IpWidget::sendDataRecordTargetWithSdo);
 
         _bus = _node->bus();
@@ -170,6 +168,8 @@ void P402IpWidget::updateData()
 
             quint8 value = 1;
             _node->writeObject(_ipDataConfigurationObjectId, 0x06, QVariant(value));
+
+            _nodeProfile402Ip->setEnableRamp(true);
         }
         else
         {

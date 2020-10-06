@@ -63,7 +63,6 @@ void P402OptionWidget::setNode(Node *node)
     if (_node)
     {
         connect(_node, &Node::statusChanged, this, &P402OptionWidget::updateData);
-        updateData();
     }
 }
 

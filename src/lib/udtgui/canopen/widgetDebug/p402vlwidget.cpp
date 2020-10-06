@@ -78,13 +78,13 @@ void P402VlWidget::setNode(Node *node)
         _nodeProfile402Vl = static_cast<NodeProfile402 *>(_node->profiles()[0])->p402Vl();
         connect(_nodeProfile402Vl, &NodeProfile402Vl::enableRampEvent, this, &P402VlWidget::enableRampEvent);
         connect(_nodeProfile402Vl, &NodeProfile402Vl::unlockRampEvent, this, &P402VlWidget::unlockRampEvent);
-        connect(_nodeProfile402Vl, &NodeProfile402Vl::setReferenceRamp, this, &P402VlWidget::referenceRamp);
+        connect(_nodeProfile402Vl, &NodeProfile402Vl::referenceRampEvent, this, &P402VlWidget::referenceRamp);
+
         enableRampEvent(_nodeProfile402Vl->isEnableRamp());
         unlockRampEvent(_nodeProfile402Vl->isUnlockRamp());
         referenceRamp(_nodeProfile402Vl->isReferenceRamp());
 
         connect(_node, &Node::statusChanged, this, &P402VlWidget::updateData);
-        updateData();
     }
 }
 

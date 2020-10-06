@@ -97,7 +97,6 @@ void WidgetDebug::setNode(Node *node)
         _p402vl->setNode(_node);
         _p402ip->setNode(_node);
         _p402tq->setNode(_node);
-        updateData();
     }
 }
 
@@ -109,7 +108,6 @@ void WidgetDebug::updateData()
         if (_node->status() == Node::STARTED)
         {
             _stackedWidget->setEnabled(true);
-            _timer.start(_logTimerSpinBox->value());
             _modeGroupBox->setEnabled(true);
             _stateMachineGroupBox->setEnabled(true);
             _controlWordGroupBox->setEnabled(true);
@@ -125,6 +123,7 @@ void WidgetDebug::updateData()
             _controlWordGroupBox->setEnabled(false);
             _statusWordGroupBox->setEnabled(false);
         }
+        modeChanged();
     }
 }
 
@@ -133,15 +132,18 @@ void WidgetDebug::modeChanged()
     NodeProfile402::Mode mode = _nodeProfile402->actualMode();
     if (mode == NodeProfile402::IP)
     {
+        _p402ip->updateData();
         _stackedWidget->setCurrentWidget(_p402ip);
     }
     else if (mode == NodeProfile402::VL)
     {
         _p402ip->stop();
+        _p402vl->updateData();
         _stackedWidget->setCurrentWidget(_p402vl);
     }
     else if (mode == NodeProfile402::TQ)
     {
+        _p402tq->updateData();
         _stackedWidget->setCurrentWidget(_p402tq);
 
     }
@@ -605,7 +607,23 @@ void WidgetDebug::showEvent(QShowEvent *event)
     {
         if (_node->status() ==  Node::STARTED)
         {
-           _timer.start();
+           _timer.start(_logTimerSpinBox->value());
         }
+
+        NodeProfile402::Mode mode = _nodeProfile402->actualMode();
+        if (mode == NodeProfile402::IP)
+        {
+            _p402ip->updateData();
+        }
+        else if (mode == NodeProfile402::VL)
+        {
+            _p402vl->updateData();
+        }
+        else if (mode == NodeProfile402::TQ)
+        {
+            _p402tq->updateData();
+        }
+        _p402Option->updateData();
+        updateData();
     }
 }
