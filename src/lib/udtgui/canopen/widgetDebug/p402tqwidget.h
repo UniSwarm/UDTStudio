@@ -22,12 +22,15 @@
 #include "../../udtgui_global.h"
 #include "node.h"
 #include "nodeodsubscriber.h"
+
 #include <QButtonGroup>
 #include <QGroupBox>
 #include <QLabel>
 #include <QSlider>
 #include <QSpinBox>
 #include <QWidget>
+
+class IndexSpinBox;
 
 class P402TqWidget : public QWidget, public NodeOdSubscriber
 {
@@ -76,13 +79,13 @@ class P402TqWidget : public QWidget, public NodeOdSubscriber
 
     QSpinBox *_tqTargetTorqueSpinBox;
     QSlider *_tqTargetTorqueSlider;
-    QSpinBox *_tqTargetSlopeSpinBox;
-    QSpinBox *_tqTorqueProfileTypeSpinBox;
-    QSpinBox *_tqMaxTorqueSpinBox;
+    IndexSpinBox *_tqTargetSlopeSpinBox;
+    IndexSpinBox *_tqTorqueProfileTypeSpinBox;
+    IndexSpinBox *_tqMaxTorqueSpinBox;
 
-    QSpinBox *_tqMaxCurrentSpinBox;
-    QSpinBox *_tqMotorRatedTorqueSpinBox;
-    QSpinBox *_tqMotorRatedCurrentSpinBox;
+    IndexSpinBox *_tqMaxCurrentSpinBox;
+    IndexSpinBox *_tqMotorRatedTorqueSpinBox;
+    IndexSpinBox *_tqMotorRatedCurrentSpinBox;
 
     void tqTargetTorqueSpinboxFinished();
     void tqTargetTorqueSliderChanged();
