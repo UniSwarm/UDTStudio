@@ -27,13 +27,13 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QTabWidget>
+#include <QSpinBox>
 
 class Node;
 class NodeObjectId;
 class DataLogger;
 class DataLoggerChartsWidget;
 class IndexSpinBox;
-class QSpinBox;
 
 class UDTGUI_EXPORT PidWidget : public QWidget
 {
@@ -45,9 +45,16 @@ public:
 
     QString title() const;
 
+    enum ModePid
+    {
+        MODE_PID_VELOCITY,
+        MODE_PID_POSITION,
+        MODE_PID_TORQUE,
+    };
+
 public slots:
     void setNode(Node *node);
-    void setMode(NodeProfile402::Mode mode);
+    void setMode(PidWidget::ModePid mode);
 
 private slots:
     void stopMeasurementTimer();
@@ -56,23 +63,13 @@ protected:
     void createWidgets();
 
     Node *_node;
-    NodeProfile402::Mode _mode;
+    ModePid _mode;
 
     QTabWidget *_tabWidget;
 
     DataLogger *_dataLogger;
     DataLoggerChartsWidget *_dataLoggerChartsWidget;
     QTimer _measurementTimer;
-    NodeObjectId _pidP_ObjId;
-    NodeObjectId _pidI_ObjId;
-    NodeObjectId _pidD_ObjId;
-    NodeObjectId _period_ObjId;
-    NodeObjectId _target_ObjId;
-
-    NodeObjectId _pidInputStatus_ObjId;
-    NodeObjectId _pidErrorStatus_ObjId;
-    NodeObjectId _pidIntegratorStatus_ObjId;
-    NodeObjectId _pidOutputStatus_ObjId;
 
     IndexSpinBox *_pSpinBox;
     IndexSpinBox *_iSpinBox;

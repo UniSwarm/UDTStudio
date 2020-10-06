@@ -30,6 +30,7 @@
 #include <QSplitter>
 #include <QWidget>
 
+
 PidWidget::PidWidget(QWidget *parent) : QWidget(parent)
 {
     createWidgets();
@@ -42,81 +43,76 @@ Node *PidWidget::node() const
 
 void PidWidget::setNode(Node *node)
 {
-    _node = node;
-    if (!_node)
-    {
-        return;
-    }
-
     _dSpinBox->setNode(node);
     _pSpinBox->setNode(node);
     _iSpinBox->setNode(node);
     _dSpinBox->setNode(node);
     _periodSpinBox->setNode(node);
 
+    _node = node;
+    if (!_node)
+    {
+        return;
+    }
     _nodeProfile402 = static_cast<NodeProfile402 *>(_node->profiles()[0]);
 }
-void PidWidget::setMode(NodeProfile402::Mode mode)
+void PidWidget::setMode(PidWidget::ModePid mode)
 {
+    NodeObjectId _pidP_ObjId;
+    NodeObjectId _pidI_ObjId;
+    NodeObjectId _pidD_ObjId;
+    NodeObjectId _period_ObjId;
+    NodeObjectId _target_ObjId;
+    NodeObjectId _pidInputStatus_ObjId;
+    NodeObjectId _pidErrorStatus_ObjId;
+    NodeObjectId _pidIntegratorStatus_ObjId;
+    NodeObjectId _pidOutputStatus_ObjId;
+
     _mode = mode;
     switch (_mode)
     {
-        case NodeProfile402::Mode::NoMode:
-            break;
-        case NodeProfile402::Mode::PP:
+        case MODE_PID_VELOCITY:
         {
-            break;
-        }
-        case NodeProfile402::Mode::VL:
-        {
-            _pidP_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4021, 1);
-            _pidI_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4021, 2);
-            _pidD_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4021, 3);
-            _period_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4021, 4);
-            _target_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6042, 0);
-            _pidInputStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4020, 1);
-            _pidErrorStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4020, 2);
-            _pidIntegratorStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4020, 3);
-            _pidOutputStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4020, 4);
+            _pidP_ObjId = NodeObjectId(0x4021, 1);
+            _pidI_ObjId = NodeObjectId(0x4021, 2);
+            _pidD_ObjId = NodeObjectId(0x4021, 3);
+            _period_ObjId = NodeObjectId(0x4021, 4);
+            _target_ObjId = NodeObjectId(0x6042, 0);
+            _pidInputStatus_ObjId = NodeObjectId(0x4020, 1);
+            _pidErrorStatus_ObjId = NodeObjectId(0x4020, 2);
+            _pidIntegratorStatus_ObjId = NodeObjectId(0x4020, 3);
+            _pidOutputStatus_ObjId = NodeObjectId(0x4020, 4);
 
             _nodeProfile402->setMode(NodeProfile402::VL);
             break;
         }
-        case NodeProfile402::Mode::PV:
-        case NodeProfile402::Mode::TQ:
+        case MODE_PID_TORQUE:
         {
-            _pidP_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4061, 1);
-            _pidI_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4061, 2);
-            _pidD_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4061, 3);
-            _period_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4061, 4);
-            _target_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6071, 0);
-            _pidInputStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4060, 1);
-            _pidErrorStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4060, 2);
-            _pidIntegratorStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4060, 3);
-            _pidOutputStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4060, 4);
+            _pidP_ObjId = NodeObjectId(0x4061, 1);
+            _pidI_ObjId = NodeObjectId(0x4061, 2);
+            _pidD_ObjId = NodeObjectId(0x4061, 3);
+            _period_ObjId = NodeObjectId(0x4061, 4);
+            _target_ObjId = NodeObjectId(0x6071, 0);
+            _pidInputStatus_ObjId = NodeObjectId(0x4060, 1);
+            _pidErrorStatus_ObjId = NodeObjectId(0x4060, 2);
+            _pidIntegratorStatus_ObjId = NodeObjectId(0x4060, 3);
+            _pidOutputStatus_ObjId = NodeObjectId(0x4060, 4);
 
             _nodeProfile402->setMode(NodeProfile402::TQ);
             break;
         }
-        case NodeProfile402::Mode::HM:
-        case NodeProfile402::Mode::IP:
-            _pidP_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4041, 1);
-            _pidI_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4041, 2);
-            _pidD_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4041, 3);
-            _period_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4041, 4);
-            _target_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x607A, 0);
-            _pidInputStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4040, 1);
-            _pidErrorStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4040, 2);
-            _pidIntegratorStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4040, 3);
-            _pidOutputStatus_ObjId = NodeObjectId(_node->busId(), _node->nodeId(), 0x4040, 4);
+        case MODE_PID_POSITION:
+            _pidP_ObjId = NodeObjectId(0x4041, 1);
+            _pidI_ObjId = NodeObjectId(0x4041, 2);
+            _pidD_ObjId = NodeObjectId(0x4041, 3);
+            _period_ObjId = NodeObjectId(0x4041, 4);
+            _target_ObjId = NodeObjectId(0x607A, 0);
+            _pidInputStatus_ObjId = NodeObjectId(0x4040, 1);
+            _pidErrorStatus_ObjId = NodeObjectId(0x4040, 2);
+            _pidIntegratorStatus_ObjId = NodeObjectId(0x4040, 3);
+            _pidOutputStatus_ObjId = NodeObjectId(0x4040, 4);
 
             _nodeProfile402->setMode(NodeProfile402::PP);
-            break;
-        case NodeProfile402::Mode::CSP:
-        case NodeProfile402::Mode::CSV:
-        case NodeProfile402::Mode::CST:
-        case NodeProfile402::Mode::CSTCA:
-        default:
             break;
     }
 
@@ -124,6 +120,7 @@ void PidWidget::setMode(NodeProfile402::Mode mode)
     _iSpinBox->setObjId(_pidI_ObjId);
     _dSpinBox->setObjId(_pidD_ObjId);
     _periodSpinBox->setObjId(_period_ObjId);
+
     _dataLogger->addData(_pidInputStatus_ObjId);
     _dataLogger->addData(_pidErrorStatus_ObjId);
     _dataLogger->addData(_pidIntegratorStatus_ObjId);
@@ -173,19 +170,19 @@ void PidWidget::createWidgets()
     QGroupBox *pidGroupBox = new QGroupBox(tr("PID"));
     QFormLayout *pidLayout = new QFormLayout();
 
-    _pSpinBox = new IndexSpinBox(_pidP_ObjId);
+    _pSpinBox = new IndexSpinBox();
     _pSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     pidLayout->addRow(tr("&P :"), _pSpinBox);
 
-    _iSpinBox = new IndexSpinBox(_pidI_ObjId);
+    _iSpinBox = new IndexSpinBox();
     _iSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     pidLayout->addRow(tr("&I :"), _iSpinBox);
 
-    _dSpinBox = new IndexSpinBox(_pidD_ObjId);
+    _dSpinBox = new IndexSpinBox();
     _dSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     pidLayout->addRow(tr("&D :"), _dSpinBox);
 
-    _periodSpinBox = new IndexSpinBox(_period_ObjId);
+    _periodSpinBox = new IndexSpinBox();
     pidLayout->addRow(tr("P&eriod :"), _periodSpinBox);
 
     pidGroupBox->setLayout(pidLayout);
@@ -228,36 +225,12 @@ QString PidWidget::title() const
 {
     switch (_mode)
     {
-        case NodeProfile402::Mode::NoMode:
-            return tr("No mode");
-        case NodeProfile402::Mode::PP:
-            return tr("PID Profile position");
-        case NodeProfile402::Mode::VL:
+    case MODE_PID_POSITION:
+            return tr("PID Position");
+        case MODE_PID_VELOCITY:
             return tr("PID Velocity");
-        case NodeProfile402::Mode::PV:
-            return tr("PID Profile velocity");
-        case NodeProfile402::Mode::TQ:
-            return tr("PID Torque profile");
-        case NodeProfile402::Mode::HM:
-            return tr("PID Homing");
-        case NodeProfile402::Mode::IP:
-            return tr("PID Interpolated position");
-        case NodeProfile402::Mode::CSP:
-            return tr("PID Cyclic sync position");
-        case NodeProfile402::Mode::CSV:
-            return tr("PID Cyclic sync velocity");
-        case NodeProfile402::Mode::CST:
-            return tr("PID Cyclic sync torque");
-        case NodeProfile402::Mode::CSTCA:
-            return tr("PID Cyclic sync torque mode with commutation angle");
-        default:
-            if (_mode < 0)
-            {
-                return tr("Manufacturer-specific");
-            }
-            else
-            {
-                return tr("Reserved");
-            }
+        case MODE_PID_TORQUE:
+            return tr("PID Torque");
     }
+    return QString();
 }

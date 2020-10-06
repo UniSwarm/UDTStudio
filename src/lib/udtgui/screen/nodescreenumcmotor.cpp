@@ -19,7 +19,6 @@
 #include "nodescreenumcmotor.h"
 
 #include "canopen/compositeWidget/pidwidget.h"
-#include "profile/p402/nodeprofile402.h"
 
 #include <QLayout>
 
@@ -56,12 +55,12 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node)
     }
 
     _pidVelocityWidget->setNode(node);
-    _pidVelocityWidget->setMode(NodeProfile402::VL);
+    _pidVelocityWidget->setMode(PidWidget::MODE_PID_VELOCITY);
     _tabWidget->addTab(_pidVelocityWidget, " " + _pidVelocityWidget->title() + " ");
     _pidTorqueWidget->setNode(node);
-    _pidTorqueWidget->setMode(NodeProfile402::TQ);
+    _pidTorqueWidget->setMode(PidWidget::MODE_PID_TORQUE);
     _tabWidget->addTab(_pidTorqueWidget, " " + _pidTorqueWidget->title() + " ");
     _pidPositionWidget->setNode(node);
-    _pidPositionWidget->setMode(NodeProfile402::IP);
+    _pidPositionWidget->setMode(PidWidget::MODE_PID_POSITION);
     _tabWidget->addTab(_pidPositionWidget, " " + _pidPositionWidget->title() + " ");
 }
