@@ -1,3 +1,21 @@
+/**
+ ** This file is part of the UDTStudio project.
+ ** Copyright 2019-2020 UniSwarm
+ **
+ ** This program is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU General Public License as published by
+ ** the Free Software Foundation, either version 3 of the License, or
+ ** (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ ** GNU General Public License for more details.
+ **
+ ** You should have received a copy of the GNU General Public License
+ ** along with this program. If not, see <http://www.gnu.org/licenses/>.
+ **/
+
 #ifndef P402IP_H
 #define P402IP_H
 
@@ -13,6 +31,8 @@
 #include <QSpinBox>
 #include <QCheckBox>
 #include <QWidget>
+
+class NodeProfile402Ip;
 
 class P402IpWidget : public QWidget, public NodeOdSubscriber
 {
@@ -35,11 +55,9 @@ private:
     Node *_node;
     CanOpenBus *_bus;
 
-    void createWidgets();
+    NodeProfile402Ip *_nodeProfile402Ip;
 
-    quint16 _cmdControlWord;
-    quint16 _controlWordObjectId;
-    quint16 _statusWordObjectId;
+    void createWidgets();
 
     // IP mode
     quint16 _ipDataRecordObjectId;
@@ -69,12 +87,6 @@ private:
 
     int _iteratorForSendDataRecord;
     QStringList _listDataRecord;
-
-    enum ControlWordIP : quint16
-    {
-        CW_IP_EnableRamp = 0x10,
-        CW_Halt = 0x100
-    };
 
     // IP MODE
     QButtonGroup *_ipEnableRampButtonGroup;
@@ -166,8 +178,9 @@ private:
 
     void dataLogger();
     void pdoMapping();
-    void manageNotificationControlWordObject(SDO::FlagsRequest flags);
     void refreshData(quint16 object);
+
+    void enableRampEvent(bool ok);
 
     // NodeOdSubscriber interface
 protected:

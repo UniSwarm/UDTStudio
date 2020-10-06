@@ -1,3 +1,21 @@
+/**
+ ** This file is part of the UDTStudio project.
+ ** Copyright 2019-2020 UniSwarm
+ **
+ ** This program is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU General Public License as published by
+ ** the Free Software Foundation, either version 3 of the License, or
+ ** (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ ** GNU General Public License for more details.
+ **
+ ** You should have received a copy of the GNU General Public License
+ ** along with this program. If not, see <http://www.gnu.org/licenses/>.
+ **/
+
 #ifndef P402VL_H
 #define P402VL_H
 
@@ -10,6 +28,8 @@
 #include <QSlider>
 #include <QSpinBox>
 #include <QWidget>
+
+class NodeProfile402Vl;
 
 class P402VlWidget : public QWidget, public NodeOdSubscriber
 {
@@ -32,9 +52,7 @@ private:
 
     void createWidgets();
 
-    quint16 _cmdControlWord;
-    quint16 _controlWordObjectId;
-    quint16 _statusWordObjectId;
+    NodeProfile402Vl *_nodeProfile402Vl;
 
     // VL mode
     quint16 _vlTargetVelocityObjectId;
@@ -47,19 +65,11 @@ private:
     quint16 _vlSetPointFactorObjectId;
     quint16 _vlDimensionFactorObjectId;
 
-    enum ControlWordVL : quint16
-    {
-        CW_VL_EnableRamp = 0x10,
-        CW_VL_UnlockRamp = 0x20,
-        CW_VL_ReferenceRamp = 0x40,
-        CW_Halt = 0x100
-    };
-
     // VL MODE
     QButtonGroup *_vlEnableRampButtonGroup;
     QButtonGroup *_vlUnlockRampButtonGroup;
     QButtonGroup *_vlReferenceRampButtonGroup;
-    QButtonGroup *_vlHaltButtonGroup;
+
     QSpinBox *_vlTargetVelocitySpinBox;
     QSlider *_vlTargetVelocitySlider;
     QLabel *_vlVelocityDemandLabel;
@@ -95,11 +105,17 @@ private:
     void vlEnableRampClicked(int id);
     void vlUnlockRampClicked(int id);
     void vlReferenceRampClicked(int id);
-    void vlHaltClicked(int id);
+
+    void enableRampEvent(bool ok);
+    void unlockRampEvent(bool ok);
+    void referenceRamp(bool ok);
+
     void dataLogger();
     void pdoMapping();
     void manageNotificationControlWordObject(SDO::FlagsRequest flags);
     void refreshData(quint16 object);
+
+
 
     // NodeOdSubscriber interface
 protected:

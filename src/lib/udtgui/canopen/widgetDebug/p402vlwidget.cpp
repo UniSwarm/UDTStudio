@@ -1,7 +1,29 @@
+/**
+ ** This file is part of the UDTStudio project.
+ ** Copyright 2019-2020 UniSwarm
+ **
+ ** This program is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU General Public License as published by
+ ** the Free Software Foundation, either version 3 of the License, or
+ ** (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ ** GNU General Public License for more details.
+ **
+ ** You should have received a copy of the GNU General Public License
+ ** along with this program. If not, see <http://www.gnu.org/licenses/>.
+ **/
+
 #include "p402vlwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "services/services.h"
+
+#include "profile/p402/nodeprofile402.h"
+#include "profile/p402/nodeprofile402vl.h"
+
 #include <QFormLayout>
 #include <QPushButton>
 #include <QRadioButton>
@@ -11,8 +33,7 @@ P402VlWidget::P402VlWidget(QWidget *parent)
 {
     _node = nullptr;
     createWidgets();
-    _controlWordObjectId = 0x6040;
-    _statusWordObjectId = 0x6041;
+
     _vlVelocityDemandObjectId = 0x6043;
     _vlVelocityActualObjectId = 0x6044;
     _vlTargetVelocityObjectId = 0x6042;
@@ -39,22 +60,29 @@ void P402VlWidget::setNode(Node *node)
         }
     }
 
-    registerObjId({_controlWordObjectId, 0x00});
-    registerObjId({_vlTargetVelocityObjectId, 0xFF});
-    registerObjId({_vlVelocityDemandObjectId, 0xFF});
-    registerObjId({_vlVelocityActualObjectId, 0xFF});
-    registerObjId({_vlVelocityMinMaxAmountObjectId, 0xFF});
-    registerObjId({_vlAccelerationObjectId, 0xFF});
-    registerObjId({_vlDecelerationObjectId, 0xFF});
-    registerObjId({_vlQuickStopObjectId, 0xFF});
-    registerObjId({_vlSetPointFactorObjectId, 0xFF});
-    registerObjId({_vlDimensionFactorObjectId, 0xFF});
-
-    setNodeInterrest(node);
-
     _node = node;
     if (_node)
     {
+        registerObjId({_vlTargetVelocityObjectId, 0xFF});
+        registerObjId({_vlVelocityDemandObjectId, 0xFF});
+        registerObjId({_vlVelocityActualObjectId, 0xFF});
+        registerObjId({_vlVelocityMinMaxAmountObjectId, 0xFF});
+        registerObjId({_vlAccelerationObjectId, 0xFF});
+        registerObjId({_vlDecelerationObjectId, 0xFF});
+        registerObjId({_vlQuickStopObjectId, 0xFF});
+        registerObjId({_vlSetPointFactorObjectId, 0xFF});
+        registerObjId({_vlDimensionFactorObjectId, 0xFF});
+
+        setNodeInterrest(node);
+
+        _nodeProfile402Vl = static_cast<NodeProfile402 *>(_node->profiles()[0])->p402Vl();
+        connect(_nodeProfile402Vl, &NodeProfile402Vl::enableRampEvent, this, &P402VlWidget::enableRampEvent);
+        connect(_nodeProfile402Vl, &NodeProfile402Vl::unlockRampEvent, this, &P402VlWidget::unlockRampEvent);
+        connect(_nodeProfile402Vl, &NodeProfile402Vl::setReferenceRamp, this, &P402VlWidget::referenceRamp);
+        enableRampEvent(_nodeProfile402Vl->isEnableRamp());
+        unlockRampEvent(_nodeProfile402Vl->isUnlockRamp());
+        referenceRamp(_nodeProfile402Vl->isReferenceRamp());
+
         connect(_node, &Node::statusChanged, this, &P402VlWidget::updateData);
         updateData();
     }
@@ -79,7 +107,6 @@ void P402VlWidget::updateData()
     if (_node)
     {
         this->setEnabled(true);
-        _node->readObject(_controlWordObjectId, 0x00);
         _node->readObject(_vlTargetVelocityObjectId, 0);
         _node->readObject(_vlVelocityDemandObjectId, 0x0);
         _node->readObject(_vlVelocityActualObjectId, 0x0);
@@ -96,10 +123,9 @@ void P402VlWidget::updateData()
         _node->readObject(_vlDimensionFactorObjectId, 1);
         _node->readObject(_vlDimensionFactorObjectId, 2);
 
-        _cmdControlWord |= CW_VL_EnableRamp;
-        _cmdControlWord |= CW_VL_UnlockRamp;
-        _cmdControlWord |= CW_VL_ReferenceRamp;
-        _node->writeObject(_controlWordObjectId, 0x00, QVariant(_cmdControlWord));
+        _nodeProfile402Vl->setEnableRamp(true);
+        _nodeProfile402Vl->setReferenceRamp(true);
+        _nodeProfile402Vl->setUnlockRamp(true);
     }
 }
 
@@ -178,70 +204,17 @@ void P402VlWidget::vlDimensionFactorDenominatorEditingFinished()
 
 void P402VlWidget::vlEnableRampClicked(int id)
 {
-    if (id == 0)
-    {
-        _cmdControlWord = (_cmdControlWord & ~ControlWordVL::CW_VL_EnableRamp);
-    }
-    else if (id == 1)
-    {
-        _cmdControlWord |= CW_VL_EnableRamp;
-    }
-    else
-    {
-        return;
-    }
-    _node->writeObject(_controlWordObjectId, 0x00, QVariant(_cmdControlWord));
+    _nodeProfile402Vl->setEnableRamp(id);
 }
 
 void P402VlWidget::vlUnlockRampClicked(int id)
 {
-    if (id == 0)
-    {
-        _cmdControlWord = (_cmdControlWord & ~ControlWordVL::CW_VL_UnlockRamp);
-    }
-    else if (id == 1)
-    {
-        _cmdControlWord |= CW_VL_UnlockRamp;
-    }
-    else
-    {
-        return;
-    }
-    _node->writeObject(_controlWordObjectId, 0x00, QVariant(_cmdControlWord));
+    _nodeProfile402Vl->setUnlockRamp(id);
 }
 
 void P402VlWidget::vlReferenceRampClicked(int id)
 {
-    if (id == 0)
-    {
-        _cmdControlWord = (_cmdControlWord & ~ControlWordVL::CW_VL_ReferenceRamp);
-    }
-    else if (id == 1)
-    {
-        _cmdControlWord |= CW_VL_ReferenceRamp;
-    }
-    else
-    {
-        return;
-    }
-    _node->writeObject(_controlWordObjectId, 0x00, QVariant(_cmdControlWord));
-}
-
-void P402VlWidget::vlHaltClicked(int id)
-{
-    if (id == 0)
-    {
-        _cmdControlWord = (_cmdControlWord & ~CW_Halt);
-    }
-    else if (id == 1)
-    {
-        _cmdControlWord |= CW_Halt;
-    }
-    else
-    {
-        return;
-    }
-    _node->writeObject(_controlWordObjectId, 0x00, QVariant(_cmdControlWord));
+    _nodeProfile402Vl->setReferenceRamp(id);
 }
 
 void P402VlWidget::createWidgets()
@@ -459,71 +432,17 @@ void P402VlWidget::dataLogger()
 
 void P402VlWidget::pdoMapping()
 {
-    QList<NodeObjectId> vlRpdoObjectList = {{_node->busId(), _node->nodeId(), _controlWordObjectId, 0x0, QMetaType::Type::UShort},
+    NodeObjectId controlWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0, QMetaType::Type::UShort);
+    NodeObjectId statusWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6041, 0, QMetaType::Type::UShort);
+
+    QList<NodeObjectId> vlRpdoObjectList = {{controlWordObjectId},
                                             {_node->busId(), _node->nodeId(), _vlTargetVelocityObjectId, 0x0, QMetaType::Type::Short}};
 
     _node->rpdos().at(0)->writeMapping(vlRpdoObjectList);
-    QList<NodeObjectId> vlTpdoObjectList = {{_node->busId(), _node->nodeId(), _statusWordObjectId, 0x0, QMetaType::Type::UShort},
+    QList<NodeObjectId> vlTpdoObjectList = {{statusWordObjectId},
                                             {_node->busId(), _node->nodeId(), _vlVelocityDemandObjectId, 0x0, QMetaType::Type::Short}};
 
     _node->tpdos().at(2)->writeMapping(vlTpdoObjectList);
-}
-
-void P402VlWidget::manageNotificationControlWordObject(SDO::FlagsRequest flags)
-{
-    if (flags == SDO::FlagsRequest::Error)
-    {
-    }
-    quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toInt());
-    _cmdControlWord = controlWord;
-
-    if (_vlEnableRampButtonGroup->button((controlWord & CW_VL_EnableRamp) > 4))
-    {
-        _vlEnableRampButtonGroup->button((controlWord & CW_VL_EnableRamp) > 4)->setChecked(true);
-    }
-    if (_vlUnlockRampButtonGroup->button((controlWord & CW_VL_UnlockRamp) > 5))
-    {
-        _vlUnlockRampButtonGroup->button((controlWord & CW_VL_UnlockRamp) > 5)->setChecked(true);
-    }
-    if (_vlReferenceRampButtonGroup->button((controlWord & CW_VL_ReferenceRamp) > 6))
-    {
-        _vlReferenceRampButtonGroup->button((controlWord & CW_VL_ReferenceRamp) > 6)->setChecked(true);
-    }
-
-    if ((controlWord & CW_VL_EnableRamp) &&  (controlWord & CW_VL_UnlockRamp) && (controlWord & CW_VL_ReferenceRamp))
-    {
-        _vlMinVelocityMinMaxAmountSpinBox->setEnabled(true);
-        _vlMinVelocityMinMaxAmountSpinBox->setToolTip("min ");
-
-        _vlMaxVelocityMinMaxAmountSpinBox->setEnabled(true);
-        _vlMaxVelocityMinMaxAmountSpinBox->setToolTip("max ");
-
-        _vlAccelerationDeltaSpeedSpinBox->setEnabled(true);
-        _vlAccelerationDeltaSpeedSpinBox->setToolTip("Delta Speed");
-
-        _vlAccelerationDeltaTimeSpinBox->setEnabled(true);
-        _vlAccelerationDeltaTimeSpinBox->setToolTip("Delta Time");
-
-        _vlDecelerationDeltaSpeedSpinBox->setEnabled(true);
-        _vlDecelerationDeltaSpeedSpinBox->setToolTip("Delta Speed");
-        _vlDecelerationDeltaTimeSpinBox->setEnabled(true);
-        _vlDecelerationDeltaTimeSpinBox->setToolTip("Delta Time");
-    }
-    else
-    {
-        _vlMinVelocityMinMaxAmountSpinBox->setEnabled(false);
-        _vlMinVelocityMinMaxAmountSpinBox->setToolTip("Deactive because one bit (4,5,6) of ControlWord is deactivate");
-        _vlMaxVelocityMinMaxAmountSpinBox->setEnabled(false);
-        _vlMaxVelocityMinMaxAmountSpinBox->setToolTip("Deactive because one bit (4,5,6) of ControlWord is deactivate");
-        _vlAccelerationDeltaSpeedSpinBox->setEnabled(false);
-        _vlAccelerationDeltaSpeedSpinBox->setToolTip("Deactive because one bit (4,5,6) of ControlWord is deactivate");
-        _vlAccelerationDeltaTimeSpinBox->setEnabled(false);
-        _vlAccelerationDeltaTimeSpinBox->setToolTip("Deactive because one bit (4,5,6) of ControlWord is deactivate");
-        _vlDecelerationDeltaSpeedSpinBox->setEnabled(false);
-        _vlDecelerationDeltaSpeedSpinBox->setToolTip("Deactive because one bit (4,5,6) of ControlWord is deactivate");
-        _vlDecelerationDeltaTimeSpinBox->setEnabled(false);
-        _vlDecelerationDeltaTimeSpinBox->setToolTip("Deactive because one bit (4,5,6) of ControlWord is deactivate");
-    }
 }
 
 void P402VlWidget::refreshData(quint16 object)
@@ -601,16 +520,26 @@ void P402VlWidget::refreshData(quint16 object)
     }
 }
 
+void P402VlWidget::enableRampEvent(bool ok)
+{
+    _vlEnableRampButtonGroup->button(ok)->setChecked(ok);
+}
+
+void P402VlWidget::unlockRampEvent(bool ok)
+{
+    _vlUnlockRampButtonGroup->button(ok)->setChecked(ok);
+}
+
+void P402VlWidget::referenceRamp(bool ok)
+{
+    _vlReferenceRampButtonGroup->button(ok)->setChecked(ok);
+}
+
 void P402VlWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (!_node)
     {
         return;
-    }
-
-    if (objId.index == _controlWordObjectId && objId.subIndex == 0x00)
-    {
-        manageNotificationControlWordObject(flags);
     }
 
     if ((objId.index == _vlTargetVelocityObjectId)

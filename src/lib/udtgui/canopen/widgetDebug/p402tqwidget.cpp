@@ -49,9 +49,6 @@ void P402TqWidget::setNode(Node *node)
     _node = node;
     if (_node)
     {
-        _controlWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0, QMetaType::Type::UShort);
-        _statusWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6041, 0, QMetaType::Type::UShort);
-
         _tqTorqueDemandObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6074, 0);
         _tqTargetTorqueObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6071, 0);
         _tqTargetSlopeObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6087, 0);
@@ -66,7 +63,7 @@ void P402TqWidget::setNode(Node *node)
         _tqCurrentActualValueObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6078, 0);
         _tqDCLinkVoltageObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6079, 0);
 
-        registerObjId({_controlWordObjectId});
+//        registerObjId({_controlWordObjectId});
         registerObjId({_tqTargetTorqueObjectId});
         registerObjId({_tqTorqueDemandObjectId});
         registerObjId({_tqTargetSlopeObjectId});
@@ -105,7 +102,6 @@ void P402TqWidget::updateData()
     if (_node)
     {
         this->setEnabled(true);
-        _node->readObject(_controlWordObjectId);
         _node->readObject(_tqTargetTorqueObjectId);
         _node->readObject(_tqTorqueDemandObjectId);
         _node->readObject(_tqTargetSlopeObjectId);
@@ -117,8 +113,6 @@ void P402TqWidget::updateData()
         _node->readObject(_tqTorqueActualValueObjectId);
         _node->readObject(_tqCurrentActualValueObjectId);
         _node->readObject(_tqDCLinkVoltageObjectId);
-
-        _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
     }
 }
 
@@ -164,23 +158,6 @@ void P402TqWidget::tqMotorRatedCurrentEditingFinished()
     _node->writeObject(_tqMotorRatedCurrentObjectId, QVariant(value));
 }
 
-void P402TqWidget::tqHaltClicked(int id)
-{
-    if (id == 0)
-    {
-        _cmdControlWord = (_cmdControlWord & ~CW_Halt);
-    }
-    else if (id == 1)
-    {
-        _cmdControlWord |= CW_Halt;
-    }
-    else
-    {
-        return;
-    }
-    _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
-}
-
 void P402TqWidget::createWidgets()
 {
     QLayout *layout = new QVBoxLayout();
@@ -217,7 +194,6 @@ void P402TqWidget::createWidgets()
     _tqDCLinkVoltageLabel = new QLabel();
     _tqDCLinkVoltageLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     tqLayout->addRow("DC Link Voltage (0x6079) :", _tqDCLinkVoltageLabel);
-
 
     _tqTargetSlopeSpinBox = new QSpinBox();
     tqLayout->addRow(tr("Target Slope (0x6087) :"), _tqTargetSlopeSpinBox);
@@ -297,22 +273,19 @@ void P402TqWidget::dataLogger()
 
 void P402TqWidget::pdoMapping()
 {
-    QList<NodeObjectId> tqRpdoObjectList = {{_controlWordObjectId},
+    NodeObjectId controlWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0, QMetaType::Type::UShort);
+    NodeObjectId statusWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6041, 0, QMetaType::Type::UShort);
+
+    QList<NodeObjectId> tqRpdoObjectList = {{controlWordObjectId},
                                             {_tqTargetTorqueObjectId}};
 
     _node->rpdos().at(0)->writeMapping(tqRpdoObjectList);
-    QList<NodeObjectId> tqTpdoObjectList = {{_statusWordObjectId},
+    QList<NodeObjectId> tqTpdoObjectList = {{statusWordObjectId},
                                             {_tqTorqueDemandObjectId}};
 
     _node->tpdos().at(2)->writeMapping(tqTpdoObjectList);
 }
 
-void P402TqWidget::manageNotificationControlWordObject(SDO::FlagsRequest flags)
-{
-    if (flags == SDO::FlagsRequest::Error)
-    {
-    }
-}
 
 void P402TqWidget::refreshData(NodeObjectId object)
 {
@@ -398,22 +371,17 @@ void P402TqWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         return;
     }
 
-    if (objId == _controlWordObjectId)
-    {
-        manageNotificationControlWordObject(flags);
-    }
-
-    if ((objId.index == _tqTargetTorqueObjectId.index)
-        || (objId.index == _tqTorqueDemandObjectId.index)
-        || (objId.index == _tqTargetSlopeObjectId.index)
-        || (objId.index == _tqTorqueProfileTypeObjectId.index)
-        || (objId.index == _tqMaxTorqueObjectId.index)
-        || (objId.index == _tqMaxCurrentObjectId.index)
-        || (objId.index == _tqMotorRatedTorqueObjectId.index)
-        || (objId.index == _tqMotorRatedCurrentObjectId.index)
-        || (objId.index == _tqTorqueActualValueObjectId.index)
-        || (objId.index == _tqCurrentActualValueObjectId.index)
-        || (objId.index == _tqDCLinkVoltageObjectId.index))
+    if ((objId == _tqTargetTorqueObjectId)
+        || (objId == _tqTorqueDemandObjectId)
+        || (objId == _tqTargetSlopeObjectId)
+        || (objId == _tqTorqueProfileTypeObjectId)
+        || (objId == _tqMaxTorqueObjectId)
+        || (objId == _tqMaxCurrentObjectId)
+        || (objId == _tqMotorRatedTorqueObjectId)
+        || (objId == _tqMotorRatedCurrentObjectId)
+        || (objId == _tqTorqueActualValueObjectId)
+        || (objId == _tqCurrentActualValueObjectId)
+        || (objId == _tqDCLinkVoltageObjectId))
     {
         if (flags == SDO::FlagsRequest::Error)
         {

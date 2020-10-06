@@ -1,7 +1,29 @@
+/**
+ ** This file is part of the UDTStudio project.
+ ** Copyright 2019-2020 UniSwarm
+ **
+ ** This program is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU General Public License as published by
+ ** the Free Software Foundation, either version 3 of the License, or
+ ** (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ ** GNU General Public License for more details.
+ **
+ ** You should have received a copy of the GNU General Public License
+ ** along with this program. If not, see <http://www.gnu.org/licenses/>.
+ **/
+
 #include "p402ipwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "services/services.h"
+
+#include "profile/p402/nodeprofile402.h"
+#include "profile/p402/nodeprofile402ip.h"
+
 #include "canopenbus.h"
 #include <QFormLayout>
 #include <QLineEdit>
@@ -18,8 +40,6 @@ P402IpWidget::P402IpWidget(QWidget *parent)
     _node = nullptr;
     createWidgets();
 
-    _controlWordObjectId = 0x6040;
-    _statusWordObjectId = 0x6041;
     _ipPositionDemandValueObjectId = 0x6062;
 
     _ipDataRecordObjectId = 0x60C1;
@@ -61,31 +81,34 @@ void P402IpWidget::setNode(Node *node)
         }
     }
 
-    registerObjId({_controlWordObjectId, 0x00});
-    registerObjId({_ipDataRecordObjectId, 0xFF});
-    registerObjId({_ipPositionDemandValueObjectId, 0x00});
-    registerObjId({_ipDataConfigurationObjectId, 0x06});
-    registerObjId({_ipDataConfigurationObjectId, 0x02});
-    registerObjId({_ipTimePeriodObjectId, 0xFF});
-    registerObjId({_ipPositionRangelLimitObjectId, 0xFF});
-    registerObjId({_ipSoftwarePositionLimitObjectId, 0xFF});
-    registerObjId({_ipHomeOffsetObjectId, 0xFF});
-    registerObjId({_ipPolarityObjectId, 0xFF});
-    registerObjId({_ipProfileVelocityObjectId, 0xFF});
-    registerObjId({_ipEndVelocityObjectId, 0xFF});
-    registerObjId({_ipMaxProfileVelocityObjectId, 0xFF});
-    registerObjId({_ipMaxMotorSpeedObjectId, 0xFF});
-    registerObjId({_ipProfileAccelerationObjectId, 0xFF});
-    registerObjId({_ipMaxAccelerationObjectId, 0xFF});
-    registerObjId({_ipProfileDecelerationObjectId, 0xFF});
-    registerObjId({_ipMaxDecelerationObjectId, 0xFF});
-    registerObjId({_ipQuickStopDecelerationObjectId, 0xFF});
-
-    setNodeInterrest(node);
-
     _node = node;
     if (_node)
     {
+        registerObjId({_ipDataRecordObjectId, 0xFF});
+        registerObjId({_ipPositionDemandValueObjectId, 0x00});
+        registerObjId({_ipDataConfigurationObjectId, 0x06});
+        registerObjId({_ipDataConfigurationObjectId, 0x02});
+        registerObjId({_ipTimePeriodObjectId, 0xFF});
+        registerObjId({_ipPositionRangelLimitObjectId, 0xFF});
+        registerObjId({_ipSoftwarePositionLimitObjectId, 0xFF});
+        registerObjId({_ipHomeOffsetObjectId, 0xFF});
+        registerObjId({_ipPolarityObjectId, 0xFF});
+        registerObjId({_ipProfileVelocityObjectId, 0xFF});
+        registerObjId({_ipEndVelocityObjectId, 0xFF});
+        registerObjId({_ipMaxProfileVelocityObjectId, 0xFF});
+        registerObjId({_ipMaxMotorSpeedObjectId, 0xFF});
+        registerObjId({_ipProfileAccelerationObjectId, 0xFF});
+        registerObjId({_ipMaxAccelerationObjectId, 0xFF});
+        registerObjId({_ipProfileDecelerationObjectId, 0xFF});
+        registerObjId({_ipMaxDecelerationObjectId, 0xFF});
+        registerObjId({_ipQuickStopDecelerationObjectId, 0xFF});
+
+        setNodeInterrest(node);
+
+        _nodeProfile402Ip = static_cast<NodeProfile402 *>(_node->profiles()[0])->p402Ip();
+        connect(_nodeProfile402Ip, &NodeProfile402Ip::enableRampEvent, this, &P402IpWidget::enableRampEvent);
+        enableRampEvent(_nodeProfile402Ip->isEnableRamp());
+
         connect(_node, &Node::statusChanged, this, &P402IpWidget::updateData);
         updateData();
 
@@ -116,7 +139,7 @@ void P402IpWidget::updateData()
         if (_node->status() == Node::STARTED)
         {
             this->setEnabled(true);
-            _node->readObject(_controlWordObjectId, 0x00);
+
             _node->readObject(_ipPositionDemandValueObjectId, 0x0);
 
             _node->readObject(_ipTimePeriodObjectId, 1);
@@ -298,36 +321,7 @@ void P402IpWidget::ipClearBufferClicked()
 
 void P402IpWidget::ipEnableRampClicked(int id)
 {
-    if (id == 0)
-    {
-        _cmdControlWord = (_cmdControlWord & ~ControlWordIP::CW_IP_EnableRamp);
-    }
-    else if (id == 1)
-    {
-        _cmdControlWord |= CW_IP_EnableRamp;
-    }
-    else
-    {
-        return;
-    }
-    _node->writeObject(_controlWordObjectId, 0x00, QVariant(_cmdControlWord));
-}
-
-void P402IpWidget::ipHaltClicked(int id)
-{
-    if (id == 0)
-    {
-        _cmdControlWord = (_cmdControlWord & ~CW_Halt);
-    }
-    else if (id == 1)
-    {
-        _cmdControlWord |= CW_Halt;
-    }
-    else
-    {
-        return;
-    }
-    _node->writeObject(_controlWordObjectId, 0x00, QVariant(_cmdControlWord));
+    _nodeProfile402Ip->setEnableRamp(id);
 }
 
 void P402IpWidget::createWidgets()
@@ -749,24 +743,22 @@ void P402IpWidget::dataLogger()
 
 void P402IpWidget::pdoMapping()
 {
-    QList<NodeObjectId> ipTpdoObjectList = {{_node->busId(), _node->nodeId(), _statusWordObjectId, 0x0, QMetaType::Type::UShort},
+    NodeObjectId controlWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0, QMetaType::Type::UShort);
+    NodeObjectId statusWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6041, 0, QMetaType::Type::UShort);
+
+    QList<NodeObjectId> ipRpdoObjectList = {{controlWordObjectId},
+                                            {_node->busId(), _node->nodeId(), _ipDataRecordObjectId, 0x0, QMetaType::Type::Short}};
+    _node->rpdos().at(0)->writeMapping(ipRpdoObjectList);
+
+    QList<NodeObjectId> ipTpdoObjectList = {{statusWordObjectId},
                                             {_node->busId(), _node->nodeId(), _ipPositionDemandValueObjectId, 0x0, QMetaType::Type::Short}};
 
     _node->tpdos().at(2)->writeMapping(ipTpdoObjectList);
 }
 
-void P402IpWidget::manageNotificationControlWordObject(SDO::FlagsRequest flags)
+void P402IpWidget::enableRampEvent(bool ok)
 {
-    if (flags == SDO::FlagsRequest::Error)
-    {
-    }
-    quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toInt());
-    _cmdControlWord = controlWord;
-
-    if (_ipEnableRampButtonGroup->button((controlWord & CW_IP_EnableRamp) > 4))
-    {
-        _ipEnableRampButtonGroup->button((controlWord & CW_IP_EnableRamp) > 4)->setChecked(true);
-    }
+    _ipEnableRampButtonGroup->button(ok)->setChecked(ok);
 }
 
 void P402IpWidget::refreshData(quint16 object)
@@ -865,11 +857,6 @@ void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     if (!_node)
     {
         return;
-    }
-
-    if (objId.index == _controlWordObjectId && objId.subIndex == 0x00)
-    {
-        manageNotificationControlWordObject(flags);
     }
 
     if ((objId.index == _ipPositionDemandValueObjectId)

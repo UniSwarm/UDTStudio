@@ -36,26 +36,15 @@ WidgetDebug::WidgetDebug(Node *node, QWidget *parent)
     : QWidget(parent)
 {
     _node = nullptr;
-    if ((node->nodeOd()->value(0x1000, 0x0).toUInt() & 0xFFFF) != 0x192)
+    if ((node->profileNumber()) != 0x192)
     {
         return;
     }
 
-    _controlWordObjectId = 0x6040;
-    _statusWordObjectId = 0x6041;
-    _modesOfOperationObjectId = 0x6060;
-    _modesOfOperationDisplayObjectId = 0x6061;
+
 
     createWidgets();
     setCheckableStateMachine(2);
-    registerObjId({_controlWordObjectId, 0x00});
-    registerObjId({_statusWordObjectId, 0x00});
-    registerObjId({_modesOfOperationObjectId, 0x00});
-    registerObjId({_modesOfOperationDisplayObjectId, 0x00});
-
-    _modeComboBox->insertItem(0, "2 Velocity (VL)");
-    _modeComboBox->insertItem(1, "7 Interpolated position (IP)");
-    _modeComboBox->insertItem(2, "4 Torque profile (TQ)");
 
     setNode(node);
 }
@@ -65,7 +54,7 @@ WidgetDebug::~WidgetDebug()
 }
 void WidgetDebug::setNode(Node *node)
 {
-    if ((node->nodeOd()->value(0x1000, 0x0).toUInt() & 0xFFFF) != 0x192)
+    if ((node->profileNumber()) != 0x192)
     {
         return;
     }
@@ -85,10 +74,24 @@ void WidgetDebug::setNode(Node *node)
     {
         setWindowTitle("402 : " + _node->name() + ", Status :" + _node->statusStr());
 
+        _controlWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0, QMetaType::Type::UShort);
+        _statusWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6041, 0, QMetaType::Type::UShort);
+
+        _nodeProfile402 = static_cast<NodeProfile402 *>(_node->profiles()[0]);
+        QList<NodeProfile402::Mode> modeList  = _nodeProfile402->modesSupported();
+        _modeComboBox->clear();
+        for (quint8 i = 0; i < modeList.size(); i++)
+        {
+            _listModeComboBox.append(modeList.at(i));
+            _modeComboBox->insertItem(i, _nodeProfile402->modeStr(modeList.at(i)));
+        }
+
+        connect(_nodeProfile402, &NodeProfile402::modeChanged, this, &WidgetDebug::modeChanged);
+        connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &WidgetDebug::stateChanged);
+        connect(_nodeProfile402, &NodeProfile402::isHalted, this, &WidgetDebug::isHalted);
+        connect(_nodeProfile402, &NodeProfile402::eventHappened, this, &WidgetDebug::eventHappened);
+
         connect(_node, &Node::statusChanged, this, &WidgetDebug::updateData);
-        _node->readObject(_statusWordObjectId, 0x0);
-        _node->readObject(_controlWordObjectId, 0x00);
-        _node->readObject(_modesOfOperationObjectId, 0x00);
 
         _p402Option->setNode(_node);
         _p402vl->setNode(_node);
@@ -106,8 +109,6 @@ void WidgetDebug::updateData()
         if (_node->status() == Node::STARTED)
         {
             _stackedWidget->setEnabled(true);
-            _node->readObject(_controlWordObjectId, 0x00);
-            _node->readObject(_modesOfOperationObjectId, 0x00);
             _timer.start(_logTimerSpinBox->value());
             _modeGroupBox->setEnabled(true);
             _stateMachineGroupBox->setEnabled(true);
@@ -127,14 +128,199 @@ void WidgetDebug::updateData()
     }
 }
 
+void WidgetDebug::modeChanged()
+{
+    NodeProfile402::Mode mode = _nodeProfile402->actualMode();
+    if (mode == NodeProfile402::IP)
+    {
+        _stackedWidget->setCurrentWidget(_p402ip);
+    }
+    else if (mode == NodeProfile402::VL)
+    {
+        _p402ip->stop();
+        _stackedWidget->setCurrentWidget(_p402vl);
+    }
+    else if (mode == NodeProfile402::TQ)
+    {
+        _stackedWidget->setCurrentWidget(_p402tq);
+
+    }
+    int m = _listModeComboBox.indexOf(mode);
+    _modeComboBox->setCurrentIndex(m);
+}
+
+void WidgetDebug::stateChanged()
+{
+    NodeProfile402::State402 state = _nodeProfile402->currentState();
+
+    _controlWordLabel->setText(QLatin1String("0x") + QString::number(_node->nodeOd()->value(_controlWordObjectId).toUInt(), 16).toUpper().rightJustified(4, '0'));
+    _statusWordRawLabel->setText(QLatin1String("0x") + QString::number(_node->nodeOd()->value(_statusWordObjectId).toUInt(), 16).toUpper().rightJustified(4, '0'));
+
+    if (state == NodeProfile402::STATE_NotReadyToSwitchOn)
+    {
+        _statusWordLabel->setText(tr("NotReadyToSwitchOn"));
+        setCheckableStateMachine(STATE_NotReadyToSwitchOn);
+    }
+    if (state ==  NodeProfile402::STATE_SwitchOnDisabled)
+    {
+        _statusWordLabel->setText(tr("SwitchOnDisabled"));
+        setCheckableStateMachine(STATE_SwitchOnDisabled);
+        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
+        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
+        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
+        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+        _haltPushButton->setCheckable(false);
+        _haltPushButton->setEnabled(false);
+    }
+    if (state ==  NodeProfile402::STATE_ReadyToSwitchOn)
+    {
+        _statusWordLabel->setText(tr("ReadyToSwitchOn"));
+        setCheckableStateMachine(STATE_ReadyToSwitchOn);
+        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
+        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
+        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+        _haltPushButton->setCheckable(false);
+        _haltPushButton->setEnabled(false);
+    }
+    if (state ==  NodeProfile402::STATE_SwitchedOn)
+    {
+        _statusWordLabel->setText(tr("SwitchedOn"));
+        setCheckableStateMachine(STATE_SwitchedOn);
+        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
+        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
+        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+        _haltPushButton->setCheckable(false);
+        _haltPushButton->setEnabled(false);
+    }
+    if (state ==  NodeProfile402::STATE_OperationEnabled)
+    {
+        _statusWordLabel->setText(tr("OperationEnabled"));
+        setCheckableStateMachine(STATE_OperationEnabled);
+        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
+        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
+        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
+        _haltPushButton->setEnabled(true);
+        _haltPushButton->setCheckable(true);
+    }
+    if (state ==  NodeProfile402::STATE_QuickStopActive)
+    {
+        _statusWordLabel->setText(tr("QuickStopActive"));
+        setCheckableStateMachine(STATE_QuickStopActive);
+        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
+        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
+        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
+        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
+        _haltPushButton->setCheckable(false);
+        _haltPushButton->setEnabled(false);
+    }
+    if (state ==  NodeProfile402::STATE_FaultReactionActive)
+    {
+        _statusWordLabel->setText(tr("FaultReactionActive"));
+        setCheckableStateMachine(STATE_FaultReactionActive);
+        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(false);
+        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
+        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
+        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
+        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+        _haltPushButton->setCheckable(false);
+        _haltPushButton->setEnabled(false);
+    }
+    if (state ==  NodeProfile402::STATE_Fault)
+    {
+        _statusWordLabel->setText(tr("Fault"));
+        setCheckableStateMachine(STATE_Fault);
+        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
+        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
+        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
+        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+        _haltPushButton->setCheckable(false);
+        _haltPushButton->setEnabled(false);
+    }
+    update();
+}
+
+void WidgetDebug::isHalted(bool state)
+{
+    _haltPushButton->setChecked(state);
+}
+
+void WidgetDebug::eventHappened(quint8 event)
+{
+    _informationLabel->setText(tr("False"));
+    _warningLabel->setText(tr("False"));
+
+    QString text;
+    if (event & NodeProfile402::VoltageEnabled)
+    {
+        text = _nodeProfile402->event402Str(NodeProfile402::VoltageEnabled);
+    }
+
+    if (event & NodeProfile402::Remote)
+    {
+        if (!text.isEmpty())
+        {
+            text.append(", ");
+        }
+        text.append(_nodeProfile402->event402Str(NodeProfile402::Remote));
+    }
+    if (event & NodeProfile402::TargetReached)
+    {
+        if (!text.isEmpty())
+        {
+            text.append(", ");
+        }
+        text.append(_nodeProfile402->event402Str(NodeProfile402::TargetReached));
+    }
+
+    _informationLabel->clear();
+    _informationLabel->setText(text);
+
+    text.clear();
+    if (event & NodeProfile402::InternalLimitActive)
+    {
+        text.append(_nodeProfile402->event402Str(NodeProfile402::InternalLimitActive));
+    }
+
+   if (event & NodeProfile402::Warning)
+    {
+        if (!text.isEmpty())
+        {
+            text.append(", ");
+        }
+        text.append(_nodeProfile402->event402Str(NodeProfile402::Warning));
+    }
+    quint16 mode = static_cast<quint16>(_nodeProfile402->actualMode());
+    if (mode == 7)
+    {
+        if (event & NodeProfile402::FollowingError)
+        {
+            if (!text.isEmpty())
+            {
+                text.append(", ");
+            }
+            text.append(_nodeProfile402->event402Str(NodeProfile402::FollowingError));
+        }
+    }
+    _warningLabel->clear();
+    _warningLabel->setText(text);
+}
+
+
 void WidgetDebug::start()
 {
     if (_node)
     {
         _node->sendStart();
         _stackedWidget->setEnabled(true);
-        _node->readObject(_controlWordObjectId, 0x00);
-        _node->readObject(_modesOfOperationObjectId, 0x00);
         _timer.start(_logTimerSpinBox->value());
         _modeGroupBox->setEnabled(true);
         _stateMachineGroupBox->setEnabled(true);
@@ -147,12 +333,7 @@ void WidgetDebug::stop()
 {
     if (_node)
     {
-        cmdControlWord = (cmdControlWord & ~CW_Mask);
-        cmdControlWord = (cmdControlWord & ~CW_Halt);
         _haltPushButton->setChecked(false);
-        _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
-        _controlWordLabel->setText(QLatin1String("0x") + QString::number(cmdControlWord, 16).toUpper().rightJustified(4, '0'));
-
         _stackedWidget->setEnabled(false);
         _nmtToolBar->setEnabled(true);
         _modeGroupBox->setEnabled(false);
@@ -173,17 +354,19 @@ void WidgetDebug::readData()
 {
     if (_node)
     {
-        _node->readObject(_statusWordObjectId, 0x0);
-        quint16 mode = static_cast<quint16>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
-        if (mode == 7)
+        _node->readObject(_controlWordObjectId);
+        _node->readObject(_statusWordObjectId);
+
+        NodeProfile402::Mode mode = _nodeProfile402->actualMode();
+        if (mode == NodeProfile402::IP)
         {
             _p402ip->readData();
         }
-        else if (mode == 2)
+        else if (mode == NodeProfile402::VL)
         {
             _p402vl->readData();
         }
-        else if (mode == 4)
+        else if (mode == NodeProfile402::TQ)
         {
             _p402tq->readData();
         }
@@ -193,7 +376,7 @@ void WidgetDebug::displayOption402()
 {
     if (_stackedWidget->currentWidget() == _p402Option)
     {
-        manageModeOfOperationObject(SDO::FlagsRequest::Sdo);
+        modeChanged();
     }
     else
     {
@@ -202,27 +385,16 @@ void WidgetDebug::displayOption402()
 }
 void WidgetDebug::modeIndexChanged(int id)
 {
-    qint8 mode = 0;
     if (!_node)
     {
         return;
     }
 
-    if (id == 0)
+    if (id == -1)
     {
-        mode = 2;
-        _node->writeObject(_modesOfOperationObjectId, 0x00, QVariant(mode));
+        return;
     }
-    else if (id == 1)
-    {
-        mode = 7;
-        _node->writeObject(_modesOfOperationObjectId, 0x00, QVariant(mode));
-    }
-    else if (id == 2)
-    {
-        mode = 4;
-        _node->writeObject(_modesOfOperationObjectId, 0x00, QVariant(mode));
-    }
+    _nodeProfile402->setMode(_listModeComboBox.at(id));
 }
 
 void WidgetDebug::stateMachineClicked(int id)
@@ -231,297 +403,17 @@ void WidgetDebug::stateMachineClicked(int id)
     {
         return;
     }
-    cmdControlWord = (cmdControlWord & ~CW_Mask);
-
-    // !! id is not the current state, it's id id groupbutton
-    switch (id)
-    {
-    case STATE_NotReadyToSwitchOn: // 1_Not ready to switch on
-        break;
-    case STATE_SwitchOnDisabled: // 2_Switch on disabled
-        if (stateMachineCurrent == STATE_Fault)
-        {
-            cmdControlWord |= CW_FaultReset;
-            _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
-        }
-        cmdControlWord = (cmdControlWord & ~CW_Mask);
-        break;
-    case STATE_ReadyToSwitchOn: // 3_Ready to switch on
-        cmdControlWord |= (CW_EnableVoltage | CW_QuickStop);
-        break;
-    case STATE_SwitchedOn: // 4_Switched on
-        cmdControlWord |= CW_EnableVoltage | CW_QuickStop | CW_SwitchOn;
-        break;
-    case STATE_OperationEnabled: // 5_Operation enabled
-        cmdControlWord |= CW_EnableVoltage | CW_QuickStop | CW_SwitchOn | CW_EnableOperation;
-        break;
-    case STATE_QuickStopActive: // 6_Quick stop active
-        cmdControlWord |= CW_EnableVoltage;
-        break;
-    case STATE_FaultReactionActive: // 7_Fault reaction active
-        break;
-    case STATE_Fault: // 8_Fault
-        break;
-    }
-    cmdControlWord = (cmdControlWord & ~CW_Halt);
-    _haltPushButton->setChecked(false);
-    _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
-    _controlWordLabel->setText(QLatin1String("0x") + QString::number(cmdControlWord, 16).toUpper().rightJustified(4, '0'));
+    _nodeProfile402->goToState(static_cast<NodeProfile402::State402>(id));
 }
 
-void WidgetDebug::controlWordHaltClicked()
+void WidgetDebug::haltClicked()
 {
-    _haltPushButton->setCheckable(true);
-    if ((cmdControlWord & CW_Halt) != 0)
-    {
-        cmdControlWord = (cmdControlWord & ~CW_Halt);
-        _haltPushButton->setChecked(false);
-    }
-    else
-    {
-        cmdControlWord |= CW_Halt;
-        _haltPushButton->setChecked(true);
-    }
-    _node->writeObject(_controlWordObjectId, 0x00, QVariant(cmdControlWord));
-    _controlWordLabel->setText(QLatin1String("0x") + QString::number(cmdControlWord, 16).toUpper().rightJustified(4, '0'));
+    _nodeProfile402->toggleHalt();
 }
 
 void WidgetDebug::gotoStateOEClicked()
 {
-    if (stateMachineCurrent == STATE_Fault)
-    {
-        stateMachineClicked(STATE_SwitchOnDisabled);
-        _operationEnabledTimer.singleShot(70, this, SLOT(gotoStateOEClicked()));
-    }
-    if (stateMachineCurrent == STATE_SwitchOnDisabled)
-    {
-        stateMachineClicked(STATE_ReadyToSwitchOn);
-        _operationEnabledTimer.singleShot(70, this, SLOT(gotoStateOEClicked()));
-    }
-    if (stateMachineCurrent == STATE_ReadyToSwitchOn)
-    {
-        stateMachineClicked(STATE_SwitchedOn);
-        _operationEnabledTimer.singleShot(70, this, SLOT(gotoStateOEClicked()));
-    }
-    if (stateMachineCurrent == STATE_SwitchedOn)
-    {
-        stateMachineClicked(STATE_OperationEnabled);
-    }
-}
-
-void WidgetDebug::manageNotificationControlWordObject(SDO::FlagsRequest flags)
-{
-    if (flags == SDO::FlagsRequest::Error)
-    {
-        _controlWordLabel->setText("Error SDO : 0x" + QString::number(_node->nodeOd()->errorObject(_controlWordObjectId, 0x0), 16));
-    }
-    quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toInt());
-    cmdControlWord = controlWord;
-    _node->readObject(_statusWordObjectId, 0x0);
-}
-
-void WidgetDebug::manageNotificationStatusWordobject(SDO::FlagsRequest flags)
-{
-    if (flags == SDO::FlagsRequest::Error)
-    {
-        _controlWordLabel->setText("Error SDO : 0x" + QString::number(_node->nodeOd()->errorObject(_controlWordObjectId, 0x0), 16));
-    }
-
-    _statusWordRawLabel->setText(QLatin1String("0x") + QString::number(_node->nodeOd()->value(_statusWordObjectId, 0x00).toUInt(), 16).toUpper().rightJustified(4, '0'));
-    quint16 state = static_cast<quint16>(_node->nodeOd()->value(_statusWordObjectId, 0x00).toUInt());
-
-    if ((state & Mask1) == SW_StateNotReadyToSwitchOn)
-    {
-        stateMachineCurrent = STATE_NotReadyToSwitchOn;
-        _statusWordLabel->setText(tr("NotReadyToSwitchOn"));
-        setCheckableStateMachine(STATE_NotReadyToSwitchOn);
-    }
-    if ((state & Mask1) == SW_StateSwitchOnDisabled)
-    {
-        stateMachineCurrent = STATE_SwitchOnDisabled;
-        _statusWordLabel->setText(tr("SwitchOnDisabled"));
-        setCheckableStateMachine(STATE_SwitchOnDisabled);
-        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
-        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
-        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
-        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
-        _haltPushButton->setEnabled(false);
-    }
-    if ((state & Mask2) == SW_StateReadyToSwitchOn)
-    {
-        stateMachineCurrent = STATE_ReadyToSwitchOn;
-        _statusWordLabel->setText(tr("ReadyToSwitchOn"));
-        setCheckableStateMachine(STATE_ReadyToSwitchOn);
-        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
-        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
-        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
-        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
-        _haltPushButton->setEnabled(false);
-    }
-    if ((state & Mask2) == SW_StateSwitchedOn)
-    {
-        stateMachineCurrent = STATE_SwitchedOn;
-        _statusWordLabel->setText(tr("SwitchedOn"));
-        setCheckableStateMachine(STATE_SwitchedOn);
-        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
-        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
-        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
-        _haltPushButton->setEnabled(false);
-    }
-    if ((state & Mask2) == SW_StateOperationEnabled)
-    {
-        stateMachineCurrent = STATE_OperationEnabled;
-        _statusWordLabel->setText(tr("OperationEnabled"));
-        setCheckableStateMachine(STATE_OperationEnabled);
-        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
-        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
-        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
-        _haltPushButton->setEnabled(true);
-    }
-    if ((state & Mask2) == SW_StateQuickStopActive)
-    {
-        stateMachineCurrent = STATE_QuickStopActive;
-        _statusWordLabel->setText(tr("QuickStopActive"));
-        setCheckableStateMachine(STATE_QuickStopActive);
-        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
-        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
-        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
-        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
-        _haltPushButton->setEnabled(false);
-    }
-    if ((state & Mask1) == SW_StateFaultReactionActive)
-    {
-        stateMachineCurrent = STATE_FaultReactionActive;
-        _statusWordLabel->setText(tr("FaultReactionActive"));
-        setCheckableStateMachine(STATE_FaultReactionActive);
-        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(false);
-        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
-        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
-        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
-        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
-        _haltPushButton->setEnabled(false);
-    }
-    if ((state & Mask1) == SW_StateFault)
-    {
-        stateMachineCurrent = STATE_Fault;
-        _statusWordLabel->setText(tr("Fault"));
-        setCheckableStateMachine(STATE_Fault);
-        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
-        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
-        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
-        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
-        _haltPushButton->setEnabled(false);
-    }
-    update();
-    manageStatusWordInformation();
-}
-
-void WidgetDebug::manageStatusWordInformation()
-{
-    quint16 state = static_cast<quint16>(_node->nodeOd()->value(_statusWordObjectId, 0x00).toUInt());
-
-    _informationLabel->setText(tr("False"));
-    _warningLabel->setText(tr("False"));
-    _operationModeSpecificLabel->setText("0x0");
-    _manufacturerSpecificLabel->setText("0x0");
-
-    if ((state & SW_OperationModeSpecific) == SW_OperationModeSpecific)
-    {
-        _operationModeSpecificLabel->setText("0x" + QString::number(state & SW_OperationModeSpecific, 16).toUpper());
-    }
-    if ((state & SW_ManufacturerSpecific) == SW_ManufacturerSpecific)
-    {
-        _manufacturerSpecificLabel->setText("0x" + QString::number(state & SW_ManufacturerSpecific, 16).toUpper());
-    }
-
-    QString text;
-    if ((state & SW_VoltageEnabled) == SW_VoltageEnabled)
-    {
-        text = "Voltage Enabled";
-    }
-
-    if ((state & SW_Remote) == SW_Remote)
-    {
-        if (!text.isEmpty())
-        {
-            text.append(", ");
-        }
-        text.append("Remote");
-    }
-    if ((state & SW_TargetReached) == SW_TargetReached)
-    {
-        if (!text.isEmpty())
-        {
-            text.append(", ");
-        }
-        text.append("Target Reached");
-    }
-
-    _informationLabel->clear();
-    _informationLabel->setText(text);
-
-    text.clear();
-    if ((state & SW_InternalLimitActive) == SW_InternalLimitActive)
-    {
-        text = "Internal Limit Active";
-    }
-
-    if ((state & SW_Warning) == SW_Warning)
-    {
-        if (!text.isEmpty())
-        {
-            text.append(", ");
-        }
-        text.append("Warning");
-    }
-    quint16 mode = static_cast<quint16>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
-    if (mode == 7)
-    {
-        if ((state & SW_FollowingError) == SW_FollowingError)
-        {
-            if (!text.isEmpty())
-            {
-                text.append(", ");
-            }
-            text.append("Following error");
-        }
-    }
-    _warningLabel->clear();
-    _warningLabel->setText(text);
-}
-
-void WidgetDebug::manageModeOfOperationObject(SDO::FlagsRequest flags)
-{
-    if (flags == SDO::FlagsRequest::Error)
-    {
-        _controlWordLabel->setText("Error SDO : 0x" + QString::number(_node->nodeOd()->errorObject(_controlWordObjectId, 0x0), 16));
-    }
-
-    quint16 mode = static_cast<quint16>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
-    if (mode == 7)
-    {
-        _stackedWidget->setCurrentWidget(_p402ip);
-        _modeComboBox->setCurrentIndex(1);
-    }
-    else if (mode == 2)
-    {
-        _p402ip->stop();
-        _stackedWidget->setCurrentWidget(_p402vl);
-        _modeComboBox->setCurrentIndex(0);
-    }
-    else if (mode == 4)
-    {
-        _stackedWidget->setCurrentWidget(_p402tq);
-        _modeComboBox->setCurrentIndex(2);
-    }
+    _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
 }
 
 void WidgetDebug::setCheckableStateMachine(int id)
@@ -634,7 +526,7 @@ void WidgetDebug::createWidgets()
     _haltPushButton->setEnabled(false);
     controlWordLayout->addRow(_haltPushButton);
     _controlWordGroupBox->setLayout(controlWordLayout);
-    connect(_haltPushButton, &QPushButton::clicked, this, &WidgetDebug::controlWordHaltClicked);
+    connect(_haltPushButton, &QPushButton::clicked, this, &WidgetDebug::haltClicked);
 
     _controlWordLabel = new QLabel("0x0000");
     controlWordLayout->addRow(tr("ControlWord sended:"), _controlWordLabel);
@@ -654,10 +546,6 @@ void WidgetDebug::createWidgets()
     statusWordLayout->addRow(tr("StatusWord raw:"), _statusWordRawLabel);
     _statusWordLabel = new QLabel();
     statusWordLayout->addRow(tr("StatusWord State:"), _statusWordLabel);
-    _operationModeSpecificLabel = new QLabel();
-    statusWordLayout->addRow(tr("Operation Mode Specific:"), _operationModeSpecificLabel);
-    _manufacturerSpecificLabel = new QLabel();
-    statusWordLayout->addRow(tr("Manufacturer Specific:"), _manufacturerSpecificLabel);
 
     _informationLabel = new QLabel();
     statusWordLayout->addRow(tr("Information :"), _informationLabel);
@@ -694,25 +582,12 @@ void WidgetDebug::createWidgets()
 
 void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    Q_UNUSED(objId)
+    Q_UNUSED(flags)
+
     if (!_node)
     {
         return;
-    }
-    if (objId.index == _controlWordObjectId && objId.subIndex == 0x00)
-    {
-        manageNotificationControlWordObject(flags);
-    }
-    if (objId.index == _statusWordObjectId && objId.subIndex == 0x00)
-    {
-        manageNotificationStatusWordobject(flags);
-    }
-    if (objId.index == _modesOfOperationObjectId)
-    {
-        _node->readObject(_modesOfOperationDisplayObjectId, 0x00);
-    }
-    if (objId.index == _modesOfOperationDisplayObjectId)
-    {
-        manageModeOfOperationObject(flags);
     }
 }
 

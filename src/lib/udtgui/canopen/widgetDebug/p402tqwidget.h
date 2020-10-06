@@ -51,8 +51,7 @@ class P402TqWidget : public QWidget, public NodeOdSubscriber
     void createWidgets();
 
     quint16 _cmdControlWord;
-    NodeObjectId _controlWordObjectId;
-    NodeObjectId _statusWordObjectId;
+
 
     // TQ mode
     NodeObjectId _tqTorqueDemandObjectId;
@@ -68,11 +67,6 @@ class P402TqWidget : public QWidget, public NodeOdSubscriber
     NodeObjectId _tqTorqueActualValueObjectId;
     NodeObjectId _tqCurrentActualValueObjectId;
     NodeObjectId _tqDCLinkVoltageObjectId;
-
-    enum ControlWordTQ : quint16
-    {
-        CW_Halt = 0x100
-    };
 
     // TQ MODE
     QLabel *_tqTorqueDemandLabel;
@@ -99,10 +93,8 @@ class P402TqWidget : public QWidget, public NodeOdSubscriber
     void tqMotorRatedTorqueEditingFinished();
     void tqMotorRatedCurrentEditingFinished();
 
-    void tqHaltClicked(int id);
     void dataLogger();
     void pdoMapping();
-    void manageNotificationControlWordObject(SDO::FlagsRequest flags);
     void refreshData(NodeObjectId object);
 
     // NodeOdSubscriber interface

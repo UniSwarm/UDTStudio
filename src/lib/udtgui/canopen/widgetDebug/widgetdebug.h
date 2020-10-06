@@ -19,7 +19,7 @@
 #ifndef WIDGETDEBUG_H
 #define WIDGETDEBUG_H
 
-#include "../../udtgui_global.h"
+#include "udtgui_global.h"
 
 #include "node.h"
 #include "nodeodsubscriber.h"
@@ -27,6 +27,7 @@
 #include "p402optionwidget.h"
 #include "p402vlwidget.h"
 #include "p402tqwidget.h"
+#include "profile/p402/nodeprofile402.h"
 
 #include <QButtonGroup>
 #include <QComboBox>
@@ -38,7 +39,7 @@
 #include <QToolBar>
 #include <QWidget>
 
-class WidgetDebug : public QWidget, public NodeOdSubscriber
+class UDTGUI_EXPORT WidgetDebug : public QWidget, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
@@ -78,13 +79,10 @@ private:
         STATE_Fault = 8,
     };
 
-    State stateMachineCurrent;
+    NodeObjectId _controlWordObjectId;
+    NodeObjectId _statusWordObjectId;
 
-    quint16 cmdControlWord;
-    quint16 _controlWordObjectId;
-    quint16 _statusWordObjectId;
-    quint16 _modesOfOperationObjectId;
-    quint16 _modesOfOperationDisplayObjectId;
+    NodeProfile402 *_nodeProfile402;
 
     QStackedWidget *_stackedWidget;
     P402OptionWidget *_p402Option;
@@ -101,6 +99,11 @@ private:
     QGroupBox *_statusWordGroupBox;
 
     QComboBox *_modeComboBox;
+    QList<NodeProfile402::Mode> _listModeComboBox;
+    void modeChanged();
+    void stateChanged();
+    void isHalted(bool state);
+    void eventHappened(quint8 event);
 
     QLabel *_controlWordLabel;
     QPushButton *_haltPushButton;
@@ -109,62 +112,14 @@ private:
     QLabel *_statusWordLabel;
     QLabel *_informationLabel;
     QLabel *_warningLabel;
-    QLabel *_operationModeSpecificLabel;
-    QLabel *_manufacturerSpecificLabel;
     QButtonGroup *_stateMachineGroup;
 
     void displayOption402();
     void modeIndexChanged(int id);
     void stateMachineClicked(int id);
-
-    void manageNotificationControlWordObject(SDO::FlagsRequest flags);
-    void manageNotificationStatusWordobject(SDO::FlagsRequest flags);
-    void manageStatusWordInformation();
-    void manageModeOfOperationObject(SDO::FlagsRequest flags);
+    void haltClicked();
 
     void setCheckableStateMachine(int id);
-    void controlWordHaltClicked();
-
-    enum ControlWord : quint16
-    {
-        CW_SwitchOn = 0x01,
-        CW_EnableVoltage = 0x02,
-        CW_QuickStop = 0x04,
-        CW_EnableOperation = 0x08,
-        CW_FaultReset = 0x80,
-        CW_Halt = 0x100,
-        CW_OperationModeSpecific = 0x70,
-        CW_ManufacturerSpecific = 0xF800,
-
-        CW_Mask = 0x8F
-    };
-
-    enum StatusWord : quint16
-    {
-        SW_StateNotReadyToSwitchOn = 0x00,
-        SW_StateSwitchOnDisabled = 0x40,
-        SW_StateReadyToSwitchOn = 0x21,
-        SW_StateSwitchedOn = 0x23,
-        SW_StateOperationEnabled = 0x27,
-        SW_StateQuickStopActive = 0x07,
-        SW_StateFaultReactionActive = 0x0F,
-        SW_StateFault = 0x08,
-
-        SW_VoltageEnabled = 0x10,
-        SW_Warning = 0x80,
-        SW_Remote = 0x200,
-        SW_TargetReached = 0x400,
-        SW_FollowingError = 0x2000,
-        SW_InternalLimitActive = 0x800,
-        SW_OperationModeSpecific = 0x3000,
-        SW_ManufacturerSpecific = 0xC000
-    };
-
-    enum StatusWordStateMask
-    {
-        Mask1 = 0x4F,
-        Mask2 = 0x6f
-    };
 
     // NodeOdSubscriber interface
 protected:
