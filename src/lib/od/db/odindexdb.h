@@ -19,35 +19,10 @@
 #ifndef ODINDEXDB_H
 #define ODINDEXDB_H
 
-#include "od_global.h"
-
-#include "../canopen/nodeobjectid.h"
-
-class OD_EXPORT OdIndexDb
+class OdIndexDb
 {
-public:
-    enum OdObject
-    {
-        OD_RPDO_MAPPING,
-        OD_RPDO_PARAM_COBID,
-        OD_RPDO_PARAM_TRANSMISSIONTYPE,
-        OD_RPDO_PARAM2222,
-
-        OD_TPDO_PARAM_COBID,
-        OD_TPDO_PARAM_TRANSMISSIONTYPE,
-        OD_TPDO_PARAM2222,
-        OD_TPDO_PARAM
-    };
-
-    static NodeObjectId getObjectId(OdObject object, uint opt = 0, uint opt2 = 0);
-
-     // FUTURE
-//    static QString name(const NodeObjectId &nodeObjectId);
-//    static QVariant min(const NodeObjectId &nodeObjectId);
-//    static QVariant max(const NodeObjectId &nodeObjectId);
-//    static QVariant defaultValue(const NodeObjectId &nodeObjectId);
-//    static QString unit(const NodeObjectId &nodeObjectId);
-//    static QString description(const NodeObjectId &nodeObjectId);
+  public:
+    OdIndexDb();
 };
 
 #endif // ODINDEXDB_H

@@ -18,28 +18,7 @@
 
 #include "odindexdb.h"
 
-
-NodeObjectId OdIndexDb::getObjectId(OdIndexDb::OdObject object, uint opt, uint opt2)
+OdIndexDb::OdIndexDb()
 {
-    switch (object) {
-    case OdIndexDb::OD_TPDO_PARAM2222:
-        return {0x1001, static_cast<quint8>(opt)};
-        break;
-    case OdIndexDb::OD_RPDO_MAPPING:
-        break;
-    case OdIndexDb::OD_RPDO_PARAM_COBID:
-        break;
-    case OdIndexDb::OD_RPDO_PARAM_TRANSMISSIONTYPE:
-        break;
-    case OdIndexDb::OD_RPDO_PARAM2222:
-        break;
-    case OdIndexDb::OD_TPDO_PARAM_COBID:
-        break;
-    case OdIndexDb::OD_TPDO_PARAM_TRANSMISSIONTYPE:
-        break;
-    case OdIndexDb::OD_TPDO_PARAM:
-        break;
 
-    }
-    return NodeObjectId();
 }
