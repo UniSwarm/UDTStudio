@@ -20,10 +20,13 @@
 #define P402OPTION_H
 
 #include "../../udtgui_global.h"
-#include "node.h"
+
 #include "nodeodsubscriber.h"
+
 #include <QButtonGroup>
 #include <QWidget>
+
+class Node;
 
 class P402OptionWidget : public QWidget, public NodeOdSubscriber
 {
@@ -48,14 +51,12 @@ public slots:
 private:
     Node *_node;
 
-    quint16 _controlWordObjectId;
-    quint16 _statusWordObjectId;
-    quint16 _abortConnectionObjectId;
-    quint16 _quickStopObjectId;
-    quint16 _shutdownObjectId;
-    quint16 _disableObjectId;
-    quint16 _haltObjectId;
-    quint16 _faultReactionObjectId;
+    NodeObjectId _abortConnectionObjectId;
+    NodeObjectId _quickStopObjectId;
+    NodeObjectId _shutdownObjectId;
+    NodeObjectId _disableObjectId;
+    NodeObjectId _haltObjectId;
+    NodeObjectId _faultReactionObjectId;
 
     QButtonGroup *_abortConnectionOptionGroup;
     QButtonGroup *_quickStopOptionGroup;
@@ -64,7 +65,7 @@ private:
     QButtonGroup *_haltOptionGroup;
     QButtonGroup *_faultReactionOptionGroup;
 
-    void refreshData(quint16 object);
+    void refreshData(NodeObjectId object);
 
     void createWidgets();
 

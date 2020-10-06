@@ -17,6 +17,9 @@
  **/
 
 #include "p402optionwidget.h"
+
+#include "node.h"
+
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QRadioButton>
@@ -27,12 +30,7 @@ P402OptionWidget::P402OptionWidget(QWidget *parent)
     _node = nullptr;
     createWidgets();
 
-    _abortConnectionObjectId = 0x6007;
-    _quickStopObjectId = 0x605A;
-    _shutdownObjectId = 0x605B;
-    _disableObjectId = 0x605C;
-    _haltObjectId = 0x605D;
-    _faultReactionObjectId = 0x605E;
+
 }
 
 P402OptionWidget::~P402OptionWidget()
@@ -50,18 +48,23 @@ void P402OptionWidget::setNode(Node *node)
         }
     }
 
-    registerObjId({_abortConnectionObjectId, 0x00});
-    registerObjId({_quickStopObjectId, 0x00});
-    registerObjId({_shutdownObjectId, 0x00});
-    registerObjId({_disableObjectId, 0x00});
-    registerObjId({_haltObjectId, 0x00});
-    registerObjId({_faultReactionObjectId, 0x00});
-
-    setNodeInterrest(node);
-
     _node = node;
     if (_node)
     {
+        _abortConnectionObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6007, 0);
+        _quickStopObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x605A, 0);
+        _shutdownObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x605B, 0);
+        _disableObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x605C, 0);
+        _haltObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x605D, 0);
+        _faultReactionObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x605E, 0);
+        registerObjId({_abortConnectionObjectId});
+        registerObjId({_quickStopObjectId});
+        registerObjId({_shutdownObjectId});
+        registerObjId({_disableObjectId});
+        registerObjId({_haltObjectId});
+        registerObjId({_faultReactionObjectId});
+
+        setNodeInterrest(node);
         connect(_node, &Node::statusChanged, this, &P402OptionWidget::updateData);
     }
 }
@@ -78,12 +81,12 @@ void P402OptionWidget::updateData()
         if (_node->status() == Node::STARTED)
         {
             this->setEnabled(true);
-            _node->readObject(_abortConnectionObjectId, 0x0);
-            _node->readObject(_quickStopObjectId, 0x0);
-            _node->readObject(_shutdownObjectId, 0x0);
-            _node->readObject(_disableObjectId, 0x0);
-            _node->readObject(_haltObjectId, 0x0);
-            _node->readObject(_faultReactionObjectId, 0x0);
+            _node->readObject(_abortConnectionObjectId);
+            _node->readObject(_quickStopObjectId);
+            _node->readObject(_shutdownObjectId);
+            _node->readObject(_disableObjectId);
+            _node->readObject(_haltObjectId);
+            _node->readObject(_faultReactionObjectId);
         }
         else
         {
@@ -99,7 +102,7 @@ void P402OptionWidget::abortConnectionOptionClicked(int id)
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_abortConnectionObjectId, 0x00, QVariant(value));
+    _node->writeObject(_abortConnectionObjectId, QVariant(value));
 }
 
 void P402OptionWidget::quickStopOptionClicked(int id)
@@ -109,7 +112,7 @@ void P402OptionWidget::quickStopOptionClicked(int id)
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_quickStopObjectId, 0x00, QVariant(value));
+    _node->writeObject(_quickStopObjectId, QVariant(value));
 }
 
 void P402OptionWidget::shutdownOptionClicked(int id)
@@ -119,7 +122,7 @@ void P402OptionWidget::shutdownOptionClicked(int id)
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_shutdownObjectId, 0x00, QVariant(value));
+    _node->writeObject(_shutdownObjectId, QVariant(value));
 }
 
 void P402OptionWidget::disableOptionClicked(int id)
@@ -129,7 +132,7 @@ void P402OptionWidget::disableOptionClicked(int id)
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_disableObjectId, 0x00, QVariant(value));
+    _node->writeObject(_disableObjectId, QVariant(value));
 }
 
 void P402OptionWidget::haltOptionClicked(int id)
@@ -139,7 +142,7 @@ void P402OptionWidget::haltOptionClicked(int id)
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_haltObjectId, 0x00, QVariant(value));
+    _node->writeObject(_haltObjectId, QVariant(value));
 }
 
 void P402OptionWidget::faultReactionOptionClicked(int id)
@@ -149,12 +152,12 @@ void P402OptionWidget::faultReactionOptionClicked(int id)
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_faultReactionObjectId, 0x00, QVariant(value));
+    _node->writeObject(_faultReactionObjectId, QVariant(value));
 }
 
-void P402OptionWidget::refreshData(quint16 object)
+void P402OptionWidget::refreshData(NodeObjectId object)
 {
-    if (_node->nodeOd()->indexExist(object))
+    if (_node->nodeOd()->indexExist(object.index))
     {
         int value = _node->nodeOd()->value(object).toInt();
 
@@ -328,17 +331,17 @@ void P402OptionWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
         return;
     }
 
-    if ((objId.index == _abortConnectionObjectId)
-        || (objId.index == _quickStopObjectId)
-        || (objId.index == _shutdownObjectId)
-        || (objId.index == _disableObjectId)
-        || (objId.index == _haltObjectId)
-        || (objId.index == _faultReactionObjectId))
+    if ((objId == _abortConnectionObjectId)
+        || (objId == _quickStopObjectId)
+        || (objId == _shutdownObjectId)
+        || (objId == _disableObjectId)
+        || (objId == _haltObjectId)
+        || (objId == _faultReactionObjectId))
     {
         if (flags == SDO::FlagsRequest::Error)
         {
             return;
         }
-        refreshData(objId.index);
+        refreshData(objId);
     }
 }
