@@ -80,7 +80,7 @@ NodeProfile402::NodeProfile402(Node *node) : NodeProfile(node)
     registerObjId({_statusWordObjectId});
 
     setNodeInterrest(node);
-
+    connect(_node, &Node::statusChanged, this, &NodeProfile402::statusNodeChanged);
     // Mode
     _node->readObject(_modesOfOperationDisplayObjectId);
     _node->readObject(_supportedDriveModesObjectId);
@@ -90,6 +90,21 @@ NodeProfile402::NodeProfile402(Node *node) : NodeProfile(node)
     _p402Ip = new NodeProfile402Ip(_node);
     _p402Tq = new NodeProfile402Tq(_node);
     _p402Vl = new NodeProfile402Vl(_node);
+}
+
+void NodeProfile402::statusNodeChanged(Node::Status status)
+{
+    if (status)
+    {
+        if (status == Node::STARTED)
+        {
+
+        }
+        else
+        {
+            goToState(STATE_SwitchOnDisabled);
+        }
+    }
 }
 
 NodeProfile402::Mode NodeProfile402::actualMode()
@@ -291,6 +306,21 @@ void NodeProfile402::manageState(const State402 state)
     _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
 }
 
+NodeProfile402Vl *NodeProfile402::p402Vl()
+{
+    return _p402Vl;
+}
+
+NodeProfile402Ip *NodeProfile402::p402Ip()
+{
+   return _p402Ip;
+}
+
+NodeProfile402Tq *NodeProfile402::p402Tq()
+{
+    return _p402Tq;
+}
+
 QString NodeProfile402::stateStr(State402 state) const
 {
     switch (state)
@@ -326,17 +356,17 @@ void NodeProfile402::setTarget(qint32 target)
         case NodeProfile402::PP:
             break;
         case NodeProfile402::VL:
-            _p402Vl->target(static_cast<qint16>(target));
+            _p402Vl->setTarget(static_cast<qint16>(target));
             break;
         case NodeProfile402::PV:
             break;
         case NodeProfile402::TQ:
-            _p402Tq->target(static_cast<qint16>(target));
+            _p402Tq->setTarget(static_cast<qint16>(target));
             break;
         case NodeProfile402::HM:
             break;
         case NodeProfile402::IP:
-            _p402Ip->target(target);
+            _p402Ip->setTarget(target);
             break;
         case NodeProfile402::CSP:
             break;

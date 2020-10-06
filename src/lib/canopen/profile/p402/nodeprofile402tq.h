@@ -33,7 +33,7 @@ class CANOPEN_EXPORT NodeProfile402Tq : public QObject, public NodeOdSubscriber
 public:
     NodeProfile402Tq(Node *node);
 
-    void target(qint16 torque);
+    void setTarget(qint16 torque);
 
 signals:
     void isAppliedTarget();

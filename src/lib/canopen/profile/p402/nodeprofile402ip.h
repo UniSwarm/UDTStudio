@@ -34,15 +34,16 @@ class CANOPEN_EXPORT NodeProfile402Ip : public QObject, public NodeOdSubscriber
 public:
     NodeProfile402Ip(Node *node);
 
-    void enableMode(void);
-    void enableRamp(bool ok);
-    bool isEnableRamp(void);
+    void setTarget(qint32 position);
 
-    void target(qint32 position);
+    void enableMode(void);
+
+    void setEnableRamp(bool ok);
+    bool isEnableRamp(void);
 
 signals:
     void isAppliedTarget();
-    void enableRamp();
+    void enableRampEvent(bool ok);
 
 private:
     Node *_node;

@@ -27,7 +27,7 @@ NodeProfile402Tq::NodeProfile402Tq(Node *node) : _node(node)
     setNodeInterrest(_node);
 }
 
-void NodeProfile402Tq::target(qint16 torque)
+void NodeProfile402Tq::setTarget(qint16 torque)
 {
     _node->writeObject(_targetObjectId, QVariant(torque));
 }

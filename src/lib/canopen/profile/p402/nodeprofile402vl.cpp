@@ -34,6 +34,10 @@ NodeProfile402Vl::NodeProfile402Vl(Node *node) : _node(node)
     _controlWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0);
     registerObjId({_controlWordObjectId});
 
+    _enableRamp = false;
+    _referenceRamp = false;
+    _unlockRamp = false;
+
     setNodeInterrest(_node);
 }
 
@@ -46,46 +50,46 @@ void NodeProfile402Vl::enableMode(void)
     _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
 }
 
-void NodeProfile402Vl::enableRamp(bool ok)
+void NodeProfile402Vl::setEnableRamp(bool ok)
 {
-    _cmdControlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    quint16 cmdControlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
     if (ok)
     {
-        _cmdControlWord |= CW_VL_EnableRamp;
+        cmdControlWord |= CW_VL_EnableRamp;
     }
     else
     {
-        _cmdControlWord = (_cmdControlWord & ~CW_VL_EnableRamp);
+        cmdControlWord = (cmdControlWord & ~CW_VL_EnableRamp);
     }
-    _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
+    _node->writeObject(_controlWordObjectId, QVariant(cmdControlWord));
 }
 
-void NodeProfile402Vl::unlockRamp(bool ok)
+void NodeProfile402Vl::setUnlockRamp(bool ok)
 {
-    _cmdControlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    quint16 cmdControlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
     if (ok)
     {
-        _cmdControlWord |= CW_VL_UnlockRamp;
+        cmdControlWord |= CW_VL_UnlockRamp;
     }
     else
     {
-        _cmdControlWord = (_cmdControlWord & ~CW_VL_UnlockRamp);
+        cmdControlWord = (cmdControlWord & ~CW_VL_UnlockRamp);
     }
-    _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
+    _node->writeObject(_controlWordObjectId, QVariant(cmdControlWord));
 }
 
-void NodeProfile402Vl::referenceRamp(bool ok)
+void NodeProfile402Vl::setReferenceRamp(bool ok)
 {
-    _cmdControlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    quint16 cmdControlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
     if (ok)
     {
-        _cmdControlWord |= CW_VL_ReferenceRamp;
+        cmdControlWord |= CW_VL_ReferenceRamp;
     }
     else
     {
-        _cmdControlWord = (_cmdControlWord & ~CW_VL_ReferenceRamp);
+        cmdControlWord = (cmdControlWord & ~CW_VL_ReferenceRamp);
     }
-    _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
+    _node->writeObject(_controlWordObjectId, QVariant(cmdControlWord));
 }
 
 bool NodeProfile402Vl::isEnableRamp(void)
@@ -102,7 +106,7 @@ bool NodeProfile402Vl::isReferenceRamp(void)
     return _referenceRamp;
 }
 
-void NodeProfile402Vl::target(qint16 velocity)
+void NodeProfile402Vl::setTarget(qint16 velocity)
 {
     _node->writeObject(_targetObjectId, QVariant(velocity));
 }
@@ -127,24 +131,22 @@ void NodeProfile402Vl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
         else
         {
             quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
-            _enableRamp = false;
-            _referenceRamp = false;
-            _unlockRamp = false;
-            if (controlWord & CW_VL_EnableRamp)
+            if ((controlWord & CW_VL_EnableRamp) != (_cmdControlWord & CW_VL_EnableRamp))
             {
-                _enableRamp = true;
-                emit enableRamp();
+                _enableRamp = (controlWord & CW_VL_EnableRamp);
+                emit enableRampEvent((controlWord & CW_VL_EnableRamp));
             }
-            if (controlWord & CW_VL_ReferenceRamp)
+            if ((controlWord & CW_VL_ReferenceRamp) != (_cmdControlWord & CW_VL_ReferenceRamp))
             {
-                _referenceRamp = true;
-                emit referenceRamp();
+                _referenceRamp = (controlWord & CW_VL_ReferenceRamp);
+                emit referenceRampEvent((controlWord & CW_VL_ReferenceRamp));
             }
-            if (controlWord & CW_VL_UnlockRamp)
+            if ((controlWord & CW_VL_UnlockRamp) != (_cmdControlWord & CW_VL_UnlockRamp))
             {
-                _unlockRamp = true;
-                emit unlockRamp();
+                _unlockRamp = (controlWord & CW_VL_UnlockRamp);
+                emit unlockRampEvent(controlWord & CW_VL_UnlockRamp);
             }
+            _cmdControlWord = controlWord;
         }
     }
 }

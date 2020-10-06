@@ -34,22 +34,24 @@ class CANOPEN_EXPORT NodeProfile402Vl : public QObject, public NodeOdSubscriber
 public:
     NodeProfile402Vl(Node *node);
 
-    void target(qint16 velocity);
+    void setTarget(qint16 velocity);
 
     void enableMode();
-    void enableRamp(bool ok);
-    void unlockRamp(bool ok);
-    void referenceRamp(bool ok);
 
+    void setEnableRamp(bool ok);
     bool isEnableRamp(void);
+
+    void setUnlockRamp(bool ok);
     bool isUnlockRamp(void);
+
+    void setReferenceRamp(bool ok);
     bool isReferenceRamp(void);
 
 signals:
     void isAppliedTarget();
-    void enableRamp();
-    void referenceRamp();
-    void unlockRamp();
+    void enableRampEvent(bool ok);
+    void referenceRampEvent(bool ok);
+    void unlockRampEvent(bool ok);
 
 private:
     Node *_node;

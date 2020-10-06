@@ -22,6 +22,7 @@
 #include "canopen_global.h"
 
 #include "../nodeprofile.h"
+#include "node.h"
 
 class NodeObjectId;
 class NodeProfile402Vl;
@@ -103,6 +104,10 @@ public:
 
     Error errorOccurred();
 
+    NodeProfile402Vl *p402Vl();
+    NodeProfile402Ip *p402Ip();
+    NodeProfile402Tq *p402Tq();
+
 signals:
     void modeChanged();
     void stateChanged();
@@ -139,6 +144,8 @@ private:
     NodeProfile402Ip *_p402Ip;
     NodeProfile402Tq *_p402Tq;
     NodeProfile402Vl *_p402Vl;
+
+    void statusNodeChanged(Node::Status status);
 
     void enableRamp(void);
     void manageState(const State402 state);
