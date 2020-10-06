@@ -175,18 +175,18 @@ void PidWidget::createWidgets()
 
     _pSpinBox = new IndexSpinBox(_pidP_ObjId);
     _pSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("P :"), _pSpinBox);
+    pidLayout->addRow(tr("&P :"), _pSpinBox);
 
     _iSpinBox = new IndexSpinBox(_pidI_ObjId);
     _iSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("I :"), _iSpinBox);
+    pidLayout->addRow(tr("&I :"), _iSpinBox);
 
     _dSpinBox = new IndexSpinBox(_pidD_ObjId);
     _dSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("D :"), _dSpinBox);
+    pidLayout->addRow(tr("&D :"), _dSpinBox);
 
     _periodSpinBox = new IndexSpinBox(_period_ObjId);
-    pidLayout->addRow(tr("Period :"), _periodSpinBox);
+    pidLayout->addRow(tr("P&eriod :"), _periodSpinBox);
 
     pidGroupBox->setLayout(pidLayout);
 
@@ -195,18 +195,18 @@ void PidWidget::createWidgets()
 
     _targetSpinBox = new QSpinBox();
     _targetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    targetLayout->addRow(tr("Target :"), _targetSpinBox);
+    targetLayout->addRow(tr("&Target :"), _targetSpinBox);
 
     _windowSpinBox = new QSpinBox();
     _windowSpinBox->setRange(10, 5000);
     _windowSpinBox->setValue(500);
     _windowSpinBox->setSuffix(" ms");
-    targetLayout->addRow(tr("Measurement window :"), _windowSpinBox);
+    targetLayout->addRow(tr("&Measurement window :"), _windowSpinBox);
 
-    _savePushButton = new QPushButton(tr("Save"));
+    _savePushButton = new QPushButton(tr("&Save"));
     connect(_savePushButton, &QPushButton::clicked, this, &PidWidget::savePosition);
 
-    _goTargetPushButton = new QPushButton(tr("GO"));
+    _goTargetPushButton = new QPushButton(tr("G&O"));
     connect(_goTargetPushButton, &QPushButton::clicked, this, &PidWidget::goTargetPosition);
 
     targetGroupBox->setLayout(targetLayout);
