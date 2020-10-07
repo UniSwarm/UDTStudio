@@ -52,6 +52,19 @@ P402IpWidget::~P402IpWidget()
     unRegisterFullOd();
 }
 
+Node *P402IpWidget::node() const
+{
+    return _node;
+}
+
+void P402IpWidget::readData()
+{
+    if (_node)
+    {
+        _node->readObject(_ipPositionDemandValueObjectId);
+    }
+}
+
 void P402IpWidget::setNode(Node *node)
 {
     _ipTimePeriodUnitSpinBox->setNode(node);
@@ -118,19 +131,6 @@ void P402IpWidget::setNode(Node *node)
 
         _bus = _node->bus();
         connect(_bus->sync(), &Sync::signalBeforeSync, this, &P402IpWidget::sendDataRecordTargetWithPdo);
-    }
-}
-
-Node *P402IpWidget::node() const
-{
-    return _node;
-}
-
-void P402IpWidget::readData()
-{
-    if (_node)
-    {
-        _node->readObject(_ipPositionDemandValueObjectId);
     }
 }
 
@@ -219,6 +219,159 @@ void P402IpWidget::ipClearBufferClicked()
 void P402IpWidget::ipEnableRampClicked(int id)
 {
     _nodeProfile402Ip->setEnableRamp(id);
+}
+
+// each period * 5 -> we send 5 set-point, for have always value in buffer in device
+void P402IpWidget::goTargetPosition()
+{
+    quint32 unit = 0;
+    qint32 index = 0;
+    qreal period = 0;
+
+    qint32 initialPosition = _node->nodeOd()->value(_ipPositionDemandValueObjectId).toInt();
+    calculatePointSinusoidalMotionProfile(initialPosition);
+
+    quint8 value = 1;
+    _node->writeObject(_ipBufferClearObjectId, QVariant(value));
+
+    unit = static_cast<quint32>(_node->nodeOd()->value(_ipTimePeriodIndexObjectId).toUInt());
+    index = static_cast<qint32>(_node->nodeOd()->value(_ipTimePeriodUnitsObjectId).toUInt());
+
+    period = qPow(10, index);
+    period = unit * period * 1000;
+
+    if (_bus->sync()->status() == Sync::Status::STOPPED)
+    {
+        sendDataRecordTargetWithSdo();
+        _sendPointSinusoidalTimer.start(static_cast<int>(period) * 5);
+    }
+    _goTargetPushButton->setEnabled(false);
+    _ipDataRecordLineEdit->setEnabled(false);
+}
+
+void P402IpWidget::stopTargetPosition()
+{
+    _pointSinusoidalVector.clear();
+    _sendPointSinusoidalTimer.stop();
+    _goTargetPushButton->setEnabled(true);
+    _ipDataRecordLineEdit->setEnabled(true);
+}
+
+void P402IpWidget::calculatePointSinusoidalMotionProfile(qint32 initialPosition)
+{
+    qint32 target = 0;
+    quint32 duration = 0;
+    quint32 unit = 0;
+    qint32 index = 0;
+    qreal period = 0;
+
+    if (_relativeTargetpositionSpinBox->isChecked())
+    {
+        target = _targetPositionSpinBox->value();
+    }
+    else
+    {
+        target = _targetPositionSpinBox->value() - initialPosition;
+    }
+
+    duration = static_cast<quint32>(_durationSpinBox->value());
+    unit = static_cast<quint32>(_node->nodeOd()->value(_ipTimePeriodIndexObjectId).toUInt());
+    index = static_cast<qint32>(_node->nodeOd()->value(_ipTimePeriodUnitsObjectId).toUInt());
+
+    period = qPow(10, index);
+    period = unit * period * 1000;
+    if (period == 0.0)
+    {
+        return;
+    }
+    _pointSinusoidalVector.clear();
+
+    int j = 0;
+    for (quint32 i = 0; i <= duration; i++)
+    {
+        qreal pos = ((M_PI * i) / duration) + M_PI;
+        pos = (((target / 2) * qCos(pos)) + (target / 2)) + initialPosition;
+        if (((i % static_cast<quint32>(period)) == 0) && (i != 0))
+        {
+            _pointSinusoidalVector.insert(static_cast<int>(j), static_cast<qint32>(pos));
+            j++;
+        }
+    }
+}
+
+void P402IpWidget::sendDataRecordTargetWithPdo()
+{
+    if (_pointSinusoidalVector.isEmpty())
+    {
+        stopTargetPosition();
+        return;
+    }
+    _node->writeObject(_ipDataRecordObjectId, QVariant(_pointSinusoidalVector.at(0)));
+    _pointSinusoidalVector.remove(0);
+}
+
+void P402IpWidget::sendDataRecordTargetWithSdo()
+{
+    int i = 0;
+    if (_pointSinusoidalVector.isEmpty())
+    {
+        stopTargetPosition();
+        return;
+    }
+
+    for (i = 0; i < 5; i++)
+    {
+        if (i > (_pointSinusoidalVector.size() - 1))
+        {
+            break;
+        }
+        _node->writeObject(_ipDataRecordObjectId, QVariant(_pointSinusoidalVector.at(i)));
+    }
+    _pointSinusoidalVector.remove(0, i);
+}
+
+void P402IpWidget::readActualBufferSize()
+{
+    _node->readObject(_ipBufferClearObjectId);
+}
+
+void P402IpWidget::dataLogger()
+{
+    DataLogger *dataLogger = new DataLogger();
+    DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
+    dataLogger->addData({_ipPositionDemandValueObjectId});
+    _dataLoggerWidget->show();
+}
+
+void P402IpWidget::pdoMapping()
+{
+    NodeObjectId controlWordObjectId =
+        NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0, QMetaType::Type::UShort);
+    NodeObjectId statusWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6041, 0, QMetaType::Type::UShort);
+
+    QList<NodeObjectId> ipRpdoObjectList = {{controlWordObjectId}, {_ipDataRecordObjectId}};
+    _node->rpdos().at(0)->writeMapping(ipRpdoObjectList);
+
+    QList<NodeObjectId> ipTpdoObjectList = {{statusWordObjectId}, {_ipPositionDemandValueObjectId}};
+    _node->tpdos().at(2)->writeMapping(ipTpdoObjectList);
+}
+
+void P402IpWidget::refreshData(NodeObjectId object)
+{
+    int value;
+    if (_node->nodeOd()->indexExist(object.index()))
+    {
+        if (object == _ipPositionDemandValueObjectId)
+        {
+            value = _node->nodeOd()->value(object).toInt();
+            _ipPositionDemandValueLabel->setNum(value);
+        }
+    }
+}
+
+void P402IpWidget::enableRampEvent(bool ok)
+{
+    _ipEnableRampButtonGroup->button(ok)->setChecked(ok);
 }
 
 void P402IpWidget::createWidgets()
@@ -501,159 +654,6 @@ void P402IpWidget::createWidgets()
     setLayout(layout);
 }
 
-// each period * 5 -> we send 5 set-point, for have always value in buffer in device
-void P402IpWidget::goTargetPosition()
-{
-    quint32 unit = 0;
-    qint32 index = 0;
-    qreal period = 0;
-
-    qint32 initialPosition = _node->nodeOd()->value(_ipPositionDemandValueObjectId).toInt();
-    calculatePointSinusoidalMotionProfile(initialPosition);
-
-    quint8 value = 1;
-    _node->writeObject(_ipBufferClearObjectId, QVariant(value));
-
-    unit = static_cast<quint32>(_node->nodeOd()->value(_ipTimePeriodIndexObjectId).toUInt());
-    index = static_cast<qint32>(_node->nodeOd()->value(_ipTimePeriodUnitsObjectId).toUInt());
-
-    period = qPow(10, index);
-    period = unit * period * 1000;
-
-    if (_bus->sync()->status() == Sync::Status::STOPPED)
-    {
-        sendDataRecordTargetWithSdo();
-        _sendPointSinusoidalTimer.start(static_cast<int>(period) * 5);
-    }
-    _goTargetPushButton->setEnabled(false);
-    _ipDataRecordLineEdit->setEnabled(false);
-}
-
-void P402IpWidget::stopTargetPosition()
-{
-    _pointSinusoidalVector.clear();
-    _sendPointSinusoidalTimer.stop();
-    _goTargetPushButton->setEnabled(true);
-    _ipDataRecordLineEdit->setEnabled(true);
-}
-
-void P402IpWidget::readActualBufferSize()
-{
-    _node->readObject(_ipBufferClearObjectId);
-}
-
-void P402IpWidget::sendDataRecordTargetWithPdo()
-{
-    if (_pointSinusoidalVector.isEmpty())
-    {
-        stopTargetPosition();
-        return;
-    }
-    _node->writeObject(_ipDataRecordObjectId, QVariant(_pointSinusoidalVector.at(0)));
-    _pointSinusoidalVector.remove(0);
-}
-
-void P402IpWidget::sendDataRecordTargetWithSdo()
-{
-    int i = 0;
-    if (_pointSinusoidalVector.isEmpty())
-    {
-        stopTargetPosition();
-        return;
-    }
-
-    for (i = 0; i < 5; i++)
-    {
-        if (i > (_pointSinusoidalVector.size() - 1))
-        {
-            break;
-        }
-        _node->writeObject(_ipDataRecordObjectId, QVariant(_pointSinusoidalVector.at(i)));
-    }
-    _pointSinusoidalVector.remove(0, i);
-}
-
-void P402IpWidget::calculatePointSinusoidalMotionProfile(qint32 initialPosition)
-{
-    qint32 target = 0;
-    quint32 duration = 0;
-    quint32 unit = 0;
-    qint32 index = 0;
-    qreal period = 0;
-
-    if (_relativeTargetpositionSpinBox->isChecked())
-    {
-        target = _targetPositionSpinBox->value();
-    }
-    else
-    {
-        target = _targetPositionSpinBox->value() - initialPosition;
-    }
-
-    duration = static_cast<quint32>(_durationSpinBox->value());
-    unit = static_cast<quint32>(_node->nodeOd()->value(_ipTimePeriodIndexObjectId).toUInt());
-    index = static_cast<qint32>(_node->nodeOd()->value(_ipTimePeriodUnitsObjectId).toUInt());
-
-    period = qPow(10, index);
-    period = unit * period * 1000;
-    if (period == 0.0)
-    {
-        return;
-    }
-    _pointSinusoidalVector.clear();
-
-    int j = 0;
-    for (quint32 i = 0; i <= duration; i++)
-    {
-        qreal pos = ((M_PI * i) / duration) + M_PI;
-        pos = (((target / 2) * qCos(pos)) + (target / 2)) + initialPosition;
-        if (((i % static_cast<quint32>(period)) == 0) && (i != 0))
-        {
-            _pointSinusoidalVector.insert(static_cast<int>(j), static_cast<qint32>(pos));
-            j++;
-        }
-    }
-}
-
-void P402IpWidget::dataLogger()
-{
-    DataLogger *dataLogger = new DataLogger();
-    DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    dataLogger->addData({_ipPositionDemandValueObjectId});
-    _dataLoggerWidget->show();
-}
-
-void P402IpWidget::pdoMapping()
-{
-    NodeObjectId controlWordObjectId =
-        NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0, QMetaType::Type::UShort);
-    NodeObjectId statusWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6041, 0, QMetaType::Type::UShort);
-
-    QList<NodeObjectId> ipRpdoObjectList = {{controlWordObjectId}, {_ipDataRecordObjectId}};
-    _node->rpdos().at(0)->writeMapping(ipRpdoObjectList);
-
-    QList<NodeObjectId> ipTpdoObjectList = {{statusWordObjectId}, {_ipPositionDemandValueObjectId}};
-    _node->tpdos().at(2)->writeMapping(ipTpdoObjectList);
-}
-
-void P402IpWidget::enableRampEvent(bool ok)
-{
-    _ipEnableRampButtonGroup->button(ok)->setChecked(ok);
-}
-
-void P402IpWidget::refreshData(NodeObjectId object)
-{
-    int value;
-    if (_node->nodeOd()->indexExist(object.index()))
-    {
-        if (object == _ipPositionDemandValueObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _ipPositionDemandValueLabel->setNum(value);
-        }
-    }
-}
-
 void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (!_node)
@@ -662,8 +662,7 @@ void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     }
 
     if ((objId == _ipPositionDemandValueObjectId) || (objId == _ipVelocityActualObjectId)
-        || (objId == _ipHomeOffsetObjectId) || (objId == _ipPolarityObjectId))
-
+        || (objId == _ipPolarityObjectId))
     {
         if (flags == SDO::FlagsRequest::Error)
         {

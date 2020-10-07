@@ -52,20 +52,15 @@ public:
 public slots:
     void setNode(Node *value);
     void updateData();
-
     void start();
     void stop();
     void gotoStateOEClicked();
 
 private:
-    void createWidgets();
-    void setTimer(int ms);
-    void readData();
+    Node *_node;
 
     QTimer _timer;
     QTimer _operationEnabledTimer;
-
-    Node *_node;
 
     enum State
     {
@@ -81,7 +76,6 @@ private:
 
     NodeObjectId _controlWordObjectId;
     NodeObjectId _statusWordObjectId;
-
     NodeProfile402 *_nodeProfile402;
 
     QStackedWidget *_stackedWidget;
@@ -92,27 +86,27 @@ private:
 
     QToolBar *_nmtToolBar;
     QSpinBox *_logTimerSpinBox;
-
     QGroupBox *_modeGroupBox;
     QGroupBox *_stateMachineGroupBox;
     QGroupBox *_controlWordGroupBox;
     QGroupBox *_statusWordGroupBox;
-
     QComboBox *_modeComboBox;
     QList<NodeProfile402::Mode> _listModeComboBox;
-    void modeChanged();
-    void stateChanged();
-    void isHalted(bool state);
-    void eventHappened(quint8 event);
-
     QLabel *_controlWordLabel;
     QPushButton *_haltPushButton;
-
     QLabel *_statusWordRawLabel;
     QLabel *_statusWordLabel;
     QLabel *_informationLabel;
     QLabel *_warningLabel;
     QButtonGroup *_stateMachineGroup;
+
+    void setTimer(int ms);
+    void readData();
+
+    void modeChanged();
+    void stateChanged();
+    void isHalted(bool state);
+    void eventHappened(quint8 event);
 
     void displayOption402();
     void modeIndexChanged(int id);
@@ -121,9 +115,12 @@ private:
 
     void setCheckableStateMachine(int id);
 
+    void createWidgets();
+
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+
     // QObject interface
 public:
     void closeEvent(QCloseEvent *event) override;

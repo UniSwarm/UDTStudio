@@ -51,28 +51,21 @@ class P402TqWidget : public QWidget, public NodeOdSubscriber
   private:
     Node *_node;
 
-    void createWidgets();
-
-    // TQ mode
     NodeObjectId _tqTorqueDemandObjectId;
     NodeObjectId _tqTargetTorqueObjectId;
-
     NodeObjectId _tqTorqueActualValueObjectId;
     NodeObjectId _tqCurrentActualValueObjectId;
     NodeObjectId _tqDCLinkVoltageObjectId;
 
-    // TQ MODE
     QLabel *_tqTorqueDemandLabel;
     QLabel *_tqTorqueActualValueLabel;
     QLabel *_tqCurrentActualValueLabel;
     QLabel *_tqDCLinkVoltageLabel;
-
     QSpinBox *_tqTargetTorqueSpinBox;
     QSlider *_tqTargetTorqueSlider;
     IndexSpinBox *_tqTargetSlopeSpinBox;
     IndexSpinBox *_tqTorqueProfileTypeSpinBox;
     IndexSpinBox *_tqMaxTorqueSpinBox;
-
     IndexSpinBox *_tqMaxCurrentSpinBox;
     IndexSpinBox *_tqMotorRatedTorqueSpinBox;
     IndexSpinBox *_tqMotorRatedCurrentSpinBox;
@@ -83,6 +76,8 @@ class P402TqWidget : public QWidget, public NodeOdSubscriber
     void dataLogger();
     void pdoMapping();
     void refreshData(NodeObjectId object);
+
+    void createWidgets();
 
     // NodeOdSubscriber interface
   protected:

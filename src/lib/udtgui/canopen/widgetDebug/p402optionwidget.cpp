@@ -19,6 +19,7 @@
 #include "p402optionwidget.h"
 
 #include "node.h"
+#include "indexdb402.h"
 
 #include <QFormLayout>
 #include <QGroupBox>
@@ -29,13 +30,16 @@ P402OptionWidget::P402OptionWidget(QWidget *parent)
 {
     _node = nullptr;
     createWidgets();
-
-
 }
 
 P402OptionWidget::~P402OptionWidget()
 {
     unRegisterFullOd();
+}
+
+Node *P402OptionWidget::node() const
+{
+    return _node;
 }
 
 void P402OptionWidget::setNode(Node *node)
@@ -51,12 +55,12 @@ void P402OptionWidget::setNode(Node *node)
     _node = node;
     if (_node)
     {
-        _abortConnectionObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6007, 0);
-        _quickStopObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x605A, 0);
-        _shutdownObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x605B, 0);
-        _disableObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x605C, 0);
-        _haltObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x605D, 0);
-        _faultReactionObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x605E, 0);
+        _abortConnectionObjectId = IndexDb402::getObjectId(IndexDb402::OD_ABORT_CONNECTION_OPTION);// = NodeObjectId(_node->busId(), _node->nodeId(), 0x6007, 0);
+        _quickStopObjectId = IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION);// = NodeObjectId(_node->busId(), _node->nodeId(), 0x605A, 0);
+        _shutdownObjectId = IndexDb402::getObjectId(IndexDb402::OD_SHUTDOWN_OPTION);// = NodeObjectId(_node->busId(), _node->nodeId(), 0x605B, 0);
+        _disableObjectId = IndexDb402::getObjectId(IndexDb402::OD_DISABLE_OPERATION_OPTION);// = NodeObjectId(_node->busId(), _node->nodeId(), 0x605C, 0);
+        _haltObjectId = IndexDb402::getObjectId(IndexDb402::OD_HALT_OPTION);// = NodeObjectId(_node->busId(), _node->nodeId(), 0x605D, 0);
+        _faultReactionObjectId = IndexDb402::getObjectId(IndexDb402::OD_FAULT_REACTION_OPTION);// = NodeObjectId(_node->busId(), _node->nodeId(), 0x605E, 0);
         registerObjId({_abortConnectionObjectId});
         registerObjId({_quickStopObjectId});
         registerObjId({_shutdownObjectId});
@@ -67,11 +71,6 @@ void P402OptionWidget::setNode(Node *node)
         setNodeInterrest(node);
         connect(_node, &Node::statusChanged, this, &P402OptionWidget::updateData);
     }
-}
-
-Node *P402OptionWidget::node() const
-{
-    return _node;
 }
 
 void P402OptionWidget::updateData()
@@ -157,41 +156,35 @@ void P402OptionWidget::faultReactionOptionClicked(int id)
 
 void P402OptionWidget::refreshData(NodeObjectId object)
 {
-    if (_node->nodeOd()->indexExist(object.index))
+    if (_node->nodeOd()->indexExist(object.index()))
     {
         int value = _node->nodeOd()->value(object).toInt();
 
-        // Abort connection option code
         if (object == _abortConnectionObjectId)
         {
             _abortConnectionOptionGroup->button(value)->setChecked(true);
         }
 
-        // Quick stop option code
         if (object == _quickStopObjectId)
         {
             _quickStopOptionGroup->button(value)->setChecked(true);
         }
 
-        // Shutdown option code
         if (object == _shutdownObjectId)
         {
             _shutdownOptionGroup->button(value)->setChecked(true);
         }
 
-        // Disable operation option code
         if (object == _disableObjectId)
         {
             _disableOptionGroup->button(value)->setChecked(true);
         }
 
-        // Halt option code
         if (object == _haltObjectId)
         {
             _haltOptionGroup->button(value)->setChecked(true);
         }
 
-        // Fault reaction option code
         if (object == _faultReactionObjectId)
         {
             _faultReactionOptionGroup->button(value)->setChecked(true);

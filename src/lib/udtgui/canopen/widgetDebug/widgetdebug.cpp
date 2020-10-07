@@ -19,6 +19,8 @@
 #include "widgetdebug.h"
 
 #include "services/services.h"
+#include "indexdb402.h"
+
 #include <QApplication>
 #include <QButtonGroup>
 #include <QDebug>
@@ -41,17 +43,21 @@ WidgetDebug::WidgetDebug(Node *node, QWidget *parent)
         return;
     }
 
-
-
     createWidgets();
     setCheckableStateMachine(2);
-
     setNode(node);
 }
+
 WidgetDebug::~WidgetDebug()
 {
     unRegisterFullOd();
 }
+
+Node *WidgetDebug::node() const
+{
+    return _node;
+}
+
 void WidgetDebug::setNode(Node *node)
 {
     if ((node->profileNumber()) != 0x192)
@@ -74,8 +80,8 @@ void WidgetDebug::setNode(Node *node)
     {
         setWindowTitle("402 : " + _node->name() + ", Status :" + _node->statusStr());
 
-        _controlWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0, QMetaType::Type::UShort);
-        _statusWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6041, 0, QMetaType::Type::UShort);
+        _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD);
+        _statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD);
 
         _nodeProfile402 = static_cast<NodeProfile402 *>(_node->profiles()[0]);
         QList<NodeProfile402::Mode> modeList  = _nodeProfile402->modesSupported();
@@ -124,6 +130,69 @@ void WidgetDebug::updateData()
             _statusWordGroupBox->setEnabled(false);
         }
         modeChanged();
+    }
+}
+
+void WidgetDebug::start()
+{
+    if (_node)
+    {
+        _node->sendStart();
+        _stackedWidget->setEnabled(true);
+        _timer.start(_logTimerSpinBox->value());
+        _modeGroupBox->setEnabled(true);
+        _stateMachineGroupBox->setEnabled(true);
+        _controlWordGroupBox->setEnabled(true);
+        _statusWordGroupBox->setEnabled(true);
+    }
+}
+
+void WidgetDebug::stop()
+{
+    if (_node)
+    {
+        _haltPushButton->setChecked(false);
+        _stackedWidget->setEnabled(false);
+        _nmtToolBar->setEnabled(true);
+        _modeGroupBox->setEnabled(false);
+        _stateMachineGroupBox->setEnabled(false);
+        _controlWordGroupBox->setEnabled(false);
+        _statusWordGroupBox->setEnabled(false);
+
+        _timer.stop();
+    }
+}
+
+void WidgetDebug::gotoStateOEClicked()
+{
+    _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
+}
+
+void WidgetDebug::setTimer(int ms)
+{
+    _timer.start(ms);
+}
+
+void WidgetDebug::readData()
+{
+    if (_node)
+    {
+        _node->readObject(_controlWordObjectId);
+        _node->readObject(_statusWordObjectId);
+
+        NodeProfile402::Mode mode = _nodeProfile402->actualMode();
+        if (mode == NodeProfile402::IP)
+        {
+            _p402ip->readData();
+        }
+        else if (mode == NodeProfile402::VL)
+        {
+            _p402vl->readData();
+        }
+        else if (mode == NodeProfile402::TQ)
+        {
+            _p402tq->readData();
+        }
     }
 }
 
@@ -292,7 +361,7 @@ void WidgetDebug::eventHappened(quint8 event)
         text.append(_nodeProfile402->event402Str(NodeProfile402::InternalLimitActive));
     }
 
-   if (event & NodeProfile402::Warning)
+    if (event & NodeProfile402::Warning)
     {
         if (!text.isEmpty())
         {
@@ -316,64 +385,6 @@ void WidgetDebug::eventHappened(quint8 event)
     _warningLabel->setText(text);
 }
 
-
-void WidgetDebug::start()
-{
-    if (_node)
-    {
-        _node->sendStart();
-        _stackedWidget->setEnabled(true);
-        _timer.start(_logTimerSpinBox->value());
-        _modeGroupBox->setEnabled(true);
-        _stateMachineGroupBox->setEnabled(true);
-        _controlWordGroupBox->setEnabled(true);
-        _statusWordGroupBox->setEnabled(true);
-    }
-}
-
-void WidgetDebug::stop()
-{
-    if (_node)
-    {
-        _haltPushButton->setChecked(false);
-        _stackedWidget->setEnabled(false);
-        _nmtToolBar->setEnabled(true);
-        _modeGroupBox->setEnabled(false);
-        _stateMachineGroupBox->setEnabled(false);
-        _controlWordGroupBox->setEnabled(false);
-        _statusWordGroupBox->setEnabled(false);
-
-        _timer.stop();
-    }
-}
-
-void WidgetDebug::setTimer(int ms)
-{
-    _timer.start(ms);
-}
-
-void WidgetDebug::readData()
-{
-    if (_node)
-    {
-        _node->readObject(_controlWordObjectId);
-        _node->readObject(_statusWordObjectId);
-
-        NodeProfile402::Mode mode = _nodeProfile402->actualMode();
-        if (mode == NodeProfile402::IP)
-        {
-            _p402ip->readData();
-        }
-        else if (mode == NodeProfile402::VL)
-        {
-            _p402vl->readData();
-        }
-        else if (mode == NodeProfile402::TQ)
-        {
-            _p402tq->readData();
-        }
-    }
-}
 void WidgetDebug::displayOption402()
 {
     if (_stackedWidget->currentWidget() == _p402Option)
@@ -411,11 +422,6 @@ void WidgetDebug::stateMachineClicked(int id)
 void WidgetDebug::haltClicked()
 {
     _nodeProfile402->toggleHalt();
-}
-
-void WidgetDebug::gotoStateOEClicked()
-{
-    _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
 }
 
 void WidgetDebug::setCheckableStateMachine(int id)
@@ -607,7 +613,7 @@ void WidgetDebug::showEvent(QShowEvent *event)
     {
         if (_node->status() ==  Node::STARTED)
         {
-           _timer.start(_logTimerSpinBox->value());
+            _timer.start(_logTimerSpinBox->value());
         }
 
         NodeProfile402::Mode mode = _nodeProfile402->actualMode();

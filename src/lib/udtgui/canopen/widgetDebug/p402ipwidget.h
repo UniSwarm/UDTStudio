@@ -46,9 +46,7 @@ public:
     ~P402IpWidget() override;
 
     Node *node() const;
-
     void readData();
-signals:
 
 public slots:
     void setNode(Node *value);
@@ -58,26 +56,19 @@ public slots:
 private:
     Node *_node;
     CanOpenBus *_bus;
-
     NodeProfile402Ip *_nodeProfile402Ip;
 
-    void createWidgets();
-
-    // IP mode
     NodeObjectId _ipDataRecordObjectId;
     NodeObjectId _ipBufferClearObjectId;
     NodeObjectId _ipPositionDemandValueObjectId;
     NodeObjectId _ipVelocityActualObjectId;
     NodeObjectId _ipTimePeriodIndexObjectId;
     NodeObjectId _ipTimePeriodUnitsObjectId;
-
-    NodeObjectId _ipHomeOffsetObjectId;
     NodeObjectId _ipPolarityObjectId;
 
     int _iteratorForSendDataRecord;
     QStringList _listDataRecord;
 
-    // IP MODE
     QButtonGroup *_ipEnableRampButtonGroup;
     QButtonGroup *_ipHaltButtonGroup;
 
@@ -114,6 +105,14 @@ private:
     QVector<int> _pointSinusoidalVector;
     QTimer _sendPointSinusoidalTimer;
 
+    void ipDataRecordLineEditFinished();
+    void ipSendDataRecord();
+
+    void ipPolarityEditingFinished();
+    void ipClearBufferClicked();
+    void ipEnableRampClicked(int id);
+    void ipHaltClicked(int id);
+
     void goTargetPosition();
     void stopTargetPosition();
     void calculatePointSinusoidalMotionProfile(qint32 initialPosition);
@@ -121,21 +120,13 @@ private:
     void sendDataRecordTargetWithSdo();
     void readActualBufferSize();
 
-    void ipDataRecordLineEditFinished();
-    void ipSendDataRecord();
-
-    void ipTargetVelocitySpinboxFinished();
-    void ipPolarityEditingFinished();
-    void ipClearBufferClicked();
-
-    void ipEnableRampClicked(int id);
-    void ipHaltClicked(int id);
-
     void dataLogger();
     void pdoMapping();
     void refreshData(NodeObjectId object);
 
     void enableRampEvent(bool ok);
+
+    void createWidgets();
 
     // NodeOdSubscriber interface
 protected:

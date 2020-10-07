@@ -20,6 +20,7 @@
 #define P402VL_H
 
 #include "../../udtgui_global.h"
+
 #include "node.h"
 #include "nodeodsubscriber.h"
 
@@ -102,4 +103,4 @@ protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // P402VL_H
+#endif  // P402VL_H
