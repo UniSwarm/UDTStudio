@@ -19,12 +19,15 @@
 #include "p402ipwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
+#include "canopenbus.h"
 #include "services/services.h"
 
+#include "canopen/widget/indexspinbox.h"
+#include "indexdb402.h"
 #include "profile/p402/nodeprofile402.h"
 #include "profile/p402/nodeprofile402ip.h"
 
-#include "canopenbus.h"
+#include <QDebug>
 #include <QFormLayout>
 #include <QLineEdit>
 #include <QPushButton>
@@ -32,38 +35,16 @@
 #include <QString>
 #include <QStringList>
 #include <QtMath>
-#include <QDebug>
 
-P402IpWidget::P402IpWidget(QWidget *parent)
-    : QWidget(parent)
+P402IpWidget::P402IpWidget(QWidget *parent) : QWidget(parent)
 {
     _node = nullptr;
     createWidgets();
 
-    _ipPositionDemandValueObjectId = 0x6062;
-
-    _ipDataRecordObjectId = 0x60C1;
-    _ipDataConfigurationObjectId = 0x60C4;
-
-    _ipTimePeriodObjectId = 0x60C2;
-    _ipPositionRangelLimitObjectId = 0x607B;
-    _ipSoftwarePositionLimitObjectId = 0x607D;
-    _ipHomeOffsetObjectId = 0x607C;
-    _ipPolarityObjectId = 0x607E;
-
-    _ipProfileVelocityObjectId = 0x6081;
-    _ipEndVelocityObjectId = 0x6082;
-
-    _ipMaxProfileVelocityObjectId = 0x607F;
-    _ipMaxMotorSpeedObjectId = 0x6080;
-
-    _ipProfileAccelerationObjectId = 0x6083;
-    _ipMaxAccelerationObjectId = 0x60C5;
-
-    _ipProfileDecelerationObjectId = 0x6084;
-    _ipMaxDecelerationObjectId = 0x60C6;
-
-    _ipQuickStopDecelerationObjectId = 0x6085;
+    _ipPositionDemandValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE);
+    _ipDataRecordObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_SET_POINT);
+    _ipBufferClearObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_BUFFER_CLEAR);
+    _ipPolarityObjectId = IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY);
 }
 
 P402IpWidget::~P402IpWidget()
@@ -73,6 +54,23 @@ P402IpWidget::~P402IpWidget()
 
 void P402IpWidget::setNode(Node *node)
 {
+    _ipTimePeriodUnitSpinBox->setNode(node);
+    _ipTimePeriodIndexSpinBox->setNode(node);
+    _ipPositionRangelLimitMinSpinBox->setNode(node);
+    _ipPositionRangelLimitMaxSpinBox->setNode(node);
+    _ipSoftwarePositionLimitMinSpinBox->setNode(node);
+    _ipSoftwarePositionLimitMaxSpinBox->setNode(node);
+    _ipHomeOffsetSpinBox->setNode(node);
+    _ipProfileVelocitySpinBox->setNode(node);
+    _ipEndVelocitySpinBox->setNode(node);
+    _ipMaxProfileVelocitySpinBox->setNode(node);
+    _ipMaxMotorSpeedSpinBox->setNode(node);
+    _ipProfileAccelerationSpinBox->setNode(node);
+    _ipMaxAccelerationSpinBox->setNode(node);
+    _ipProfileDecelerationSpinBox->setNode(node);
+    _ipMaxDecelerationSpinBox->setNode(node);
+    _ipQuickStopDecelerationSpinBox->setNode(node);
+
     if (node != _node)
     {
         if (_node)
@@ -84,25 +82,12 @@ void P402IpWidget::setNode(Node *node)
     _node = node;
     if (_node)
     {
-        registerObjId({_ipDataRecordObjectId, 0xFF});
-        registerObjId({_ipPositionDemandValueObjectId, 0x00});
-        registerObjId({_ipDataConfigurationObjectId, 0x06});
-        registerObjId({_ipDataConfigurationObjectId, 0x02});
-        registerObjId({_ipTimePeriodObjectId, 0xFF});
-        registerObjId({_ipPositionRangelLimitObjectId, 0xFF});
-        registerObjId({_ipSoftwarePositionLimitObjectId, 0xFF});
-        registerObjId({_ipHomeOffsetObjectId, 0xFF});
-        registerObjId({_ipPolarityObjectId, 0xFF});
-        registerObjId({_ipProfileVelocityObjectId, 0xFF});
-        registerObjId({_ipEndVelocityObjectId, 0xFF});
-        registerObjId({_ipMaxProfileVelocityObjectId, 0xFF});
-        registerObjId({_ipMaxMotorSpeedObjectId, 0xFF});
-        registerObjId({_ipProfileAccelerationObjectId, 0xFF});
-        registerObjId({_ipMaxAccelerationObjectId, 0xFF});
-        registerObjId({_ipProfileDecelerationObjectId, 0xFF});
-        registerObjId({_ipMaxDecelerationObjectId, 0xFF});
-        registerObjId({_ipQuickStopDecelerationObjectId, 0xFF});
+        _ipPositionDemandValueObjectId.setBusId(_node->busId());
+        _ipPositionDemandValueObjectId.setNodeId(_node->nodeId());
 
+        registerObjId({_ipDataRecordObjectId});
+        registerObjId({_ipPositionDemandValueObjectId});
+        registerObjId({_ipPolarityObjectId});
         setNodeInterrest(node);
 
         _nodeProfile402Ip = static_cast<NodeProfile402 *>(_node->profiles()[0])->p402Ip();
@@ -111,6 +96,25 @@ void P402IpWidget::setNode(Node *node)
 
         connect(_node, &Node::statusChanged, this, &P402IpWidget::updateData);
         connect(&_sendPointSinusoidalTimer, &QTimer::timeout, this, &P402IpWidget::sendDataRecordTargetWithSdo);
+
+        _ipTimePeriodUnitSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_UNITS));
+        _ipTimePeriodIndexSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_INDEX));
+        _ipPositionRangelLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MIN));
+        _ipPositionRangelLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MAX));
+        _ipSoftwarePositionLimitMinSpinBox->setObjId(
+            IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MIN));
+        _ipSoftwarePositionLimitMaxSpinBox->setObjId(
+            IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MAX));
+        _ipHomeOffsetSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_HM_HOME_OFFSET));
+        _ipProfileVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_VELOCITY));
+        _ipEndVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_END_VELOCITY));
+        _ipMaxProfileVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_PROFILE_VELOCITY));
+        _ipMaxMotorSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_MOTOR_SPEED));
+        _ipProfileAccelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_ACCELERATION));
+        _ipMaxAccelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_ACCELERATION));
+        _ipProfileDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_DECELERATION));
+        _ipMaxDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_DECELERATION));
+        _ipQuickStopDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_QUICK_STOP_DECELERATION));
 
         _bus = _node->bus();
         connect(_bus->sync(), &Sync::signalBeforeSync, this, &P402IpWidget::sendDataRecordTargetWithPdo);
@@ -126,7 +130,7 @@ void P402IpWidget::readData()
 {
     if (_node)
     {
-        _node->readObject(_ipPositionDemandValueObjectId, 0x0);
+        _node->readObject(_ipPositionDemandValueObjectId);
     }
 }
 
@@ -137,37 +141,11 @@ void P402IpWidget::updateData()
         if (_node->status() == Node::STARTED)
         {
             this->setEnabled(true);
-
-            _node->readObject(_ipPositionDemandValueObjectId, 0x0);
-
-            _node->readObject(_ipTimePeriodObjectId, 1);
-            _node->readObject(_ipTimePeriodObjectId, 2);
-
-            _node->readObject(_ipPositionRangelLimitObjectId, 1);
-            _node->readObject(_ipPositionRangelLimitObjectId, 2);
-
-            _node->readObject(_ipSoftwarePositionLimitObjectId, 1);
-            _node->readObject(_ipSoftwarePositionLimitObjectId, 2);
-
-            _node->readObject(_ipHomeOffsetObjectId, 0);
-            _node->readObject(_ipPolarityObjectId, 0);
-
-            _node->readObject(_ipProfileVelocityObjectId, 0);
-            _node->readObject(_ipEndVelocityObjectId, 0);
-
-            _node->readObject(_ipMaxProfileVelocityObjectId, 0);
-            _node->readObject(_ipMaxMotorSpeedObjectId, 0);
-
-            _node->readObject(_ipProfileAccelerationObjectId, 0);
-            _node->readObject(_ipMaxAccelerationObjectId, 0);
-
-            _node->readObject(_ipProfileDecelerationObjectId, 0);
-            _node->readObject(_ipMaxDecelerationObjectId, 0);
-
-            _node->readObject(_ipQuickStopDecelerationObjectId, 0);
+            _node->readObject(_ipPositionDemandValueObjectId);
+            _node->readObject(_ipPolarityObjectId);
 
             quint8 value = 1;
-            _node->writeObject(_ipDataConfigurationObjectId, 0x06, QVariant(value));
+            _node->writeObject(_ipBufferClearObjectId, QVariant(value));
 
             _nodeProfile402Ip->setEnableRamp(true);
         }
@@ -195,7 +173,7 @@ void P402IpWidget::ipSendDataRecord()
     if (_iteratorForSendDataRecord < _listDataRecord.size())
     {
         qint32 value = _listDataRecord.at(_iteratorForSendDataRecord).toInt();
-        _node->writeObject(_ipDataRecordObjectId, 0x01, QVariant(value));
+        _node->writeObject(_ipDataRecordObjectId, QVariant(value));
         _iteratorForSendDataRecord++;
     }
     else
@@ -205,44 +183,9 @@ void P402IpWidget::ipSendDataRecord()
     }
 }
 
-void P402IpWidget::ipTimePeriodUnitEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_ipTimePeriodUnitSpinBox->value());
-    _node->writeObject(_ipTimePeriodObjectId, 0x01, QVariant(value));
-}
-void P402IpWidget::ipTimePeriodIndexEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_ipTimePeriodIndexSpinBox->value());
-    _node->writeObject(_ipTimePeriodObjectId, 0x02, QVariant(value));
-}
-void P402IpWidget::ipPositionRangelLimitMinEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_ipPositionRangelLimitMinSpinBox->value());
-    _node->writeObject(_ipPositionRangelLimitObjectId, 0x01, QVariant(value));
-}
-void P402IpWidget::ipPositionRangelLimitMaxEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_ipPositionRangelLimitMaxSpinBox->value());
-    _node->writeObject(_ipPositionRangelLimitObjectId, 0x02, QVariant(value));
-}
-void P402IpWidget::ipSoftwarePositionLimitMinEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_ipSoftwarePositionLimitMinSpinBox->value());
-    _node->writeObject(_ipSoftwarePositionLimitObjectId, 0x01, QVariant(value));
-}
-void P402IpWidget::ipSoftwarePositionLimitMaxFinished()
-{
-    quint32 value = static_cast<quint32>(_ipSoftwarePositionLimitMaxSpinBox->value());
-    _node->writeObject(_ipSoftwarePositionLimitObjectId, 0x02, QVariant(value));
-}
-void P402IpWidget::ipHomeOffsetEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_ipHomeOffsetSpinBox->value());
-    _node->writeObject(_ipHomeOffsetObjectId, 0x00, QVariant(value));
-}
 void P402IpWidget::ipPolarityEditingFinished()
 {
-    quint8 value = static_cast<quint8>(_node->nodeOd()->index(_ipPolarityObjectId)->subIndex(0)->value().toInt());
+    quint8 value = static_cast<quint8>(_node->nodeOd()->value(_ipPolarityObjectId).toInt());
 
     if (_ipPolaritySpinBox->value() == 0)
     {
@@ -252,53 +195,7 @@ void P402IpWidget::ipPolarityEditingFinished()
     {
         value = value | 0x80;
     }
-    _node->writeObject(_ipPolarityObjectId, 0x00, QVariant(value));
-}
-void P402IpWidget::ipProfileVelocityFinished()
-{
-    quint32 value = static_cast<quint32>(_ipProfileVelocitySpinBox->value());
-    _node->writeObject(_ipProfileVelocityObjectId, 0x00, QVariant(value));
-}
-void P402IpWidget::ipEndVelocityFinished()
-{
-    quint32 value = static_cast<quint32>(_ipEndVelocitySpinBox->value());
-    _node->writeObject(_ipEndVelocityObjectId, 0x00, QVariant(value));
-}
-void P402IpWidget::ipMaxProfileVelocityFinished()
-{
-    quint32 value = static_cast<quint32>(_ipMaxProfileVelocitySpinBox->value());
-    _node->writeObject(_ipMaxProfileVelocityObjectId, 0x00, QVariant(value));
-}
-void P402IpWidget::ipMaxMotorSpeedFinished()
-{
-    quint32 value = static_cast<quint32>(_ipMaxMotorSpeedSpinBox->value());
-    _node->writeObject(_ipMaxMotorSpeedObjectId, 0x00, QVariant(value));
-}
-void P402IpWidget::ipProfileAccelerationFinished()
-{
-    quint32 value = static_cast<quint32>(_ipProfileAccelerationSpinBox->value());
-    _node->writeObject(_ipProfileAccelerationObjectId, 0x00, QVariant(value));
-}
-void P402IpWidget::ipMaxAccelerationFinished()
-{
-    quint32 value = static_cast<quint32>(_ipMaxAccelerationSpinBox->value());
-    _node->writeObject(_ipMaxAccelerationObjectId, 0x00, QVariant(value));
-}
-
-void P402IpWidget::ipProfileDecelerationFinished()
-{
-    quint32 value = static_cast<quint32>(_ipProfileDecelerationSpinBox->value());
-    _node->writeObject(_ipProfileDecelerationObjectId, 0x00, QVariant(value));
-}
-void P402IpWidget::ipMaxDecelerationFinished()
-{
-    quint32 value = static_cast<quint32>(_ipMaxDecelerationSpinBox->value());
-    _node->writeObject(_ipMaxDecelerationObjectId, 0x00, QVariant(value));
-}
-void P402IpWidget::ipQuickStopDecelerationFinished()
-{
-    quint32 value = static_cast<quint32>(_ipQuickStopDecelerationSpinBox->value());
-    _node->writeObject(_ipQuickStopDecelerationObjectId, 0x00, QVariant(value));
+    _node->writeObject(_ipPolarityObjectId, QVariant(value));
 }
 
 void P402IpWidget::ipClearBufferClicked()
@@ -308,13 +205,13 @@ void P402IpWidget::ipClearBufferClicked()
     if (_clearBufferPushButton->isChecked())
     {
         value = 0;
-        _node->writeObject(_ipDataConfigurationObjectId, 0x06, QVariant(value));
+        _node->writeObject(_ipBufferClearObjectId, QVariant(value));
         _clearBufferPushButton->setChecked(false);
     }
     else
     {
         value = 1;
-        _node->writeObject(_ipDataConfigurationObjectId, 0x06, QVariant(value));
+        _node->writeObject(_ipBufferClearObjectId, QVariant(value));
         _clearBufferPushButton->setChecked(true);
     }
 }
@@ -345,17 +242,16 @@ void P402IpWidget::createWidgets()
     QLabel *ipTimePeriodLabel = new QLabel(tr("Interpolation time period (0x60C2) unit*10^index:"));
     ipLayout->addRow(ipTimePeriodLabel);
     QLayout *ipTimePeriodlayout = new QHBoxLayout();
-    _ipTimePeriodUnitSpinBox = new QSpinBox();
+    _ipTimePeriodUnitSpinBox = new IndexSpinBox();
     _ipTimePeriodUnitSpinBox->setToolTip("unit");
-    _ipTimePeriodUnitSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
+    //    _ipTimePeriodUnitSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
     ipTimePeriodlayout->addWidget(_ipTimePeriodUnitSpinBox);
-    _ipTimePeriodIndexSpinBox = new QSpinBox();
+    _ipTimePeriodIndexSpinBox = new IndexSpinBox();
     _ipTimePeriodIndexSpinBox->setToolTip("index");
-    _ipTimePeriodIndexSpinBox->setRange(-3, 63);
+    _ipTimePeriodIndexSpinBox->setDisplayHint(AbstractIndexWidget::DisplayHint::DisplayDirectValue);
+    //    _ipTimePeriodIndexSpinBox->setRange(-3, 63);
     ipTimePeriodlayout->addWidget(_ipTimePeriodIndexSpinBox);
     ipLayout->addRow(ipTimePeriodlayout);
-    connect(_ipTimePeriodUnitSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipTimePeriodUnitEditingFinished);
-    connect(_ipTimePeriodIndexSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipTimePeriodIndexEditingFinished);
 
     _clearBufferPushButton = new QPushButton(tr("Clear Buffer"));
     _clearBufferPushButton->setCheckable(true);
@@ -366,47 +262,44 @@ void P402IpWidget::createWidgets()
     QLabel *ipPositionRangelLimitLabel = new QLabel(tr("Position range limit (0x607B) :"));
     ipLayout->addRow(ipPositionRangelLimitLabel);
     QLayout *ipPositionRangelLimitlayout = new QHBoxLayout();
-    _ipPositionRangelLimitMinSpinBox = new QSpinBox();
-    _ipPositionRangelLimitMinSpinBox->setSuffix(" inc");
+    _ipPositionRangelLimitMinSpinBox = new IndexSpinBox();
+    //    _ipPositionRangelLimitMinSpinBox->setSuffix(" inc");
     _ipPositionRangelLimitMinSpinBox->setToolTip("min");
-    _ipPositionRangelLimitMinSpinBox->setRange(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+    //    _ipPositionRangelLimitMinSpinBox->setRange(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
     ipPositionRangelLimitlayout->addWidget(_ipPositionRangelLimitMinSpinBox);
-    _ipPositionRangelLimitMaxSpinBox = new QSpinBox();
-    _ipPositionRangelLimitMaxSpinBox->setSuffix(" inc");
+    _ipPositionRangelLimitMaxSpinBox = new IndexSpinBox();
+    //    _ipPositionRangelLimitMaxSpinBox->setSuffix(" inc");
     _ipPositionRangelLimitMaxSpinBox->setToolTip("max");
-    _ipPositionRangelLimitMaxSpinBox->setRange(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+    //    _ipPositionRangelLimitMaxSpinBox->setRange(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
     ipPositionRangelLimitlayout->addWidget(_ipPositionRangelLimitMaxSpinBox);
     ipLayout->addRow(ipPositionRangelLimitlayout);
-    connect(_ipPositionRangelLimitMinSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipPositionRangelLimitMinEditingFinished);
-    connect(_ipPositionRangelLimitMaxSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipPositionRangelLimitMaxEditingFinished);
 
     QLabel *ipSoftwarePositionLimitLabel = new QLabel(tr("Software position limit (0x607D) :"));
     ipLayout->addRow(ipSoftwarePositionLimitLabel);
     QLayout *ipSoftwarePositionLimitlayout = new QHBoxLayout();
-    _ipSoftwarePositionLimitMinSpinBox = new QSpinBox();
-    _ipSoftwarePositionLimitMinSpinBox->setSuffix(" inc");
+    _ipSoftwarePositionLimitMinSpinBox = new IndexSpinBox();
+    //    _ipSoftwarePositionLimitMinSpinBox->setSuffix(" inc");
     _ipSoftwarePositionLimitMinSpinBox->setToolTip("min");
-    _ipSoftwarePositionLimitMinSpinBox->setRange(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+    //    _ipSoftwarePositionLimitMinSpinBox->setRange(std::numeric_limits<int>::min(),
+    //    std::numeric_limits<int>::max());
     ipSoftwarePositionLimitlayout->addWidget(_ipSoftwarePositionLimitMinSpinBox);
-    _ipSoftwarePositionLimitMaxSpinBox = new QSpinBox();
-    _ipSoftwarePositionLimitMaxSpinBox->setSuffix(" inc");
+    _ipSoftwarePositionLimitMaxSpinBox = new IndexSpinBox();
+    //    _ipSoftwarePositionLimitMaxSpinBox->setSuffix(" inc");
     _ipSoftwarePositionLimitMaxSpinBox->setToolTip("max");
-    _ipSoftwarePositionLimitMaxSpinBox->setRange(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+    //    _ipSoftwarePositionLimitMaxSpinBox->setRange(std::numeric_limits<int>::min(),
+    //    std::numeric_limits<int>::max());
     ipSoftwarePositionLimitlayout->addWidget(_ipSoftwarePositionLimitMaxSpinBox);
     ipLayout->addRow(ipSoftwarePositionLimitlayout);
-    connect(_ipSoftwarePositionLimitMinSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipSoftwarePositionLimitMinEditingFinished);
-    connect(_ipSoftwarePositionLimitMaxSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipSoftwarePositionLimitMaxFinished);
 
     // Add Home offset (0x607C) and Polarity (0x607E)
     QLayout *ipHomeOffsetlayout = new QVBoxLayout();
     QLabel *ipHomeOffsetLabel = new QLabel(tr("Home offset (0x607C) :"));
-    _ipHomeOffsetSpinBox = new QSpinBox();
-    _ipHomeOffsetSpinBox->setSuffix(" inc");
+    _ipHomeOffsetSpinBox = new IndexSpinBox();
+    //    _ipHomeOffsetSpinBox->setSuffix(" inc");
     _ipHomeOffsetSpinBox->setToolTip("");
-    _ipHomeOffsetSpinBox->setRange(0, std::numeric_limits<int>::max());
+    //    _ipHomeOffsetSpinBox->setRange(0, std::numeric_limits<int>::max());
     ipHomeOffsetlayout->addWidget(ipHomeOffsetLabel);
     ipHomeOffsetlayout->addWidget(_ipHomeOffsetSpinBox);
-    connect(_ipHomeOffsetSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipHomeOffsetEditingFinished);
 
     QLayout *ipPolaritylayout = new QVBoxLayout();
     QLabel *ipPolarityLabel = new QLabel(tr("Polarity (0x607E bit 7) :"));
@@ -415,7 +308,6 @@ void P402IpWidget::createWidgets()
     _ipPolaritySpinBox->setRange(0, 1);
     ipPolaritylayout->addWidget(ipPolarityLabel);
     ipPolaritylayout->addWidget(_ipPolaritySpinBox);
-    connect(_ipPolaritySpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipPolarityEditingFinished);
 
     QHBoxLayout *ipHomePolaritylayout = new QHBoxLayout();
     ipHomePolaritylayout->addLayout(ipHomeOffsetlayout);
@@ -425,23 +317,21 @@ void P402IpWidget::createWidgets()
     // Add Profile velocity (0x6081) and Max motor speed (0x6080)
     QLayout *ipProfileVelocitylayout = new QVBoxLayout();
     QLabel *ipProfileVelocityLabel = new QLabel(tr("Profile velocity (0x6081) :"));
-    _ipProfileVelocitySpinBox = new QSpinBox();
-    _ipProfileVelocitySpinBox->setSuffix(" inc/s");
+    _ipProfileVelocitySpinBox = new IndexSpinBox();
+    //    _ipProfileVelocitySpinBox->setSuffix(" inc/s");
     _ipProfileVelocitySpinBox->setToolTip("");
-    _ipProfileVelocitySpinBox->setRange(0, std::numeric_limits<int>::max());
+    //    _ipProfileVelocitySpinBox->setRange(0, std::numeric_limits<int>::max());
     ipProfileVelocitylayout->addWidget(ipProfileVelocityLabel);
     ipProfileVelocitylayout->addWidget(_ipProfileVelocitySpinBox);
-    connect(_ipProfileVelocitySpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipProfileVelocityFinished);
 
     QLayout *ipEndVelocitylayout = new QVBoxLayout();
     QLabel *ipEndVelocityLabel = new QLabel(tr("End velocity (0x6082) :"));
-    _ipEndVelocitySpinBox = new QSpinBox();
-    _ipEndVelocitySpinBox->setSuffix(" inc/s");
+    _ipEndVelocitySpinBox = new IndexSpinBox();
+    //    _ipEndVelocitySpinBox->setSuffix(" inc/s");
     _ipEndVelocitySpinBox->setToolTip("");
-    _ipEndVelocitySpinBox->setRange(0, std::numeric_limits<int>::max());
+    //    _ipEndVelocitySpinBox->setRange(0, std::numeric_limits<int>::max());
     ipEndVelocitylayout->addWidget(ipEndVelocityLabel);
     ipEndVelocitylayout->addWidget(_ipEndVelocitySpinBox);
-    connect(_ipEndVelocitySpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipEndVelocityFinished);
 
     QHBoxLayout *ipMaxVelocitylayout = new QHBoxLayout();
     ipMaxVelocitylayout->addLayout(ipProfileVelocitylayout);
@@ -451,23 +341,21 @@ void P402IpWidget::createWidgets()
     // Add Max profile velocity (0x607F) and Max motor speed (0x6080)
     QLayout *ipMaxProfileVelocitylayout = new QVBoxLayout();
     QLabel *ipMaxProfileVelocityLabel = new QLabel(tr("Max profile velocity (0x607F) :"));
-    _ipMaxProfileVelocitySpinBox = new QSpinBox();
-    _ipMaxProfileVelocitySpinBox->setSuffix(" inc/period");
+    _ipMaxProfileVelocitySpinBox = new IndexSpinBox();
+    //    _ipMaxProfileVelocitySpinBox->setSuffix(" inc/period");
     _ipMaxProfileVelocitySpinBox->setToolTip("");
-    _ipMaxProfileVelocitySpinBox->setRange(0, std::numeric_limits<int>::max());
+    //    _ipMaxProfileVelocitySpinBox->setRange(0, std::numeric_limits<int>::max());
     ipMaxProfileVelocitylayout->addWidget(ipMaxProfileVelocityLabel);
     ipMaxProfileVelocitylayout->addWidget(_ipMaxProfileVelocitySpinBox);
-    connect(_ipMaxProfileVelocitySpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipMaxProfileVelocityFinished);
 
     QLayout *ipMaxMotorSpeedlayout = new QVBoxLayout();
     QLabel *ipMaxMotorSpeedLabel = new QLabel(tr("Max motor speed (0x6080) :"));
-    _ipMaxMotorSpeedSpinBox = new QSpinBox();
-    _ipMaxMotorSpeedSpinBox->setSuffix(" inc/period");
+    _ipMaxMotorSpeedSpinBox = new IndexSpinBox();
+    //    _ipMaxMotorSpeedSpinBox->setSuffix(" inc/period");
     _ipMaxMotorSpeedSpinBox->setToolTip("");
-    _ipMaxMotorSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
+    //    _ipMaxMotorSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
     ipMaxMotorSpeedlayout->addWidget(ipMaxMotorSpeedLabel);
     ipMaxMotorSpeedlayout->addWidget(_ipMaxMotorSpeedSpinBox);
-    connect(_ipMaxMotorSpeedSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipMaxMotorSpeedFinished);
 
     QHBoxLayout *ipVelocitylayout = new QHBoxLayout();
     ipVelocitylayout->addLayout(ipMaxProfileVelocitylayout);
@@ -477,23 +365,21 @@ void P402IpWidget::createWidgets()
     // Add Profile acceleration (0x6083) and Max acceleration (0x60C5)
     QLayout *ipProfileAccelerationlayout = new QVBoxLayout();
     QLabel *ipProfileAccelerationLabel = new QLabel(tr("Profile acceleration (0x6083) :"));
-    _ipProfileAccelerationSpinBox = new QSpinBox();
-    _ipProfileAccelerationSpinBox->setSuffix(" inc/s2");
+    _ipProfileAccelerationSpinBox = new IndexSpinBox();
+    //    _ipProfileAccelerationSpinBox->setSuffix(" inc/s2");
     _ipProfileAccelerationSpinBox->setToolTip("");
-    _ipProfileAccelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
+    //    _ipProfileAccelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
     ipProfileAccelerationlayout->addWidget(ipProfileAccelerationLabel);
     ipProfileAccelerationlayout->addWidget(_ipProfileAccelerationSpinBox);
-    connect(_ipProfileAccelerationSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipProfileAccelerationFinished);
 
     QLayout *ipMaxAccelerationlayout = new QVBoxLayout();
     QLabel *ipMaxAccelerationLabel = new QLabel(tr("Max acceleration (0x60C5) :"));
-    _ipMaxAccelerationSpinBox = new QSpinBox();
-    _ipMaxAccelerationSpinBox->setSuffix(" inc/s2");
+    _ipMaxAccelerationSpinBox = new IndexSpinBox();
+    //    _ipMaxAccelerationSpinBox->setSuffix(" inc/s2");
     _ipMaxAccelerationSpinBox->setToolTip("");
-    _ipMaxAccelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
+    //    _ipMaxAccelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
     ipMaxAccelerationlayout->addWidget(ipMaxAccelerationLabel);
     ipMaxAccelerationlayout->addWidget(_ipMaxAccelerationSpinBox);
-    connect(_ipMaxAccelerationSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipMaxAccelerationFinished);
 
     QHBoxLayout *ipProfileAccelerationHlayout = new QHBoxLayout();
     ipProfileAccelerationHlayout->addLayout(ipProfileAccelerationlayout);
@@ -503,23 +389,21 @@ void P402IpWidget::createWidgets()
     // Add Profile deceleration (0x6084) and Max deceleration (0x60C6)
     QLayout *ipProfileDecelerationlayout = new QVBoxLayout();
     QLabel *ipProfileDecelerationLabel = new QLabel(tr("Profile deceleration (0x6084) :"));
-    _ipProfileDecelerationSpinBox = new QSpinBox();
-    _ipProfileDecelerationSpinBox->setSuffix(" inc/s2");
+    _ipProfileDecelerationSpinBox = new IndexSpinBox();
+    //    _ipProfileDecelerationSpinBox->setSuffix(" inc/s2");
     _ipProfileDecelerationSpinBox->setToolTip("");
-    _ipProfileDecelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
+    //    _ipProfileDecelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
     ipProfileDecelerationlayout->addWidget(ipProfileDecelerationLabel);
     ipProfileDecelerationlayout->addWidget(_ipProfileDecelerationSpinBox);
-    connect(_ipProfileDecelerationSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipProfileDecelerationFinished);
 
     QLayout *ipMaxDecelerationlayout = new QVBoxLayout();
     QLabel *ipMaxDecelerationLabel = new QLabel(tr("Max deceleration (0x60C6) :"));
-    _ipMaxDecelerationSpinBox = new QSpinBox();
-    _ipMaxDecelerationSpinBox->setSuffix(" inc/s2");
+    _ipMaxDecelerationSpinBox = new IndexSpinBox();
+    //    _ipMaxDecelerationSpinBox->setSuffix(" inc/s2");
     _ipMaxDecelerationSpinBox->setToolTip("");
-    _ipMaxDecelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
+    //    _ipMaxDecelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
     ipMaxDecelerationlayout->addWidget(ipMaxDecelerationLabel);
     ipMaxDecelerationlayout->addWidget(_ipMaxDecelerationSpinBox);
-    connect(_ipMaxDecelerationSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipMaxDecelerationFinished);
 
     QHBoxLayout *ipProfileDecelerationHlayout = new QHBoxLayout();
     ipProfileDecelerationHlayout->addLayout(ipProfileDecelerationlayout);
@@ -529,14 +413,13 @@ void P402IpWidget::createWidgets()
     // Add Quick stop deceleration (0x6085)
     QLayout *ipQuickStopDecelerationlayout = new QVBoxLayout();
     QLabel *ipQuickStopDecelerationLabel = new QLabel(tr("Quick stop deceleration (0x6085) :"));
-    _ipQuickStopDecelerationSpinBox = new QSpinBox();
-    _ipQuickStopDecelerationSpinBox->setSuffix(" inc/s2");
+    _ipQuickStopDecelerationSpinBox = new IndexSpinBox();
+    //    _ipQuickStopDecelerationSpinBox->setSuffix(" inc/s2");
     _ipQuickStopDecelerationSpinBox->setToolTip("");
-    _ipQuickStopDecelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
+    //    _ipQuickStopDecelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
     ipQuickStopDecelerationlayout->addWidget(ipQuickStopDecelerationLabel);
     ipQuickStopDecelerationlayout->addWidget(_ipQuickStopDecelerationSpinBox);
     ipLayout->addRow(ipQuickStopDecelerationlayout);
-    connect(_ipQuickStopDecelerationSpinBox, &QSpinBox::editingFinished, this, &P402IpWidget::ipQuickStopDecelerationFinished);
 
     ipGroupBox->setLayout(ipLayout);
 
@@ -568,7 +451,6 @@ void P402IpWidget::createWidgets()
     generatorSinusoidalLayout->addRow(buttonGoStoplayout);
     generatorSinusoidalGroupBox->setLayout(generatorSinusoidalLayout);
 
-
     // Group Box Control Word
     QGroupBox *modeControlWordGroupBox = new QGroupBox(tr("Control Word (0x6040) bit 4, bit 8"));
     QFormLayout *modeControlWordLayout = new QFormLayout();
@@ -585,7 +467,9 @@ void P402IpWidget::createWidgets()
     _ipEnableRampButtonGroup->addButton(ip0EnableRamp, 0);
     _ipEnableRampButtonGroup->addButton(ip1EnableRamp, 1);
     modeControlWordLayout->addRow(ipEnableRamplayout);
-    connect(_ipEnableRampButtonGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { ipEnableRampClicked(id); });
+    connect(_ipEnableRampButtonGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) {
+        ipEnableRampClicked(id);
+    });
 
     QLabel *ipHaltLabel = new QLabel(tr("Halt ramp (bit 8) : Motor stopped"));
     modeControlWordLayout->addRow(ipHaltLabel);
@@ -628,10 +512,10 @@ void P402IpWidget::goTargetPosition()
     calculatePointSinusoidalMotionProfile(initialPosition);
 
     quint8 value = 1;
-    _node->writeObject(_ipDataConfigurationObjectId, 0x06, QVariant(value));
+    _node->writeObject(_ipBufferClearObjectId, QVariant(value));
 
-    unit = static_cast<quint32>(_ipTimePeriodUnitSpinBox->value());
-    index = static_cast<qint32>(_ipTimePeriodIndexSpinBox->value());
+    unit = static_cast<quint32>(_node->nodeOd()->value(_ipTimePeriodIndexObjectId).toUInt());
+    index = static_cast<qint32>(_node->nodeOd()->value(_ipTimePeriodUnitsObjectId).toUInt());
 
     period = qPow(10, index);
     period = unit * period * 1000;
@@ -655,7 +539,7 @@ void P402IpWidget::stopTargetPosition()
 
 void P402IpWidget::readActualBufferSize()
 {
-    _node->readObject(_ipDataConfigurationObjectId, 0x2);
+    _node->readObject(_ipBufferClearObjectId);
 }
 
 void P402IpWidget::sendDataRecordTargetWithPdo()
@@ -665,14 +549,13 @@ void P402IpWidget::sendDataRecordTargetWithPdo()
         stopTargetPosition();
         return;
     }
-    _node->writeObject(_ipDataRecordObjectId, 0x01, QVariant(_pointSinusoidalVector.at(0)));
+    _node->writeObject(_ipDataRecordObjectId, QVariant(_pointSinusoidalVector.at(0)));
     _pointSinusoidalVector.remove(0);
 }
 
 void P402IpWidget::sendDataRecordTargetWithSdo()
 {
     int i = 0;
-
     if (_pointSinusoidalVector.isEmpty())
     {
         stopTargetPosition();
@@ -685,11 +568,10 @@ void P402IpWidget::sendDataRecordTargetWithSdo()
         {
             break;
         }
-        _node->writeObject(_ipDataRecordObjectId, 0x01, QVariant(_pointSinusoidalVector.at(i)));
+        _node->writeObject(_ipDataRecordObjectId, QVariant(_pointSinusoidalVector.at(i)));
     }
     _pointSinusoidalVector.remove(0, i);
 }
-
 
 void P402IpWidget::calculatePointSinusoidalMotionProfile(qint32 initialPosition)
 {
@@ -709,8 +591,8 @@ void P402IpWidget::calculatePointSinusoidalMotionProfile(qint32 initialPosition)
     }
 
     duration = static_cast<quint32>(_durationSpinBox->value());
-    unit = static_cast<quint32>(_ipTimePeriodUnitSpinBox->value());
-    index = static_cast<qint32>(_ipTimePeriodIndexSpinBox->value());
+    unit = static_cast<quint32>(_node->nodeOd()->value(_ipTimePeriodIndexObjectId).toUInt());
+    index = static_cast<qint32>(_node->nodeOd()->value(_ipTimePeriodUnitsObjectId).toUInt());
 
     period = qPow(10, index);
     period = unit * period * 1000;
@@ -721,7 +603,7 @@ void P402IpWidget::calculatePointSinusoidalMotionProfile(qint32 initialPosition)
     _pointSinusoidalVector.clear();
 
     int j = 0;
-    for(quint32 i = 0; i <= duration; i++)
+    for (quint32 i = 0; i <= duration; i++)
     {
         qreal pos = ((M_PI * i) / duration) + M_PI;
         pos = (((target / 2) * qCos(pos)) + (target / 2)) + initialPosition;
@@ -737,22 +619,20 @@ void P402IpWidget::dataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    dataLogger->addData({_node->busId(), _node->nodeId(), _ipPositionDemandValueObjectId, 0x0, QMetaType::Type::Short});
+    dataLogger->addData({_ipPositionDemandValueObjectId});
     _dataLoggerWidget->show();
 }
 
 void P402IpWidget::pdoMapping()
 {
-    NodeObjectId controlWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0, QMetaType::Type::UShort);
+    NodeObjectId controlWordObjectId =
+        NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0, QMetaType::Type::UShort);
     NodeObjectId statusWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6041, 0, QMetaType::Type::UShort);
 
-    QList<NodeObjectId> ipRpdoObjectList = {{controlWordObjectId},
-                                            {_node->busId(), _node->nodeId(), _ipDataRecordObjectId, 0x0, QMetaType::Type::Short}};
+    QList<NodeObjectId> ipRpdoObjectList = {{controlWordObjectId}, {_ipDataRecordObjectId}};
     _node->rpdos().at(0)->writeMapping(ipRpdoObjectList);
 
-    QList<NodeObjectId> ipTpdoObjectList = {{statusWordObjectId},
-                                            {_node->busId(), _node->nodeId(), _ipPositionDemandValueObjectId, 0x0, QMetaType::Type::Short}};
-
+    QList<NodeObjectId> ipTpdoObjectList = {{statusWordObjectId}, {_ipPositionDemandValueObjectId}};
     _node->tpdos().at(2)->writeMapping(ipTpdoObjectList);
 }
 
@@ -761,93 +641,15 @@ void P402IpWidget::enableRampEvent(bool ok)
     _ipEnableRampButtonGroup->button(ok)->setChecked(ok);
 }
 
-void P402IpWidget::refreshData(quint16 object)
+void P402IpWidget::refreshData(NodeObjectId object)
 {
     int value;
-    if (_node->nodeOd()->indexExist(object))
+    if (_node->nodeOd()->indexExist(object.index()))
     {
         if (object == _ipPositionDemandValueObjectId)
         {
             value = _node->nodeOd()->value(object).toInt();
             _ipPositionDemandValueLabel->setNum(value);
-        }
-
-        if (object == _ipTimePeriodObjectId)
-        {
-            value = _node->nodeOd()->value(object, 1).toInt();
-            _ipTimePeriodUnitSpinBox->setValue(value);
-            value = _node->nodeOd()->value(object, 2).toInt();
-            _ipTimePeriodIndexSpinBox->setValue(value);
-        }
-        if (object == _ipPositionRangelLimitObjectId)
-        {
-            value = _node->nodeOd()->value(object, 1).toInt();
-            _ipPositionRangelLimitMinSpinBox->setValue(value);
-            value = _node->nodeOd()->value(object, 2).toInt();
-            _ipPositionRangelLimitMaxSpinBox->setValue(value);
-        }
-        if (object == _ipSoftwarePositionLimitObjectId)
-        {
-            value = _node->nodeOd()->value(object, 1).toInt();
-            _ipSoftwarePositionLimitMinSpinBox->setValue(value);
-            value = _node->nodeOd()->value(object, 2).toInt();
-            _ipSoftwarePositionLimitMaxSpinBox->setValue(value);
-        }
-
-        if (object == _ipHomeOffsetObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _ipHomeOffsetSpinBox->setValue(value);
-        }
-        if (object == _ipPolarityObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _ipPolaritySpinBox->setValue(value);
-        }
-        if (object == _ipProfileVelocityObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _ipProfileVelocitySpinBox->setValue(value);
-        }
-        if (object == _ipEndVelocityObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _ipEndVelocitySpinBox->setValue(value);
-        }
-        if (object == _ipMaxProfileVelocityObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _ipMaxProfileVelocitySpinBox->setValue(value);
-        }
-        if (object == _ipMaxMotorSpeedObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _ipMaxMotorSpeedSpinBox->setValue(value);
-        }
-        if (object == _ipProfileAccelerationObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _ipProfileAccelerationSpinBox->setValue(value);
-        }
-        if (object == _ipMaxAccelerationObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _ipMaxAccelerationSpinBox->setValue(value);
-        }
-        if (object == _ipProfileDecelerationObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _ipProfileDecelerationSpinBox->setValue(value);
-        }
-        if (object == _ipMaxDecelerationObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _ipMaxDecelerationSpinBox->setValue(value);
-        }
-        if (object == _ipQuickStopDecelerationObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _ipQuickStopDecelerationSpinBox->setValue(value);
         }
     }
 }
@@ -859,30 +661,17 @@ void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         return;
     }
 
-    if ((objId.index == _ipPositionDemandValueObjectId)
-        || (objId.index == _ipVelocityActualObjectId)
-        || (objId.index == _ipTimePeriodObjectId)
-        || (objId.index == _ipPositionRangelLimitObjectId)
-        || (objId.index == _ipSoftwarePositionLimitObjectId)
-        || (objId.index == _ipHomeOffsetObjectId)
-        || (objId.index == _ipPolarityObjectId)
-        || (objId.index == _ipProfileVelocityObjectId)
-        || (objId.index == _ipEndVelocityObjectId)
-        || (objId.index == _ipMaxProfileVelocityObjectId)
-        || (objId.index == _ipMaxMotorSpeedObjectId)
-        || (objId.index == _ipProfileAccelerationObjectId)
-        || (objId.index == _ipMaxAccelerationObjectId)
-        || (objId.index == _ipProfileDecelerationObjectId)
-        || (objId.index == _ipMaxDecelerationObjectId)
-        || (objId.index == _ipQuickStopDecelerationObjectId))
+    if ((objId == _ipPositionDemandValueObjectId) || (objId == _ipVelocityActualObjectId)
+        || (objId == _ipHomeOffsetObjectId) || (objId == _ipPolarityObjectId))
+
     {
         if (flags == SDO::FlagsRequest::Error)
         {
             return;
         }
-        refreshData(objId.index);
+        refreshData(objId);
     }
-    if ((objId.index == _ipDataRecordObjectId))
+    if ((objId == _ipDataRecordObjectId))
     {
         if (flags == SDO::FlagsRequest::Error)
         {
@@ -893,14 +682,8 @@ void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
             ipSendDataRecord();
         }
     }
-    if ((objId.index == _ipDataConfigurationObjectId) && (objId.subIndex == 0x06)) // object BUFFER_CLEAR
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            return;
-        }
-    }
-    if ((objId.index == _ipDataConfigurationObjectId) && (objId.subIndex == 0x02))
+
+    if ((objId == _ipBufferClearObjectId) && (objId.subIndex() == 0x02))
     {
         if (flags == SDO::FlagsRequest::Error)
         {

@@ -20,19 +20,23 @@
 #define P402IP_H
 
 #include "../../udtgui_global.h"
+
 #include "node.h"
 #include "nodeodsubscriber.h"
+
 #include <QButtonGroup>
+#include <QCheckBox>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSlider>
 #include <QSpinBox>
-#include <QCheckBox>
 #include <QWidget>
 
 class NodeProfile402Ip;
+class NodeObjectId;
+class IndexSpinBox;
 
 class P402IpWidget : public QWidget, public NodeOdSubscriber
 {
@@ -60,30 +64,15 @@ private:
     void createWidgets();
 
     // IP mode
-    quint16 _ipDataRecordObjectId;
-    quint16 _ipDataConfigurationObjectId;
-    quint16 _ipPositionDemandValueObjectId;
-    quint16 _ipVelocityActualObjectId;
-    quint16 _ipTimePeriodObjectId;
-    quint16 _ipPositionRangelLimitObjectId;
-    quint16 _ipSoftwarePositionLimitObjectId;
+    NodeObjectId _ipDataRecordObjectId;
+    NodeObjectId _ipBufferClearObjectId;
+    NodeObjectId _ipPositionDemandValueObjectId;
+    NodeObjectId _ipVelocityActualObjectId;
+    NodeObjectId _ipTimePeriodIndexObjectId;
+    NodeObjectId _ipTimePeriodUnitsObjectId;
 
-    quint16 _ipHomeOffsetObjectId;
-    quint16 _ipPolarityObjectId;
-
-    quint16 _ipProfileVelocityObjectId;
-    quint16 _ipEndVelocityObjectId;
-
-    quint16 _ipMaxProfileVelocityObjectId;
-    quint16 _ipMaxMotorSpeedObjectId;
-
-    quint16 _ipProfileAccelerationObjectId;
-    quint16 _ipMaxAccelerationObjectId;
-
-    quint16 _ipProfileDecelerationObjectId;
-    quint16 _ipMaxDecelerationObjectId;
-
-    quint16 _ipQuickStopDecelerationObjectId;
+    NodeObjectId _ipHomeOffsetObjectId;
+    NodeObjectId _ipPolarityObjectId;
 
     int _iteratorForSendDataRecord;
     QStringList _listDataRecord;
@@ -96,34 +85,26 @@ private:
 
     QLabel *_ipPositionDemandValueLabel;
 
-    QSpinBox *_ipTimePeriodUnitSpinBox;
-    QSpinBox *_ipTimePeriodIndexSpinBox;
+    IndexSpinBox *_ipTimePeriodUnitSpinBox;
+    IndexSpinBox *_ipTimePeriodIndexSpinBox;
 
     QPushButton *_clearBufferPushButton;
 
-    QSpinBox *_ipPositionRangelLimitMinSpinBox;
-    QSpinBox *_ipPositionRangelLimitMaxSpinBox;
-
-    QSpinBox *_ipSoftwarePositionLimitMinSpinBox;
-    QSpinBox *_ipSoftwarePositionLimitMaxSpinBox;
-
-    QSpinBox *_ipHomeOffsetSpinBox;
+    IndexSpinBox *_ipPositionRangelLimitMinSpinBox;
+    IndexSpinBox *_ipPositionRangelLimitMaxSpinBox;
+    IndexSpinBox *_ipSoftwarePositionLimitMinSpinBox;
+    IndexSpinBox *_ipSoftwarePositionLimitMaxSpinBox;
+    IndexSpinBox *_ipHomeOffsetSpinBox;
     QSpinBox *_ipPolaritySpinBox;
-
-    QSpinBox *_ipProfileVelocitySpinBox;
-    QSpinBox *_ipEndVelocitySpinBox;
-
-    QSpinBox *_ipMaxProfileVelocitySpinBox;
-    QSpinBox *_ipMaxMotorSpeedSpinBox;
-
-    QSpinBox *_ipProfileAccelerationSpinBox;
-    QSpinBox *_ipMaxAccelerationSpinBox;
-
-    QSpinBox *_ipProfileDecelerationSpinBox;
-    QSpinBox *_ipMaxDecelerationSpinBox;
-
-    QSpinBox *_ipQuickStopDecelerationSpinBox;
-
+    IndexSpinBox *_ipProfileVelocitySpinBox;
+    IndexSpinBox *_ipEndVelocitySpinBox;
+    IndexSpinBox *_ipMaxProfileVelocitySpinBox;
+    IndexSpinBox *_ipMaxMotorSpeedSpinBox;
+    IndexSpinBox *_ipProfileAccelerationSpinBox;
+    IndexSpinBox *_ipMaxAccelerationSpinBox;
+    IndexSpinBox *_ipProfileDecelerationSpinBox;
+    IndexSpinBox *_ipMaxDecelerationSpinBox;
+    IndexSpinBox *_ipQuickStopDecelerationSpinBox;
     QSpinBox *_targetPositionSpinBox;
     QCheckBox *_relativeTargetpositionSpinBox;
     QSpinBox *_durationSpinBox;
@@ -144,33 +125,7 @@ private:
     void ipSendDataRecord();
 
     void ipTargetVelocitySpinboxFinished();
-
-    void ipTimePeriodUnitEditingFinished();
-    void ipTimePeriodIndexEditingFinished();
-
-    void ipPositionRangelLimitMinEditingFinished();
-    void ipPositionRangelLimitMaxEditingFinished();
-
-    void ipSoftwarePositionLimitMinEditingFinished();
-    void ipSoftwarePositionLimitMaxFinished();
-
-    void ipHomeOffsetEditingFinished();
     void ipPolarityEditingFinished();
-
-    void ipProfileVelocityFinished();
-    void ipEndVelocityFinished();
-
-    void ipMaxProfileVelocityFinished();
-    void ipMaxMotorSpeedFinished();
-
-    void ipProfileAccelerationFinished();
-    void ipMaxAccelerationFinished();
-
-    void ipProfileDecelerationFinished();
-    void ipMaxDecelerationFinished();
-
-    void ipQuickStopDecelerationFinished();
-
     void ipClearBufferClicked();
 
     void ipEnableRampClicked(int id);
@@ -178,7 +133,7 @@ private:
 
     void dataLogger();
     void pdoMapping();
-    void refreshData(quint16 object);
+    void refreshData(NodeObjectId object);
 
     void enableRampEvent(bool ok);
 
@@ -187,4 +142,4 @@ protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // P402IP_H
+#endif  // P402IP_H
