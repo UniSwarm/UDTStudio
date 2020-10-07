@@ -313,8 +313,8 @@ QModelIndex NodeOdItemModel::subIndexItem(quint16 index, quint8 subindex, int co
 void NodeOdItemModel::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     Q_UNUSED(flags)
-    QModelIndex modelIndexStart = subIndexItem(objId.index, objId.subIndex, OdIndex);
-    QModelIndex modelIndexEnd = subIndexItem(objId.index, objId.subIndex, ColumnCount - 1);
+    QModelIndex modelIndexStart = subIndexItem(objId.index(), objId.subIndex(), OdIndex);
+    QModelIndex modelIndexEnd = subIndexItem(objId.index(), objId.subIndex(), ColumnCount - 1);
     if (modelIndexStart.isValid() && modelIndexEnd.isValid())
     {
         emit dataChanged(modelIndexStart, modelIndexEnd);

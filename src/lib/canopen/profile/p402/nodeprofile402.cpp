@@ -23,6 +23,7 @@
 #include "nodeprofile402ip.h"
 #include "nodeprofile402tq.h"
 #include "nodeprofile402vl.h"
+#include "indexdb402.h"
 
 enum ControlWord : quint16
 {
@@ -65,37 +66,44 @@ enum StatusWord : quint16
 
 NodeProfile402::NodeProfile402(Node *node) : NodeProfile(node)
 {
-    // Mode
-    _modesOfOperationObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6060, 0);
-    _modesOfOperationDisplayObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6061, 0);
-    _supportedDriveModesObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6502, 0);
-    registerObjId({_modesOfOperationObjectId});
-    registerObjId({_modesOfOperationDisplayObjectId});
-    registerObjId({_supportedDriveModesObjectId});
+    _modesOfOperationObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION);
+    _modesOfOperationDisplayObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION_DISPLAY);
+    _supportedDriveModesObjectId = IndexDb402::getObjectId(IndexDb402::OD_SUPPORTED_DRIVE_MODES);
+    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD);
+    _statusWordObjectId =IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD);
 
-    // ControlWord/StatusWord
-    _controlWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0);
-    _statusWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6041, 0);
-    registerObjId({_controlWordObjectId});
-    registerObjId({_statusWordObjectId});
 
-    setNodeInterrest(node);
     connect(_node, &Node::statusChanged, this, &NodeProfile402::statusNodeChanged);
-//    // Mode
-//    _node->readObject(_modesOfOperationDisplayObjectId);
-    _node->readObject(_supportedDriveModesObjectId);
-//    // ControlWord/StatusWord
-//    _node->readObject(_controlWordObjectId);
 
     _p402Ip = new NodeProfile402Ip(_node);
     _p402Tq = new NodeProfile402Tq(_node);
     _p402Vl = new NodeProfile402Vl(_node);
 
     _requestedStateMachine = STATE_SwitchOnDisabled;
+    _currentMode = NoMode;
+    _isActive = false;
+}
+
+
+NodeProfile402::~NodeProfile402()
+{
+    unRegisterObjId({_modesOfOperationObjectId});
+    unRegisterObjId({_modesOfOperationDisplayObjectId});
+    unRegisterObjId({_supportedDriveModesObjectId});
+    unRegisterObjId({_controlWordObjectId});
+    unRegisterObjId({_statusWordObjectId});
+
+    delete _p402Ip;
+    delete _p402Tq;
+    delete _p402Vl;
 }
 
 void NodeProfile402::statusNodeChanged(Node::Status status)
 {
+    if (!_isActive)
+    {
+        return;
+    }
     if (status)
     {
         if (status == Node::STARTED)
@@ -107,6 +115,41 @@ void NodeProfile402::statusNodeChanged(Node::Status status)
             goToState(STATE_SwitchOnDisabled);
         }
     }
+}
+
+void NodeProfile402::active(bool ok)
+{
+    if(ok)
+    {
+
+        registerObjId({_modesOfOperationObjectId});
+        registerObjId({_modesOfOperationDisplayObjectId});
+        registerObjId({_supportedDriveModesObjectId});
+        registerObjId({_controlWordObjectId});
+        registerObjId({_statusWordObjectId});
+        setNodeInterrest(_node);
+
+        _node->readObject(_supportedDriveModesObjectId);
+//        _node->readObject(_controlWordObjectId);
+//        _node->readObject(_modesOfOperationDisplayObjectId);
+
+        _isActive = true;
+    }
+    else
+    {
+        unRegisterObjId({_modesOfOperationObjectId});
+        unRegisterObjId({_modesOfOperationDisplayObjectId});
+        unRegisterObjId({_supportedDriveModesObjectId});
+        unRegisterObjId({_controlWordObjectId});
+        unRegisterObjId({_statusWordObjectId});
+
+        _isActive = false;
+    }
+}
+
+bool NodeProfile402::isActived()
+{
+    return _isActive;
 }
 
 NodeProfile402::Mode NodeProfile402::actualMode()
@@ -167,6 +210,11 @@ QString NodeProfile402::modeStr(NodeProfile402::Mode mode)
 
 bool NodeProfile402::setMode(Mode mode)
 {
+    if (!_isActive)
+    {
+        return false;
+    }
+
     if (_currentMode == mode)
     {
         return true;
@@ -211,12 +259,22 @@ NodeProfile402::State402 NodeProfile402::currentState() const
 
 void NodeProfile402::goToState(const State402 state)
 {
+    if (!_isActive)
+    {
+        return;
+    }
+
     _requestedStateMachine = state;
     manageState(_requestedStateMachine);
 }
 
 void NodeProfile402::manageState(const State402 state)
 {
+    if (!_isActive)
+    {
+        return;
+    }
+
     if (!_node)
     {
         return;
@@ -349,6 +407,11 @@ QString NodeProfile402::stateStr(State402 state) const
 
 void NodeProfile402::setTarget(qint32 target)
 {
+    if (!_isActive)
+    {
+        return;
+    }
+
     switch (_currentMode)
     {
         case NodeProfile402::MS:
@@ -385,6 +448,11 @@ void NodeProfile402::setTarget(qint32 target)
 
 bool NodeProfile402::toggleHalt()
 {
+    if (!_isActive)
+    {
+        return false;
+    }
+
     quint16 cmdControlWord;
     if (_stateMachineCurrent == STATE_OperationEnabled)
     {
@@ -432,6 +500,11 @@ bool NodeProfile402::status() const
 
 void NodeProfile402::enableRamp(void)
 {
+    if (!_isActive)
+    {
+        return;
+    }
+
     switch (_currentMode)
     {
     case NodeProfile402::MS:
@@ -477,6 +550,11 @@ QString NodeProfile402::profileNumberStr() const
 
 void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (!_isActive)
+    {
+        return;
+    }
+
     if (objId == _modesOfOperationObjectId)
     {
         if (flags == SDO::FlagsRequest::Error)

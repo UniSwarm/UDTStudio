@@ -263,7 +263,7 @@ QAction *NodeManagerWidget::actionPreop() const
 
 void NodeManagerWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if (objId.index == 0x1000 && objId.subIndex == 0x00)
+    if (objId.index() == 0x1000 && objId.subIndex() == 0x00)
     {
         //_index1000Label->setNum(flags);
     }

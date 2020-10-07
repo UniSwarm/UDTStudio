@@ -24,50 +24,50 @@
 #include "canopen.h"
 
 NodeObjectId::NodeObjectId()
-    : busId(0xFF), nodeId(0xFF), index(0xFFFF), subIndex(0xFF), dataType(QMetaType::Type::UnknownType)
+    : _busId(0xFF), _nodeId(0xFF), _index(0xFFFF), _subIndex(0xFF), _dataType(QMetaType::Type::UnknownType)
 {
 }
 
 NodeObjectId::NodeObjectId(quint8 busId, quint8 nodeId, quint16 index, quint8 subIndex, QMetaType::Type dataType)
-    : busId(busId), nodeId(nodeId), index(index), subIndex(subIndex), dataType(dataType)
+    : _busId(busId), _nodeId(nodeId), _index(index), _subIndex(subIndex), _dataType(dataType)
 {
 }
 
 NodeObjectId::NodeObjectId(quint16 index, quint8 subIndex, QMetaType::Type dataType)
-    : busId(0xFF), nodeId(0xFF), index(index), subIndex(subIndex), dataType(dataType)
+    : _busId(0xFF), _nodeId(0xFF), _index(index), _subIndex(subIndex), _dataType(dataType)
 {
 }
 
 NodeObjectId::NodeObjectId(const NodeObjectId &other)
 {
-    busId = other.busId;
-    nodeId = other.nodeId;
-    index = other.index;
-    subIndex = other.subIndex;
-    dataType = other.dataType;
+    _busId = other.busId();
+    _nodeId = other.nodeId();
+    _index = other.index();
+    _subIndex = other.subIndex();
+    _dataType = other.dataType();
 }
 
 bool operator==(const NodeObjectId &a, const NodeObjectId &b)
 {
-    return (a.busId == b.busId
-            && a.nodeId == b.nodeId
-            && a.index == b.index
-            && a.subIndex == b.subIndex);
+    return (a.busId() == b.busId()
+            && a.nodeId() == b.nodeId()
+            && a.index() == b.index()
+            && a.subIndex() == b.subIndex());
 }
 
 quint64 NodeObjectId::key() const
 {
     quint64 key = 0;
-    key += static_cast<quint64>(busId) << 24;
-    key += static_cast<quint64>(nodeId) << 16;
-    key += static_cast<quint64>(index) << 8;
-    key += static_cast<quint64>(subIndex);
+    key += static_cast<quint64>(_busId) << 24;
+    key += static_cast<quint64>(_nodeId) << 16;
+    key += static_cast<quint64>(_index) << 8;
+    key += static_cast<quint64>(_subIndex);
     return key;
 }
 
 bool NodeObjectId::isValid() const
 {
-    if (busId != 0xFF && nodeId != 0xFF && index != 0xFFFF && subIndex != 0xFF)
+    if (_busId != 0xFF && _nodeId != 0xFF && _index != 0xFFFF && _subIndex != 0xFF)
     {
         return true;
     }
@@ -76,7 +76,7 @@ bool NodeObjectId::isValid() const
 
 bool NodeObjectId::isNodeIndependant() const
 {
-    if (busId == 0xFF && nodeId == 0xFF)
+    if (_busId == 0xFF && _nodeId == 0xFF)
     {
         return true;
     }
@@ -85,7 +85,7 @@ bool NodeObjectId::isNodeIndependant() const
 
 bool NodeObjectId::isABus() const
 {
-    if (busId != 0xFF && nodeId == 0xFF && index == 0xFFFF && subIndex == 0xFF)
+    if (_busId != 0xFF && _nodeId == 0xFF && _index == 0xFFFF && _subIndex == 0xFF)
     {
         return true;
     }
@@ -94,7 +94,7 @@ bool NodeObjectId::isABus() const
 
 bool NodeObjectId::isANode() const
 {
-    if (busId != 0xFF && nodeId != 0xFF && index == 0xFFFF && subIndex == 0xFF)
+    if (_busId != 0xFF && _nodeId != 0xFF && _index == 0xFFFF && _subIndex == 0xFF)
     {
         return true;
     }
@@ -103,7 +103,7 @@ bool NodeObjectId::isANode() const
 
 bool NodeObjectId::isAnIndex() const
 {
-    if (index != 0xFFFF && subIndex == 0xFF)
+    if (_index != 0xFFFF && _subIndex == 0xFF)
     {
         return true;
     }
@@ -112,7 +112,7 @@ bool NodeObjectId::isAnIndex() const
 
 bool NodeObjectId::isASubIndex() const
 {
-    if (index != 0xFFFF && subIndex != 0xFF)
+    if (_index != 0xFFFF && _subIndex != 0xFF)
     {
         return true;
     }
@@ -125,68 +125,68 @@ CanOpenBus *NodeObjectId::bus() const
     {
         return nullptr;
     }
-    return CanOpen::bus(busId);
+    return CanOpen::bus(_busId);
 }
 
 Node *NodeObjectId::node() const
 {
-    if (busId == 0xFF || nodeId == 0xFF)
+    if (_busId == 0xFF || _nodeId == 0xFF)
     {
         return nullptr;
     }
-    CanOpenBus *bus = CanOpen::bus(busId);
+    CanOpenBus *bus = CanOpen::bus(_busId);
     if (!bus)
     {
         return nullptr;
     }
-    return bus->node(nodeId);
+    return bus->node(_nodeId);
 }
 
 NodeIndex *NodeObjectId::nodeIndex() const
 {
-    if (busId == 0xFF || nodeId == 0xFF || index == 0xFFFF)
+    if (_busId == 0xFF || _nodeId == 0xFF || _index == 0xFFFF)
     {
         return nullptr;
     }
-    CanOpenBus *bus = CanOpen::bus(busId);
+    CanOpenBus *bus = CanOpen::bus(_busId);
     if (!bus)
     {
         return nullptr;
     }
-    Node *node = bus->node(nodeId);
+    Node *node = bus->node(_nodeId);
     if (!node)
     {
         return nullptr;
     }
-    return node->nodeOd()->index(index);
+    return node->nodeOd()->index(_index);
 }
 
 NodeSubIndex *NodeObjectId::nodeSubIndex() const
 {
-    if (busId == 0xFF || nodeId == 0xFF || index == 0xFFFF || subIndex == 0xFF)
+    if (_busId == 0xFF || _nodeId == 0xFF || _index == 0xFFFF || _subIndex == 0xFF)
     {
         return nullptr;
     }
-    CanOpenBus *bus = CanOpen::bus(busId);
+    CanOpenBus *bus = CanOpen::bus(_busId);
     if (!bus)
     {
         return nullptr;
     }
-    Node *node = bus->node(nodeId);
+    Node *node = bus->node(_nodeId);
     if (!node)
     {
         return nullptr;
     }
-    return node->nodeOd()->subIndex(index, subIndex);
+    return node->nodeOd()->subIndex(_index, _subIndex);
 }
 
 QString NodeObjectId::mimeData() const
 {
     return QString("%1.%2.%3.%4")
-        .arg(QString::number(busId, 16).rightJustified(2, '0'))
-        .arg(QString::number(nodeId, 16).rightJustified(2, '0'))
-        .arg(QString::number(index, 16).rightJustified(4, '0'))
-        .arg(QString::number(subIndex, 16).rightJustified(2, '0'));
+        .arg(QString::number(_busId, 16).rightJustified(2, '0'))
+        .arg(QString::number(_nodeId, 16).rightJustified(2, '0'))
+        .arg(QString::number(_index, 16).rightJustified(4, '0'))
+        .arg(QString::number(_subIndex, 16).rightJustified(2, '0'));
 }
 
 NodeObjectId NodeObjectId::fromMimeData(const QString mimeData)
@@ -204,19 +204,69 @@ NodeObjectId NodeObjectId::fromMimeData(const QString mimeData)
                         static_cast<quint8>(fields[3].toUShort(&ok, 16)));
 }
 
+quint8 NodeObjectId::nodeId() const
+{
+    return _nodeId;
+}
+
+void NodeObjectId::setNodeId(const quint8 &nodeId)
+{
+    _nodeId = nodeId;
+}
+
+quint16 NodeObjectId::index() const
+{
+    return _index;
+}
+
+void NodeObjectId::setIndex(const quint16 &index)
+{
+    _index = index;
+}
+
+quint8 NodeObjectId::subIndex() const
+{
+    return _subIndex;
+}
+
+void NodeObjectId::setSubIndex(const quint8 &subIndex)
+{
+    _subIndex = subIndex;
+}
+
+QMetaType::Type NodeObjectId::dataType() const
+{
+    return _dataType;
+}
+
+void NodeObjectId::setDataType(const QMetaType::Type &dataType)
+{
+    _dataType = dataType;
+}
+
+quint8 NodeObjectId::busId() const
+{
+    return _busId;
+}
+
+void NodeObjectId::setBusId(const quint8 &busId)
+{
+    _busId = busId;
+}
+
 NodeObjectId &NodeObjectId::operator=(const NodeObjectId &other)
 {
-    busId = other.busId;
-    nodeId = other.nodeId;
-    index = other.index;
-    subIndex = other.subIndex;
-    dataType = other.dataType;
+    _busId = other.busId();
+    _nodeId = other.nodeId();
+    _index = other.index();
+    _subIndex = other.subIndex();
+    _dataType = other.dataType();
     return *this;
 }
 
 quint8 NodeObjectId::bitSize() const
 {
-    switch (dataType)
+    switch (_dataType)
     {
     case QMetaType::Bool:
         return 1;
@@ -248,6 +298,6 @@ quint8 NodeObjectId::bitSize() const
 QDebug operator<<(QDebug debug, const NodeObjectId &c)
 {
     QDebugStateSaver saver(debug);
-    debug.nospace() << '(' << c.mimeData() << '.' << c.dataType << ')';
+    debug.nospace() << '(' << c.mimeData() << '.' << c.dataType() << ')';
     return debug;
 }

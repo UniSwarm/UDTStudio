@@ -24,10 +24,10 @@ DLData::DLData(const NodeObjectId &objectId)
     :_objectId(objectId)
 {
     _node = nullptr;
-    CanOpenBus *bus = CanOpen::bus(objectId.busId);
+    CanOpenBus *bus = CanOpen::bus(objectId.busId());
     if (bus)
     {
-        _node = bus->node(objectId.nodeId);
+        _node = bus->node(objectId.nodeId());
         NodeSubIndex *nodeSubIndex = objectId.nodeSubIndex();
         if (nodeSubIndex)
         {

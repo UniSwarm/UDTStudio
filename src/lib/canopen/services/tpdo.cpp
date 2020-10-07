@@ -59,22 +59,22 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
 
     for (quint8 i = 0; i < _objectCurrentMapped.size(); i++)
     {
-        QByteArray data = frame.payload().mid(offset, QMetaType::sizeOf(_objectCurrentMapped.at(i).dataType));
-        QVariant vata = convertQByteArrayToQVariant(data, _objectCurrentMapped.at(i).dataType);
+        QByteArray data = frame.payload().mid(offset, QMetaType::sizeOf(_objectCurrentMapped.at(i).dataType()));
+        QVariant vata = convertQByteArrayToQVariant(data, _objectCurrentMapped.at(i).dataType());
 
-        _node->nodeOd()->updateObjectFromDevice(_objectCurrentMapped.at(i).index, _objectCurrentMapped.at(i).subIndex, vata, SDO::FlagsRequest::Pdo);
-        offset += QMetaType::sizeOf(_objectCurrentMapped.at(i).dataType);
+        _node->nodeOd()->updateObjectFromDevice(_objectCurrentMapped.at(i).index(), _objectCurrentMapped.at(i).subIndex(), vata, SDO::FlagsRequest::Pdo);
+        offset += QMetaType::sizeOf(_objectCurrentMapped.at(i).dataType());
     }
 }
 
 void TPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if ((objId.index == _objectCommId) && (objId.subIndex == 0x01))
+    if ((objId.index() == _objectCommId) && (objId.subIndex() == 0x01))
     {
         emit enabledChanged(isEnabled());
     }
 
-    if (_statusPdo == STATE_NONE && objId.index == _objectMappingId)
+    if (_statusPdo == STATE_NONE && objId.index() == _objectMappingId)
     {
         if (_objectCommList.size() != 0)
         {
@@ -115,7 +115,7 @@ bool TPDO::setTransmissionType(quint8 type)
     if ((type <= TPDO_CYCLIC_MAX) || (type == TPDO_RTR_SYNC) || (type == TPDO_RTR_EVENT) || (type == TPDO_EVENT_MS) || (type == TPDO_EVENT_DP))
     {
         _waitingConf.transType = type;
-        _node->writeObject(_objectCommList[1].index, PDO_COMM_TRANSMISSION_TYPE, _waitingConf.transType);
+        _node->writeObject(_objectCommList[1].index(), PDO_COMM_TRANSMISSION_TYPE, _waitingConf.transType);
         return true;
     }
     else
@@ -135,7 +135,7 @@ void TPDO::setSyncStartValue(quint8 syncStartValue)
 {
     _statusPdo = STATE_NONE;
     _waitingConf.syncStartValue = syncStartValue;
-    _node->writeObject(_objectCommList[4].index, PDO_COMM_SYNC_START_VALUE, _waitingConf.syncStartValue);
+    _node->writeObject(_objectCommList[4].index(), PDO_COMM_SYNC_START_VALUE, _waitingConf.syncStartValue);
 }
 
 quint8 TPDO::syncStartValue()

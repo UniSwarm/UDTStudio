@@ -267,8 +267,8 @@ bool PDOMappingView::event(QEvent *event)
         }
         NodeObjectId nodeObjectId = _nodeListMapping.at(objId);
         QString toolTipText = QString("0x%1.%2\n%3")
-                                .arg(QString::number(nodeObjectId.index, 16).toUpper())
-                                .arg(QString::number(nodeObjectId.subIndex, 16).toUpper())
+                                .arg(QString::number(nodeObjectId.index(), 16).toUpper())
+                                .arg(QString::number(nodeObjectId.subIndex(), 16).toUpper())
                                 .arg(objName);
         QToolTip::showText(helpEvent->globalPos(), toolTipText);
         return true;

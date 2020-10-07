@@ -33,16 +33,25 @@ class CANOPEN_EXPORT NodeObjectId
 {
 public:
     NodeObjectId();
-    NodeObjectId(quint8 busId, quint8 nodeId, quint16 index, quint8 subIndex, QMetaType::Type dataType = QMetaType::Type::UnknownType);
-    NodeObjectId(quint16 index, quint8 subIndex, QMetaType::Type dataType = QMetaType::Type::UnknownType);
+    NodeObjectId(quint8 _busId, quint8 _nodeId, quint16 _index, quint8 _subIndex, QMetaType::Type _dataType = QMetaType::Type::UnknownType);
+    NodeObjectId(quint16 _index, quint8 _subIndex, QMetaType::Type _dataType = QMetaType::Type::UnknownType);
     NodeObjectId(const NodeObjectId &other);
     NodeObjectId &operator=(const NodeObjectId &other);
 
-    quint8 busId;
-    quint8 nodeId;
-    quint16 index;
-    quint8 subIndex;
-    QMetaType::Type dataType;
+    quint8 busId() const;
+    void setBusId(const quint8 &busId);
+
+    quint8 nodeId() const;
+    void setNodeId(const quint8 &nodeId);
+
+    quint16 index() const;
+    void setIndex(const quint16 &index);
+
+    quint8 subIndex() const;
+    void setSubIndex(const quint8 &subIndex);
+
+    QMetaType::Type dataType() const;
+    void setDataType(const QMetaType::Type &dataType);
 
     quint8 bitSize() const;
 
@@ -61,6 +70,13 @@ public:
 
     QString mimeData() const;
     static NodeObjectId fromMimeData(const QString mimeData);
+
+private:
+    quint8 _busId;
+    quint8 _nodeId;
+    quint16 _index;
+    quint8 _subIndex;
+    QMetaType::Type _dataType;
 };
 
 bool CANOPEN_EXPORT operator==(const NodeObjectId &a, const NodeObjectId &b);

@@ -131,14 +131,14 @@ void PDOMappingPainter::drawMapping(const QRect &objRect, const NodeObjectId &no
     if (objName.isEmpty() || textRext.height() < fontMetrics.height() * 2)
     {
         drawText(textRext, Qt::AlignCenter, QString("0x%1.%2")
-                                                .arg(QString::number(nodeObjectId.index, 16).toUpper())
-                                                .arg(QString::number(nodeObjectId.subIndex, 16).toUpper()));
+                                                .arg(QString::number(nodeObjectId.index(), 16).toUpper())
+                                                .arg(QString::number(nodeObjectId.subIndex(), 16).toUpper()));
     }
     else
     {
         drawText(textRext, Qt::AlignCenter, QString("0x%1.%2\n%3")
-                                                .arg(QString::number(nodeObjectId.index, 16).toUpper())
-                                                .arg(QString::number(nodeObjectId.subIndex, 16).toUpper())
+                                                .arg(QString::number(nodeObjectId.index(), 16).toUpper())
+                                                .arg(QString::number(nodeObjectId.subIndex(), 16).toUpper())
                                                 .arg(objName));
     }
 }

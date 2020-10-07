@@ -53,12 +53,12 @@ void RPDO::parseFrame(const QCanBusFrame &frame)
 
 void RPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if ((objId.index == _objectCommId) && (objId.subIndex == 0x01))
+    if ((objId.index() == _objectCommId) && (objId.subIndex() == 0x01))
     {
         emit enabledChanged(isEnabled());
     }
 
-    if (_statusPdo == STATE_NONE && objId.index == _objectMappingId)
+    if (_statusPdo == STATE_NONE && objId.index() == _objectMappingId)
     {
         if (_objectCommList.size() != 0)
         {
@@ -94,7 +94,7 @@ bool RPDO::setTransmissionType(quint8 type)
     if ((type <= RPDO_SYNC_MAX) || (type == RPDO_EVENT_MS) || (type == RPDO_EVENT_DP))
     {
         _waitingConf.transType = type;
-        _node->writeObject(_objectCommList[1].index, PDO_COMM_TRANSMISSION_TYPE, _waitingConf.transType);
+        _node->writeObject(_objectCommList[1].index(), PDO_COMM_TRANSMISSION_TYPE, _waitingConf.transType);
         return true;
     }
     else
@@ -125,10 +125,10 @@ void RPDO::receiveSync()
     for (NodeObjectId objectIterator : _objectCurrentMapped)
     {
         if (_dataObjectCurrentMapped.contains(objectIterator.key())
-            && _node->nodeOd()->indexExist(objectIterator.index)
-            && _node->nodeOd()->subIndexExist(objectIterator.index, objectIterator.subIndex))
+            && _node->nodeOd()->indexExist(objectIterator.index())
+            && _node->nodeOd()->subIndexExist(objectIterator.index(), objectIterator.subIndex()))
         {
-            _node->nodeOd()->index(objectIterator.index)->subIndex(objectIterator.subIndex)->setValue(_dataObjectCurrentMapped.value(objectIterator.key()));
+            _node->nodeOd()->index(objectIterator.index())->subIndex(objectIterator.subIndex())->setValue(_dataObjectCurrentMapped.value(objectIterator.key()));
         }
     }
 }
@@ -148,7 +148,7 @@ void RPDO::write(const NodeObjectId &object, const QVariant &data)
 
     for (NodeObjectId objectIterator : _objectCurrentMapped)
     {
-        if (objectIterator.index == object.index && objectIterator.subIndex == object.subIndex)
+        if (objectIterator.index() == object.index() && objectIterator.subIndex() == object.subIndex())
         {
             if (_dataObjectCurrentMapped.contains(objectIterator.key()))
             {
@@ -183,7 +183,7 @@ void RPDO::prepareAndSendData()
 
     for (NodeObjectId objectIterator : _objectCurrentMapped)
     {
-        quint8 size = static_cast<quint8>(QMetaType::sizeOf(objectIterator.dataType));
+        quint8 size = static_cast<quint8>(QMetaType::sizeOf(objectIterator.dataType()));
         if (size > 8)
         {
             setError(ERROR_EXCEED_PDO_LENGTH);

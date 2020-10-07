@@ -173,8 +173,8 @@ bool ProgramDownload::update()
 
         for (NodeObjectId object : _objectIdentityList)
         {
-            quint32 valueDevice = _node->nodeOd()->index(object.index)->subIndex(object.subIndex)->value().toUInt();
-            quint32 valueEds = _node->nodeOd()->index(object.index)->subIndex(object.subIndex)->value().toUInt();
+            quint32 valueDevice = _node->nodeOd()->index(object.index())->subIndex(object.subIndex())->value().toUInt();
+            quint32 valueEds = _node->nodeOd()->index(object.index())->subIndex(object.subIndex())->value().toUInt();
             if (valueDevice != valueEds)
             {
                 _state = STATE_NOT_OK;
@@ -228,7 +228,7 @@ void ProgramDownload::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flag
 
         if (_state == STATE_CHECK_1F55)
         {
-            if ((objId.index == 0x1F56) && objId.subIndex == 1)
+            if ((objId.index() == 0x1F56) && objId.subIndex() == 1)
             {
                 _state = STATE_CHECK_1F56;
                 update();
@@ -237,7 +237,7 @@ void ProgramDownload::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flag
 
         if (_state == STATE_CHECK_1F56)
         {
-            if ((objId.index == 0x1F50) && objId.subIndex == 1)
+            if ((objId.index() == 0x1F50) && objId.subIndex() == 1)
             {
                 _state = STATE_DOWNLOAD_PROGRAM;
                 update();
@@ -245,7 +245,7 @@ void ProgramDownload::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flag
         }
         if (_state == STATE_DOWNLOAD_PROGRAM)
         {
-            if ((objId.index == 0x1F56) && objId.subIndex == 1)
+            if ((objId.index() == 0x1F56) && objId.subIndex() == 1)
             {
                 _state = STATE_FLASH_FINISHED;
                 update();
@@ -265,7 +265,7 @@ void ProgramDownload::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flag
         }
     }
 
-    if ((objId.index == 0x1021) && (objId.subIndex == 0) && (_state == STATE_FREE))
+    if ((objId.index() == 0x1021) && (objId.subIndex() == 0) && (_state == STATE_FREE))
     {
         if (flags != SDO::FlagsRequest::Error)
         {

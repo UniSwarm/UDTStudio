@@ -132,7 +132,7 @@ void NodeOd::setErrorObject(const quint16 index, const quint8 subIndex, const qu
 
 quint32 NodeOd::errorObject(const NodeObjectId &id) const
 {
-    return errorObject(id.index, id.subIndex);
+    return errorObject(id.index(), id.subIndex());
 }
 
 quint32 NodeOd::errorObject(const quint16 index, const quint8 subIndex) const
@@ -148,7 +148,7 @@ quint32 NodeOd::errorObject(const quint16 index, const quint8 subIndex) const
 
 QMetaType::Type NodeOd::dataType(const NodeObjectId &id) const
 {
-    return dataType(id.index, id.subIndex);
+    return dataType(id.index(), id.subIndex());
 }
 
 QMetaType::Type NodeOd::dataType(const quint16 index, const quint8 subIndex) const
@@ -164,7 +164,7 @@ QMetaType::Type NodeOd::dataType(const quint16 index, const quint8 subIndex) con
 
 QVariant NodeOd::value(const NodeObjectId &id) const
 {
-    return value(id.index, id.subIndex);
+    return value(id.index(), id.subIndex());
 }
 
 QVariant NodeOd::value(const quint16 index, const quint8 subIndex) const
@@ -191,7 +191,7 @@ void NodeOd::resetValue()
 
 QDateTime NodeOd::lastModification(const NodeObjectId &id) const
 {
-    return lastModification(id.index, id.subIndex);
+    return lastModification(id.index(), id.subIndex());
 }
 
 QDateTime NodeOd::lastModification(const quint16 index, const quint8 subIndex) const
@@ -255,7 +255,7 @@ void NodeOd::updateObjectFromDevice(const quint16 indexDevice, const quint8 subi
     {
         if (index(indexDevice)->subIndexExist(subindexDevice))
         {
-            if ((flags & SDO::Error) != SDO::Error)
+            if (!(flags & SDO::Error))
             {
                 index(indexDevice)->subIndex(subindexDevice)->clearError();
                 index(indexDevice)->subIndex(subindexDevice)->setValue(value);

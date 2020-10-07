@@ -36,6 +36,7 @@ class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
     Q_OBJECT
 public:
     NodeProfile402(Node *node);
+    ~NodeProfile402();
 
     enum Mode
     {
@@ -53,6 +54,9 @@ public:
         CSTCA = 11,  // Cyclic sync torque mode with commutation angle
         Reserved = 12
     };
+
+    void active(bool ok);
+    bool isActived();
 
     Mode actualMode();
     bool setMode(Mode mode);
@@ -122,6 +126,8 @@ private:
     };
     State _state;
     Error _currentError;
+
+    bool _isActive;
 
     // Mode
     NodeObjectId _modesOfOperationObjectId;

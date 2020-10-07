@@ -60,7 +60,7 @@ void NodeOdSubscriber::setNodeInterrest(Node *nodeInterrest)
         {
             //if (objId.isNodeIndependant())
             {
-                _nodeInterrest->nodeOd()->subscribe(this, objId.index, objId.subIndex);
+                _nodeInterrest->nodeOd()->subscribe(this, objId.index(), objId.subIndex());
 
                 this->odNotify(objId, SDO::Read);
             }
@@ -136,7 +136,7 @@ void NodeOdSubscriber::registerKey(const NodeObjectId &objId)
     {
         if (_nodeInterrest)
         {
-            _nodeInterrest->nodeOd()->subscribe(this, objId.index, objId.subIndex);
+            _nodeInterrest->nodeOd()->subscribe(this, objId.index(), objId.subIndex());
         }
     }
     else
@@ -145,7 +145,7 @@ void NodeOdSubscriber::registerKey(const NodeObjectId &objId)
         if (node)
         {
             NodeOd *nodeOd = node->nodeOd();
-            nodeOd->subscribe(this, objId.index, objId.subIndex);
+            nodeOd->subscribe(this, objId.index(), objId.subIndex());
         }
     }
 }
@@ -165,7 +165,7 @@ void NodeOdSubscriber::unRegisterKey(const NodeObjectId &objId)
     {
         if (_nodeInterrest)
         {
-            _nodeInterrest->nodeOd()->unsubscribe(this, objId.index, objId.subIndex);
+            _nodeInterrest->nodeOd()->unsubscribe(this, objId.index(), objId.subIndex());
         }
     }
     else
@@ -174,7 +174,7 @@ void NodeOdSubscriber::unRegisterKey(const NodeObjectId &objId)
         if (node)
         {
             NodeOd *nodeOd = node->nodeOd();
-            nodeOd->subscribe(this, objId.index, objId.subIndex);
+            nodeOd->subscribe(this, objId.index(), objId.subIndex());
         }
     }
 }

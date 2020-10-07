@@ -278,7 +278,7 @@ TPDO *Node::isMappedObjectInTpdo(const NodeObjectId &object) const
 
 void Node::readObject(const NodeObjectId &id)
 {
-    readObject(id.index, id.subIndex, id.dataType);
+    readObject(id.index(), id.subIndex(), id.dataType());
 }
 
 void Node::readObject(const quint16 index, const quint8 subindex, const QMetaType::Type dataType)
@@ -301,7 +301,7 @@ void Node::readObject(const quint16 index, const quint8 subindex, const QMetaTyp
 
 void Node::writeObject(const NodeObjectId &id, const QVariant &data)
 {
-    writeObject(id.index, id.subIndex, data);
+    writeObject(id.index(), id.subIndex(), data);
 }
 
 void Node::writeObject(const quint16 index, const quint8 subindex, const QVariant &data)
