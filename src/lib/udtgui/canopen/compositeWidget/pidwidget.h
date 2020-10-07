@@ -21,16 +21,14 @@
 
 #include "../../udtgui_global.h"
 
-#include "nodeobjectid.h"
-#include "profile/p402/nodeprofile402.h"
-
-#include <QWidget>
 #include <QPushButton>
-#include <QTabWidget>
 #include <QSpinBox>
+#include <QTabWidget>
+#include <QTimer>
+#include <QWidget>
 
 class Node;
-class NodeObjectId;
+class NodeProfile402;
 class DataLogger;
 class DataLoggerChartsWidget;
 class IndexSpinBox;
