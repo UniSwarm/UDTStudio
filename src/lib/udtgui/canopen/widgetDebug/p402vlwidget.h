@@ -22,6 +22,7 @@
 #include "../../udtgui_global.h"
 #include "node.h"
 #include "nodeodsubscriber.h"
+
 #include <QButtonGroup>
 #include <QGroupBox>
 #include <QLabel>
@@ -30,6 +31,7 @@
 #include <QWidget>
 
 class NodeProfile402Vl;
+class IndexSpinBox;
 
 class P402VlWidget : public QWidget, public NodeOdSubscriber
 {
@@ -50,22 +52,12 @@ public slots:
 private:
     Node *_node;
 
-    void createWidgets();
-
     NodeProfile402Vl *_nodeProfile402Vl;
 
-    // VL mode
-    quint16 _vlTargetVelocityObjectId;
-    quint16 _vlVelocityDemandObjectId;
-    quint16 _vlVelocityActualObjectId;
-    quint16 _vlVelocityMinMaxAmountObjectId;
-    quint16 _vlAccelerationObjectId;
-    quint16 _vlDecelerationObjectId;
-    quint16 _vlQuickStopObjectId;
-    quint16 _vlSetPointFactorObjectId;
-    quint16 _vlDimensionFactorObjectId;
+    NodeObjectId _vlTargetVelocityObjectId;
+    NodeObjectId _vlVelocityDemandObjectId;
+    NodeObjectId _vlVelocityActualObjectId;
 
-    // VL MODE
     QButtonGroup *_vlEnableRampButtonGroup;
     QButtonGroup *_vlUnlockRampButtonGroup;
     QButtonGroup *_vlReferenceRampButtonGroup;
@@ -74,48 +66,36 @@ private:
     QSlider *_vlTargetVelocitySlider;
     QLabel *_vlVelocityDemandLabel;
     QLabel *_vlVelocityActualLabel;
-    QSpinBox *_vlMinVelocityMinMaxAmountSpinBox;
-    QSpinBox *_vlMaxVelocityMinMaxAmountSpinBox;
-    QSpinBox *_vlAccelerationDeltaSpeedSpinBox;
-    QSpinBox *_vlAccelerationDeltaTimeSpinBox;
-    QSpinBox *_vlDecelerationDeltaSpeedSpinBox;
-    QSpinBox *_vlDecelerationDeltaTimeSpinBox;
-    QSpinBox *_vlQuickStopDeltaSpeedSpinBox;
-    QSpinBox *_vlQuickStopDeltaTimeSpinBox;
-    QSpinBox *_vlSetPointFactorNumeratorSpinBox;
-    QSpinBox *_vlSetPointFactorDenominatorSpinBox;
-    QSpinBox *_vlDimensionFactorNumeratorSpinBox;
-    QSpinBox *_vlDimensionFactorDenominatorSpinBox;
+
+    IndexSpinBox *_vlMinVelocityMinMaxAmountSpinBox;
+    IndexSpinBox *_vlMaxVelocityMinMaxAmountSpinBox;
+    IndexSpinBox *_vlAccelerationDeltaSpeedSpinBox;
+    IndexSpinBox *_vlAccelerationDeltaTimeSpinBox;
+    IndexSpinBox *_vlDecelerationDeltaSpeedSpinBox;
+    IndexSpinBox *_vlDecelerationDeltaTimeSpinBox;
+    IndexSpinBox *_vlQuickStopDeltaSpeedSpinBox;
+    IndexSpinBox *_vlQuickStopDeltaTimeSpinBox;
+    IndexSpinBox *_vlSetPointFactorNumeratorSpinBox;
+    IndexSpinBox *_vlSetPointFactorDenominatorSpinBox;
+    IndexSpinBox *_vlDimensionFactorNumeratorSpinBox;
+    IndexSpinBox *_vlDimensionFactorDenominatorSpinBox;
 
     void vlTargetVelocitySpinboxFinished();
     void vlTargetVelocitySliderChanged();
-    void vlMinAmountEditingFinished();
-    void vlMaxAmountEditingFinished();
-    void vlAccelerationDeltaSpeedEditingFinished();
-    void vlAccelerationDeltaTimeEditingFinished();
-    void vlDecelerationDeltaSpeedEditingFinished();
-    void vlDecelerationDeltaTimeEditingFinished();
-    void vlQuickStopDeltaSpeedEditingFinished();
-    void vlQuickStopDeltaTimeEditingFinished();
-    void vlSetPointFactorNumeratorEditingFinished();
-    void vlSetPointFactorDenominatorEditingFinished();
-    void vlDimensionFactorNumeratorEditingFinished();
-    void vlDimensionFactorDenominatorEditingFinished();
 
     void vlEnableRampClicked(int id);
     void vlUnlockRampClicked(int id);
     void vlReferenceRampClicked(int id);
 
-    void enableRampEvent(bool ok);
-    void unlockRampEvent(bool ok);
-    void referenceRamp(bool ok);
+    void vlEnableRampEvent(bool ok);
+    void vlUnlockRampEvent(bool ok);
+    void vlReferenceRamp(bool ok);
 
     void dataLogger();
     void pdoMapping();
-    void manageNotificationControlWordObject(SDO::FlagsRequest flags);
-    void refreshData(quint16 object);
+    void refreshData(NodeObjectId object);
 
-
+    void createWidgets();
 
     // NodeOdSubscriber interface
 protected:

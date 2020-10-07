@@ -20,10 +20,11 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "services/services.h"
+#include "canopen/widget/indexspinbox.h"
 
 #include "profile/p402/nodeprofile402.h"
 #include "profile/p402/nodeprofile402vl.h"
-
+#include "indexdb402.h"
 #include <QFormLayout>
 #include <QPushButton>
 #include <QRadioButton>
@@ -34,15 +35,9 @@ P402VlWidget::P402VlWidget(QWidget *parent)
     _node = nullptr;
     createWidgets();
 
-    _vlVelocityDemandObjectId = 0x6043;
-    _vlVelocityActualObjectId = 0x6044;
-    _vlTargetVelocityObjectId = 0x6042;
-    _vlVelocityMinMaxAmountObjectId = 0x6046;
-    _vlAccelerationObjectId = 0x6048;
-    _vlDecelerationObjectId = 0x6049;
-    _vlQuickStopObjectId = 0x604A;
-    _vlSetPointFactorObjectId = 0x604B;
-    _vlDimensionFactorObjectId = 0x604C;
+    _vlVelocityDemandObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND);
+    _vlVelocityActualObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE);
+    _vlTargetVelocityObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET);
 }
 
 P402VlWidget::~P402VlWidget()
@@ -50,8 +45,26 @@ P402VlWidget::~P402VlWidget()
     unRegisterFullOd();
 }
 
+Node *P402VlWidget::node() const
+{
+    return _node;
+}
+
 void P402VlWidget::setNode(Node *node)
 {
+    _vlMinVelocityMinMaxAmountSpinBox->setNode(node);
+    _vlMaxVelocityMinMaxAmountSpinBox->setNode(node);
+    _vlAccelerationDeltaSpeedSpinBox->setNode(node);
+    _vlAccelerationDeltaTimeSpinBox->setNode(node);
+    _vlDecelerationDeltaSpeedSpinBox->setNode(node);
+    _vlDecelerationDeltaTimeSpinBox->setNode(node);
+    _vlQuickStopDeltaSpeedSpinBox->setNode(node);
+    _vlQuickStopDeltaTimeSpinBox->setNode(node);
+    _vlSetPointFactorNumeratorSpinBox->setNode(node);
+    _vlSetPointFactorDenominatorSpinBox->setNode(node);
+    _vlDimensionFactorNumeratorSpinBox->setNode(node);
+    _vlDimensionFactorDenominatorSpinBox->setNode(node);
+
     if (node != _node)
     {
         if (_node)
@@ -63,42 +76,56 @@ void P402VlWidget::setNode(Node *node)
     _node = node;
     if (_node)
     {
-        registerObjId({_vlTargetVelocityObjectId, 0xFF});
-        registerObjId({_vlVelocityDemandObjectId, 0xFF});
-        registerObjId({_vlVelocityActualObjectId, 0xFF});
-        registerObjId({_vlVelocityMinMaxAmountObjectId, 0xFF});
-        registerObjId({_vlAccelerationObjectId, 0xFF});
-        registerObjId({_vlDecelerationObjectId, 0xFF});
-        registerObjId({_vlQuickStopObjectId, 0xFF});
-        registerObjId({_vlSetPointFactorObjectId, 0xFF});
-        registerObjId({_vlDimensionFactorObjectId, 0xFF});
+        _vlTargetVelocityObjectId.setBusId(_node->busId());
+        _vlVelocityDemandObjectId.setBusId(_node->busId());
+        _vlVelocityActualObjectId.setBusId(_node->busId());
+        _vlTargetVelocityObjectId.setNodeId(_node->nodeId());
+        _vlVelocityDemandObjectId.setNodeId(_node->nodeId());
+        _vlVelocityActualObjectId.setNodeId(_node->nodeId());
+        _vlTargetVelocityObjectId.setDataType(QMetaType::Type::Short);
+        _vlVelocityDemandObjectId.setDataType(QMetaType::Type::Short);
+        _vlVelocityActualObjectId.setDataType(QMetaType::Type::Short);
+
+        registerObjId({_vlTargetVelocityObjectId});
+        registerObjId({_vlVelocityDemandObjectId});
+        registerObjId({_vlVelocityActualObjectId});
 
         setNodeInterrest(node);
 
-        _nodeProfile402Vl = static_cast<NodeProfile402 *>(_node->profiles()[0])->p402Vl();
-        connect(_nodeProfile402Vl, &NodeProfile402Vl::enableRampEvent, this, &P402VlWidget::enableRampEvent);
-        connect(_nodeProfile402Vl, &NodeProfile402Vl::unlockRampEvent, this, &P402VlWidget::unlockRampEvent);
-        connect(_nodeProfile402Vl, &NodeProfile402Vl::referenceRampEvent, this, &P402VlWidget::referenceRamp);
+       _vlMinVelocityMinMaxAmountSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_MIN));
+       _vlMaxVelocityMinMaxAmountSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_MAX));
+       _vlAccelerationDeltaSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_ACCELERATION_DELTA_SPEED));
+       _vlAccelerationDeltaTimeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_ACCELERATION_DELTA_TIME));
+       _vlDecelerationDeltaSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DECELERATION_DELTA_SPEED));
+       _vlDecelerationDeltaTimeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DECELERATION_DELTA_TIME));
+       _vlQuickStopDeltaSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_QUICK_STOP_DELTA_SPEED));
+       _vlQuickStopDeltaTimeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_QUICK_STOP_DELTA_TIME));
+       _vlSetPointFactorNumeratorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_SET_POINT_FACTOR_NUMERATOR));
+       _vlSetPointFactorDenominatorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_SET_POINT_FACTOR_DENOMINATOR));
+       _vlDimensionFactorNumeratorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_NUMERATOR));
+       _vlDimensionFactorDenominatorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_DENOMINATOR));
 
-        enableRampEvent(_nodeProfile402Vl->isEnableRamp());
-        unlockRampEvent(_nodeProfile402Vl->isUnlockRamp());
-        referenceRamp(_nodeProfile402Vl->isReferenceRamp());
+        _nodeProfile402Vl = static_cast<NodeProfile402 *>(_node->profiles()[0])->p402Vl();
+        connect(_nodeProfile402Vl, &NodeProfile402Vl::enableRampEvent, this, &P402VlWidget::vlEnableRampEvent);
+        connect(_nodeProfile402Vl, &NodeProfile402Vl::unlockRampEvent, this, &P402VlWidget::vlUnlockRampEvent);
+        connect(_nodeProfile402Vl, &NodeProfile402Vl::referenceRampEvent, this, &P402VlWidget::vlReferenceRamp);
+
+        vlEnableRampEvent(_nodeProfile402Vl->isEnableRamp());
+        vlUnlockRampEvent(_nodeProfile402Vl->isUnlockRamp());
+        vlReferenceRamp(_nodeProfile402Vl->isReferenceRamp());
 
         connect(_node, &Node::statusChanged, this, &P402VlWidget::updateData);
     }
 }
 
-Node *P402VlWidget::node() const
-{
-    return _node;
-}
+
 
 void P402VlWidget::readData()
 {
     if (_node)
     {
-        _node->readObject(_vlVelocityDemandObjectId, 0x0);
-        _node->readObject(_vlVelocityActualObjectId, 0x0);
+        _node->readObject(_vlVelocityDemandObjectId);
+        _node->readObject(_vlVelocityActualObjectId);
     }
 }
 
@@ -107,21 +134,9 @@ void P402VlWidget::updateData()
     if (_node)
     {
         this->setEnabled(true);
-        _node->readObject(_vlTargetVelocityObjectId, 0);
-        _node->readObject(_vlVelocityDemandObjectId, 0x0);
-        _node->readObject(_vlVelocityActualObjectId, 0x0);
-        _node->readObject(_vlVelocityMinMaxAmountObjectId, 1);
-        _node->readObject(_vlVelocityMinMaxAmountObjectId, 2);
-        _node->readObject(_vlAccelerationObjectId, 1);
-        _node->readObject(_vlAccelerationObjectId, 2);
-        _node->readObject(_vlDecelerationObjectId, 1);
-        _node->readObject(_vlDecelerationObjectId, 2);
-        _node->readObject(_vlQuickStopObjectId, 1);
-        _node->readObject(_vlQuickStopObjectId, 2);
-        _node->readObject(_vlSetPointFactorObjectId, 1);
-        _node->readObject(_vlSetPointFactorObjectId, 2);
-        _node->readObject(_vlDimensionFactorObjectId, 1);
-        _node->readObject(_vlDimensionFactorObjectId, 2);
+        _node->readObject(_vlTargetVelocityObjectId);
+        _node->readObject(_vlVelocityDemandObjectId);
+        _node->readObject(_vlVelocityActualObjectId);
 
         _nodeProfile402Vl->setEnableRamp(true);
         _nodeProfile402Vl->setReferenceRamp(true);
@@ -132,74 +147,13 @@ void P402VlWidget::updateData()
 void P402VlWidget::vlTargetVelocitySpinboxFinished()
 {
     qint16 value = static_cast<qint16>(_vlTargetVelocitySpinBox->value());
-    _node->writeObject(_vlTargetVelocityObjectId, 0x00, QVariant(value));
+    _node->writeObject(_vlTargetVelocityObjectId, QVariant(value));
     _vlTargetVelocitySlider->setValue(value);
 }
 void P402VlWidget::vlTargetVelocitySliderChanged()
 {
     qint16 value = static_cast<qint16>(_vlTargetVelocitySpinBox->value());
-    _node->writeObject(_vlTargetVelocityObjectId, 0x00, QVariant(value));
-}
-void P402VlWidget::vlMinAmountEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlMinVelocityMinMaxAmountSpinBox->value());
-    _node->writeObject(0x6046, 0x01, QVariant(value));
-}
-void P402VlWidget::vlMaxAmountEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlMaxVelocityMinMaxAmountSpinBox->value());
-    _node->writeObject(0x6046, 0x02, QVariant(value));
-}
-void P402VlWidget::vlAccelerationDeltaSpeedEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlAccelerationDeltaSpeedSpinBox->value());
-    _node->writeObject(0x6048, 0x01, QVariant(value));
-}
-void P402VlWidget::vlAccelerationDeltaTimeEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlAccelerationDeltaTimeSpinBox->value());
-    _node->writeObject(0x6048, 0x02, QVariant(value));
-}
-void P402VlWidget::vlDecelerationDeltaSpeedEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlDecelerationDeltaSpeedSpinBox->value());
-    _node->writeObject(0x6049, 0x01, QVariant(value));
-}
-void P402VlWidget::vlDecelerationDeltaTimeEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlDecelerationDeltaTimeSpinBox->value());
-    _node->writeObject(0x6049, 0x02, QVariant(value));
-}
-void P402VlWidget::vlQuickStopDeltaSpeedEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlQuickStopDeltaSpeedSpinBox->value());
-    _node->writeObject(0x604A, 0x01, QVariant(value));
-}
-void P402VlWidget::vlQuickStopDeltaTimeEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlQuickStopDeltaTimeSpinBox->value());
-    _node->writeObject(0x604A, 0x02, QVariant(value));
-}
-void P402VlWidget::vlSetPointFactorNumeratorEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlSetPointFactorNumeratorSpinBox->value());
-    _node->writeObject(0x604B, 0x01, QVariant(value));
-}
-void P402VlWidget::vlSetPointFactorDenominatorEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlSetPointFactorDenominatorSpinBox->value());
-    _node->writeObject(0x604B, 0x02, QVariant(value));
-}
-
-void P402VlWidget::vlDimensionFactorNumeratorEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlDimensionFactorNumeratorSpinBox->value());
-    _node->writeObject(0x604C, 0x01, QVariant(value));
-}
-void P402VlWidget::vlDimensionFactorDenominatorEditingFinished()
-{
-    quint32 value = static_cast<quint32>(_vlDimensionFactorDenominatorSpinBox->value());
-    _node->writeObject(0x604C, 0x02, QVariant(value));
+    _node->writeObject(_vlTargetVelocityObjectId, QVariant(value));
 }
 
 void P402VlWidget::vlEnableRampClicked(int id)
@@ -249,98 +203,87 @@ void P402VlWidget::createWidgets()
     QLabel *vlVelocityMinMaxAmountLabel = new QLabel(tr("Velocity min max amount (0x6046) :"));
     vlLayout->addRow(vlVelocityMinMaxAmountLabel);
     QLayout *vlVelocityMinMaxAmountlayout = new QHBoxLayout();
-    _vlMinVelocityMinMaxAmountSpinBox = new QSpinBox();
+
+    _vlMinVelocityMinMaxAmountSpinBox = new IndexSpinBox();
     _vlMinVelocityMinMaxAmountSpinBox->setToolTip("min ");
-    _vlMinVelocityMinMaxAmountSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
+//    _vlMinVelocityMinMaxAmountSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
     vlVelocityMinMaxAmountlayout->addWidget(_vlMinVelocityMinMaxAmountSpinBox);
-    _vlMaxVelocityMinMaxAmountSpinBox = new QSpinBox();
+    _vlMaxVelocityMinMaxAmountSpinBox = new IndexSpinBox();
     _vlMaxVelocityMinMaxAmountSpinBox->setToolTip("max ");
-    _vlMaxVelocityMinMaxAmountSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
+//    _vlMaxVelocityMinMaxAmountSpinBox->setRange(std::numeric_limits<quint32>::min(), std::numeric_limits<int>::max());
     vlVelocityMinMaxAmountlayout->addWidget(_vlMaxVelocityMinMaxAmountSpinBox);
     vlLayout->addRow(vlVelocityMinMaxAmountlayout);
-    connect(_vlMinVelocityMinMaxAmountSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlMinAmountEditingFinished);
-    connect(_vlMaxVelocityMinMaxAmountSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlMaxAmountEditingFinished);
 
     QLabel *vlVelocityAccelerationLabel = new QLabel(tr("Velocity acceleration (0x6048) :"));
     vlLayout->addRow(vlVelocityAccelerationLabel);
     QLayout *vlVelocityAccelerationlayout = new QHBoxLayout();
-    _vlAccelerationDeltaSpeedSpinBox = new QSpinBox();
-    _vlAccelerationDeltaSpeedSpinBox->setSuffix(" inc/ms");
+    _vlAccelerationDeltaSpeedSpinBox = new IndexSpinBox();
+//    _vlAccelerationDeltaSpeedSpinBox->setSuffix(" inc/ms");
     _vlAccelerationDeltaSpeedSpinBox->setToolTip("Delta Speed");
-    _vlAccelerationDeltaSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
+//    _vlAccelerationDeltaSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
     vlVelocityAccelerationlayout->addWidget(_vlAccelerationDeltaSpeedSpinBox);
-    _vlAccelerationDeltaTimeSpinBox = new QSpinBox();
-    _vlAccelerationDeltaTimeSpinBox->setSuffix(" ms");
+    _vlAccelerationDeltaTimeSpinBox = new IndexSpinBox();
+//    _vlAccelerationDeltaTimeSpinBox->setSuffix(" ms");
     _vlAccelerationDeltaTimeSpinBox->setToolTip("Delta Time");
-    _vlAccelerationDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
+//    _vlAccelerationDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
     vlVelocityAccelerationlayout->addWidget(_vlAccelerationDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityAccelerationlayout);
-    connect(_vlAccelerationDeltaSpeedSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlAccelerationDeltaSpeedEditingFinished);
-    connect(_vlAccelerationDeltaTimeSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlAccelerationDeltaTimeEditingFinished);
 
     QLabel *vlVelocityDecelerationLabel = new QLabel(tr("Velocity deceleration (0x6049) :"));
     vlLayout->addRow(vlVelocityDecelerationLabel);
     QLayout *vlVelocityDecelerationlayout = new QHBoxLayout();
-    _vlDecelerationDeltaSpeedSpinBox = new QSpinBox();
-    _vlDecelerationDeltaSpeedSpinBox->setSuffix(" inc/ms");
+    _vlDecelerationDeltaSpeedSpinBox = new IndexSpinBox();
+//    _vlDecelerationDeltaSpeedSpinBox->setSuffix(" inc/ms");
     _vlDecelerationDeltaSpeedSpinBox->setToolTip("Delta Speed");
-    _vlDecelerationDeltaSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
+//    _vlDecelerationDeltaSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
     vlVelocityDecelerationlayout->addWidget(_vlDecelerationDeltaSpeedSpinBox);
-    _vlDecelerationDeltaTimeSpinBox = new QSpinBox();
-    _vlDecelerationDeltaTimeSpinBox->setSuffix(" ms");
+    _vlDecelerationDeltaTimeSpinBox = new IndexSpinBox();
+//    _vlDecelerationDeltaTimeSpinBox->setSuffix(" ms");
     _vlDecelerationDeltaTimeSpinBox->setToolTip("Delta Time");
-    _vlDecelerationDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
+//    _vlDecelerationDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
     vlVelocityDecelerationlayout->addWidget(_vlDecelerationDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityDecelerationlayout);
-    connect(_vlDecelerationDeltaSpeedSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlDecelerationDeltaSpeedEditingFinished);
-    connect(_vlDecelerationDeltaTimeSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlDecelerationDeltaTimeEditingFinished);
 
     QLabel *vlVelocityQuickStopLabel = new QLabel(tr("Velocity quick stop (0x604A) :"));
     vlLayout->addRow(vlVelocityQuickStopLabel);
     QLayout *vlVelocityQuickStoplayout = new QHBoxLayout();
-    _vlQuickStopDeltaSpeedSpinBox = new QSpinBox();
-    _vlQuickStopDeltaSpeedSpinBox->setSuffix(" inc/ms");
+    _vlQuickStopDeltaSpeedSpinBox = new IndexSpinBox();
+//    _vlQuickStopDeltaSpeedSpinBox->setSuffix(" inc/ms");
     _vlQuickStopDeltaSpeedSpinBox->setToolTip("Delta Speed");
-    _vlQuickStopDeltaSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
+//    _vlQuickStopDeltaSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
     vlVelocityQuickStoplayout->addWidget(_vlQuickStopDeltaSpeedSpinBox);
-    _vlQuickStopDeltaTimeSpinBox = new QSpinBox();
-    _vlQuickStopDeltaTimeSpinBox->setSuffix(" ms");
+    _vlQuickStopDeltaTimeSpinBox = new IndexSpinBox();
+//    _vlQuickStopDeltaTimeSpinBox->setSuffix(" ms");
     _vlQuickStopDeltaTimeSpinBox->setToolTip("Delta Time");
-    _vlQuickStopDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
+//    _vlQuickStopDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
     vlVelocityQuickStoplayout->addWidget(_vlQuickStopDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityQuickStoplayout);
-    connect(_vlQuickStopDeltaSpeedSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlQuickStopDeltaSpeedEditingFinished);
-    connect(_vlQuickStopDeltaTimeSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlQuickStopDeltaTimeEditingFinished);
 
     QLabel *vlSetPointFactorLabel = new QLabel(tr("Set-point factor (0x604B) :"));
     vlLayout->addRow(vlSetPointFactorLabel);
     QLayout *vlSetPointFactorlayout = new QHBoxLayout();
-    _vlSetPointFactorNumeratorSpinBox = new QSpinBox();
+    _vlSetPointFactorNumeratorSpinBox = new IndexSpinBox();
     _vlSetPointFactorNumeratorSpinBox->setToolTip("Numerator");
-    _vlSetPointFactorNumeratorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
+//    _vlSetPointFactorNumeratorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
     vlSetPointFactorlayout->addWidget(_vlSetPointFactorNumeratorSpinBox);
-    _vlSetPointFactorDenominatorSpinBox = new QSpinBox();
+    _vlSetPointFactorDenominatorSpinBox = new IndexSpinBox();
     _vlSetPointFactorDenominatorSpinBox->setToolTip("Denominator");
-    _vlSetPointFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
+//    _vlSetPointFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
     vlSetPointFactorlayout->addWidget(_vlSetPointFactorDenominatorSpinBox);
     vlLayout->addRow(vlSetPointFactorlayout);
-    connect(_vlSetPointFactorNumeratorSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlSetPointFactorNumeratorEditingFinished);
-    connect(_vlSetPointFactorDenominatorSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlSetPointFactorDenominatorEditingFinished);
 
     QLabel *vlDimensionFactorLabel = new QLabel(tr("Dimension factor (0x604C) :"));
     vlLayout->addRow(vlDimensionFactorLabel);
     QLayout *vlDimensionFactorlayout = new QHBoxLayout();
-    _vlDimensionFactorNumeratorSpinBox = new QSpinBox();
+    _vlDimensionFactorNumeratorSpinBox = new IndexSpinBox();
     _vlDimensionFactorNumeratorSpinBox->setToolTip("Numerator");
-    _vlDimensionFactorNumeratorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
+//    _vlDimensionFactorNumeratorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
     vlDimensionFactorlayout->addWidget(_vlDimensionFactorNumeratorSpinBox);
-    _vlDimensionFactorDenominatorSpinBox = new QSpinBox();
+    _vlDimensionFactorDenominatorSpinBox = new IndexSpinBox();
     _vlDimensionFactorDenominatorSpinBox->setToolTip("Denominator");
-    _vlDimensionFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
+//    _vlDimensionFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
     vlDimensionFactorlayout->addWidget(_vlDimensionFactorDenominatorSpinBox);
     vlLayout->addRow(vlDimensionFactorlayout);
-    connect(_vlDimensionFactorNumeratorSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlDimensionFactorNumeratorEditingFinished);
-    connect(_vlDimensionFactorDenominatorSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlDimensionFactorDenominatorEditingFinished);
 
     vlGroupBox->setLayout(vlLayout);
 
@@ -424,9 +367,11 @@ void P402VlWidget::dataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    dataLogger->addData({_node->busId(), _node->nodeId(), _vlVelocityActualObjectId, 0x0, QMetaType::Type::Short});
-    dataLogger->addData({_node->busId(), _node->nodeId(), _vlTargetVelocityObjectId, 0x0, QMetaType::Type::Short});
-    dataLogger->addData({_node->busId(), _node->nodeId(), _vlVelocityDemandObjectId, 0x0, QMetaType::Type::Short});
+
+    dataLogger->addData({_vlVelocityActualObjectId});
+    dataLogger->addData({_vlTargetVelocityObjectId});
+    dataLogger->addData({_vlVelocityDemandObjectId});
+
     _dataLoggerWidget->show();
 }
 
@@ -435,20 +380,17 @@ void P402VlWidget::pdoMapping()
     NodeObjectId controlWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0, QMetaType::Type::UShort);
     NodeObjectId statusWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6041, 0, QMetaType::Type::UShort);
 
-    QList<NodeObjectId> vlRpdoObjectList = {{controlWordObjectId},
-                                            {_node->busId(), _node->nodeId(), _vlTargetVelocityObjectId, 0x0, QMetaType::Type::Short}};
-
+    QList<NodeObjectId> vlRpdoObjectList = {{controlWordObjectId}, {_vlTargetVelocityObjectId}};
     _node->rpdos().at(0)->writeMapping(vlRpdoObjectList);
-    QList<NodeObjectId> vlTpdoObjectList = {{statusWordObjectId},
-                                            {_node->busId(), _node->nodeId(), _vlVelocityDemandObjectId, 0x0, QMetaType::Type::Short}};
 
+    QList<NodeObjectId> vlTpdoObjectList = {{statusWordObjectId}, {_vlVelocityDemandObjectId}};
     _node->tpdos().at(2)->writeMapping(vlTpdoObjectList);
 }
 
-void P402VlWidget::refreshData(quint16 object)
+void P402VlWidget::refreshData(NodeObjectId object)
 {
     int value;
-    if (_node->nodeOd()->indexExist(object))
+    if (_node->nodeOd()->indexExist(object.index()))
     {
         if (object == _vlTargetVelocityObjectId)
         {
@@ -472,65 +414,20 @@ void P402VlWidget::refreshData(quint16 object)
             value = _node->nodeOd()->value(object).toInt();
             _vlVelocityActualLabel->setNum(value);
         }
-        if (object == _vlVelocityMinMaxAmountObjectId)
-        {
-            value = _node->nodeOd()->value(object, 1).toInt();
-            _vlMinVelocityMinMaxAmountSpinBox->setValue(value);
-            value = _node->nodeOd()->value(object, 2).toInt();
-            _vlMaxVelocityMinMaxAmountSpinBox->setValue(value);
-            _vlTargetVelocitySlider->setMinimum(-value);
-            _vlTargetVelocitySlider->setMaximum(value);
-        }
-        if (object == _vlAccelerationObjectId)
-        {
-            value = _node->nodeOd()->value(object, 1).toInt();
-            _vlAccelerationDeltaSpeedSpinBox->setValue(value);
-            value = _node->nodeOd()->value(object, 2).toInt();
-            _vlAccelerationDeltaTimeSpinBox->setValue(value);
-        }
-        if (object == _vlDecelerationObjectId)
-        {
-            value = _node->nodeOd()->value(object, 1).toInt();
-            _vlDecelerationDeltaSpeedSpinBox->setValue(value);
-            value = _node->nodeOd()->value(object, 2).toInt();
-            _vlDecelerationDeltaTimeSpinBox->setValue(value);
-        }
-        if (object == _vlQuickStopObjectId)
-        {
-            value = _node->nodeOd()->value(object, 1).toInt();
-            _vlQuickStopDeltaSpeedSpinBox->setValue(value);
-            value = _node->nodeOd()->value(object, 2).toInt();
-            _vlQuickStopDeltaTimeSpinBox->setValue(value);
-        }
-
-        if (object == _vlSetPointFactorObjectId)
-        {
-            value = _node->nodeOd()->value(object, 1).toInt();
-            _vlSetPointFactorNumeratorSpinBox->setValue(value);
-            value = _node->nodeOd()->value(object, 2).toInt();
-            _vlSetPointFactorDenominatorSpinBox->setValue(value);
-        }
-        if (object == _vlDimensionFactorObjectId)
-        {
-            value = _node->nodeOd()->value(object, 1).toInt();
-            _vlDimensionFactorNumeratorSpinBox->setValue(value);
-            value = _node->nodeOd()->value(object, 2).toInt();
-            _vlDimensionFactorDenominatorSpinBox->setValue(value);
-        }
     }
 }
 
-void P402VlWidget::enableRampEvent(bool ok)
+void P402VlWidget::vlEnableRampEvent(bool ok)
 {
     _vlEnableRampButtonGroup->button(ok)->setChecked(ok);
 }
 
-void P402VlWidget::unlockRampEvent(bool ok)
+void P402VlWidget::vlUnlockRampEvent(bool ok)
 {
     _vlUnlockRampButtonGroup->button(ok)->setChecked(ok);
 }
 
-void P402VlWidget::referenceRamp(bool ok)
+void P402VlWidget::vlReferenceRamp(bool ok)
 {
     _vlReferenceRampButtonGroup->button(ok)->setChecked(ok);
 }
@@ -542,20 +439,14 @@ void P402VlWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         return;
     }
 
-    if ((objId.index == _vlTargetVelocityObjectId)
-        || (objId.index == _vlVelocityDemandObjectId)
-        || (objId.index == _vlVelocityActualObjectId)
-        || (objId.index == _vlVelocityMinMaxAmountObjectId)
-        || (objId.index == _vlAccelerationObjectId)
-        || (objId.index == _vlDecelerationObjectId)
-        || (objId.index == _vlQuickStopObjectId)
-        || (objId.index == _vlSetPointFactorObjectId)
-        || (objId.index == _vlDimensionFactorObjectId))
+    if ((objId == _vlTargetVelocityObjectId)
+        || (objId == _vlVelocityDemandObjectId)
+        || (objId == _vlVelocityActualObjectId))
     {
         if (flags == SDO::FlagsRequest::Error)
         {
             return;
         }
-        refreshData(objId.index);
+        refreshData(objId);
     }
 }
