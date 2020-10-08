@@ -21,6 +21,8 @@
 
 #include "../../udtgui_global.h"
 
+#include "profile/p402/nodeprofile402.h"
+
 #include <QPushButton>
 #include <QSpinBox>
 #include <QTabWidget>
@@ -28,7 +30,6 @@
 #include <QWidget>
 
 class Node;
-class NodeProfile402;
 class DataLogger;
 class DataLoggerChartsWidget;
 class IndexSpinBox;
@@ -45,6 +46,7 @@ public:
 
     enum ModePid
     {
+        MODE_PID_NONE,
         MODE_PID_VELOCITY,
         MODE_PID_POSITION,
         MODE_PID_TORQUE,
@@ -61,7 +63,7 @@ protected:
     void createWidgets();
 
     Node *_node;
-    ModePid _mode;
+    ModePid _modePid;
 
     QTabWidget *_tabWidget;
 
@@ -83,6 +85,7 @@ protected:
 
     void goTargetPosition();
     void savePosition();
+    void mode402Changed(NodeProfile402::Mode modeNew);
 };
 
 #endif  // PIDWIDGET_H

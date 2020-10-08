@@ -55,6 +55,7 @@ void PidWidget::setNode(Node *node)
         return;
     }
     _nodeProfile402 = static_cast<NodeProfile402 *>(_node->profiles()[0]);
+    _modePid = MODE_PID_NONE;
 }
 void PidWidget::setMode(PidWidget::ModePid mode)
 {
@@ -68,60 +69,61 @@ void PidWidget::setMode(PidWidget::ModePid mode)
     NodeObjectId pidIntegratorStatus_ObjId;
     NodeObjectId pidOutputStatus_ObjId;
 
-    _mode = mode;
-    switch (_mode)
+    _modePid = mode;
+    switch (_modePid)
     {
-        case MODE_PID_VELOCITY:
-        {
-            pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_P);
-            pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_I);
-            pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_D);
-            period_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_PERIOD_US);
-            pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_INPUT);
-            pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_ERROR);
-            pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_INTEGRATOR);
-            pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_OUTPUT);
-            target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET);
-
-            _nodeProfile402->setMode(NodeProfile402::VL);
-            break;
-        }
-        case MODE_PID_TORQUE:
-        {
-            pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_P);
-            pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_I);
-            pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_D);
-            period_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PERIOD_US);
-            pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_INPUT);
-            pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_ERROR);
-            pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_INTEGRATOR);
-            pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_OUTPUT);
-            target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TARGET_TORQUE);
-
-            _nodeProfile402->setMode(NodeProfile402::TQ);
-            break;
-        }
-        case MODE_PID_POSITION:
-        {
-            pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_P);
-            pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_I);
-            pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_D);
-            period_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PERIOD_US);
-            pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_INPUT);
-            pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_ERROR);
-            pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_INTEGRATOR);
-            pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_OUTPUT);
-            target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PP_TARGET_POSITION);
-
-            _nodeProfile402->setMode(NodeProfile402::PP);
-            break;
-        }
+    case PidWidget::MODE_PID_NONE:
+        break;
+    case MODE_PID_VELOCITY:
+    {
+        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_P);
+        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_I);
+        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_D);
+        period_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_PERIOD_US);
+        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_INPUT);
+        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_ERROR);
+        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_INTEGRATOR);
+        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_OUTPUT);
+        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET);
+        break;
+    }
+    case MODE_PID_TORQUE:
+    {
+        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_P);
+        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_I);
+        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_D);
+        period_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PERIOD_US);
+        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_INPUT);
+        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_ERROR);
+        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_INTEGRATOR);
+        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_OUTPUT);
+        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TARGET_TORQUE);
+        break;
+    }
+    case MODE_PID_POSITION:
+    {
+        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_P);
+        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_I);
+        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_D);
+        period_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PERIOD_US);
+        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_INPUT);
+        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_ERROR);
+        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_INTEGRATOR);
+        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_OUTPUT);
+        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PP_TARGET_POSITION);
+        break;
+    }
     }
 
     _pSpinBox->setObjId(pidP_ObjId);
     _iSpinBox->setObjId(pidI_ObjId);
     _dSpinBox->setObjId(pidD_ObjId);
     _periodSpinBox->setObjId(period_ObjId);
+
+    pidInputStatus_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    pidErrorStatus_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    pidIntegratorStatus_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    pidOutputStatus_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
     _dataLogger->addData(pidInputStatus_ObjId);
     _dataLogger->addData(pidErrorStatus_ObjId);
@@ -139,15 +141,89 @@ void PidWidget::savePosition()
 
 void PidWidget::goTargetPosition()
 {
+    connect(_nodeProfile402, &NodeProfile402::modeChanged, this, &PidWidget::mode402Changed);
+    switch (_modePid)
+    {
+    case MODE_PID_NONE:
+        break;
+    case MODE_PID_POSITION:
+        if (_nodeProfile402->actualMode() != NodeProfile402::IP)
+        {
+            _nodeProfile402->setMode(NodeProfile402::IP);
+        }
+        else
+        {
+            mode402Changed(NodeProfile402::IP);
+        }
+        break;
+    case MODE_PID_VELOCITY:
+        if (_nodeProfile402->actualMode() != NodeProfile402::VL)
+        {
+            _nodeProfile402->setMode(NodeProfile402::VL);
+        }
+        else
+        {
+            mode402Changed(NodeProfile402::VL);
+        }
+        break;
+    case MODE_PID_TORQUE:
+        if (_nodeProfile402->actualMode() != NodeProfile402::TQ)
+        {
+            _nodeProfile402->setMode(NodeProfile402::TQ);
+        }
+        else
+        {
+            mode402Changed(NodeProfile402::TQ);
+        }
+        break;
+    }
+
     _savePushButton->setEnabled(false);
     _goTargetPushButton->setEnabled(false);
+
+}
+
+void PidWidget::mode402Changed(NodeProfile402::Mode modeNew)
+{
     _dataLogger->clear();
     _dataLogger->start(10);
 
-    _nodeProfile402->setTarget(_targetSpinBox->value());
-    _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
+    switch (modeNew)
+    {
+    case NodeProfile402::HM:
+    case NodeProfile402::Reserved:
+    case NodeProfile402::MS:
+    case NodeProfile402::NoMode:
+        _modePid = ModePid::MODE_PID_NONE;
+        break;
 
-    _measurementTimer.singleShot(_windowSpinBox->value(), this, SLOT(stopMeasurementTimer()));
+    case NodeProfile402::PP:
+    case NodeProfile402::Mode::IP :
+    case NodeProfile402::CSP:
+        _modePid = ModePid::MODE_PID_POSITION;
+        _nodeProfile402->setTarget(_targetSpinBox->value());
+        _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
+        _measurementTimer.singleShot(_windowSpinBox->value(), this, SLOT(stopMeasurementTimer()));
+        break;
+
+    case NodeProfile402::CSV:
+    case NodeProfile402::VL:
+    case NodeProfile402::PV:
+        _modePid = ModePid::MODE_PID_VELOCITY;
+        _nodeProfile402->setTarget(_targetSpinBox->value());
+        _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
+        _measurementTimer.singleShot(_windowSpinBox->value(), this, SLOT(stopMeasurementTimer()));
+        break;
+
+    case NodeProfile402::CST:
+    case NodeProfile402::CSTCA:
+    case NodeProfile402::TQ:
+        _modePid = ModePid::MODE_PID_TORQUE;
+        _nodeProfile402->setTarget(_targetSpinBox->value());
+        _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
+        _measurementTimer.singleShot(_windowSpinBox->value(), this, SLOT(stopMeasurementTimer()));
+        break;
+    }
 }
 
 void PidWidget::stopMeasurementTimer()
@@ -156,6 +232,7 @@ void PidWidget::stopMeasurementTimer()
     _dataLogger->stop();
     _savePushButton->setEnabled(true);
     _goTargetPushButton->setEnabled(true);
+    disconnect(_nodeProfile402, &NodeProfile402::modeChanged, this, &PidWidget::mode402Changed);
 }
 
 void PidWidget::createWidgets()
@@ -225,14 +302,16 @@ void PidWidget::createWidgets()
 
 QString PidWidget::title() const
 {
-    switch (_mode)
+    switch (_modePid)
     {
-        case MODE_PID_POSITION:
-            return tr("PID Position");
-        case MODE_PID_VELOCITY:
-            return tr("PID Velocity");
-        case MODE_PID_TORQUE:
-            return tr("PID Torque");
+    case PidWidget::MODE_PID_NONE:
+        return tr("None");
+    case MODE_PID_POSITION:
+        return tr("PID Position");
+    case MODE_PID_VELOCITY:
+        return tr("PID Velocity");
+    case MODE_PID_TORQUE:
+        return tr("PID Torque");
     }
     return QString();
 }
