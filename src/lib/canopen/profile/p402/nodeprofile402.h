@@ -34,9 +34,8 @@ class NodeProfile402Tq;
 class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
 {
     Q_OBJECT
-public:
+  public:
     NodeProfile402(Node *node);
-    ~NodeProfile402();
 
     enum Mode
     {
@@ -55,9 +54,6 @@ public:
         Reserved = 12
     };
 
-    void active(bool ok);
-    bool isActived();
-
     Mode actualMode();
     bool setMode(Mode mode);
     QString modeStr(NodeProfile402::Mode mode);
@@ -74,7 +70,7 @@ public:
         STATE_QuickStopActive = 6,
         STATE_FaultReactionActive = 7,
         STATE_Fault = 8,
-    };
+        };
 
     State402 currentState() const;
     void goToState(const State402 state);
@@ -112,13 +108,13 @@ public:
     NodeProfile402Ip *p402Ip();
     NodeProfile402Tq *p402Tq();
 
-signals:
-    void modeChanged();
+  signals:
+    void modeChanged(Mode modeNew);
     void stateChanged();
     void isHalted(bool state);
     void eventHappened(quint8 Event402);
 
-private:
+  private:
     enum State
     {
         STATE_NONE,
@@ -127,18 +123,15 @@ private:
     State _state;
     Error _currentError;
 
-    bool _isActive;
-
-    // Mode
     NodeObjectId _modesOfOperationObjectId;
     NodeObjectId _modesOfOperationDisplayObjectId;
     NodeObjectId _supportedDriveModesObjectId;
+    NodeObjectId _controlWordObjectId;
+    NodeObjectId _statusWordObjectId;
+
     Mode _currentMode;
     QList<Mode> _supportedModes;
 
-    //    ControlWord/StatusWord
-    NodeObjectId _controlWordObjectId;
-    NodeObjectId _statusWordObjectId;
     quint16 _cmdControlWord;
     State402 _stateMachineCurrent;
     State402 _requestedStateMachine;
@@ -157,13 +150,13 @@ private:
     void manageState(const State402 state);
     void changeState(void);
 
-public:
+  public:
     bool status() const override;
     quint16 profileNumber() const override;
     QString profileNumberStr() const override;
 
     // NodeOdSubscriber interface
-public:
+  public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
