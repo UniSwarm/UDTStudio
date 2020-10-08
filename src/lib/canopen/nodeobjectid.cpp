@@ -214,6 +214,12 @@ void NodeObjectId::setNodeId(const quint8 &nodeId)
     _nodeId = nodeId;
 }
 
+void NodeObjectId::setBusIdNodeId(const quint8 &busId, const quint8 &nodeId)
+{
+    _nodeId = nodeId;
+    _busId = busId;
+}
+
 quint16 NodeObjectId::index() const
 {
     return _index;

@@ -44,6 +44,8 @@ public:
     quint8 nodeId() const;
     void setNodeId(const quint8 &nodeId);
 
+    void setBusIdNodeId(const quint8 &busId, const quint8 &nodeId);
+
     quint16 index() const;
     void setIndex(const quint16 &index);
 
