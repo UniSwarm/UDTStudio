@@ -55,12 +55,12 @@ void P402OptionWidget::setNode(Node *node)
     _node = node;
     if (_node)
     {
-        _abortConnectionObjectId = IndexDb402::getObjectId(IndexDb402::OD_ABORT_CONNECTION_OPTION);// = NodeObjectId(_node->busId(), _node->nodeId(), 0x6007, 0);
-        _quickStopObjectId = IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION);// = NodeObjectId(_node->busId(), _node->nodeId(), 0x605A, 0);
-        _shutdownObjectId = IndexDb402::getObjectId(IndexDb402::OD_SHUTDOWN_OPTION);// = NodeObjectId(_node->busId(), _node->nodeId(), 0x605B, 0);
-        _disableObjectId = IndexDb402::getObjectId(IndexDb402::OD_DISABLE_OPERATION_OPTION);// = NodeObjectId(_node->busId(), _node->nodeId(), 0x605C, 0);
-        _haltObjectId = IndexDb402::getObjectId(IndexDb402::OD_HALT_OPTION);// = NodeObjectId(_node->busId(), _node->nodeId(), 0x605D, 0);
-        _faultReactionObjectId = IndexDb402::getObjectId(IndexDb402::OD_FAULT_REACTION_OPTION);// = NodeObjectId(_node->busId(), _node->nodeId(), 0x605E, 0);
+        _abortConnectionObjectId = IndexDb402::getObjectId(IndexDb402::OD_ABORT_CONNECTION_OPTION);
+        _quickStopObjectId = IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION);
+        _shutdownObjectId = IndexDb402::getObjectId(IndexDb402::OD_SHUTDOWN_OPTION);
+        _disableObjectId = IndexDb402::getObjectId(IndexDb402::OD_DISABLE_OPERATION_OPTION);
+        _haltObjectId = IndexDb402::getObjectId(IndexDb402::OD_HALT_OPTION);
+        _faultReactionObjectId = IndexDb402::getObjectId(IndexDb402::OD_FAULT_REACTION_OPTION);
         registerObjId({_abortConnectionObjectId});
         registerObjId({_quickStopObjectId});
         registerObjId({_shutdownObjectId});

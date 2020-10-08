@@ -18,6 +18,7 @@
 
 #include "nodeprofile402vl.h"
 #include "node.h"
+#include "indexdb402.h"
 
 enum ControlWordVL : quint16
 {
@@ -29,9 +30,11 @@ enum ControlWordVL : quint16
 
 NodeProfile402Vl::NodeProfile402Vl(Node *node) : _node(node)
 {
-    _targetObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6042, 0);
+    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET);
+    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD);
+    _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    _controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId({_targetObjectId});
-    _controlWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0);
     registerObjId({_controlWordObjectId});
 
     _enableRamp = false;

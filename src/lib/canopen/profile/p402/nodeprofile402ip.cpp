@@ -18,7 +18,7 @@
 
 #include "nodeprofile402ip.h"
 #include "node.h"
-
+#include "indexdb402.h"
 enum ControlWordIP : quint16
 {
     CW_IP_EnableRamp = 0x10,
@@ -27,11 +27,12 @@ enum ControlWordIP : quint16
 
 NodeProfile402Ip::NodeProfile402Ip(Node *node) : _node(node)
 {
-    _targetObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x60C1, 1);
+    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_SET_POINT);
+    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD);
+    _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    _controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId({_targetObjectId});
-    _controlWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0);
     registerObjId({_controlWordObjectId});
-
     setNodeInterrest(_node);
     _enableRamp = false;
 }

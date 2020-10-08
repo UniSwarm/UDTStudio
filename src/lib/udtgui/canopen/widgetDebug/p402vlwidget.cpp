@@ -197,9 +197,10 @@ void P402VlWidget::dataLogger()
 
 void P402VlWidget::pdoMapping()
 {
-    NodeObjectId controlWordObjectId =
-        NodeObjectId(_node->busId(), _node->nodeId(), 0x6040, 0, QMetaType::Type::UShort);
-    NodeObjectId statusWordObjectId = NodeObjectId(_node->busId(), _node->nodeId(), 0x6041, 0, QMetaType::Type::UShort);
+    NodeObjectId controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD);
+    NodeObjectId statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD);
+    controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    statusWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
     QList<NodeObjectId> vlRpdoObjectList = {{controlWordObjectId}, {_vlTargetVelocityObjectId}};
     _node->rpdos().at(0)->writeMapping(vlRpdoObjectList);
