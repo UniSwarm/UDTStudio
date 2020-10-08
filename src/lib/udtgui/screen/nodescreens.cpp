@@ -38,13 +38,62 @@ Node *NodeScreens::node() const
 
 void NodeScreens::addScreen(NodeScreen *screen)
 {
-    _tabWidget->addTab(screen, " " + screen->title() + " ");
-    _screens.append(screen);
+    if (!screenExist(screen))
+    {
+        _tabWidget->addTab(screen, " " + screen->title() + " ");
+        _screens.append(screen);
+    }
+//    for (NodeScreen *scr : _screens)
+//    {
+//        if ((_tabWidget->indexOf(scr) < 0) && (scr->title() == NodeScreenUmcMotor().title()))
+//        {
+//            _tabWidget->addTab(screen, " " + screen->title() + " ");
+//        }
+//    }
+}
+
+bool NodeScreens::screenExist(NodeScreen *screen)
+{
+    for (NodeScreen *scr : _screens)
+    {
+        if (scr->title() == screen->title())
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void NodeScreens::setNode(Node *node)
 {
     _node = node;
+    if (_node)
+    {
+         if ((_node->profileNumber()) == 0x192)
+         {
+             NodeScreen *screen;
+             screen = new NodeScreenUmcMotor();
+             addScreen(screen);
+             for (NodeScreen *scr : _screens)
+             {
+                 if (scr->title() == NodeScreenUmcMotor().title())
+                 {
+                     scr->setEnabled(true);
+                 }
+             }
+         }
+         else
+         {
+             for (NodeScreen *scr : _screens)
+             {
+                 if (scr->title() == NodeScreenUmcMotor().title())
+                 {
+                    scr->setEnabled(false);
+                 }
+             }
+         }
+    }
+
     for (NodeScreen *screen : _screens)
     {
         screen->setNode(node);
@@ -65,9 +114,6 @@ void NodeScreens::createWidgets()
     addScreen(screen);
 
     screen = new NodeScreenPDO();
-    addScreen(screen);
-
-    screen = new NodeScreenUmcMotor();
     addScreen(screen);
 
     setLayout(layout);

@@ -36,6 +36,7 @@ public:
     Node *node() const;
 
     void addScreen(NodeScreen *screen);
+    bool screenExist(NodeScreen *screen);
 
 public slots:
     void setNode(Node *node);

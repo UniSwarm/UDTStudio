@@ -53,7 +53,10 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node)
     {
         return;
     }
-
+    if (_node->profileNumber() != 0x192)
+    {
+        return;
+    }
     _pidVelocityWidget->setNode(node);
     _pidVelocityWidget->setMode(PidWidget::MODE_PID_VELOCITY);
     _tabWidget->addTab(_pidVelocityWidget, " " + _pidVelocityWidget->title() + " ");
