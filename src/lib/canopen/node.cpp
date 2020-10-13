@@ -221,6 +221,11 @@ void Node::reset()
     {
         service->reset();
     }
+
+    for (NodeProfile *nodeProfile : _nodeProfiles)
+    {
+        nodeProfile->reset();
+    }
 }
 
 const QList<RPDO *> &Node::rpdos() const

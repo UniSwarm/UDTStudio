@@ -480,6 +480,12 @@ QString NodeProfile402::profileNumberStr() const
     return QString("402");
 }
 
+void NodeProfile402::reset() const
+{
+    _node->readObject(_modesOfOperationDisplayObjectId);
+    _node->readObject(_supportedDriveModesObjectId);
+}
+
 void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (objId == _modesOfOperationObjectId)

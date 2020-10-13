@@ -154,6 +154,7 @@ class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
     bool status() const override;
     quint16 profileNumber() const override;
     QString profileNumberStr() const override;
+    virtual void reset() const override;
 
     // NodeOdSubscriber interface
   public:

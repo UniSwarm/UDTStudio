@@ -35,6 +35,7 @@ public:
     virtual bool status() const;
     virtual quint16 profileNumber() const = 0;
     virtual QString profileNumberStr() const = 0;
+    virtual void reset() const = 0;
 
 protected:
     Node *_node;
