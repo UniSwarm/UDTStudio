@@ -23,6 +23,7 @@
 #include <QFontMetrics>
 #include <QMenu>
 #include <QDebug>
+#include <QRegExp>
 
 #include "node.h"
 
@@ -83,7 +84,7 @@ void NodeOdTreeView::setEditable(bool editable)
 
 void NodeOdTreeView::setFilter(const QString filterText)
 {
-    QRegularExpression filterRegExp("(?:pdo:(?<pdo>[^ ]*) *)*(.*)");
+    QRegularExpression filterRegExp("(?:pdo:(?<pdo>[^ ]*) *|type:(?<type>[^ ]*) *)*(.*)");
     QRegularExpressionMatch match = filterRegExp.match(filterText);
 
     // pdo
@@ -100,16 +101,19 @@ void NodeOdTreeView::setFilter(const QString filterText)
     }
 
     QString textFilter = match.capturedTexts().at(match.lastCapturedIndex());
-    if (filterText.startsWith("0x", Qt::CaseInsensitive))
+    if (textFilter.startsWith("0x", Qt::CaseInsensitive))
     {
         _odModelSorter->setFilterKeyColumn(NodeOdItemModel::OdIndex);
-        _odModelSorter->setFilterRegularExpression(QRegularExpression(textFilter, QRegularExpression::CaseInsensitiveOption));
     }
     else
     {
         _odModelSorter->setFilterKeyColumn(NodeOdItemModel::Name);
-        _odModelSorter->setFilterRegularExpression(QRegularExpression(textFilter, QRegularExpression::CaseInsensitiveOption));
     }
+#if QT_VERSION >= 0x050C00
+    _odModelSorter->setFilterRegularExpression(QRegularExpression(textFilter, QRegularExpression::CaseInsensitiveOption));
+#else
+    _odModelSorter->setFilterRegExp(QRegExp(textFilter, Qt::CaseInsensitive));
+#endif
 }
 
 void NodeOdTreeView::readCurrent()
@@ -144,7 +148,10 @@ void NodeOdTreeView::readAll()
         {
             for (NodeSubIndex *subIndexN : nodeIndex->subIndexes())
             {
-                _odModel->node()->readObject(nodeIndex->index(), subIndexN->subIndex());
+                if (subIndexN->isReadable())
+                {
+                    _odModel->node()->readObject(nodeIndex->index(), subIndexN->subIndex());
+                }
             }
         }
     }
