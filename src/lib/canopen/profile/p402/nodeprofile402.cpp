@@ -93,7 +93,8 @@ NodeProfile402::NodeProfile402(Node *node) : NodeProfile(node)
     _p402Tq = new NodeProfile402Tq(_node);
     _p402Vl = new NodeProfile402Vl(_node);
 
-    _requestedStateMachine = State402::STATE_SwitchOnDisabled;
+    _requestedStateMachine = State402::STATE_NotReadyToSwitchOn;
+    _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
     _currentMode = NoMode;
 
     setNodeInterrest(node);
@@ -105,11 +106,14 @@ void NodeProfile402::statusNodeChanged(Node::Status status)
     {
         if (status == Node::STARTED)
         {
-
+            _requestedStateMachine = State402::STATE_ReadyToSwitchOn;
+            _stateMachineCurrent = State402::STATE_ReadyToSwitchOn;
+            _node->readObject(_modesOfOperationDisplayObjectId);
         }
         else
         {
-            goToState(STATE_SwitchOnDisabled);
+            _requestedStateMachine = State402::STATE_ReadyToSwitchOn;
+            _stateMachineCurrent = State402::STATE_ReadyToSwitchOn;
         }
     }
 }
@@ -183,6 +187,7 @@ bool NodeProfile402::setMode(Mode mode)
         _node->writeObject(_modesOfOperationObjectId, QVariant(mode));
         _state = STATE_CHANGE_MODE;
         _currentError = NO_ERROR;
+        _requestedChangeMode = mode;
         return true;
     }
     else
@@ -216,6 +221,7 @@ NodeProfile402::State402 NodeProfile402::currentState() const
 
 void NodeProfile402::goToState(const State402 state)
 {
+    _state = STATE_CHANGE_MODE;
     _requestedStateMachine = state;
     manageState(_requestedStateMachine);
 }
@@ -252,7 +258,7 @@ void NodeProfile402::manageState(const State402 state)
         {
             _cmdControlWord = (_cmdControlWord & ~CW_Mask);
             _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn | CW_EnableOperation);
-            enableRamp();
+            enableRamp(_cmdControlWord);
         }
         break;
     case STATE_SwitchedOn:
@@ -260,7 +266,7 @@ void NodeProfile402::manageState(const State402 state)
         {
             _cmdControlWord = (_cmdControlWord & ~CW_Mask);
             _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn | CW_EnableOperation);
-            enableRamp();
+            enableRamp(_cmdControlWord);
         }
         if (state == STATE_ReadyToSwitchOn)
         {
@@ -435,7 +441,7 @@ bool NodeProfile402::status() const
     return true;
 }
 
-void NodeProfile402::enableRamp(void)
+void NodeProfile402::enableRamp(quint16 cmdControlWord)
 {
     switch (_currentMode)
     {
@@ -446,7 +452,7 @@ void NodeProfile402::enableRamp(void)
     case NodeProfile402::PP:
         break;
     case NodeProfile402::VL:
-        _p402Vl->enableMode();
+        _p402Vl->enableMode(cmdControlWord);
         break;
     case NodeProfile402::PV:
         break;
@@ -455,7 +461,7 @@ void NodeProfile402::enableRamp(void)
     case NodeProfile402::HM:
         break;
     case NodeProfile402::IP:
-        _p402Ip->enableMode();
+        _p402Ip->enableMode(cmdControlWord);
         break;
     case NodeProfile402::CSP:
         break;
@@ -480,8 +486,12 @@ QString NodeProfile402::profileNumberStr() const
     return QString("402");
 }
 
-void NodeProfile402::reset() const
+void NodeProfile402::reset()
 {
+    _requestedStateMachine = State402::STATE_NotReadyToSwitchOn;
+    _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
+    _currentMode = NoMode;
+
     _node->readObject(_modesOfOperationDisplayObjectId);
     _node->readObject(_supportedDriveModesObjectId);
 }
@@ -509,8 +519,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
         }
         else
         {
-            NodeProfile402::Mode mode =
-                static_cast<NodeProfile402::Mode>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
+            NodeProfile402::Mode mode = static_cast<NodeProfile402::Mode>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
             if (_currentMode != mode)
             {
                 _currentMode = mode;
@@ -668,12 +677,12 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
                 emit eventHappened(_eventStatusWord);
             }
 
-            if (_requestedStateMachine != _stateMachineCurrent)
+            if ((_state == STATE_CHANGE_MODE) && (_requestedStateMachine != _stateMachineCurrent))
             {
                 manageState(_requestedStateMachine);
                 return;
             }
-
+            _state = STATE_NONE;
             emit stateChanged();
         }
     }

@@ -36,7 +36,7 @@ public:
 
     void setTarget(qint16 velocity);
 
-    void enableMode();
+    quint16 enableMode(quint16 cmdControlWord);
 
     void setEnableRamp(bool ok);
     bool isEnableRamp(void);

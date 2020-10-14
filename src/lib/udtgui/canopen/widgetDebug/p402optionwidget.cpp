@@ -319,7 +319,7 @@ void P402OptionWidget::createWidgets()
 
 void P402OptionWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if (!_node)
+    if ((!_node) || (_node->status() != Node::STARTED))
     {
         return;
     }

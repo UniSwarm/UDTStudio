@@ -36,7 +36,7 @@ public:
 
     void setTarget(qint32 position);
 
-    void enableMode(void);
+    quint16 enableMode(quint16 cmdControlWord);
 
     void setEnableRamp(bool ok);
     bool isEnableRamp(void);

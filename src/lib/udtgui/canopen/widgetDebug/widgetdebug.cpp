@@ -118,6 +118,7 @@ void WidgetDebug::updateData()
             _stateMachineGroupBox->setEnabled(true);
             _controlWordGroupBox->setEnabled(true);
             _statusWordGroupBox->setEnabled(true);
+            modeChanged();
         }
         else if ((_node->status() == Node::STOPPED) || (_node->status() == Node::PREOP))
         {
@@ -129,7 +130,6 @@ void WidgetDebug::updateData()
             _controlWordGroupBox->setEnabled(false);
             _statusWordGroupBox->setEnabled(false);
         }
-        modeChanged();
     }
 }
 
@@ -177,8 +177,8 @@ void WidgetDebug::readData()
 {
     if (_node)
     {
-        _node->readObject(_controlWordObjectId);
-        _node->readObject(_statusWordObjectId);
+//        _node->readObject(_controlWordObjectId);
+//        _node->readObject(_statusWordObjectId);
 
         NodeProfile402::Mode mode = _nodeProfile402->actualMode();
         if (mode == NodeProfile402::IP)

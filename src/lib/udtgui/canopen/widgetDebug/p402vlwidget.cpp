@@ -130,14 +130,17 @@ void P402VlWidget::updateData()
 {
     if (_node)
     {
-        this->setEnabled(true);
-        _node->readObject(_vlTargetVelocityObjectId);
-        _node->readObject(_vlVelocityDemandObjectId);
-        _node->readObject(_vlVelocityActualObjectId);
+        if (_node->status() == Node::STARTED)
+        {
+            this->setEnabled(true);
+            _node->readObject(_vlTargetVelocityObjectId);
+            _node->readObject(_vlVelocityDemandObjectId);
+            _node->readObject(_vlVelocityActualObjectId);
 
-        _nodeProfile402Vl->setEnableRamp(true);
-        _nodeProfile402Vl->setReferenceRamp(true);
-        _nodeProfile402Vl->setUnlockRamp(true);
+            _nodeProfile402Vl->setEnableRamp(true);
+            _nodeProfile402Vl->setReferenceRamp(true);
+            _nodeProfile402Vl->setUnlockRamp(true);
+        }
     }
 }
 
@@ -435,7 +438,7 @@ void P402VlWidget::createWidgets()
 
 void P402VlWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if (!_node)
+    if ((!_node) || (_node->status() != Node::STARTED))
     {
         return;
     }

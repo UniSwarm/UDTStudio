@@ -44,13 +44,12 @@ NodeProfile402Vl::NodeProfile402Vl(Node *node) : _node(node)
     setNodeInterrest(_node);
 }
 
-void NodeProfile402Vl::enableMode(void)
+quint16 NodeProfile402Vl::enableMode(quint16 cmdControlWord)
 {
-    _cmdControlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
-//    _cmdControlWord |= CW_VL_EnableRamp;
-    _cmdControlWord |= CW_VL_UnlockRamp;
-    _cmdControlWord |= CW_VL_ReferenceRamp;
-    _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
+//    cmdControlWord |= CW_VL_EnableRamp;
+    cmdControlWord |= CW_VL_UnlockRamp;
+    cmdControlWord |= CW_VL_ReferenceRamp;
+    return cmdControlWord;
 }
 
 void NodeProfile402Vl::setEnableRamp(bool ok)

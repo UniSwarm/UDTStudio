@@ -130,6 +130,7 @@ class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
     NodeObjectId _statusWordObjectId;
 
     Mode _currentMode;
+    Mode _requestedChangeMode;
     QList<Mode> _supportedModes;
 
     quint16 _cmdControlWord;
@@ -146,7 +147,7 @@ class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
 
     void statusNodeChanged(Node::Status status);
 
-    void enableRamp(void);
+    void enableRamp(quint16 cmdControlWord);
     void manageState(const State402 state);
     void changeState(void);
 
@@ -154,7 +155,7 @@ class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
     bool status() const override;
     quint16 profileNumber() const override;
     QString profileNumberStr() const override;
-    virtual void reset() const override;
+    virtual void reset() override;
 
     // NodeOdSubscriber interface
   public:

@@ -657,7 +657,7 @@ void P402IpWidget::createWidgets()
 
 void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if (!_node)
+    if ((!_node) || (_node->status() != Node::STARTED))
     {
         return;
     }

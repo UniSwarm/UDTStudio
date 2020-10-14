@@ -112,12 +112,15 @@ void P402TqWidget::updateData()
 {
     if (_node)
     {
-        this->setEnabled(true);
-        _node->readObject(_tqTargetTorqueObjectId);
-        _node->readObject(_tqTorqueDemandObjectId);
-        _node->readObject(_tqTorqueActualValueObjectId);
-        _node->readObject(_tqCurrentActualValueObjectId);
-        _node->readObject(_tqDCLinkVoltageObjectId);
+        if (_node->status() == Node::STARTED)
+        {
+            this->setEnabled(true);
+            _node->readObject(_tqTargetTorqueObjectId);
+            _node->readObject(_tqTorqueDemandObjectId);
+            _node->readObject(_tqTorqueActualValueObjectId);
+            _node->readObject(_tqCurrentActualValueObjectId);
+            _node->readObject(_tqDCLinkVoltageObjectId);
+        }
     }
 }
 
@@ -301,7 +304,7 @@ void P402TqWidget::createWidgets()
 
 void P402TqWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if (!_node)
+    if ((!_node) || (_node->status() != Node::STARTED))
     {
         return;
     }

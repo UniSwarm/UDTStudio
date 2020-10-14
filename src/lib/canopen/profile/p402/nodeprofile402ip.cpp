@@ -37,11 +37,10 @@ NodeProfile402Ip::NodeProfile402Ip(Node *node) : _node(node)
     _enableRamp = false;
 }
 
-void NodeProfile402Ip::enableMode(void)
+quint16 NodeProfile402Ip::enableMode(quint16 cmdControlWord)
 {
-    _cmdControlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
-    _cmdControlWord |= CW_IP_EnableRamp;
-    _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
+    cmdControlWord |= CW_IP_EnableRamp;
+    return cmdControlWord;
 }
 
 void NodeProfile402Ip::setEnableRamp(bool ok)
