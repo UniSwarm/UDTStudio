@@ -512,7 +512,8 @@ void NodeProfile402::manageState(const State402 state)
         case STATE_Fault:
             if (state == STATE_SwitchOnDisabled)
             {
-                _cmdControlWord -= (CW_FaultReset);
+                _cmdControlWord = (_cmdControlWord & ~CW_Mask);
+                _cmdControlWord |= (CW_FaultReset);
             }
             break;
     }
@@ -667,6 +668,7 @@ void NodeProfile402::reset()
 
     _node->readObject(_modesOfOperationDisplayObjectId);
     _node->readObject(_supportedDriveModesObjectId);
+    _node->readObject(_controlWordObjectId);
 }
 
 void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
