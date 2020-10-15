@@ -176,8 +176,7 @@ void WidgetDebug::readData()
 {
     if (_node)
     {
-//        _node->readObject(_controlWordObjectId);
-//        _node->readObject(_statusWordObjectId);
+        _node->readObject(_statusWordObjectId);
 
         NodeProfile402::Mode mode = _nodeProfile402->actualMode();
         if (mode == NodeProfile402::IP)
