@@ -25,6 +25,8 @@
 #include "nodeprofile402tq.h"
 #include "nodeprofile402vl.h"
 
+#define TIMER_READ_MODE_OPERATION_DISPLAY 100
+
 enum ControlWord : quint16
 {
     CW_SwitchOn = 0x01,
@@ -96,6 +98,8 @@ NodeProfile402::NodeProfile402(Node *node) : NodeProfile(node)
     _requestedStateMachine = State402::STATE_NotReadyToSwitchOn;
     _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
     _currentMode = NoMode;
+    _requestedChangeMode= NoMode;
+    _state = NONE;
 
     setNodeInterrest(node);
 }
@@ -129,7 +133,7 @@ bool NodeProfile402::setMode(Mode mode)
         || (mode == CSP) || (mode == CSV) || (mode == CST) || (mode == CSTCA))
     {
         _node->writeObject(_modesOfOperationObjectId, QVariant(mode));
-        _state = STATE_CHANGE_MODE;
+        _state = MODE_CHANGE;
         _requestedChangeMode = mode;
         return true;
     }
@@ -205,7 +209,7 @@ void NodeProfile402::goToState(const State402 state)
     {
         return;
     }
-    _state = STATE_CHANGE_MODE;
+    _state = STATE_CHANGE;
     _requestedStateMachine = state;
     manageState(_requestedStateMachine);
 }
@@ -590,12 +594,12 @@ void NodeProfile402::manageStateStatusWord(quint16 statusWord)
         _stateMachineCurrent = STATE_Fault;
     }
 
-    if ((_state == STATE_CHANGE_MODE) && (_requestedStateMachine != _stateMachineCurrent))
+    if ((_state == STATE_CHANGE) && (_requestedStateMachine != _stateMachineCurrent))
     {
         manageState(_requestedStateMachine);
         return;
     }
-    _state = STATE_NONE;
+    _state = NONE;
     emit stateChanged();
 }
 
@@ -645,6 +649,11 @@ void NodeProfile402::manageSupportedDriveModes(quint32 supportedDriveModes)
     }
 }
 
+void NodeProfile402::readModeOfOperationDisplay()
+{
+    _node->readObject(_modesOfOperationDisplayObjectId);
+}
+
 bool NodeProfile402::status() const
 {
     return true;
@@ -692,14 +701,16 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
         }
         else
         {
-            NodeProfile402::Mode mode =
-                static_cast<NodeProfile402::Mode>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
-            if (_currentMode != mode)
+            NodeProfile402::Mode mode = static_cast<NodeProfile402::Mode>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
+            if ((_state == MODE_CHANGE) && (_requestedChangeMode != mode))
             {
-                _currentMode = mode;
-                emit modeChanged(_currentMode);
+                _modeTimer.singleShot(TIMER_READ_MODE_OPERATION_DISPLAY, this, SLOT(readModeOfOperationDisplay()));
+                return;
             }
-            _state = STATE_NONE;
+
+            _currentMode = mode;
+            emit modeChanged(_currentMode);
+            _state = NONE;
         }
     }
 

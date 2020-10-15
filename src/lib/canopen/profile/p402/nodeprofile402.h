@@ -113,8 +113,9 @@ signals:
 private:
     enum State
     {
-        STATE_NONE,
-        STATE_CHANGE_MODE
+        NONE,
+        STATE_CHANGE,
+        MODE_CHANGE,
     };
     State _state;
 
@@ -138,6 +139,8 @@ private:
     NodeProfile402Tq *_p402Tq;
     NodeProfile402Vl *_p402Vl;
 
+    QTimer _modeTimer;
+
     void statusNodeChanged(Node::Status status);
 
     void enableRamp(quint16 cmdControlWord);
@@ -146,6 +149,9 @@ private:
     void manageEventStatusWord(quint16 statusWord);
     void manageStateStatusWord(quint16 statusWord);
     void manageSupportedDriveModes(quint32 supportedDriveModes);
+
+private slots:
+    void readModeOfOperationDisplay(void);
 
 public:
     bool status() const override;
