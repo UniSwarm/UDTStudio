@@ -31,7 +31,7 @@
 #include <QSpinBox>
 #include <QWidget>
 
-class NodeProfile402Vl;
+class NodeProfile402;
 class IndexSpinBox;
 
 class P402VlWidget : public QWidget, public NodeOdSubscriber
@@ -53,7 +53,7 @@ public slots:
 private:
     Node *_node;
 
-    NodeProfile402Vl *_nodeProfile402Vl;
+    NodeProfile402 *_nodeProfile402;
 
     NodeObjectId _vlTargetVelocityObjectId;
     NodeObjectId _vlVelocityDemandObjectId;

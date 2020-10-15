@@ -34,7 +34,7 @@
 #include <QSpinBox>
 #include <QWidget>
 
-class NodeProfile402Ip;
+class NodeProfile402;
 class NodeObjectId;
 class IndexSpinBox;
 
@@ -56,7 +56,7 @@ public slots:
 private:
     Node *_node;
     CanOpenBus *_bus;
-    NodeProfile402Ip *_nodeProfile402Ip;
+    NodeProfile402 *_nodeProfile402;
 
     NodeObjectId _ipDataRecordObjectId;
     NodeObjectId _ipBufferClearObjectId;

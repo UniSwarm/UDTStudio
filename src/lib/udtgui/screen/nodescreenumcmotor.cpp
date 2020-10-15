@@ -49,20 +49,22 @@ QString NodeScreenUmcMotor::title() const
 
 void NodeScreenUmcMotor::setNodeInternal(Node *node)
 {
-    if (!_node)
+    if (!node)
     {
         return;
     }
-    if (_node->profileNumber() != 0x192)
+    if ((node->profileNumber() != 0x192) || node->profiles().isEmpty())
     {
         return;
     }
     _pidVelocityWidget->setNode(node);
     _pidVelocityWidget->setMode(PidWidget::MODE_PID_VELOCITY);
     _tabWidget->addTab(_pidVelocityWidget, " " + _pidVelocityWidget->title() + " ");
+
     _pidTorqueWidget->setNode(node);
     _pidTorqueWidget->setMode(PidWidget::MODE_PID_TORQUE);
     _tabWidget->addTab(_pidTorqueWidget, " " + _pidTorqueWidget->title() + " ");
+
     _pidPositionWidget->setNode(node);
     _pidPositionWidget->setMode(PidWidget::MODE_PID_POSITION);
     _tabWidget->addTab(_pidPositionWidget, " " + _pidPositionWidget->title() + " ");

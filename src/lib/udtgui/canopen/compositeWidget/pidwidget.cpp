@@ -33,6 +33,7 @@
 
 PidWidget::PidWidget(QWidget *parent) : QWidget(parent)
 {
+    _nodeProfile402 = nullptr;
     createWidgets();
 }
 
@@ -54,11 +55,21 @@ void PidWidget::setNode(Node *node)
     {
         return;
     }
-    _nodeProfile402 = static_cast<NodeProfile402 *>(_node->profiles()[0]);
+    connect(_node, &Node::statusChanged, this, &PidWidget::statusNodeChanged);
+    if (!_node->profiles().isEmpty())
+    {
+        _nodeProfile402 = static_cast<NodeProfile402 *>(_node->profiles()[0]);
+    }
+
     _modePid = MODE_PID_NONE;
 }
 void PidWidget::setMode(PidWidget::ModePid mode)
 {
+    if (!_nodeProfile402)
+    {
+        return;
+    }
+
     NodeObjectId pidP_ObjId;
     NodeObjectId pidI_ObjId;
     NodeObjectId pidD_ObjId;
@@ -134,19 +145,25 @@ void PidWidget::setMode(PidWidget::ModePid mode)
 void PidWidget::savePosition()
 {
     QPixmap pixmap = _dataLoggerChartsWidget->grab();
-    QString file =
-        QString("%1_%2.png").arg(title()).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz"));
+    QString file = QString("%1_%2.png").arg(title()).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz"));
     pixmap.save(file, "PNG");
 }
 
 void PidWidget::goTargetPosition()
 {
+    if (!_nodeProfile402)
+    {
+        return;
+    }
+
     connect(_nodeProfile402, &NodeProfile402::modeChanged, this, &PidWidget::mode402Changed);
+
     switch (_modePid)
     {
     case MODE_PID_NONE:
         break;
     case MODE_PID_POSITION:
+        _nodeProfile402->setEnableRamp(true);
         if (_nodeProfile402->actualMode() != NodeProfile402::IP)
         {
             _nodeProfile402->setMode(NodeProfile402::IP);
@@ -157,6 +174,7 @@ void PidWidget::goTargetPosition()
         }
         break;
     case MODE_PID_VELOCITY:
+        _nodeProfile402->setEnableRamp(false);
         if (_nodeProfile402->actualMode() != NodeProfile402::VL)
         {
             _nodeProfile402->setMode(NodeProfile402::VL);
@@ -185,6 +203,11 @@ void PidWidget::goTargetPosition()
 
 void PidWidget::mode402Changed(NodeProfile402::Mode modeNew)
 {
+    if (!_nodeProfile402)
+    {
+        return;
+    }
+
     _dataLogger->clear();
     _dataLogger->start(10);
 
@@ -198,7 +221,7 @@ void PidWidget::mode402Changed(NodeProfile402::Mode modeNew)
         break;
 
     case NodeProfile402::PP:
-    case NodeProfile402::Mode::IP :
+    case NodeProfile402::IP :
     case NodeProfile402::CSP:
         _modePid = ModePid::MODE_PID_POSITION;
         _nodeProfile402->setTarget(_targetSpinBox->value());
@@ -228,6 +251,11 @@ void PidWidget::mode402Changed(NodeProfile402::Mode modeNew)
 
 void PidWidget::stopMeasurementTimer()
 {
+    if (!_nodeProfile402)
+    {
+        return;
+    }
+
     _nodeProfile402->setTarget(0);
     _dataLogger->stop();
     _savePushButton->setEnabled(true);
@@ -298,6 +326,18 @@ void PidWidget::createWidgets()
 
     splitter->addWidget(_dataLoggerChartsWidget);
     setLayout(layout);
+}
+
+void PidWidget::statusNodeChanged(Node::Status status)
+{
+    if (status == Node::STARTED)
+    {
+        this->setEnabled(true);
+    }
+    else
+    {
+        this->setEnabled(false);
+    }
 }
 
 QString PidWidget::title() const

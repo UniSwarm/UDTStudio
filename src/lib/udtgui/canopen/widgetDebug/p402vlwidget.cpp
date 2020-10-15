@@ -32,6 +32,7 @@
 P402VlWidget::P402VlWidget(QWidget *parent) : QWidget(parent)
 {
     _node = nullptr;
+    _nodeProfile402 = nullptr;
     createWidgets();
 
     _vlVelocityDemandObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND);
@@ -113,14 +114,17 @@ void P402VlWidget::setNode(Node *node)
         _vlDimensionFactorNumeratorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_NUMERATOR));
         _vlDimensionFactorDenominatorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_DENOMINATOR));
 
-        _nodeProfile402Vl = static_cast<NodeProfile402 *>(_node->profiles()[0])->p402Vl();
-        connect(_nodeProfile402Vl, &NodeProfile402Vl::enableRampEvent, this, &P402VlWidget::vlEnableRampEvent);
-        connect(_nodeProfile402Vl, &NodeProfile402Vl::unlockRampEvent, this, &P402VlWidget::vlUnlockRampEvent);
-        connect(_nodeProfile402Vl, &NodeProfile402Vl::referenceRampEvent, this, &P402VlWidget::vlReferenceRamp);
+        if (!_node->profiles().isEmpty())
+        {
+            _nodeProfile402 = static_cast<NodeProfile402 *>(_node->profiles()[0]);
+            connect(_nodeProfile402, &NodeProfile402::enableRampEvent, this, &P402VlWidget::vlEnableRampEvent);
+            connect(_nodeProfile402, &NodeProfile402::unlockRampEvent, this, &P402VlWidget::vlUnlockRampEvent);
+            connect(_nodeProfile402, &NodeProfile402::referenceRampEvent, this, &P402VlWidget::vlReferenceRamp);
 
-        vlEnableRampEvent(_nodeProfile402Vl->isEnableRamp());
-        vlUnlockRampEvent(_nodeProfile402Vl->isUnlockRamp());
-        vlReferenceRamp(_nodeProfile402Vl->isReferenceRamp());
+            vlEnableRampEvent(_nodeProfile402->isEnableRamp());
+            vlUnlockRampEvent(_nodeProfile402->isUnlockRamp());
+            vlReferenceRamp(_nodeProfile402->isReferenceRamp());
+        }
 
         connect(_node, &Node::statusChanged, this, &P402VlWidget::updateData);
     }
@@ -137,9 +141,12 @@ void P402VlWidget::updateData()
             _node->readObject(_vlVelocityDemandObjectId);
             _node->readObject(_vlVelocityActualObjectId);
 
-            _nodeProfile402Vl->setEnableRamp(true);
-            _nodeProfile402Vl->setReferenceRamp(true);
-            _nodeProfile402Vl->setUnlockRamp(true);
+            if (_nodeProfile402)
+            {
+                _nodeProfile402->setEnableRamp(true);
+                _nodeProfile402->setReferenceRamp(true);
+                _nodeProfile402->setUnlockRamp(true);
+            }
         }
     }
 }
@@ -158,17 +165,26 @@ void P402VlWidget::vlTargetVelocitySliderChanged()
 
 void P402VlWidget::vlEnableRampClicked(int id)
 {
-    _nodeProfile402Vl->setEnableRamp(id);
+    if (_nodeProfile402)
+    {
+        _nodeProfile402->setEnableRamp(id);
+    }
 }
 
 void P402VlWidget::vlUnlockRampClicked(int id)
 {
-    _nodeProfile402Vl->setUnlockRamp(id);
+    if (_nodeProfile402)
+    {
+        _nodeProfile402->setUnlockRamp(id);
+    }
 }
 
 void P402VlWidget::vlReferenceRampClicked(int id)
 {
-    _nodeProfile402Vl->setReferenceRamp(id);
+    if (_nodeProfile402)
+    {
+        _nodeProfile402->setReferenceRamp(id);
+    }
 }
 
 void P402VlWidget::vlEnableRampEvent(bool ok)

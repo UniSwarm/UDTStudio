@@ -39,6 +39,7 @@
 P402IpWidget::P402IpWidget(QWidget *parent) : QWidget(parent)
 {
     _node = nullptr;
+    _nodeProfile402 = nullptr;
     createWidgets();
 
     _ipPositionDemandValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE);
@@ -103,9 +104,12 @@ void P402IpWidget::setNode(Node *node)
         registerObjId({_ipPolarityObjectId});
         setNodeInterrest(node);
 
-        _nodeProfile402Ip = static_cast<NodeProfile402 *>(_node->profiles()[0])->p402Ip();
-        connect(_nodeProfile402Ip, &NodeProfile402Ip::enableRampEvent, this, &P402IpWidget::enableRampEvent);
-        enableRampEvent(_nodeProfile402Ip->isEnableRamp());
+        if (!_node->profiles().isEmpty())
+        {
+            _nodeProfile402 = static_cast<NodeProfile402 *>(_node->profiles()[0]);
+            connect(_nodeProfile402, &NodeProfile402::enableRampEvent, this, &P402IpWidget::enableRampEvent);
+            enableRampEvent(_nodeProfile402->isEnableRamp());
+        }
 
         connect(_node, &Node::statusChanged, this, &P402IpWidget::updateData);
         connect(&_sendPointSinusoidalTimer, &QTimer::timeout, this, &P402IpWidget::sendDataRecordTargetWithSdo);
@@ -114,10 +118,8 @@ void P402IpWidget::setNode(Node *node)
         _ipTimePeriodIndexSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_INDEX));
         _ipPositionRangelLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MIN));
         _ipPositionRangelLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MAX));
-        _ipSoftwarePositionLimitMinSpinBox->setObjId(
-            IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MIN));
-        _ipSoftwarePositionLimitMaxSpinBox->setObjId(
-            IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MAX));
+        _ipSoftwarePositionLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MIN));
+        _ipSoftwarePositionLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MAX));
         _ipHomeOffsetSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_HM_HOME_OFFSET));
         _ipProfileVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_VELOCITY));
         _ipEndVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_END_VELOCITY));
@@ -147,7 +149,10 @@ void P402IpWidget::updateData()
             quint8 value = 1;
             _node->writeObject(_ipBufferClearObjectId, QVariant(value));
 
-            _nodeProfile402Ip->setEnableRamp(true);
+            if (_nodeProfile402)
+            {
+                _nodeProfile402->setEnableRamp(true);
+            }
         }
         else
         {
@@ -218,7 +223,10 @@ void P402IpWidget::ipClearBufferClicked()
 
 void P402IpWidget::ipEnableRampClicked(int id)
 {
-    _nodeProfile402Ip->setEnableRamp(id);
+    if (_nodeProfile402)
+    {
+        _nodeProfile402->setEnableRamp(id);
+    }
 }
 
 // each period * 5 -> we send 5 set-point, for have always value in buffer in device

@@ -21,6 +21,7 @@
 #include "nodescreenod.h"
 #include "nodescreenpdo.h"
 #include "nodescreenumcmotor.h"
+#include "indexdb.h"
 
 #include <QHBoxLayout>
 
@@ -69,8 +70,8 @@ void NodeScreens::setNode(Node *node)
     _node = node;
     if (_node)
     {
-         if ((_node->profileNumber()) == 0x192)
-         {
+        if (((_node->profileNumber()) == 0x192) && (_node->nodeOd()->value(IndexDb::getObjectId(IndexDb::OD_VENDOR_ID)).toUInt() == 0x4A2))
+        {
              NodeScreen *screen;
              screen = new NodeScreenUmcMotor();
              addScreen(screen);

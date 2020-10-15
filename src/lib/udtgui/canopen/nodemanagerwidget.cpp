@@ -17,6 +17,7 @@
  **/
 
 #include "nodemanagerwidget.h"
+#include "indexdb.h"
 
 #include <QFormLayout>
 #include <QDebug>
@@ -62,7 +63,7 @@ void NodeManagerWidget::setNode(Node *node)
     if (_node)
     {
         connect(_node, &Node::statusChanged, this, &NodeManagerWidget::updateData);
-        if ((_node->profileNumber()) == 0x192)
+        if (((_node->profileNumber()) == 0x192) && (_node->nodeOd()->value(IndexDb::getObjectId(IndexDb::OD_VENDOR_ID)).toUInt() == 0x4A2))
         {
             if (!_widgetDebug)
             {

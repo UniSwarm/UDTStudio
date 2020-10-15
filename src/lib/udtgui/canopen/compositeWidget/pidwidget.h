@@ -83,6 +83,8 @@ protected:
 
     NodeProfile402 *_nodeProfile402;
 
+    void statusNodeChanged(Node::Status status);
+
     void goTargetPosition();
     void savePosition();
     void mode402Changed(NodeProfile402::Mode modeNew);

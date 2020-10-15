@@ -60,11 +60,10 @@ Node *WidgetDebug::node() const
 
 void WidgetDebug::setNode(Node *node)
 {
-    if ((node->profileNumber()) != 0x192)
+    if ((node->profileNumber() != 0x192) || node->profiles().isEmpty())
     {
         return;
     }
-
     if (node != _node)
     {
         if (_node)
