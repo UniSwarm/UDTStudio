@@ -17,15 +17,18 @@
  **/
 
 #include "nodeprofile402ip.h"
-#include "node.h"
 #include "indexdb402.h"
+#include "node.h"
+#include "nodeprofile402.h"
+
 enum ControlWordIP : quint16
 {
     CW_IP_EnableRamp = 0x10,
     CW_Halt = 0x100
 };
 
-NodeProfile402Ip::NodeProfile402Ip(Node *node) : _node(node)
+NodeProfile402Ip::NodeProfile402Ip(Node *node, NodeProfile402 *nodeProfile402)
+    : _node(node), _nodeProfile402(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_SET_POINT);
     _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD);
@@ -35,6 +38,13 @@ NodeProfile402Ip::NodeProfile402Ip(Node *node) : _node(node)
     registerObjId({_controlWordObjectId});
     setNodeInterrest(_node);
     _enableRamp = false;
+
+    _mode = 7;
+}
+
+void NodeProfile402Ip::setTarget(qint32 position)
+{
+    _node->writeObject(_targetObjectId, QVariant(position));
 }
 
 quint16 NodeProfile402Ip::enableMode(quint16 cmdControlWord)
@@ -43,9 +53,8 @@ quint16 NodeProfile402Ip::enableMode(quint16 cmdControlWord)
     return cmdControlWord;
 }
 
-void NodeProfile402Ip::setEnableRamp(bool ok)
+quint16 NodeProfile402Ip::setEnableRamp(quint16 cmdControlWord, bool ok)
 {
-    quint16 cmdControlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
     if (ok)
     {
         cmdControlWord |= CW_IP_EnableRamp;
@@ -54,17 +63,12 @@ void NodeProfile402Ip::setEnableRamp(bool ok)
     {
         cmdControlWord = (cmdControlWord & ~CW_IP_EnableRamp);
     }
-    _node->writeObject(_controlWordObjectId, QVariant(cmdControlWord));
+    return cmdControlWord;
 }
 
 bool NodeProfile402Ip::isEnableRamp(void)
 {
     return _enableRamp;
-}
-
-void NodeProfile402Ip::setTarget(qint32 position)
-{
-    _node->writeObject(_targetObjectId, QVariant(position));
 }
 
 void NodeProfile402Ip::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
@@ -79,7 +83,7 @@ void NodeProfile402Ip::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
             emit isAppliedTarget();
         }
     }
-    if (objId == _controlWordObjectId)
+    if ((objId == _controlWordObjectId) && _nodeProfile402->actualMode() == _mode)
     {
         if (flags == SDO::FlagsRequest::Error)
         {
@@ -87,10 +91,10 @@ void NodeProfile402Ip::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
         else
         {
             quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
-            if ((controlWord & CW_IP_EnableRamp) != (_cmdControlWord & CW_IP_EnableRamp))
+            if (((controlWord & CW_IP_EnableRamp) >> 4) != (_enableRamp))
             {
                 _enableRamp = (controlWord & CW_IP_EnableRamp);
-                emit enableRampEvent((controlWord & CW_IP_EnableRamp));
+                emit _nodeProfile402->enableRampEvent((controlWord & CW_IP_EnableRamp));
             }
         }
     }

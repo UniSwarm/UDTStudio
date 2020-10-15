@@ -17,8 +17,9 @@
  **/
 
 #include "nodeprofile402vl.h"
-#include "node.h"
 #include "indexdb402.h"
+#include "node.h"
+#include "nodeprofile402.h"
 
 enum ControlWordVL : quint16
 {
@@ -28,7 +29,8 @@ enum ControlWordVL : quint16
     CW_Halt = 0x100
 };
 
-NodeProfile402Vl::NodeProfile402Vl(Node *node) : _node(node)
+NodeProfile402Vl::NodeProfile402Vl(Node *node, NodeProfile402 *nodeProfile402)
+    : _node(node), _nodeProfile402(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET);
     _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD);
@@ -37,6 +39,8 @@ NodeProfile402Vl::NodeProfile402Vl(Node *node) : _node(node)
     registerObjId({_targetObjectId});
     registerObjId({_controlWordObjectId});
 
+    _mode = 2;
+
     _enableRamp = false;
     _referenceRamp = false;
     _unlockRamp = false;
@@ -44,17 +48,21 @@ NodeProfile402Vl::NodeProfile402Vl(Node *node) : _node(node)
     setNodeInterrest(_node);
 }
 
+void NodeProfile402Vl::setTarget(qint16 velocity)
+{
+    _node->writeObject(_targetObjectId, QVariant(velocity));
+}
+
 quint16 NodeProfile402Vl::enableMode(quint16 cmdControlWord)
 {
-//    cmdControlWord |= CW_VL_EnableRamp;
+    cmdControlWord |= CW_VL_EnableRamp;
     cmdControlWord |= CW_VL_UnlockRamp;
     cmdControlWord |= CW_VL_ReferenceRamp;
     return cmdControlWord;
 }
 
-void NodeProfile402Vl::setEnableRamp(bool ok)
+quint16 NodeProfile402Vl::setEnableRamp(quint16 cmdControlWord, bool ok)
 {
-    quint16 cmdControlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
     if (ok)
     {
         cmdControlWord |= CW_VL_EnableRamp;
@@ -63,12 +71,16 @@ void NodeProfile402Vl::setEnableRamp(bool ok)
     {
         cmdControlWord = (cmdControlWord & ~CW_VL_EnableRamp);
     }
-    _node->writeObject(_controlWordObjectId, QVariant(cmdControlWord));
+    return cmdControlWord;
 }
 
-void NodeProfile402Vl::setUnlockRamp(bool ok)
+bool NodeProfile402Vl::isEnableRamp(void)
 {
-    quint16 cmdControlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    return _enableRamp;
+}
+
+quint16 NodeProfile402Vl::setUnlockRamp(quint16 cmdControlWord, bool ok)
+{
     if (ok)
     {
         cmdControlWord |= CW_VL_UnlockRamp;
@@ -77,12 +89,16 @@ void NodeProfile402Vl::setUnlockRamp(bool ok)
     {
         cmdControlWord = (cmdControlWord & ~CW_VL_UnlockRamp);
     }
-    _node->writeObject(_controlWordObjectId, QVariant(cmdControlWord));
+    return cmdControlWord;
 }
 
-void NodeProfile402Vl::setReferenceRamp(bool ok)
+bool NodeProfile402Vl::isUnlockRamp(void)
 {
-    quint16 cmdControlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    return _unlockRamp;
+}
+
+quint16 NodeProfile402Vl::setReferenceRamp(quint16 cmdControlWord, bool ok)
+{
     if (ok)
     {
         cmdControlWord |= CW_VL_ReferenceRamp;
@@ -91,26 +107,12 @@ void NodeProfile402Vl::setReferenceRamp(bool ok)
     {
         cmdControlWord = (cmdControlWord & ~CW_VL_ReferenceRamp);
     }
-    _node->writeObject(_controlWordObjectId, QVariant(cmdControlWord));
+    return cmdControlWord;
 }
 
-bool NodeProfile402Vl::isEnableRamp(void)
-{
-    return _enableRamp;
-}
-
-bool NodeProfile402Vl::isUnlockRamp(void)
-{
-    return _unlockRamp;
-}
 bool NodeProfile402Vl::isReferenceRamp(void)
 {
     return _referenceRamp;
-}
-
-void NodeProfile402Vl::setTarget(qint16 velocity)
-{
-    _node->writeObject(_targetObjectId, QVariant(velocity));
 }
 
 void NodeProfile402Vl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
@@ -125,7 +127,8 @@ void NodeProfile402Vl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
             emit isAppliedTarget();
         }
     }
-    if (objId == _controlWordObjectId)
+
+    if ((objId == _controlWordObjectId) && _nodeProfile402->actualMode() == _mode)
     {
         if (flags == SDO::FlagsRequest::Error)
         {
@@ -133,22 +136,21 @@ void NodeProfile402Vl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
         else
         {
             quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
-            if ((controlWord & CW_VL_EnableRamp) != (_cmdControlWord & CW_VL_EnableRamp))
+            if (((controlWord & CW_VL_EnableRamp) >> 4) != _enableRamp)
             {
-                _enableRamp = (controlWord & CW_VL_EnableRamp);
-                emit enableRampEvent((controlWord & CW_VL_EnableRamp));
+                _enableRamp = (controlWord & CW_VL_EnableRamp) >> 4;
+                emit _nodeProfile402->enableRampEvent(_enableRamp);
             }
-            if ((controlWord & CW_VL_ReferenceRamp) != (_cmdControlWord & CW_VL_ReferenceRamp))
+            if (((controlWord & CW_VL_ReferenceRamp) >> 6) != _referenceRamp)
             {
-                _referenceRamp = (controlWord & CW_VL_ReferenceRamp);
-                emit referenceRampEvent((controlWord & CW_VL_ReferenceRamp));
+                _referenceRamp = (controlWord & CW_VL_ReferenceRamp) >> 6;
+                emit _nodeProfile402->referenceRampEvent(_referenceRamp);
             }
-            if ((controlWord & CW_VL_UnlockRamp) != (_cmdControlWord & CW_VL_UnlockRamp))
+            if (((controlWord & CW_VL_UnlockRamp) >> 5) != _unlockRamp)
             {
-                _unlockRamp = (controlWord & CW_VL_UnlockRamp);
-                emit unlockRampEvent(controlWord & CW_VL_UnlockRamp);
+                _unlockRamp = (controlWord & CW_VL_UnlockRamp) >> 5;
+                emit _nodeProfile402->unlockRampEvent(_unlockRamp);
             }
-            _cmdControlWord = controlWord;
         }
     }
 }

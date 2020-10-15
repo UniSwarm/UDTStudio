@@ -27,18 +27,19 @@
 
 class Node;
 class NodeObjectId;
+class NodeProfile402;
 
 class CANOPEN_EXPORT NodeProfile402Ip : public QObject, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
-    NodeProfile402Ip(Node *node);
+    NodeProfile402Ip(Node *node, NodeProfile402 *nodeProfile402);
 
     void setTarget(qint32 position);
 
     quint16 enableMode(quint16 cmdControlWord);
 
-    void setEnableRamp(bool ok);
+    quint16 setEnableRamp(quint16 cmdControlWord, bool ok);
     bool isEnableRamp(void);
 
 signals:
@@ -47,6 +48,8 @@ signals:
 
 private:
     Node *_node;
+    quint8 _mode;
+    NodeProfile402 *_nodeProfile402;
 
     NodeObjectId _controlWordObjectId;
     quint16 _cmdControlWord;

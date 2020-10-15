@@ -17,10 +17,12 @@
  **/
 
 #include "nodeprofile402tq.h"
-#include "node.h"
 #include "indexdb402.h"
+#include "node.h"
+#include "nodeprofile402.h"
 
-NodeProfile402Tq::NodeProfile402Tq(Node *node) : _node(node)
+NodeProfile402Tq::NodeProfile402Tq(Node *node, NodeProfile402 *nodeProfile402)
+    : _node(node), _nodeProfile402(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TARGET_TORQUE);
     _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
