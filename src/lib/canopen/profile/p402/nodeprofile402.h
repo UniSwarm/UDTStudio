@@ -29,12 +29,10 @@ class NodeProfile402Vl;
 class NodeProfile402Ip;
 class NodeProfile402Tq;
 
-#define TIMER_FOR_CHANGE_MODE 10  // in ms
-
 class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
 {
     Q_OBJECT
-  public:
+public:
     NodeProfile402(Node *node);
 
     enum Mode
@@ -70,7 +68,7 @@ class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
         STATE_QuickStopActive = 6,
         STATE_FaultReactionActive = 7,
         STATE_Fault = 8,
-        };
+    };
 
     State402 currentState() const;
     void goToState(const State402 state);
@@ -93,35 +91,32 @@ class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
 
     QString event402Str(quint8 Event402);
 
-    enum Error
-    {
-        NO_ERROR,
-        WRONG_MODE,
-        MODE_NOT_APPLY,
-        FAILED_READ,
-        FAILED_WRITE
-    };
+    void setEnableRamp(bool ok);
+    bool isEnableRamp(void);
 
-    Error errorOccurred();
+    void setUnlockRamp(bool ok);
+    bool isUnlockRamp(void);
 
-    NodeProfile402Vl *p402Vl();
-    NodeProfile402Ip *p402Ip();
-    NodeProfile402Tq *p402Tq();
+    void setReferenceRamp(bool ok);
+    bool isReferenceRamp(void);
 
-  signals:
+signals:
     void modeChanged(Mode modeNew);
     void stateChanged();
     void isHalted(bool state);
     void eventHappened(quint8 Event402);
 
-  private:
+    void enableRampEvent(bool ok);
+    void referenceRampEvent(bool ok);
+    void unlockRampEvent(bool ok);
+
+private:
     enum State
     {
         STATE_NONE,
         STATE_CHANGE_MODE
     };
     State _state;
-    Error _currentError;
 
     NodeObjectId _modesOfOperationObjectId;
     NodeObjectId _modesOfOperationDisplayObjectId;
@@ -137,8 +132,6 @@ class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
     State402 _stateMachineCurrent;
     State402 _requestedStateMachine;
 
-    quint8 _msFieldStatusWord;
-    quint8 _omsFieldStatusWord;
     uint8_t _eventStatusWord;
 
     NodeProfile402Ip *_p402Ip;
@@ -149,16 +142,19 @@ class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
 
     void enableRamp(quint16 cmdControlWord);
     void manageState(const State402 state);
-    void changeState(void);
 
-  public:
+    void manageEventStatusWord(quint16 statusWord);
+    void manageStateStatusWord(quint16 statusWord);
+    void manageSupportedDriveModes(quint32 supportedDriveModes);
+
+public:
     bool status() const override;
     quint16 profileNumber() const override;
     QString profileNumberStr() const override;
     virtual void reset() override;
 
     // NodeOdSubscriber interface
-  public:
+public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
