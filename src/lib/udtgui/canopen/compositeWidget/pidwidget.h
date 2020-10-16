@@ -56,9 +56,6 @@ public slots:
     void setNode(Node *node);
     void setMode(PidWidget::ModePid mode);
 
-private slots:
-    void stopMeasurementTimer();
-
 protected:
     void createWidgets();
 
@@ -69,25 +66,42 @@ protected:
 
     DataLogger *_dataLogger;
     DataLoggerChartsWidget *_dataLoggerChartsWidget;
-    QTimer _measurementTimer;
+    QTimer _timer;
 
     IndexSpinBox *_pSpinBox;
     IndexSpinBox *_iSpinBox;
     IndexSpinBox *_dSpinBox;
     IndexSpinBox *_periodSpinBox;
-    QSpinBox *_targetSpinBox;
+    QSpinBox *_firstTargetSpinBox;
+    QSpinBox *_secondTargetSpinBox;
     QSpinBox *_windowSpinBox;
+    QSpinBox *_stopDataLoggerSpinBox;
 
     QPushButton *_goTargetPushButton;
     QPushButton *_savePushButton;
 
     NodeProfile402 *_nodeProfile402;
 
+    enum State
+    {
+        NONE,
+        LAUCH_DATALOGGER,
+        LAUCH_FIRST_TARGET,
+        LAUCH_SECOND_TARGET,
+        STOP_DATALOGGER,
+    };
+
+    State _state;
+
     void statusNodeChanged(Node::Status status);
 
-    void goTargetPosition();
+    void changeMode402();
     void savePosition();
     void mode402Changed(NodeProfile402::Mode modeNew);
+    void manageMeasurement();
+    void stopFirstMeasurement();
+    void stopSecondMeasurement();
+    void stopDataLogger();
 };
 
 #endif  // PIDWIDGET_H
