@@ -36,6 +36,7 @@ PidWidget::PidWidget(QWidget *parent) : QWidget(parent)
     _nodeProfile402 = nullptr;
     createWidgets();
     connect(&_timer, &QTimer::timeout, this, &PidWidget::manageMeasurement);
+    connect(&_readStatusTimer, &QTimer::timeout, this, &PidWidget::readStatus);
     _state = NONE;
 }
 
@@ -50,6 +51,10 @@ void PidWidget::setNode(Node *node)
     _pSpinBox->setNode(node);
     _iSpinBox->setNode(node);
     _dSpinBox->setNode(node);
+    _actualValueSpinBox->setNode(node);
+    _tempMotorSpinBox->setNode(node);
+    _tempDriver1SpinBox->setNode(node);
+    _tempDriver2SpinBox->setNode(node);
     _periodSpinBox->setNode(node);
 
     _node = node;
@@ -82,6 +87,10 @@ void PidWidget::setMode(PidWidget::ModePid mode)
     NodeObjectId pidIntegratorStatus_ObjId;
     NodeObjectId pidOutputStatus_ObjId;
 
+    _tempMotor_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_MOTOR_1);;
+    _tempDriver1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_1);;
+    _tempDriver2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_2);;
+
     _modePid = mode;
     switch (_modePid)
     {
@@ -89,6 +98,7 @@ void PidWidget::setMode(PidWidget::ModePid mode)
         break;
     case MODE_PID_VELOCITY:
     {
+        _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_P);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_I);
         pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_D);
@@ -103,6 +113,7 @@ void PidWidget::setMode(PidWidget::ModePid mode)
     }
     case MODE_PID_TORQUE:
     {
+        _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_P);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_I);
         pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_D);
@@ -117,6 +128,7 @@ void PidWidget::setMode(PidWidget::ModePid mode)
     }
     case MODE_PID_POSITION:
     {
+        _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_P);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_I);
         pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_D);
@@ -134,6 +146,10 @@ void PidWidget::setMode(PidWidget::ModePid mode)
     _pSpinBox->setObjId(pidP_ObjId);
     _iSpinBox->setObjId(pidI_ObjId);
     _dSpinBox->setObjId(pidD_ObjId);
+    _actualValueSpinBox->setObjId(_actualValue_ObjId);
+    _tempMotorSpinBox->setObjId(_tempMotor_ObjId);
+    _tempDriver1SpinBox->setObjId(_tempDriver1_ObjId);
+    _tempDriver2SpinBox->setObjId(_tempDriver2_ObjId);
     _periodSpinBox->setObjId(period_ObjId);
 
     pidInputStatus_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
@@ -324,6 +340,14 @@ void PidWidget::stopDataLogger()
     disconnect(_nodeProfile402, &NodeProfile402::modeChanged, this, &PidWidget::mode402Changed);
 }
 
+void PidWidget::readStatus()
+{
+    _node->readObject(_actualValue_ObjId);
+    _node->readObject(_tempMotor_ObjId);
+    _node->readObject(_tempDriver1_ObjId);
+    _node->readObject(_tempDriver2_ObjId);
+}
+
 void PidWidget::createWidgets()
 {
     QVBoxLayout *layout = new QVBoxLayout();
@@ -354,6 +378,31 @@ void PidWidget::createWidgets()
     pidLayout->addRow(tr("P&eriod :"), _periodSpinBox);
 
     pidGroupBox->setLayout(pidLayout);
+
+    QGroupBox *statusGroupBox = new QGroupBox(tr("Status"));
+    QFormLayout *statusLayout = new QFormLayout();
+
+    _actualValueSpinBox = new IndexSpinBox();
+    _actualValueSpinBox->setDisabled(true);
+    _actualValueSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    statusLayout->addRow(tr("&Actual Value :"), _actualValueSpinBox);
+
+    _tempMotorSpinBox = new IndexSpinBox();
+    _tempMotorSpinBox->setDisabled(true);
+    _tempMotorSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    statusLayout->addRow(tr("&Temperature Motor :"), _tempMotorSpinBox);
+
+    _tempDriver1SpinBox = new IndexSpinBox();
+    _tempDriver1SpinBox->setDisabled(true);
+    _tempDriver1SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    statusLayout->addRow(tr("&Temperature Driver1:"), _tempDriver1SpinBox);
+
+    _tempDriver2SpinBox = new IndexSpinBox();
+    _tempDriver2SpinBox->setDisabled(true);
+    _tempDriver2SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    statusLayout->addRow(tr("&Temperature Driver2:"), _tempDriver2SpinBox);
+
+    statusGroupBox->setLayout(statusLayout);
 
     QGroupBox *targetGroupBox = new QGroupBox(tr("Target"));
     QFormLayout *targetLayout = new QFormLayout();
@@ -390,6 +439,7 @@ void PidWidget::createWidgets()
     targetGroupBox->setLayout(targetLayout);
 
     actionLayout->addWidget(pidGroupBox);
+    actionLayout->addWidget(statusGroupBox);
     actionLayout->addWidget(targetGroupBox);
     actionLayout->addWidget(_savePushButton);
     actionLayout->addWidget(_goTargetPushButton);
@@ -407,6 +457,7 @@ void PidWidget::statusNodeChanged(Node::Status status)
     if (status == Node::STARTED)
     {
         this->setEnabled(true);
+        _readStatusTimer.start(500);
     }
     else
     {

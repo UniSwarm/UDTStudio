@@ -67,11 +67,21 @@ protected:
     DataLogger *_dataLogger;
     DataLoggerChartsWidget *_dataLoggerChartsWidget;
     QTimer _timer;
+    QTimer _readStatusTimer;
 
     IndexSpinBox *_pSpinBox;
     IndexSpinBox *_iSpinBox;
     IndexSpinBox *_dSpinBox;
     IndexSpinBox *_periodSpinBox;
+
+    IndexSpinBox *_actualValueSpinBox;
+    IndexSpinBox *_tempMotorSpinBox;
+    IndexSpinBox *_tempDriver1SpinBox;
+    IndexSpinBox *_tempDriver2SpinBox;
+    NodeObjectId _actualValue_ObjId;
+    NodeObjectId _tempMotor_ObjId ;
+    NodeObjectId _tempDriver1_ObjId;
+    NodeObjectId _tempDriver2_ObjId ;
     QSpinBox *_firstTargetSpinBox;
     QSpinBox *_secondTargetSpinBox;
     QSpinBox *_windowSpinBox;
@@ -102,6 +112,7 @@ protected:
     void stopFirstMeasurement();
     void stopSecondMeasurement();
     void stopDataLogger();
+    void readStatus();
 };
 
 #endif  // PIDWIDGET_H
