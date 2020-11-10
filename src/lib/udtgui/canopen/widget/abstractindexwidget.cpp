@@ -94,6 +94,15 @@ void AbstractIndexWidget::setDisplayHint(const AbstractIndexWidget::DisplayHint 
     }
 }
 
+void AbstractIndexWidget::readObject()
+{
+    if (!nodeInterrest())
+    {
+        return;
+    }
+    nodeInterrest()->readObject(_objId);
+}
+
 NodeObjectId AbstractIndexWidget::objId() const
 {
     return _objId;
@@ -149,7 +158,7 @@ void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest 
             return;
         }
     }
-    if (flags & SDO::Read && isEditing() && !_requestRead)
+    if (flags & SDO::Read && this->isEditing() && !_requestRead)
     {
         return;
     }

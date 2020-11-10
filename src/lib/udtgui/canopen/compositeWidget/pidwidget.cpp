@@ -342,10 +342,16 @@ void PidWidget::stopDataLogger()
 
 void PidWidget::readStatus()
 {
-    _node->readObject(_actualValue_ObjId);
-    _node->readObject(_tempMotor_ObjId);
-    _node->readObject(_tempDriver1_ObjId);
-    _node->readObject(_tempDriver2_ObjId);
+    if (_actualValueSpinBox->parentWidget()->isVisible())
+    {
+        _pSpinBox->readObject();
+        _iSpinBox->readObject();
+        _dSpinBox->readObject();
+        _actualValueSpinBox->readObject();
+        _tempMotorSpinBox->readObject();
+        _tempDriver1SpinBox->readObject();
+        _tempDriver2SpinBox->readObject();
+    }
 }
 
 void PidWidget::createWidgets()
@@ -384,22 +390,18 @@ void PidWidget::createWidgets()
 
     _actualValueSpinBox = new IndexSpinBox();
     _actualValueSpinBox->setDisabled(true);
-    _actualValueSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     statusLayout->addRow(tr("&Actual Value :"), _actualValueSpinBox);
 
     _tempMotorSpinBox = new IndexSpinBox();
     _tempMotorSpinBox->setDisabled(true);
-    _tempMotorSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     statusLayout->addRow(tr("&Temperature Motor :"), _tempMotorSpinBox);
 
     _tempDriver1SpinBox = new IndexSpinBox();
     _tempDriver1SpinBox->setDisabled(true);
-    _tempDriver1SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     statusLayout->addRow(tr("&Temperature Driver1:"), _tempDriver1SpinBox);
 
     _tempDriver2SpinBox = new IndexSpinBox();
     _tempDriver2SpinBox->setDisabled(true);
-    _tempDriver2SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     statusLayout->addRow(tr("&Temperature Driver2:"), _tempDriver2SpinBox);
 
     statusGroupBox->setLayout(statusLayout);

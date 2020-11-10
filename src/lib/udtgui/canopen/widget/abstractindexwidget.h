@@ -50,6 +50,9 @@ public:
     //tooltip
     //setunit
 
+public slots:
+    void readObject();
+
 protected:
     enum DisplayAttribute
     {
