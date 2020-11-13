@@ -23,6 +23,7 @@
 
 #include "profile/p402/nodeprofile402.h"
 
+#include <QFormLayout>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QTabWidget>
@@ -78,10 +79,8 @@ protected:
     IndexSpinBox *_tempMotorSpinBox;
     IndexSpinBox *_tempDriver1SpinBox;
     IndexSpinBox *_tempDriver2SpinBox;
-    NodeObjectId _actualValue_ObjId;
-    NodeObjectId _tempMotor_ObjId ;
-    NodeObjectId _tempDriver1_ObjId;
-    NodeObjectId _tempDriver2_ObjId ;
+
+    QFormLayout *_targetLayout;
     QSpinBox *_firstTargetSpinBox;
     QSpinBox *_secondTargetSpinBox;
     QSpinBox *_windowSpinBox;

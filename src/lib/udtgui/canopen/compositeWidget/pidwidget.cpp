@@ -86,10 +86,10 @@ void PidWidget::setMode(PidWidget::ModePid mode)
     NodeObjectId pidErrorStatus_ObjId;
     NodeObjectId pidIntegratorStatus_ObjId;
     NodeObjectId pidOutputStatus_ObjId;
-
-    _tempMotor_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_MOTOR_1);;
-    _tempDriver1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_1);;
-    _tempDriver2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_2);;
+    NodeObjectId actualValue_ObjId;
+    NodeObjectId tempMotor_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_MOTOR_1);;
+    NodeObjectId tempDriver1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_1);;
+    NodeObjectId tempDriver2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_2);;
 
     _modePid = mode;
     switch (_modePid)
@@ -98,7 +98,7 @@ void PidWidget::setMode(PidWidget::ModePid mode)
         break;
     case MODE_PID_VELOCITY:
     {
-        _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE);
+        actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_P);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_I);
         pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_D);
@@ -108,12 +108,11 @@ void PidWidget::setMode(PidWidget::ModePid mode)
         pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_INTEGRATOR);
         pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_OUTPUT);
         target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET);
-        _secondTargetSpinBox->setEnabled(true);
         break;
     }
     case MODE_PID_TORQUE:
     {
-        _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE);
+        actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_P);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_I);
         pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_D);
@@ -123,12 +122,12 @@ void PidWidget::setMode(PidWidget::ModePid mode)
         pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_INTEGRATOR);
         pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_OUTPUT);
         target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TARGET_TORQUE);
-        _secondTargetSpinBox->setEnabled(true);
         break;
     }
     case MODE_PID_POSITION:
     {
-        _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE);
+        _targetLayout->removeRow(_secondTargetSpinBox);
+        actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_P);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_I);
         pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_D);
@@ -138,7 +137,6 @@ void PidWidget::setMode(PidWidget::ModePid mode)
         pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_INTEGRATOR);
         pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_OUTPUT);
         target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PP_TARGET_POSITION);
-        _secondTargetSpinBox->setEnabled(false);
         break;
     }
     }
@@ -146,10 +144,10 @@ void PidWidget::setMode(PidWidget::ModePid mode)
     _pSpinBox->setObjId(pidP_ObjId);
     _iSpinBox->setObjId(pidI_ObjId);
     _dSpinBox->setObjId(pidD_ObjId);
-    _actualValueSpinBox->setObjId(_actualValue_ObjId);
-    _tempMotorSpinBox->setObjId(_tempMotor_ObjId);
-    _tempDriver1SpinBox->setObjId(_tempDriver1_ObjId);
-    _tempDriver2SpinBox->setObjId(_tempDriver2_ObjId);
+    _actualValueSpinBox->setObjId(actualValue_ObjId);
+    _tempMotorSpinBox->setObjId(tempMotor_ObjId);
+    _tempDriver1SpinBox->setObjId(tempDriver1_ObjId);
+    _tempDriver2SpinBox->setObjId(tempDriver2_ObjId);
     _periodSpinBox->setObjId(period_ObjId);
 
     pidInputStatus_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
@@ -241,7 +239,7 @@ void PidWidget::mode402Changed(NodeProfile402::Mode modeNew)
     case NodeProfile402::IP :
     case NodeProfile402::CSP:
         _modePid = ModePid::MODE_PID_POSITION;
-        _nodeProfile402->setTarget(_firstTargetSpinBox->value());
+        _nodeProfile402->setTarget(_firstTargetSpinBox->value() + _actualValueSpinBox->value().toInt());
         _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
         break;
     case NodeProfile402::CSV:
@@ -303,7 +301,6 @@ void PidWidget::stopFirstMeasurement()
     case MODE_PID_NONE:
         break;
     case MODE_PID_POSITION:
-        _nodeProfile402->setTarget(0);
         _timer.start(_stopDataLoggerSpinBox->value());
         _state = STOP_DATALOGGER;
         break;
@@ -407,17 +404,17 @@ void PidWidget::createWidgets()
     statusGroupBox->setLayout(statusLayout);
 
     QGroupBox *targetGroupBox = new QGroupBox(tr("Target"));
-    QFormLayout *targetLayout = new QFormLayout();
+    _targetLayout = new QFormLayout();
 
     _firstTargetSpinBox = new QSpinBox();
     _firstTargetSpinBox->setValue(200);
     _firstTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    targetLayout->addRow(tr("&Fisrt Target :"), _firstTargetSpinBox);
+    _targetLayout->addRow(tr("&Fisrt Target :"), _firstTargetSpinBox);
 
     _secondTargetSpinBox = new QSpinBox();
     _secondTargetSpinBox->setValue(100);
     _secondTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    targetLayout->addRow(tr("&Second Target :"), _secondTargetSpinBox);
+    _targetLayout->addRow(tr("&Second Target :"), _secondTargetSpinBox);
 
     _windowSpinBox = new QSpinBox();
     _windowSpinBox->setRange(10, 5000);
@@ -429,8 +426,8 @@ void PidWidget::createWidgets()
     _stopDataLoggerSpinBox->setValue(100);
     _stopDataLoggerSpinBox->setSuffix(" ms");
 
-    targetLayout->addRow(tr("&Measurement window :"), _windowSpinBox);
-    targetLayout->addRow(tr("&Time limit after the end of the last target :"), _stopDataLoggerSpinBox);
+    _targetLayout->addRow(tr("&Measurement window :"), _windowSpinBox);
+    _targetLayout->addRow(tr("&Time limit after the end of the last target :"), _stopDataLoggerSpinBox);
 
     _savePushButton = new QPushButton(tr("&Save"));
     connect(_savePushButton, &QPushButton::clicked, this, &PidWidget::savePosition);
@@ -438,7 +435,7 @@ void PidWidget::createWidgets()
     _goTargetPushButton = new QPushButton(tr("G&O"));
     connect(_goTargetPushButton, &QPushButton::clicked, this, &PidWidget::manageMeasurement);
 
-    targetGroupBox->setLayout(targetLayout);
+    targetGroupBox->setLayout(_targetLayout);
 
     actionLayout->addWidget(pidGroupBox);
     actionLayout->addWidget(statusGroupBox);
