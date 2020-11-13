@@ -239,7 +239,7 @@ void PidWidget::mode402Changed(NodeProfile402::Mode modeNew)
     case NodeProfile402::IP :
     case NodeProfile402::CSP:
         _modePid = ModePid::MODE_PID_POSITION;
-        _nodeProfile402->setTarget(_firstTargetSpinBox->value() + _actualValueSpinBox->value().toInt());
+        _nodeProfile402->setTarget(_firstTargetSpinBox->value() + _node->nodeOd()->value(_actualValueSpinBox->objId()).toInt());
         _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
         break;
     case NodeProfile402::CSV:
