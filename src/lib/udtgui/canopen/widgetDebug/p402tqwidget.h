@@ -72,6 +72,7 @@ class P402TqWidget : public QWidget, public NodeOdSubscriber
 
     void tqTargetTorqueSpinboxFinished();
     void tqTargetTorqueSliderChanged();
+    void tqMaxTorqueSpinboxFinished();
 
     void dataLogger();
     void pdoMapping();

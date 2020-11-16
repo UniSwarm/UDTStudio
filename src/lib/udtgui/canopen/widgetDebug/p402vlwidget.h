@@ -83,6 +83,8 @@ private:
 
     void vlTargetVelocitySpinboxFinished();
     void vlTargetVelocitySliderChanged();
+    void vlMinVelocityMinMaxAmountSpinboxFinished();
+    void vllMaxVelocityMinMaxAmountSpinboxFinished();
 
     void vlEnableRampClicked(int id);
     void vlUnlockRampClicked(int id);

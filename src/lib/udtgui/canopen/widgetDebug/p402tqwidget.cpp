@@ -81,7 +81,7 @@ void P402TqWidget::setNode(Node *node)
         _tqDCLinkVoltageObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_DC_LINK_CIRCUIT_VOLTAGE);
         _tqTorqueDemandObjectId.setBusId(_node->busId());
         _tqTorqueDemandObjectId.setNodeId(_node->nodeId());
-        _tqTargetTorqueObjectId .setBusId(_node->busId());
+        _tqTargetTorqueObjectId.setBusId(_node->busId());
         _tqTargetTorqueObjectId.setNodeId(_node->nodeId());
         _tqTorqueActualValueObjectId.setBusId(_node->busId());
         _tqTorqueActualValueObjectId.setNodeId(_node->nodeId());
@@ -104,6 +104,11 @@ void P402TqWidget::setNode(Node *node)
         _tqMotorRatedTorqueSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_TORQUE));
         _tqMotorRatedCurrentSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_CURRENT));
 
+        int max = _node->nodeOd()->value(_tqMaxTorqueSpinBox->objId()).toInt();
+        _tqTargetTorqueSlider->setValue(_node->nodeOd()->value(_tqTargetTorqueObjectId).toInt());
+        _tqTargetTorqueSlider->setRange(0, max);
+
+        connect(_tqMaxTorqueSpinBox, &QSpinBox::editingFinished, this, &P402TqWidget::tqMaxTorqueSpinboxFinished);
         connect(_node, &Node::statusChanged, this, &P402TqWidget::updateData);
     }
 }
@@ -135,6 +140,12 @@ void P402TqWidget::tqTargetTorqueSliderChanged()
 {
     qint16 value = static_cast<qint16>(_tqTargetTorqueSpinBox->value());
     _node->writeObject(_tqTargetTorqueObjectId, QVariant(value));
+}
+
+void P402TqWidget::tqMaxTorqueSpinboxFinished()
+{
+    int max = _node->nodeOd()->value(_tqMaxTorqueSpinBox->objId()).toInt();
+    _tqTargetTorqueSlider->setRange(0, max);
 }
 
 void P402TqWidget::dataLogger()
@@ -220,7 +231,6 @@ void P402TqWidget::createWidgets()
     tqLayout->addRow("Target torque (0x6071) :", _tqTargetTorqueSpinBox);
 
     _tqTargetTorqueSlider = new QSlider(Qt::Horizontal);
-    _tqTargetTorqueSlider->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
     tqLayout->addRow(_tqTargetTorqueSlider);
 
     connect(_tqTargetTorqueSlider, &QSlider::valueChanged, _tqTargetTorqueSpinBox, &QSpinBox::setValue);

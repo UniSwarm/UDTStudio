@@ -114,6 +114,11 @@ void P402VlWidget::setNode(Node *node)
         _vlDimensionFactorNumeratorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_NUMERATOR));
         _vlDimensionFactorDenominatorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_DENOMINATOR));
 
+        int min = _node->nodeOd()->value(_vlMinVelocityMinMaxAmountSpinBox->objId()).toInt();
+        int max = _node->nodeOd()->value(_vlMaxVelocityMinMaxAmountSpinBox->objId()).toInt();
+        _vlTargetVelocitySlider->setValue(_node->nodeOd()->value(_vlTargetVelocityObjectId).toInt());
+        _vlTargetVelocitySlider->setRange(min, max);
+
         if (!_node->profiles().isEmpty())
         {
             _nodeProfile402 = static_cast<NodeProfile402 *>(_node->profiles()[0]);
@@ -126,6 +131,8 @@ void P402VlWidget::setNode(Node *node)
             vlReferenceRamp(_nodeProfile402->isReferenceRamp());
         }
 
+        connect(_vlMinVelocityMinMaxAmountSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlMinVelocityMinMaxAmountSpinboxFinished);
+        connect(_vlMaxVelocityMinMaxAmountSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vllMaxVelocityMinMaxAmountSpinboxFinished);
         connect(_node, &Node::statusChanged, this, &P402VlWidget::updateData);
     }
 }
@@ -161,6 +168,18 @@ void P402VlWidget::vlTargetVelocitySliderChanged()
 {
     qint16 value = static_cast<qint16>(_vlTargetVelocitySpinBox->value());
     _node->writeObject(_vlTargetVelocityObjectId, QVariant(value));
+}
+
+void P402VlWidget::vlMinVelocityMinMaxAmountSpinboxFinished()
+{
+    int min = _node->nodeOd()->value(_vlMinVelocityMinMaxAmountSpinBox->objId()).toInt();
+    _vlTargetVelocitySlider->setMinimum(min);
+}
+
+void P402VlWidget::vllMaxVelocityMinMaxAmountSpinboxFinished()
+{
+    int max = _node->nodeOd()->value(_vlMaxVelocityMinMaxAmountSpinBox->objId()).toInt();
+    _vlTargetVelocitySlider->setMaximum(max);
 }
 
 void P402VlWidget::vlEnableRampClicked(int id)
@@ -272,7 +291,7 @@ void P402VlWidget::createWidgets()
     vlLayout->addRow("Target velocity (0x6042) :", _vlTargetVelocitySpinBox);
 
     _vlTargetVelocitySlider = new QSlider(Qt::Horizontal);
-    _vlTargetVelocitySlider->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
+    _vlTargetVelocitySlider->setTickPosition(QSlider::TicksBothSides);
     vlLayout->addRow(_vlTargetVelocitySlider);
 
     connect(_vlTargetVelocitySlider, &QSlider::valueChanged, _vlTargetVelocitySpinBox, &QSpinBox::setValue);
@@ -293,13 +312,9 @@ void P402VlWidget::createWidgets()
 
     _vlMinVelocityMinMaxAmountSpinBox = new IndexSpinBox();
     _vlMinVelocityMinMaxAmountSpinBox->setToolTip("min ");
-    //    _vlMinVelocityMinMaxAmountSpinBox->setRange(std::numeric_limits<quint32>::min(),
-    //    std::numeric_limits<int>::max());
     vlVelocityMinMaxAmountlayout->addWidget(_vlMinVelocityMinMaxAmountSpinBox);
     _vlMaxVelocityMinMaxAmountSpinBox = new IndexSpinBox();
     _vlMaxVelocityMinMaxAmountSpinBox->setToolTip("max ");
-    //    _vlMaxVelocityMinMaxAmountSpinBox->setRange(std::numeric_limits<quint32>::min(),
-    //    std::numeric_limits<int>::max());
     vlVelocityMinMaxAmountlayout->addWidget(_vlMaxVelocityMinMaxAmountSpinBox);
     vlLayout->addRow(vlVelocityMinMaxAmountlayout);
 
