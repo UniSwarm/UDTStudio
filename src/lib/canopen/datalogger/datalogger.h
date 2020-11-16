@@ -34,6 +34,7 @@ public:
 
     void addData(const NodeObjectId &objId);
     void removeData(const NodeObjectId &objId);
+    void removeAllData();
     QList<DLData *> &dataList();
     DLData *data(int index) const;
     DLData *data(const NodeObjectId &objId) const;

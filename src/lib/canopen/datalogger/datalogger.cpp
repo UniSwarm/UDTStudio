@@ -89,6 +89,14 @@ void DataLogger::removeData(const NodeObjectId &objId)
     emit dataRemoved();
 }
 
+void DataLogger::removeAllData()
+{
+    for (DLData *dlData : _dataList)
+    {
+        removeData(dlData->objectId());
+    }
+}
+
 QList<DLData *> &DataLogger::dataList()
 {
     return _dataList;
