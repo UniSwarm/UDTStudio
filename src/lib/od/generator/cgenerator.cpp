@@ -1071,13 +1071,13 @@ void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextS
                     break;
                 }
 
-                cFile << " = " << subIndex->value().toUInt() - deviceConfiguration->nodeId().toUInt() << " + "
-                      << "nodeId";
+                uint value = subIndex->value().toUInt() - deviceConfiguration->nodeId().toUInt();
+                cFile << " = 0x" << QString::number(value, 16).toUpper() << "u + " << "nodeId";
 
                 cFile << ";  // " << index->name() << " : " << subIndex->name() << "\n";
             }
         }
     }
 
-    cFile << "}\n\n";
+    cFile << "}\n";
 }
