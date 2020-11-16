@@ -62,6 +62,8 @@ void PidWidget::setNode(Node *node)
     {
         return;
     }
+    _dataLogger->removeAllData();
+
     connect(_node, &Node::statusChanged, this, &PidWidget::statusNodeChanged);
     if (!_node->profiles().isEmpty())
     {
@@ -90,6 +92,8 @@ void PidWidget::setMode(PidWidget::ModePid mode)
     NodeObjectId tempMotor_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_MOTOR_1);;
     NodeObjectId tempDriver1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_1);;
     NodeObjectId tempDriver2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_2);;
+
+
 
     _modePid = mode;
     switch (_modePid)
@@ -154,7 +158,10 @@ void PidWidget::setMode(PidWidget::ModePid mode)
     pidErrorStatus_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
     pidIntegratorStatus_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
     pidOutputStatus_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
-
+    _dataLogger->removeData(pidInputStatus_ObjId);
+    _dataLogger->removeData(pidErrorStatus_ObjId);
+    _dataLogger->removeData(pidIntegratorStatus_ObjId);
+    _dataLogger->removeData(pidOutputStatus_ObjId);
     _dataLogger->addData(pidInputStatus_ObjId);
     _dataLogger->addData(pidErrorStatus_ObjId);
     _dataLogger->addData(pidIntegratorStatus_ObjId);
