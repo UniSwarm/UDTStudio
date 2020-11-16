@@ -80,7 +80,6 @@ protected:
     IndexSpinBox *_tempDriver1SpinBox;
     IndexSpinBox *_tempDriver2SpinBox;
 
-    QFormLayout *_targetLayout;
     QSpinBox *_firstTargetSpinBox;
     QSpinBox *_secondTargetSpinBox;
     QSpinBox *_windowSpinBox;
