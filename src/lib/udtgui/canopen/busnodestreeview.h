@@ -22,6 +22,7 @@
 #include "udtgui_global.h"
 
 #include <QTreeView>
+#include <QSortFilterProxyModel>
 
 #include "busnodesmodel.h"
 
@@ -52,6 +53,7 @@ protected slots:
 
 protected:
     BusNodesModel *_busNodesModel;
+    QSortFilterProxyModel *_sortFilterProxyModel;
 };
 
 #endif // BUSNODESTREEVIEW_H

@@ -24,10 +24,6 @@
 BusNodesTreeView::BusNodesTreeView(QWidget *parent)
     : BusNodesTreeView(nullptr, parent)
 {
-    int w0 = QFontMetrics(font()).horizontalAdvance("0");
-    header()->resizeSection(BusNodesModel::NodeId, 10 * w0);
-    header()->resizeSection(BusNodesModel::Name, 18 * w0);
-    header()->resizeSection(BusNodesModel::Status, 10 * w0);
 }
 
 BusNodesTreeView::BusNodesTreeView(CanOpen *canOpen, QWidget *parent)
@@ -38,10 +34,16 @@ BusNodesTreeView::BusNodesTreeView(CanOpen *canOpen, QWidget *parent)
     header()->resizeSection(BusNodesModel::Name, 18 * w0);
     header()->resizeSection(BusNodesModel::Status, 10 * w0);
 
-    _busNodesModel = new BusNodesModel();
+    _busNodesModel = new BusNodesModel(this);
+
+    _sortFilterProxyModel = new QSortFilterProxyModel(this);
+    _sortFilterProxyModel->setSourceModel(_busNodesModel);
+    setModel(_sortFilterProxyModel);
+
+    setSortingEnabled(true);
     setSelectionBehavior(QAbstractItemView::SelectRows);
+
     setCanOpen(canOpen);
-    setModel(_busNodesModel);
     setAnimated(true);
     connect(selectionModel(), &QItemSelectionModel::selectionChanged, this, &BusNodesTreeView::updateSelection);
     connect(this, &QAbstractItemView::doubleClicked, this, &BusNodesTreeView::indexDbClick);
@@ -75,12 +77,12 @@ void BusNodesTreeView::setCanOpen(CanOpen *canOpen)
 
 CanOpenBus *BusNodesTreeView::currentBus() const
 {
-    return _busNodesModel->bus(selectionModel()->currentIndex());
+    return _busNodesModel->bus(_sortFilterProxyModel->mapToSource(selectionModel()->currentIndex()));
 }
 
 Node *BusNodesTreeView::currentNode() const
 {
-    return _busNodesModel->node(selectionModel()->currentIndex());
+    return _busNodesModel->node(_sortFilterProxyModel->mapToSource(selectionModel()->currentIndex()));
 }
 
 void BusNodesTreeView::refresh()
@@ -105,7 +107,9 @@ void BusNodesTreeView::updateSelection()
 
 void BusNodesTreeView::indexDbClick(const QModelIndex &index)
 {
-    CanOpenBus *bus = _busNodesModel->bus(index);
+    QModelIndex indexBusNodeModel = _sortFilterProxyModel->mapToSource(index);
+
+    CanOpenBus *bus = _busNodesModel->bus(indexBusNodeModel);
     if (bus)
     {
         if (bus->isConnected() && bus->nodes().isEmpty())
