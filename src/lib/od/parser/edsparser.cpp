@@ -73,6 +73,14 @@ DeviceDescription *EdsParser::parse(const QString &path) const
             file.endGroup();
             continue;
         }
+
+        else if (group == "Comments")
+        {
+            file.beginGroup(group);
+            parser.readComments(deviceDescription);
+            file.endGroup();
+            continue;
+        }
     }
 
     // objects

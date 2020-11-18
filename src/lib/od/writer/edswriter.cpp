@@ -57,6 +57,7 @@ void EdsWriter::write(const DeviceDescription *deviceDescription, const QString 
     writer.writeFileInfo(deviceDescription->fileInfos());
     writer.writeDeviceInfo(deviceDescription->deviceInfos());
     writer.writeDummyUsage(deviceDescription->dummyUsages());
+    writer.writeComments(deviceDescription->comments());
 
     writer.writeObjects(deviceDescription);
 
