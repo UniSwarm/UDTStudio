@@ -217,10 +217,10 @@ void DeviceIniWriter::writeIndex(Index *index) const
 
     *_file << "[" << QString::number(index->index(), base).toUpper() << "]\n";
     *_file << "ParameterName=" << index->name() << "\n";
-    *_file << "ObjectType=" << valueToString(index->objectType(), base) << "\n";
-    *_file << "DataType=" << valueToString(subIndex->dataType(), base) << "\n";
+    *_file << "ObjectType=" << valueToString(index->objectType(), base, 1) << "\n";
+    *_file << "DataType=" << valueToString(subIndex->dataType(), base, 4) << "\n";
     *_file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
-    *_file << "DefaultValue=" << defaultValue(subIndex) << "\n";
+    *_file << "DefaultValue=" << defaultValue(subIndex, base) << "\n";
     *_file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\n";
     writeLimit(subIndex);
     *_file << "\n";
@@ -244,10 +244,10 @@ void DeviceIniWriter::writeRecord(Index *index) const
     {
         *_file << "[" << QString::number(index->index(), base).toUpper() << "sub" << subIndex->subIndex() << "]\n";
         *_file << "ParameterName=" << subIndex->name() << "\n";
-        *_file << "ObjectType=" << valueToString(Index::Object::VAR, base) << "\n";
-        *_file << "DataType=" << valueToString(subIndex->dataType(), base) << "\n";
+        *_file << "ObjectType=" << valueToString(Index::Object::VAR, base, 1) << "\n";
+        *_file << "DataType=" << valueToString(subIndex->dataType(), base, 4) << "\n";
         *_file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
-        *_file << "DefaultValue=" << defaultValue(subIndex) << "\n";
+        *_file << "DefaultValue=" << defaultValue(subIndex, base) << "\n";
         *_file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\n";
         writeLimit(subIndex);
         *_file << "\n";
@@ -300,7 +300,7 @@ void DeviceIniWriter::writeStringMap(const QMap<QString, QString> &map) const
  * @param base, 16 or 10
  * @return formated string
  */
-QString DeviceIniWriter::valueToString(int value, int base) const
+QString DeviceIniWriter::valueToString(int value, int base, int width) const
 {
     switch (base)
     {
@@ -308,7 +308,8 @@ QString DeviceIniWriter::valueToString(int value, int base) const
         return QString(value);
 
     case 16:
-        return QString("0x" + QString::number(value, base).toUpper());
+        QString t = QString("0x" + QString::number(value, base).rightJustified(width, '0').toUpper());
+        return t;
     }
 
     return QString("");
@@ -380,14 +381,24 @@ void DeviceIniWriter::setDescription(bool description)
     _isDescription = description;
 }
 
-QString DeviceIniWriter::defaultValue(const SubIndex *subIndex) const
+QString DeviceIniWriter::defaultValue(const SubIndex *subIndex, int base) const
 {
     if (subIndex->hasNodeId() && _isDescription)
     {
-        return "$NODEID+" + dataToString(subIndex->value());
+        return "$NODEID+" + dataToString(valueToString(subIndex->value().toInt(), base));
     }
     else
     {
-        return dataToString(subIndex->value());
+        if ((subIndex->dataType() < SubIndex::VISIBLE_STRING)
+            && (subIndex->dataType() < SubIndex::DDOMAIN)
+            && (subIndex->value() >= 0))
+        {
+            QString t = dataToString(valueToString(subIndex->value().toInt(), base));
+            return t;
+        }
+        else
+        {
+            return dataToString(subIndex->value());
+        }
     }
 }

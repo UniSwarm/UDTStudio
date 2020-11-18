@@ -48,8 +48,8 @@ public:
     void setDescription(bool description);
 
 private:
-    QString defaultValue(const SubIndex *subIndex) const;
-    QString valueToString(int value, int base = 10) const;
+    QString defaultValue(const SubIndex *subIndex, int base = 10) const;
+    QString valueToString(int value, int base = 10, int width = 1) const;
     QString accessToString(int access) const;
     QString dataToString(const QVariant &value) const;
     QString pdoToString(uint8_t accessType) const;
