@@ -101,7 +101,7 @@ void DeviceIniWriter::writeFileInfo(QMap<QString, QString> fileInfos) const
     *_file << "[FileInfo]"
            << "\n";
 
-    QString date = QDateTime().currentDateTime().toString("dd-MM-yyyy");
+    QString date = QDateTime().currentDateTime().toString("MM-dd-yyyy");
     QString time = QDateTime().currentDateTime().toString("hh:mm AP");
 
     fileInfos.insert("ModificationDate", date);
