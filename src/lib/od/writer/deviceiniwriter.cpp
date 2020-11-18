@@ -222,7 +222,7 @@ void DeviceIniWriter::writeIndex(Index *index) const
     *_file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
     if (subIndex->value().isValid())
     {
-        *_file << "DefaultValue=" << defaultValue(subIndex, base) << "\n";
+        *_file << "DefaultValue=" << defaultValue(subIndex) << "\n";
     }
     *_file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\n";
     writeLimit(subIndex);
@@ -252,7 +252,7 @@ void DeviceIniWriter::writeRecord(Index *index) const
         *_file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
         if (subIndex->value().isValid())
         {
-            *_file << "DefaultValue=" << defaultValue(subIndex, base) << "\n";
+            *_file << "DefaultValue=" << defaultValue(subIndex) << "\n";
         }
         *_file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\n";
         writeLimit(subIndex);
@@ -387,24 +387,14 @@ void DeviceIniWriter::setDescription(bool description)
     _isDescription = description;
 }
 
-QString DeviceIniWriter::defaultValue(const SubIndex *subIndex, int base) const
+QString DeviceIniWriter::defaultValue(const SubIndex *subIndex) const
 {
     if (subIndex->hasNodeId() && _isDescription)
     {
-        return "$NODEID+" + dataToString(valueToString(subIndex->value().toInt(), base));
+        return "$NODEID+" + valueToString(subIndex->value().toInt(), 16);
     }
     else
     {
-        if ((subIndex->dataType() < SubIndex::VISIBLE_STRING)
-            && (subIndex->dataType() < SubIndex::DDOMAIN)
-            && (subIndex->value() >= 0))
-        {
-            QString t = dataToString(valueToString(subIndex->value().toInt(), base));
-            return t;
-        }
-        else
-        {
             return dataToString(subIndex->value());
-        }
     }
 }
