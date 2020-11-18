@@ -25,6 +25,7 @@
 
 #include <QString>
 #include <QTextStream>
+#include <QSet>
 
 #include "model/deviceconfiguration.h"
 #include "model/devicedescription.h"
@@ -62,6 +63,8 @@ private:
     void writeInitRamC(QList<Index *> indexes, QTextStream &cFile);
     void writeDefineH(Index *index, QTextStream &hFile);
     void writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextStream &cFile);
+
+    QSet<QString> _typeSetTable;
 };
 
 #endif // CGENERATOR_H

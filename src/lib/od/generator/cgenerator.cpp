@@ -701,24 +701,35 @@ QString CGenerator::stringNameToString(const SubIndex *subIndex)
  */
 void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile)
 {
-    if (index->objectType() == Index::Object::RECORD)
+    if (index->objectType() != Index::Object::RECORD)
     {
-        hFile << "typedef struct"
-              << "  // 0x" << QString::number(index->index(), 16) << "\n{\n";
-
-        for (SubIndex *subIndex : index->subIndexes())
-        {
-            QString dataType = typeToString(subIndex->dataType());
-            if (dataType == nullptr)
-            {
-                continue;
-            }
-
-            hFile << "    " << dataType << " " << varNameToString(subIndex->name()) << ";"
-                  << "\n";
-        }
-        hFile << "} " << structNameToString(index->name()) << ";\n\n";
+        return;
     }
+
+    QString structName = structNameToString(index->name());
+
+    if (_typeSetTable.contains(structName))
+    {
+        return;
+    }
+
+    hFile << "typedef struct"
+          << "  // 0x" << QString::number(index->index(), 16) << "\n{\n";
+
+    for (SubIndex *subIndex : index->subIndexes())
+    {
+        QString dataType = typeToString(subIndex->dataType());
+        if (dataType == nullptr)
+        {
+            continue;
+        }
+
+        hFile << "    " << dataType << " " << varNameToString(subIndex->name()) << ";"
+              << "\n";
+    }
+    hFile << "} " << structName << ";\n\n";
+
+    _typeSetTable.insert(structName);
 }
 
 /**
