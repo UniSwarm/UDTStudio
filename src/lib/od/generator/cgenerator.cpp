@@ -785,6 +785,7 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile)
 int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
 {
     QMap<uint8_t, SubIndex *> subIndexes;
+    int written = 0;
 
     switch (index->objectType())
     {
@@ -797,6 +798,10 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
         {
             break;
         }
+        if (!index->subIndex(0)->value().isValid())
+        {
+            break;
+        }
 
         cFile << "    "
               << "OD_RAM." << varNameToString(index->name());
@@ -805,12 +810,17 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
         cFile << ";";
         cFile << "  // 0x" << QString::number(index->index(), 16);
         cFile << "\n";
+        written++;
         break;
 
     case Index::Object::RECORD:
         subIndexes = index->subIndexes();
         for (SubIndex *subIndex : subIndexes)
         {
+            if (!subIndex->value().isValid())
+            {
+                continue;
+            }
             cFile << "    "
                   << "OD_RAM." << varNameToString(index->name()) << "." << varNameToString(subIndex->name());
             cFile << " = ";
@@ -818,6 +828,7 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
             cFile << ";";
             cFile << "  // 0x" << QString::number(index->index(), 16) << "." << subIndex->subIndex();
             cFile << "\n";
+            written++;
         }
         break;
 
@@ -830,7 +841,11 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
             }
             if (index->subIndex(i)->dataType() == SubIndex::DDOMAIN)
             {
-                break;
+                continue;
+            }
+            if (!index->subIndex(i)->value().isValid())
+            {
+                continue;
             }
             cFile << "    "
                   << "OD_RAM." << varNameToString(index->name()) << "[" << i - 1 << "]";
@@ -839,9 +854,11 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
             cFile << ";";
             cFile << "  // 0x" << QString::number(index->index(), 16) << "." << i - 1;
             cFile << "\n";
+            written++;
         }
         break;
     }
+    return written;
 }
 
 /**
@@ -990,15 +1007,17 @@ void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile)
  */
 void CGenerator::writeInitRamC(QList<Index *> indexes, QTextStream &cFile)
 {
-    uint8_t lastOT = 0;
+    uint8_t lastObjectType = 0;
+    int written = 1;
     for (Index *index : indexes)
     {
-        if (index->objectType() != lastOT || index->objectType() == Index::Object::RECORD || index->objectType() == Index::Object::ARRAY)
+        if ((index->objectType() != lastObjectType || index->objectType() == Index::Object::RECORD || index->objectType() == Index::Object::ARRAY)
+            && written != 0)
         {
             cFile << "\n";
         }
-        writeRamLineC(index, cFile);
-        lastOT = index->objectType();
+        written = writeRamLineC(index, cFile);
+        lastObjectType = index->objectType();
     }
 }
 

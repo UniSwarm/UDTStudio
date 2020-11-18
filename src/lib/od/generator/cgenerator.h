@@ -55,7 +55,7 @@ private:
 
     void writeRecordDefinitionH(Index *index, QTextStream &hFile);
     void writeIndexH(Index *index, QTextStream &hFile);
-    void writeRamLineC(Index *index, QTextStream &cFile);
+    int writeRamLineC(Index *index, QTextStream &cFile);
     void writeRecordCompletionC(Index *index, QTextStream &cFile);
     void writeOdCompletionC(Index *index, QTextStream &cFile);
     void writeCharLineC(const SubIndex *subIndex, QTextStream &cFile);
