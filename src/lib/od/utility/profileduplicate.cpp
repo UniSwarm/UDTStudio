@@ -24,6 +24,10 @@ ProfileDuplicate::ProfileDuplicate()
 
 void ProfileDuplicate::duplicate(DeviceDescription *deviceDescription, const uint8_t number)
 {
+    if (!deviceDescription->indexExist(0x1000))
+    {
+        return;
+    }
     uint32_t deviceType = deviceDescription->index(0x1000)->subIndex(0)->value().toUInt();
 
     if ((deviceType & 0xFFFF) == 0x192)
