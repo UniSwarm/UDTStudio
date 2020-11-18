@@ -35,33 +35,33 @@ public:
     CGenerator();
     ~CGenerator();
 
-    bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath) const;
-    bool generate(DeviceDescription *deviceDescription, const QString &filePath) const;
-    void generate(DeviceDescription *deviceDescription, const QString &filePath, uint8_t nodeId) const;
+    bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath);
+    bool generate(DeviceDescription *deviceDescription, const QString &filePath);
+    void generate(DeviceDescription *deviceDescription, const QString &filePath, uint8_t nodeId);
 
-    void generateH(DeviceConfiguration *deviceConfiguration, const QString &filePath) const;
-    void generateC(DeviceConfiguration *deviceConfiguration, const QString &filePath) const;
+    void generateH(DeviceConfiguration *deviceConfiguration, const QString &filePath);
+    void generateC(DeviceConfiguration *deviceConfiguration, const QString &filePath);
 
 private:
-    QString typeToString(const uint16_t &type) const;
-    QString varNameToString(const QString &name) const;
-    QString structNameToString(const QString &name) const;
-    QString dataToString(const SubIndex *index) const;
-    QString objectTypeToEnumString(const uint16_t objectType) const;
-    QString dataTypeToEnumString(const uint16_t dataType) const;
-    QString accessToEnumString(const uint8_t acces) const;
-    QString typeObjectToString(Index *index, uint8_t subIndex, bool isInRecord) const;
-    QString stringNameToString(const SubIndex *subIndex) const;
+    static QString typeToString(const uint16_t &type);
+    static QString varNameToString(const QString &name);
+    static QString structNameToString(const QString &name);
+    static QString dataToString(const SubIndex *index);
+    static QString objectTypeToEnumString(const uint16_t objectType);
+    static QString dataTypeToEnumString(const uint16_t dataType);
+    static QString accessToEnumString(const uint8_t acces);
+    static QString typeObjectToString(Index *index, uint8_t subIndex, bool isInRecord);
+    static QString stringNameToString(const SubIndex *subIndex);
 
-    void writeRecordDefinitionH(Index *index, QTextStream &hFile) const;
-    void writeIndexH(Index *index, QTextStream &hFile) const;
-    void writeRamLineC(Index *index, QTextStream &cFile) const;
-    void writeRecordCompletionC(Index *index, QTextStream &cFile) const;
-    void writeOdCompletionC(Index *index, QTextStream &cFile) const;
-    void writeCharLineC(const SubIndex *subIndex, QTextStream &cFile) const;
-    void writeInitRamC(QList<Index *> indexes, QTextStream &cFile) const;
-    void writeDefineH(Index *index, QTextStream &hFile) const;
-    void writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextStream &cFile) const;
+    void writeRecordDefinitionH(Index *index, QTextStream &hFile);
+    void writeIndexH(Index *index, QTextStream &hFile);
+    void writeRamLineC(Index *index, QTextStream &cFile);
+    void writeRecordCompletionC(Index *index, QTextStream &cFile);
+    void writeOdCompletionC(Index *index, QTextStream &cFile);
+    void writeCharLineC(const SubIndex *subIndex, QTextStream &cFile);
+    void writeInitRamC(QList<Index *> indexes, QTextStream &cFile);
+    void writeDefineH(Index *index, QTextStream &hFile);
+    void writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextStream &cFile);
 };
 
 #endif // CGENERATOR_H

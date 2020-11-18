@@ -33,8 +33,8 @@ public:
     ~TexGenerator();
 
     // Generator interface
-    bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath) const;
-    bool generate(DeviceDescription *deviceDescription, const QString &filePath) const;
+    bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath);
+    bool generate(DeviceDescription *deviceDescription, const QString &filePath);
 };
 
 #endif // TEXGENERATOR_H

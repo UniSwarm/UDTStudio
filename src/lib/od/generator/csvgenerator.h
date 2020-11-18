@@ -18,18 +18,18 @@ public:
     ~CsvGenerator();
 
     // Generator interface
-    bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath) const;
-    bool generate(DeviceDescription *deviceDescription, const QString &filePath) const;
+    bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath);
+    bool generate(DeviceDescription *deviceDescription, const QString &filePath);
 
 private:
-    QString accessToString(int access) const;
-    QString pdoToString(uint8_t accessType) const;
+    static QString accessToString(int access);
+    static QString pdoToString(uint8_t accessType);
 
-    void writeListIndex(const QList<Index *> indexes, QTextStream *out) const;
-    void writeIndex(Index *index, QTextStream *out) const;
-    void writeRecord(Index *index, QTextStream *out) const;
-    void writeArray(Index *index, QTextStream *out) const;
-    void writeLimit(const SubIndex *subIndex, QTextStream *out) const;
+    void writeListIndex(const QList<Index *> indexes, QTextStream *out);
+    void writeIndex(Index *index, QTextStream *out);
+    void writeRecord(Index *index, QTextStream *out);
+    void writeArray(Index *index, QTextStream *out);
+    void writeLimit(const SubIndex *subIndex, QTextStream *out);
 };
 
 #endif // CSVGENERATOR_H

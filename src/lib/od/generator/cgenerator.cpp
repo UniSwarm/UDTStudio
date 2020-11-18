@@ -45,7 +45,7 @@ CGenerator::~CGenerator()
  * @param output file name
  * @return true
  */
-bool CGenerator::generate(DeviceConfiguration *deviceConfiguration, const QString &filePath) const
+bool CGenerator::generate(DeviceConfiguration *deviceConfiguration, const QString &filePath)
 {
     generateH(deviceConfiguration, filePath);
     generateC(deviceConfiguration, filePath);
@@ -59,7 +59,7 @@ bool CGenerator::generate(DeviceConfiguration *deviceConfiguration, const QStrin
  * @param output file name
  * @return false
  */
-bool CGenerator::generate(DeviceDescription *deviceDescription, const QString &filePath) const
+bool CGenerator::generate(DeviceDescription *deviceDescription, const QString &filePath)
 {
     Q_UNUSED(deviceDescription);
     Q_UNUSED(filePath);
@@ -72,7 +72,7 @@ bool CGenerator::generate(DeviceDescription *deviceDescription, const QString &f
  * @param output file name
  * @param CANopen node-id
  */
-void CGenerator::generate(DeviceDescription *deviceDescription, const QString &filePath, uint8_t nodeId) const
+void CGenerator::generate(DeviceDescription *deviceDescription, const QString &filePath, uint8_t nodeId)
 {
     DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, nodeId);
     generate(deviceConfiguration, filePath);
@@ -83,7 +83,7 @@ void CGenerator::generate(DeviceDescription *deviceDescription, const QString &f
  * @param device configuration model based on dcf or xdd files
  * @param output file name
  */
-void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QString &filePath) const
+void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QString &filePath)
 {
     QFile hFile(filePath);
 
@@ -185,7 +185,7 @@ void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
  * @param device configuration model based on dcf or xdd files
  * @param output file name
  */
-void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QString &filePath) const
+void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QString &filePath)
 {
     QFile cFile(filePath);
 
@@ -325,7 +325,7 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
  * @param data type
  * @return data type to C format
  */
-QString CGenerator::typeToString(const uint16_t &type) const
+QString CGenerator::typeToString(const uint16_t &type)
 {
     switch (type)
     {
@@ -379,7 +379,7 @@ QString CGenerator::typeToString(const uint16_t &type) const
  * @param variable name
  * @return variable name to C format
  */
-QString CGenerator::varNameToString(const QString &name) const
+QString CGenerator::varNameToString(const QString &name)
 {
     QString modified;
     modified = name.toLower();
@@ -407,13 +407,12 @@ QString CGenerator::varNameToString(const QString &name) const
  * @param structure name
  * @return structure name to C format
  */
-QString CGenerator::structNameToString(const QString &name) const
+QString CGenerator::structNameToString(const QString &name)
 {
     QString modified;
-    QString end("_t");
     modified = name.toLower();
     modified = modified.replace(QChar(' '), QChar('_'));
-    modified = modified.append(end);
+    modified = modified.append("_t");
     return modified;
 }
 
@@ -422,7 +421,7 @@ QString CGenerator::structNameToString(const QString &name) const
  * @param sub-index which contains data
  * @return data to C hexadecimal format
  */
-QString CGenerator::dataToString(const SubIndex *subIndex) const
+QString CGenerator::dataToString(const SubIndex *subIndex)
 {
     QString data;
 
@@ -461,7 +460,7 @@ QString CGenerator::dataToString(const SubIndex *subIndex) const
     return data;
 }
 
-QString CGenerator::objectTypeToEnumString(const uint16_t objectType) const
+QString CGenerator::objectTypeToEnumString(const uint16_t objectType)
 {
     QString typeObject;
 
@@ -503,7 +502,7 @@ QString CGenerator::objectTypeToEnumString(const uint16_t objectType) const
     return typeObject;
 }
 
-QString CGenerator::dataTypeToEnumString(const uint16_t dataType) const
+QString CGenerator::dataTypeToEnumString(const uint16_t dataType)
 {
     QString dataTypeEnumString;
 
@@ -613,7 +612,7 @@ QString CGenerator::dataTypeToEnumString(const uint16_t dataType) const
     return dataTypeEnumString;
 }
 
-QString CGenerator::accessToEnumString(const uint8_t acces) const
+QString CGenerator::accessToEnumString(const uint8_t acces)
 {
     QString accessToEnumString;
 
@@ -654,7 +653,7 @@ QString CGenerator::accessToEnumString(const uint8_t acces) const
  * @param sub-index
  * @return a C hexadecimal value coded on 16 bits
  */
-QString CGenerator::typeObjectToString(Index *index, uint8_t subIndex, bool isInRecord = false) const
+QString CGenerator::typeObjectToString(Index *index, uint8_t subIndex, bool isInRecord = false)
 {
     QString typeObject;
 
@@ -679,7 +678,7 @@ QString CGenerator::typeObjectToString(Index *index, uint8_t subIndex, bool isIn
  * @param sub-index number for arrays
  * @return string name for C file
  */
-QString CGenerator::stringNameToString(const SubIndex *subIndex) const
+QString CGenerator::stringNameToString(const SubIndex *subIndex)
 {
     QString string;
 
@@ -700,7 +699,7 @@ QString CGenerator::stringNameToString(const SubIndex *subIndex) const
  * @param record
  * @param .h file
  */
-void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile) const
+void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile)
 {
     if (index->objectType() == Index::Object::RECORD)
     {
@@ -727,7 +726,7 @@ void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile) const
  * @param index
  * @param .h file
  */
-void CGenerator::writeIndexH(Index *index, QTextStream &hFile) const
+void CGenerator::writeIndexH(Index *index, QTextStream &hFile)
 {
     QString dataType;
     switch (index->objectType())
@@ -783,7 +782,7 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile) const
  * @param index
  * @param .c file
  */
-void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
+int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
 {
     QMap<uint8_t, SubIndex *> subIndexes;
 
@@ -850,7 +849,7 @@ void CGenerator::writeRamLineC(Index *index, QTextStream &cFile) const
  * @param index
  * @param .c file
  */
-void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
+void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile)
 {
     if (index->objectType() == Index::Object::RECORD)
     {
@@ -879,7 +878,7 @@ void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile) const
  * @param index
  * @param .c file
  */
-void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
+void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
 {
     cFile << "    "
           << "{";
@@ -968,7 +967,7 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile) const
  * @param C file
  * @param sub-index-number for arrays
  */
-void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile) const
+void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile)
 {
     switch (subIndex->dataType())
     {
@@ -989,7 +988,7 @@ void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile) co
  * @param indexes
  * @param C file
  */
-void CGenerator::writeInitRamC(QList<Index *> indexes, QTextStream &cFile) const
+void CGenerator::writeInitRamC(QList<Index *> indexes, QTextStream &cFile)
 {
     uint8_t lastOT = 0;
     for (Index *index : indexes)
@@ -1008,7 +1007,7 @@ void CGenerator::writeInitRamC(QList<Index *> indexes, QTextStream &cFile) const
  * @param index model
  * @param .h file
  */
-void CGenerator::writeDefineH(Index *index, QTextStream &hFile) const
+void CGenerator::writeDefineH(Index *index, QTextStream &hFile)
 {
     hFile << "#define "
           << "OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
@@ -1046,7 +1045,7 @@ void CGenerator::writeDefineH(Index *index, QTextStream &hFile) const
     hFile << "\n";
 }
 
-void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextStream &cFile) const
+void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextStream &cFile)
 {
     cFile << "void od_setNodeId(uint8_t nodeId)\n";
     cFile << "{\n";

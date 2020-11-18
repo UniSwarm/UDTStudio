@@ -22,7 +22,7 @@ CsvGenerator::~CsvGenerator()
  * @param output file name
  * @return true
  */
-bool CsvGenerator::generate(DeviceConfiguration *deviceConfiguration, const QString &filePath) const
+bool CsvGenerator::generate(DeviceConfiguration *deviceConfiguration, const QString &filePath)
 {
     Q_UNUSED(deviceConfiguration);
     Q_UNUSED(filePath);
@@ -35,7 +35,7 @@ bool CsvGenerator::generate(DeviceConfiguration *deviceConfiguration, const QStr
  * @param output file name
  * @return true
  */
-bool CsvGenerator::generate(DeviceDescription *deviceDescription, const QString &filePath) const
+bool CsvGenerator::generate(DeviceDescription *deviceDescription, const QString &filePath)
 {
     QString filePathBaseName = QFileInfo(filePath).path() + "/" + QFileInfo(filePath).baseName();
     QString outCom =  filePathBaseName + "Communication." + QFileInfo(filePath).suffix();
@@ -103,7 +103,7 @@ bool CsvGenerator::generate(DeviceDescription *deviceDescription, const QString 
  * @brief writes a list of index and these parameters
  * @param list of indexes
  */
-void CsvGenerator::writeListIndex(const QList<Index *> indexes, QTextStream *out) const
+void CsvGenerator::writeListIndex(const QList<Index *> indexes, QTextStream *out)
 {
     for (Index *index : indexes)
     {
@@ -128,7 +128,7 @@ void CsvGenerator::writeListIndex(const QList<Index *> indexes, QTextStream *out
  * @brief writes an index and these parameters
  * @param index model
  */
-void CsvGenerator::writeIndex(Index *index, QTextStream *out) const
+void CsvGenerator::writeIndex(Index *index, QTextStream *out)
 {
     SubIndex *subIndex;
     subIndex = index->subIndex(0);
@@ -159,7 +159,7 @@ void CsvGenerator::writeIndex(Index *index, QTextStream *out) const
  * @brief writes a record index
  * @param index model
  */
-void CsvGenerator::writeRecord(Index *index, QTextStream *out) const
+void CsvGenerator::writeRecord(Index *index, QTextStream *out)
 {
     int base = 16;
 
@@ -194,7 +194,7 @@ void CsvGenerator::writeRecord(Index *index, QTextStream *out) const
  * @brief writes an array index
  * @param index model
  */
-void CsvGenerator::writeArray(Index *index, QTextStream *out) const
+void CsvGenerator::writeArray(Index *index, QTextStream *out)
 {
     writeRecord(index, out);
 }
@@ -203,7 +203,7 @@ void CsvGenerator::writeArray(Index *index, QTextStream *out) const
  * @brief writes high limit and low limit of a sub-index if they exist
  * @param sub index model
  */
-void CsvGenerator::writeLimit(const SubIndex *subIndex, QTextStream *out) const
+void CsvGenerator::writeLimit(const SubIndex *subIndex, QTextStream *out)
 {
     if (subIndex->hasLowLimit())
     {
@@ -229,7 +229,7 @@ void CsvGenerator::writeLimit(const SubIndex *subIndex, QTextStream *out) const
  * @param access code
  * @return formated string
  */
-QString CsvGenerator::accessToString(int access) const
+QString CsvGenerator::accessToString(int access)
 {
     switch (access)
     {
@@ -260,7 +260,7 @@ QString CsvGenerator::accessToString(int access) const
  * @param 8 bits access type code
  * @return 1 or 0 as a string
  */
-QString CsvGenerator::pdoToString(uint8_t accessType) const
+QString CsvGenerator::pdoToString(uint8_t accessType)
 {
     if ((accessType & SubIndex::TPDO) == SubIndex::TPDO || (accessType & SubIndex::RPDO) == SubIndex::RPDO)
     {
