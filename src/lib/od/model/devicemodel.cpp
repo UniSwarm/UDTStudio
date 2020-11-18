@@ -155,6 +155,11 @@ bool DeviceModel::indexExist(uint16_t index) const
     return _indexes.contains(index);
 }
 
+void DeviceModel::deleteIndex(Index *index)
+{
+    _indexes.remove(index->index());
+}
+
 SubIndex *DeviceModel::subIndex(uint16_t index, uint8_t subIndex) const
 {
     Index *mindex = _indexes.value(index);

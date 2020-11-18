@@ -56,6 +56,7 @@ public:
     void addIndex(Index *index);
     int indexCount() const;
     bool indexExist(uint16_t index) const;
+    void deleteIndex(Index *index);
 
     SubIndex *subIndex(uint16_t index, uint8_t subIndex) const;
     bool subIndexExist(uint16_t index, uint8_t subIndex) const;
