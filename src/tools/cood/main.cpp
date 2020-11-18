@@ -29,6 +29,7 @@
 #include "writer/edswriter.h"
 #include "generator/texgenerator.h"
 #include "generator/csvgenerator.h"
+#include "utility/profileduplicate.h"
 
 /**
  * @brief main
@@ -47,7 +48,7 @@ int main(int argc, char *argv[])
     cliParser.setApplicationDescription(QCoreApplication::translate("main", "Object Dicitonary command line interface."));
     cliParser.addHelpOption();
     cliParser.addVersionOption();
-    cliParser.addPositionalArgument("file", QCoreApplication::translate("main", "Object dictionary file (dcf)."), "file");
+    cliParser.addPositionalArgument("file", QCoreApplication::translate("main", "Object dictionary file (dcf or eds)."), "file");
 
     QCommandLineOption outOption(QStringList() << "o" << "out",
                                      QCoreApplication::translate("main", "Output directory or file."),
@@ -60,6 +61,12 @@ int main(int argc, char *argv[])
     nodeIdOption.setDefaultValue("0");
     cliParser.addOption(nodeIdOption);
 
+    QCommandLineOption duplicateOption(QStringList() << "d" << "duplicate",
+                                    QCoreApplication::translate("main", "Duplicate profile"),
+                                    "duplicate");
+    duplicateOption.setDefaultValue("0");
+    cliParser.addOption(duplicateOption);
+
     cliParser.process(app);
 
     const QStringList files = cliParser.positionalArguments();
@@ -71,26 +78,31 @@ int main(int argc, char *argv[])
     const QString &inputFile = files.at(0);
     QString inSuffix = QFileInfo(inputFile).suffix();
 
-    // output file
-    QString outputFile = cliParser.value("out");
-    if (outputFile.isEmpty())
-    {
-        outputFile = QFileInfo(inputFile).path();
-    }
-
     // node Id
     uint8_t nodeid = 0;
-    if (inSuffix == "eds")
+
+    // output file
+    QString outputFile = cliParser.value("out");
+    QString outSuffix = QFileInfo(outputFile).suffix();
+    if (outputFile.isEmpty())
     {
-        nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
-        if (nodeid == 0 || nodeid >= 126)
+        outputFile = inputFile;
+        outSuffix = QFileInfo(outputFile).suffix();
+    }
+    else
+    {
+        if (inSuffix == "eds" && outSuffix != "eds")
         {
-            err << "error (2): invalid node id, nodeId > 0 && nodeId < 126" << endl;
-            return -2;
+            nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
+            if (nodeid == 0 || nodeid >= 126)
+            {
+                err << "error (2): invalid node id, nodeId > 0 && nodeId < 126" << endl;
+                return -2;
+            }
         }
     }
 
-    // input file opening
+    // INPUT FILE OPENING
     DeviceDescription *deviceDescription = nullptr;
     DeviceConfiguration *deviceConfiguration = nullptr;
     if (inSuffix == "eds")
@@ -110,7 +122,7 @@ int main(int argc, char *argv[])
         return -3;
     }
 
-    QString outSuffix = QFileInfo(outputFile).suffix();
+    // OUTPUT FILE
     CGenerator cgenerator;
     DcfWriter dcfWriter;
     if (outSuffix == "c")
@@ -127,6 +139,12 @@ int main(int argc, char *argv[])
     }
     else if (outSuffix == "eds" && deviceDescription)
     {
+        uint8_t duplicate = 0;
+        duplicate = static_cast<uint8_t>(cliParser.value("duplicate").toUInt());
+
+        ProfileDuplicate profileDuplicate;
+        profileDuplicate.duplicate(deviceDescription, duplicate);
+
         EdsWriter edsWriter;
         edsWriter.write(deviceDescription, outputFile);
     }
