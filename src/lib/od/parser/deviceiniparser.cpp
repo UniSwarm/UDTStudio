@@ -232,29 +232,34 @@ void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
  */
 QVariant DeviceIniParser::readData(bool *nodeId) const
 {
-    QString value;
+    QString stringValue;
 
     if (_file->value("DefaultValue").isNull())
     {
-        value = "0";
+        stringValue = "";
     }
     else if (_file->value("DefaultValue").toString().startsWith("$NODEID+"))
     {
-        value = _file->value("DefaultValue").toString().mid(8);
+        stringValue = _file->value("DefaultValue").toString().mid(8);
         *nodeId = true;
     }
 
     else
     {
-        value = _file->value("DefaultValue").toString();
+        stringValue = _file->value("DefaultValue").toString();
     }
 
     uint16_t dataType = readDataType();
 
     int base = 10;
-    if (value.startsWith("0x"))
+    if (stringValue.startsWith("0x"))
     {
         base = 16;
+    }
+
+    if (stringValue.isEmpty())
+    {
+        return QVariant();
     }
 
     bool ok;
@@ -264,31 +269,31 @@ QVariant DeviceIniParser::readData(bool *nodeId) const
     case SubIndex::INTEGER8:
     case SubIndex::INTEGER16:
     case SubIndex::INTEGER32:
-        return QVariant(value.toInt(&ok, base));
+        return QVariant(stringValue.toInt(&ok, base));
 
     case SubIndex::INTEGER64:
-        return QVariant(value.toLongLong(&ok, base));
+        return QVariant(stringValue.toLongLong(&ok, base));
 
     case SubIndex::UNSIGNED8:
     case SubIndex::UNSIGNED16:
     case SubIndex::UNSIGNED32:
-        return QVariant(value.toUInt(&ok, base));
+        return QVariant(stringValue.toUInt(&ok, base));
 
     case SubIndex::UNSIGNED64:
-        return QVariant(value.toULongLong(&ok, base));
+        return QVariant(stringValue.toULongLong(&ok, base));
 
     case SubIndex::REAL32:
-        return QVariant(value.toFloat());
+        return QVariant(stringValue.toFloat());
 
     case SubIndex::REAL64:
-        return QVariant(value.toDouble());
+        return QVariant(stringValue.toDouble());
 
     case SubIndex::VISIBLE_STRING:
     case SubIndex::OCTET_STRING:
-        return QVariant(value);
+        return QVariant(stringValue);
     }
 
-    return 0;
+    return QVariant();
 }
 
 /**

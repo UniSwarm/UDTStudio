@@ -220,7 +220,10 @@ void DeviceIniWriter::writeIndex(Index *index) const
     *_file << "ObjectType=" << valueToString(index->objectType(), base, 1) << "\n";
     *_file << "DataType=" << valueToString(subIndex->dataType(), base, 4) << "\n";
     *_file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
-    *_file << "DefaultValue=" << defaultValue(subIndex, base) << "\n";
+    if (subIndex->value().isValid())
+    {
+        *_file << "DefaultValue=" << defaultValue(subIndex, base) << "\n";
+    }
     *_file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\n";
     writeLimit(subIndex);
     *_file << "\n";
@@ -247,7 +250,10 @@ void DeviceIniWriter::writeRecord(Index *index) const
         *_file << "ObjectType=" << valueToString(Index::Object::VAR, base, 1) << "\n";
         *_file << "DataType=" << valueToString(subIndex->dataType(), base, 4) << "\n";
         *_file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
-        *_file << "DefaultValue=" << defaultValue(subIndex, base) << "\n";
+        if (subIndex->value().isValid())
+        {
+            *_file << "DefaultValue=" << defaultValue(subIndex, base) << "\n";
+        }
         *_file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\n";
         writeLimit(subIndex);
         *_file << "\n";
