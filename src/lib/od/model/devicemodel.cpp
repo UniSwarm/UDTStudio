@@ -90,6 +90,24 @@ void DeviceModel::setDummyUsage(const QString &key, const QString &value)
     _dummyUsages.insert(key, value);
 }
 
+const QMap<QString, QString> &DeviceModel::comments() const
+{
+    return _comments;
+}
+
+void DeviceModel::setComments(const QMap<QString, QString> &comments)
+{
+    _comments = comments;
+}
+
+void DeviceModel::setComment(const QString &key, const QString &value)
+{
+    if (key != "Lines")
+    {
+        _comments.insert(key, value);
+    }
+}
+
 /**
  * @brief _indexes getter
  * @return a map of index wich contains the index of the device model

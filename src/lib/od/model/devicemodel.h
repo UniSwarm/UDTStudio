@@ -47,6 +47,10 @@ public:
     void setDummyUsages(const QMap<QString, QString> &dummyUsages);
     void setDummyUsage(const QString &key, const QString &value);
 
+    const QMap<QString, QString> &comments() const;
+    void setComments(const QMap<QString, QString> &comments);
+    void setComment(const QString &key, const QString &value);
+
     const QMap<uint16_t, Index *> &indexes() const;
     Index *index(uint16_t index) const;
     void addIndex(Index *index);
@@ -63,6 +67,7 @@ public:
 private:
     QMap<QString, QString> _fileInfos;
     QMap<QString, QString> _dummyUsages;
+    QMap<QString, QString> _comments;
     QMap<uint16_t, Index *> _indexes;
 };
 

@@ -146,6 +146,17 @@ void DeviceIniWriter::writeDummyUsage(const QMap<QString, QString> &dummyUsages)
     writeStringMap(dummyUsages);
 }
 
+void DeviceIniWriter::writeComments(const QMap<QString, QString> &comments) const
+{
+    *_file << "[Comments]"
+           << "\n";
+
+    *_file << "Lines=" << comments.size()
+           << "\n";
+
+    writeStringMap(comments);
+}
+
 /**
  * @brief writes supported indexes fields
  * @param list of index

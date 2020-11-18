@@ -35,6 +35,7 @@ public:
     void writeDeviceComissioning(const QMap<QString, QString> &deviceComissionings) const;
     void writeDeviceInfo(const QMap<QString, QString> &deviceInfos) const;
     void writeDummyUsage(const QMap<QString, QString> &dummyUsages) const;
+    void writeComments(const QMap<QString, QString> &comments) const;
     void writeSupportedIndexes(const QList<Index *> &indexes) const;
     void writeListIndex(const QList<Index *> indexes) const;
     void writeIndex(Index *index) const;

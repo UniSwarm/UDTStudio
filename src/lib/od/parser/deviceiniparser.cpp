@@ -315,6 +315,14 @@ void DeviceIniParser::readDummyUsage(DeviceModel *deviceModel) const
     }
 }
 
+void DeviceIniParser::readComments(DeviceModel *deviceModel) const
+{
+    for (const QString &key : _file->allKeys())
+    {
+        deviceModel->setComment(key, _file->value(key).toString());
+    }
+}
+
 /**
  * @brief parses device infos and completes device description model
  * @param device description model

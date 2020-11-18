@@ -40,6 +40,7 @@ public:
     QVariant readData(bool *nodeId) const;
     void readFileInfo(DeviceModel *deviceModel) const;
     void readDummyUsage(DeviceModel *deviceModel) const;
+    void readComments(DeviceModel *deviceModel) const;
     void readDeviceInfo(DeviceDescription *deviceDescription) const;
     void readDeviceComissioning(DeviceConfiguration *deviceConfiguration) const;
     uint8_t readPdoMapping() const;
