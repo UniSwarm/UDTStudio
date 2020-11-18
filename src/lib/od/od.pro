@@ -29,7 +29,8 @@ HEADERS += \
     $$PWD/parser/edsparser.h \
     $$PWD/db/oddb.h \
     $$PWD/db/odindexdb.h \
-    $$PWD/generator/csvgenerator.h
+    $$PWD/generator/csvgenerator.h \
+    $$PWD/utility/profileduplicate.h
 
 SOURCES += \
     $$PWD/model/index.cpp \
@@ -52,4 +53,5 @@ SOURCES += \
     $$PWD/parser/edsparser.cpp \
     $$PWD/db/oddb.cpp \
     $$PWD/db/odindexdb.cpp \
-    $$PWD/generator/csvgenerator.cpp
+    $$PWD/generator/csvgenerator.cpp \
+    $$PWD/utility/profileduplicate.cpp
