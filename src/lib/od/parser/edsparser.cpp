@@ -44,7 +44,7 @@ EdsParser::~EdsParser()
  */
 DeviceDescription *EdsParser::parse(const QString &path) const
 {
-    DeviceDescription *deviceDescription = new DeviceDescription;
+    DeviceDescription *deviceDescription = new DeviceDescription();
 
     QSettings file(path, QSettings::IniFormat);
     DeviceIniParser parser(&file);

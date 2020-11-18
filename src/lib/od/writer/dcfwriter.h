@@ -29,7 +29,7 @@
 #include "deviceconfigurationwriter.h"
 #include "model/deviceconfiguration.h"
 
-class OD_EXPORT DcfWriter : public DeviceConfigurationWriter
+class OD_EXPORT DcfWriter
 {
 public:
     DcfWriter();

@@ -43,15 +43,16 @@ EdsWriter::~EdsWriter()
  */
 void EdsWriter::write(const DeviceDescription *deviceDescription, const QString &filePath) const
 {
-    QFile dcfFile(filePath);
+    QFile edsFile(filePath);
 
-    if (!dcfFile.open(QIODevice::WriteOnly))
+    if (!edsFile.open(QIODevice::WriteOnly))
     {
         return;
     }
 
-    QTextStream out(&dcfFile);
+    QTextStream out(&edsFile);
     DeviceIniWriter writer(&out);
+    writer.setDescription(true);
 
     writer.writeFileInfo(deviceDescription->fileInfos());
     writer.writeDeviceInfo(deviceDescription->deviceInfos());
@@ -59,5 +60,5 @@ void EdsWriter::write(const DeviceDescription *deviceDescription, const QString 
 
     writer.writeObjects(deviceDescription);
 
-    dcfFile.close();
+    edsFile.close();
 }

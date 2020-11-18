@@ -23,7 +23,7 @@
 
 #include "model/devicedescription.h"
 
-class OD_EXPORT EdsWriter : public DeviceDescription
+class OD_EXPORT EdsWriter
 {
 public:
     EdsWriter();

@@ -43,13 +43,18 @@ public:
     void writeLimit(const SubIndex *subIndex) const;
     void writeStringMap(const QMap<QString, QString> &map) const;
 
+    bool isDescription() const;
+    void setDescription(bool description);
+
 private:
+    QString defaultValue(const SubIndex *subIndex) const;
     QString valueToString(int value, int base = 10) const;
     QString accessToString(int access) const;
     QString dataToString(const QVariant &value) const;
     QString pdoToString(uint8_t accessType) const;
 
     QTextStream *_file;
+    bool _isDescription;
 };
 
 #endif // DEVICEINIWRITER_H
