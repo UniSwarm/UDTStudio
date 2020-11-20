@@ -145,7 +145,7 @@ void P402TqWidget::tqTargetTorqueSliderChanged()
 void P402TqWidget::tqMaxTorqueSpinboxFinished()
 {
     int max = _node->nodeOd()->value(_tqMaxTorqueSpinBox->objId()).toInt();
-    _tqTargetTorqueSlider->setRange(0, max);
+    _tqTargetTorqueSlider->setRange(-max, max);
 }
 
 void P402TqWidget::dataLogger()
