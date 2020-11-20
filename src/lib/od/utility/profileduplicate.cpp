@@ -32,13 +32,27 @@ void ProfileDuplicate::duplicate(DeviceDescription *deviceDescription, const uin
 
     if ((deviceType & 0xFFFF) == 0x192)
     {
-        QList<Index *> optionalsStandardizedProfile;
+        // Manufacturer-specific profile area : Axis
+        QList<Index *> manufactureIndex;
+        // Standardized profile area : 0x6000 to 0x9FFF
+        QList<Index *> standardizedIndex;
+
         for (Index *index : deviceDescription->indexes().values())
         {
             uint16_t numIndex = index->index();
+            if (numIndex >= 0x4000 && numIndex < 0x4200)
+            {
+                manufactureIndex.append(index);
+                deviceDescription->deleteIndex(index);
+            }
+            if (numIndex >= 0x4200 && numIndex <= 0x4FFF)
+            {
+                deviceDescription->deleteIndex(index);
+            }
             if (numIndex >= 0x6000 && numIndex < 0x6800)
             {
-                optionalsStandardizedProfile.append(index);
+                standardizedIndex.append(index);
+                deviceDescription->deleteIndex(index);
             }
             if (numIndex >= 0x6800 && numIndex <= 0x9FFF)
             {
@@ -46,13 +60,34 @@ void ProfileDuplicate::duplicate(DeviceDescription *deviceDescription, const uin
             }
         }
 
-        int size = optionalsStandardizedProfile.size();
-        for (uint16_t count = 1; count < number; count++)
+        QString name;
+        QRegExp reg("^[a][0-9]_");
+
+        int size = manufactureIndex.size();
+        for (uint16_t count = 0; count < number; count++)
         {
             for (int i = 0; i < size; i++)
             {
-                Index *index = new Index(*optionalsStandardizedProfile[i]);
-                uint16_t indexId = index->index() +(0x800 * count);
+                Index *index = new Index(*manufactureIndex[i]);
+                uint16_t indexId = index->index() + (0x200 * count);
+                name = index->name();
+                name.remove(reg);
+                index->setName(QString("a%1_").arg(count + 1) + name);
+                index->setIndex(indexId);
+                deviceDescription->addIndex(index);
+            }
+        }
+
+        size = standardizedIndex.size();
+        for (uint16_t count = 0; count < number; count++)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                Index *index = new Index(*standardizedIndex[i]);
+                uint16_t indexId = index->index() + (0x800 * count);
+                name = index->name();
+                name.remove(reg);
+                index->setName(QString("a%1_").arg(count + 1) + name);
                 index->setIndex(indexId);
                 deviceDescription->addIndex(index);
             }
