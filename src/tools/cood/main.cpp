@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     QCommandLineOption duplicateOption(QStringList() << "d" << "duplicate",
                                     QCoreApplication::translate("main", "Duplicate profile"),
                                     "duplicate");
-    duplicateOption.setDefaultValue("0");
+    duplicateOption.setDefaultValue("1");
     cliParser.addOption(duplicateOption);
 
     cliParser.process(app);
