@@ -473,6 +473,7 @@ QVariant NodeOdItem::formatValue(const QVariant &value, NodeSubIndex::DataType d
     QVariant mvalue = value;
     int zero = 0;
     bool sign = true;
+    bool floatingPoint = false;
     switch (dataType)
     {
         case NodeSubIndex::BOOLEAN:
@@ -533,16 +534,30 @@ QVariant NodeOdItem::formatValue(const QVariant &value, NodeSubIndex::DataType d
             zero = 16;
             break;
 
+        case NodeSubIndex::REAL32:
+        case NodeSubIndex::REAL64:
+            zero = 16;
+            floatingPoint = true;
+            break;
+
     default:
         return value;
     }
-    if (sign)
+
+    if (floatingPoint)
     {
-        return QVariant(QString("%1 (0x%2)").arg(mvalue.toInt()).arg(QString::number(mvalue.toInt(), 16).right(zero).toUpper()));
+        return QVariant(QString("%1").arg(mvalue.toReal(), 0, 'f'));
     }
     else
     {
-        return QVariant(QString("%1 (0x%2)").arg(mvalue.toUInt()).arg(QString::number(mvalue.toUInt(), 16).rightJustified(zero, '0').toUpper()));
+        if (sign)
+        {
+            return QVariant(QString("%1 (0x%2)").arg(mvalue.toInt()).arg(QString::number(mvalue.toInt(), 16).rightJustified(zero, '0').toUpper()));
+        }
+        else
+        {
+            return QVariant(QString("%1 (0x%2)").arg(mvalue.toUInt()).arg(QString::number(mvalue.toUInt(), 16).rightJustified(zero, '0').toUpper()));
+        }
     }
 }
 
