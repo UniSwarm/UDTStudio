@@ -70,6 +70,8 @@ public:
     QString statusStr() const;
     void setStatus(const Status status);
 
+    quint16 manufacturerId() const;
+    quint16 productCode() const;
     quint16 profileNumber() const;
     void addProfile(NodeProfile *nodeProfile);
     const QList<NodeProfile *> &profiles() const;

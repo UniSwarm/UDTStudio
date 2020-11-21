@@ -163,6 +163,16 @@ void Node::setStatus(const Status status)
     }
 }
 
+quint16 Node::manufacturerId() const
+{
+    return static_cast<quint16>(nodeOd()->value(0x1018, 1).toUInt());
+}
+
+quint16 Node::productCode() const
+{
+    return static_cast<quint16>(nodeOd()->value(0x1018, 2).toUInt());
+}
+
 quint16 Node::profileNumber() const
 {
     return static_cast<quint16>(nodeOd()->value(0x1000).toUInt() & 0xFFFF);
