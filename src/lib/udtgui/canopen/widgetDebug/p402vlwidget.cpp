@@ -117,7 +117,7 @@ void P402VlWidget::setNode(Node *node)
         int min = _node->nodeOd()->value(_vlMinVelocityMinMaxAmountSpinBox->objId()).toInt();
         int max = _node->nodeOd()->value(_vlMaxVelocityMinMaxAmountSpinBox->objId()).toInt();
         _vlTargetVelocitySlider->setValue(_node->nodeOd()->value(_vlTargetVelocityObjectId).toInt());
-        _vlTargetVelocitySlider->setRange(min, max);
+        _vlTargetVelocitySlider->setRange(-max, max);
 
         if (!_node->profiles().isEmpty())
         {
@@ -173,13 +173,13 @@ void P402VlWidget::vlTargetVelocitySliderChanged()
 void P402VlWidget::vlMinVelocityMinMaxAmountSpinboxFinished()
 {
     int min = _node->nodeOd()->value(_vlMinVelocityMinMaxAmountSpinBox->objId()).toInt();
-    _vlTargetVelocitySlider->setMinimum(min);
+    //_vlTargetVelocitySlider->setMinimum(min);
 }
 
 void P402VlWidget::vllMaxVelocityMinMaxAmountSpinboxFinished()
 {
     int max = _node->nodeOd()->value(_vlMaxVelocityMinMaxAmountSpinBox->objId()).toInt();
-    _vlTargetVelocitySlider->setMaximum(max);
+    _vlTargetVelocitySlider->setRange(-max, max);
 }
 
 void P402VlWidget::vlEnableRampClicked(int id)
