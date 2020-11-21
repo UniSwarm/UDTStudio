@@ -29,24 +29,25 @@ BusNodesTreeView::BusNodesTreeView(QWidget *parent)
 BusNodesTreeView::BusNodesTreeView(CanOpen *canOpen, QWidget *parent)
     : QTreeView(parent)
 {
-    int w0 = QFontMetrics(font()).horizontalAdvance("0");
-    header()->resizeSection(BusNodesModel::NodeId, 10 * w0);
-    header()->resizeSection(BusNodesModel::Name, 18 * w0);
-    header()->resizeSection(BusNodesModel::Status, 10 * w0);
-
     _busNodesModel = new BusNodesModel(this);
 
     _sortFilterProxyModel = new QSortFilterProxyModel(this);
     _sortFilterProxyModel->setSourceModel(_busNodesModel);
     setModel(_sortFilterProxyModel);
 
-    setSortingEnabled(true);
-    setSelectionBehavior(QAbstractItemView::SelectRows);
-
     setCanOpen(canOpen);
     setAnimated(true);
     connect(selectionModel(), &QItemSelectionModel::selectionChanged, this, &BusNodesTreeView::updateSelection);
     connect(this, &QAbstractItemView::doubleClicked, this, &BusNodesTreeView::indexDbClick);
+
+    int w0 = QFontMetrics(font()).horizontalAdvance("0");
+    header()->resizeSection(BusNodesModel::NodeId, 12 * w0);
+    header()->resizeSection(BusNodesModel::Name, 14 * w0);
+    header()->resizeSection(BusNodesModel::Status, 8 * w0);
+
+    setSortingEnabled(true);
+    setSelectionBehavior(QAbstractItemView::SelectRows);
+    sortByColumn(0, Qt::AscendingOrder);
 }
 
 BusNodesTreeView::~BusNodesTreeView()

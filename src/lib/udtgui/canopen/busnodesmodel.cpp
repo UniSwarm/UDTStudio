@@ -1,6 +1,7 @@
 #include "busnodesmodel.h"
 
 #include <QDebug>
+#include <QIcon>
 
 BusNodesModel::BusNodesModel(QObject *parent)
     : BusNodesModel(nullptr, parent)
@@ -126,6 +127,22 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
             default:
                 return QVariant();
             }
+
+        case Qt::DecorationRole:
+            if (index.column() == NodeId)
+            {
+                if (node->manufacturerId() == 0x04A2) // UniSwarm
+                {
+                    switch (node->profileNumber())
+                    {
+                    case 401:
+                        return QVariant(QIcon(":/uBoards/uio.png"));
+                    case 402:
+                        return QVariant(QIcon(":/uBoards/umc.png"));
+                    }
+                }
+            }
+            return QVariant();
         }
     }
     return QVariant();
