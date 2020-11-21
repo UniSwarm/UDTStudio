@@ -646,7 +646,7 @@ void P402IpWidget::createWidgets()
     QPixmap ipModePixmap;
     QLabel *ipModeLabel;
     ipModeLabel = new QLabel();
-    ipModePixmap.load(":/diagram/img/402IPDiagram.png");
+    ipModePixmap.load(":/diagram/img/diagrams/402IPDiagram.png");
     ipModeLabel->setPixmap(ipModePixmap);
     QPushButton *imgPushButton = new QPushButton(tr("Diagram IP mode"));
     connect(imgPushButton, SIGNAL(clicked()), ipModeLabel, SLOT(show()));

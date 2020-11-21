@@ -451,7 +451,7 @@ void P402VlWidget::createWidgets()
     QPixmap vlModePixmap;
     QLabel *vlModeLabel;
     vlModeLabel = new QLabel();
-    vlModePixmap.load(":/diagram/img/402VLDiagram.png");
+    vlModePixmap.load(":/diagram/img/diagrams/402VLDiagram.png");
     vlModeLabel->setPixmap(vlModePixmap);
     QPushButton *imgPushButton = new QPushButton(tr("Diagram VL mode"));
     connect(imgPushButton, SIGNAL(clicked()), vlModeLabel, SLOT(show()));

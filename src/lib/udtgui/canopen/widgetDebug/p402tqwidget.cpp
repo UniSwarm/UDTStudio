@@ -296,7 +296,7 @@ void P402TqWidget::createWidgets()
     QPixmap tqModePixmap;
     QLabel *tqModeLabel;
     tqModeLabel = new QLabel();
-    tqModePixmap.load(":/diagram/img/402TQDiagram.png");
+    tqModePixmap.load(":/diagram/img/diagrams/402TQDiagram.png");
     tqModeLabel->setPixmap(tqModePixmap);
     QPushButton *imgPushButton = new QPushButton(tr("Diagram TQ mode"));
     connect(imgPushButton, SIGNAL(clicked()), tqModeLabel, SLOT(show()));
