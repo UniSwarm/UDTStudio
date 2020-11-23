@@ -45,12 +45,13 @@ protected:
     void createWidgets();
     QTabWidget *_tabWidget;
 
-    struct NodeScreensStruct
+    struct NodeScreens
     {
         Node *node;
         QList<NodeScreen *> screens;
     };
-    QMap<Node *, NodeScreensStruct> _nodesMap;
+
+    QMap<Node *, NodeScreens> _nodesMap;
 };
 
 #endif // NODESCREENS_H

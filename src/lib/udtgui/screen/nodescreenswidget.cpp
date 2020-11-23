@@ -56,11 +56,11 @@ void NodeScreensWidget::setActiveNode(Node *node)
     _activeNode = node;
 
     // add all screens from nodeScreens to QTabWidget and set node
-    NodeScreensStruct nodeScreens = _nodesMap.value(_activeNode);
+    NodeScreens nodeScreens = _nodesMap.value(_activeNode);
     for (NodeScreen *screen : nodeScreens.screens)
     {
         screen->setNode(nodeScreens.node);
-         _tabWidget->addTab(screen, " " + screen->title() + " ");
+        _tabWidget->addTab(screen, " " + screen->title() + " ");
     }
 
     _tabWidget->setCurrentIndex(currentIndex);
@@ -68,14 +68,14 @@ void NodeScreensWidget::setActiveNode(Node *node)
 
 void NodeScreensWidget::addNode(Node *node)
 {
-    QMap<Node *, NodeScreensStruct>::const_iterator nodeIt = _nodesMap.find(node);
+    QMap<Node *, NodeScreens>::const_iterator nodeIt = _nodesMap.find(node);
     if (nodeIt != _nodesMap.constEnd())
     {
         return;
     }
 
     // add generic screens to the NodeScreensStruct
-    NodeScreensStruct nodeScreens;
+    NodeScreens nodeScreens;
     nodeScreens.node = node;
 
     NodeScreen *screen;
