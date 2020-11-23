@@ -28,13 +28,13 @@
 NodeScreens::NodeScreens(QWidget *parent)
     : QWidget(parent)
 {
-    _node = nullptr;
+    _activeNode = nullptr;
     createWidgets();
 }
 
-Node *NodeScreens::node() const
+Node *NodeScreens::activeNode() const
 {
-    return _node;
+    return _activeNode;
 }
 
 void NodeScreens::addScreen(NodeScreen *screen)
@@ -65,12 +65,16 @@ bool NodeScreens::screenExist(NodeScreen *screen)
     return false;
 }
 
-void NodeScreens::setNode(Node *node)
+void NodeScreens::setActiveNode(Node *node)
 {
-    _node = node;
-    if (_node)
+    // addNode();
+    // remove all screens from QTabWidget
+    // add all screens from nodeScreens to QTabWidget
+
+    _activeNode = node;
+    if (_activeNode)
     {
-        if (((_node->profileNumber()) == 0x192) && (_node->nodeOd()->value(IndexDb::getObjectId(IndexDb::OD_VENDOR_ID)).toUInt() == 0x4A2))
+        if (((_activeNode->profileNumber()) == 0x192) && (_activeNode->nodeOd()->value(IndexDb::getObjectId(IndexDb::OD_VENDOR_ID)).toUInt() == 0x4A2))
         {
              NodeScreen *screen;
              screen = new NodeScreenUmcMotor();
@@ -99,6 +103,19 @@ void NodeScreens::setNode(Node *node)
     {
         screen->setNode(node);
     }
+}
+
+void NodeScreens::addNode(Node *node)
+{
+    QMap<Node *, NodeScreensStruct>::const_iterator nodeIt = _nodesMap.find(node);
+    if (nodeIt != _nodesMap.constEnd())
+    {
+        return;
+    }
+
+    // add generic screens to the NodeScreensStruct
+    // add specific screens node
+    // add NodeScreensStruct to nodeIt
 }
 
 void NodeScreens::createWidgets()

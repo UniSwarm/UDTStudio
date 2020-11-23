@@ -33,20 +33,29 @@ class UDTGUI_EXPORT NodeScreens : public QWidget
 public:
     NodeScreens(QWidget *parent = nullptr);
 
-    Node *node() const;
-
-    void addScreen(NodeScreen *screen);
-    bool screenExist(NodeScreen *screen);
+    Node *activeNode() const;
 
 public slots:
-    void setNode(Node *node);
+    void setActiveNode(Node *node);
 
 protected:
-    Node *_node;
+    Node *_activeNode;
+    void addNode(Node *node);
 
     void createWidgets();
     QTabWidget *_tabWidget;
+
+    struct NodeScreensStruct
+    {
+        Node *node;
+        QList<NodeScreen *> screens;
+    };
+    QMap<Node *, NodeScreensStruct> _nodesMap;
+
+    // to remove
     QList<NodeScreen *> _screens;
+    void addScreen(NodeScreen *screen);
+    bool screenExist(NodeScreen *screen);
 };
 
 #endif // NODESCREENS_H
