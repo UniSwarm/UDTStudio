@@ -43,11 +43,12 @@ class UDTGUI_EXPORT WidgetDebug : public QWidget, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
-    WidgetDebug(QWidget *parent = nullptr);
-    WidgetDebug(Node *node, QWidget *parent = nullptr);
+    WidgetDebug(Node *node = nullptr, QWidget *parent = nullptr);
     ~WidgetDebug() override;
 
     Node *node() const;
+
+    QString title() const;
 
 public slots:
     void setNode(Node *value);

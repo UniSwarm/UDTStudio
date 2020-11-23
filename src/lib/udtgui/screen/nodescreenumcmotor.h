@@ -27,6 +27,7 @@
 
 class PidWidget;
 class NodeProfile402;
+class WidgetDebug;
 
 class UDTGUI_EXPORT NodeScreenUmcMotor : public NodeScreen
 {
@@ -39,6 +40,8 @@ protected:
     PidWidget *_pidVelocityWidget;
     PidWidget *_pidPositionWidget;
     PidWidget *_pidTorqueWidget;
+
+    WidgetDebug *_widgetDebug;
 
     QTabWidget *_tabWidget;
 

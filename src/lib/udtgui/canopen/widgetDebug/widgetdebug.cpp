@@ -29,22 +29,21 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 
-WidgetDebug::WidgetDebug(QWidget *parent)
-    : QWidget(parent)
-{
-}
-
 WidgetDebug::WidgetDebug(Node *node, QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), _node(node)
 {
-    _node = nullptr;
+    createWidgets();
+
+    if (!_node)
+    {
+        return;
+    }
+
     if ((node->profileNumber()) != 0x192)
     {
         return;
     }
 
-    createWidgets();
-    setCheckableStateMachine(2);
     setNode(node);
 }
 
@@ -58,27 +57,30 @@ Node *WidgetDebug::node() const
     return _node;
 }
 
+QString WidgetDebug::title() const
+{
+    return QString("Motion Control");
+}
+
 void WidgetDebug::setNode(Node *node)
 {
+    _node = node;
+    if (!_node)
+    {
+        return;
+    }
+
     if ((node->profileNumber() != 0x192) || node->profiles().isEmpty())
     {
         return;
     }
-    if (node != _node)
-    {
-        if (_node)
-        {
-            disconnect(_node, &Node::statusChanged, this, &WidgetDebug::updateData);
-        }
-    }
 
+    setCheckableStateMachine(2);
     setNodeInterrest(node);
     _node = node;
 
     if (_node)
     {
-        setWindowTitle("402 : " + _node->name() + ", Status :" + _node->statusStr());
-
         _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD);
         _statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD);
 
@@ -109,7 +111,6 @@ void WidgetDebug::updateData()
 {
     if (_node)
     {
-        this->setWindowTitle("402 : " + _node->name() + ", Status :" + _node->statusStr());
         if (_node->status() == Node::STARTED)
         {
             _stackedWidget->setEnabled(true);

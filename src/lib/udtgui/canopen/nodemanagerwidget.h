@@ -59,8 +59,6 @@ public slots:
     void resetCom();
     void resetNode();
 
-    void displayMode();
-
 protected:
     void createWidgets();
     QToolBar *_toolBar;
@@ -75,9 +73,6 @@ protected:
     QLabel *_nodeStatusLabel;
 
     Node *_node;
-
-    WidgetDebug *_widgetDebug;
-    QAction *_action402;
 
     // NodeOdSubscriber interface
 protected:

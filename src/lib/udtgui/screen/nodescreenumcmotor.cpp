@@ -22,6 +22,8 @@
 
 #include <QLayout>
 
+#include "canopen/widgetDebug/widgetdebug.h"
+
 NodeScreenUmcMotor::NodeScreenUmcMotor(QWidget *parent) : NodeScreen(parent)
 {
     createWidgets();
@@ -39,12 +41,14 @@ void NodeScreenUmcMotor::createWidgets()
     _pidTorqueWidget = new PidWidget();
     _pidPositionWidget = new PidWidget();
 
+    _widgetDebug = new WidgetDebug();
+
     setLayout(layout);
 }
 
 QString NodeScreenUmcMotor::title() const
 {
-    return QString(tr("UMC Motor"));
+    return QString(tr("UMC Motor Axis 1"));
 }
 
 void NodeScreenUmcMotor::setNodeInternal(Node *node)
@@ -57,6 +61,10 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node)
     {
         return;
     }
+
+    _widgetDebug->setNode(node);
+    _tabWidget->addTab(_widgetDebug, " " + _widgetDebug->title() + " ");
+
     _pidVelocityWidget->setNode(node);
     _pidVelocityWidget->setMode(PidWidget::MODE_PID_VELOCITY);
     _tabWidget->addTab(_pidVelocityWidget, " " + _pidVelocityWidget->title() + " ");
