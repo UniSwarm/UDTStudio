@@ -43,7 +43,7 @@ HEADERS += \
     $$PWD/canopen/widgetDebug/p402vlwidget.h \
     $$PWD/canopen/widgetDebug/p402ipwidget.h \
     $$PWD/canopen/widgetDebug/p402tqwidget.h \
-    $$PWD/screen/nodescreens.h \
+    $$PWD/screen/nodescreenswidget.h \
     $$PWD/screen/nodescreen.h \
     $$PWD/screen/nodescreenod.h \
     $$PWD/screen/nodescreenpdo.h \
@@ -85,7 +85,7 @@ SOURCES += \
     $$PWD/canopen/widgetDebug/p402vlwidget.cpp \
     $$PWD/canopen/widgetDebug/p402ipwidget.cpp \
     $$PWD/canopen/widgetDebug/p402tqwidget.cpp \
-    $$PWD/screen/nodescreens.cpp \
+    $$PWD/screen/nodescreenswidget.cpp \
     $$PWD/screen/nodescreen.cpp \
     $$PWD/screen/nodescreenod.cpp \
     $$PWD/screen/nodescreenpdo.cpp \

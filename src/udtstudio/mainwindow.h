@@ -32,7 +32,7 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 
-#include "screen/nodescreens.h"
+#include "screen/nodescreenswidget.h"
 
 class MainWindow : public QMainWindow
 {
@@ -58,7 +58,7 @@ protected:
     DataLoggerWidget *_dataLoggerWidget;
 
     void createWidgets();
-    NodeScreens *_nodeScreens;
+    NodeScreensWidget *_nodeScreens;
 
     // actions / menu
     void createMenus();

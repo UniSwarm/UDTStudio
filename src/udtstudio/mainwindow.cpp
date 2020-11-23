@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createDocks();
     createWidgets();
     createMenus();
-    connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, _nodeScreens, &NodeScreens::setNode);
+    connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, _nodeScreens, &NodeScreensWidget::setActiveNode);
 
     CanOpenBus *bus = nullptr;
     if (QCanBus::instance()->plugins().contains("socketcan"))
@@ -106,7 +106,7 @@ void MainWindow::createDocks()
 
 void MainWindow::createWidgets()
 {
-    _nodeScreens = new NodeScreens();
+    _nodeScreens = new NodeScreensWidget();
     setCentralWidget(_nodeScreens);
 }
 

@@ -27,11 +27,11 @@
 
 #include <QTabWidget>
 
-class UDTGUI_EXPORT NodeScreens : public QWidget
+class UDTGUI_EXPORT NodeScreensWidget : public QWidget
 {
     Q_OBJECT
 public:
-    NodeScreens(QWidget *parent = nullptr);
+    NodeScreensWidget(QWidget *parent = nullptr);
 
     Node *activeNode() const;
 
@@ -51,11 +51,6 @@ protected:
         QList<NodeScreen *> screens;
     };
     QMap<Node *, NodeScreensStruct> _nodesMap;
-
-    // to remove
-    QList<NodeScreen *> _screens;
-    void addScreen(NodeScreen *screen);
-    bool screenExist(NodeScreen *screen);
 };
 
 #endif // NODESCREENS_H
