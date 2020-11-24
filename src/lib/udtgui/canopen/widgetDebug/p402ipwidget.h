@@ -24,13 +24,11 @@
 #include "node.h"
 #include "nodeodsubscriber.h"
 
-#include <QButtonGroup>
 #include <QCheckBox>
-#include <QGroupBox>
+
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QSlider>
 #include <QSpinBox>
 #include <QWidget>
 
@@ -70,11 +68,9 @@ private:
     int _iteratorForSendDataRecord;
     QStringList _listDataRecord;
 
-    QButtonGroup *_ipEnableRampButtonGroup;
-    QButtonGroup *_ipHaltButtonGroup;
+    QCheckBox *_ipEnableRampCheckBox;
 
     QLineEdit *_ipDataRecordLineEdit;
-
     QLabel *_ipPositionDemandValueLabel;
 
     IndexSpinBox *_ipTimePeriodUnitSpinBox;

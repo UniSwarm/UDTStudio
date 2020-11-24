@@ -27,7 +27,7 @@
 #include "profile/p402/nodeprofile402vl.h"
 #include <QFormLayout>
 #include <QPushButton>
-#include <QRadioButton>
+#include <QGroupBox>
 
 P402VlWidget::P402VlWidget(QWidget *parent) : QWidget(parent)
 {
@@ -177,8 +177,8 @@ void P402VlWidget::vlTargetVelocitySliderChanged()
 
 void P402VlWidget::vlMinVelocityMinMaxAmountSpinboxFinished()
 {
-    int min = _node->nodeOd()->value(_vlMinVelocityMinMaxAmountSpinBox->objId()).toInt();
-    //_vlTargetVelocitySlider->setMinimum(min);
+//    int min = _node->nodeOd()->value(_vlMinVelocityMinMaxAmountSpinBox->objId()).toInt();
+//    _vlTargetVelocitySlider->setMinimum(min);
 }
 
 void P402VlWidget::vllMaxVelocityMinMaxAmountSpinboxFinished()
@@ -187,43 +187,51 @@ void P402VlWidget::vllMaxVelocityMinMaxAmountSpinboxFinished()
     _vlTargetVelocitySlider->setRange(-max, max);
 }
 
-void P402VlWidget::vlEnableRampClicked(int id)
+void P402VlWidget::vlEnableRampClicked(bool ok)
 {
+    // 0 -> Velocity demand value shall be controlled in any other
+    // 1 -> Velocity demand value shall accord with ramp output value
+
     if (_nodeProfile402)
     {
-        _nodeProfile402->setEnableRamp(id);
+        _nodeProfile402->setEnableRamp(ok);
     }
 }
 
-void P402VlWidget::vlUnlockRampClicked(int id)
+void P402VlWidget::vlUnlockRampClicked(bool ok)
 {
+    // 0 -> Ramp output value shall be locked to current output value
+    // 1 -> Ramp output value shall follow ramp input value
+
     if (_nodeProfile402)
     {
-        _nodeProfile402->setUnlockRamp(id);
+        _nodeProfile402->setUnlockRamp(ok);
     }
 }
 
-void P402VlWidget::vlReferenceRampClicked(int id)
+void P402VlWidget::vlReferenceRampClicked(bool ok)
 {
+    // 0 -> Ramp input value shall be set to zero
+    // 1 -> Ramp input value shall accord with ramp reference
     if (_nodeProfile402)
     {
-        _nodeProfile402->setReferenceRamp(id);
+        _nodeProfile402->setReferenceRamp(ok);
     }
 }
 
 void P402VlWidget::vlEnableRampEvent(bool ok)
 {
-    _vlEnableRampButtonGroup->button(ok)->setChecked(ok);
+    _vlEnableRampCheckBox->setChecked(ok);
 }
 
 void P402VlWidget::vlUnlockRampEvent(bool ok)
 {
-    _vlUnlockRampButtonGroup->button(ok)->setChecked(ok);
+    _vlUnlockRampCheckBox->setChecked(ok);
 }
 
 void P402VlWidget::vlReferenceRamp(bool ok)
 {
-    _vlReferenceRampButtonGroup->button(ok)->setChecked(ok);
+    _vlReferenceRampCheckBox->setChecked(ok);
 }
 
 void P402VlWidget::dataLogger()
@@ -397,54 +405,21 @@ void P402VlWidget::createWidgets()
     vlGroupBox->setLayout(vlLayout);
 
     // Group Box Control Word
-    QGroupBox *modeControlWordGroupBox = new QGroupBox(tr("Control Word (0x6040) bit 4, bit 5, bit 6, bit 8"));
+    QGroupBox *modeControlWordGroupBox = new QGroupBox(tr("Control Word (0x6040) bit 4, bit 5, bit 6"));
     QFormLayout *modeControlWordLayout = new QFormLayout();
 
-    QLabel *vlEnableRampLabel = new QLabel(tr("Enable ramp (bit 4) :"));
-    modeControlWordLayout->addRow(vlEnableRampLabel);
-    _vlEnableRampButtonGroup = new QButtonGroup(this);
-    _vlEnableRampButtonGroup->setExclusive(true);
-    QVBoxLayout *vlEnableRamplayout = new QVBoxLayout();
-    QRadioButton *vl0EnableRamp = new QRadioButton(tr("Velocity demand value shall be controlled in any other"));
-    vlEnableRamplayout->addWidget(vl0EnableRamp);
-    QRadioButton *vl1EnableRamp = new QRadioButton(tr("Velocity demand value shall accord with ramp output value"));
-    vlEnableRamplayout->addWidget(vl1EnableRamp);
-    _vlEnableRampButtonGroup->addButton(vl0EnableRamp, 0);
-    _vlEnableRampButtonGroup->addButton(vl1EnableRamp, 1);
-    modeControlWordLayout->addRow(vlEnableRamplayout);
-    connect(_vlEnableRampButtonGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) {vlEnableRampClicked(id);});
+    _vlEnableRampCheckBox = new QCheckBox();
+    modeControlWordLayout->addRow(tr("Enable ramp (bit 4) :"), _vlEnableRampCheckBox);
+    connect(_vlEnableRampCheckBox, &QCheckBox::clicked, this,  &P402VlWidget::vlEnableRampClicked);
 
-    QLabel *vlUnlockRampLabel = new QLabel(tr("Unlock ramp (bit 5) :"));
-    modeControlWordLayout->addRow(vlUnlockRampLabel);
-    _vlUnlockRampButtonGroup = new QButtonGroup(this);
-    _vlUnlockRampButtonGroup->setExclusive(true);
-    QVBoxLayout *vlUnlockRamplayout = new QVBoxLayout();
-    _vlUnlockRampButtonGroup = new QButtonGroup(this);
-    QRadioButton *vl0UnlockRamp = new QRadioButton(tr("Ramp output value shall be locked to current output value"));
-    vlUnlockRamplayout->addWidget(vl0UnlockRamp);
-    QRadioButton *vl1UnlockRamp = new QRadioButton(tr("Ramp output value shall follow ramp input value"));
-    vlUnlockRamplayout->addWidget(vl1UnlockRamp);
-    _vlUnlockRampButtonGroup->addButton(vl0UnlockRamp, 0);
-    _vlUnlockRampButtonGroup->addButton(vl1UnlockRamp, 1);
-    modeControlWordLayout->addRow(vlUnlockRamplayout);
-    connect(_vlUnlockRampButtonGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) {vlUnlockRampClicked(id);});
+    _vlUnlockRampCheckBox = new QCheckBox();
+    modeControlWordLayout->addRow(tr("Unlock ramp (bit 5) :"), _vlUnlockRampCheckBox);
+    connect(_vlUnlockRampCheckBox, &QCheckBox::clicked, this,  &P402VlWidget::vlUnlockRampClicked);
 
-    QLabel *_vlReferenceRampLabel = new QLabel(tr("Reference ramp (bit 6) :"));
-    modeControlWordLayout->addRow(_vlReferenceRampLabel);
-    _vlReferenceRampButtonGroup = new QButtonGroup(this);
-    _vlReferenceRampButtonGroup->setExclusive(true);
-    QVBoxLayout *_vlReferenceRamplayout = new QVBoxLayout();
-    QRadioButton *vl0ReferenceRamp = new QRadioButton(tr("Ramp input value shall be set to zero"));
-    _vlReferenceRamplayout->addWidget(vl0ReferenceRamp);
-    QRadioButton *vl1ReferenceRamp = new QRadioButton(tr("Ramp input value shall accord with ramp reference"));
-    _vlReferenceRamplayout->addWidget(vl1ReferenceRamp);
-    _vlReferenceRampButtonGroup->addButton(vl0ReferenceRamp, 0);
-    _vlReferenceRampButtonGroup->addButton(vl1ReferenceRamp, 1);
-    modeControlWordLayout->addRow(_vlReferenceRamplayout);
-    connect(_vlReferenceRampButtonGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) {vlReferenceRampClicked(id);});
+    _vlReferenceRampCheckBox = new QCheckBox();
+    modeControlWordLayout->addRow(tr("Reference ramp (bit 6) :"), _vlReferenceRampCheckBox);
+    connect(_vlReferenceRampCheckBox, &QCheckBox::clicked, this,  &P402VlWidget::vlReferenceRampClicked);
 
-    QLabel *vlHaltLabel = new QLabel(tr("Halt ramp (bit 8) : Motor stopped"));
-    modeControlWordLayout->addRow(vlHaltLabel);
     modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));

@@ -27,14 +27,13 @@
 #include "profile/p402/nodeprofile402.h"
 #include "profile/p402/nodeprofile402ip.h"
 
-#include <QDebug>
 #include <QFormLayout>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QRadioButton>
 #include <QString>
 #include <QStringList>
 #include <QtMath>
+#include <QGroupBox>
 
 P402IpWidget::P402IpWidget(QWidget *parent) : QWidget(parent)
 {
@@ -231,6 +230,8 @@ void P402IpWidget::ipClearBufferClicked()
 
 void P402IpWidget::ipEnableRampClicked(int id)
 {
+    // 0 Disable interpolation
+    // 1 Enable interpolation
     if (_nodeProfile402)
     {
         _nodeProfile402->setEnableRamp(id);
@@ -388,7 +389,7 @@ void P402IpWidget::refreshData(NodeObjectId object)
 
 void P402IpWidget::enableRampEvent(bool ok)
 {
-    _ipEnableRampButtonGroup->button(ok)->setChecked(ok);
+    _ipEnableRampCheckBox->setChecked(ok);
 }
 
 void P402IpWidget::createWidgets()
@@ -622,27 +623,12 @@ void P402IpWidget::createWidgets()
     generatorSinusoidalGroupBox->setLayout(generatorSinusoidalLayout);
 
     // Group Box Control Word
-    QGroupBox *modeControlWordGroupBox = new QGroupBox(tr("Control Word (0x6040) bit 4, bit 8"));
+    QGroupBox *modeControlWordGroupBox = new QGroupBox(tr("Control Word (0x6040) bit 4"));
     QFormLayout *modeControlWordLayout = new QFormLayout();
 
-    QLabel *ipEnableRampLabel = new QLabel(tr("Enable interpolation (bit 4) :"));
-    modeControlWordLayout->addRow(ipEnableRampLabel);
-    _ipEnableRampButtonGroup = new QButtonGroup(this);
-    _ipEnableRampButtonGroup->setExclusive(true);
-    QVBoxLayout *ipEnableRamplayout = new QVBoxLayout();
-    QRadioButton *ip0EnableRamp = new QRadioButton(tr("0 Disable interpolation"));
-    ipEnableRamplayout->addWidget(ip0EnableRamp);
-    QRadioButton *ip1EnableRamp = new QRadioButton(tr("1 Enable interpolation"));
-    ipEnableRamplayout->addWidget(ip1EnableRamp);
-    _ipEnableRampButtonGroup->addButton(ip0EnableRamp, 0);
-    _ipEnableRampButtonGroup->addButton(ip1EnableRamp, 1);
-    modeControlWordLayout->addRow(ipEnableRamplayout);
-    connect(_ipEnableRampButtonGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) {
-        ipEnableRampClicked(id);
-    });
-
-    QLabel *ipHaltLabel = new QLabel(tr("Halt ramp (bit 8) : Motor stopped"));
-    modeControlWordLayout->addRow(ipHaltLabel);
+    _ipEnableRampCheckBox = new QCheckBox();
+    modeControlWordLayout->addRow(tr("Enable interpolation (bit 4) :"), _ipEnableRampCheckBox);
+    connect(_ipEnableRampCheckBox, &QCheckBox::clicked, this,  &P402IpWidget::ipEnableRampClicked);
     modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));

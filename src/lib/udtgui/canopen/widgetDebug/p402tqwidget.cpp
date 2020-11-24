@@ -25,7 +25,7 @@
 
 #include <QFormLayout>
 #include <QPushButton>
-#include <QRadioButton>
+#include <QGroupBox>
 
 P402TqWidget::P402TqWidget(QWidget *parent)
     : QWidget(parent)
@@ -282,16 +282,7 @@ void P402TqWidget::createWidgets()
     _tqMotorRatedCurrentSpinBox = new IndexSpinBox();
     _tqMotorRatedCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     tqLayout->addRow(tr("Motor Rate&d Current (0x6075) :"), _tqMotorRatedCurrentSpinBox);
-
     tqGroupBox->setLayout(tqLayout);
-
-    // Group Box Control Word
-    QGroupBox *modeControlWordGroupBox = new QGroupBox(tr("Control Word (0x6040) bit 4, bit 5, bit 6, bit 8"));
-    QFormLayout *modeControlWordLayout = new QFormLayout();
-
-    QLabel *tqHaltLabel = new QLabel(tr("Halt ramp (bit 8) : Motor stopped"));
-    modeControlWordLayout->addRow(tqHaltLabel);
-    modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402TqWidget::dataLogger);
@@ -312,7 +303,6 @@ void P402TqWidget::createWidgets()
     tqButtonLayout->addWidget(imgPushButton);
 
     layout->addWidget(tqGroupBox);
-    layout->addWidget(modeControlWordGroupBox);
     layout->addItem(tqButtonLayout);
 
     setLayout(layout);

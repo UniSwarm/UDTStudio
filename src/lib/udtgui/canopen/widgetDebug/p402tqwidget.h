@@ -23,8 +23,6 @@
 #include "node.h"
 #include "nodeodsubscriber.h"
 
-#include <QButtonGroup>
-#include <QGroupBox>
 #include <QLabel>
 #include <QSlider>
 #include <QSpinBox>

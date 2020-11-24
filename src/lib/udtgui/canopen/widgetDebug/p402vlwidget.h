@@ -24,8 +24,7 @@
 #include "node.h"
 #include "nodeodsubscriber.h"
 
-#include <QButtonGroup>
-#include <QGroupBox>
+#include <QCheckBox>
 #include <QLabel>
 #include <QSlider>
 #include <QSpinBox>
@@ -60,9 +59,9 @@ private:
     NodeObjectId _vlVelocityDemandObjectId;
     NodeObjectId _vlVelocityActualObjectId;
 
-    QButtonGroup *_vlEnableRampButtonGroup;
-    QButtonGroup *_vlUnlockRampButtonGroup;
-    QButtonGroup *_vlReferenceRampButtonGroup;
+    QCheckBox *_vlEnableRampCheckBox;
+    QCheckBox *_vlUnlockRampCheckBox;
+    QCheckBox *_vlReferenceRampCheckBox;
 
     QSpinBox *_vlTargetVelocitySpinBox;
     QSlider *_vlTargetVelocitySlider;
@@ -87,9 +86,9 @@ private:
     void vlMinVelocityMinMaxAmountSpinboxFinished();
     void vllMaxVelocityMinMaxAmountSpinboxFinished();
 
-    void vlEnableRampClicked(int id);
-    void vlUnlockRampClicked(int id);
-    void vlReferenceRampClicked(int id);
+    void vlEnableRampClicked(bool ok);
+    void vlUnlockRampClicked(bool ok);
+    void vlReferenceRampClicked(bool ok);
 
     void vlEnableRampEvent(bool ok);
     void vlUnlockRampEvent(bool ok);
