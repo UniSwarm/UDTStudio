@@ -32,7 +32,7 @@ class CANOPEN_EXPORT NodeProfile402Tq : public QObject, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
-    NodeProfile402Tq(Node *node, NodeProfile402 *nodeProfile402);
+    NodeProfile402Tq(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402);
 
     void setTarget(qint16 torque);
 
@@ -41,6 +41,7 @@ signals:
 
 private:
     Node *_node;
+    uint8_t _axis;
     NodeProfile402 *_nodeProfile402;
 
     NodeObjectId _targetObjectId;

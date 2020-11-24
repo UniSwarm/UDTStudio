@@ -66,13 +66,21 @@ enum StatusWord : quint16
     SW_ManufacturerSpecific = 0xC000
 };
 
-NodeProfile402::NodeProfile402(Node *node) : NodeProfile(node)
+NodeProfile402::NodeProfile402(Node *node, uint8_t axis) : NodeProfile(node)
 {
-    _modesOfOperationObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION);
-    _modesOfOperationDisplayObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION_DISPLAY);
-    _supportedDriveModesObjectId = IndexDb402::getObjectId(IndexDb402::OD_SUPPORTED_DRIVE_MODES);
-    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD);
-    _statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD);
+    if (axis > 8)
+    {
+        return;
+    }
+    _axis = axis;
+
+    _node = node;
+
+    _modesOfOperationObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, axis);
+    _modesOfOperationDisplayObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION_DISPLAY, axis);
+    _supportedDriveModesObjectId = IndexDb402::getObjectId(IndexDb402::OD_SUPPORTED_DRIVE_MODES, axis);
+    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, axis);
+    _statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD, axis);
 
     _modesOfOperationObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     _modesOfOperationDisplayObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
@@ -91,9 +99,9 @@ NodeProfile402::NodeProfile402(Node *node) : NodeProfile(node)
 
     connect(_node, &Node::statusChanged, this, &NodeProfile402::statusNodeChanged);
 
-    _p402Ip = new NodeProfile402Ip(_node, this);
-    _p402Tq = new NodeProfile402Tq(_node, this);
-    _p402Vl = new NodeProfile402Vl(_node, this);
+    _p402Ip = new NodeProfile402Ip(_node, axis, this);
+    _p402Tq = new NodeProfile402Tq(_node, axis, this);
+    _p402Vl = new NodeProfile402Vl(_node, axis, this);
 
     _requestedStateMachine = State402::STATE_NotReadyToSwitchOn;
     _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
@@ -647,6 +655,7 @@ void NodeProfile402::manageSupportedDriveModes(quint32 supportedDriveModes)
                 break;
         }
     }
+    emit supportedDriveModesUdpdated();
 }
 
 void NodeProfile402::readModeOfOperationDisplay()

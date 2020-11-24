@@ -29,11 +29,11 @@ enum ControlWordVL : quint16
     CW_Halt = 0x100
 };
 
-NodeProfile402Vl::NodeProfile402Vl(Node *node, NodeProfile402 *nodeProfile402)
-    : _node(node), _nodeProfile402(nodeProfile402)
+NodeProfile402Vl::NodeProfile402Vl(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
+    : _node(node), _axis(axis), _nodeProfile402(nodeProfile402)
 {
-    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET);
-    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD);
+    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, axis);
+    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, axis);
     _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     _controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId({_targetObjectId});

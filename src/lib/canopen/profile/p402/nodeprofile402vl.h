@@ -33,7 +33,7 @@ class CANOPEN_EXPORT NodeProfile402Vl : public QObject, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
-    NodeProfile402Vl(Node *node, NodeProfile402 *nodeProfile402);
+    NodeProfile402Vl(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402);
 
     void setTarget(qint16 velocity);
 
@@ -56,6 +56,7 @@ signals:
 
 private:
     Node *_node;
+    uint8_t _axis;
     quint8 _mode;
 
     NodeProfile402 *_nodeProfile402;

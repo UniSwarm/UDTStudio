@@ -27,11 +27,11 @@ enum ControlWordIP : quint16
     CW_Halt = 0x100
 };
 
-NodeProfile402Ip::NodeProfile402Ip(Node *node, NodeProfile402 *nodeProfile402)
-    : _node(node), _nodeProfile402(nodeProfile402)
+NodeProfile402Ip::NodeProfile402Ip(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
+    : _node(node), _axis(axis), _nodeProfile402(nodeProfile402)
 {
-    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_SET_POINT);
-    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD);
+    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_SET_POINT, axis);
+    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, axis);
     _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     _controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId({_targetObjectId});

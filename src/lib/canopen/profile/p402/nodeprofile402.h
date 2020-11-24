@@ -33,7 +33,7 @@ class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
 {
     Q_OBJECT
 public:
-    NodeProfile402(Node *node);
+    NodeProfile402(Node *node, uint8_t axis);
 
     enum Mode
     {
@@ -110,7 +110,11 @@ signals:
     void referenceRampEvent(bool ok);
     void unlockRampEvent(bool ok);
 
+    void supportedDriveModesUdpdated();
+
 private:
+    uint8_t _axis;
+
     enum State
     {
         NONE,

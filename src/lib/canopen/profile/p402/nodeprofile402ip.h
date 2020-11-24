@@ -33,7 +33,7 @@ class CANOPEN_EXPORT NodeProfile402Ip : public QObject, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
-    NodeProfile402Ip(Node *node, NodeProfile402 *nodeProfile402);
+    NodeProfile402Ip(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402);
 
     void setTarget(qint32 position);
 
@@ -48,9 +48,10 @@ signals:
 
 private:
     Node *_node;
-    quint8 _mode;
+    uint8_t _axis;
     NodeProfile402 *_nodeProfile402;
 
+    quint8 _mode;
     NodeObjectId _controlWordObjectId;
     quint16 _cmdControlWord;
     NodeObjectId _targetObjectId;
