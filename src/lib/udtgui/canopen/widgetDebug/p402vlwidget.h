@@ -47,11 +47,12 @@ public:
 signals:
 
 public slots:
-    void setNode(Node *value);
+    void setNode(Node *value, uint8_t axis = 0);
     void updateData();
 
 private:
     Node *_node;
+    uint8_t _axis;
 
     NodeProfile402 *_nodeProfile402;
 

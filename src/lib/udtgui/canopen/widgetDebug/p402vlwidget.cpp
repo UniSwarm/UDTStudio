@@ -34,10 +34,6 @@ P402VlWidget::P402VlWidget(QWidget *parent) : QWidget(parent)
     _node = nullptr;
     _nodeProfile402 = nullptr;
     createWidgets();
-
-    _vlVelocityDemandObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND);
-    _vlVelocityActualObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE);
-    _vlTargetVelocityObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET);
 }
 
 P402VlWidget::~P402VlWidget()
@@ -59,7 +55,7 @@ void P402VlWidget::readData()
     }
 }
 
-void P402VlWidget::setNode(Node *node)
+void P402VlWidget::setNode(Node *node, uint8_t axis)
 {
     _vlMinVelocityMinMaxAmountSpinBox->setNode(node);
     _vlMaxVelocityMinMaxAmountSpinBox->setNode(node);
@@ -82,9 +78,19 @@ void P402VlWidget::setNode(Node *node)
         }
     }
 
+    if (axis > 8)
+    {
+        return;
+    }
+    _axis = axis;
+
     _node = node;
     if (_node)
     {
+        _vlVelocityDemandObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND, axis);
+        _vlVelocityActualObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, axis);
+        _vlTargetVelocityObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, axis);
+
         _vlTargetVelocityObjectId.setBusId(_node->busId());
         _vlVelocityDemandObjectId.setBusId(_node->busId());
         _vlVelocityActualObjectId.setBusId(_node->busId());
@@ -101,27 +107,26 @@ void P402VlWidget::setNode(Node *node)
 
         setNodeInterrest(node);
 
-        _vlMinVelocityMinMaxAmountSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_MIN));
-        _vlMaxVelocityMinMaxAmountSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_MAX));
-        _vlAccelerationDeltaSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_ACCELERATION_DELTA_SPEED));
-        _vlAccelerationDeltaTimeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_ACCELERATION_DELTA_TIME));
-        _vlDecelerationDeltaSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DECELERATION_DELTA_SPEED));
-        _vlDecelerationDeltaTimeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DECELERATION_DELTA_TIME));
-        _vlQuickStopDeltaSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_QUICK_STOP_DELTA_SPEED));
-        _vlQuickStopDeltaTimeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_QUICK_STOP_DELTA_TIME));
-        _vlSetPointFactorNumeratorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_SET_POINT_FACTOR_NUMERATOR));
-        _vlSetPointFactorDenominatorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_SET_POINT_FACTOR_DENOMINATOR));
-        _vlDimensionFactorNumeratorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_NUMERATOR));
-        _vlDimensionFactorDenominatorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_DENOMINATOR));
+        _vlMinVelocityMinMaxAmountSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_MIN, axis));
+        _vlMaxVelocityMinMaxAmountSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_MAX, axis));
+        _vlAccelerationDeltaSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_ACCELERATION_DELTA_SPEED, axis));
+        _vlAccelerationDeltaTimeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_ACCELERATION_DELTA_TIME, axis));
+        _vlDecelerationDeltaSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DECELERATION_DELTA_SPEED, axis));
+        _vlDecelerationDeltaTimeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DECELERATION_DELTA_TIME, axis));
+        _vlQuickStopDeltaSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_QUICK_STOP_DELTA_SPEED, axis));
+        _vlQuickStopDeltaTimeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_QUICK_STOP_DELTA_TIME, axis));
+        _vlSetPointFactorNumeratorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_SET_POINT_FACTOR_NUMERATOR, axis));
+        _vlSetPointFactorDenominatorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_SET_POINT_FACTOR_DENOMINATOR, axis));
+        _vlDimensionFactorNumeratorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_NUMERATOR, axis));
+        _vlDimensionFactorDenominatorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_DENOMINATOR, axis));
 
-        int min = _node->nodeOd()->value(_vlMinVelocityMinMaxAmountSpinBox->objId()).toInt();
         int max = _node->nodeOd()->value(_vlMaxVelocityMinMaxAmountSpinBox->objId()).toInt();
         _vlTargetVelocitySlider->setValue(_node->nodeOd()->value(_vlTargetVelocityObjectId).toInt());
         _vlTargetVelocitySlider->setRange(-max, max);
 
         if (!_node->profiles().isEmpty())
         {
-            _nodeProfile402 = static_cast<NodeProfile402 *>(_node->profiles()[0]);
+            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
             connect(_nodeProfile402, &NodeProfile402::enableRampEvent, this, &P402VlWidget::vlEnableRampEvent);
             connect(_nodeProfile402, &NodeProfile402::unlockRampEvent, this, &P402VlWidget::vlUnlockRampEvent);
             connect(_nodeProfile402, &NodeProfile402::referenceRampEvent, this, &P402VlWidget::vlReferenceRamp);

@@ -43,7 +43,7 @@ class UDTGUI_EXPORT WidgetDebug : public QWidget, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
-    WidgetDebug(Node *node = nullptr, QWidget *parent = nullptr);
+    WidgetDebug(Node *node = nullptr, uint8_t axis = 0, QWidget *parent = nullptr);
     ~WidgetDebug() override;
 
     Node *node() const;
@@ -51,7 +51,7 @@ public:
     QString title() const;
 
 public slots:
-    void setNode(Node *value);
+    void setNode(Node *value, uint8_t axis = 0);
     void updateData();
     void start();
     void stop();
@@ -59,6 +59,7 @@ public slots:
 
 private:
     Node *_node;
+    uint8_t _axis;
 
     QTimer _timer;
     QTimer _operationEnabledTimer;
@@ -108,6 +109,8 @@ private:
     void stateChanged();
     void isHalted(bool state);
     void eventHappened(quint8 event);
+
+    void updateModeComboBox();
 
     void displayOption402();
     void modeIndexChanged(int id);

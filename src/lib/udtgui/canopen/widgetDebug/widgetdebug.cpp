@@ -29,8 +29,8 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 
-WidgetDebug::WidgetDebug(Node *node, QWidget *parent)
-    : QWidget(parent), _node(node)
+WidgetDebug::WidgetDebug(Node *node, uint8_t axis, QWidget *parent)
+    : QWidget(parent), _node(node), _axis(axis)
 {
     createWidgets();
 
@@ -44,7 +44,7 @@ WidgetDebug::WidgetDebug(Node *node, QWidget *parent)
         return;
     }
 
-    setNode(node);
+    setNode(node, axis);
 }
 
 WidgetDebug::~WidgetDebug()
@@ -62,7 +62,7 @@ QString WidgetDebug::title() const
     return QString("Motion Control");
 }
 
-void WidgetDebug::setNode(Node *node)
+void WidgetDebug::setNode(Node *node, uint8_t axis)
 {
     _node = node;
     if (!_node)
@@ -75,35 +75,38 @@ void WidgetDebug::setNode(Node *node)
         return;
     }
 
+    if (axis > 8)
+    {
+        return;
+    }
+    _axis = axis;
+
     setCheckableStateMachine(2);
     setNodeInterrest(node);
     _node = node;
 
+
     if (_node)
     {
-        _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD);
-        _statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD);
+        _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, axis);
+        _statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD, axis);
 
-        _nodeProfile402 = static_cast<NodeProfile402 *>(_node->profiles()[0]);
-        QList<NodeProfile402::Mode> modeList  = _nodeProfile402->modesSupported();
-        _modeComboBox->clear();
-        for (quint8 i = 0; i < modeList.size(); i++)
-        {
-            _listModeComboBox.append(modeList.at(i));
-            _modeComboBox->insertItem(i, _nodeProfile402->modeStr(modeList.at(i)));
-        }
+        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+
+        updateModeComboBox();
 
         connect(_nodeProfile402, &NodeProfile402::modeChanged, this, &WidgetDebug::modeChanged);
         connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &WidgetDebug::stateChanged);
         connect(_nodeProfile402, &NodeProfile402::isHalted, this, &WidgetDebug::isHalted);
         connect(_nodeProfile402, &NodeProfile402::eventHappened, this, &WidgetDebug::eventHappened);
+        connect(_nodeProfile402, &NodeProfile402::supportedDriveModesUdpdated, this, &WidgetDebug::updateModeComboBox);
 
         connect(_node, &Node::statusChanged, this, &WidgetDebug::updateData);
 
-        _p402Option->setNode(_node);
-        _p402vl->setNode(_node);
-        _p402ip->setNode(_node);
-        _p402tq->setNode(_node);
+        _p402Option->setNode(_node, axis);
+        _p402vl->setNode(_node, axis);
+        _p402ip->setNode(_node, axis);
+        _p402tq->setNode(_node, axis);
     }
 }
 
@@ -382,6 +385,17 @@ void WidgetDebug::eventHappened(quint8 event)
     }
     _warningLabel->clear();
     _warningLabel->setText(text);
+}
+
+void WidgetDebug::updateModeComboBox()
+{
+    QList<NodeProfile402::Mode> modeList  = _nodeProfile402->modesSupported();
+    _modeComboBox->clear();
+    for (quint8 i = 0; i < modeList.size(); i++)
+    {
+        _listModeComboBox.append(modeList.at(i));
+        _modeComboBox->insertItem(i, _nodeProfile402->modeStr(modeList.at(i)));
+    }
 }
 
 void WidgetDebug::displayOption402()

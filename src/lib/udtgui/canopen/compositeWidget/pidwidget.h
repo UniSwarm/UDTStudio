@@ -54,13 +54,14 @@ public:
     };
 
 public slots:
-    void setNode(Node *node);
+    void setNode(Node *node, uint8_t axis = 0);
     void setMode(PidWidget::ModePid mode);
 
 protected:
     void createWidgets();
 
     Node *_node;
+    uint8_t _axis;
     ModePid _modePid;
 
     QTabWidget *_tabWidget;

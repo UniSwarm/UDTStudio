@@ -38,7 +38,7 @@ public:
     Node *node() const;
 
 public slots:
-    void setNode(Node *value);
+    void setNode(Node *value, uint8_t axis = 0);
     void updateData();
 
     void abortConnectionOptionClicked(int id);
@@ -50,6 +50,7 @@ public slots:
 
 private:
     Node *_node;
+    uint8_t _axis;
 
     NodeObjectId _abortConnectionObjectId;
     NodeObjectId _quickStopObjectId;

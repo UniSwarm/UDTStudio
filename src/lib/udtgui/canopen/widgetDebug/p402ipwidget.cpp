@@ -41,11 +41,6 @@ P402IpWidget::P402IpWidget(QWidget *parent) : QWidget(parent)
     _node = nullptr;
     _nodeProfile402 = nullptr;
     createWidgets();
-
-    _ipPositionDemandValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE);
-    _ipDataRecordObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_SET_POINT);
-    _ipBufferClearObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_BUFFER_CLEAR);
-    _ipPolarityObjectId = IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY);
 }
 
 P402IpWidget::~P402IpWidget()
@@ -66,7 +61,7 @@ void P402IpWidget::readData()
     }
 }
 
-void P402IpWidget::setNode(Node *node)
+void P402IpWidget::setNode(Node *node, uint8_t axis)
 {
     _ipTimePeriodUnitSpinBox->setNode(node);
     _ipTimePeriodIndexSpinBox->setNode(node);
@@ -93,11 +88,24 @@ void P402IpWidget::setNode(Node *node)
         }
     }
 
+    if (axis > 8)
+    {
+        return;
+    }
+    _axis = axis;
+
     _node = node;
     if (_node)
     {
+        _ipPositionDemandValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, axis);
+        _ipDataRecordObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_SET_POINT, axis);
+        _ipBufferClearObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_BUFFER_CLEAR, axis);
+        _ipPolarityObjectId = IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY, axis);
+
         _ipPositionDemandValueObjectId.setBusId(_node->busId());
         _ipPositionDemandValueObjectId.setNodeId(_node->nodeId());
+        _ipBufferClearObjectId.setBusId(_node->busId());
+        _ipPolarityObjectId.setBusId(_node->busId());
 
         registerObjId({_ipDataRecordObjectId});
         registerObjId({_ipPositionDemandValueObjectId});
@@ -106,7 +114,7 @@ void P402IpWidget::setNode(Node *node)
 
         if (!_node->profiles().isEmpty())
         {
-            _nodeProfile402 = static_cast<NodeProfile402 *>(_node->profiles()[0]);
+            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
             connect(_nodeProfile402, &NodeProfile402::enableRampEvent, this, &P402IpWidget::enableRampEvent);
             enableRampEvent(_nodeProfile402->isEnableRamp());
         }
@@ -114,22 +122,22 @@ void P402IpWidget::setNode(Node *node)
         connect(_node, &Node::statusChanged, this, &P402IpWidget::updateData);
         connect(&_sendPointSinusoidalTimer, &QTimer::timeout, this, &P402IpWidget::sendDataRecordTargetWithSdo);
 
-        _ipTimePeriodUnitSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_UNITS));
-        _ipTimePeriodIndexSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_INDEX));
-        _ipPositionRangelLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MIN));
-        _ipPositionRangelLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MAX));
-        _ipSoftwarePositionLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MIN));
-        _ipSoftwarePositionLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MAX));
-        _ipHomeOffsetSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_HM_HOME_OFFSET));
-//        _ipProfileVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_VELOCITY));
-//        _ipEndVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_END_VELOCITY));
-        _ipMaxProfileVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_PROFILE_VELOCITY));
-        _ipMaxMotorSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_MOTOR_SPEED));
-//        _ipProfileAccelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_ACCELERATION));
-//        _ipMaxAccelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_ACCELERATION));
-//        _ipProfileDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_DECELERATION));
-//        _ipMaxDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_DECELERATION));
-//        _ipQuickStopDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_QUICK_STOP_DECELERATION));
+        _ipTimePeriodUnitSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_UNITS, axis));
+        _ipTimePeriodIndexSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_INDEX, axis));
+        _ipPositionRangelLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MIN, axis));
+        _ipPositionRangelLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MAX, axis));
+        _ipSoftwarePositionLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MIN, axis));
+        _ipSoftwarePositionLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MAX, axis));
+        _ipHomeOffsetSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_HM_HOME_OFFSET, axis));
+//        _ipProfileVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_VELOCITY, axis));
+//        _ipEndVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_END_VELOCITY, axis));
+        _ipMaxProfileVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_PROFILE_VELOCITY, axis));
+        _ipMaxMotorSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_MOTOR_SPEED, axis));
+//        _ipProfileAccelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_ACCELERATION, axis));
+//        _ipMaxAccelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_ACCELERATION, axis));
+//        _ipProfileDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_DECELERATION, axis));
+//        _ipMaxDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_DECELERATION, axis));
+//        _ipQuickStopDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_QUICK_STOP_DECELERATION, axis));
 
         _bus = _node->bus();
         connect(_bus->sync(), &Sync::signalBeforeSync, this, &P402IpWidget::sendDataRecordTargetWithPdo);

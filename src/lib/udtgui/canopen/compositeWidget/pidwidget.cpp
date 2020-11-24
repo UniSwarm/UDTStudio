@@ -45,7 +45,7 @@ Node *PidWidget::node() const
     return _node;
 }
 
-void PidWidget::setNode(Node *node)
+void PidWidget::setNode(Node *node, uint8_t axis)
 {
     _dSpinBox->setNode(node);
     _pSpinBox->setNode(node);
@@ -62,6 +62,13 @@ void PidWidget::setNode(Node *node)
     {
         return;
     }
+
+    if (axis > 8)
+    {
+        return;
+    }
+    _axis = axis;
+
     _dataLogger->removeAllData();
 
     connect(_node, &Node::statusChanged, this, &PidWidget::statusNodeChanged);
@@ -89,11 +96,9 @@ void PidWidget::setMode(PidWidget::ModePid mode)
     NodeObjectId pidIntegratorStatus_ObjId;
     NodeObjectId pidOutputStatus_ObjId;
     NodeObjectId actualValue_ObjId;
-    NodeObjectId tempMotor_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_MOTOR_1);;
-    NodeObjectId tempDriver1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_1);;
-    NodeObjectId tempDriver2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_2);;
-
-
+    NodeObjectId tempMotor_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_MOTOR_1, _axis);
+    NodeObjectId tempDriver1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_1, _axis);
+    NodeObjectId tempDriver2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_2, _axis);
 
     _modePid = mode;
     switch (_modePid)
@@ -102,45 +107,45 @@ void PidWidget::setMode(PidWidget::ModePid mode)
         break;
     case MODE_PID_VELOCITY:
     {
-        actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE);
-        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_P);
-        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_I);
-        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_D);
-        period_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_PERIOD_US);
-        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_INPUT);
-        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_ERROR);
-        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_INTEGRATOR);
-        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_OUTPUT);
-        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET);
+        actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis);
+        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_P, _axis);
+        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_I, _axis);
+        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_D, _axis);
+        period_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_PERIOD_US, _axis);
+        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_INPUT, _axis);
+        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_ERROR, _axis);
+        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_INTEGRATOR, _axis);
+        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_OUTPUT, _axis);
+        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, _axis);
         break;
     }
     case MODE_PID_TORQUE:
     {
-        actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE);
-        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_P);
-        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_I);
-        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_D);
-        period_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PERIOD_US);
-        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_INPUT);
-        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_ERROR);
-        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_INTEGRATOR);
-        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_OUTPUT);
-        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TARGET_TORQUE);
+        actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE, _axis);
+        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_P, _axis);
+        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_I, _axis);
+        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_D, _axis);
+        period_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PERIOD_US, _axis);
+        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_INPUT, _axis);
+        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_ERROR, _axis);
+        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_INTEGRATOR, _axis);
+        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_OUTPUT, _axis);
+        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TARGET_TORQUE, _axis);
         _node->readObject(target_ObjId);
         break;
     }
     case MODE_PID_POSITION:
     {
-        actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE);
-        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_P);
-        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_I);
-        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_D);
-        period_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PERIOD_US);
-        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_INPUT);
-        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_ERROR);
-        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_INTEGRATOR);
-        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_OUTPUT);
-        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PP_TARGET_POSITION);
+        actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, _axis);
+        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_P, _axis);
+        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_I, _axis);
+        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_D, _axis);
+        period_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PERIOD_US, _axis);
+        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_INPUT, _axis);
+        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_ERROR, _axis);
+        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_INTEGRATOR, _axis);
+        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_OUTPUT, _axis);
+        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PP_TARGET_POSITION, _axis);
         break;
     }
     }

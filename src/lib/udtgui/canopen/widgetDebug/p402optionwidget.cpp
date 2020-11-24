@@ -42,7 +42,7 @@ Node *P402OptionWidget::node() const
     return _node;
 }
 
-void P402OptionWidget::setNode(Node *node)
+void P402OptionWidget::setNode(Node *node, uint8_t axis)
 {
     if (node != _node)
     {
@@ -52,15 +52,21 @@ void P402OptionWidget::setNode(Node *node)
         }
     }
 
+    if (axis > 8)
+    {
+        return;
+    }
+    _axis = axis;
+
     _node = node;
     if (_node)
     {
-        _abortConnectionObjectId = IndexDb402::getObjectId(IndexDb402::OD_ABORT_CONNECTION_OPTION);
-        _quickStopObjectId = IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION);
-        _shutdownObjectId = IndexDb402::getObjectId(IndexDb402::OD_SHUTDOWN_OPTION);
-        _disableObjectId = IndexDb402::getObjectId(IndexDb402::OD_DISABLE_OPERATION_OPTION);
-        _haltObjectId = IndexDb402::getObjectId(IndexDb402::OD_HALT_OPTION);
-        _faultReactionObjectId = IndexDb402::getObjectId(IndexDb402::OD_FAULT_REACTION_OPTION);
+        _abortConnectionObjectId = IndexDb402::getObjectId(IndexDb402::OD_ABORT_CONNECTION_OPTION, axis);
+        _quickStopObjectId = IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION, axis);
+        _shutdownObjectId = IndexDb402::getObjectId(IndexDb402::OD_SHUTDOWN_OPTION, axis);
+        _disableObjectId = IndexDb402::getObjectId(IndexDb402::OD_DISABLE_OPERATION_OPTION, axis);
+        _haltObjectId = IndexDb402::getObjectId(IndexDb402::OD_HALT_OPTION, axis);
+        _faultReactionObjectId = IndexDb402::getObjectId(IndexDb402::OD_FAULT_REACTION_OPTION, axis);
         registerObjId({_abortConnectionObjectId});
         registerObjId({_quickStopObjectId});
         registerObjId({_shutdownObjectId});
