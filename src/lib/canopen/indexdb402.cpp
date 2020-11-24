@@ -29,10 +29,8 @@ NodeObjectId IndexDb402::getObjectId(IndexDb402::OdObject object, uint axis, uin
         return getObjectIdMs(object, axis, opt2);
     }
 
-    if ((axis > 0) && (axis <= 8))
-    {
-        axisDecal = 0x800 * (static_cast<quint16>(axis) - 1);
-    }
+    axisDecal = 0x800 * static_cast<quint16>(axis);
+
     switch (object)
     {
         case OD_ABORT_CONNECTION_OPTION:
@@ -453,10 +451,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
 
     quint16 axisDecal = 0;
 
-    if ((axis > 0) && (axis <= 8))
-    {
-        axisDecal = 0x200 * (static_cast<quint16>(axis) - 1);
-    }
+    axisDecal = 0x200 * static_cast<quint16>(axis);
+
     switch (object)
     {
         case OD_MS_BOARD_VOLTAGE_INPUT:
