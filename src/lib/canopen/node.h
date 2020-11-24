@@ -73,8 +73,10 @@ public:
     quint16 manufacturerId() const;
     quint16 productCode() const;
     quint16 profileNumber() const;
+    void profileDiscover();
     void addProfile(NodeProfile *nodeProfile);
     const QList<NodeProfile *> &profiles() const;
+    int countProfile() const;
 
     const QList<TPDO *> &tpdos() const;
     const QList<RPDO *> &rpdos() const;

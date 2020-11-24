@@ -24,6 +24,7 @@
 #include "parser/edsparser.h"
 #include "services/services.h"
 #include "profile/p402/nodeprofile402.h"
+#include "profile/nodeprofilefactory.h"
 
 Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
     : _nodeId(nodeId)
@@ -178,6 +179,11 @@ quint16 Node::profileNumber() const
     return static_cast<quint16>(nodeOd()->value(0x1000).toUInt() & 0xFFFF);
 }
 
+void Node::profileDiscover()
+{
+    NodeProfileFactory *detect = new NodeProfileFactory(this);
+}
+
 void Node::addProfile(NodeProfile *nodeProfile)
 {
     // TODO mamagement multi-axis
@@ -187,6 +193,11 @@ void Node::addProfile(NodeProfile *nodeProfile)
 const QList<NodeProfile *> &Node::profiles() const
 {
     return _nodeProfiles;
+}
+
+int Node::countProfile() const
+{
+    return _nodeProfiles.size();
 }
 
 void Node::sendPreop()

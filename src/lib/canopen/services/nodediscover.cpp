@@ -23,7 +23,7 @@
 #include <QProcessEnvironment>
 
 #include "canopenbus.h"
-#include "../profile/p402/nodeprofile402.h"
+#include "../profile/nodeprofilefactory.h"
 
 NodeDiscover::NodeDiscover(CanOpenBus *bus)
     : Service(bus)
@@ -152,12 +152,7 @@ void NodeDiscover::exploreNodeNext()
         if (!file.isEmpty())
         {
             node->nodeOd()->loadEds(file);
-            // TODO to rethink : the instanciation of profile
-            if ((node->profileNumber()) == 0x192)
-            {
-                NodeProfile402 *nodeProfile402 = new NodeProfile402(node);
-                node->addProfile(nodeProfile402);
-            }
+            node->profileDiscover();
         }
 
         if (_nodeIdToExplore.isEmpty())
