@@ -35,11 +35,11 @@ public:
     virtual QString title() const =0;
 
 public slots:
-    void setNode(Node *node);
+    void setNode(Node *node, uint8_t axis = 0);
 
 protected:
     Node *_node;
-    virtual void setNodeInternal(Node *node) =0;
+    virtual void setNodeInternal(Node *node, uint8_t axis = 0) =0;
 };
 
 #endif // NODESCREEN_H

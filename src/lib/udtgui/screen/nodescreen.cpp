@@ -24,10 +24,10 @@ NodeScreen::NodeScreen(QWidget *parent)
     _node = nullptr;
 }
 
-void NodeScreen::setNode(Node *node)
+void NodeScreen::setNode(Node *node, uint8_t axis)
 {
     _node = node;
-    setNodeInternal(node);
+    setNodeInternal(node, axis);
 }
 
 Node *NodeScreen::node() const

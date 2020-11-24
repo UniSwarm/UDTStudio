@@ -42,7 +42,7 @@ QString NodeScreenOD::title() const
     return QString(tr("OD"));
 }
 
-void NodeScreenOD::setNodeInternal(Node *node)
+void NodeScreenOD::setNodeInternal(Node *node, uint8_t axis)
 {
     _nodeOdWidget->setNode(node);
 }

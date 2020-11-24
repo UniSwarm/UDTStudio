@@ -51,7 +51,7 @@ QString NodeScreenPDO::title() const
     return QString(tr("PDO"));
 }
 
-void NodeScreenPDO::setNodeInternal(Node *node)
+void NodeScreenPDO::setNodeInternal(Node *node, uint8_t axis)
 {
     _nodeOdWidget->setNode(node);
     _nodePdoMappingWidget->setNode(node);

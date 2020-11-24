@@ -48,10 +48,10 @@ void NodeScreenUmcMotor::createWidgets()
 
 QString NodeScreenUmcMotor::title() const
 {
-    return QString(tr("UMC Motor Axis 1"));
+    return QString(tr("UMC Motor Axis %1").arg(_axis + 1));
 }
 
-void NodeScreenUmcMotor::setNodeInternal(Node *node)
+void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)
 {
     if (!node)
     {
@@ -62,18 +62,20 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node)
         return;
     }
 
-    _widgetDebug->setNode(node);
+    _axis = axis;
+
+    _widgetDebug->setNode(node, axis);
     _tabWidget->addTab(_widgetDebug, " " + _widgetDebug->title() + " ");
 
-    _pidVelocityWidget->setNode(node);
+    _pidVelocityWidget->setNode(node, axis);
     _pidVelocityWidget->setMode(PidWidget::MODE_PID_VELOCITY);
     _tabWidget->addTab(_pidVelocityWidget, " " + _pidVelocityWidget->title() + " ");
 
-    _pidTorqueWidget->setNode(node);
+    _pidTorqueWidget->setNode(node, axis);
     _pidTorqueWidget->setMode(PidWidget::MODE_PID_TORQUE);
     _tabWidget->addTab(_pidTorqueWidget, " " + _pidTorqueWidget->title() + " ");
 
-    _pidPositionWidget->setNode(node);
+    _pidPositionWidget->setNode(node, axis);
     _pidPositionWidget->setMode(PidWidget::MODE_PID_POSITION);
     _tabWidget->addTab(_pidPositionWidget, " " + _pidPositionWidget->title() + " ");
 }

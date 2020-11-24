@@ -40,7 +40,7 @@ protected:
     // NodeScreen interface
 public:
     QString title() const override;
-    void setNodeInternal(Node *node) override;
+    void setNodeInternal(Node *node, uint8_t axis = 0) override;
 };
 
 #endif // NODESCREENPDO_H

@@ -63,6 +63,14 @@ void NodeScreensWidget::setActiveNode(Node *node)
         _tabWidget->addTab(screen, " " + screen->title() + " ");
     }
 
+    uint8_t i = 0;
+    for (NodeScreen *screen : nodeScreens.screensAxis)
+    {
+        screen->setNode(nodeScreens.node, i);
+        _tabWidget->addTab(screen, " " + screen->title() + " ");
+        i++;
+    }
+
     _tabWidget->setCurrentIndex(currentIndex);
 }
 
@@ -88,8 +96,12 @@ void NodeScreensWidget::addNode(Node *node)
     // add specific screens node
     if (((node->profileNumber()) == 0x192) && (node->nodeOd()->value(IndexDb::getObjectId(IndexDb::OD_VENDOR_ID)).toUInt() == 0x4A2))
     {
-         screen = new NodeScreenUmcMotor();
-         nodeScreens.screens.append(screen);
+        for (int i = 0; i < node->countProfile(); i++)
+        {
+            screen = new NodeScreenUmcMotor();
+            nodeScreens.screensAxis.append(screen);
+        }
+
      }
 
     // add NodeScreensStruct to nodeIt
