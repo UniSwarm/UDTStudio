@@ -170,6 +170,7 @@ void PDOMappingView::dropEvent(QDropEvent *event)
 {
     QRect rectPdo = rect().adjusted(1, 1, -1, -1);
     _dragBitPos = PDOMappingPainter::bitFromX(rectPdo, event->posF().x());
+    _dragBitPos = (_dragBitPos & 0xF8);
 
     if (_pdo->canInsertObjectAtBitPos(_nodeListMapping, _dragObjId, _dragBitPos))
     {
@@ -202,7 +203,7 @@ void PDOMappingView::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasFormat("index/subindex") && _pdo)
     {
-        const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', QString::SkipEmptyParts);
+        const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', Qt::SkipEmptyParts);
         for (const QString &stringObjId : stringListObjId)
         {
             _dragObjId = NodeObjectId::fromMimeData(stringObjId);
@@ -233,6 +234,7 @@ void PDOMappingView::dragMoveEvent(QDragMoveEvent *event)
 {
     QRect rectPdo = rect().adjusted(1, 1, -1, -1);
     _dragBitPos = PDOMappingPainter::bitFromX(rectPdo, event->posF().x());
+    _dragBitPos = (_dragBitPos & 0xF8);
     if (!_pdo->canInsertObjectAtBitPos(_nodeListMapping, _dragObjId, _dragBitPos))
     {
         _dragBitPos = -1;
@@ -254,7 +256,7 @@ bool PDOMappingView::event(QEvent *event)
 {
     if (event->type() == QEvent::ToolTip)
     {
-        QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
+        QHelpEvent *helpEvent = dynamic_cast<QHelpEvent *>(event);
         int objId = objIdAtPos(helpEvent->pos());
         if (objId == -1)
         {

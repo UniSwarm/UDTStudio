@@ -40,7 +40,7 @@ void PDOMappingWidget::setPdo(PDO *pdo)
     if (_pdo)
     {
         _pdoNameLabel->setText(_pdo->type());
-        _pdoIndexLabel->setText(QString("0x%1").arg(_pdo->cobId(), 0, 16));
+        _pdoIndexLabel->setText(QString("0x%1").arg(QString::number(_pdo->cobId(), 16).toUpper()));
         updateEnabled(pdo->isEnabled());
         connect(_pdo, &PDO::enabledChanged, this, &PDOMappingWidget::updateEnabled);
     }
