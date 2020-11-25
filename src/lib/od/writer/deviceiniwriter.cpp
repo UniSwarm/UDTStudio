@@ -74,21 +74,21 @@ void DeviceIniWriter::writeObjects(const DeviceModel *deviceModel) const
     std::sort(manufacturers.begin(), manufacturers.end(), indexLessThan);
 
     *_file << "[MandatoryObjects]"
-           << "\n";
+           << "\r\n";
     writeSupportedIndexes(mandatories);
-    *_file << "\n";
+    *_file << "\r\n";
     writeListIndex(mandatories);
 
     *_file << "[OptionalObjects]"
-           << "\n";
+           << "\r\n";
     writeSupportedIndexes(optionals);
-    *_file << "\n";
+    *_file << "\r\n";
     writeListIndex(optionals);
 
     *_file << "[ManufacturerObjects]"
-           << "\n";
+           << "\r\n";
     writeSupportedIndexes(manufacturers);
-    *_file << "\n";
+    *_file << "\r\n";
     writeListIndex(manufacturers);
 }
 
@@ -99,7 +99,7 @@ void DeviceIniWriter::writeObjects(const DeviceModel *deviceModel) const
 void DeviceIniWriter::writeFileInfo(QMap<QString, QString> fileInfos) const
 {
     *_file << "[FileInfo]"
-           << "\n";
+           << "\r\n";
 
     QString date = QDateTime().currentDateTime().toString("MM-dd-yyyy");
     QString time = QDateTime().currentDateTime().toString("hh:mm AP");
@@ -117,7 +117,7 @@ void DeviceIniWriter::writeFileInfo(QMap<QString, QString> fileInfos) const
 void DeviceIniWriter::writeDeviceComissioning(const QMap<QString, QString> &deviceComissionings) const
 {
     *_file << "[DeviceComissioning]"
-           << "\n";
+           << "\r\n";
 
     writeStringMap(deviceComissionings);
 }
@@ -129,7 +129,7 @@ void DeviceIniWriter::writeDeviceComissioning(const QMap<QString, QString> &devi
 void DeviceIniWriter::writeDeviceInfo(const QMap<QString, QString> &deviceInfos) const
 {
     *_file << "[DeviceInfo]"
-           << "\n";
+           << "\r\n";
 
     writeStringMap(deviceInfos);
 }
@@ -141,7 +141,7 @@ void DeviceIniWriter::writeDeviceInfo(const QMap<QString, QString> &deviceInfos)
 void DeviceIniWriter::writeDummyUsage(const QMap<QString, QString> &dummyUsages) const
 {
     *_file << "[DummyUsage]"
-           << "\n";
+           << "\r\n";
 
     writeStringMap(dummyUsages);
 }
@@ -149,10 +149,10 @@ void DeviceIniWriter::writeDummyUsage(const QMap<QString, QString> &dummyUsages)
 void DeviceIniWriter::writeComments(const QMap<QString, QString> &comments) const
 {
     *_file << "[Comments]"
-           << "\n";
+           << "\r\n";
 
     *_file << "Lines=" << comments.size()
-           << "\n";
+           << "\r\n";
 
     writeStringMap(comments);
 }
@@ -163,13 +163,13 @@ void DeviceIniWriter::writeComments(const QMap<QString, QString> &comments) cons
  */
 void DeviceIniWriter::writeSupportedIndexes(const QList<Index *> &indexes) const
 {
-    *_file << "SupportedObjects=" << indexes.count() << "\n";
+    *_file << "SupportedObjects=" << indexes.count() << "\r\n";
 
     int base = 16;
     int i = 1;
     for (Index *index : indexes)
     {
-        *_file << i << "=" << valueToString(index->index(), base) << "\n";
+        *_file << i << "=" << valueToString(index->index(), base) << "\r\n";
         i++;
     }
 }
@@ -215,18 +215,18 @@ void DeviceIniWriter::writeIndex(Index *index) const
 
     int base = 16;
 
-    *_file << "[" << QString::number(index->index(), base).toUpper() << "]\n";
-    *_file << "ParameterName=" << index->name() << "\n";
-    *_file << "ObjectType=" << valueToString(index->objectType(), base, 1) << "\n";
-    *_file << "DataType=" << valueToString(subIndex->dataType(), base, 4) << "\n";
-    *_file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
+    *_file << "[" << QString::number(index->index(), base).toUpper() << "]\r\n";
+    *_file << "ParameterName=" << index->name() << "\r\n";
+    *_file << "ObjectType=" << valueToString(index->objectType(), base, 1) << "\r\n";
+    *_file << "DataType=" << valueToString(subIndex->dataType(), base, 4) << "\r\n";
+    *_file << "AccessType=" << accessToString(subIndex->accessType()) << "\r\n";
     if (subIndex->value().isValid())
     {
-        *_file << "DefaultValue=" << defaultValue(subIndex) << "\n";
+        *_file << "DefaultValue=" << defaultValue(subIndex) << "\r\n";
     }
-    *_file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\n";
+    *_file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\r\n";
     writeLimit(subIndex);
-    *_file << "\n";
+    *_file << "\r\n";
 }
 
 /**
@@ -237,26 +237,26 @@ void DeviceIniWriter::writeRecord(Index *index) const
 {
     int base = 16;
 
-    *_file << "[" << QString::number(index->index(), base).toUpper() << "]\n";
-    *_file << "ParameterName=" << index->name() << "\n";
-    *_file << "ObjectType=" << valueToString(index->objectType(), base) << "\n";
-    *_file << "SubNumber=" << valueToString(index->subIndexesCount(), base) << "\n";
-    *_file << "\n";
+    *_file << "[" << QString::number(index->index(), base).toUpper() << "]\r\n";
+    *_file << "ParameterName=" << index->name() << "\r\n";
+    *_file << "ObjectType=" << valueToString(index->objectType(), base) << "\r\n";
+    *_file << "SubNumber=" << valueToString(index->subIndexesCount(), base) << "\r\n";
+    *_file << "\r\n";
 
     for (SubIndex *subIndex : index->subIndexes())
     {
-        *_file << "[" << QString::number(index->index(), base).toUpper() << "sub" << subIndex->subIndex() << "]\n";
-        *_file << "ParameterName=" << subIndex->name() << "\n";
-        *_file << "ObjectType=" << valueToString(Index::Object::VAR, base, 1) << "\n";
-        *_file << "DataType=" << valueToString(subIndex->dataType(), base, 4) << "\n";
-        *_file << "AccessType=" << accessToString(subIndex->accessType()) << "\n";
+        *_file << "[" << QString::number(index->index(), base).toUpper() << "sub" << subIndex->subIndex() << "]\r\n";
+        *_file << "ParameterName=" << subIndex->name() << "\r\n";
+        *_file << "ObjectType=" << valueToString(Index::Object::VAR, base, 1) << "\r\n";
+        *_file << "DataType=" << valueToString(subIndex->dataType(), base, 4) << "\r\n";
+        *_file << "AccessType=" << accessToString(subIndex->accessType()) << "\r\n";
         if (subIndex->value().isValid())
         {
-            *_file << "DefaultValue=" << defaultValue(subIndex) << "\n";
+            *_file << "DefaultValue=" << defaultValue(subIndex) << "\r\n";
         }
-        *_file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\n";
+        *_file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\r\n";
         writeLimit(subIndex);
-        *_file << "\n";
+        *_file << "\r\n";
     }
 }
 
@@ -277,12 +277,12 @@ void DeviceIniWriter::writeLimit(const SubIndex *subIndex) const
 {
     if (subIndex->hasLowLimit())
     {
-        *_file << "LowLimit=" << subIndex->lowLimit().toString() << "\n";
+        *_file << "LowLimit=" << subIndex->lowLimit().toString() << "\r\n";
     }
 
     if (subIndex->hasHighLimit())
     {
-        *_file << "HighLimit=" << subIndex->highLimit().toString() << "\n";
+        *_file << "HighLimit=" << subIndex->highLimit().toString() << "\r\n";
     }
 }
 
@@ -294,10 +294,10 @@ void DeviceIniWriter::writeStringMap(const QMap<QString, QString> &map) const
 {
     for (const QString &key : map.keys())
     {
-        *_file << key << "=" << map.value(key) << "\n";
+        *_file << key << "=" << map.value(key) << "\r\n";
     }
 
-    *_file << "\n";
+    *_file << "\r\n";
 }
 
 /**
