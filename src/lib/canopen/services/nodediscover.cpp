@@ -152,6 +152,7 @@ void NodeDiscover::exploreNodeNext()
         if (!file.isEmpty())
         {
             node->nodeOd()->loadEds(file);
+            node->reset();
             node->profileDiscover();
         }
 

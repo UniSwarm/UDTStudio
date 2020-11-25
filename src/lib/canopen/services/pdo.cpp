@@ -17,8 +17,10 @@
  **/
 
 #include "pdo.h"
+
 #include "canopenbus.h"
 #include "services/services.h"
+
 #include <QDataStream>
 #include <QDebug>
 
@@ -264,29 +266,29 @@ void PDO::setEnabled(bool enabled)
     }
 }
 
-quint32 PDO::inhibitTime() const
+qreal PDO::inhibitTimeMs() const
 {
     NodeObjectId object(_objectCommId, PDO_COMM_INHIBIT_TIME);
-    return _node->nodeOd()->value(object).toUInt();
+    return _node->nodeOd()->value(object).toUInt() / 10.0;
 }
 
-void PDO::setInhibitTime(quint32 inhibitTime)
+void PDO::setInhibitTimeMs(qreal inhibitTimeMs)
 {
     _statusPdo = STATE_NONE;
-    _waitingConf.inhibitTime = inhibitTime;
+    _waitingConf.inhibitTime = inhibitTimeMs * 10.0;
     _node->writeObject(_objectCommList[2].index(), PDO_COMM_INHIBIT_TIME, _waitingConf.inhibitTime);
 }
 
-quint32 PDO::eventTimer() const
+quint32 PDO::eventTimerMs() const
 {
     NodeObjectId object(_objectCommId, PDO_COMM_EVENT_TIMER);
     return _node->nodeOd()->value(object).toUInt();
 }
 
-void PDO::setEventTimer(quint32 eventTimer)
+void PDO::setEventTimerMs(quint32 eventTimerMs)
 {
     _statusPdo = STATE_NONE;
-    _waitingConf.eventTimer = eventTimer;
+    _waitingConf.eventTimer = eventTimerMs;
     _node->writeObject(_objectCommList[3].index(), PDO_COMM_EVENT_TIMER, _waitingConf.eventTimer);
 }
 
@@ -314,10 +316,10 @@ void PDO::managementRespWriteCommParam(const NodeObjectId &objId, SDO::FlagsRequ
             _waitingConf.syncStartValue = static_cast<quint8>(_node->nodeOd()->value(objId).toUInt());
         }
 
-        qDebug() << ">PDO::odNotify : Index:SubIndex"
+        /*qDebug() << ">PDO::odNotify : Index:SubIndex"
                  << QString("0x%1").arg(QString::number(objId.index(), 16))
                  << ":" << objId.subIndex()
-                 << ", Error : " << _node->nodeOd()->errorObject(objId);
+                 << ", Error : " << _node->nodeOd()->errorObject(objId);*/
         setError(ERROR_WRITE_PARAM);
         return;
     }
@@ -332,10 +334,10 @@ void PDO::managementRespReadCommAndMapping(const NodeObjectId &objId, SDO::Flags
     {
         if (flags == SDO::FlagsRequest::Error)
         {
-            qDebug() << ">PDO::odNotify : Index:SubIndex"
+            /*qDebug() << ">PDO::odNotify : Index:SubIndex"
                      << QString("0x%1").arg(QString::number(objId.index(), 16))
                      << ":" << objId.subIndex()
-                     << ", Error : " << _node->nodeOd()->errorObject(objId);
+                     << ", Error : " << _node->nodeOd()->errorObject(objId);*/
 
             setError(ERROR_GENERAL_ERROR);
             _objectIdFsm++;
@@ -374,10 +376,10 @@ void PDO::managementRespReadCommAndMapping(const NodeObjectId &objId, SDO::Flags
     {
         if (flags == SDO::FlagsRequest::Error)
         {
-            qDebug() << ">PDO::odNotify : Index:SubIndex"
+            /*qDebug() << ">PDO::odNotify : Index:SubIndex"
                      << QString("0x%1").arg(QString::number(objId.index(), 16))
                      << ":" << objId.subIndex()
-                     << ", Error : " << _node->nodeOd()->errorObject(objId);
+                     << ", Error : " << _node->nodeOd()->errorObject(objId);*/
             setError(ERROR_GENERAL_ERROR);
             _stateMapping = STATE_FREE;
             return;
@@ -453,7 +455,7 @@ bool PDO::createListObjectMapped()
 
     if (_node->nodeOd()->indexExist(objectMapping.index()))
     {
-        numberEntries =  static_cast<quint8>(_objectCurrentMapped.size());
+        numberEntries = static_cast<quint8>(_objectCurrentMapped.size());
         _node->nodeOd()->index(objectMapping.index())->subIndex(objectMapping.subIndex())->setValue(numberEntries);
     }
     emit mappingChanged();
@@ -554,13 +556,12 @@ void PDO::processMapping()
     switch (_stateMapping)
     {
     case STATE_FREE:
-    {
         // Deactivate the PDO
         _node->writeObject(_objectCommList[PDO_COMM_COB_ID].index(),
                            _objectCommList[PDO_COMM_COB_ID].subIndex(),
                            QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toUInt() | COBID_VALID_NOT_VALID));
         break;
-    }
+
     case STATE_DEACTIVATE:
         // Disable the mapping
         if (((_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toUInt() & COBID_VALID_NOT_VALID) == COBID_VALID_NOT_VALID))
@@ -575,18 +576,20 @@ void PDO::processMapping()
         break;
 
     case STATE_DISABLE:
-    {
         // Modify the mapping
-        quint32 map = 0;
         if (_objectIdFsm < _objectToMap.size())
         {
+            quint32 map = 0;
             map = static_cast<quint32>(_objectToMap.at(_objectIdFsm).index() << 16);
             map = map | (static_cast<quint16>(_objectToMap.at(_objectIdFsm).subIndex() << 8));
             map = map | _objectToMap.at(_objectIdFsm).bitSize();
+            _node->writeObject(_objectMappingId, _objectIdFsm + 1, map);
         }
-        _node->writeObject(_objectMappingId, _objectIdFsm + 1, map);
+        else
+        {
+            _node->writeObject(_objectMappingId, _objectIdFsm + 1, 0);
+        }
         break;
-    }
 
     case STATE_MODIFY:
         // Enable the mapping
@@ -617,5 +620,4 @@ void PDO::setError(ErrorPdo error)
 
 void PDO::clearDataWaiting()
 {
-
 }

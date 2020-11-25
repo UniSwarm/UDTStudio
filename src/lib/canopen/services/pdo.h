@@ -21,10 +21,11 @@
 
 #include "canopen_global.h"
 
-#include "nodeobjectid.h"
-#include "nodeod.h"
 #include "nodeodsubscriber.h"
 #include "service.h"
+
+#include "nodeobjectid.h"
+#include "nodeod.h"
 
 class RPDO;
 class TPDO;
@@ -38,12 +39,18 @@ public:
     quint32 cobId() const;
     quint8 pdoNumber() const;
 
-    void reset() override;
+    // PDO enable
+    bool isEnabled() const;
+    void setEnabled(bool enabled);
 
+    // PDO currentMappind access
+    void readMapping();
     const QList<NodeObjectId> &currentMappind() const;
     bool hasMappedObject() const;
     bool isMappedObject(const NodeObjectId &object) const;
 
+    // PDO mappind availability and modify
+    void writeMapping(const QList<NodeObjectId> &objectList);
     bool canInsertObjectAtBitPos(const NodeObjectId &object, int bitPos) const;
     bool canInsertObjectAtBitPos(const QList<NodeObjectId> &objectList, const NodeObjectId &object, int bitPos) const;
     int maxMappingBitSize() const;
@@ -54,20 +61,15 @@ public:
     int indexAtBitPos(int bitPos) const;
     static int indexAtBitPos(const QList<NodeObjectId> &objectList, int bitPos);
 
-    void readMapping();
-    void writeMapping(const QList<NodeObjectId> &objectList);
-
-    bool isEnabled() const;
-    void setEnabled(bool enabled);
-
     virtual bool isTPDO() const = 0;
     virtual bool isRPDO() const = 0;
 
-    quint32 inhibitTime() const;
-    void setInhibitTime(quint32 inhibitTime);
+    // common PDO settings
+    qreal inhibitTimeMs() const;
+    void setInhibitTimeMs(qreal inhibitTimeMs);
 
-    quint32 eventTimer() const;
-    void setEventTimer(quint32 eventTimer);
+    quint32 eventTimerMs() const;
+    void setEventTimerMs(quint32 eventTimerMs);
 
     enum ErrorPdo
     {
@@ -89,7 +91,7 @@ public:
 signals:
     void mappingChanged();
     void enabledChanged(bool enabled);
-    void errorOccurred(ErrorPdo error);
+    void errorOccurred(PDO::ErrorPdo error);
 
 protected:
     quint32 _cobId;
@@ -158,6 +160,10 @@ private:
 
     bool checkIndex(quint16 index);
     virtual void clearDataWaiting();
+
+    // Service interface
+public:
+    void reset() override;
 };
 
 #endif // PDO_H
