@@ -203,7 +203,7 @@ void PDOMappingView::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasFormat("index/subindex") && _pdo)
     {
-        const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', Qt::SkipEmptyParts);
+        const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', QString::SkipEmptyParts);
         for (const QString &stringObjId : stringListObjId)
         {
             _dragObjId = NodeObjectId::fromMimeData(stringObjId);
