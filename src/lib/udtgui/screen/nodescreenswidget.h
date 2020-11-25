@@ -49,7 +49,6 @@ protected:
     {
         Node *node;
         QList<NodeScreen *> screens;
-        QList<NodeScreen *> screensAxis;
     };
 
     QMap<Node *, NodeScreens> _nodesMap;

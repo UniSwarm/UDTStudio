@@ -39,11 +39,6 @@ Node *NodeScreensWidget::activeNode() const
 
 void NodeScreensWidget::setActiveNode(Node *node)
 {
-    if (!node)
-    {
-        return;
-    }
-
     int currentIndex = _tabWidget->currentIndex();
 
     // remove all screens from QTabWidget
@@ -52,26 +47,21 @@ void NodeScreensWidget::setActiveNode(Node *node)
         _tabWidget->removeTab(0);
     }
 
-    addNode(node);
     _activeNode = node;
 
-    // add all screens from nodeScreens to QTabWidget and set node
-    NodeScreens nodeScreens = _nodesMap.value(_activeNode);
-    for (NodeScreen *screen : nodeScreens.screens)
+    if (node)
     {
-        screen->setNode(nodeScreens.node);
-        _tabWidget->addTab(screen, " " + screen->title() + " ");
-    }
+        addNode(node);
 
-    uint8_t i = 0;
-    for (NodeScreen *screen : nodeScreens.screensAxis)
-    {
-        screen->setNode(nodeScreens.node, i);
-        _tabWidget->addTab(screen, " " + screen->title() + " ");
-        i++;
-    }
+        // add all screens from nodeScreens to QTabWidget and set node
+        NodeScreens nodeScreens = _nodesMap.value(_activeNode);
+        for (NodeScreen *screen : nodeScreens.screens)
+        {
+            _tabWidget->addTab(screen, " " + screen->title() + " ");
+        }
 
-    _tabWidget->setCurrentIndex(currentIndex);
+        _tabWidget->setCurrentIndex(currentIndex);
+    }
 }
 
 void NodeScreensWidget::addNode(Node *node)
@@ -87,10 +77,13 @@ void NodeScreensWidget::addNode(Node *node)
     nodeScreens.node = node;
 
     NodeScreen *screen;
+
     screen = new NodeScreenOD();
+    screen->setNode(node);
     nodeScreens.screens.append(screen);
 
     screen = new NodeScreenPDO();
+    screen->setNode(node);
     nodeScreens.screens.append(screen);
 
     // add specific screens node
@@ -99,9 +92,9 @@ void NodeScreensWidget::addNode(Node *node)
         for (int i = 0; i < node->countProfile(); i++)
         {
             screen = new NodeScreenUmcMotor();
-            nodeScreens.screensAxis.append(screen);
+            screen->setNode(node, i);
+            nodeScreens.screens.append(screen);
         }
-
      }
 
     // add NodeScreensStruct to nodeIt
