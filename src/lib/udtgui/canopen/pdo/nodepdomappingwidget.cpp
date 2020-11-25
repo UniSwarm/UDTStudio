@@ -46,7 +46,6 @@ void NodePDOMappingWidget::setNode(Node *node)
         {
             if (node->rpdos().count() >= rpdo)
             {
-                node->rpdos()[rpdo]->readMapping();
                 _rpdoMappingWidgets[rpdo]->setPdo(node->rpdos()[rpdo]);
             }
             else
@@ -58,12 +57,32 @@ void NodePDOMappingWidget::setNode(Node *node)
         {
             if (node->tpdos().count() >= tpdo)
             {
-                node->tpdos()[tpdo]->readMapping();
                 _tpdoMappingWidgets[tpdo]->setPdo(node->tpdos()[tpdo]);
             }
             else
             {
                 _tpdoMappingWidgets[tpdo]->setPdo(nullptr);
+            }
+        }
+    }
+}
+
+void NodePDOMappingWidget::readAllMapping()
+{
+    if (_node)
+    {
+        for (int rpdo = 0; rpdo < 4; rpdo++)
+        {
+            if (_node->rpdos().count() >= rpdo)
+            {
+                _node->rpdos()[rpdo]->readMapping();
+            }
+        }
+        for (int tpdo = 0; tpdo < 4; tpdo++)
+        {
+            if (_node->tpdos().count() >= tpdo)
+            {
+                _node->tpdos()[tpdo]->readMapping();
             }
         }
     }
@@ -75,6 +94,18 @@ void NodePDOMappingWidget::createWidgets()
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
     layout->setContentsMargins(0, 0, 0, 0);
+
+    _toolBar = new QToolBar(tr("PDO commands"));
+    _toolBar->setIconSize(QSize(20, 20));
+
+    // read all action
+    _actionReadMappings = _toolBar->addAction(tr("Read all"));
+    _actionReadMappings->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    _actionReadMappings->setShortcut(QKeySequence("Ctrl+R"));
+    _actionReadMappings->setStatusTip(tr("Read all PDO mapping from device"));
+    connect(_actionReadMappings, &QAction::triggered, this, &NodePDOMappingWidget::readAllMapping);
+
+    layout->addWidget(_toolBar);
 
     for (int rpdo = 0; rpdo < 4; rpdo++)
     {

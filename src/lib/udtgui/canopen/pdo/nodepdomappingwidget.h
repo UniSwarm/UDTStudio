@@ -25,6 +25,8 @@
 
 #include "pdomappingwidget.h"
 
+#include <QToolBar>
+
 class UDTGUI_EXPORT NodePDOMappingWidget : public QScrollArea
 {
     Q_OBJECT
@@ -35,6 +37,7 @@ public:
 
 public slots:
     void setNode(Node *node);
+    void readAllMapping();
 
 protected:
     void createWidgets();
@@ -42,6 +45,8 @@ protected:
     QList<PDOMappingWidget *> _rpdoMappingWidgets;
 
     Node *_node;
+    QToolBar *_toolBar;
+    QAction *_actionReadMappings;
 };
 
 #endif // NODEPDOMAPPINGWIDGET_H
