@@ -33,7 +33,6 @@ P402VlWidget::P402VlWidget(QWidget *parent) : QWidget(parent)
 {
     _node = nullptr;
     _nodeProfile402 = nullptr;
-    createWidgets();
 }
 
 P402VlWidget::~P402VlWidget()
@@ -57,19 +56,6 @@ void P402VlWidget::readData()
 
 void P402VlWidget::setNode(Node *node, uint8_t axis)
 {
-    _vlMinVelocityMinMaxAmountSpinBox->setNode(node);
-    _vlMaxVelocityMinMaxAmountSpinBox->setNode(node);
-    _vlAccelerationDeltaSpeedSpinBox->setNode(node);
-    _vlAccelerationDeltaTimeSpinBox->setNode(node);
-    _vlDecelerationDeltaSpeedSpinBox->setNode(node);
-    _vlDecelerationDeltaTimeSpinBox->setNode(node);
-    _vlQuickStopDeltaSpeedSpinBox->setNode(node);
-    _vlQuickStopDeltaTimeSpinBox->setNode(node);
-    _vlSetPointFactorNumeratorSpinBox->setNode(node);
-    _vlSetPointFactorDenominatorSpinBox->setNode(node);
-    _vlDimensionFactorNumeratorSpinBox->setNode(node);
-    _vlDimensionFactorDenominatorSpinBox->setNode(node);
-
     if (node != _node)
     {
         if (_node)
@@ -90,6 +76,21 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
         _vlVelocityDemandObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND, axis);
         _vlVelocityActualObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, axis);
         _vlTargetVelocityObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, axis);
+
+        createWidgets();
+
+        _vlMinVelocityMinMaxAmountSpinBox->setNode(node);
+        _vlMaxVelocityMinMaxAmountSpinBox->setNode(node);
+        _vlAccelerationDeltaSpeedSpinBox->setNode(node);
+        _vlAccelerationDeltaTimeSpinBox->setNode(node);
+        _vlDecelerationDeltaSpeedSpinBox->setNode(node);
+        _vlDecelerationDeltaTimeSpinBox->setNode(node);
+        _vlQuickStopDeltaSpeedSpinBox->setNode(node);
+        _vlQuickStopDeltaTimeSpinBox->setNode(node);
+        _vlSetPointFactorNumeratorSpinBox->setNode(node);
+        _vlSetPointFactorDenominatorSpinBox->setNode(node);
+        _vlDimensionFactorNumeratorSpinBox->setNode(node);
+        _vlDimensionFactorDenominatorSpinBox->setNode(node);
 
         _vlTargetVelocityObjectId.setBusId(_node->busId());
         _vlVelocityDemandObjectId.setBusId(_node->busId());
@@ -292,6 +293,7 @@ void P402VlWidget::refreshData(NodeObjectId object)
 
 void P402VlWidget::createWidgets()
 {
+    QString name;
     QLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
 
@@ -301,7 +303,8 @@ void P402VlWidget::createWidgets()
 
     _vlTargetVelocitySpinBox = new QSpinBox();
     _vlTargetVelocitySpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    vlLayout->addRow("Target velocity (0x6042) :", _vlTargetVelocitySpinBox);
+    name = tr("Target velocity ") + QString("(0x%1) :").arg(QString::number(_vlTargetVelocityObjectId.index(), 16).toUpper());
+    vlLayout->addRow(name, _vlTargetVelocitySpinBox);
 
     _vlTargetVelocitySlider = new QSlider(Qt::Horizontal);
     _vlTargetVelocitySlider->setTickPosition(QSlider::TicksBothSides);
@@ -313,13 +316,16 @@ void P402VlWidget::createWidgets()
 
     _vlVelocityDemandLabel = new QLabel();
     _vlVelocityDemandLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    vlLayout->addRow("Velocity_demand (0x6043) :", _vlVelocityDemandLabel);
+    name = tr("Velocity_demand ") + QString("(0x%1) :").arg(QString::number(_vlVelocityDemandObjectId.index(), 16).toUpper());
+    vlLayout->addRow(name, _vlVelocityDemandLabel);
 
     _vlVelocityActualLabel = new QLabel();
     _vlVelocityActualLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    vlLayout->addRow("Velocity_actual_value (0x6044) :", _vlVelocityActualLabel);
+    name = tr("Velocity_actual_value ") + QString("(0x%1) :").arg(QString::number(_vlVelocityActualObjectId.index(), 16));
+    vlLayout->addRow(name, _vlVelocityActualLabel);
 
-    QLabel *vlVelocityMinMaxAmountLabel = new QLabel(tr("Velocity min max amount (0x6046) :"));
+    name = tr("Velocity min max amount ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_VL_MAX, _axis).index(), 16).toUpper());
+    QLabel *vlVelocityMinMaxAmountLabel = new QLabel(name);
     vlLayout->addRow(vlVelocityMinMaxAmountLabel);
     QLayout *vlVelocityMinMaxAmountlayout = new QHBoxLayout();
 
@@ -331,81 +337,77 @@ void P402VlWidget::createWidgets()
     vlVelocityMinMaxAmountlayout->addWidget(_vlMaxVelocityMinMaxAmountSpinBox);
     vlLayout->addRow(vlVelocityMinMaxAmountlayout);
 
-    QLabel *vlVelocityAccelerationLabel = new QLabel(tr("Velocity acceleration (0x6048) :"));
+    name = tr("Velocity acceleration ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_VL_ACCELERATION_DELTA_TIME, _axis).index(), 16).toUpper());
+    QLabel *vlVelocityAccelerationLabel = new QLabel(name);
     vlLayout->addRow(vlVelocityAccelerationLabel);
     QLayout *vlVelocityAccelerationlayout = new QHBoxLayout();
     _vlAccelerationDeltaSpeedSpinBox = new IndexSpinBox();
     //    _vlAccelerationDeltaSpeedSpinBox->setSuffix(" inc/ms");
     _vlAccelerationDeltaSpeedSpinBox->setToolTip("Delta Speed");
-    //    _vlAccelerationDeltaSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
     vlVelocityAccelerationlayout->addWidget(_vlAccelerationDeltaSpeedSpinBox);
     _vlAccelerationDeltaTimeSpinBox = new IndexSpinBox();
     //    _vlAccelerationDeltaTimeSpinBox->setSuffix(" ms");
     _vlAccelerationDeltaTimeSpinBox->setToolTip("Delta Time");
-    //    _vlAccelerationDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
     vlVelocityAccelerationlayout->addWidget(_vlAccelerationDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityAccelerationlayout);
 
-    QLabel *vlVelocityDecelerationLabel = new QLabel(tr("Velocity deceleration (0x6049) :"));
+    name = tr("Velocity deceleration ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_VL_DECELERATION_DELTA_TIME, _axis).index(), 16).toUpper());
+    QLabel *vlVelocityDecelerationLabel = new QLabel(name);
     vlLayout->addRow(vlVelocityDecelerationLabel);
     QLayout *vlVelocityDecelerationlayout = new QHBoxLayout();
     _vlDecelerationDeltaSpeedSpinBox = new IndexSpinBox();
     //    _vlDecelerationDeltaSpeedSpinBox->setSuffix(" inc/ms");
     _vlDecelerationDeltaSpeedSpinBox->setToolTip("Delta Speed");
-    //    _vlDecelerationDeltaSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
     vlVelocityDecelerationlayout->addWidget(_vlDecelerationDeltaSpeedSpinBox);
     _vlDecelerationDeltaTimeSpinBox = new IndexSpinBox();
     //    _vlDecelerationDeltaTimeSpinBox->setSuffix(" ms");
     _vlDecelerationDeltaTimeSpinBox->setToolTip("Delta Time");
-    //    _vlDecelerationDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
     vlVelocityDecelerationlayout->addWidget(_vlDecelerationDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityDecelerationlayout);
 
-    QLabel *vlVelocityQuickStopLabel = new QLabel(tr("Velocity quick stop (0x604A) :"));
+    name = tr("Velocity quick stop ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_VL_QUICK_STOP_DELTA_TIME, _axis).index(), 16).toUpper());
+    QLabel *vlVelocityQuickStopLabel = new QLabel(name);
     vlLayout->addRow(vlVelocityQuickStopLabel);
     QLayout *vlVelocityQuickStoplayout = new QHBoxLayout();
     _vlQuickStopDeltaSpeedSpinBox = new IndexSpinBox();
     //    _vlQuickStopDeltaSpeedSpinBox->setSuffix(" inc/ms");
     _vlQuickStopDeltaSpeedSpinBox->setToolTip("Delta Speed");
-    //    _vlQuickStopDeltaSpeedSpinBox->setRange(0, std::numeric_limits<int>::max());
     vlVelocityQuickStoplayout->addWidget(_vlQuickStopDeltaSpeedSpinBox);
     _vlQuickStopDeltaTimeSpinBox = new IndexSpinBox();
     //    _vlQuickStopDeltaTimeSpinBox->setSuffix(" ms");
     _vlQuickStopDeltaTimeSpinBox->setToolTip("Delta Time");
-    //    _vlQuickStopDeltaTimeSpinBox->setRange(1, std::numeric_limits<quint16>::max());
     vlVelocityQuickStoplayout->addWidget(_vlQuickStopDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityQuickStoplayout);
 
-    QLabel *vlSetPointFactorLabel = new QLabel(tr("Set-point factor (0x604B) :"));
+    name = tr("Set-point factor ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_VL_SET_POINT_FACTOR_NUMERATOR, _axis).index(), 16).toUpper());
+    QLabel *vlSetPointFactorLabel = new QLabel(name);
     vlLayout->addRow(vlSetPointFactorLabel);
     QLayout *vlSetPointFactorlayout = new QHBoxLayout();
     _vlSetPointFactorNumeratorSpinBox = new IndexSpinBox();
     _vlSetPointFactorNumeratorSpinBox->setToolTip("Numerator");
-    //    _vlSetPointFactorNumeratorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
     vlSetPointFactorlayout->addWidget(_vlSetPointFactorNumeratorSpinBox);
     _vlSetPointFactorDenominatorSpinBox = new IndexSpinBox();
     _vlSetPointFactorDenominatorSpinBox->setToolTip("Denominator");
-    //    _vlSetPointFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
     vlSetPointFactorlayout->addWidget(_vlSetPointFactorDenominatorSpinBox);
     vlLayout->addRow(vlSetPointFactorlayout);
 
-    QLabel *vlDimensionFactorLabel = new QLabel(tr("Dimension factor (0x604C) :"));
+    name = tr("Dimension factor ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_NUMERATOR, _axis).index(), 16).toUpper());
+    QLabel *vlDimensionFactorLabel = new QLabel(name);
     vlLayout->addRow(vlDimensionFactorLabel);
     QLayout *vlDimensionFactorlayout = new QHBoxLayout();
     _vlDimensionFactorNumeratorSpinBox = new IndexSpinBox();
     _vlDimensionFactorNumeratorSpinBox->setToolTip("Numerator");
-    //    _vlDimensionFactorNumeratorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
     vlDimensionFactorlayout->addWidget(_vlDimensionFactorNumeratorSpinBox);
     _vlDimensionFactorDenominatorSpinBox = new IndexSpinBox();
     _vlDimensionFactorDenominatorSpinBox->setToolTip("Denominator");
-    //    _vlDimensionFactorDenominatorSpinBox->setRange(1, std::numeric_limits<qint16>::max());
     vlDimensionFactorlayout->addWidget(_vlDimensionFactorDenominatorSpinBox);
     vlLayout->addRow(vlDimensionFactorlayout);
 
     vlGroupBox->setLayout(vlLayout);
 
     // Group Box Control Word
-    QGroupBox *modeControlWordGroupBox = new QGroupBox(tr("Control Word (0x6040) bit 4, bit 5, bit 6"));
+    name = tr("Control Word ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, _axis).index(), 16).toUpper());
+    QGroupBox *modeControlWordGroupBox = new QGroupBox(name);
     QFormLayout *modeControlWordLayout = new QFormLayout();
 
     _vlEnableRampCheckBox = new QCheckBox();

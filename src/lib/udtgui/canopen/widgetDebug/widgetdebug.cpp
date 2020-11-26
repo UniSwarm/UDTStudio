@@ -32,8 +32,6 @@
 WidgetDebug::WidgetDebug(Node *node, uint8_t axis, QWidget *parent)
     : QWidget(parent), _node(node), _axis(axis)
 {
-    createWidgets();
-
     if (!_node)
     {
         return;
@@ -81,7 +79,6 @@ void WidgetDebug::setNode(Node *node, uint8_t axis)
     }
     _axis = axis;
 
-    setCheckableStateMachine(2);
     setNodeInterrest(node);
     _node = node;
 
@@ -93,6 +90,8 @@ void WidgetDebug::setNode(Node *node, uint8_t axis)
 
         _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
 
+        createWidgets();
+        setCheckableStateMachine(2);
         updateModeComboBox();
 
         connect(_nodeProfile402, &NodeProfile402::modeChanged, this, &WidgetDebug::modeChanged);
@@ -449,6 +448,8 @@ void WidgetDebug::setCheckableStateMachine(int id)
 
 void WidgetDebug::createWidgets()
 {
+    QString name;
+
     QLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
 
@@ -492,7 +493,8 @@ void WidgetDebug::createWidgets()
     _modeGroupBox = new QGroupBox(tr("Mode"));
     QFormLayout *modeLayout = new QFormLayout();
     _modeComboBox = new QComboBox();
-    modeLayout->addRow(tr("Modes of operation (0x6060) :"), _modeComboBox);
+    name = tr("Modes of operation ") + QString("(0x%1)").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, _axis).index(), 16));
+    modeLayout->addRow(name, _modeComboBox);
     _modeGroupBox->setLayout(modeLayout);
     layout->addWidget(_modeGroupBox);
     connect(_modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int id) { modeIndexChanged(id); });
@@ -539,7 +541,8 @@ void WidgetDebug::createWidgets()
     // END Group Box State Machine
 
     // Group Box Control Word
-    _controlWordGroupBox = new QGroupBox(tr("Control Word (0x6040)"));
+
+    _controlWordGroupBox = new QGroupBox(tr("Control Word ") + QString("(0x%1)").arg(QString::number(_controlWordObjectId.index(), 16)));
     QFormLayout *controlWordLayout = new QFormLayout();
 
     _haltPushButton = new QPushButton(tr("Halt"));
@@ -560,7 +563,8 @@ void WidgetDebug::createWidgets()
     // END Group Box Control Word
 
     // Group Box Status Word
-    _statusWordGroupBox = new QGroupBox(tr("Status Word (0x6041)"));
+    name = tr("Status Word ") + QString("(0x%1)").arg(QString::number(_statusWordObjectId.index(), 16));
+    _statusWordGroupBox = new QGroupBox(name);
     QFormLayout *statusWordLayout = new QFormLayout();
 
     _statusWordRawLabel = new QLabel();
