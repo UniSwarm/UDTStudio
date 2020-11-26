@@ -48,7 +48,7 @@ void NodeScreenUmcMotor::createWidgets()
 
 QString NodeScreenUmcMotor::title() const
 {
-    return QString(tr("UMC Motor Axis %1").arg(_axis + 1));
+    return QString(tr("Axis %1").arg(_axis + 1));
 }
 
 void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)

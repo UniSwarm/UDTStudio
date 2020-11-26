@@ -87,9 +87,9 @@ void NodeScreensWidget::addNode(Node *node)
     nodeScreens.screens.append(screen);
 
     // add specific screens node
-    if (((node->profileNumber()) == 0x192) && (node->nodeOd()->value(IndexDb::getObjectId(IndexDb::OD_VENDOR_ID)).toUInt() == 0x4A2))
+    if ((node->profileNumber()) == 0x192)
     {
-        for (int i = 0; i < node->countProfile(); i++)
+        for (uint8_t i = 0; i < node->countProfile(); i++)
         {
             screen = new NodeScreenUmcMotor();
             screen->setNode(node, i);
