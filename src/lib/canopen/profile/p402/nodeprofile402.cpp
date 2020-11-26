@@ -109,6 +109,7 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis) : NodeProfile(node)
     _requestedChangeMode= NoMode;
     _state = NONE;
 
+    _cmdControlWord = 0;
     setNodeInterrest(node);
 }
 
@@ -569,8 +570,6 @@ void NodeProfile402::manageEventStatusWord(quint16 statusWord)
 
 void NodeProfile402::manageStateStatusWord(quint16 statusWord)
 {
-    _cmdControlWord = (_cmdControlWord & ~CW_Mask);
-
     if ((statusWord & SW_StateMask1) == SW_StateNotReadyToSwitchOn)
     {
         _stateMachineCurrent = STATE_NotReadyToSwitchOn;
@@ -578,7 +577,11 @@ void NodeProfile402::manageStateStatusWord(quint16 statusWord)
     if ((statusWord & SW_StateMask1) == SW_StateSwitchOnDisabled)
     {
         _stateMachineCurrent = STATE_SwitchOnDisabled;
-        _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
+        if ((_cmdControlWord & CW_Mask) == CW_FaultReset)
+        {
+            _cmdControlWord = (_cmdControlWord & ~CW_Mask);
+            _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
+        }
     }
     if ((statusWord & SW_StateMask2) == SW_StateReadyToSwitchOn)
     {
