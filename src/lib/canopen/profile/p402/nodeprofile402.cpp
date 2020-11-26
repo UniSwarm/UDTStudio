@@ -522,7 +522,7 @@ void NodeProfile402::manageState(const State402 state)
         case STATE_FaultReactionActive:
             break;
         case STATE_Fault:
-            if (state == STATE_SwitchOnDisabled)
+            if (state >= STATE_SwitchOnDisabled)
             {
                 _cmdControlWord = (_cmdControlWord & ~CW_Mask);
                 _cmdControlWord |= (CW_FaultReset);
@@ -569,6 +569,8 @@ void NodeProfile402::manageEventStatusWord(quint16 statusWord)
 
 void NodeProfile402::manageStateStatusWord(quint16 statusWord)
 {
+    _cmdControlWord = (_cmdControlWord & ~CW_Mask);
+
     if ((statusWord & SW_StateMask1) == SW_StateNotReadyToSwitchOn)
     {
         _stateMachineCurrent = STATE_NotReadyToSwitchOn;
@@ -576,6 +578,7 @@ void NodeProfile402::manageStateStatusWord(quint16 statusWord)
     if ((statusWord & SW_StateMask1) == SW_StateSwitchOnDisabled)
     {
         _stateMachineCurrent = STATE_SwitchOnDisabled;
+        _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
     }
     if ((statusWord & SW_StateMask2) == SW_StateReadyToSwitchOn)
     {
@@ -607,6 +610,7 @@ void NodeProfile402::manageStateStatusWord(quint16 statusWord)
         manageState(_requestedStateMachine);
         return;
     }
+
     _state = NONE;
     emit stateChanged();
 }
@@ -747,7 +751,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
             {
                 emit isHalted(static_cast<bool>(((controlWord & CW_Halt) >> 8)));
             }
-            _cmdControlWord = controlWord;
+
             _node->readObject(_statusWordObjectId);
         }
     }
