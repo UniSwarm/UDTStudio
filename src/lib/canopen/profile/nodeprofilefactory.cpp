@@ -22,62 +22,22 @@
 #include "node.h"
 #include "p402/nodeprofile402.h"
 
-NodeProfileFactory::NodeProfileFactory(Node *node): _node(node)
+NodeProfileFactory::NodeProfileFactory()
 {
-    if (_node->profileNumber() == 0x192)
-    {
-        axisDiscover();
-        _axisCount = 0;
-        _controlWordListObjectId.clear();
-    }
 }
 
-void NodeProfileFactory::axisDiscover()
+void NodeProfileFactory::profileFactory(Node *node)
 {
-    setNodeInterrest(_node);
-
-    for (uint8_t i = 0; i < 8; i++)
+    if (node->profileNumber() == 0x192)
     {
-        NodeObjectId cwObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, i);
-        cwObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-        registerObjId({cwObjectId});
-        _node->readObject(cwObjectId);
-    }
-}
-
-void NodeProfileFactory::managementAxisDiscover(const NodeObjectId &objId, SDO::FlagsRequest flags)
-{
-    if (!(flags & SDO::Error))
-    {
-        for (int i = 0; i < _controlWordListObjectId.size(); i++)
+        for (uint8_t i = 0; i < 8; i++)
         {
-            if (_controlWordListObjectId[i].index() == objId.index())
+            NodeObjectId cwObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, i);
+            if (node->nodeOd()->indexExist(cwObjectId.index()))
             {
-                return;
+                NodeProfile402 *profile402 = new NodeProfile402(node, i);
+                node->addProfile(profile402);
             }
         }
-        _controlWordListObjectId.append(objId);
-    }
-
-    _axisCount++;
-    if (_axisCount == 8)
-    {
-        _axisCount = static_cast<uint8_t>(_controlWordListObjectId.size());
-        for (uint8_t i = 0; i < _axisCount; i++)
-        {
-            NodeProfile402 *axisNode = new NodeProfile402(_node, i);
-            _node->addProfile(axisNode);
-        }
-        _axisCount = 0;
-        _controlWordListObjectId.clear();
-        unRegisterFullOd();
-    }
-}
-
-void NodeProfileFactory::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
-{
-    if (_node->profileNumber() == 0x192)
-    {
-        managementAxisDiscover(objId, flags);
     }
 }

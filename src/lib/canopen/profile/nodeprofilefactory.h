@@ -21,26 +21,15 @@
 
 #include "canopen_global.h"
 
-#include "nodeodsubscriber.h"
+class Node;
 
-class CANOPEN_EXPORT NodeProfileFactory : public QObject, public NodeOdSubscriber
+class CANOPEN_EXPORT NodeProfileFactory
 {
-    Q_OBJECT
 public:
-    NodeProfileFactory(Node *node);
+    NodeProfileFactory();
 
-private:
-    Node *_node;
-    uint8_t _axisCount;
+    static void profileFactory(Node *node);
 
-    QList<NodeObjectId> _controlWordListObjectId;
-
-    void axisDiscover();
-    void managementAxisDiscover(const NodeObjectId &objId, SDO::FlagsRequest flags);
-
-    // NodeOdSubscriber interface
-protected:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags);
 };
 
 #endif // NODEPROFILEFACTORY_H

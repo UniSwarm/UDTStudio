@@ -179,14 +179,8 @@ quint16 Node::profileNumber() const
     return static_cast<quint16>(nodeOd()->value(0x1000).toUInt() & 0xFFFF);
 }
 
-void Node::profileDiscover()
-{
-    NodeProfileFactory *detect = new NodeProfileFactory(this);
-}
-
 void Node::addProfile(NodeProfile *nodeProfile)
 {
-    // TODO mamagement multi-axis
     _nodeProfiles.append(nodeProfile);
 }
 

@@ -153,7 +153,7 @@ void NodeDiscover::exploreNodeNext()
         {
             node->nodeOd()->loadEds(file);
             node->reset();
-            node->profileDiscover();
+            NodeProfileFactory::profileFactory(node);
         }
 
         if (_nodeIdToExplore.isEmpty())
