@@ -74,7 +74,7 @@ void PidWidget::setNode(Node *node, uint8_t axis)
     connect(_node, &Node::statusChanged, this, &PidWidget::statusNodeChanged);
     if (!_node->profiles().isEmpty())
     {
-        _nodeProfile402 = static_cast<NodeProfile402 *>(_node->profiles()[0]);
+        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[0]);
     }
 
     _modePid = MODE_PID_NONE;
@@ -201,7 +201,7 @@ void PidWidget::changeMode402()
         }
         else
         {
-            mode402Changed(NodeProfile402::IP);
+            mode402Changed(_axis, NodeProfile402::IP);
         }
         break;
     case MODE_PID_VELOCITY:
@@ -212,7 +212,7 @@ void PidWidget::changeMode402()
         }
         else
         {
-            mode402Changed(NodeProfile402::VL);
+            mode402Changed(_axis, NodeProfile402::VL);
         }
         break;
     case MODE_PID_TORQUE:
@@ -222,7 +222,7 @@ void PidWidget::changeMode402()
         }
         else
         {
-            mode402Changed(NodeProfile402::TQ);
+            mode402Changed(_axis, NodeProfile402::TQ);
         }
         break;
     }
@@ -232,9 +232,14 @@ void PidWidget::changeMode402()
 
 }
 
-void PidWidget::mode402Changed(NodeProfile402::Mode modeNew)
+void PidWidget::mode402Changed(uint8_t axis, NodeProfile402::Mode modeNew)
 {
     if (!_nodeProfile402)
+    {
+        return;
+    }
+
+    if (_axis != axis)
     {
         return;
     }

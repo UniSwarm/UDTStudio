@@ -106,7 +106,7 @@ protected:
 
     void changeMode402();
     void savePosition();
-    void mode402Changed(NodeProfile402::Mode modeNew);
+    void mode402Changed(uint8_t axis, NodeProfile402::Mode modeNew);
     void manageMeasurement();
     void stopFirstMeasurement();
     void stopSecondMeasurement();
