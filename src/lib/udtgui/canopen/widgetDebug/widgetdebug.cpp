@@ -62,11 +62,11 @@ QString WidgetDebug::title() const
 
 void WidgetDebug::setNode(Node *node, uint8_t axis)
 {
-    _node = node;
-    if (!_node)
+    if (!node)
     {
         return;
     }
+    _node = node;
 
     if ((node->profileNumber() != 0x192) || node->profiles().isEmpty())
     {
@@ -80,8 +80,6 @@ void WidgetDebug::setNode(Node *node, uint8_t axis)
     _axis = axis;
 
     setNodeInterrest(node);
-    _node = node;
-
 
     if (_node)
     {
@@ -92,35 +90,37 @@ void WidgetDebug::setNode(Node *node, uint8_t axis)
 
         createWidgets();
         setCheckableStateMachine(2);
+
         updateModeComboBox();
 
+        connect(_modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int id) { modeIndexChanged(id); });
         connect(_nodeProfile402, &NodeProfile402::modeChanged, this, &WidgetDebug::modeChanged);
         connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &WidgetDebug::stateChanged);
         connect(_nodeProfile402, &NodeProfile402::isHalted, this, &WidgetDebug::isHalted);
         connect(_nodeProfile402, &NodeProfile402::eventHappened, this, &WidgetDebug::eventHappened);
-        connect(_nodeProfile402, &NodeProfile402::supportedDriveModesUdpdated, this, &WidgetDebug::updateModeComboBox);
-
-        connect(_node, &Node::statusChanged, this, &WidgetDebug::updateData);
+        connect(_node, &Node::statusChanged, this, &WidgetDebug::statusNodeChanged);
 
         _p402Option->setNode(_node, axis);
         _p402vl->setNode(_node, axis);
         _p402ip->setNode(_node, axis);
         _p402tq->setNode(_node, axis);
+
+        modeChanged(_axis, _nodeProfile402->actualMode());
     }
 }
 
-void WidgetDebug::updateData()
+void WidgetDebug::statusNodeChanged()
 {
     if (_node)
     {
         if (_node->status() == Node::STARTED)
         {
+            modeChanged(_axis, _nodeProfile402->actualMode());
             _stackedWidget->setEnabled(true);
             _modeGroupBox->setEnabled(true);
             _stateMachineGroupBox->setEnabled(true);
             _controlWordGroupBox->setEnabled(true);
             _statusWordGroupBox->setEnabled(true);
-            modeChanged();
         }
         else if ((_node->status() == Node::STOPPED) || (_node->status() == Node::PREOP))
         {
@@ -132,6 +132,10 @@ void WidgetDebug::updateData()
             _controlWordGroupBox->setEnabled(false);
             _statusWordGroupBox->setEnabled(false);
         }
+        _p402ip->updateData();
+        _p402vl->updateData();
+        _p402tq->updateData();
+        _p402Option->updateData();
     }
 }
 
@@ -139,7 +143,11 @@ void WidgetDebug::start()
 {
     if (_node)
     {
-        _node->sendStart();
+        if (_node->status() != Node::STARTED)
+        {
+            _node->sendStart();
+        }
+
         _stackedWidget->setEnabled(true);
         _timer.start(_logTimerSpinBox->value());
         _modeGroupBox->setEnabled(true);
@@ -175,49 +183,39 @@ void WidgetDebug::setTimer(int ms)
     _timer.start(ms);
 }
 
-void WidgetDebug::readData()
+void WidgetDebug::readDataTimer()
 {
     if (_node)
     {
         _node->readObject(_statusWordObjectId);
-
-        NodeProfile402::Mode mode = _nodeProfile402->actualMode();
-        if (mode == NodeProfile402::IP)
-        {
-            _p402ip->readData();
-        }
-        else if (mode == NodeProfile402::VL)
-        {
-            _p402vl->readData();
-        }
-        else if (mode == NodeProfile402::TQ)
-        {
-            _p402tq->readData();
-        }
+        _p402ip->readData();
+        _p402vl->readData();
+        _p402tq->readData();
     }
 }
 
-void WidgetDebug::modeChanged()
+void WidgetDebug::modeChanged(uint8_t axis, NodeProfile402::Mode modeNew)
 {
-    NodeProfile402::Mode mode = _nodeProfile402->actualMode();
-    if (mode == NodeProfile402::IP)
+    if (_axis != axis)
     {
-        _p402ip->updateData();
+        return;
+    }
+
+    if (modeNew == NodeProfile402::IP)
+    {
         _stackedWidget->setCurrentWidget(_p402ip);
     }
-    else if (mode == NodeProfile402::VL)
+    else if (modeNew == NodeProfile402::VL)
     {
         _p402ip->stop();
-        _p402vl->updateData();
         _stackedWidget->setCurrentWidget(_p402vl);
     }
-    else if (mode == NodeProfile402::TQ)
+    else if (modeNew == NodeProfile402::TQ)
     {
-        _p402tq->updateData();
+        _p402ip->stop();
         _stackedWidget->setCurrentWidget(_p402tq);
-
     }
-    int m = _listModeComboBox.indexOf(mode);
+    int m = _listModeComboBox.indexOf(modeNew);
     _modeComboBox->setCurrentIndex(m);
 }
 
@@ -390,6 +388,7 @@ void WidgetDebug::updateModeComboBox()
 {
     QList<NodeProfile402::Mode> modeList  = _nodeProfile402->modesSupported();
     _modeComboBox->clear();
+
     for (quint8 i = 0; i < modeList.size(); i++)
     {
         _listModeComboBox.append(modeList.at(i));
@@ -401,7 +400,7 @@ void WidgetDebug::displayOption402()
 {
     if (_stackedWidget->currentWidget() == _p402Option)
     {
-        modeChanged();
+        modeChanged(_axis, _nodeProfile402->actualMode());
     }
     else
     {
@@ -419,7 +418,10 @@ void WidgetDebug::modeIndexChanged(int id)
     {
         return;
     }
-    _nodeProfile402->setMode(_listModeComboBox.at(id));
+    if (_nodeProfile402->actualMode() != _listModeComboBox.at(id))
+    {
+        _nodeProfile402->setMode(_listModeComboBox.at(id));
+    }
 }
 
 void WidgetDebug::stateMachineClicked(int id)
@@ -477,7 +479,7 @@ void WidgetDebug::createWidgets()
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
     connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setTimer(i); });
-    connect(&_timer, &QTimer::timeout, this, &WidgetDebug::readData);
+    connect(&_timer, &QTimer::timeout, this, &WidgetDebug::readDataTimer);
     _nmtToolBar->addWidget(_logTimerSpinBox);
 
     _nmtToolBar->addSeparator();
@@ -497,7 +499,7 @@ void WidgetDebug::createWidgets()
     modeLayout->addRow(name, _modeComboBox);
     _modeGroupBox->setLayout(modeLayout);
     layout->addWidget(_modeGroupBox);
-    connect(_modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int id) { modeIndexChanged(id); });
+
     // End Group Box State Machine
 
     // Group Box State Machine
@@ -620,7 +622,6 @@ void WidgetDebug::closeEvent(QCloseEvent *event)
 {
     if (event->type() == QEvent::Close)
     {
-        _timer.stop();
     }
 }
 
@@ -628,25 +629,5 @@ void WidgetDebug::showEvent(QShowEvent *event)
 {
     if (event->type() == QEvent::Show)
     {
-        if (_node->status() ==  Node::STARTED)
-        {
-            _timer.start(_logTimerSpinBox->value());
-        }
-
-        NodeProfile402::Mode mode = _nodeProfile402->actualMode();
-        if (mode == NodeProfile402::IP)
-        {
-            _p402ip->updateData();
-        }
-        else if (mode == NodeProfile402::VL)
-        {
-            _p402vl->updateData();
-        }
-        else if (mode == NodeProfile402::TQ)
-        {
-            _p402tq->updateData();
-        }
-        _p402Option->updateData();
-        updateData();
     }
 }

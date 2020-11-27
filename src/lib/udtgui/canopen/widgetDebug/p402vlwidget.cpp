@@ -49,8 +49,11 @@ void P402VlWidget::readData()
 {
     if (_node)
     {
-        _node->readObject(_vlVelocityDemandObjectId);
-        _node->readObject(_vlVelocityActualObjectId);
+        if (_nodeProfile402->actualMode() == NodeProfile402::Mode::VL)
+        {
+            _node->readObject(_vlVelocityDemandObjectId);
+            _node->readObject(_vlVelocityActualObjectId);
+        }
     }
 }
 
@@ -139,7 +142,6 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
 
         connect(_vlMinVelocityMinMaxAmountSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlMinVelocityMinMaxAmountSpinboxFinished);
         connect(_vlMaxVelocityMinMaxAmountSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vllMaxVelocityMinMaxAmountSpinboxFinished);
-        connect(_node, &Node::statusChanged, this, &P402VlWidget::updateData);
     }
 }
 
@@ -147,7 +149,7 @@ void P402VlWidget::updateData()
 {
     if (_node)
     {
-        if (_node->status() == Node::STARTED)
+        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::Mode::VL)
         {
             this->setEnabled(true);
             _node->readObject(_vlTargetVelocityObjectId);

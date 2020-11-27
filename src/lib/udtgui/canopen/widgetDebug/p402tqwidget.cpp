@@ -22,6 +22,7 @@
 #include "canopen/widget/indexspinbox.h"
 #include "services/services.h"
 #include "indexdb402.h"
+#include "profile/p402/nodeprofile402.h"
 
 #include <QFormLayout>
 #include <QPushButton>
@@ -47,8 +48,11 @@ void P402TqWidget::readData()
 {
     if (_node)
     {
-        _node->readObject(_tqTorqueDemandObjectId);
-        _node->readObject(_tqTorqueActualValueObjectId);
+        if (_nodeProfile402->actualMode() == NodeProfile402::Mode::TQ)
+        {
+            _node->readObject(_tqTorqueDemandObjectId);
+            _node->readObject(_tqTorqueActualValueObjectId);
+        }
     }
 }
 
@@ -112,11 +116,16 @@ void P402TqWidget::setNode(Node *node, uint8_t axis)
         _tqMotorRatedCurrentSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_CURRENT, axis));
 
         int max = _node->nodeOd()->value(_tqMaxTorqueSpinBox->objId()).toInt();
-        _tqTargetTorqueSlider->setValue(_node->nodeOd()->value(_tqTargetTorqueObjectId).toInt());
+//        _tqTargetTorqueSlider->setValue(_node->nodeOd()->value(_tqTargetTorqueObjectId).toInt());
         _tqTargetTorqueSlider->setRange(-max, max);
 
+        if (!_node->profiles().isEmpty())
+        {
+            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+        }
+
         connect(_tqMaxTorqueSpinBox, &QSpinBox::editingFinished, this, &P402TqWidget::tqMaxTorqueSpinboxFinished);
-        connect(_node, &Node::statusChanged, this, &P402TqWidget::updateData);
+//        connect(_node, &Node::statusChanged, this, &P402TqWidget::updateData);
     }
 }
 
@@ -124,7 +133,7 @@ void P402TqWidget::updateData()
 {
     if (_node)
     {
-        if (_node->status() == Node::STARTED)
+        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::Mode::TQ)
         {
             this->setEnabled(true);
             _node->readObject(_tqTargetTorqueObjectId);

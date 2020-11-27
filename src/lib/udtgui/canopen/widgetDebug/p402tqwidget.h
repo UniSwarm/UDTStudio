@@ -28,6 +28,7 @@
 #include <QSpinBox>
 #include <QWidget>
 
+class NodeProfile402;
 class IndexSpinBox;
 
 class P402TqWidget : public QWidget, public NodeOdSubscriber
@@ -49,6 +50,8 @@ class P402TqWidget : public QWidget, public NodeOdSubscriber
   private:
     Node *_node;
     uint8_t _axis;
+
+    NodeProfile402 *_nodeProfile402;
 
     NodeObjectId _tqTorqueDemandObjectId;
     NodeObjectId _tqTargetTorqueObjectId;

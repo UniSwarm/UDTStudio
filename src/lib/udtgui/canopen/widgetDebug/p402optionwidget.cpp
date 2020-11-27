@@ -77,7 +77,7 @@ void P402OptionWidget::setNode(Node *node, uint8_t axis)
         registerObjId({_faultReactionObjectId});
 
         setNodeInterrest(node);
-        connect(_node, &Node::statusChanged, this, &P402OptionWidget::updateData);
+//        connect(_node, &Node::statusChanged, this, &P402OptionWidget::updateData);
     }
 }
 
@@ -94,10 +94,6 @@ void P402OptionWidget::updateData()
             _node->readObject(_disableObjectId);
             _node->readObject(_haltObjectId);
             _node->readObject(_faultReactionObjectId);
-        }
-        else
-        {
-            // this->setEnabled(false);
         }
     }
 }

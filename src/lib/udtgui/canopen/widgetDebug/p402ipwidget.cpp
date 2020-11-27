@@ -55,7 +55,10 @@ void P402IpWidget::readData()
 {
     if (_node)
     {
-        _node->readObject(_ipPositionDemandValueObjectId);
+        if (_nodeProfile402->actualMode() == NodeProfile402::Mode::IP)
+        {
+            _node->readObject(_ipPositionDemandValueObjectId);
+        }
     }
 }
 
@@ -119,7 +122,7 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
             enableRampEvent(_nodeProfile402->isEnableRamp());
         }
 
-        connect(_node, &Node::statusChanged, this, &P402IpWidget::updateData);
+//        connect(_node, &Node::statusChanged, this, &P402IpWidget::updateData);
         connect(&_sendPointSinusoidalTimer, &QTimer::timeout, this, &P402IpWidget::sendDataRecordTargetWithSdo);
 
         _ipTimePeriodUnitSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_UNITS, axis));
@@ -148,11 +151,10 @@ void P402IpWidget::updateData()
 {
     if (_node)
     {
-        if (_node->status() == Node::STARTED)
+        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::Mode::IP)
         {
             this->setEnabled(true);
             _node->readObject(_ipPositionDemandValueObjectId);
-            _node->readObject(_ipPolarityObjectId);
 
             quint8 value = 1;
             _node->writeObject(_ipBufferClearObjectId, QVariant(value));
@@ -164,7 +166,7 @@ void P402IpWidget::updateData()
         }
         else
         {
-            // this->setEnabled(false);
+            stop();
         }
     }
 }

@@ -52,7 +52,6 @@ public:
 
 public slots:
     void setNode(Node *value, uint8_t axis = 0);
-    void updateData();
     void start();
     void stop();
     void gotoStateOEClicked();
@@ -102,10 +101,12 @@ private:
     QLabel *_warningLabel;
     QButtonGroup *_stateMachineGroup;
 
-    void setTimer(int ms);
-    void readData();
+    void statusNodeChanged();
 
-    void modeChanged();
+    void setTimer(int ms);
+    void readDataTimer();
+
+    void modeChanged(uint8_t axis, NodeProfile402::Mode modeNew);
     void stateChanged();
     void isHalted(bool state);
     void eventHappened(quint8 event);
