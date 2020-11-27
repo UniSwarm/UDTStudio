@@ -94,8 +94,9 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis) : NodeProfile(node)
     registerObjId({_controlWordObjectId});
     registerObjId({_statusWordObjectId});
 
+    manageSupportedDriveModes(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
+
     _node->readObject(_modesOfOperationDisplayObjectId);
-    _node->readObject(_supportedDriveModesObjectId);
 
     connect(_node, &Node::statusChanged, this, &NodeProfile402::statusNodeChanged);
 
@@ -394,6 +395,7 @@ void NodeProfile402::statusNodeChanged(Node::Status status)
         _requestedStateMachine = State402::STATE_ReadyToSwitchOn;
         _stateMachineCurrent = State402::STATE_ReadyToSwitchOn;
         _node->readObject(_modesOfOperationDisplayObjectId);
+        _node->readObject(_statusWordObjectId);
     }
     else
     {
@@ -691,9 +693,7 @@ void NodeProfile402::reset()
     _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
     _currentMode = NoMode;
 
-    _node->readObject(_modesOfOperationDisplayObjectId);
-    _node->readObject(_supportedDriveModesObjectId);
-    _node->readObject(_controlWordObjectId);
+    manageSupportedDriveModes(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
 }
 
 void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
@@ -725,7 +725,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
             }
 
             _currentMode = mode;
-            emit modeChanged(_currentMode);
+            emit modeChanged(_axis, _currentMode);
             _state = NONE;
         }
     }

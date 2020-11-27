@@ -101,7 +101,7 @@ public:
     bool isReferenceRamp(void);
 
 signals:
-    void modeChanged(Mode modeNew);
+    void modeChanged(uint8_t axis, Mode modeNew);
     void stateChanged();
     void isHalted(bool state);
     void eventHappened(quint8 Event402);
