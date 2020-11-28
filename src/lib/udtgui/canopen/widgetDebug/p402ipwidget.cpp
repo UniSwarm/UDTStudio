@@ -88,31 +88,14 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
 
         createWidgets();
 
-        _ipTimePeriodUnitSpinBox->setNode(node);
-        _ipTimePeriodIndexSpinBox->setNode(node);
-        _ipPositionRangelLimitMinSpinBox->setNode(node);
-        _ipPositionRangelLimitMaxSpinBox->setNode(node);
-        _ipSoftwarePositionLimitMinSpinBox->setNode(node);
-        _ipSoftwarePositionLimitMaxSpinBox->setNode(node);
-        _ipHomeOffsetSpinBox->setNode(node);
-        //    _ipProfileVelocitySpinBox->setNode(node);
-        //    _ipEndVelocitySpinBox->setNode(node);
-        _ipMaxProfileVelocitySpinBox->setNode(node);
-        _ipMaxMotorSpeedSpinBox->setNode(node);
-        //    _ipProfileAccelerationSpinBox->setNode(node);
-        //    _ipMaxAccelerationSpinBox->setNode(node);
-        //    _ipProfileDecelerationSpinBox->setNode(node);
-        //    _ipMaxDecelerationSpinBox->setNode(node);
-        //    _ipQuickStopDecelerationSpinBox->setNode(node);
-
         _ipPositionDemandValueObjectId.setBusId(_node->busId());
         _ipPositionDemandValueObjectId.setNodeId(_node->nodeId());
         _ipBufferClearObjectId.setBusId(_node->busId());
         _ipPolarityObjectId.setBusId(_node->busId());
 
-        registerObjId({_ipDataRecordObjectId});
-        registerObjId({_ipPositionDemandValueObjectId});
-        registerObjId({_ipPolarityObjectId});
+        registerObjId(_ipDataRecordObjectId);
+        registerObjId(_ipPositionDemandValueObjectId);
+        registerObjId(_ipPolarityObjectId);
         setNodeInterrest(node);
 
         if (!_node->profiles().isEmpty())
@@ -142,6 +125,23 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
 //        _ipMaxDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_DECELERATION, axis));
 //        _ipQuickStopDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_QUICK_STOP_DECELERATION, axis));
 
+        _ipTimePeriodUnitSpinBox->setNode(node);
+        _ipTimePeriodIndexSpinBox->setNode(node);
+        _ipPositionRangelLimitMinSpinBox->setNode(node);
+        _ipPositionRangelLimitMaxSpinBox->setNode(node);
+        _ipSoftwarePositionLimitMinSpinBox->setNode(node);
+        _ipSoftwarePositionLimitMaxSpinBox->setNode(node);
+        _ipHomeOffsetSpinBox->setNode(node);
+        //    _ipProfileVelocitySpinBox->setNode(node);
+        //    _ipEndVelocitySpinBox->setNode(node);
+        _ipMaxProfileVelocitySpinBox->setNode(node);
+        _ipMaxMotorSpeedSpinBox->setNode(node);
+        //    _ipProfileAccelerationSpinBox->setNode(node);
+        //    _ipMaxAccelerationSpinBox->setNode(node);
+        //    _ipProfileDecelerationSpinBox->setNode(node);
+        //    _ipMaxDecelerationSpinBox->setNode(node);
+        //    _ipQuickStopDecelerationSpinBox->setNode(node);
+
         _bus = _node->bus();
         connect(_bus->sync(), &Sync::signalBeforeSync, this, &P402IpWidget::sendDataRecordTargetWithPdo);
     }
@@ -153,7 +153,7 @@ void P402IpWidget::updateData()
     {
         if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::Mode::IP)
         {
-            this->setEnabled(true);
+            setEnabled(true);
             _node->readObject(_ipPositionDemandValueObjectId);
 
             quint8 value = 1;
@@ -359,7 +359,7 @@ void P402IpWidget::dataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    dataLogger->addData({_ipPositionDemandValueObjectId});
+    dataLogger->addData(_ipPositionDemandValueObjectId);
     _dataLoggerWidget->show();
 }
 
@@ -370,10 +370,10 @@ void P402IpWidget::pdoMapping()
     controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     statusWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
-    QList<NodeObjectId> ipRpdoObjectList = {{controlWordObjectId}, {_ipDataRecordObjectId}};
+    QList<NodeObjectId> ipRpdoObjectList = {controlWordObjectId, _ipDataRecordObjectId};
     _node->rpdos().at(0)->writeMapping(ipRpdoObjectList);
 
-    QList<NodeObjectId> ipTpdoObjectList = {{statusWordObjectId}, {_ipPositionDemandValueObjectId}};
+    QList<NodeObjectId> ipTpdoObjectList = {statusWordObjectId, _ipPositionDemandValueObjectId};
     _node->tpdos().at(2)->writeMapping(ipTpdoObjectList);
 }
 

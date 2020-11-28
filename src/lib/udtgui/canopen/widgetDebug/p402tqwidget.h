@@ -41,13 +41,14 @@ class P402TqWidget : public QWidget, public NodeOdSubscriber
     Node *node() const;
 
     void readData();
-  signals:
 
-  public slots:
+signals:
+
+public slots:
     void setNode(Node *value, uint8_t axis = 0);
     void updateData();
 
-  private:
+private:
     Node *_node;
     uint8_t _axis;
 
@@ -85,7 +86,7 @@ class P402TqWidget : public QWidget, public NodeOdSubscriber
     void createWidgets();
 
     // NodeOdSubscriber interface
-  protected:
+protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 

@@ -81,15 +81,6 @@ void P402TqWidget::setNode(Node *node, uint8_t axis)
         _tqCurrentActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_CURRENT_ACTUAL_VALUE, axis);
         _tqDCLinkVoltageObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_DC_LINK_CIRCUIT_VOLTAGE, axis);
 
-        createWidgets();
-
-        _tqTargetSlopeSpinBox->setNode(node);
-        _tqTorqueProfileTypeSpinBox->setNode(node);
-        _tqMaxTorqueSpinBox->setNode(node);
-        _tqMaxCurrentSpinBox->setNode(node);
-        _tqMotorRatedTorqueSpinBox->setNode(node);
-        _tqMotorRatedCurrentSpinBox->setNode(node);
-
         _tqTorqueDemandObjectId.setBusId(_node->busId());
         _tqTorqueDemandObjectId.setNodeId(_node->nodeId());
         _tqTargetTorqueObjectId.setBusId(_node->busId());
@@ -101,11 +92,13 @@ void P402TqWidget::setNode(Node *node, uint8_t axis)
         _tqDCLinkVoltageObjectId.setBusId(_node->busId());
         _tqDCLinkVoltageObjectId.setNodeId(_node->nodeId());
 
-        registerObjId({_tqTargetTorqueObjectId});
-        registerObjId({_tqTorqueDemandObjectId});
-        registerObjId({_tqTorqueActualValueObjectId});
-        registerObjId({_tqCurrentActualValueObjectId});
-        registerObjId({_tqDCLinkVoltageObjectId});
+        createWidgets();
+
+        registerObjId(_tqTargetTorqueObjectId);
+        registerObjId(_tqTorqueDemandObjectId);
+        registerObjId(_tqTorqueActualValueObjectId);
+        registerObjId(_tqCurrentActualValueObjectId);
+        registerObjId(_tqDCLinkVoltageObjectId);
         setNodeInterrest(_node);
 
         _tqTargetSlopeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_SLOPE, axis));
@@ -114,6 +107,12 @@ void P402TqWidget::setNode(Node *node, uint8_t axis)
         _tqMaxCurrentSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_MAX_CURRENT, axis));
         _tqMotorRatedTorqueSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_TORQUE, axis));
         _tqMotorRatedCurrentSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_CURRENT, axis));
+        _tqTargetSlopeSpinBox->setNode(node);
+        _tqTorqueProfileTypeSpinBox->setNode(node);
+        _tqMaxTorqueSpinBox->setNode(node);
+        _tqMaxCurrentSpinBox->setNode(node);
+        _tqMotorRatedTorqueSpinBox->setNode(node);
+        _tqMotorRatedCurrentSpinBox->setNode(node);
 
         int max = _node->nodeOd()->value(_tqMaxTorqueSpinBox->objId()).toInt();
 //        _tqTargetTorqueSlider->setValue(_node->nodeOd()->value(_tqTargetTorqueObjectId).toInt());
@@ -138,7 +137,7 @@ void P402TqWidget::updateData()
     {
         if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::Mode::TQ)
         {
-            this->setEnabled(true);
+            setEnabled(true);
             _node->readObject(_tqTargetTorqueObjectId);
             _node->readObject(_tqTorqueDemandObjectId);
             _node->readObject(_tqTorqueActualValueObjectId);
@@ -171,9 +170,9 @@ void P402TqWidget::dataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    dataLogger->addData({_tqTorqueActualValueObjectId});
-    dataLogger->addData({_tqTargetTorqueObjectId});
-    dataLogger->addData({_tqTorqueDemandObjectId});
+    dataLogger->addData(_tqTorqueActualValueObjectId);
+    dataLogger->addData(_tqTargetTorqueObjectId);
+    dataLogger->addData(_tqTorqueDemandObjectId);
     _dataLoggerWidget->show();
 }
 
@@ -182,12 +181,12 @@ void P402TqWidget::pdoMapping()
     NodeObjectId controlWordObjectId = NodeObjectId(0x6040, 0, QMetaType::Type::UShort);
     NodeObjectId statusWordObjectId = NodeObjectId(0x6041, 0, QMetaType::Type::UShort);
 
-    QList<NodeObjectId> tqRpdoObjectList = {{controlWordObjectId},
-                                            {_tqTargetTorqueObjectId}};
+    QList<NodeObjectId> tqRpdoObjectList = {controlWordObjectId,
+                                            _tqTargetTorqueObjectId};
 
     _node->rpdos().at(0)->writeMapping(tqRpdoObjectList);
-    QList<NodeObjectId> tqTpdoObjectList = {{statusWordObjectId},
-                                            {_tqTorqueDemandObjectId}};
+    QList<NodeObjectId> tqTpdoObjectList = {statusWordObjectId,
+                                            _tqTorqueDemandObjectId};
 
     _node->tpdos().at(2)->writeMapping(tqTpdoObjectList);
 }
@@ -226,13 +225,11 @@ void P402TqWidget::refreshData(NodeObjectId object)
             value = _node->nodeOd()->value(object).toInt();
             _tqDCLinkVoltageLabel->setNum(value);
         }
-
         if (object == _tqTorqueDemandObjectId)
         {
             value = _node->nodeOd()->value(object).toInt();
             _tqTorqueDemandLabel->setNum(value);
         }
-
     }
 }
 

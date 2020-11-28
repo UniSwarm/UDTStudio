@@ -82,19 +82,6 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
 
         createWidgets();
 
-        _vlMinVelocityMinMaxAmountSpinBox->setNode(node);
-        _vlMaxVelocityMinMaxAmountSpinBox->setNode(node);
-        _vlAccelerationDeltaSpeedSpinBox->setNode(node);
-        _vlAccelerationDeltaTimeSpinBox->setNode(node);
-        _vlDecelerationDeltaSpeedSpinBox->setNode(node);
-        _vlDecelerationDeltaTimeSpinBox->setNode(node);
-        _vlQuickStopDeltaSpeedSpinBox->setNode(node);
-        _vlQuickStopDeltaTimeSpinBox->setNode(node);
-        _vlSetPointFactorNumeratorSpinBox->setNode(node);
-        _vlSetPointFactorDenominatorSpinBox->setNode(node);
-        _vlDimensionFactorNumeratorSpinBox->setNode(node);
-        _vlDimensionFactorDenominatorSpinBox->setNode(node);
-
         _vlTargetVelocityObjectId.setBusId(_node->busId());
         _vlVelocityDemandObjectId.setBusId(_node->busId());
         _vlVelocityActualObjectId.setBusId(_node->busId());
@@ -105,9 +92,9 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
         _vlVelocityDemandObjectId.setDataType(QMetaType::Type::Short);
         _vlVelocityActualObjectId.setDataType(QMetaType::Type::Short);
 
-        registerObjId({_vlTargetVelocityObjectId});
-        registerObjId({_vlVelocityDemandObjectId});
-        registerObjId({_vlVelocityActualObjectId});
+        registerObjId(_vlTargetVelocityObjectId);
+        registerObjId(_vlVelocityDemandObjectId);
+        registerObjId(_vlVelocityActualObjectId);
 
         setNodeInterrest(node);
 
@@ -123,6 +110,19 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
         _vlSetPointFactorDenominatorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_SET_POINT_FACTOR_DENOMINATOR, axis));
         _vlDimensionFactorNumeratorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_NUMERATOR, axis));
         _vlDimensionFactorDenominatorSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_DENOMINATOR, axis));
+
+        _vlMinVelocityMinMaxAmountSpinBox->setNode(node);
+        _vlMaxVelocityMinMaxAmountSpinBox->setNode(node);
+        _vlAccelerationDeltaSpeedSpinBox->setNode(node);
+        _vlAccelerationDeltaTimeSpinBox->setNode(node);
+        _vlDecelerationDeltaSpeedSpinBox->setNode(node);
+        _vlDecelerationDeltaTimeSpinBox->setNode(node);
+        _vlQuickStopDeltaSpeedSpinBox->setNode(node);
+        _vlQuickStopDeltaTimeSpinBox->setNode(node);
+        _vlSetPointFactorNumeratorSpinBox->setNode(node);
+        _vlSetPointFactorDenominatorSpinBox->setNode(node);
+        _vlDimensionFactorNumeratorSpinBox->setNode(node);
+        _vlDimensionFactorDenominatorSpinBox->setNode(node);
 
         int max = _node->nodeOd()->value(_vlMaxVelocityMinMaxAmountSpinBox->objId()).toInt();
         _vlTargetVelocitySlider->setValue(_node->nodeOd()->value(_vlTargetVelocityObjectId).toInt());
@@ -244,9 +244,9 @@ void P402VlWidget::dataLogger()
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
 
-    dataLogger->addData({_vlVelocityActualObjectId});
-    dataLogger->addData({_vlTargetVelocityObjectId});
-    dataLogger->addData({_vlVelocityDemandObjectId});
+    dataLogger->addData(_vlVelocityActualObjectId);
+    dataLogger->addData(_vlTargetVelocityObjectId);
+    dataLogger->addData(_vlVelocityDemandObjectId);
 
     _dataLoggerWidget->show();
 }
@@ -258,10 +258,10 @@ void P402VlWidget::pdoMapping()
     controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     statusWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
-    QList<NodeObjectId> vlRpdoObjectList = {{controlWordObjectId}, {_vlTargetVelocityObjectId}};
+    QList<NodeObjectId> vlRpdoObjectList = {controlWordObjectId, _vlTargetVelocityObjectId};
     _node->rpdos().at(0)->writeMapping(vlRpdoObjectList);
 
-    QList<NodeObjectId> vlTpdoObjectList = {{statusWordObjectId}, {_vlVelocityDemandObjectId}};
+    QList<NodeObjectId> vlTpdoObjectList = {statusWordObjectId, _vlVelocityDemandObjectId};
     _node->tpdos().at(2)->writeMapping(vlTpdoObjectList);
 }
 
