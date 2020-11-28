@@ -44,7 +44,7 @@ void OdDb::addDirectory(const QStringList &directories)
 
 void OdDb::searchFile(const QString &directory)
 {
-    QDirIterator it(directory, QStringList() << "*.eds", QDir::Files | QDir::NoSymLinks, QDirIterator::Subdirectories);
+    QDirIterator it(directory, QStringList() << "*.eds", QDir::Files | QDir::NoSymLinks |  QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
 
     while (it.hasNext())
     {
@@ -87,7 +87,7 @@ QString OdDb::file(quint32 deviceType, quint32 vendorID, quint32 productCode, qu
             {
                 if (values.at(i).first == rev)
                 {
-                    qDebug() << "deviceType :" << deviceType << ", vendorID :" << vendorID << ", productCode :" << productCode << ", revisionNumber :" << rev;
+                    // qDebug() << "deviceType :" << deviceType << ", vendorID :" << vendorID << ", productCode :" << productCode << ", revisionNumber :" << rev;
                     return values.at(i).second;
                 }
             }

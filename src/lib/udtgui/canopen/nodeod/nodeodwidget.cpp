@@ -27,12 +27,12 @@
 NodeOdWidget::NodeOdWidget(QWidget *parent)
     : NodeOdWidget(nullptr, parent)
 {
-    _oldProfile = 0;
 }
 
 NodeOdWidget::NodeOdWidget(Node *node, QWidget *parent)
     : QWidget(parent)
 {
+    _oldProfile = 0;
     _node = nullptr;
     createWidgets();
     setNode(node);
@@ -118,7 +118,7 @@ void NodeOdWidget::createWidgets()
     _filterCombobox->addItem(tr("Com. objects"), QVariant("0x1[0-9A-F]{3}"));
     _filterCombobox->addItem(tr("Man. objects"), QVariant("0x[2-4][0-9A-F]{3}"));
     _filterCombobox->addItem(tr("Profile objects"), QVariant("0x[6-9][0-9A-F]{3}"));
-    _filterCombobox->insertSeparator(20);
+    _filterCombobox->insertSeparator(1);
     connect(_filterCombobox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index){this->selectFilter(index);});
     connect(_filterLineEdit, &QLineEdit::textChanged, this, &NodeOdWidget::applyFilterCustom);
 

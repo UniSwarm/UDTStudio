@@ -40,6 +40,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    setWindowTitle(tr("UniSwarm UDTStudio"));
     setWindowIcon(QIcon(":/icons/img/udtstudio.ico"));
     _connectDialog = new CanSettingsDialog(nullptr, this);
     statusBar()->setVisible(true);
@@ -82,13 +83,13 @@ void MainWindow::createDocks()
     setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     setTabPosition(Qt::LeftDockWidgetArea, QTabWidget::North);
 
-    _busNodesManagerDock = new QDockWidget(tr("Bus nodes manager"), this);
+    _busNodesManagerDock = new QDockWidget(tr("Bus nodes"), this);
     _busNodesManagerDock->setObjectName("busNodesManagerDock");
     _busNodesManagerView = new BusNodesManagerView(CanOpen::instance());
     _busNodesManagerDock->setWidget(_busNodesManagerView);
     addDockWidget(Qt::LeftDockWidgetArea, _busNodesManagerDock);
 
-    _canFrameListDock = new QDockWidget(tr("Can frames list view"), this);
+    _canFrameListDock = new QDockWidget(tr("Can frames"), this);
     _canFrameListDock->setObjectName("canFrameListDock");
     _canFrameListView = new CanFrameListView();
     _canFrameListDock->setWidget(_canFrameListView);

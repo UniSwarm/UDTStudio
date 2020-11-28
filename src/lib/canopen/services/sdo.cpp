@@ -1211,7 +1211,7 @@ bool SDO::sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segD
     // the frame must be a size of 8
     for (int i = sdoWriteReqPayload.size(); i < 8; i++)
     {
-        sdoWriteReqPayload.append(static_cast<quint8>(0));
+        sdoWriteReqPayload.append(static_cast<char>(0));
     }
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
@@ -1333,9 +1333,11 @@ QVariant SDO::arrangeDataUpload(QByteArray data, QMetaType::Type type)
     }
 
     case QMetaType::Float:
-        float l;
-        dataStream >> l;
-        return QVariant(l);
+    {
+        float f;
+        f = *(const float *)(data.constData());
+        return QVariant(f);
+    }
 
     case QMetaType::SChar:
     {
@@ -1413,7 +1415,13 @@ void SDO::arrangeDataDownload(QDataStream &request, const QVariant &data)
         break;
 
     case QMetaType::Float:
-        request << data.value<float>();
+        //request << data.value<float>();
+        {
+            float f = data.toFloat();
+            QByteArray bytes;
+            bytes.append((char *)&f, 4);
+            request << bytes;
+        }
         break;
 
     case QMetaType::SChar:

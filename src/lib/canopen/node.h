@@ -87,7 +87,7 @@ public:
     void reset();
 
 signals:
-    void statusChanged(Status status);
+    void statusChanged(Node::Status status);
 
 public slots:
     void sendPreop();

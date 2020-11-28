@@ -340,7 +340,7 @@ QMimeData *NodeOdItemModel::mimeData(const QModelIndexList &indexes) const
             NodeOdItem *item = static_cast<NodeOdItem *>(index.internalPointer());
             if (item->type() == NodeOdItem::TIndex || item->type() == NodeOdItem::TSubIndex)
             {
-                encodedData.append(item->mimeData() + ":");
+                encodedData.append(QString(item->mimeData() + ":").toUtf8());
             }
         }
     }

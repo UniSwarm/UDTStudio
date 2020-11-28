@@ -18,6 +18,8 @@
 
 #include <QApplication>
 #include <QScreen>
+#include <QDebug>
+#include <QDir>
 
 #include <parser/edsparser.h>
 
@@ -31,8 +33,9 @@ int main(int argc, char *argv[])
 
     if (a.arguments().size() > 1)
     {
+        QString fileName = QDir::fromNativeSeparators(a.arguments()[1]);
         EdsParser parser;
-        DeviceDescription *deviceDescription = parser.parse(a.arguments()[1]);
+        DeviceDescription *deviceDescription = parser.parse(fileName);
         w.setDeviceModel(deviceDescription);
     }
     w.setEditable(true);
