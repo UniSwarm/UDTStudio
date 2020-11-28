@@ -411,7 +411,7 @@ void P402IpWidget::createWidgets()
     _ipDataRecordLineEdit->setToolTip("Separated by ,");
     connect(_ipDataRecordLineEdit, &QLineEdit::editingFinished, this, &P402IpWidget::ipDataRecordLineEditFinished);
 
-    _ipPositionDemandValueLabel = new QLabel();
+    _ipPositionDemandValueLabel = new QLabel("-");
     _ipPositionDemandValueLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     name = tr("Position demand value ") + QString("(0x%1) :").arg(QString::number(_ipPositionDemandValueObjectId.index(), 16).toUpper());
     ipLayout->addRow(name, _ipPositionDemandValueLabel);

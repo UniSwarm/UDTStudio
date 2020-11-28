@@ -65,6 +65,8 @@ private:
 
     QSpinBox *_vlTargetVelocitySpinBox;
     QSlider *_vlTargetVelocitySlider;
+    QLabel *_vlSliderMinLabel;
+    QLabel *_vlSliderMaxLabel;
     QLabel *_vlVelocityDemandLabel;
     QLabel *_vlVelocityActualLabel;
 

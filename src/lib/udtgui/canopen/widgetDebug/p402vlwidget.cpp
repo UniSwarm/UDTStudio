@@ -188,6 +188,8 @@ void P402VlWidget::vllMaxVelocityMinMaxAmountSpinboxFinished()
 {
     int max = _node->nodeOd()->value(_vlMaxVelocityMinMaxAmountSpinBox->objId()).toInt();
     _vlTargetVelocitySlider->setRange(-max, max);
+    _vlSliderMinLabel->setNum(-max);
+    _vlSliderMaxLabel->setNum(max);
 }
 
 void P402VlWidget::vlEnableRampClicked(bool ok)
@@ -312,16 +314,26 @@ void P402VlWidget::createWidgets()
     _vlTargetVelocitySlider->setTickPosition(QSlider::TicksBothSides);
     vlLayout->addRow(_vlTargetVelocitySlider);
 
+    QLayout *labelSliderLayout = new QHBoxLayout();
+    _vlSliderMinLabel = new QLabel("min");
+    labelSliderLayout->addWidget(_vlSliderMinLabel);
+    labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
+    labelSliderLayout->addWidget(new QLabel("0"));
+    labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
+    _vlSliderMaxLabel = new QLabel("max");
+    labelSliderLayout->addWidget(_vlSliderMaxLabel);
+    vlLayout->addRow(labelSliderLayout);
+
     connect(_vlTargetVelocitySlider, &QSlider::valueChanged, _vlTargetVelocitySpinBox, &QSpinBox::setValue);
     connect(_vlTargetVelocitySlider, &QSlider::valueChanged, this, &P402VlWidget::vlTargetVelocitySliderChanged);
     connect(_vlTargetVelocitySpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlTargetVelocitySpinboxFinished);
 
-    _vlVelocityDemandLabel = new QLabel();
+    _vlVelocityDemandLabel = new QLabel("-");
     _vlVelocityDemandLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     name = tr("Velocity_demand ") + QString("(0x%1) :").arg(QString::number(_vlVelocityDemandObjectId.index(), 16).toUpper());
     vlLayout->addRow(name, _vlVelocityDemandLabel);
 
-    _vlVelocityActualLabel = new QLabel();
+    _vlVelocityActualLabel = new QLabel("-");
     _vlVelocityActualLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     name = tr("Velocity_actual_value ") + QString("(0x%1) :").arg(QString::number(_vlVelocityActualObjectId.index(), 16));
     vlLayout->addRow(name, _vlVelocityActualLabel);
