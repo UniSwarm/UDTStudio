@@ -65,6 +65,8 @@ class P402TqWidget : public QWidget, public NodeOdSubscriber
     QLabel *_tqDCLinkVoltageLabel;
     QSpinBox *_tqTargetTorqueSpinBox;
     QSlider *_tqTargetTorqueSlider;
+    QLabel *_tqSliderMinLabel;
+    QLabel *_tqSliderMaxLabel;
     IndexSpinBox *_tqTargetSlopeSpinBox;
     IndexSpinBox *_tqTorqueProfileTypeSpinBox;
     IndexSpinBox *_tqMaxTorqueSpinBox;

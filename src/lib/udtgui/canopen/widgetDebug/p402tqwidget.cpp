@@ -118,6 +118,9 @@ void P402TqWidget::setNode(Node *node, uint8_t axis)
         int max = _node->nodeOd()->value(_tqMaxTorqueSpinBox->objId()).toInt();
 //        _tqTargetTorqueSlider->setValue(_node->nodeOd()->value(_tqTargetTorqueObjectId).toInt());
         _tqTargetTorqueSlider->setRange(-max, max);
+        _tqTargetTorqueSlider->setTickInterval(max / 10);
+        _tqSliderMinLabel->setNum(-max);
+        _tqSliderMaxLabel->setNum(max);
 
         if (!_node->profiles().isEmpty())
         {
@@ -245,32 +248,43 @@ void P402TqWidget::createWidgets()
 
     _tqTargetTorqueSpinBox = new QSpinBox();
     _tqTargetTorqueSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    name = tr("Target torque ") + QString("(0x%1) :").arg(QString::number(_tqTargetTorqueObjectId.index(), 16).toUpper());
+    name = tr("Target torque (0x%1) :").arg(QString::number(_tqTargetTorqueObjectId.index(), 16).toUpper());
     tqLayout->addRow(name, _tqTargetTorqueSpinBox);
 
     _tqTargetTorqueSlider = new QSlider(Qt::Horizontal);
+    _tqTargetTorqueSlider->setTickPosition(QSlider::TicksBelow);
     tqLayout->addRow(_tqTargetTorqueSlider);
+
+    QLayout *labelSliderLayout = new QHBoxLayout();
+    _tqSliderMinLabel = new QLabel("min");
+    labelSliderLayout->addWidget(_tqSliderMinLabel);
+    labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
+    labelSliderLayout->addWidget(new QLabel("0"));
+    labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
+    _tqSliderMaxLabel = new QLabel("max");
+    labelSliderLayout->addWidget(_tqSliderMaxLabel);
+    tqLayout->addRow(labelSliderLayout);
 
     connect(_tqTargetTorqueSlider, &QSlider::valueChanged, _tqTargetTorqueSpinBox, &QSpinBox::setValue);
     connect(_tqTargetTorqueSlider, &QSlider::valueChanged, this, &P402TqWidget::tqTargetTorqueSliderChanged);
     connect(_tqTargetTorqueSpinBox, &QSpinBox::editingFinished, this, &P402TqWidget::tqTargetTorqueSpinboxFinished);
 
-    _tqTorqueDemandLabel = new QLabel();
+    _tqTorqueDemandLabel = new QLabel("-");
     _tqTorqueDemandLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     name = tr("Torque demand ") + QString("(0x%1) :").arg(QString::number(_tqTorqueDemandObjectId.index(), 16).toUpper());
     tqLayout->addRow(name, _tqTorqueDemandLabel);
 
-    _tqTorqueActualValueLabel = new QLabel();
+    _tqTorqueActualValueLabel = new QLabel("-");
     _tqTorqueActualValueLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     name = tr("Torque actual value ") + QString("(0x%1) :").arg(QString::number(_tqTorqueActualValueObjectId.index(), 16).toUpper());
     tqLayout->addRow(name, _tqTorqueActualValueLabel);
 
-    _tqCurrentActualValueLabel = new QLabel();
+    _tqCurrentActualValueLabel = new QLabel("-");
     _tqCurrentActualValueLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     name = tr("Current Actual Value ") + QString("(0x%1) :").arg(QString::number(_tqCurrentActualValueObjectId.index(), 16).toUpper());
     tqLayout->addRow(name, _tqCurrentActualValueLabel);
 
-    _tqDCLinkVoltageLabel = new QLabel();
+    _tqDCLinkVoltageLabel = new QLabel("-");
     _tqDCLinkVoltageLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     name = tr("DC Link Voltage ") + QString("(0x%1) :").arg(QString::number(_tqDCLinkVoltageObjectId.index(), 16).toUpper());
     tqLayout->addRow(name, _tqDCLinkVoltageLabel);
