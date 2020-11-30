@@ -149,12 +149,7 @@ void WidgetDebug::start()
             _node->sendStart();
         }
 
-        _stackedWidget->setEnabled(true);
         _timer.start(_logTimerSpinBox->value());
-        _modeGroupBox->setEnabled(true);
-        _stateMachineGroupBox->setEnabled(true);
-        _controlWordGroupBox->setEnabled(true);
-        _statusWordGroupBox->setEnabled(true);
     }
 }
 
@@ -162,14 +157,6 @@ void WidgetDebug::stop()
 {
     if (_node)
     {
-        _haltPushButton->setChecked(false);
-        _stackedWidget->setEnabled(false);
-        _nmtToolBar->setEnabled(true);
-        _modeGroupBox->setEnabled(false);
-        _stateMachineGroupBox->setEnabled(false);
-        _controlWordGroupBox->setEnabled(false);
-        _statusWordGroupBox->setEnabled(false);
-
         _timer.stop();
     }
 }
@@ -457,20 +444,20 @@ void WidgetDebug::createWidgets()
     layout->setMargin(0);
 
     // toolbar nmt
-    _nmtToolBar = new QToolBar(tr("Node commands"));
+    _nmtToolBar = new QToolBar(tr("Axis commands"));
     QActionGroup *groupNmt = new QActionGroup(this);
     groupNmt->setExclusive(true);
     QAction *action;
-    action = groupNmt->addAction(tr("Start"));
+    action = groupNmt->addAction(tr("Start object reading of axis"));
     action->setCheckable(true);
     action->setIcon(QIcon(":/icons/img/icons8-play.png"));
-    action->setStatusTip(tr("Request node to go in started mode"));
+    action->setStatusTip(tr("Start object reading of axis"));
     connect(action, &QAction::triggered, this, &WidgetDebug::start);
 
-    action = groupNmt->addAction(tr("Stop"));
+    action = groupNmt->addAction(tr("Stop object reading of axis"));
     action->setCheckable(true);
     action->setIcon(QIcon(":/icons/img/icons8-stop.png"));
-    action->setStatusTip(tr("Request node to go in stop mode"));
+    action->setStatusTip(tr("Stop object reading of axis"));
     connect(action, &QAction::triggered, this, &WidgetDebug::stop);
 
     _nmtToolBar->addActions(groupNmt->actions());
