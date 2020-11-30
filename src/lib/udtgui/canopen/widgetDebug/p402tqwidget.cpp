@@ -127,7 +127,6 @@ void P402TqWidget::setNode(Node *node, uint8_t axis)
         }
 
         connect(_tqMaxTorqueSpinBox, &QSpinBox::editingFinished, this, &P402TqWidget::tqMaxTorqueSpinboxFinished);
-//        connect(_node, &Node::statusChanged, this, &P402TqWidget::updateData);
     }
 }
 
@@ -164,6 +163,8 @@ void P402TqWidget::tqMaxTorqueSpinboxFinished()
 {
     int max = _node->nodeOd()->value(_tqMaxTorqueSpinBox->objId()).toInt();
     _tqTargetTorqueSlider->setRange(-max, max);
+    _tqSliderMinLabel->setNum(-max);
+    _tqSliderMaxLabel->setNum(max);
 }
 
 void P402TqWidget::dataLogger()
