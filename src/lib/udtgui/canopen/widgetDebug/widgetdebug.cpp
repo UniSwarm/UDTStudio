@@ -106,6 +106,7 @@ void WidgetDebug::setNode(Node *node, uint8_t axis)
         _p402tq->setNode(_node, axis);
 
         modeChanged(_axis, _nodeProfile402->actualMode());
+        stateChanged();
     }
 }
 

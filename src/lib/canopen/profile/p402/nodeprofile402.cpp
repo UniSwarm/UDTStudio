@@ -76,6 +76,8 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis) : NodeProfile(node)
 
     _node = node;
 
+    setNodeInterrest(node);
+
     _modesOfOperationObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, axis);
     _modesOfOperationDisplayObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION_DISPLAY, axis);
     _supportedDriveModesObjectId = IndexDb402::getObjectId(IndexDb402::OD_SUPPORTED_DRIVE_MODES, axis);
@@ -97,6 +99,7 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis) : NodeProfile(node)
     manageSupportedDriveModes(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
 
     _node->readObject(_modesOfOperationDisplayObjectId);
+    _node->readObject(_statusWordObjectId);
 
     connect(_node, &Node::statusChanged, this, &NodeProfile402::statusNodeChanged);
 
@@ -111,7 +114,6 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis) : NodeProfile(node)
     _state = NONE;
 
     _cmdControlWord = 0;
-    setNodeInterrest(node);
 }
 
 NodeProfile402::Mode NodeProfile402::actualMode()
