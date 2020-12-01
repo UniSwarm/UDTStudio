@@ -24,6 +24,7 @@
 #include "profile/p402/nodeprofile402.h"
 
 #include <QFormLayout>
+#include <QGroupBox>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QTabWidget>
@@ -71,6 +72,7 @@ protected:
     QTimer _timer;
     QTimer _readStatusTimer;
 
+    QGroupBox *pidGroupBox;
     IndexSpinBox *_pSpinBox;
     IndexSpinBox *_iSpinBox;
     IndexSpinBox *_dSpinBox;

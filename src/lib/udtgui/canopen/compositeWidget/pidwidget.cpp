@@ -107,6 +107,7 @@ void PidWidget::setMode(PidWidget::ModePid mode)
         break;
     case MODE_PID_VELOCITY:
     {
+        pidGroupBox->setTitle(tr("PID Velocity"));
         actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_P, _axis);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_I, _axis);
@@ -121,6 +122,7 @@ void PidWidget::setMode(PidWidget::ModePid mode)
     }
     case MODE_PID_TORQUE:
     {
+        pidGroupBox->setTitle(tr("PID Torque"));
         actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE, _axis);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_P, _axis);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_I, _axis);
@@ -136,6 +138,7 @@ void PidWidget::setMode(PidWidget::ModePid mode)
     }
     case MODE_PID_POSITION:
     {
+        pidGroupBox->setTitle(tr("PID Position"));
         actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, _axis);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_P, _axis);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_I, _axis);
@@ -400,7 +403,7 @@ void PidWidget::createWidgets()
     QWidget *pidWidget = new QWidget(this);
     QVBoxLayout *actionLayout = new QVBoxLayout(pidWidget);
 
-    QGroupBox *pidGroupBox = new QGroupBox(tr("PID"));
+    pidGroupBox = new QGroupBox(tr("PID"));
     QFormLayout *pidLayout = new QFormLayout();
 
     _pSpinBox = new IndexSpinBox();
