@@ -96,6 +96,8 @@ private:
     void vlUnlockRampEvent(bool ok);
     void vlReferenceRamp(bool ok);
 
+    void updateVelocityDemandLabel();
+
     void dataLogger();
     void pdoMapping();
     void refreshData(NodeObjectId object);

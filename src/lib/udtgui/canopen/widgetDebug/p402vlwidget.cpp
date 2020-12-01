@@ -227,17 +227,53 @@ void P402VlWidget::vlReferenceRampClicked(bool ok)
 void P402VlWidget::vlEnableRampEvent(bool ok)
 {
     _vlEnableRampCheckBox->setChecked(ok);
+    updateVelocityDemandLabel();
 }
 
 void P402VlWidget::vlUnlockRampEvent(bool ok)
 {
     _vlUnlockRampCheckBox->setChecked(ok);
+    updateVelocityDemandLabel();
 }
 
 void P402VlWidget::vlReferenceRamp(bool ok)
 {
     _vlReferenceRampCheckBox->setChecked(ok);
+    updateVelocityDemandLabel();
 }
+
+void P402VlWidget::updateVelocityDemandLabel()
+{
+    QString text;
+    if (!_vlEnableRampCheckBox->isChecked())
+    {
+        text = "Enable Ramp";
+    }
+    if (!_vlUnlockRampCheckBox->isChecked())
+    {
+        if (!text.isEmpty())
+        {
+            text.append(", ");
+        }
+        text += "Unlock Ramp";
+    }
+    if (!_vlReferenceRampCheckBox->isChecked())
+    {
+        if (!text.isEmpty())
+        {
+            text.append(", ");
+        }
+        text += "Not set ramp to zero";
+    }
+    if (!text.isEmpty())
+    {
+        text = "(" + text + "  : Not Activated)";
+    }
+
+    int value = _node->nodeOd()->value(_vlVelocityDemandObjectId).toInt();
+    _vlVelocityDemandLabel->setText( QString("%1 ").arg(QString::number(value, 10)) + text);
+}
+
 
 void P402VlWidget::dataLogger()
 {
@@ -284,8 +320,7 @@ void P402VlWidget::refreshData(NodeObjectId object)
         }
         if (object == _vlVelocityDemandObjectId)
         {
-            value = _node->nodeOd()->value(object).toInt();
-            _vlVelocityDemandLabel->setNum(value);
+            updateVelocityDemandLabel();
         }
         if (object == _vlVelocityActualObjectId)
         {
@@ -425,15 +460,15 @@ void P402VlWidget::createWidgets()
     QFormLayout *modeControlWordLayout = new QFormLayout();
 
     _vlEnableRampCheckBox = new QCheckBox();
-    modeControlWordLayout->addRow(tr("Enable ramp (bit 4) :"), _vlEnableRampCheckBox);
+    modeControlWordLayout->addRow(tr("Enable Ramp (bit 4) :"), _vlEnableRampCheckBox);
     connect(_vlEnableRampCheckBox, &QCheckBox::clicked, this,  &P402VlWidget::vlEnableRampClicked);
 
     _vlUnlockRampCheckBox = new QCheckBox();
-    modeControlWordLayout->addRow(tr("Unlock ramp (bit 5) :"), _vlUnlockRampCheckBox);
+    modeControlWordLayout->addRow(tr("Unlock Ramp (bit 5) :"), _vlUnlockRampCheckBox);
     connect(_vlUnlockRampCheckBox, &QCheckBox::clicked, this,  &P402VlWidget::vlUnlockRampClicked);
 
     _vlReferenceRampCheckBox = new QCheckBox();
-    modeControlWordLayout->addRow(tr("Reference ramp (bit 6) :"), _vlReferenceRampCheckBox);
+    modeControlWordLayout->addRow(tr("Not set ramp to zero (bit 6) :"), _vlReferenceRampCheckBox);
     connect(_vlReferenceRampCheckBox, &QCheckBox::clicked, this,  &P402VlWidget::vlReferenceRampClicked);
 
     modeControlWordGroupBox->setLayout(modeControlWordLayout);
