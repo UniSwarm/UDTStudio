@@ -473,6 +473,7 @@ void NodeProfile402::manageState(const State402 state)
     {
         return;
     }
+
     if (_currentMode == Mode::VL)
     {
         _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Vl->getSpecificControlWord();
@@ -616,6 +617,20 @@ void NodeProfile402::manageStateStatusWord(quint16 statusWord)
     }
     if ((statusWord & SW_StateMask1) == SW_StateSwitchOnDisabled)
     {
+        if (_currentMode == Mode::VL)
+        {
+            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Vl->getSpecificControlWord();
+            emit enableRampEvent(_p402Vl->isEnableRamp());
+            emit referenceRampEvent(_p402Vl->isReferenceRamp());
+            emit unlockRampEvent(_p402Vl->isUnlockRamp());
+        }
+
+        if (_currentMode == Mode::IP)
+        {
+            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Ip->getSpecificControlWord();
+            emit enableRampEvent(_p402Ip->isEnableRamp());
+        }
+
         _stateMachineCurrent = STATE_SwitchOnDisabled;
         if ((_cmdControlWord & CW_Mask) == CW_FaultReset)
         {
