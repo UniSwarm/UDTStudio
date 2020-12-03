@@ -118,15 +118,16 @@ void WidgetDebug::statusNodeChanged()
         if (_node->status() == Node::STARTED)
         {
             modeChanged(_axis, _nodeProfile402->actualMode());
-            _stackedWidget->setEnabled(true);
+            _stackedWidget->setEnabled(false);
             _modeGroupBox->setEnabled(true);
-            _stateMachineGroupBox->setEnabled(true);
-            _controlWordGroupBox->setEnabled(true);
-            _statusWordGroupBox->setEnabled(true);
+            _stateMachineGroupBox->setEnabled(false);
+            _controlWordGroupBox->setEnabled(false);
+            _statusWordGroupBox->setEnabled(false);
         }
         else if ((_node->status() == Node::STOPPED) || (_node->status() == Node::PREOP))
         {
             _timer.stop();
+
             _stackedWidget->setEnabled(false);
             _nmtToolBar->setEnabled(true);
             _modeGroupBox->setEnabled(false);
@@ -137,7 +138,6 @@ void WidgetDebug::statusNodeChanged()
         _p402ip->updateData();
         _p402vl->updateData();
         _p402tq->updateData();
-        _p402Option->updateData();
     }
 }
 
@@ -148,9 +148,16 @@ void WidgetDebug::start()
         if (_node->status() != Node::STARTED)
         {
             _node->sendStart();
-        }
 
+        }
         _timer.start(_logTimerSpinBox->value());
+
+        _stackedWidget->setEnabled(true);
+        _modeGroupBox->setEnabled(true);
+        _stateMachineGroupBox->setEnabled(true);
+        _controlWordGroupBox->setEnabled(true);
+        _statusWordGroupBox->setEnabled(true);
+
     }
 }
 
@@ -159,6 +166,12 @@ void WidgetDebug::stop()
     if (_node)
     {
         _timer.stop();
+
+        _stackedWidget->setEnabled(false);
+        _modeGroupBox->setEnabled(true);
+        _stateMachineGroupBox->setEnabled(false);
+        _controlWordGroupBox->setEnabled(false);
+        _statusWordGroupBox->setEnabled(false);
     }
 }
 
@@ -393,6 +406,7 @@ void WidgetDebug::displayOption402()
     }
     else
     {
+        _p402Option->updateData();
         _stackedWidget->setCurrentWidget(_p402Option);
     }
 }
