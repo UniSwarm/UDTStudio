@@ -155,13 +155,6 @@ void P402VlWidget::updateData()
             _node->readObject(_vlTargetVelocityObjectId);
             _node->readObject(_vlVelocityDemandObjectId);
             _node->readObject(_vlVelocityActualObjectId);
-
-            if (_nodeProfile402)
-            {
-                _nodeProfile402->setEnableRamp(true);
-                _nodeProfile402->setReferenceRamp(true);
-                _nodeProfile402->setUnlockRamp(true);
-            }
         }
     }
 }
@@ -273,7 +266,6 @@ void P402VlWidget::updateVelocityDemandLabel()
     int value = _node->nodeOd()->value(_vlVelocityDemandObjectId).toInt();
     _vlVelocityDemandLabel->setText( QString("%1 ").arg(QString::number(value, 10)) + text);
 }
-
 
 void P402VlWidget::dataLogger()
 {

@@ -77,7 +77,6 @@ void P402OptionWidget::setNode(Node *node, uint8_t axis)
         registerObjId({_faultReactionObjectId});
 
         setNodeInterrest(node);
-//        connect(_node, &Node::statusChanged, this, &P402OptionWidget::updateData);
     }
 }
 

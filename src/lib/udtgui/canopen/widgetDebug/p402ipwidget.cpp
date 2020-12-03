@@ -156,13 +156,9 @@ void P402IpWidget::updateData()
             setEnabled(true);
             _node->readObject(_ipPositionDemandValueObjectId);
 
+            // TODO : move that to NodePorfile402IP
             quint8 value = 1;
             _node->writeObject(_ipBufferClearObjectId, QVariant(value));
-
-            if (_nodeProfile402)
-            {
-                _nodeProfile402->setEnableRamp(true);
-            }
         }
         else
         {
@@ -239,6 +235,30 @@ void P402IpWidget::ipEnableRampClicked(int id)
     {
         _nodeProfile402->setEnableRamp(id);
     }
+    updatePositionDemandLabel();
+}
+
+void P402IpWidget::enableRampEvent(bool ok)
+{
+    _ipEnableRampCheckBox->setChecked(ok);
+    updatePositionDemandLabel();
+}
+
+void P402IpWidget::updatePositionDemandLabel()
+{
+    QString text;
+    if (!_ipEnableRampCheckBox->isChecked())
+    {
+        text = "Enable Interpolation";
+    }
+
+    if (!text.isEmpty())
+    {
+        text = "(" + text + "  : Not Activated)";
+    }
+
+    int value = _node->nodeOd()->value(_ipPositionDemandValueObjectId).toInt();
+    _ipPositionDemandValueLabel->setText( QString("%1 ").arg(QString::number(value, 10)) + text);
 }
 
 // each period * 5 -> we send 5 set-point, for have always value in buffer in device
@@ -379,20 +399,13 @@ void P402IpWidget::pdoMapping()
 
 void P402IpWidget::refreshData(NodeObjectId object)
 {
-    int value;
     if (_node->nodeOd()->indexExist(object.index()))
     {
         if (object == _ipPositionDemandValueObjectId)
         {
-            value = _node->nodeOd()->value(object).toInt();
-            _ipPositionDemandValueLabel->setNum(value);
+            updatePositionDemandLabel();
         }
     }
-}
-
-void P402IpWidget::enableRampEvent(bool ok)
-{
-    _ipEnableRampCheckBox->setChecked(ok);
 }
 
 void P402IpWidget::createWidgets()

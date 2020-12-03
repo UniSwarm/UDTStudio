@@ -108,7 +108,9 @@ private:
     void ipPolarityEditingFinished();
     void ipClearBufferClicked();
     void ipEnableRampClicked(int id);
-    void ipHaltClicked(int id);
+    void enableRampEvent(bool ok);
+
+    void updatePositionDemandLabel(void);
 
     void goTargetPosition();
     void stopTargetPosition();
@@ -121,7 +123,7 @@ private:
     void pdoMapping();
     void refreshData(NodeObjectId object);
 
-    void enableRampEvent(bool ok);
+
 
     void createWidgets();
 
