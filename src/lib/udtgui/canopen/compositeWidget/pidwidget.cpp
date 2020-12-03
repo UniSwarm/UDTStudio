@@ -291,7 +291,8 @@ void PidWidget::manageMeasurement()
         _dataLogger->start(10);
         _dataLogger->clear();
         _state = LAUCH_DATALOGGER;
-        _timer.start(100);
+        _timer.start(10);
+        _readStatusTimer.start(10);
         break;
     case PidWidget::LAUCH_DATALOGGER:
         _state = LAUCH_FIRST_TARGET;
@@ -303,11 +304,12 @@ void PidWidget::manageMeasurement()
         break;
     case PidWidget::LAUCH_SECOND_TARGET:
         stopSecondMeasurement();
-        _timer.start(_windowSpinBox->value());
+        _timer.start(_windowSpinBox->value() + _stopDataLoggerSpinBox->value());
         _state = STOP_DATALOGGER;
         break;
     case PidWidget::STOP_DATALOGGER:
         stopDataLogger();
+        _readStatusTimer.stop();
         _state = NONE;
         break;
     }
@@ -365,7 +367,6 @@ void PidWidget::stopSecondMeasurement()
         _nodeProfile402->setTarget(0);
         break;
     }
-
 }
 
 void PidWidget::stopDataLogger()
@@ -380,16 +381,13 @@ void PidWidget::stopDataLogger()
 
 void PidWidget::readStatus()
 {
-    if (_actualValueSpinBox->parentWidget()->isVisible())
-    {
-        _pSpinBox->readObject();
-        _iSpinBox->readObject();
-        _dSpinBox->readObject();
-        _actualValueSpinBox->readObject();
-        _tempMotorSpinBox->readObject();
-        _tempDriver1SpinBox->readObject();
-        _tempDriver2SpinBox->readObject();
-    }
+    _pSpinBox->readObject();
+    _iSpinBox->readObject();
+    _dSpinBox->readObject();
+    _actualValueSpinBox->readObject();
+    _tempMotorSpinBox->readObject();
+    _tempDriver1SpinBox->readObject();
+    _tempDriver2SpinBox->readObject();
 }
 
 void PidWidget::createWidgets()
@@ -497,7 +495,6 @@ void PidWidget::statusNodeChanged(Node::Status status)
     if (status == Node::STARTED)
     {
         this->setEnabled(true);
-        _readStatusTimer.start(500);
     }
     else
     {
