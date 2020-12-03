@@ -36,16 +36,13 @@ NodeProfile402Vl::NodeProfile402Vl(Node *node, uint8_t axis, NodeProfile402 *nod
     _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, axis);
     _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     _controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    registerObjId({_targetObjectId});
-    registerObjId({_controlWordObjectId});
-
-    _mode = 2;
-
-    _enableRamp = false;
-    _referenceRamp = false;
-    _unlockRamp = false;
 
     setNodeInterrest(_node);
+    registerObjId(_targetObjectId);
+    registerObjId(_controlWordObjectId);
+
+    _mode = 2;
+    _cmdControlWordSpecific = CW_VL_EnableRamp | CW_VL_UnlockRamp | CW_VL_ReferenceRamp;
 }
 
 void NodeProfile402Vl::setTarget(qint16 velocity)
@@ -53,76 +50,67 @@ void NodeProfile402Vl::setTarget(qint16 velocity)
     _node->writeObject(_targetObjectId, QVariant(velocity));
 }
 
-quint16 NodeProfile402Vl::enableMode(quint16 cmdControlWord)
+quint16 NodeProfile402Vl::getSpecificControlWord()
 {
-    cmdControlWord |= CW_VL_EnableRamp;
-    cmdControlWord |= CW_VL_UnlockRamp;
-    cmdControlWord |= CW_VL_ReferenceRamp;
-    return cmdControlWord;
+    return _cmdControlWordSpecific;
 }
 
-quint16 NodeProfile402Vl::setEnableRamp(quint16 cmdControlWord, bool ok)
+void NodeProfile402Vl::setEnableRamp(bool ok)
 {
     if (ok)
     {
-        cmdControlWord |= CW_VL_EnableRamp;
+        _cmdControlWordSpecific |= CW_VL_EnableRamp;
     }
     else
     {
-        cmdControlWord = (cmdControlWord & ~CW_VL_EnableRamp);
+        _cmdControlWordSpecific = (_cmdControlWordSpecific & ~CW_VL_EnableRamp);
     }
-    return cmdControlWord;
 }
 
 bool NodeProfile402Vl::isEnableRamp(void)
 {
-    return _enableRamp;
+    return _cmdControlWordSpecific & CW_VL_EnableRamp;
 }
 
-quint16 NodeProfile402Vl::setUnlockRamp(quint16 cmdControlWord, bool ok)
+void NodeProfile402Vl::setUnlockRamp(bool ok)
 {
     if (ok)
     {
-        cmdControlWord |= CW_VL_UnlockRamp;
+        _cmdControlWordSpecific |= CW_VL_UnlockRamp;
     }
     else
     {
-        cmdControlWord = (cmdControlWord & ~CW_VL_UnlockRamp);
+        _cmdControlWordSpecific = (_cmdControlWordSpecific & ~CW_VL_UnlockRamp);
     }
-    return cmdControlWord;
 }
 
 bool NodeProfile402Vl::isUnlockRamp(void)
 {
-    return _unlockRamp;
+   return _cmdControlWordSpecific & CW_VL_UnlockRamp;
 }
 
-quint16 NodeProfile402Vl::setReferenceRamp(quint16 cmdControlWord, bool ok)
+void NodeProfile402Vl::setReferenceRamp(bool ok)
 {
     if (ok)
     {
-        cmdControlWord |= CW_VL_ReferenceRamp;
+        _cmdControlWordSpecific |= CW_VL_ReferenceRamp;
     }
     else
     {
-        cmdControlWord = (cmdControlWord & ~CW_VL_ReferenceRamp);
+        _cmdControlWordSpecific = (_cmdControlWordSpecific & ~CW_VL_ReferenceRamp);
     }
-    return cmdControlWord;
 }
 
 bool NodeProfile402Vl::isReferenceRamp(void)
 {
-    return _referenceRamp;
+    return _cmdControlWordSpecific & CW_VL_ReferenceRamp;
 }
 
 void NodeProfile402Vl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (objId == _targetObjectId)
     {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-        }
-        else
+        if (flags != SDO::FlagsRequest::Error)
         {
             emit isAppliedTarget();
         }
@@ -130,27 +118,13 @@ void NodeProfile402Vl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
 
     if ((objId == _controlWordObjectId) && _nodeProfile402->actualMode() == _mode)
     {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-        }
-        else
+        if (flags != SDO::FlagsRequest::Error)
         {
             quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
-            if (((controlWord & CW_VL_EnableRamp) >> 4) != _enableRamp)
-            {
-                _enableRamp = (controlWord & CW_VL_EnableRamp) >> 4;
-                emit _nodeProfile402->enableRampEvent(_enableRamp);
-            }
-            if (((controlWord & CW_VL_ReferenceRamp) >> 6) != _referenceRamp)
-            {
-                _referenceRamp = (controlWord & CW_VL_ReferenceRamp) >> 6;
-                emit _nodeProfile402->referenceRampEvent(_referenceRamp);
-            }
-            if (((controlWord & CW_VL_UnlockRamp) >> 5) != _unlockRamp)
-            {
-                _unlockRamp = (controlWord & CW_VL_UnlockRamp) >> 5;
-                emit _nodeProfile402->unlockRampEvent(_unlockRamp);
-            }
+            _cmdControlWordSpecific = (controlWord & (CW_VL_EnableRamp | CW_VL_ReferenceRamp | CW_VL_UnlockRamp));
+            emit _nodeProfile402->enableRampEvent((_cmdControlWordSpecific & CW_VL_EnableRamp ) >> 4);
+            emit _nodeProfile402->referenceRampEvent((_cmdControlWordSpecific & CW_VL_ReferenceRamp ) >> 6);
+            emit _nodeProfile402->unlockRampEvent((_cmdControlWordSpecific & CW_VL_UnlockRamp ) >> 5);
         }
     }
 }

@@ -37,9 +37,9 @@ public:
 
     void setTarget(qint32 position);
 
-    quint16 enableMode(quint16 cmdControlWord);
+    quint16 getSpecificControlWord();
 
-    quint16 setEnableRamp(quint16 cmdControlWord, bool ok);
+    void setEnableRamp(bool ok);
     bool isEnableRamp(void);
 
 signals:
@@ -53,10 +53,8 @@ private:
 
     quint8 _mode;
     NodeObjectId _controlWordObjectId;
-    quint16 _cmdControlWord;
     NodeObjectId _targetObjectId;
-
-    bool _enableRamp;
+    quint16 _cmdControlWordSpecific;
 
     // NodeOdSubscriber interface
 public:

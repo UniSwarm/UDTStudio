@@ -26,8 +26,12 @@ NodeProfile402Tq::NodeProfile402Tq(Node *node, uint8_t axis, NodeProfile402 *nod
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TARGET_TORQUE, axis);
     _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    registerObjId({_targetObjectId});
+
     setNodeInterrest(_node);
+    registerObjId(_targetObjectId);
+
+    _mode = 4;
+    _cmdControlWordSpecific = 0;
 }
 
 void NodeProfile402Tq::setTarget(qint16 torque)
@@ -35,14 +39,16 @@ void NodeProfile402Tq::setTarget(qint16 torque)
     _node->writeObject(_targetObjectId, QVariant(torque));
 }
 
+quint16 NodeProfile402Tq::getSpecificControlWord()
+{
+    return _cmdControlWordSpecific;
+}
+
 void NodeProfile402Tq::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (objId == _targetObjectId)
     {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-        }
-        else
+        if (flags != SDO::FlagsRequest::Error)
         {
             emit isAppliedTarget();
         }

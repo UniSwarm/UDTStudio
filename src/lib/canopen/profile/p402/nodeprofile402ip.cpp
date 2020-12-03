@@ -34,12 +34,13 @@ NodeProfile402Ip::NodeProfile402Ip(Node *node, uint8_t axis, NodeProfile402 *nod
     _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, axis);
     _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     _controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    registerObjId({_targetObjectId});
-    registerObjId({_controlWordObjectId});
+
     setNodeInterrest(_node);
-    _enableRamp = false;
+    registerObjId(_targetObjectId);
+    registerObjId(_controlWordObjectId);
 
     _mode = 7;
+    _cmdControlWordSpecific = CW_IP_EnableRamp;
 }
 
 void NodeProfile402Ip::setTarget(qint32 position)
@@ -47,55 +48,44 @@ void NodeProfile402Ip::setTarget(qint32 position)
     _node->writeObject(_targetObjectId, QVariant(position));
 }
 
-quint16 NodeProfile402Ip::enableMode(quint16 cmdControlWord)
+quint16 NodeProfile402Ip::getSpecificControlWord()
 {
-    cmdControlWord |= CW_IP_EnableRamp;
-    return cmdControlWord;
+    return _cmdControlWordSpecific & CW_IP_EnableRamp;
 }
 
-quint16 NodeProfile402Ip::setEnableRamp(quint16 cmdControlWord, bool ok)
+void NodeProfile402Ip::setEnableRamp(bool ok)
 {
     if (ok)
     {
-        cmdControlWord |= CW_IP_EnableRamp;
+        _cmdControlWordSpecific |= CW_IP_EnableRamp;
     }
     else
     {
-        cmdControlWord = (cmdControlWord & ~CW_IP_EnableRamp);
+        _cmdControlWordSpecific = (_cmdControlWordSpecific & ~CW_IP_EnableRamp);
     }
-    return cmdControlWord;
 }
 
 bool NodeProfile402Ip::isEnableRamp(void)
 {
-    return _enableRamp;
+    return _cmdControlWordSpecific & CW_IP_EnableRamp;
 }
 
 void NodeProfile402Ip::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (objId == _targetObjectId)
     {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-        }
-        else
+        if (flags != SDO::FlagsRequest::Error)
         {
             emit isAppliedTarget();
         }
     }
     if ((objId == _controlWordObjectId) && _nodeProfile402->actualMode() == _mode)
     {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-        }
-        else
+        if (flags != SDO::FlagsRequest::Error)
         {
             quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
-            if (((controlWord & CW_IP_EnableRamp) >> 4) != (_enableRamp))
-            {
-                _enableRamp = (controlWord & CW_IP_EnableRamp);
-                emit _nodeProfile402->enableRampEvent((controlWord & CW_IP_EnableRamp));
-            }
+            _cmdControlWordSpecific = (controlWord & (CW_IP_EnableRamp));
+            emit _nodeProfile402->enableRampEvent((controlWord & CW_IP_EnableRamp));
         }
     }
 }

@@ -37,15 +37,15 @@ public:
 
     void setTarget(qint16 velocity);
 
-    quint16 enableMode(quint16 cmdControlWord);
+    quint16 getSpecificControlWord();
 
-    quint16 setEnableRamp(quint16 cmdControlWord, bool ok);
+    void setEnableRamp(bool ok);
     bool isEnableRamp(void);
 
-    quint16 setUnlockRamp(quint16 cmdControlWord, bool ok);
+    void setUnlockRamp(bool ok);
     bool isUnlockRamp(void);
 
-    quint16 setReferenceRamp(quint16 cmdControlWord, bool ok);
+    void setReferenceRamp(bool ok);
     bool isReferenceRamp(void);
 
 signals:
@@ -63,10 +63,7 @@ private:
 
     NodeObjectId _controlWordObjectId;
     NodeObjectId _targetObjectId;
-
-    bool _enableRamp;
-    bool _referenceRamp;
-    bool _unlockRamp;
+    quint16 _cmdControlWordSpecific;
 
     // NodeOdSubscriber interface
 public:

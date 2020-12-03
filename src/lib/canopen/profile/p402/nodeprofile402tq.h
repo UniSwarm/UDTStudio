@@ -36,6 +36,8 @@ public:
 
     void setTarget(qint16 torque);
 
+    quint16 getSpecificControlWord();
+
 signals:
     void isAppliedTarget();
 
@@ -44,7 +46,9 @@ private:
     uint8_t _axis;
     NodeProfile402 *_nodeProfile402;
 
+    quint8 _mode;
     NodeObjectId _targetObjectId;
+    quint16 _cmdControlWordSpecific;
 
     // NodeOdSubscriber interface
 public:

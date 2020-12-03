@@ -147,7 +147,7 @@ private:
 
     void statusNodeChanged(Node::Status status);
 
-    void enableRamp(quint16 cmdControlWord);
+    void activeSpecificBitControlWord(quint16 &cmdControlWord);
     void manageState(const State402 state);
 
     void manageEventStatusWord(quint16 statusWord);
