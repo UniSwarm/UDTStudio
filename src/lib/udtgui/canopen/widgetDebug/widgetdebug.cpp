@@ -124,7 +124,7 @@ void WidgetDebug::statusNodeChanged()
             _controlWordGroupBox->setEnabled(false);
             _statusWordGroupBox->setEnabled(false);
         }
-        else if ((_node->status() == Node::STOPPED) || (_node->status() == Node::PREOP))
+        else
         {
             _timer.stop();
 
