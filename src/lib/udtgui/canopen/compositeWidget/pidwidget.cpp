@@ -109,14 +109,14 @@ void PidWidget::setMode(PidWidget::ModePid mode)
     {
         pidGroupBox->setTitle(tr("PID Velocity"));
         actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis);
-        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_P, _axis);
-        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_I, _axis);
-        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_D, _axis);
-        period_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_PERIOD_US, _axis);
-        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_INPUT, _axis);
-        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_ERROR, _axis);
-        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_INTEGRATOR, _axis);
-        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_SPEED_OUTPUT, _axis);
+        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_P, _axis);
+        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_I, _axis);
+        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_D, _axis);
+        period_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PERIOD_US, _axis);
+        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_INPUT, _axis);
+        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_ERROR, _axis);
+        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_INTEGRATOR, _axis);
+        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_OUTPUT, _axis);
         target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, _axis);
         break;
     }
