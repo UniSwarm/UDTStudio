@@ -67,15 +67,15 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)
     _widgetDebug->setNode(node, axis);
     _tabWidget->addTab(_widgetDebug, " " + _widgetDebug->title() + " ");
 
-    _pidTorqueWidget->setNode(node, axis);
     _pidTorqueWidget->setMode(PidWidget::MODE_PID_TORQUE);
+    _pidTorqueWidget->setNode(node, axis);
     _tabWidget->addTab(_pidTorqueWidget, " " + _pidTorqueWidget->title() + " ");
 
-    _pidVelocityWidget->setNode(node, axis);
     _pidVelocityWidget->setMode(PidWidget::MODE_PID_VELOCITY);
+    _pidVelocityWidget->setNode(node, axis);
     _tabWidget->addTab(_pidVelocityWidget, " " + _pidVelocityWidget->title() + " ");
 
-    _pidPositionWidget->setNode(node, axis);
     _pidPositionWidget->setMode(PidWidget::MODE_PID_POSITION);
+    _pidPositionWidget->setNode(node, axis);
     _tabWidget->addTab(_pidPositionWidget, " " + _pidPositionWidget->title() + " ");
 }

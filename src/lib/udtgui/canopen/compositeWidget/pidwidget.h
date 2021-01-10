@@ -76,7 +76,9 @@ protected:
     IndexSpinBox *_pSpinBox;
     IndexSpinBox *_iSpinBox;
     IndexSpinBox *_dSpinBox;
-    IndexSpinBox *_periodSpinBox;
+    IndexSpinBox *_minSpinBox;
+    IndexSpinBox *_maxSpinBox;
+    IndexSpinBox *_thresholdSpinBox;
 
     IndexSpinBox *_actualValueSpinBox;
     IndexSpinBox *_tempMotorSpinBox;
@@ -114,6 +116,7 @@ protected:
     void stopSecondMeasurement();
     void stopDataLogger();
     void readStatus();
+    void setIMode();
 };
 
 #endif  // PIDWIDGET_H
