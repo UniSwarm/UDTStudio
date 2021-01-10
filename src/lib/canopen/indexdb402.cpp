@@ -350,78 +350,26 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
             return {static_cast<quint16>((0x4006 + axisDecal)), 0x3};
         case OD_MS_BLDC_BRIDGE_PWM:
             return {static_cast<quint16>((0x4006 + axisDecal)), 0x4};
-        case OD_MS_VELOCITY_INPUT:
-            return {static_cast<quint16>((0x4040 + axisDecal)), 0x1};
-        case OD_MS_VELOCITY_ERROR:
-            return {static_cast<quint16>((0x4040 + axisDecal)), 0x2};
-        case OD_MS_VELOCITY_INTEGRATOR:
-            return {static_cast<quint16>((0x4040 + axisDecal)), 0x3};
-        case OD_MS_VELOCITY_OUTPUT:
-            return {static_cast<quint16>((0x4040 + axisDecal)), 0x4};
-        case OD_MS_VELOCITY_P:
-            return {static_cast<quint16>((0x4041 + axisDecal)), 0x1};
-        case OD_MS_VELOCITY_I:
-            return {static_cast<quint16>((0x4041 + axisDecal)), 0x2};
-        case OD_MS_VELOCITY_D:
-            return {static_cast<quint16>((0x4041 + axisDecal)), 0x3};
-        case OD_MS_VELOCITY_PERIOD_US:
-            return {static_cast<quint16>((0x4041 + axisDecal)), 0x4};
-        case OD_MS_VELOCITY_SENSOR_SELECT:
-            return {static_cast<quint16>((0x4042 + axisDecal)), 0x1};
-        case OD_MS_VELOCITY_NUMERATOR:
-            return {static_cast<quint16>((0x4042 + axisDecal)), 0x2};
-        case OD_MS_VELOCITY_DENOMINATOR:
-            return {static_cast<quint16>((0x4042 + axisDecal)), 0x3};
-        case OD_MS_VELOCITY_OFFSET:
-            return {static_cast<quint16>((0x4042 + axisDecal)), 0x4};
-        case OD_MS_VELOCITY_MIN:
-            return {static_cast<quint16>((0x4042 + axisDecal)), 0x5};
-        case OD_MS_VELOCITY_MAX:
-            return {static_cast<quint16>((0x4042 + axisDecal)), 0x6};
-        case OD_MS_POSITION_INPUT:
-            return {static_cast<quint16>((0x4060 + axisDecal)), 0x1};
-        case OD_MS_POSITION_ERROR:
-            return {static_cast<quint16>((0x4060 + axisDecal)), 0x2};
-        case OD_MS_POSITION_INTEGRATOR:
-            return {static_cast<quint16>((0x4060 + axisDecal)), 0x3};
-        case OD_MS_POSITION_OUTPUT:
-            return {static_cast<quint16>((0x4060 + axisDecal)), 0x4};
-        case OD_MS_POSITION_P:
-            return {static_cast<quint16>((0x4061 + axisDecal)), 0x1};
-        case OD_MS_POSITION_I:
-            return {static_cast<quint16>((0x4061 + axisDecal)), 0x2};
-        case OD_MS_POSITION_D:
-            return {static_cast<quint16>((0x4061 + axisDecal)), 0x3};
-        case OD_MS_POSITION_PERIOD_US:
-            return {static_cast<quint16>((0x4061 + axisDecal)), 0x4};
-        case OD_MS_POSITION_SENSOR_SELECT:
-            return {static_cast<quint16>((0x4062 + axisDecal)), 0x1};
-        case OD_MS_POSITION_NUMERATOR:
-            return {static_cast<quint16>((0x4062 + axisDecal)), 0x2};
-        case OD_MS_POSITION_DENOMINATOR:
-            return {static_cast<quint16>((0x4062 + axisDecal)), 0x3};
-        case OD_MS_POSITION_OFFSET:
-            return {static_cast<quint16>((0x4062 + axisDecal)), 0x4};
-        case OD_MS_POSITION_MIN:
-            return {static_cast<quint16>((0x4062 + axisDecal)), 0x5};
-        case OD_MS_POSITION_MAX:
-            return {static_cast<quint16>((0x4062 + axisDecal)), 0x6};
-        case OD_MS_TORQUE_INPUT:
+        case OD_MS_TORQUE_PID_INPUT:
             return {static_cast<quint16>((0x4020 + axisDecal)), 0x1};
-        case OD_MS_TORQUE_ERROR:
+        case OD_MS_TORQUE_PID_ERROR:
             return {static_cast<quint16>((0x4020 + axisDecal)), 0x2};
-        case OD_MS_TORQUE_INTEGRATOR:
+        case OD_MS_TORQUE_PID_INTEGRATOR:
             return {static_cast<quint16>((0x4020 + axisDecal)), 0x3};
-        case OD_MS_TORQUE_OUTPUT:
+        case OD_MS_TORQUE_PID_OUTPUT:
             return {static_cast<quint16>((0x4020 + axisDecal)), 0x4};
-        case OD_MS_TORQUE_P:
+        case OD_MS_TORQUE_PID_P:
             return {static_cast<quint16>((0x4021 + axisDecal)), 0x1};
-        case OD_MS_TORQUE_I:
+        case OD_MS_TORQUE_PID_I:
             return {static_cast<quint16>((0x4021 + axisDecal)), 0x2};
-        case OD_MS_TORQUE_D:
+        case OD_MS_TORQUE_PID_D:
             return {static_cast<quint16>((0x4021 + axisDecal)), 0x3};
-        case OD_MS_TORQUE_PERIOD_US:
+        case OD_MS_VELOCITY_PID_MIN:
             return {static_cast<quint16>((0x4021 + axisDecal)), 0x4};
+        case OD_MS_VELOCITY_PID_MAX:
+            return {static_cast<quint16>((0x4021 + axisDecal)), 0x5};
+        case OD_MS_VELOCITY_PID_THRESHOLD:
+            return {static_cast<quint16>((0x4021 + axisDecal)), 0x6};
         case OD_MS_TORQUE_SENSOR_SELECT:
             return {static_cast<quint16>((0x4022 + axisDecal)), 0x1};
         case OD_MS_TORQUE_NUMERATOR:
@@ -434,6 +382,70 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
             return {static_cast<quint16>((0x4022 + axisDecal)), 0x5};
         case OD_MS_TORQUE_MAX:
             return {static_cast<quint16>((0x4022 + axisDecal)), 0x6};
+        case OD_MS_VELOCITY_PID_INPUT:
+            return {static_cast<quint16>((0x4040 + axisDecal)), 0x1};
+        case OD_MS_VELOCITY_PID_ERROR:
+            return {static_cast<quint16>((0x4040 + axisDecal)), 0x2};
+        case OD_MS_VELOCITY_PID_INTEGRATOR:
+            return {static_cast<quint16>((0x4040 + axisDecal)), 0x3};
+        case OD_MS_VELOCITY_PID_OUTPUT:
+            return {static_cast<quint16>((0x4040 + axisDecal)), 0x4};
+        case OD_MS_VELOCITY_PID_P:
+            return {static_cast<quint16>((0x4041 + axisDecal)), 0x1};
+        case OD_MS_VELOCITY_PID_I:
+            return {static_cast<quint16>((0x4041 + axisDecal)), 0x2};
+        case OD_MS_VELOCITY_PID_D:
+            return {static_cast<quint16>((0x4041 + axisDecal)), 0x3};
+        case OD_MS_TORQUE_PID_MIN:
+            return {static_cast<quint16>((0x4041 + axisDecal)), 0x4};
+        case OD_MS_TORQUE_PID_MAX:
+            return {static_cast<quint16>((0x4041 + axisDecal)), 0x5};
+        case OD_MS_TORQUE_PID_THRESHOLD:
+            return {static_cast<quint16>((0x4041 + axisDecal)), 0x6};
+        case OD_MS_VELOCITY_SENSOR_SELECT:
+            return {static_cast<quint16>((0x4042 + axisDecal)), 0x1};
+        case OD_MS_VELOCITY_NUMERATOR:
+            return {static_cast<quint16>((0x4042 + axisDecal)), 0x2};
+        case OD_MS_VELOCITY_DENOMINATOR:
+            return {static_cast<quint16>((0x4042 + axisDecal)), 0x3};
+        case OD_MS_VELOCITY_OFFSET:
+            return {static_cast<quint16>((0x4042 + axisDecal)), 0x4};
+        case OD_MS_VELOCITY_MIN:
+            return {static_cast<quint16>((0x4042 + axisDecal)), 0x5};
+        case OD_MS_VELOCITY_MAX:
+            return {static_cast<quint16>((0x4042 + axisDecal)), 0x6};
+        case OD_MS_POSITION_PID_INPUT:
+            return {static_cast<quint16>((0x4060 + axisDecal)), 0x1};
+        case OD_MS_POSITION_PID_ERROR:
+            return {static_cast<quint16>((0x4060 + axisDecal)), 0x2};
+        case OD_MS_POSITION_PID_INTEGRATOR:
+            return {static_cast<quint16>((0x4060 + axisDecal)), 0x3};
+        case OD_MS_POSITION_PID_OUTPUT:
+            return {static_cast<quint16>((0x4060 + axisDecal)), 0x4};
+        case OD_MS_POSITION_PID_P:
+            return {static_cast<quint16>((0x4061 + axisDecal)), 0x1};
+        case OD_MS_POSITION_PID_I:
+            return {static_cast<quint16>((0x4061 + axisDecal)), 0x2};
+        case OD_MS_POSITION_PID_D:
+            return {static_cast<quint16>((0x4061 + axisDecal)), 0x3};
+        case OD_MS_POSITION_PID_MIN:
+            return {static_cast<quint16>((0x4061 + axisDecal)), 0x4};
+        case OD_MS_POSITION_PID_MAX:
+            return {static_cast<quint16>((0x4061 + axisDecal)), 0x5};
+        case OD_MS_POSITION_PID_THRESHOLD:
+            return {static_cast<quint16>((0x4061 + axisDecal)), 0x6};
+        case OD_MS_POSITION_SENSOR_SELECT:
+            return {static_cast<quint16>((0x4062 + axisDecal)), 0x1};
+        case OD_MS_POSITION_NUMERATOR:
+            return {static_cast<quint16>((0x4062 + axisDecal)), 0x2};
+        case OD_MS_POSITION_DENOMINATOR:
+            return {static_cast<quint16>((0x4062 + axisDecal)), 0x3};
+        case OD_MS_POSITION_OFFSET:
+            return {static_cast<quint16>((0x4062 + axisDecal)), 0x4};
+        case OD_MS_POSITION_MIN:
+            return {static_cast<quint16>((0x4062 + axisDecal)), 0x5};
+        case OD_MS_POSITION_MAX:
+            return {static_cast<quint16>((0x4062 + axisDecal)), 0x6};
         case OD_MS_CONF_MOTOR_TYPE:
             return {static_cast<quint16>((0x4080 + axisDecal)), 0x1};
         case OD_MS_CONF_MOTOR_PEAK_CURRENT:
@@ -468,6 +480,7 @@ QString IndexDb402::name(const NodeObjectId &nodeObjectId)
 
 QString IndexDb402::name(IndexDb402::OdObject object, uint axis, uint opt2)
 {
+    Q_UNUSED(axis)
     Q_UNUSED(opt2)
 
     switch (object)
@@ -531,38 +544,46 @@ QString IndexDb402::name(IndexDb402::OdObject object, uint axis, uint opt2)
         return  QString("Bldc_bridge_pwm");
 
 
-    case OD_MS_VELOCITY_INPUT:
-    case OD_MS_POSITION_INPUT:
-    case OD_MS_TORQUE_INPUT:
+    case OD_MS_VELOCITY_PID_INPUT:
+    case OD_MS_POSITION_PID_INPUT:
+    case OD_MS_TORQUE_PID_INPUT:
         return  QString("input");
-    case OD_MS_VELOCITY_ERROR:
-    case OD_MS_TORQUE_ERROR:
-    case OD_MS_POSITION_ERROR:
+    case OD_MS_VELOCITY_PID_ERROR:
+    case OD_MS_TORQUE_PID_ERROR:
+    case OD_MS_POSITION_PID_ERROR:
         return  QString("error");
-    case OD_MS_VELOCITY_INTEGRATOR:
-    case OD_MS_POSITION_INTEGRATOR:
-    case OD_MS_TORQUE_INTEGRATOR:
+    case OD_MS_VELOCITY_PID_INTEGRATOR:
+    case OD_MS_POSITION_PID_INTEGRATOR:
+    case OD_MS_TORQUE_PID_INTEGRATOR:
         return  QString("integrator");
-    case OD_MS_VELOCITY_OUTPUT:
-    case OD_MS_POSITION_OUTPUT:
-    case OD_MS_TORQUE_OUTPUT:
+    case OD_MS_VELOCITY_PID_OUTPUT:
+    case OD_MS_POSITION_PID_OUTPUT:
+    case OD_MS_TORQUE_PID_OUTPUT:
         return  QString("output");
-    case OD_MS_VELOCITY_P:
-    case OD_MS_POSITION_P:
-    case OD_MS_TORQUE_P:
+    case OD_MS_VELOCITY_PID_P:
+    case OD_MS_POSITION_PID_P:
+    case OD_MS_TORQUE_PID_P:
         return  QString("P");
-    case OD_MS_VELOCITY_I:
-    case OD_MS_POSITION_I:
-    case OD_MS_TORQUE_I:
+    case OD_MS_VELOCITY_PID_I:
+    case OD_MS_POSITION_PID_I:
+    case OD_MS_TORQUE_PID_I:
         return  QString("I");
-    case OD_MS_VELOCITY_D:
-    case OD_MS_POSITION_D:
-    case OD_MS_TORQUE_D:
+    case OD_MS_VELOCITY_PID_D:
+    case OD_MS_POSITION_PID_D:
+    case OD_MS_TORQUE_PID_D:
         return  QString("D");
-    case OD_MS_VELOCITY_PERIOD_US:
-    case OD_MS_POSITION_PERIOD_US:
-    case OD_MS_TORQUE_PERIOD_US:
-        return  QString("period_us");
+    case OD_MS_VELOCITY_PID_MIN:
+    case OD_MS_POSITION_PID_MIN:
+    case OD_MS_TORQUE_PID_MIN:
+        return  QString("pid_min");
+    case OD_MS_VELOCITY_PID_MAX:
+    case OD_MS_POSITION_PID_MAX:
+    case OD_MS_TORQUE_PID_MAX:
+        return  QString("pid_max");
+    case OD_MS_VELOCITY_PID_THRESHOLD:
+    case OD_MS_POSITION_PID_THRESHOLD:
+    case OD_MS_TORQUE_PID_THRESHOLD:
+        return  QString("pid_threshold");
     case OD_MS_VELOCITY_SENSOR_SELECT:
     case OD_MS_POSITION_SENSOR_SELECT:
     case OD_MS_TORQUE_SENSOR_SELECT:
