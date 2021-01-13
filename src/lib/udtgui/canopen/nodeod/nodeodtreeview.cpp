@@ -24,6 +24,8 @@
 #include <QMenu>
 #include <QDebug>
 #include <QRegExp>
+#include <QGuiApplication>
+#include <QClipboard>
 
 #include "node.h"
 
@@ -119,13 +121,6 @@ void NodeOdTreeView::setFilter(const QString filterText)
 void NodeOdTreeView::readCurrent()
 {
     const QModelIndex &curentIndex = _odModelSorter->mapToSource(selectionModel()->currentIndex());
-    NodeSubIndex *nodeSubIndex = _odModel->nodeSubIndex(curentIndex);
-    if (nodeSubIndex)
-    {
-        _odModel->node()->readObject(nodeSubIndex->index(), nodeSubIndex->subIndex());
-        return;
-    }
-
     NodeIndex *nodeIndex = _odModel->nodeIndex(curentIndex);
     if (nodeIndex)
     {
@@ -133,6 +128,13 @@ void NodeOdTreeView::readCurrent()
         {
             _odModel->node()->readObject(nodeIndex->index(), subIndexN->subIndex());
         }
+        return;
+    }
+
+    NodeSubIndex *nodeSubIndex = _odModel->nodeSubIndex(curentIndex);
+    if (nodeSubIndex)
+    {
+        _odModel->node()->readObject(nodeSubIndex->index(), nodeSubIndex->subIndex());
         return;
     }
 }
@@ -155,6 +157,22 @@ void NodeOdTreeView::readAll()
             }
         }
     }
+}
+
+void NodeOdTreeView::copy()
+{
+    QString copyText;
+    QModelIndexList selectedRows = selectionModel()->selectedRows();
+    for (QModelIndex row : selectedRows)
+    {
+        const QModelIndex &curentIndex = _odModelSorter->mapToSource(row);
+        NodeSubIndex *nodeSubIndex = _odModel->nodeSubIndex(curentIndex);
+        if (nodeSubIndex)
+        {
+            copyText.append(nodeSubIndex->nodeIndex()->name() + "." + nodeSubIndex->name() + "=" + nodeSubIndex->value().toString() + "\n");
+        }
+    }
+    QGuiApplication::clipboard()->setText(copyText);
 }
 
 void NodeOdTreeView::createActions()
@@ -181,6 +199,17 @@ void NodeOdTreeView::createActions()
 #endif
     connect(_readAllAction, &QAction::triggered, this, &NodeOdTreeView::readAll);
     addAction(_readAllAction);
+
+    _copyAction = new QAction(this);
+    _copyAction->setText(tr("Copy"));
+    _copyAction->setShortcut(QKeySequence::Copy);
+    _copyAction->setShortcutContext(Qt::WidgetShortcut);
+    _copyAction->setIcon(QIcon(":/icons/img/icons8-copy"));
+#if QT_VERSION >= 0x050A00
+    _copyAction->setShortcutVisibleInContextMenu(true);
+#endif
+    connect(_copyAction, &QAction::triggered, this, &NodeOdTreeView::copy);
+    addAction(_copyAction);
 }
 
 void NodeOdTreeView::updateSelect(const QItemSelection &selected, const QItemSelection &deselected)
@@ -190,6 +219,7 @@ void NodeOdTreeView::updateSelect(const QItemSelection &selected, const QItemSel
 
     bool selectionEmpty = selectionModel()->selectedRows().isEmpty();
     _readAction->setEnabled(!selectionEmpty);
+    _copyAction->setEnabled(!selectionEmpty);
 }
 
 void NodeOdTreeView::contextMenuEvent(QContextMenuEvent *event)
@@ -197,5 +227,6 @@ void NodeOdTreeView::contextMenuEvent(QContextMenuEvent *event)
     QMenu menu;
     menu.addAction(_readAction);
     menu.addAction(_readAllAction);
+    menu.addAction(_copyAction);
     menu.exec(event->globalPos());
 }

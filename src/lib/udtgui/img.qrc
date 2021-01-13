@@ -28,6 +28,7 @@
         <file>img/icons8-exit.png</file>
         <file>img/icons8-paint-palette.png</file>
         <file>img/icons8-system-information.png</file>
+        <file>img/icons8-copy.png</file>
     </qresource>
     <qresource prefix="/diagram">
         <file>img/diagrams/402VLDiagram.png</file>

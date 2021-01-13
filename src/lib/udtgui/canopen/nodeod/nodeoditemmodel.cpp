@@ -78,6 +78,14 @@ NodeSubIndex *NodeOdItemModel::nodeSubIndex(const QModelIndex &index) const
     {
         return item->subIndex();
     }
+    if (item->type() == NodeOdItem::TIndex)
+    {
+        NodeIndex *nodeIndex = item->index();
+        if (nodeIndex && nodeIndex->subIndexExist(0))
+        {
+            return nodeIndex->subIndex(0);
+        }
+    }
     return nullptr;
 }
 

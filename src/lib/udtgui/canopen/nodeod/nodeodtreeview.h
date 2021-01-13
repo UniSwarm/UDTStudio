@@ -46,6 +46,7 @@ public slots:
     void setFilter(const QString filterText);
     void readCurrent();
     void readAll();
+    void copy();
 
 protected slots:
     void updateSelect(const QItemSelection &selected, const QItemSelection &deselected);
@@ -58,6 +59,7 @@ protected:
     void createActions();
     QAction *_readAction;
     QAction *_readAllAction;
+    QAction *_copyAction;
 
     // QWidget interface
 protected:

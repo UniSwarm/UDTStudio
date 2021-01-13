@@ -167,7 +167,7 @@ QVariant NodeOdItem::data(int column, int role) const
             switch (column)
             {
             case NodeOdItemModel::OdIndex:
-                return QVariant(Qt::AlignRight);
+                return QVariant(Qt::AlignRight | Qt::AlignVCenter);
             }
             break;
 
