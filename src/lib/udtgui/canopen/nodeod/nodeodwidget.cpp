@@ -153,7 +153,7 @@ void NodeOdWidget::createDefaultFilters(uint profile)
 
     case 402:
         _filterCombobox->addItem(tr("402 FSA"), QVariant("0x[6-A][058](0[27]|3F|4[01]|5[A-E]|6[01])"));
-        _filterCombobox->addItem(tr("402 tq (Torque)"), QVariant("0x[6-A][0](7[1-9]|8[7-8])"));
+        _filterCombobox->addItem(tr("402 tq (Torque)"), QVariant("0x[6-A][08](7[1-9]|8[7-8])"));
         _filterCombobox->addItem(tr("402 tp (Torque profile)"), QVariant("0x[6-A][08](B[8-D]|D0)"));
         _filterCombobox->addItem(tr("402 pt (Profile Torque)"), QVariant("0x[6-A][08](7[1-9]|E[01])"));
         _filterCombobox->addItem(tr("402 hm (Homming)"), QVariant("0x[6-A][08](9[89A]|7C|E3)"));
