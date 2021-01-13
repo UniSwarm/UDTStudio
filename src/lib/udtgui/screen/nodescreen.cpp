@@ -18,6 +18,8 @@
 
 #include "nodescreen.h"
 
+#include <QIcon>
+
 NodeScreen::NodeScreen(QWidget *parent)
     : QWidget(parent)
 {
@@ -33,4 +35,9 @@ void NodeScreen::setNode(Node *node, uint8_t axis)
 Node *NodeScreen::node() const
 {
     return _node;
+}
+
+QIcon NodeScreen::icon() const
+{
+    return QIcon();
 }

@@ -24,7 +24,8 @@
 
 #include "canopen/widgetDebug/widgetdebug.h"
 
-NodeScreenUmcMotor::NodeScreenUmcMotor(QWidget *parent) : NodeScreen(parent)
+NodeScreenUmcMotor::NodeScreenUmcMotor(QWidget *parent)
+    : NodeScreen(parent)
 {
     createWidgets();
 }
@@ -49,6 +50,11 @@ void NodeScreenUmcMotor::createWidgets()
 QString NodeScreenUmcMotor::title() const
 {
     return QString(tr("Axis %1").arg(_axis + 1));
+}
+
+QIcon NodeScreenUmcMotor::icon() const
+{
+    return QIcon(":/uBoards/umc.png");
 }
 
 void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)

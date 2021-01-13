@@ -33,6 +33,7 @@ public:
 
     Node *node() const;
     virtual QString title() const =0;
+    virtual QIcon icon() const;
 
 public slots:
     void setNode(Node *node, uint8_t axis = 0);

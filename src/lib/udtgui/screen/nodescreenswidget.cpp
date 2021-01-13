@@ -57,7 +57,7 @@ void NodeScreensWidget::setActiveNode(Node *node)
         NodeScreens nodeScreens = _nodesMap.value(_activeNode);
         for (NodeScreen *screen : nodeScreens.screens)
         {
-            _tabWidget->addTab(screen, " " + screen->title() + " ");
+            _tabWidget->addTab(screen, screen->icon(), " " + screen->title() + " ");
         }
 
         _tabWidget->setCurrentIndex(currentIndex);

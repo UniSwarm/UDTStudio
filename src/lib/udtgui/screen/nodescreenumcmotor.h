@@ -50,6 +50,7 @@ protected:
     // NodeScreen interface
 public:
     QString title() const override;
+    QIcon icon() const override;
     void setNodeInternal(Node *node, uint8_t axis) override;
 };
 
