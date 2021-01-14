@@ -82,17 +82,14 @@ bool TexGenerator::generate(DeviceDescription *deviceDescription, const QString 
     }
 
     QTextStream out(&TexComFile);
-    out << "index,subNumber,subIndex,name,objectType,dataType,accessType,pdoMapping,defaultValue,lowLimit,highLimit,\n";
     writeListIndex(mandatories, &out);
     TexComFile.close();
 
     out.setDevice(&TexManuFile);
-    out << "index,subNumber,subIndex,name,objectType,dataType,accessType,pdoMapping,defaultValue,lowLimit,highLimit,\n";
     writeListIndex(manufacturers, &out);
     TexManuFile.close();
 
     out.setDevice(&TexStandardFile);
-    out << "index,subNumber,subIndex,name,objectType,dataType,accessType,pdoMapping,defaultValue,lowLimit,highLimit,\n";
     writeListIndex(optionals, &out);
     TexStandardFile.close();
 
@@ -146,15 +143,16 @@ void TexGenerator::writeIndex(Index *index, QTextStream *out)
     nameObject.remove(QRegExp("^[a][0-9]"));
     nameObject.remove("_");
     nameObject.remove(" ");
-    nameObject.replace("1", "A");
-    nameObject.replace("2", "B");
-    nameObject.replace("3", "C");
-    nameObject.replace("4", "D");
-    nameObject.replace("5", "E");
-    nameObject.replace("6", "F");
-    nameObject.replace("7", "G");
-    nameObject.replace("8", "H");
-    nameObject.replace("9", "I");
+    nameObject.replace("0", "A");
+    nameObject.replace("1", "B");
+    nameObject.replace("2", "C");
+    nameObject.replace("3", "D");
+    nameObject.replace("4", "E");
+    nameObject.replace("5", "F");
+    nameObject.replace("6", "G");
+    nameObject.replace("7", "H");
+    nameObject.replace("8", "I");
+    nameObject.replace("9", "J");
 
     QString nameFull = index->name();
     nameFull.replace("_", "$\\_$");
@@ -173,43 +171,44 @@ void TexGenerator::writeIndex(Index *index, QTextStream *out)
     QString dispTabCommand = nameObject;
     dispTabCommand.prepend("\\dispTab");
 
-    // nameCommand
+    // nameCommand >> \newcommand{\nameControlword}{a1$\_$Controlword}%
     *out << "\\newcommand{" << nameCommand << "}";
     *out << "{" << nameFull << "}%";
     *out << "\n";
 
-    // indexCommand
+    // indexCommand >> \newcommand{\indexControlword}{6040}%
     *out << "\\newcommand{" << indexCommand << "}";
     *out << "{" << QString::number(index->index(), base).toUpper() << "}%";
     *out << "\n";
 
-    // subIndexCommand
+    // subIndexCommand >> \newcommand{\subIndexControlword}{0}%
     *out << "\\newcommand{" << subIndexCommand << "}";
     *out << "{0}%";
     *out << "\n";
 
-    // sectionCommand
+    // sectionCommand >> \newcommand{\sectionControlword}{\sectionIndexName{\indexControlword}{\nameControlword}}%
     *out << "\\newcommand{" << sectionCommand << "}";
     *out << "{\\sectionIndexName";
     *out << "{" << indexCommand << "}";
     *out << "{" << nameCommand << "}}%";
     *out << "\n";
 
-    // dispIndexSubCommand
+    // dispIndexSubCommand >> \newcommand{\dispIndexSubControlword}{\displayIndexSub{\indexControlword}{\subIndexControlword}}%
     *out << "\\newcommand{" << dispIndexSubCommand << "}";
     *out << "{\\displayIndexSub";
     *out << "{" << indexCommand << "}";
     *out << "{" << subIndexCommand << "}}%";
     *out << "\n";
 
-    // dispIndexNameCommand
+    // dispIndexNameCommand >> \newcommand{\dispIndexNameControlword}{\displayIndexName{\indexControlword}{\nameControlword}}%
     *out << "\\newcommand{" << dispIndexNameCommand << "}";
     *out << "{\\displayIndexName";
     *out << "{" << indexCommand << "}";
     *out << "{" << nameCommand << "}}%";
     *out << "\n";
 
-    // dispTabCommand
+    // dispTabCommand >> \newcommand{\dispTabControlword}{\displayTab{\indexControlword}{\subIndexControlword}{\nameControlword}%
+    //                   {UINT16}{RW,RPDO}{-}{-}{;}}%
     *out << "\\newcommand{" << dispTabCommand << "}";
     *out << "{\\displayTab";
     *out << "{" << indexCommand << "}";
@@ -255,15 +254,16 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out)
     nameObject.remove(QRegExp("^[a][0-9]"));
     nameObject.remove("_");
     nameObject.remove(" ");
-    nameObject.replace("1", "A");
-    nameObject.replace("2", "B");
-    nameObject.replace("3", "C");
-    nameObject.replace("4", "D");
-    nameObject.replace("5", "E");
-    nameObject.replace("6", "F");
-    nameObject.replace("7", "G");
-    nameObject.replace("8", "H");
-    nameObject.replace("9", "I");
+    nameObject.replace("0", "A");
+    nameObject.replace("1", "B");
+    nameObject.replace("2", "C");
+    nameObject.replace("3", "D");
+    nameObject.replace("4", "E");
+    nameObject.replace("5", "F");
+    nameObject.replace("6", "G");
+    nameObject.replace("7", "H");
+    nameObject.replace("8", "I");
+    nameObject.replace("9", "J");
 
     QString nameFull = index->name();
     nameFull.replace("_", "$\\_$");
@@ -280,36 +280,36 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out)
     QString dispIndexNameCommand = nameObject;
     dispIndexNameCommand.prepend("\\dispIndexName");
 
-    // nameCommand
+    // nameCommand >> \newcommand{\nameStatusword}{a1$\_$Statusword}%
     *out << "\\newcommand{" << nameCommand << "}";
     *out << "{" << nameFull << "}%";
     *out << "\n";
 
-    // indexCommand
+    // indexCommand >> \newcommand{\indexStatusword}{6041}%
     *out << "\\newcommand{" << indexCommand << "}";
     *out << "{" << QString::number(index->index(), base).toUpper() << "}%";
     *out << "\n";
 
-    // subIndexCommand
+    // subIndexCommand >> \newcommand{\subIndexStatusword}{0}%
     *out << "\\newcommand{" << subIndexCommand << "}";
     *out << "{0}%";
     *out << "\n";
 
-    // sectionCommand
+    // sectionCommand >> \newcommand{\sectionStatusword}{\sectionIndexName{\indexStatusword}{\nameStatusword}}%
     *out << "\\newcommand{" << sectionCommand << "}";
     *out << "{\\sectionIndexName";
     *out << "{" << indexCommand << "}";
     *out << "{" << nameCommand << "}}%";
     *out << "\n";
 
-    // dispIndexSubCommand
+    // dispIndexSubCommand >> \newcommand{\dispIndexSubStatusword}{\displayIndexSub{\indexStatusword}{\subIndexStatusword}}%
     *out << "\\newcommand{" << dispIndexSubCommand << "}";
     *out << "{\\displayIndexSub";
     *out << "{" << indexCommand << "}";
     *out << "{" << subIndexCommand << "}}%";
     *out << "\n";
 
-    // dispIndexNameCommand
+    // dispIndexNameCommand >> \newcommand{\dispIndexNameStatusword}{\displayIndexName{\indexStatusword}{\nameStatusword}}%
     *out << "\\newcommand{" << dispIndexNameCommand << "}";
     *out << "{\\displayIndexName";
     *out << "{" << indexCommand << "}";
@@ -369,29 +369,31 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out)
         dispTabCommand.prepend(nameObject);
         dispTabCommand.prepend("\\dispTab");
 
-        // subIndexCommand
+        // subIndexCommand >> \newcommand{\subIndexvlDecelerationvlDecelerationdeltaspeed}{1}%
         *out << "\\newcommand{" << subIndexSubCommand << "}";
         *out << "{" << QString::number(subIndex->subIndex(), base).toUpper() << "}%";
         *out << "\n";
 
-        // nameCommand
+        // nameCommand >> \newcommand{\namevlDecelerationvlDecelerationdeltaspeed}{vl$\_$Deceleration$\_$delta$\_$speed}%
         *out << "\\newcommand{" << nameSubCommand << "}";
         *out << "{" << nameFull << "}%";
         *out << "\n";
 
-        // indexCommand
+        // indexCommand >> \newcommand{\indexvlDecelerationvlDecelerationdeltaspeed}{\indexvlDeceleration}%
         *out << "\\newcommand{" << indexSubCommand << "}";
         *out << "{" << indexCommand << "}%";
         *out << "\n";
 
-        // dispIndexSubCommand
+        // dispIndexSubCommand >> \newcommand{\dispIndexSubvlDecelerationvlDecelerationdeltaspeed}{\displayIndexSub{\indexvlDeceleration}
+        //                                 {\subIndexvlDecelerationvlDecelerationdeltaspeed}}%
         *out << "\\newcommand{" << dispIndexSubSubCommand << "}";
         *out << "{\\displayIndexSub";
         *out << "{" << indexCommand << "}";
         *out << "{" << subIndexSubCommand << "}}%";
         *out << "\n";
 
-        // dispIndexNameCommand
+        // dispIndexNameCommand >> \newcommand{\dispIndexSubNamevlDecelerationvlDecelerationdeltaspeed}{\displayIndexSubName{\indexvlDeceleration}
+        //                                       {\subIndexvlDecelerationvlDecelerationdeltaspeed}{\namevlDecelerationvlDecelerationdeltaspeed}}%
         *out << "\\newcommand{" << dispIndexNameSubCommand << "}";
         *out << "{\\displayIndexSubName";
         *out << "{" << indexCommand << "}";
@@ -399,7 +401,9 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out)
         *out << "{" << nameSubCommand << "}}%";
         *out << "\n";
 
-        // dispTabCommand
+        // dispTabCommand >> \newcommand{\dispTabvlDecelerationvlDecelerationdeltaspeed}{\displayTab{\indexvlDeceleration}
+        //                          {\subIndexvlDecelerationvlDecelerationdeltaspeed}{\namevlDecelerationvlDecelerationdeltaspeed}%
+        //                   {UINT32}{RW,RPDO}{1}{-}{0x1;0xFFFFFFFF}}%
         *out << "\\newcommand{" << dispTabCommand << "}";
         *out << "{\\displayTab";
         *out << "{" << indexCommand << "}";
