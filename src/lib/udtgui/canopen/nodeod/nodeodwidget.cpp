@@ -158,8 +158,8 @@ void NodeOdWidget::createDefaultFilters(uint profile)
         _filterCombobox->addItem(tr("402 pt (Profile Torque)"), QVariant("0x[6-A][08](7[1-9]|E[01])"));
         _filterCombobox->addItem(tr("402 hm (Homming)"), QVariant("0x[6-A][08](9[89A]|7C|E3)"));
         _filterCombobox->addItem(tr("402 pc (Position Control)"), QVariant("0x[6-A][08](6[2-8]|F[24AC])"));
-        _filterCombobox->addItem(tr("402 pp (Profile Position)"), QVariant("0x[6-A][08](7[ABDE]|8[0-6]|A[34]|C[56])"));
-        _filterCombobox->addItem(tr("402 ip (Interpolated Position)"), QVariant("0x[6-A][08](C[0-4]|7[B-F]|8[0-5]|C[5-6])"));
+        _filterCombobox->addItem(tr("402 pp (Profile Position)"), QVariant("0x[6-A][08](7[ABDEF]|8[0-6]|A[34]|C[56]|6[2-4])"));
+        _filterCombobox->addItem(tr("402 ip (Interpolated Position)"), QVariant("0x[6-A][08](C[0-4]|7[B-F]|8[0-5]|C[5-6]|6[2-4])"));
         _filterCombobox->addItem(tr("402 pv (Profile Velocity"), QVariant("0x[6-A][08](6[9-F]|70|F[8F])"));
         _filterCombobox->addItem(tr("402 vl (Velocity)"), QVariant("0x[6-A][08]4[2-F]"));
         _filterCombobox->addItem(tr("402 factors"), QVariant("0x[6-A][08](8F|9[0-267]|A[8-B])"));
