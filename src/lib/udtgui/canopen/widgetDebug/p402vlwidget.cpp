@@ -383,12 +383,10 @@ void P402VlWidget::createWidgets()
     vlLayout->addRow(vlVelocityAccelerationLabel);
     QLayout *vlVelocityAccelerationlayout = new QHBoxLayout();
     _vlAccelerationDeltaSpeedSpinBox = new IndexSpinBox();
-    //    _vlAccelerationDeltaSpeedSpinBox->setSuffix(" inc/ms");
-    _vlAccelerationDeltaSpeedSpinBox->setToolTip("Delta Speed");
+    _vlAccelerationDeltaSpeedSpinBox->setToolTip("Delta Speed (inc/ms)");
     vlVelocityAccelerationlayout->addWidget(_vlAccelerationDeltaSpeedSpinBox);
     _vlAccelerationDeltaTimeSpinBox = new IndexSpinBox();
-    //    _vlAccelerationDeltaTimeSpinBox->setSuffix(" ms");
-    _vlAccelerationDeltaTimeSpinBox->setToolTip("Delta Time");
+    _vlAccelerationDeltaTimeSpinBox->setToolTip("Delta Time (ms)");
     vlVelocityAccelerationlayout->addWidget(_vlAccelerationDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityAccelerationlayout);
 
@@ -397,12 +395,10 @@ void P402VlWidget::createWidgets()
     vlLayout->addRow(vlVelocityDecelerationLabel);
     QLayout *vlVelocityDecelerationlayout = new QHBoxLayout();
     _vlDecelerationDeltaSpeedSpinBox = new IndexSpinBox();
-    //    _vlDecelerationDeltaSpeedSpinBox->setSuffix(" inc/ms");
-    _vlDecelerationDeltaSpeedSpinBox->setToolTip("Delta Speed");
+    _vlDecelerationDeltaSpeedSpinBox->setToolTip("Delta Speed (inc/ms)");
     vlVelocityDecelerationlayout->addWidget(_vlDecelerationDeltaSpeedSpinBox);
     _vlDecelerationDeltaTimeSpinBox = new IndexSpinBox();
-    //    _vlDecelerationDeltaTimeSpinBox->setSuffix(" ms");
-    _vlDecelerationDeltaTimeSpinBox->setToolTip("Delta Time");
+    _vlDecelerationDeltaTimeSpinBox->setToolTip("Delta Time (ms)");
     vlVelocityDecelerationlayout->addWidget(_vlDecelerationDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityDecelerationlayout);
 
@@ -411,12 +407,10 @@ void P402VlWidget::createWidgets()
     vlLayout->addRow(vlVelocityQuickStopLabel);
     QLayout *vlVelocityQuickStoplayout = new QHBoxLayout();
     _vlQuickStopDeltaSpeedSpinBox = new IndexSpinBox();
-    //    _vlQuickStopDeltaSpeedSpinBox->setSuffix(" inc/ms");
-    _vlQuickStopDeltaSpeedSpinBox->setToolTip("Delta Speed");
+    _vlQuickStopDeltaSpeedSpinBox->setToolTip("Delta Speed (inc/ms)");
     vlVelocityQuickStoplayout->addWidget(_vlQuickStopDeltaSpeedSpinBox);
     _vlQuickStopDeltaTimeSpinBox = new IndexSpinBox();
-    //    _vlQuickStopDeltaTimeSpinBox->setSuffix(" ms");
-    _vlQuickStopDeltaTimeSpinBox->setToolTip("Delta Time");
+    _vlQuickStopDeltaTimeSpinBox->setToolTip("Delta Time (ms)");
     vlVelocityQuickStoplayout->addWidget(_vlQuickStopDeltaTimeSpinBox);
     vlLayout->addRow(vlVelocityQuickStoplayout);
 
