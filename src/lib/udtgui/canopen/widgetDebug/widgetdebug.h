@@ -27,6 +27,7 @@
 #include "p402optionwidget.h"
 #include "p402vlwidget.h"
 #include "p402tqwidget.h"
+#include "p402ppwidget.h"
 #include "profile/p402/nodeprofile402.h"
 
 #include <QButtonGroup>
@@ -84,6 +85,7 @@ private:
     P402VlWidget *_p402vl;
     P402IpWidget *_p402ip;
     P402TqWidget *_p402tq;
+    P402PpWidget *_p402pp;
 
     QToolBar *_nmtToolBar;
     QSpinBox *_logTimerSpinBox;

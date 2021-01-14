@@ -24,8 +24,9 @@
 #include "nodeprofile402ip.h"
 #include "nodeprofile402tq.h"
 #include "nodeprofile402vl.h"
+#include "nodeprofile402pp.h"
 
-#define TIMER_READ_MODE_OPERATION_DISPLAY 100
+#define TIMER_READ_MODE_OPERATION_DISPLAY 100u
 
 enum ControlWord : quint16
 {
@@ -105,6 +106,7 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis) : NodeProfile(node)
     _p402Ip = new NodeProfile402Ip(_node, axis, this);
     _p402Tq = new NodeProfile402Tq(_node, axis, this);
     _p402Vl = new NodeProfile402Vl(_node, axis, this);
+    _p402Pp = new NodeProfile402Pp(_node, axis, this);
 
     _requestedStateMachine = State402::STATE_NotReadyToSwitchOn;
     _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
@@ -164,6 +166,11 @@ bool NodeProfile402::setMode(Mode mode)
             _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Tq->getSpecificControlWord();
         }
 
+        else if (_requestedChangeMode == Mode::PP)
+        {
+            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Pp->getSpecificControlWord();
+        }
+
         return true;
     }
     else
@@ -179,25 +186,25 @@ QString NodeProfile402::modeStr(NodeProfile402::Mode mode)
         case Mode::NoMode:
             return tr("No mode");
         case Mode::PP:
-            return tr("Profile position");
+            return tr("Profile position (PP)");
         case Mode::VL:
             return tr("Velocity (VL)");
         case Mode::PV:
-            return tr("Profile velocity");
+            return tr("Profile velocity (PV)");
         case Mode::TQ:
             return tr("Torque profile(TQ)");
         case Mode::HM:
-            return tr("Homing");
+            return tr("Homing (HM)");
         case Mode::IP:
             return tr("Interpolated position (IP)");
         case Mode::CSP:
-            return tr("Cyclic sync position");
+            return tr("Cyclic sync position (CSP)");
         case Mode::CSV:
-            return tr("Cyclic sync velocity");
+            return tr("Cyclic sync velocity (CSV)");
         case Mode::CST:
-            return tr("Cyclic sync torque");
+            return tr("Cyclic sync torque (CST)");
         case Mode::CSTCA:
-            return tr("Cyclic sync torque mode with commutation angle");
+            return tr("Cyclic sync torque mode with commutation angle (CTCA)");
         default:
             if (_currentMode < 0)
             {
@@ -295,6 +302,7 @@ void NodeProfile402::setTarget(qint32 target)
         case NodeProfile402::NoMode:
             break;
         case NodeProfile402::PP:
+            _p402Pp->setTarget(target);
             break;
         case NodeProfile402::VL:
             _p402Vl->setTarget(static_cast<qint16>(target));
@@ -355,6 +363,11 @@ void NodeProfile402::setEnableRamp(bool ok)
     if (_currentMode == Mode::IP)
     {
         _p402Ip->setEnableRamp(ok);
+        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Ip->getSpecificControlWord();
+    }
+    if (_currentMode == Mode::PP)
+    {
+        _p402Pp->setEnableRamp(ok);
         _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Ip->getSpecificControlWord();
     }
     _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
@@ -436,6 +449,7 @@ void NodeProfile402::activeSpecificBitControlWord(quint16 &cmdControlWord)
         case NodeProfile402::NoMode:
             break;
         case NodeProfile402::PP:
+            cmdControlWord |= _p402Pp->getSpecificControlWord();
             break;
         case NodeProfile402::VL:
             cmdControlWord |= _p402Vl->getSpecificControlWord();
@@ -486,6 +500,11 @@ void NodeProfile402::manageState(const State402 state)
     else if (_currentMode == Mode::TQ)
     {
         _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Tq->getSpecificControlWord();
+    }
+
+    else if (_currentMode == Mode::PP)
+    {
+        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Pp->getSpecificControlWord();
     }
 
     switch (_stateMachineCurrent)

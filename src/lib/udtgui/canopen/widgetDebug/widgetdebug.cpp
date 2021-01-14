@@ -104,6 +104,7 @@ void WidgetDebug::setNode(Node *node, uint8_t axis)
         _p402vl->setNode(_node, axis);
         _p402ip->setNode(_node, axis);
         _p402tq->setNode(_node, axis);
+        _p402pp->setNode(_node, axis);
 
         statusNodeChanged();
         modeChanged(_axis, _nodeProfile402->actualMode());
@@ -138,6 +139,7 @@ void WidgetDebug::statusNodeChanged()
         _p402ip->updateData();
         _p402vl->updateData();
         _p402tq->updateData();
+        _p402pp->updateData();
     }
 }
 
@@ -193,6 +195,7 @@ void WidgetDebug::readDataTimer()
         _p402ip->readData();
         _p402vl->readData();
         _p402tq->readData();
+        _p402pp->readData();
     }
 }
 
@@ -216,6 +219,16 @@ void WidgetDebug::modeChanged(uint8_t axis, NodeProfile402::Mode modeNew)
     {
         _p402ip->stop();
         _stackedWidget->setCurrentWidget(_p402tq);
+    }
+    else if (modeNew == NodeProfile402::PP)
+    {
+        _p402ip->stop();
+        _stackedWidget->setCurrentWidget(_p402pp);
+    }
+    else
+    {
+        _p402ip->stop();
+        _stackedWidget->setCurrentWidget(_p402Option);
     }
     int m = _listModeComboBox.indexOf(modeNew);
     _modeComboBox->setCurrentIndex(m);
@@ -593,11 +606,14 @@ void WidgetDebug::createWidgets()
     _p402vl = new P402VlWidget();
     _p402ip = new P402IpWidget();
     _p402tq = new P402TqWidget();
+    _p402pp = new P402PpWidget();
+
     _stackedWidget = new QStackedWidget;
     _stackedWidget->addWidget(_p402Option);
     _stackedWidget->addWidget(_p402vl);
     _stackedWidget->addWidget(_p402ip);
     _stackedWidget->addWidget(_p402tq);
+    _stackedWidget->addWidget(_p402pp);
 
     QHBoxLayout *hBoxLayout = new QHBoxLayout();
     hBoxLayout->setMargin(0);
