@@ -34,6 +34,7 @@
         <file>img/diagrams/402VLDiagram.png</file>
         <file>img/diagrams/402IPDiagram.png</file>
         <file>img/diagrams/402TQDiagram.png</file>
+        <file>img/diagrams/402PPDiagram.png</file>
     </qresource>
     <qresource prefix="/uBoards">
         <file alias="udt.png">img/uBoards/udt.png</file>

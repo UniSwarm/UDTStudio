@@ -40,7 +40,8 @@ SOURCES += \
     $$PWD/indexdb.cpp \
     $$PWD/indexdb401.cpp \
     $$PWD/indexdb402.cpp \
-    $$PWD/profile/nodeprofilefactory.cpp
+    $$PWD/profile/nodeprofilefactory.cpp \
+    profile/p402/nodeprofile402pp.cpp
 
 
 HEADERS += \
@@ -76,7 +77,8 @@ HEADERS += \
     $$PWD/indexdb.h \
     $$PWD/indexdb401.h \
     $$PWD/indexdb402.h \
-    $$PWD/profile/nodeprofilefactory.h
+    $$PWD/profile/nodeprofilefactory.h \
+    profile/p402/nodeprofile402pp.h
 
 INCLUDEPATH += $$PWD/../od/
 
