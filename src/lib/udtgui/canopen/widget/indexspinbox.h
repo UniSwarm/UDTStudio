@@ -21,8 +21,8 @@
 
 #include "../../udtgui_global.h"
 
-#include "abstractindexwidget.h"
 #include <QAbstractSpinBox>
+#include "abstractindexwidget.h"
 
 class UDTGUI_EXPORT IndexSpinBox : public QAbstractSpinBox, public AbstractIndexWidget
 {
@@ -34,7 +34,11 @@ public:
 public:
     void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
     bool isEditing() const override;
+
+    // AbstractIndexWidget interface
+protected:
     void updateHint() override;
+    void updateObjId() override;
 
 protected:
     void setValue(const QVariant &value);

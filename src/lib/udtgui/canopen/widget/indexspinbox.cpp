@@ -79,25 +79,7 @@ void IndexSpinBox::focusOutEvent(QFocusEvent *event)
 
 void IndexSpinBox::setValue(const QVariant &value)
 {
-    switch (_hint)
-    {
-    case AbstractIndexWidget::DisplayDirectValue:
-        lineEdit()->setText(value.toString());
-        break;
-
-    case AbstractIndexWidget::DisplayHexa:
-        lineEdit()->setText("0x" + QString::number(value.toInt(), 16).toUpper());
-        break;
-
-    case AbstractIndexWidget::DisplayQ1_15:
-    case AbstractIndexWidget::DisplayQ15_16:
-        lineEdit()->setText(QString::number(value.toDouble() / 65536.0, 'g', 6));
-        break;
-
-    case AbstractIndexWidget::DisplayFloat:
-        lineEdit()->setText(QString::number(value.toDouble(), 'g', 6));
-        break;
-    }
+    lineEdit()->setText(pstringValue(value, _hint));
 }
 
 QVariant IndexSpinBox::value() const
@@ -149,7 +131,7 @@ void IndexSpinBox::stepBy(int steps)
 
 QAbstractSpinBox::StepEnabled IndexSpinBox::stepEnabled() const
 {
-    return StepUpEnabled| StepDownEnabled;
+    return StepUpEnabled | StepDownEnabled;
 }
 
 void IndexSpinBox::updateHint()
@@ -172,4 +154,11 @@ void IndexSpinBox::updateHint()
         break;
     }
     lineEdit()->setValidator(validator);
+}
+
+void IndexSpinBox::updateObjId()
+{
+    setToolTip(QString("0x%1.%2")
+                   .arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'))
+                   .arg(QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
 }

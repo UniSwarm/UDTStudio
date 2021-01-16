@@ -38,6 +38,21 @@ Node *AbstractIndexWidget::node() const
 void AbstractIndexWidget::setNode(Node *node)
 {
     setNodeInterrest(node);
+    if (node)
+    {
+        _objId.setBusId(node->busId());
+        _objId.setNodeId(node->nodeId());
+        if (_objId.isValid())
+        {
+            _lastValue = nodeInterrest()->nodeOd()->value(_objId);
+            setDisplayValue(_lastValue, DisplayAttribute::Normal);
+        }
+    }
+    else
+    {
+        _objId.setBusId(0xFF);
+        _objId.setNodeId(0xFF);
+    }
 }
 
 void AbstractIndexWidget::requestWriteValue(const QVariant &value)
@@ -68,11 +83,62 @@ void AbstractIndexWidget::cancelEdit()
         setDisplayValue(QVariant(), DisplayAttribute::Error);
         return;
     }
-    setDisplayValue(nodeInterrest()->nodeOd()->value(_objId), DisplayAttribute::Normal);
+    setDisplayValue(_lastValue, DisplayAttribute::Normal);
 }
 
 void AbstractIndexWidget::updateHint()
 {
+}
+
+void AbstractIndexWidget::updateObjId()
+{
+}
+
+QVariant AbstractIndexWidget::pValue(const QVariant &value, const AbstractIndexWidget::DisplayHint hint)
+{
+    QVariant val;
+    switch (hint)
+    {
+    case AbstractIndexWidget::DisplayFloat:
+    case AbstractIndexWidget::DisplayDirectValue:
+        val = value;
+        break;
+
+    case AbstractIndexWidget::DisplayHexa:
+        val = QString("0x" + QString::number(value.toInt(), 16).toUpper());
+        break;
+
+    case AbstractIndexWidget::DisplayQ1_15:
+    case AbstractIndexWidget::DisplayQ15_16:
+        val = value.toDouble() / 65536.0;
+        break;
+    }
+    return val;
+}
+
+QString AbstractIndexWidget::pstringValue(const QVariant &value, const AbstractIndexWidget::DisplayHint hint)
+{
+    QString str;
+    switch (hint)
+    {
+    case AbstractIndexWidget::DisplayDirectValue:
+        str = value.toString();
+        break;
+
+    case AbstractIndexWidget::DisplayHexa:
+        str = "0x" + QString::number(value.toInt(), 16).toUpper();
+        break;
+
+    case AbstractIndexWidget::DisplayQ1_15:
+    case AbstractIndexWidget::DisplayQ15_16:
+        str = QString::number(value.toDouble() / 65536.0, 'g', 6);
+        break;
+
+    case AbstractIndexWidget::DisplayFloat:
+        str = QString::number(value.toDouble(), 'g', 6);
+        break;
+    }
+    return str;
 }
 
 AbstractIndexWidget::DisplayHint AbstractIndexWidget::hint() const
@@ -90,8 +156,18 @@ void AbstractIndexWidget::setDisplayHint(const AbstractIndexWidget::DisplayHint 
         {
             return;
         }
-        setDisplayValue(nodeInterrest()->nodeOd()->value(_objId), DisplayAttribute::Normal);
+        setDisplayValue(_lastValue, DisplayAttribute::Normal);
     }
+}
+
+QVariant AbstractIndexWidget::value() const
+{
+    return pValue(_lastValue, _hint);
+}
+
+QString AbstractIndexWidget::stringValue() const
+{
+    return pstringValue(value(), _hint);
 }
 
 void AbstractIndexWidget::readObject()
@@ -103,7 +179,7 @@ void AbstractIndexWidget::readObject()
     nodeInterrest()->readObject(_objId);
 }
 
-NodeObjectId AbstractIndexWidget::objId() const
+const NodeObjectId &AbstractIndexWidget::objId() const
 {
     return _objId;
 }
@@ -125,6 +201,7 @@ void AbstractIndexWidget::setObjId(const NodeObjectId &objId)
     {
         setNode(node);
     }
+    updateObjId();
 }
 
 void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
@@ -134,7 +211,7 @@ void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest 
         return;
     }
 
-    QVariant newValue = nodeInterrest()->nodeOd()->value(objId);
+    _lastValue = nodeInterrest()->nodeOd()->value(objId);
     if (flags & SDO::Error)
     {
         if (_pendingValue.isValid() && (flags & SDO::Write)) // we request a write value that cause an error
@@ -162,7 +239,7 @@ void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest 
     {
         return;
     }
-    setDisplayValue(newValue, DisplayAttribute::Normal);
+    setDisplayValue(_lastValue, DisplayAttribute::Normal);
     _requestRead = false;
     _pendingValue = QVariant();
 }

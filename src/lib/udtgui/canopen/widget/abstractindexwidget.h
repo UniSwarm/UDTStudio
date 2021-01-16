@@ -32,7 +32,7 @@ public:
     Node *node() const;
     void setNode(Node *node);
 
-    NodeObjectId objId() const;
+    const NodeObjectId &objId() const;
     void setObjId(const NodeObjectId &objId);
 
     enum DisplayHint
@@ -46,12 +46,18 @@ public:
     DisplayHint hint() const;
     void setDisplayHint(const DisplayHint hint);
 
+    QVariant value() const;
+    QString stringValue() const;
+
     //min max
     //tooltip
     //setunit
 
 public slots:
     void readObject();
+
+signals:
+    void valueChanged(QVariant value);
 
 protected:
     enum DisplayAttribute
@@ -66,10 +72,16 @@ protected:
     void requestReadValue();
     virtual bool isEditing() const =0;
     void cancelEdit();
+
     virtual void updateHint();
+    virtual void updateObjId();
+
+    static QVariant pValue(const QVariant &value, const DisplayHint hint = DisplayHint::DisplayDirectValue);
+    static QString pstringValue(const QVariant &value, const DisplayHint hint = DisplayHint::DisplayDirectValue);
 
 protected:
     NodeObjectId _objId;
+    QVariant _lastValue;
     QVariant _pendingValue;
     bool _requestRead;
 
