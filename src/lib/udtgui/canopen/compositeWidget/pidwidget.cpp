@@ -20,6 +20,7 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/widget/indexspinbox.h"
+#include "canopen/widget/indexlabel.h"
 #include "indexdb402.h"
 #include "node.h"
 #include "profile/p402/nodeprofile402.h"
@@ -74,10 +75,10 @@ void PidWidget::setNode(Node *node, uint8_t axis)
     _pSpinBox->setNode(node);
     _iSpinBox->setNode(node);
     //_dSpinBox->setNode(node);
-    _actualValueSpinBox->setNode(node);
-    _tempMotorSpinBox->setNode(node);
-    _tempDriver1SpinBox->setNode(node);
-    _tempDriver2SpinBox->setNode(node);
+    _actualValueLabel->setNode(node);
+    _tempMotorLabel->setNode(node);
+    _tempDriver1Label->setNode(node);
+    _tempDriver2Label->setNode(node);
     _minSpinBox->setNode(node);
     _maxSpinBox->setNode(node);
     _thresholdSpinBox->setNode(node);
@@ -170,10 +171,10 @@ void PidWidget::setIMode()
     _pSpinBox->setObjId(pidP_ObjId);
     _iSpinBox->setObjId(pidI_ObjId);
     _dSpinBox->setObjId(pidD_ObjId);
-    _actualValueSpinBox->setObjId(actualValue_ObjId);
-    _tempMotorSpinBox->setObjId(tempMotor_ObjId);
-    _tempDriver1SpinBox->setObjId(tempDriver1_ObjId);
-    _tempDriver2SpinBox->setObjId(tempDriver2_ObjId);
+    _actualValueLabel->setObjId(actualValue_ObjId);
+    _tempMotorLabel->setObjId(tempMotor_ObjId);
+    _tempDriver1Label->setObjId(tempDriver1_ObjId);
+    _tempDriver2Label->setObjId(tempDriver2_ObjId);
     _minSpinBox->setObjId(pidMin_ObjId);
     _maxSpinBox->setObjId(pidMax_ObjId);
     _thresholdSpinBox->setObjId(pidThreshold_ObjId);
@@ -283,7 +284,7 @@ void PidWidget::mode402Changed(uint8_t axis, NodeProfile402::Mode modeNew)
     case NodeProfile402::CSP:
     {
         _modePid = ModePid::MODE_PID_POSITION;
-        int actualPosition = _node->nodeOd()->value(_actualValueSpinBox->objId()).toInt();
+        int actualPosition = _node->nodeOd()->value(_actualValueLabel->objId()).toInt();
         _nodeProfile402->setTarget((_firstTargetSpinBox->value() - actualPosition) + actualPosition);
         _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
         break;
@@ -358,7 +359,7 @@ void PidWidget::stopFirstMeasurement()
 
     case MODE_PID_POSITION:
     {
-        int actualPosition = _node->nodeOd()->value(_actualValueSpinBox->objId()).toInt();
+        int actualPosition = _node->nodeOd()->value(_actualValueLabel->objId()).toInt();
         _nodeProfile402->setTarget((_secondTargetSpinBox->value() - actualPosition) + actualPosition);
         _timer.start(_windowSpinBox->value());
         break;
@@ -414,10 +415,10 @@ void PidWidget::readStatus()
     _pSpinBox->readObject();
     _iSpinBox->readObject();
     _dSpinBox->readObject();
-    _actualValueSpinBox->readObject();
-    _tempMotorSpinBox->readObject();
-    _tempDriver1SpinBox->readObject();
-    _tempDriver2SpinBox->readObject();
+    _actualValueLabel->readObject();
+    _tempMotorLabel->readObject();
+    _tempDriver1Label->readObject();
+    _tempDriver2Label->readObject();
 }
 
 void PidWidget::createWidgets()
@@ -463,21 +464,17 @@ void PidWidget::createWidgets()
     QGroupBox *statusGroupBox = new QGroupBox(tr("Status"));
     QFormLayout *statusLayout = new QFormLayout();
 
-    _actualValueSpinBox = new IndexSpinBox();
-    _actualValueSpinBox->setDisabled(true);
-    statusLayout->addRow(tr("&Actual Value :"), _actualValueSpinBox);
+    _actualValueLabel = new IndexLabel();
+    statusLayout->addRow(tr("&Actual Value :"), _actualValueLabel);
 
-    _tempMotorSpinBox = new IndexSpinBox();
-    _tempMotorSpinBox->setDisabled(true);
-    statusLayout->addRow(tr("&Temperature Motor :"), _tempMotorSpinBox);
+    _tempMotorLabel = new IndexLabel();
+    statusLayout->addRow(tr("&Temperature Motor :"), _tempMotorLabel);
 
-    _tempDriver1SpinBox = new IndexSpinBox();
-    _tempDriver1SpinBox->setDisabled(true);
-    statusLayout->addRow(tr("&Temperature Driver1:"), _tempDriver1SpinBox);
+    _tempDriver1Label = new IndexLabel();
+    statusLayout->addRow(tr("&Temperature Driver1 :"), _tempDriver1Label);
 
-    _tempDriver2SpinBox = new IndexSpinBox();
-    _tempDriver2SpinBox->setDisabled(true);
-    statusLayout->addRow(tr("&Temperature Driver2:"), _tempDriver2SpinBox);
+    _tempDriver2Label = new IndexLabel();
+    statusLayout->addRow(tr("&Temperature Driver2 :"), _tempDriver2Label);
 
     statusGroupBox->setLayout(statusLayout);
 

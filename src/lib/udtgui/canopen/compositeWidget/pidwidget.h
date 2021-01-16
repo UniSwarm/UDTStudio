@@ -35,6 +35,7 @@ class Node;
 class DataLogger;
 class DataLoggerChartsWidget;
 class IndexSpinBox;
+class IndexLabel;
 
 class UDTGUI_EXPORT PidWidget : public QWidget
 {
@@ -80,10 +81,10 @@ protected:
     IndexSpinBox *_maxSpinBox;
     IndexSpinBox *_thresholdSpinBox;
 
-    IndexSpinBox *_actualValueSpinBox;
-    IndexSpinBox *_tempMotorSpinBox;
-    IndexSpinBox *_tempDriver1SpinBox;
-    IndexSpinBox *_tempDriver2SpinBox;
+    IndexLabel *_actualValueLabel;
+    IndexLabel *_tempMotorLabel;
+    IndexLabel *_tempDriver1Label;
+    IndexLabel *_tempDriver2Label;
 
     QSpinBox *_firstTargetSpinBox;
     QSpinBox *_secondTargetSpinBox;
