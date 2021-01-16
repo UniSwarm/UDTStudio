@@ -662,6 +662,7 @@ void P402IpWidget::createWidgets()
     QPushButton *imgPushButton = new QPushButton(tr("Diagram IP mode"));
     connect(imgPushButton, SIGNAL(clicked()), ipModeLabel, SLOT(show()));
     QHBoxLayout *ipButtonLayout = new QHBoxLayout();
+    ipButtonLayout->setSpacing(5);
     ipButtonLayout->addWidget(dataLoggerPushButton);
     ipButtonLayout->addWidget(mappingPdoPushButton);
     ipButtonLayout->addWidget(imgPushButton);

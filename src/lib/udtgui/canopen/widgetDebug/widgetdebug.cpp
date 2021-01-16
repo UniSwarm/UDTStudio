@@ -122,19 +122,11 @@ void WidgetDebug::statusNodeChanged()
             _stackedWidget->setEnabled(false);
             _modeGroupBox->setEnabled(true);
             _stateMachineGroupBox->setEnabled(false);
-            _controlWordGroupBox->setEnabled(false);
             _statusWordGroupBox->setEnabled(false);
         }
         else
         {
-            _timer.stop();
-
-            _stackedWidget->setEnabled(false);
-            _nmtToolBar->setEnabled(true);
-            _modeGroupBox->setEnabled(false);
-            _stateMachineGroupBox->setEnabled(false);
-            _controlWordGroupBox->setEnabled(false);
-            _statusWordGroupBox->setEnabled(false);
+            stop();
         }
         _p402ip->updateData();
         _p402vl->updateData();
@@ -150,16 +142,13 @@ void WidgetDebug::start()
         if (_node->status() != Node::STARTED)
         {
             _node->sendStart();
-
         }
         _timer.start(_logTimerSpinBox->value());
 
         _stackedWidget->setEnabled(true);
         _modeGroupBox->setEnabled(true);
         _stateMachineGroupBox->setEnabled(true);
-        _controlWordGroupBox->setEnabled(true);
         _statusWordGroupBox->setEnabled(true);
-
     }
 }
 
@@ -172,13 +161,13 @@ void WidgetDebug::stop()
         _stackedWidget->setEnabled(false);
         _modeGroupBox->setEnabled(true);
         _stateMachineGroupBox->setEnabled(false);
-        _controlWordGroupBox->setEnabled(false);
         _statusWordGroupBox->setEnabled(false);
     }
 }
 
 void WidgetDebug::gotoStateOEClicked()
 {
+    start();
     _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
 }
 

@@ -332,6 +332,7 @@ void P402TqWidget::createWidgets()
     QPushButton *imgPushButton = new QPushButton(tr("Diagram TQ mode"));
     connect(imgPushButton, SIGNAL(clicked()), tqModeLabel, SLOT(show()));
     QHBoxLayout *tqButtonLayout = new QHBoxLayout();
+    tqButtonLayout->setSpacing(5);
     tqButtonLayout->addWidget(dataLoggerPushButton);
     tqButtonLayout->addWidget(mappingPdoPushButton);
     tqButtonLayout->addWidget(imgPushButton);

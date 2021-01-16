@@ -473,6 +473,7 @@ void P402VlWidget::createWidgets()
     QPushButton *imgPushButton = new QPushButton(tr("Diagram VL mode"));
     connect(imgPushButton, SIGNAL(clicked()), vlModeLabel, SLOT(show()));
     QHBoxLayout *vlButtonLayout = new QHBoxLayout();
+    vlButtonLayout->setSpacing(5);
     vlButtonLayout->addWidget(dataLoggerPushButton);
     vlButtonLayout->addWidget(mappingPdoPushButton);
     vlButtonLayout->addWidget(imgPushButton);
