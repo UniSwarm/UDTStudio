@@ -53,6 +53,9 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
 
     setDataLogger(dataLogger);
     _idPending = -1;
+
+    _useOpenGL = false;
+    _viewCross = false;
 }
 
 DataLoggerChartsWidget::~DataLoggerChartsWidget()
@@ -102,7 +105,7 @@ void DataLoggerChartsWidget::updateDlData(int id)
 
         qreal min = qFloor(_dataLogger->min());
         qreal max = qCeil(_dataLogger->max());
-        qreal border = qCeil((max - min) * .1);
+        qreal border = qMax(qCeil((max - min) * .1), 1);
         qreal range = max - min + 2 * border;
         if (min < _axisY->min() || min + border > _axisY->min()
             || max > _axisY->max() || max - border < _axisY->max())
@@ -112,8 +115,11 @@ void DataLoggerChartsWidget::updateDlData(int id)
             {
                 _axisY->setTickCount(range + 1);
             }
+            else if (range < 20.0)
+            {
+                _axisY->setTickCount(range / 2.0 + 1);
+            }
         }
-        //qDebug() << min - border << max + border << dlData->lastValue() << range << qCeil(range / 10.0);
 
         QDateTime firstDateTime = _dataLogger->firstDateTime();
         QDateTime lastDateTime = _dataLogger->lastDateTime();
@@ -136,10 +142,11 @@ void DataLoggerChartsWidget::addDataOk()
     {
         DLData *dlData = _dataLogger->data(_idPending);
         QtCharts::QLineSeries *serie = new QtCharts::QLineSeries();
-        serie->setUseOpenGL(true);
         serie->setName(dlData->name());
         serie->setPen(QPen(dlData->color(), 2));
         serie->setBrush(QBrush(dlData->color()));
+        serie->setPointsVisible(_viewCross);
+        serie->setUseOpenGL(_useOpenGL);
         _chart->addSeries(serie);
 
         if (!_chart->axes(Qt::Horizontal).contains(_axisX))

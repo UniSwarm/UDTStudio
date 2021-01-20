@@ -31,7 +31,7 @@ DLData::DLData(const NodeObjectId &objectId)
         NodeSubIndex *nodeSubIndex = objectId.nodeSubIndex();
         if (nodeSubIndex)
         {
-            _name = nodeSubIndex->name();
+            _name = nodeSubIndex->nodeIndex()->name() + "." + nodeSubIndex->name();
         }
     }
 

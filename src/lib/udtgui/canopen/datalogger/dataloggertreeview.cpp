@@ -125,10 +125,11 @@ void DataLoggerTreeView::setColorCurrent()
     {
         return;
     }
-    QColor color = QColorDialog::getColor(dlData->color(), this);
-    if (color.isValid())
+    QColorDialog colorDialog(this);
+    colorDialog.show();
+    if (colorDialog.exec())
     {
-        dlData->setColor(color);
+        dlData->setColor(colorDialog.currentColor());
     }
 }
 

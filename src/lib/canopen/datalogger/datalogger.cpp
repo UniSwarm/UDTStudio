@@ -183,6 +183,11 @@ QDateTime DataLogger::lastDateTime() const
 
 void DataLogger::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (!_timer.isActive())
+    {
+        return;
+    }
+
     DLData *dlData = data(objId);
     if (!dlData || flags == SDO::Error)
     {

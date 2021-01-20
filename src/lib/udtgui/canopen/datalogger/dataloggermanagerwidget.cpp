@@ -113,7 +113,7 @@ void DataLoggerManagerWidget::createWidgets()
     // speed
     _openGLAction = _toolBar->addAction(tr("Open-GL"));
     _openGLAction->setCheckable(true);
-    _openGLAction->setChecked(true);
+    _openGLAction->setChecked(false);
     _openGLAction->setIcon(QIcon(":/icons/img/icons8-speed.png"));
     _openGLAction->setStatusTip(tr("Set render to open GL for fast rendering"));
     connect(_openGLAction, &QAction::triggered, this, &DataLoggerManagerWidget::setUseOpenGL);
@@ -121,7 +121,7 @@ void DataLoggerManagerWidget::createWidgets()
     // linechart
     _crossAction = _toolBar->addAction(tr("Cross"));
     _crossAction->setCheckable(true);
-    _crossAction->setEnabled(false);
+    _crossAction->setEnabled(true);
     _crossAction->setIcon(QIcon(":/icons/img/icons8-line-chart.png"));
     _crossAction->setStatusTip(tr("Adds cross to line chart"));
     connect(_crossAction, &QAction::triggered, this, &DataLoggerManagerWidget::setViewCross);
