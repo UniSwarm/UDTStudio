@@ -300,22 +300,22 @@ void P402TqWidget::createWidgets()
     _tqTorqueProfileTypeSpinBox = new IndexSpinBox();
     _tqTorqueProfileTypeSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     name = tr("To&rque Profile Type ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_PROFILE_TYPE, _axis).index(), 16).toUpper());
-    tqLayout->addRow(name, _tqTorqueProfileTypeSpinBox);
+//    tqLayout->addRow(name, _tqTorqueProfileTypeSpinBox);
 
     _tqMaxCurrentSpinBox = new IndexSpinBox();
     _tqMaxCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     name = tr("Max &Current ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_TQ_MAX_CURRENT, _axis).index(), 16).toUpper());
-    tqLayout->addRow(name, _tqMaxCurrentSpinBox);
+//    tqLayout->addRow(name, _tqMaxCurrentSpinBox);
 
     _tqMotorRatedTorqueSpinBox = new IndexSpinBox();
     _tqMotorRatedTorqueSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     name = tr("Mot&or Rated Torque ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_TORQUE, _axis).index(), 16).toUpper());
-    tqLayout->addRow(name, _tqMotorRatedTorqueSpinBox);
+//    tqLayout->addRow(name, _tqMotorRatedTorqueSpinBox);
 
     _tqMotorRatedCurrentSpinBox = new IndexSpinBox();
     _tqMotorRatedCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     name = tr("Motor Rate&d Current ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_CURRENT, _axis).index(), 16).toUpper());
-    tqLayout->addRow(name, _tqMotorRatedCurrentSpinBox);
+//    tqLayout->addRow(name, _tqMotorRatedCurrentSpinBox);
     tqGroupBox->setLayout(tqLayout);
 
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
