@@ -545,11 +545,11 @@ QString PidWidget::title() const
     case PidWidget::MODE_PID_NONE:
         return tr("None");
     case MODE_PID_POSITION:
-        return tr("PID Position");
+        return tr("Position PID");
     case MODE_PID_VELOCITY:
-        return tr("PID Velocity");
+        return tr("Velocity PID");
     case MODE_PID_TORQUE:
-        return tr("PID Torque");
+        return tr("Torque PID");
     }
     return QString();
 }

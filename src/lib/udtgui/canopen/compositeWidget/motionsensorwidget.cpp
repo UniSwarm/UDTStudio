@@ -327,12 +327,14 @@ void MotionSensorWidget::createWidgets()
     QFormLayout *statusLayout = new QFormLayout();
 
     _rawDataValueLabel = new IndexLabel();
+    _rawDataValueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     statusLayout->addRow(tr("Ra&w Data :"), _rawDataValueLabel);
 
     _flagLabel = new IndexLabel();
     statusLayout->addRow(tr("&Flag :"), _flagLabel);
 
     _valueLabel = new IndexLabel();
+    _valueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     statusLayout->addRow(tr("&Value :"), _valueLabel);
 
     statusGroupBox->setLayout(statusLayout);
@@ -399,11 +401,11 @@ QString MotionSensorWidget::title() const
     case MotionSensorWidget::MODE_SENSOR_NONE:
         return tr("None");
     case MODE_SENSOR_POSITION:
-        return tr("Sensor Position");
+        return tr("Position sensor");
     case MODE_SENSOR_VELOCITY:
-        return tr("Sensor Velocity");
+        return tr("Velocity sensor");
     case MODE_SENSOR_TORQUE:
-        return tr("Sensor Torque");
+        return tr("Torque sensor");
     }
     return QString();
 }
