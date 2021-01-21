@@ -28,6 +28,7 @@
 class PidWidget;
 class NodeProfile402;
 class WidgetDebug;
+class MotionSensorWidget;
 
 class UDTGUI_EXPORT NodeScreenUmcMotor : public NodeScreen
 {
@@ -42,6 +43,10 @@ protected:
     PidWidget *_pidVelocityWidget;
     PidWidget *_pidPositionWidget;
     PidWidget *_pidTorqueWidget;
+
+    MotionSensorWidget *_motionSensorVelocityWidget;
+    MotionSensorWidget *_motionSensorPositionWidget;
+    MotionSensorWidget *_motionSensorTorqueWidget;
 
     WidgetDebug *_widgetDebug;
 

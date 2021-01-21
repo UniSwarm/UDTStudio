@@ -19,7 +19,7 @@
 #include "nodescreenumcmotor.h"
 
 #include "canopen/compositeWidget/pidwidget.h"
-
+#include "canopen/compositeWidget/motionsensorwidget.h"
 #include <QLayout>
 
 #include "canopen/widgetDebug/widgetdebug.h"
@@ -41,6 +41,10 @@ void NodeScreenUmcMotor::createWidgets()
     _pidVelocityWidget = new PidWidget();
     _pidTorqueWidget = new PidWidget();
     _pidPositionWidget = new PidWidget();
+
+    _motionSensorVelocityWidget = new MotionSensorWidget();
+    _motionSensorPositionWidget = new MotionSensorWidget();
+    _motionSensorTorqueWidget = new MotionSensorWidget();
 
     _widgetDebug = new WidgetDebug();
 
@@ -76,12 +80,21 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)
     _pidTorqueWidget->setMode(PidWidget::MODE_PID_TORQUE);
     _pidTorqueWidget->setNode(node, axis);
     _tabWidget->addTab(_pidTorqueWidget, " " + _pidTorqueWidget->title() + " ");
+    _motionSensorTorqueWidget->setMode(MotionSensorWidget::MODE_SENSOR_TORQUE);
+    _motionSensorTorqueWidget->setNode(node, axis);
+    _tabWidget->addTab(_motionSensorTorqueWidget, " " + _motionSensorTorqueWidget->title() + " ");
 
     _pidVelocityWidget->setMode(PidWidget::MODE_PID_VELOCITY);
     _pidVelocityWidget->setNode(node, axis);
     _tabWidget->addTab(_pidVelocityWidget, " " + _pidVelocityWidget->title() + " ");
+    _motionSensorVelocityWidget->setMode(MotionSensorWidget::MODE_SENSOR_VELOCITY);
+    _motionSensorVelocityWidget->setNode(node, axis);
+    _tabWidget->addTab(_motionSensorVelocityWidget, " " + _motionSensorVelocityWidget->title() + " ");
 
     _pidPositionWidget->setMode(PidWidget::MODE_PID_POSITION);
     _pidPositionWidget->setNode(node, axis);
     _tabWidget->addTab(_pidPositionWidget, " " + _pidPositionWidget->title() + " ");
+    _motionSensorPositionWidget->setMode(MotionSensorWidget::MODE_SENSOR_POSITION);
+    _motionSensorPositionWidget->setNode(node, axis);
+    _tabWidget->addTab(_motionSensorPositionWidget, " " + _motionSensorPositionWidget->title() + " ");
 }

@@ -396,6 +396,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
             return {static_cast<quint16>((0x4022 + axisDecal)), 0x1};
         case OD_MS_TORQUE_SENSOR_STATUS_FLAG:
             return {static_cast<quint16>((0x4022 + axisDecal)), 0x2};
+        case OD_MS_TORQUE_SENSOR_STATUS_VALUE:
+            return {static_cast<quint16>((0x4022 + axisDecal)), 0x3};
         // a1_Torque_sensor_config
         case OD_MS_TORQUE_SENSOR_SELECT:
             return {static_cast<quint16>((0x4023 + axisDecal)), 0x1};
@@ -455,6 +457,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
             return {static_cast<quint16>((0x4042 + axisDecal)), 0x1};
         case OD_MS_VELOCITY_SENSOR_STATUS_FLAG:
             return {static_cast<quint16>((0x4042 + axisDecal)), 0x2};
+        case OD_MS_VELOCITY_SENSOR_STATUS_VALUE:
+            return {static_cast<quint16>((0x4042 + axisDecal)), 0x3};
         // a1_Velocity_sensor_config
         case OD_MS_VELOCITY_SENSOR_SELECT:
             return {static_cast<quint16>((0x4043 + axisDecal)), 0x1};
@@ -514,6 +518,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
             return {static_cast<quint16>((0x4062 + axisDecal)), 0x1};
         case OD_MS_POSITION_SENSOR_STATUS_FLAG:
             return {static_cast<quint16>((0x4062 + axisDecal)), 0x2};
+        case OD_MS_POSITION_SENSOR_STATUS_VALUE:
+            return {static_cast<quint16>((0x4062 + axisDecal)), 0x3};
         // a1_Position_sensor_config
         case OD_MS_POSITION_SENSOR_SELECT:
             return {static_cast<quint16>((0x4063 + axisDecal)), 0x1};
