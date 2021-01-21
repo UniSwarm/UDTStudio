@@ -283,45 +283,45 @@ void MotionSensorWidget::createWidgets()
     QVBoxLayout *actionLayout = new QVBoxLayout(MotionSensorWidget);
 
     sensorConfigGroupBox = new QGroupBox(tr("Sensor config"));
-    QFormLayout *pidLayout = new QFormLayout();
+    QFormLayout *configLayout = new QFormLayout();
 
     _sensorSelectSpinBox = new IndexSpinBox();
     _sensorSelectSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
-    pidLayout->addRow(tr("&Sensor select :"), _sensorSelectSpinBox);
+    configLayout->addRow(tr("&Sensor select :"), _sensorSelectSpinBox);
 
     _preOffsetSpinBox = new IndexSpinBox();
     _preOffsetSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("Pr&e offset :"), _preOffsetSpinBox);
+    configLayout->addRow(tr("Pr&e offset :"), _preOffsetSpinBox);
 
     _scaleSpinBox = new IndexSpinBox();
     _scaleSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("S&cale :"), _scaleSpinBox);
+    configLayout->addRow(tr("S&cale :"), _scaleSpinBox);
 
     _postOffsetSpinBox = new IndexSpinBox();
     _postOffsetSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("&Post offset :"), _postOffsetSpinBox);
+    configLayout->addRow(tr("&Post offset :"), _postOffsetSpinBox);
 
     _errorMinSpinBox = new IndexSpinBox();
     _errorMinSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("Err&or min :"), _errorMinSpinBox);
+    configLayout->addRow(tr("Err&or min :"), _errorMinSpinBox);
 
     _errorMaxsetSpinBox = new IndexSpinBox();
     _errorMaxsetSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("Error m&ax :"), _errorMaxsetSpinBox);
+    configLayout->addRow(tr("Error m&ax :"), _errorMaxsetSpinBox);
 
     _thresholdMinSpinBox = new IndexSpinBox();
     _thresholdMinSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("&Threshold min :"), _thresholdMinSpinBox);
+    configLayout->addRow(tr("&Threshold min :"), _thresholdMinSpinBox);
 
     _thresholdMaxSpinBox = new IndexSpinBox();
     _thresholdMaxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("T&hreshold max :"), _thresholdMaxSpinBox);
+    configLayout->addRow(tr("T&hreshold max :"), _thresholdMaxSpinBox);
 
     _thresholdModeSpinBox = new IndexSpinBox();
     _thresholdModeSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("Th&reshold mode :"), _thresholdModeSpinBox);
+    configLayout->addRow(tr("Th&reshold mode :"), _thresholdModeSpinBox);
 
-    sensorConfigGroupBox->setLayout(pidLayout);
+    sensorConfigGroupBox->setLayout(configLayout);
 
     QGroupBox *statusGroupBox = new QGroupBox(tr("Sensor status"));
     QFormLayout *statusLayout = new QFormLayout();
