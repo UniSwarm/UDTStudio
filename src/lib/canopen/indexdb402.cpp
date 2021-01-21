@@ -402,21 +402,21 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         case OD_MS_TORQUE_SENSOR_SELECT:
             return {static_cast<quint16>((0x4023 + axisDecal)), 0x1};
         case OD_MS_TORQUE_SENSOR_THRESHOLD_MIN:
-            return {static_cast<quint16>((0x4023 + axisDecal)), 0x2};
-        case OD_MS_TORQUE_SENSOR_THRESHOLD_MAX:
-            return {static_cast<quint16>((0x4023 + axisDecal)), 0x3};
-        case OD_MS_TORQUE_SENSOR_THRESHOLD_MODE:
-            return {static_cast<quint16>((0x4023 + axisDecal)), 0x4};
-        case OD_MS_TORQUE_SENSOR_PRE_OFFSET:
-            return {static_cast<quint16>((0x4023 + axisDecal)), 0x5};
-        case OD_MS_TORQUE_SENSOR_SCALE:
-            return {static_cast<quint16>((0x4023 + axisDecal)), 0x6};
-        case OD_MS_TORQUE_SENSOR_POST_OFFSET:
             return {static_cast<quint16>((0x4023 + axisDecal)), 0x7};
-        case OD_MS_TORQUE_SENSOR_ERROR_MIN:
+        case OD_MS_TORQUE_SENSOR_THRESHOLD_MAX:
             return {static_cast<quint16>((0x4023 + axisDecal)), 0x8};
-        case OD_MS_TORQUE_SENSOR_ERROR_MAX:
+        case OD_MS_TORQUE_SENSOR_THRESHOLD_MODE:
             return {static_cast<quint16>((0x4023 + axisDecal)), 0x9};
+        case OD_MS_TORQUE_SENSOR_PRE_OFFSET:
+            return {static_cast<quint16>((0x4023 + axisDecal)), 0x2};
+        case OD_MS_TORQUE_SENSOR_SCALE:
+            return {static_cast<quint16>((0x4023 + axisDecal)), 0x3};
+        case OD_MS_TORQUE_SENSOR_POST_OFFSET:
+            return {static_cast<quint16>((0x4023 + axisDecal)), 0x4};
+        case OD_MS_TORQUE_SENSOR_ERROR_MIN:
+            return {static_cast<quint16>((0x4023 + axisDecal)), 0x5};
+        case OD_MS_TORQUE_SENSOR_ERROR_MAX:
+            return {static_cast<quint16>((0x4023 + axisDecal)), 0x6};
         // a1_Torque_sensor_filter
         case OD_MS_TORQUE_SENSOR_FILTER_SELECT:
             return {static_cast<quint16>((0x4024 + axisDecal)), 0x1};
@@ -463,21 +463,21 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         case OD_MS_VELOCITY_SENSOR_SELECT:
             return {static_cast<quint16>((0x4043 + axisDecal)), 0x1};
         case OD_MS_VELOCITY_SENSOR_THRESHOLD_MIN:
-            return {static_cast<quint16>((0x4043 + axisDecal)), 0x2};
-        case OD_MS_VELOCITY_SENSOR_THRESHOLD_MAX:
-            return {static_cast<quint16>((0x4043 + axisDecal)), 0x3};
-        case OD_MS_VELOCITY_SENSOR_THRESHOLD_MODE:
-            return {static_cast<quint16>((0x4043 + axisDecal)), 0x4};
-        case OD_MS_VELOCITY_SENSOR_PRE_OFFSET:
-            return {static_cast<quint16>((0x4043 + axisDecal)), 0x5};
-        case OD_MS_VELOCITY_SENSOR_SCALE:
-            return {static_cast<quint16>((0x4043 + axisDecal)), 0x6};
-        case OD_MS_VELOCITY_SENSOR_POST_OFFSET:
             return {static_cast<quint16>((0x4043 + axisDecal)), 0x7};
-        case OD_MS_VELOCITY_SENSOR_ERROR_MIN:
+        case OD_MS_VELOCITY_SENSOR_THRESHOLD_MAX:
             return {static_cast<quint16>((0x4043 + axisDecal)), 0x8};
-        case OD_MS_VELOCITY_SENSOR_ERROR_MAX:
+        case OD_MS_VELOCITY_SENSOR_THRESHOLD_MODE:
             return {static_cast<quint16>((0x4043 + axisDecal)), 0x9};
+        case OD_MS_VELOCITY_SENSOR_PRE_OFFSET:
+            return {static_cast<quint16>((0x4043 + axisDecal)), 0x2};
+        case OD_MS_VELOCITY_SENSOR_SCALE:
+            return {static_cast<quint16>((0x4043 + axisDecal)), 0x3};
+        case OD_MS_VELOCITY_SENSOR_POST_OFFSET:
+            return {static_cast<quint16>((0x4043 + axisDecal)), 0x4};
+        case OD_MS_VELOCITY_SENSOR_ERROR_MIN:
+            return {static_cast<quint16>((0x4043 + axisDecal)), 0x5};
+        case OD_MS_VELOCITY_SENSOR_ERROR_MAX:
+            return {static_cast<quint16>((0x4043 + axisDecal)), 0x6};
             // a1_Velocity_sensor_filter
         case OD_MS_VELOCITY_SENSOR_FILTER_SELECT:
             return {static_cast<quint16>((0x4044 + axisDecal)), 0x1};
@@ -524,21 +524,21 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         case OD_MS_POSITION_SENSOR_SELECT:
             return {static_cast<quint16>((0x4063 + axisDecal)), 0x1};
         case OD_MS_POSITION_SENSOR_THRESHOLD_MIN:
-            return {static_cast<quint16>((0x4063 + axisDecal)), 0x2};
-        case OD_MS_POSITION_SENSOR_THRESHOLD_MAX:
-            return {static_cast<quint16>((0x4063 + axisDecal)), 0x3};
-        case OD_MS_POSITION_SENSOR_THRESHOLD_MODE:
-            return {static_cast<quint16>((0x4063 + axisDecal)), 0x4};
-        case OD_MS_POSITION_SENSOR_PRE_OFFSET:
-            return {static_cast<quint16>((0x4063 + axisDecal)), 0x5};
-        case OD_MS_POSITION_SENSOR_SCALE:
-            return {static_cast<quint16>((0x4063 + axisDecal)), 0x6};
-        case OD_MS_POSITION_SENSOR_POST_OFFSET:
             return {static_cast<quint16>((0x4063 + axisDecal)), 0x7};
-        case OD_MS_POSITION_SENSOR_ERROR_MIN:
+        case OD_MS_POSITION_SENSOR_THRESHOLD_MAX:
             return {static_cast<quint16>((0x4063 + axisDecal)), 0x8};
-        case OD_MS_POSITION_SENSOR_ERROR_MAX:
+        case OD_MS_POSITION_SENSOR_THRESHOLD_MODE:
             return {static_cast<quint16>((0x4063 + axisDecal)), 0x9};
+        case OD_MS_POSITION_SENSOR_PRE_OFFSET:
+            return {static_cast<quint16>((0x4063 + axisDecal)), 0x2};
+        case OD_MS_POSITION_SENSOR_SCALE:
+            return {static_cast<quint16>((0x4063 + axisDecal)), 0x3};
+        case OD_MS_POSITION_SENSOR_POST_OFFSET:
+            return {static_cast<quint16>((0x4063 + axisDecal)), 0x4};
+        case OD_MS_POSITION_SENSOR_ERROR_MIN:
+            return {static_cast<quint16>((0x4063 + axisDecal)), 0x5};
+        case OD_MS_POSITION_SENSOR_ERROR_MAX:
+            return {static_cast<quint16>((0x4063 + axisDecal)), 0x6};
         // a1_Position_sensor_filter
         case OD_MS_POSITION_SENSOR_FILTER_SELECT:
             return {static_cast<quint16>((0x4064 + axisDecal)), 0x1};
