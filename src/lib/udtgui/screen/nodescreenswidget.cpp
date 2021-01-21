@@ -21,6 +21,7 @@
 #include "nodescreenod.h"
 #include "nodescreenpdo.h"
 #include "nodescreenumcmotor.h"
+#include "nodescreensynchro.h"
 #include "indexdb.h"
 
 #include <QHBoxLayout>
@@ -95,6 +96,9 @@ void NodeScreensWidget::addNode(Node *node)
             screen->setNode(node, i);
             nodeScreens.screens.append(screen);
         }
+        screen = new NodeScreenSynchro();
+        screen->setNode(node, 12);
+        nodeScreens.screens.append(screen);
      }
 
     // add NodeScreensStruct to nodeIt

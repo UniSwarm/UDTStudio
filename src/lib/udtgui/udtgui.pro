@@ -52,7 +52,7 @@ HEADERS += \
     $$PWD/canopen/widget/indexlabel.h \
     $$PWD/canopen/widgetDebug/p402ppwidget.h \
     $$PWD/canopen/compositeWidget/motionsensorwidget.h \
-    $$PWD/canopen/compositeWidget/synchrowidget.h
+    $$PWD/screen/nodescreensynchro.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -98,7 +98,7 @@ SOURCES += \
     $$PWD/canopen/widget/indexlabel.cpp \
     $$PWD/canopen/widgetDebug/p402ppwidget.cpp \
     $$PWD/canopen/compositeWidget/motionsensorwidget.cpp \
-    $$PWD/canopen/compositeWidget/synchrowidget.cpp
+    $$PWD/screen/nodescreensynchro.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 
