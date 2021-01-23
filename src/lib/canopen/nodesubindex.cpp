@@ -482,17 +482,21 @@ int NodeSubIndex::byteLength() const
     {
     case NodeSubIndex::NONE:
         break;
+
     case NodeSubIndex::VISIBLE_STRING:
     case NodeSubIndex::OCTET_STRING:
     case NodeSubIndex::UNICODE_STRING:
         // TODO
         break;
+
     case NodeSubIndex::TIME_OF_DAY:
         // TODO
         break;
+
     case NodeSubIndex::TIME_DIFFERENCE:
         // TODO
         break;
+
     case NodeSubIndex::DDOMAIN:
         // TODO
         break;
@@ -541,17 +545,21 @@ int NodeSubIndex::bitLength() const
     {
     case NodeSubIndex::NONE:
         break;
+
     case NodeSubIndex::VISIBLE_STRING:
     case NodeSubIndex::OCTET_STRING:
     case NodeSubIndex::UNICODE_STRING:
         // TODO
         break;
+
     case NodeSubIndex::TIME_OF_DAY:
         // TODO
         break;
+
     case NodeSubIndex::TIME_DIFFERENCE:
         // TODO
         break;
+
     case NodeSubIndex::DDOMAIN:
         // TODO
         break;

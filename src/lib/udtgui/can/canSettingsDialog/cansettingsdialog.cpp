@@ -18,15 +18,16 @@
 
 #include "cansettingsdialog.h"
 
-#include <QLayout>
-#include <QFormLayout>
-#include <QPushButton>
-#include <QMessageBox>
 #include <QCanBus>
 #include <QDialogButtonBox>
+#include <QFormLayout>
+#include <QLayout>
+#include <QMessageBox>
+#include <QPushButton>
 
 CanSettingsDialog::CanSettingsDialog(QCanBusDevice *canDevice, QWidget *parent)
-    : QDialog(parent), _canDevice(canDevice)
+    : QDialog(parent)
+    , _canDevice(canDevice)
 {
     setWindowTitle(QString("Can settings"));
     createDialog();
@@ -72,15 +73,14 @@ void CanSettingsDialog::accept()
 
     if (!_canDevice)
     {
-         _canDevice = QCanBus::instance()->createDevice(_currentSettings.interfaceName, _currentSettings.deviceName, &errorString);
+        _canDevice = QCanBus::instance()->createDevice(_currentSettings.interfaceName, _currentSettings.deviceName, &errorString);
     }
     else
     {
         _canDevice = QCanBus::instance()->createDevice(_currentSettings.interfaceName, _currentSettings.deviceName, &errorString);
         if (!_canDevice)
         {
-            QMessageBox::warning(this, tr("My Application"), tr("Error creating device '%1', reason: '%2'").arg(_currentSettings.interfaceName).arg(errorString),
-                                 QMessageBox::Cancel);
+            QMessageBox::warning(this, tr("My Application"), tr("Error creating device '%1', reason: '%2'").arg(_currentSettings.interfaceName).arg(errorString), QMessageBox::Cancel);
         }
     }
     QDialog::accept();
@@ -124,7 +124,6 @@ QString CanSettingsDialog::searchParam(QCanBusDevice::ConfigurationKey key)
 
     return result.toString();
 }
-
 
 void CanSettingsDialog::fillBitrates()
 {

@@ -44,7 +44,7 @@ void OdDb::addDirectory(const QStringList &directories)
 
 void OdDb::searchFile(const QString &directory)
 {
-    QDirIterator it(directory, QStringList() << "*.eds", QDir::Files | QDir::NoSymLinks |  QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+    QDirIterator it(directory, QStringList() << "*.eds", QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
 
     while (it.hasNext())
     {

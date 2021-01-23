@@ -29,7 +29,6 @@ public:
     NodeProfileFactory();
 
     static void profileFactory(Node *node);
-
 };
 
 #endif // NODEPROFILEFACTORY_H

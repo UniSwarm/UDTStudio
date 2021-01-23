@@ -20,9 +20,9 @@
 
 #include "canframemodel.h"
 
-#include <QFont>
 #include <QApplication>
 #include <QColor>
+#include <QFont>
 
 CanFrameModel::CanFrameModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -181,11 +181,11 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
         switch (index.column())
         {
         case DataByte:
-            {
-                QFont fontMono = QApplication::font();
-                fontMono.setStyleHint(QFont::Monospace);
-                return QVariant(fontMono);
-            }
+        {
+            QFont fontMono = QApplication::font();
+            fontMono.setStyleHint(QFont::Monospace);
+            return QVariant(fontMono);
+        }
         default:
             return QVariant();
         }

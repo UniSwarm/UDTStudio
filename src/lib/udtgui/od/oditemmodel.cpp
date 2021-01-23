@@ -95,7 +95,7 @@ QVariant ODItemModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    ODItem *item = static_cast<ODItem*>(index.internalPointer());
+    ODItem *item = static_cast<ODItem *>(index.internalPointer());
 
     return item->data(index.column(), role);
 }
@@ -107,7 +107,7 @@ bool ODItemModel::setData(const QModelIndex &index, const QVariant &value, int r
         return false;
     }
 
-    ODItem *item = static_cast<ODItem*>(index.internalPointer());
+    ODItem *item = static_cast<ODItem *>(index.internalPointer());
     return item->setData(index.column(), value, role);
 }
 
@@ -125,7 +125,7 @@ QModelIndex ODItemModel::index(int row, int column, const QModelIndex &parent) c
     }
     else
     {
-        item = static_cast<ODItem*>(parent.internalPointer());
+        item = static_cast<ODItem *>(parent.internalPointer());
     }
 
     ODItem *childItem = item->child(row);
@@ -184,7 +184,7 @@ Qt::ItemFlags ODItemModel::flags(const QModelIndex &index) const
         return Qt::NoItemFlags;
     }
 
-    ODItem *item = static_cast<ODItem*>(index.internalPointer());
+    ODItem *item = static_cast<ODItem *>(index.internalPointer());
     Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     if (_editable)
     {

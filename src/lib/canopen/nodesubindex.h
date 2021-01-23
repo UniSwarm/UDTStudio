@@ -21,8 +21,8 @@
 
 #include "canopen_global.h"
 
-#include <QVariant>
 #include <QTime>
+#include <QVariant>
 
 #include "nodeobjectid.h"
 

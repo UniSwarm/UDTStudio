@@ -28,9 +28,9 @@
 
 namespace QtCharts
 {
-    class QDateTimeAxis;
-    class QValueAxis;
-}
+class QDateTimeAxis;
+class QValueAxis;
+} // namespace QtCharts
 
 class UDTGUI_EXPORT DataLoggerChartsWidget : public QtCharts::QChartView
 {

@@ -21,11 +21,11 @@
 
 #include <QMainWindow>
 
-#include <QTreeView>
 #include <QSortFilterProxyModel>
+#include <QTreeView>
 
-#include "canopenbus.h"
 #include "can/canSettingsDialog/cansettingsdialog.h"
+#include "canopenbus.h"
 
 #include "can/canFrameListView/canframelistview.h"
 #include "canopen/busnodesmanagerview.h"

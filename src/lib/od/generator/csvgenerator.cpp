@@ -24,7 +24,6 @@
  */
 CsvGenerator::CsvGenerator()
 {
-
 }
 
 /**
@@ -56,7 +55,7 @@ bool CsvGenerator::generate(DeviceConfiguration *deviceConfiguration, const QStr
 bool CsvGenerator::generate(DeviceDescription *deviceDescription, const QString &filePath)
 {
     QString filePathBaseName = QFileInfo(filePath).path() + "/" + QFileInfo(filePath).baseName();
-    QString outCom =  filePathBaseName + "Communication." + QFileInfo(filePath).suffix();
+    QString outCom = filePathBaseName + "Communication." + QFileInfo(filePath).suffix();
     QFile csvComFile(outCom);
     if (!csvComFile.open(QIODevice::WriteOnly))
     {
@@ -158,16 +157,16 @@ void CsvGenerator::writeIndex(Index *index, QTextStream *out)
 
     int base = 16;
 
-    *out << QString::number(index->index(), base).toUpper() << ",";     // index
-    *out << ",";                                                        // subNumber
-    *out << "0,";                                                       // subIndex
+    *out << QString::number(index->index(), base).toUpper() << ","; // index
+    *out << ","; // subNumber
+    *out << "0,"; // subIndex
     QString name = index->name();
-    *out << name.replace("_"," ") << ",";                                // Name
-    *out << index->objectTypeStr(index->objectType()) << ",";           // objectType
-    *out << subIndex->dataTypeStr(subIndex->dataType()) << ",";         // dataType
-    *out << accessToString(subIndex->accessType()) << ",";              // accessType
-    *out << pdoToString(subIndex->accessType()) << ",";                 // pdoMapping
-    *out << subIndex->value().toString() << ",";                        // defaultValue
+    *out << name.replace("_", " ") << ","; // Name
+    *out << index->objectTypeStr(index->objectType()) << ","; // objectType
+    *out << subIndex->dataTypeStr(subIndex->dataType()) << ","; // dataType
+    *out << accessToString(subIndex->accessType()) << ","; // accessType
+    *out << pdoToString(subIndex->accessType()) << ","; // pdoMapping
+    *out << subIndex->value().toString() << ","; // defaultValue
 
     writeLimit(subIndex, out);
     *out << "\n";
@@ -181,27 +180,27 @@ void CsvGenerator::writeRecord(Index *index, QTextStream *out)
 {
     int base = 16;
 
-    *out << QString::number(index->index(), base).toUpper() << ",";     // index
-    *out << index->subIndexesCount() << ",";                            // subNumber
-    *out << ",";                                                        // subIndex
+    *out << QString::number(index->index(), base).toUpper() << ","; // index
+    *out << index->subIndexesCount() << ","; // subNumber
+    *out << ","; // subIndex
     QString name = index->name();
-    *out << name.replace("_"," ") << ",";                               // Name
-    *out << index->objectTypeStr(index->objectType()) << ",";           // objectType
-    *out << ",,,,,,";                                             // dataType,accessType,pdoMapping,defaultValue,lowLimit,highLimit
+    *out << name.replace("_", " ") << ","; // Name
+    *out << index->objectTypeStr(index->objectType()) << ","; // objectType
+    *out << ",,,,,,"; // dataType,accessType,pdoMapping,defaultValue,lowLimit,highLimit
     *out << "\n";
 
     for (SubIndex *subIndex : index->subIndexes())
     {
         *out << QString::number(index->index(), base).toUpper() << ","; // index
-        *out << ",";                                                   // subNumber
-        *out << subIndex->subIndex() << ",";                            // subIndex
+        *out << ","; // subNumber
+        *out << subIndex->subIndex() << ","; // subIndex
         QString name = subIndex->name();
-        *out << name.replace("_"," ") << ",";                           // Name
-        *out << index->objectTypeStr(Index::Object::VAR) << ",";        // objectType
-        *out << subIndex->dataTypeStr(subIndex->dataType()) << ",";     // dataType
-        *out << accessToString(subIndex->accessType()) << ",";          // accessType
-        *out << pdoToString(subIndex->accessType()) << ",";             // pdoMapping
-        *out << subIndex->value().toString() << ",";                    // defaultValue
+        *out << name.replace("_", " ") << ","; // Name
+        *out << index->objectTypeStr(Index::Object::VAR) << ","; // objectType
+        *out << subIndex->dataTypeStr(subIndex->dataType()) << ","; // dataType
+        *out << accessToString(subIndex->accessType()) << ","; // accessType
+        *out << pdoToString(subIndex->accessType()) << ","; // pdoMapping
+        *out << subIndex->value().toString() << ","; // defaultValue
 
         writeLimit(subIndex, out);
         *out << "\n";
@@ -229,7 +228,7 @@ void CsvGenerator::writeLimit(const SubIndex *subIndex, QTextStream *out)
     }
     else
     {
-         *out << ",";
+        *out << ",";
     }
 
     if (subIndex->hasHighLimit())

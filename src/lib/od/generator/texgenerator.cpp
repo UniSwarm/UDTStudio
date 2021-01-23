@@ -24,7 +24,6 @@
  */
 TexGenerator::TexGenerator()
 {
-
 }
 
 /**
@@ -56,7 +55,7 @@ bool TexGenerator::generate(DeviceConfiguration *deviceConfiguration, const QStr
 bool TexGenerator::generate(DeviceDescription *deviceDescription, const QString &filePath)
 {
     QString filePathBaseName = QFileInfo(filePath).path() + "/" + QFileInfo(filePath).baseName();
-    QString outCom =  filePathBaseName + "Communication." + QFileInfo(filePath).suffix();
+    QString outCom = filePathBaseName + "Communication." + QFileInfo(filePath).suffix();
     QFile TexComFile(outCom);
     if (!TexComFile.open(QIODevice::WriteOnly))
     {
@@ -156,7 +155,7 @@ void TexGenerator::writeIndex(Index *index, QTextStream *out)
     int base = 16;
 
     QString nameObject = index->name();
-    *out << "% " << QString::number(index->index(), base).toUpper() << " " <<  nameObject;
+    *out << "% " << QString::number(index->index(), base).toUpper() << " " << nameObject;
     *out << "\n";
     nameObject.remove(QRegExp("^[a][0-9]"));
     nameObject.remove("_");
@@ -237,18 +236,19 @@ void TexGenerator::writeIndex(Index *index, QTextStream *out)
     *out << "{" << accessToString(subIndex->accessType());
     if (pdoToString(subIndex->accessType()) != "")
     {
-        *out << "," << pdoToString(subIndex->accessType()) <<"}";
+        *out << "," << pdoToString(subIndex->accessType()) << "}";
     }
     else
     {
-        *out <<"}";
-    }if (subIndex->value().toString().isEmpty())
+        *out << "}";
+    }
+    if (subIndex->value().toString().isEmpty())
     {
         *out << "{-}";
     }
     else
     {
-        *out << "{" << subIndex->value().toString()  << "}";
+        *out << "{" << subIndex->value().toString() << "}";
     }
     *out << "{-}";
     *out << "{";
@@ -267,7 +267,7 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out)
     int base = 16;
 
     QString nameObject = index->name();
-    *out << "% " << QString::number(index->index(), base).toUpper() << " " <<  nameObject;
+    *out << "% " << QString::number(index->index(), base).toUpper() << " " << nameObject;
     *out << "\n";
     nameObject.remove(QRegExp("^[a][0-9]"));
     nameObject.remove("_");
@@ -342,10 +342,7 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out)
         }
 
         QString nameSubObject = subIndex->name();
-        *out << "% "
-             << QString::number(index->index(), base).toUpper() << "."
-             << QString::number(subIndex->subIndex(), base).toUpper() << " "
-             << nameSubObject;
+        *out << "% " << QString::number(index->index(), base).toUpper() << "." << QString::number(subIndex->subIndex(), base).toUpper() << " " << nameSubObject;
         *out << "\n";
         nameSubObject.remove("_");
         nameSubObject.remove(" ");
@@ -432,18 +429,19 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out)
         *out << "{" << accessToString(subIndex->accessType());
         if (pdoToString(subIndex->accessType()) != "")
         {
-            *out << "," << pdoToString(subIndex->accessType()) <<"}";
+            *out << "," << pdoToString(subIndex->accessType()) << "}";
         }
         else
         {
-            *out <<"}";
-        }if (subIndex->value().toString().isEmpty())
+            *out << "}";
+        }
+        if (subIndex->value().toString().isEmpty())
         {
             *out << "{-}";
         }
         else
         {
-            *out << "{" << subIndex->value().toString()  << "}";
+            *out << "{" << subIndex->value().toString() << "}";
         }
         *out << "{-}";
         *out << "{";

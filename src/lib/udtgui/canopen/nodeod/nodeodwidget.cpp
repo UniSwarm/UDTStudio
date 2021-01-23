@@ -18,9 +18,9 @@
 
 #include "nodeodwidget.h"
 
+#include <QDebug>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QDebug>
 
 #include "node.h"
 
@@ -119,7 +119,7 @@ void NodeOdWidget::createWidgets()
     _filterCombobox->addItem(tr("Man. objects"), QVariant("0x[2-4][0-9A-F]{3}"));
     _filterCombobox->addItem(tr("Profile objects"), QVariant("0x[6-9][0-9A-F]{3}"));
     _filterCombobox->insertSeparator(1);
-    connect(_filterCombobox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index){this->selectFilter(index);});
+    connect(_filterCombobox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index) { this->selectFilter(index); });
     connect(_filterLineEdit, &QLineEdit::textChanged, this, &NodeOdWidget::applyFilterCustom);
 
     _nodeOdTreeView = new NodeOdTreeView();

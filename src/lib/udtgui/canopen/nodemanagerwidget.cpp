@@ -19,11 +19,10 @@
 #include "nodemanagerwidget.h"
 #include "indexdb.h"
 
-#include <QFormLayout>
 #include <QDebug>
+#include <QFormLayout>
 
 #include "services/services.h"
-
 
 NodeManagerWidget::NodeManagerWidget(QWidget *parent)
     : NodeManagerWidget(nullptr, parent)

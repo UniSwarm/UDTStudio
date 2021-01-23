@@ -18,9 +18,9 @@
 
 #include "odtreeviewdelegate.h"
 
-#include <QStyledItemDelegate>
-#include <QPainter>
 #include <QComboBox>
+#include <QPainter>
+#include <QStyledItemDelegate>
 
 #include "oditemmodel.h"
 
@@ -49,10 +49,8 @@ QWidget *ODTreeViewDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 
 void ODTreeViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
-
 }
 
 void ODTreeViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
-
 }

@@ -236,11 +236,9 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
 
     out << "\n";
 
-    QList<Index *> commIndexes; //Communication profile area
-    QList<Index *> msIndexes;   //Manufacturer-specific profile area
-    QList<Index *> appIndexes;  //Standardized profile area
-
-
+    QList<Index *> commIndexes; // Communication profile area
+    QList<Index *> msIndexes; // Manufacturer-specific profile area
+    QList<Index *> appIndexes; // Standardized profile area
 
     for (Index *index : indexes)
     {
@@ -269,7 +267,7 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
     out << "{";
     writeInitRamC(commIndexes, out);
     out << "}"
-        << "\n";    
+        << "\n";
     out << "\n";
     out << "//Manufacturer-specific profile area, Indexes 0x2000 to 0x5FFF"
         << "\n";
@@ -1006,6 +1004,7 @@ void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile)
               << "\"" << subIndex->value().toString() << "\""
               << ";\n";
         break;
+
     default:
         break;
     }
@@ -1022,8 +1021,7 @@ void CGenerator::writeInitRamC(QList<Index *> indexes, QTextStream &cFile)
     int written = 1;
     for (Index *index : indexes)
     {
-        if ((index->objectType() != lastObjectType || index->objectType() == Index::Object::RECORD || index->objectType() == Index::Object::ARRAY)
-            && written != 0)
+        if ((index->objectType() != lastObjectType || index->objectType() == Index::Object::RECORD || index->objectType() == Index::Object::ARRAY) && written != 0)
         {
             cFile << "\n";
         }
@@ -1101,7 +1099,8 @@ void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextS
                 }
 
                 uint value = subIndex->value().toUInt() - deviceConfiguration->nodeId().toUInt();
-                cFile << " = 0x" << QString::number(value, 16).toUpper() << "u + " << "nodeId";
+                cFile << " = 0x" << QString::number(value, 16).toUpper() << "u + "
+                      << "nodeId";
 
                 cFile << ";  // " << index->name() << " : " << subIndex->name() << "\n";
             }

@@ -26,10 +26,11 @@
 #include "profile/p402/nodeprofile402.h"
 #include "profile/p402/nodeprofile402vl.h"
 #include <QFormLayout>
-#include <QPushButton>
 #include <QGroupBox>
+#include <QPushButton>
 
-P402VlWidget::P402VlWidget(QWidget *parent) : QWidget(parent)
+P402VlWidget::P402VlWidget(QWidget *parent)
+    : QWidget(parent)
 {
     _node = nullptr;
     _nodeProfile402 = nullptr;
@@ -173,8 +174,8 @@ void P402VlWidget::vlTargetVelocitySliderChanged()
 
 void P402VlWidget::vlMinVelocityMinMaxAmountSpinboxFinished()
 {
-//    int min = _node->nodeOd()->value(_vlMinVelocityMinMaxAmountSpinBox->objId()).toInt();
-//    _vlTargetVelocitySlider->setMinimum(min);
+    //    int min = _node->nodeOd()->value(_vlMinVelocityMinMaxAmountSpinBox->objId()).toInt();
+    //    _vlTargetVelocitySlider->setMinimum(min);
 }
 
 void P402VlWidget::vllMaxVelocityMinMaxAmountSpinboxFinished()
@@ -264,7 +265,7 @@ void P402VlWidget::updateVelocityDemandLabel()
     }
 
     int value = _node->nodeOd()->value(_vlVelocityDemandObjectId).toInt();
-    _vlVelocityDemandLabel->setText( QString("%1 ").arg(QString::number(value, 10)) + text);
+    _vlVelocityDemandLabel->setText(QString("%1 ").arg(QString::number(value, 10)) + text);
 }
 
 void P402VlWidget::dataLogger()
@@ -447,15 +448,15 @@ void P402VlWidget::createWidgets()
 
     _vlEnableRampCheckBox = new QCheckBox();
     modeControlWordLayout->addRow(tr("Enable Ramp (bit 4) :"), _vlEnableRampCheckBox);
-    connect(_vlEnableRampCheckBox, &QCheckBox::clicked, this,  &P402VlWidget::vlEnableRampClicked);
+    connect(_vlEnableRampCheckBox, &QCheckBox::clicked, this, &P402VlWidget::vlEnableRampClicked);
 
     _vlUnlockRampCheckBox = new QCheckBox();
     modeControlWordLayout->addRow(tr("Unlock Ramp (bit 5) :"), _vlUnlockRampCheckBox);
-    connect(_vlUnlockRampCheckBox, &QCheckBox::clicked, this,  &P402VlWidget::vlUnlockRampClicked);
+    connect(_vlUnlockRampCheckBox, &QCheckBox::clicked, this, &P402VlWidget::vlUnlockRampClicked);
 
     _vlReferenceRampCheckBox = new QCheckBox();
     modeControlWordLayout->addRow(tr("Not set ramp to zero (bit 6) :"), _vlReferenceRampCheckBox);
-    connect(_vlReferenceRampCheckBox, &QCheckBox::clicked, this,  &P402VlWidget::vlReferenceRampClicked);
+    connect(_vlReferenceRampCheckBox, &QCheckBox::clicked, this, &P402VlWidget::vlReferenceRampClicked);
 
     modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
@@ -492,8 +493,7 @@ void P402VlWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         return;
     }
 
-    if ((objId == _vlTargetVelocityObjectId) || (objId == _vlVelocityDemandObjectId)
-        || (objId == _vlVelocityActualObjectId))
+    if ((objId == _vlTargetVelocityObjectId) || (objId == _vlVelocityDemandObjectId) || (objId == _vlVelocityActualObjectId))
     {
         if (flags == SDO::FlagsRequest::Error)
         {

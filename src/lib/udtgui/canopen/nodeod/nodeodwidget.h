@@ -24,9 +24,9 @@
 #include <QWidget>
 
 #include "nodeodtreeview.h"
-#include <QToolBar>
 #include <QComboBox>
 #include <QLineEdit>
+#include <QToolBar>
 
 class UDTGUI_EXPORT NodeOdWidget : public QWidget
 {

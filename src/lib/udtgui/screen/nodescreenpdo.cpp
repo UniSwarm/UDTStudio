@@ -18,9 +18,9 @@
 
 #include "nodescreenpdo.h"
 
+#include <QDebug>
 #include <QLayout>
 #include <QSplitter>
-#include <QDebug>
 
 NodeScreenPDO::NodeScreenPDO(QWidget *parent)
     : NodeScreen(parent)

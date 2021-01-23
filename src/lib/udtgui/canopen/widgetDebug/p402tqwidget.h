@@ -34,7 +34,7 @@ class IndexSpinBox;
 class P402TqWidget : public QWidget, public NodeOdSubscriber
 {
     Q_OBJECT
-  public:
+public:
     P402TqWidget(QWidget *parent = nullptr);
     ~P402TqWidget() override;
 

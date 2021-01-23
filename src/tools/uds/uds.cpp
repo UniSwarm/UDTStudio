@@ -17,9 +17,9 @@
  **/
 
 #include <QApplication>
-#include <QScreen>
 #include <QDebug>
 #include <QDir>
+#include <QScreen>
 
 #include <parser/edsparser.h>
 
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     w.setEditable(true);
     w.show();
     w.resize(QApplication::screens()[0]->size() / 2);
-    for (int i=0; i<4; i++)
+    for (int i = 0; i < 4; i++)
     {
         w.resizeColumnToContents(i);
     }

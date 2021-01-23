@@ -68,4 +68,4 @@ public:
     static NodeObjectId getObjectId(OdObject object, uint opt = 0, uint opt2 = 0);
 };
 
-#endif  // INDEXDB401_H
+#endif // INDEXDB401_H

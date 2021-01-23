@@ -109,4 +109,4 @@ protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif  // P402VL_H
+#endif // P402VL_H

@@ -25,9 +25,9 @@
 #include "nodeodsubscriber.h"
 #include "p402ipwidget.h"
 #include "p402optionwidget.h"
-#include "p402vlwidget.h"
-#include "p402tqwidget.h"
 #include "p402ppwidget.h"
+#include "p402tqwidget.h"
+#include "p402vlwidget.h"
 #include "profile/p402/nodeprofile402.h"
 
 #include <QButtonGroup>

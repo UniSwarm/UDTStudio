@@ -25,10 +25,10 @@
 
 class OD_EXPORT ProfileDuplicate
 {
-  public:
+public:
     ProfileDuplicate();
 
-    void duplicate(DeviceDescription *deviceDescription, const uint8_t number=1);
+    void duplicate(DeviceDescription *deviceDescription, const uint8_t number = 1);
 };
 
 #endif // PROFILEDUPLICATE_H

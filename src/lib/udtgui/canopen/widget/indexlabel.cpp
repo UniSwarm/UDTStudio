@@ -48,9 +48,7 @@ bool IndexLabel::isEditing() const
 
 void IndexLabel::updateObjId()
 {
-    setToolTip(QString("0x%1.%2")
-                   .arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'))
-                   .arg(QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
+    setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0')).arg(QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
 }
 
 void IndexLabel::mouseDoubleClickEvent(QMouseEvent *event)

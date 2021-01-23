@@ -16,20 +16,20 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <QCoreApplication>
 #include <QCommandLineParser>
+#include <QCoreApplication>
 #include <QFileInfo>
 
-#include <cstdint>
-#include "model/devicemodel.h"
-#include "parser/edsparser.h"
-#include "parser/dcfparser.h"
 #include "generator/cgenerator.h"
+#include "generator/csvgenerator.h"
+#include "generator/texgenerator.h"
+#include "model/devicemodel.h"
+#include "parser/dcfparser.h"
+#include "parser/edsparser.h"
+#include "utility/profileduplicate.h"
 #include "writer/dcfwriter.h"
 #include "writer/edswriter.h"
-#include "generator/texgenerator.h"
-#include "generator/csvgenerator.h"
-#include "utility/profileduplicate.h"
+#include <cstdint>
 
 /**
  * @brief main
@@ -50,20 +50,23 @@ int main(int argc, char *argv[])
     cliParser.addVersionOption();
     cliParser.addPositionalArgument("file", QCoreApplication::translate("main", "Object dictionary file (dcf or eds)."), "file");
 
-    QCommandLineOption outOption(QStringList() << "o" << "out",
-                                     QCoreApplication::translate("main", "Output directory or file."),
-                                     "out");
+    QCommandLineOption outOption(QStringList() << "o"
+                                               << "out",
+                                 QCoreApplication::translate("main", "Output directory or file."),
+                                 "out");
     cliParser.addOption(outOption);
 
-    QCommandLineOption nodeIdOption(QStringList() << "n" << "nodeid",
-                                     QCoreApplication::translate("main", "CANOpen Node Id."),
-                                     "nodeid");
+    QCommandLineOption nodeIdOption(QStringList() << "n"
+                                                  << "nodeid",
+                                    QCoreApplication::translate("main", "CANOpen Node Id."),
+                                    "nodeid");
     nodeIdOption.setDefaultValue("0");
     cliParser.addOption(nodeIdOption);
 
-    QCommandLineOption duplicateOption(QStringList() << "d" << "duplicate",
-                                    QCoreApplication::translate("main", "Duplicate profile"),
-                                    "duplicate");
+    QCommandLineOption duplicateOption(QStringList() << "d"
+                                                     << "duplicate",
+                                       QCoreApplication::translate("main", "Duplicate profile"),
+                                       "duplicate");
     duplicateOption.setDefaultValue("1");
     cliParser.addOption(duplicateOption);
 

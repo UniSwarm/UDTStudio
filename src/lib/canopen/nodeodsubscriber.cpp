@@ -20,8 +20,8 @@
 
 #include <QDebug>
 
-#include "node.h"
 #include "canopen.h"
+#include "node.h"
 
 NodeOdSubscriber::NodeOdSubscriber()
 {

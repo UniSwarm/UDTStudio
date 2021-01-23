@@ -21,8 +21,8 @@
 
 #include "../../udtgui_global.h"
 
-#include <QAbstractItemModel>
 #include "nodeodsubscriber.h"
+#include <QAbstractItemModel>
 
 class Node;
 class NodeIndex;
@@ -43,7 +43,8 @@ public:
     bool isEditable() const;
     void setEditable(bool editable);
 
-    enum Column {
+    enum Column
+    {
         OdIndex,
         Name,
         Type,

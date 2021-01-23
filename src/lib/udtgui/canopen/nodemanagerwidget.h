@@ -21,16 +21,16 @@
 
 #include "../udtgui_global.h"
 
-#include <QWidget>
 #include "nodeodsubscriber.h"
+#include <QWidget>
 
 #include <QGroupBox>
-#include <QLineEdit>
 #include <QLabel>
+#include <QLineEdit>
 #include <QToolBar>
 
-#include "widgetDebug/widgetdebug.h"
 #include "node.h"
+#include "widgetDebug/widgetdebug.h"
 
 class UDTGUI_EXPORT NodeManagerWidget : public QWidget, public NodeOdSubscriber
 {

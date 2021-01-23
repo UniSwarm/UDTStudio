@@ -40,7 +40,8 @@ public:
     bool editable() const;
     void setEditable(bool editable);
 
-    enum Column {
+    enum Column
+    {
         OdIndex,
         Name,
         Type,

@@ -21,8 +21,8 @@
 #include <QDebug>
 #include <QFont>
 
-#include "nodeoditemmodel.h"
 #include "node.h"
+#include "nodeoditemmodel.h"
 
 NodeOdItem::NodeOdItem(NodeOd *od, NodeOdItem *parent)
 {
@@ -476,69 +476,69 @@ QVariant NodeOdItem::formatValue(const QVariant &value, NodeSubIndex::DataType d
     bool floatingPoint = false;
     switch (dataType)
     {
-        case NodeSubIndex::BOOLEAN:
-            if (value.toInt() == 1)
-            {
-                return QVariant(true);
-            }
-            else
-            {
-                return QVariant(false);
-            }
+    case NodeSubIndex::BOOLEAN:
+        if (value.toInt() == 1)
+        {
+            return QVariant(true);
+        }
+        else
+        {
+            return QVariant(false);
+        }
 
-        case NodeSubIndex::UNSIGNED8:
-            sign = false;
-        case NodeSubIndex::INTEGER8:
-            zero = 2;
-            break;
+    case NodeSubIndex::UNSIGNED8:
+        sign = false;
+    case NodeSubIndex::INTEGER8:
+        zero = 2;
+        break;
 
-        case NodeSubIndex::UNSIGNED16:
-            sign = false;
-        case NodeSubIndex::INTEGER16:
-            zero = 4;
-            break;
+    case NodeSubIndex::UNSIGNED16:
+        sign = false;
+    case NodeSubIndex::INTEGER16:
+        zero = 4;
+        break;
 
-        case NodeSubIndex::UNSIGNED24:
-            sign = false;
-        case NodeSubIndex::INTEGER24:
-            zero = 6;
-            break;
+    case NodeSubIndex::UNSIGNED24:
+        sign = false;
+    case NodeSubIndex::INTEGER24:
+        zero = 6;
+        break;
 
-        case NodeSubIndex::UNSIGNED32:
-            sign = false;
-        case NodeSubIndex::INTEGER32:
-            zero = 8;
-            break;
+    case NodeSubIndex::UNSIGNED32:
+        sign = false;
+    case NodeSubIndex::INTEGER32:
+        zero = 8;
+        break;
 
-        case NodeSubIndex::UNSIGNED40:
-            sign = false;
-        case NodeSubIndex::INTEGER40:
-            zero = 10;
-            break;
+    case NodeSubIndex::UNSIGNED40:
+        sign = false;
+    case NodeSubIndex::INTEGER40:
+        zero = 10;
+        break;
 
-        case NodeSubIndex::UNSIGNED48:
-            sign = false;
-        case NodeSubIndex::INTEGER48:
-            zero = 12;
-            break;
+    case NodeSubIndex::UNSIGNED48:
+        sign = false;
+    case NodeSubIndex::INTEGER48:
+        zero = 12;
+        break;
 
-        case NodeSubIndex::UNSIGNED56:
-            sign = false;
-        case NodeSubIndex::INTEGER56:
-            zero = 14;
-            break;
+    case NodeSubIndex::UNSIGNED56:
+        sign = false;
+    case NodeSubIndex::INTEGER56:
+        zero = 14;
+        break;
 
-        case NodeSubIndex::UNSIGNED64:
-            sign = false;
-        case NodeSubIndex::INTEGER64:
-            zero = 16;
-            break;
+    case NodeSubIndex::UNSIGNED64:
+        sign = false;
+    case NodeSubIndex::INTEGER64:
+        zero = 16;
+        break;
 
-        case NodeSubIndex::REAL32:
-        case NodeSubIndex::REAL64:
-            zero = 16;
-            floatingPoint = true;
-            break;
+    case NodeSubIndex::REAL32:
+    case NodeSubIndex::REAL64:
+        zero = 16;
+        floatingPoint = true;
+        break;
 
     default:
         return value;

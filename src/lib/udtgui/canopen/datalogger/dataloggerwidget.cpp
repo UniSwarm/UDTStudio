@@ -27,7 +27,8 @@ DataLoggerWidget::DataLoggerWidget(QWidget *parent)
 }
 
 DataLoggerWidget::DataLoggerWidget(DataLogger *dataLogger, QWidget *parent)
-    : QWidget(parent), _dataLogger(dataLogger)
+    : QWidget(parent)
+    , _dataLogger(dataLogger)
 {
     if (!_dataLogger)
     {

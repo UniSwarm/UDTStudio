@@ -40,14 +40,10 @@ public:
                          const QList<QColor> &nodeListColor = QList<QColor>(),
                          bool enabled = true);
 
-    void drawMapping(const QRect &objRect,
-                     const NodeObjectId &nodeObjectId,
-                     const QString &nodeName,
-                     const QColor &nodeColor);
+    void drawMapping(const QRect &objRect, const NodeObjectId &nodeObjectId, const QString &nodeName, const QColor &nodeColor);
 
-    static int objIdAtPos(const QRect &rect,
-                   const QList<NodeObjectId> &nodeListMapping,
-                   const QPoint &pos);
+    static int objIdAtPos(const QRect &rect, const QList<NodeObjectId> &nodeListMapping, const QPoint &pos);
+
 protected:
     QWidget *_widget;
 };

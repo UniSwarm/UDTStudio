@@ -169,8 +169,7 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
             return QVariant(QString("%1.%2 %3").arg(dlData->node()->busId()).arg(dlData->node()->nodeId()).arg(dlData->node()->name()));
 
         case Index:
-            return QVariant(QString("0x%1.%2").arg(QString::number(dlData->objectId().index(), 16))
-                                .arg(QString::number(dlData->objectId().subIndex(), 16)));
+            return QVariant(QString("0x%1.%2").arg(QString::number(dlData->objectId().index(), 16)).arg(QString::number(dlData->objectId().subIndex(), 16)));
 
         case Name:
             return QVariant(dlData->name());

@@ -122,7 +122,7 @@ void ErrorControl::sendNodeGuarding()
 
 void ErrorControl::lifeGuardingEvent()
 {
-    //qDebug() << ">>ErrorControl::lifeGuardingEvent : node error, dont answer";
+    // qDebug() << ">>ErrorControl::lifeGuardingEvent : node error, dont answer";
 }
 
 void ErrorControl::manageErrorControl(const QCanBusFrame &frame)
@@ -142,14 +142,17 @@ void ErrorControl::manageErrorControl(const QCanBusFrame &frame)
         case 4: // Stopped
             _node->setStatus(Node::Status::STOPPED);
             break;
+
         case 5: // Operational
             _node->setStatus(Node::Status::STARTED);
             break;
+
         case 127: // Pre-operational
             _node->setStatus(Node::Status::PREOP);
             break;
+
         default:
-            //qDebug() << "Error control : error state" << QString::number(frame.frameId(), 16).toUpper() << frame.payload().toHex().toUpper();
+            // qDebug() << "Error control : error state" << QString::number(frame.frameId(), 16).toUpper() << frame.payload().toHex().toUpper();
             break;
         }
     }

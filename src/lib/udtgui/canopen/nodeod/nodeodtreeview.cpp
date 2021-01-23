@@ -18,14 +18,14 @@
 
 #include "nodeodtreeview.h"
 
-#include <QKeyEvent>
-#include <QHeaderView>
-#include <QFontMetrics>
-#include <QMenu>
-#include <QDebug>
-#include <QRegExp>
-#include <QGuiApplication>
 #include <QClipboard>
+#include <QDebug>
+#include <QFontMetrics>
+#include <QGuiApplication>
+#include <QHeaderView>
+#include <QKeyEvent>
+#include <QMenu>
+#include <QRegExp>
 
 #include "node.h"
 

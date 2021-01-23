@@ -26,12 +26,13 @@
 class UDTGUI_EXPORT ODItem
 {
 public:
-    ODItem(DeviceModel *od, ODItem *parent=nullptr);
-    ODItem(Index *index, ODItem *parent=nullptr);
-    ODItem(SubIndex *subIndex, ODItem *parent=nullptr);
+    ODItem(DeviceModel *od, ODItem *parent = nullptr);
+    ODItem(Index *index, ODItem *parent = nullptr);
+    ODItem(SubIndex *subIndex, ODItem *parent = nullptr);
     ~ODItem();
 
-    enum Type {
+    enum Type
+    {
         TOD,
         TIndex,
         TSubIndex

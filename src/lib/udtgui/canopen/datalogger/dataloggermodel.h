@@ -38,7 +38,8 @@ public:
     NodeObjectId objId(const QModelIndex &index);
     DLData *dlData(const QModelIndex &index);
 
-    enum Column {
+    enum Column
+    {
         Node,
         Index,
         Name,

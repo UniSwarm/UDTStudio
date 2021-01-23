@@ -91,4 +91,4 @@ public:
     //    static QString description(const NodeObjectId &nodeObjectId);
 };
 
-#endif  // INDEXDB_H
+#endif // INDEXDB_H

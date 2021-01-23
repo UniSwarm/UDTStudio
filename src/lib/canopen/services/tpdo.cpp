@@ -146,7 +146,6 @@ quint8 TPDO::syncStartValue()
 
 void TPDO::receiveSync()
 {
-
 }
 
 QVariant TPDO::convertQByteArrayToQVariant(QByteArray data, QMetaType::Type type)

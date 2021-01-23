@@ -20,5 +20,4 @@
 
 OdIndexDb::OdIndexDb()
 {
-
 }

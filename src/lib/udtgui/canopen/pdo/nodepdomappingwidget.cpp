@@ -21,8 +21,8 @@
 #include <QVBoxLayout>
 
 #include "node.h"
-#include "services/tpdo.h"
 #include "services/rpdo.h"
+#include "services/tpdo.h"
 
 NodePDOMappingWidget::NodePDOMappingWidget(QWidget *parent)
     : QScrollArea(parent)

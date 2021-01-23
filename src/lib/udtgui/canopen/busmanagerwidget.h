@@ -24,10 +24,10 @@
 #include <QWidget>
 
 #include <QGroupBox>
-#include <QLineEdit>
 #include <QLabel>
-#include <QToolBar>
+#include <QLineEdit>
 #include <QSpinBox>
+#include <QToolBar>
 
 #include "canopenbus.h"
 

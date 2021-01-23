@@ -29,11 +29,10 @@ class IndexLabel;
 class UDTGUI_EXPORT NodeScreenSynchro : public NodeScreen
 {
     Q_OBJECT
-  public:
+public:
     NodeScreenSynchro(QWidget *parent = nullptr);
 
-  protected:
-
+protected:
     uint8_t _axis;
     void createWidgets();
 
@@ -48,7 +47,7 @@ class UDTGUI_EXPORT NodeScreenSynchro : public NodeScreen
     IndexLabel *_correctorLabel;
 
     // NodeScreen interface
-  public:
+public:
     QString title() const override;
     void setNodeInternal(Node *node, uint8_t axis) override;
 };

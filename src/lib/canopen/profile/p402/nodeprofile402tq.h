@@ -55,4 +55,4 @@ public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif  // NODEPROFILE402TQ_H
+#endif // NODEPROFILE402TQ_H

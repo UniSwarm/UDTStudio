@@ -28,14 +28,15 @@
 #include "profile/p402/nodeprofile402ip.h"
 
 #include <QFormLayout>
+#include <QGroupBox>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QString>
 #include <QStringList>
 #include <QtMath>
-#include <QGroupBox>
 
-P402PpWidget::P402PpWidget(QWidget *parent) : QWidget(parent)
+P402PpWidget::P402PpWidget(QWidget *parent)
+    : QWidget(parent)
 {
     _node = nullptr;
     _nodeProfile402 = nullptr;
@@ -162,7 +163,6 @@ void P402PpWidget::updateData()
 
 void P402PpWidget::stop()
 {
-
 }
 
 void P402PpWidget::ppTargetPositionLineEditFinished()
@@ -223,7 +223,7 @@ void P402PpWidget::ppChangeSetImmediatelyPointCheckBoxRampClicked(int id)
 {
     if (_nodeProfile402)
     {
-//        _nodeProfile402->setEnableRamp(id);
+        //        _nodeProfile402->setEnableRamp(id);
     }
     updatePositionDemandLabel();
 }
@@ -238,7 +238,7 @@ void P402PpWidget::ppChangeOnSetPointCheckBoxRampClicked(int id)
 {
     if (_nodeProfile402)
     {
-//        _nodeProfile402->setEnableRamp(id);
+        //        _nodeProfile402->setEnableRamp(id);
     }
     updatePositionDemandLabel();
 }
@@ -252,35 +252,35 @@ void P402PpWidget::changeOnSetPointEvent(bool ok)
 void P402PpWidget::updatePositionDemandLabel()
 {
     QString text;
-//    if (!_ppNewSetPointCheckBox->isChecked())
-//    {
-//        text = "Enable Interpolation";
-//    }
+    //    if (!_ppNewSetPointCheckBox->isChecked())
+    //    {
+    //        text = "Enable Interpolation";
+    //    }
 
-//    if (!text.isEmpty())
-//    {
-//        text = "(" + text + "  : Not Activated)";
-//    }
+    //    if (!text.isEmpty())
+    //    {
+    //        text = "(" + text + "  : Not Activated)";
+    //    }
 
     int value = _node->nodeOd()->value(_ppPositionDemandValueObjectId).toInt();
-    _ppPositionDemandValueLabel->setText( QString("%1 ").arg(QString::number(value, 10)) + text);
+    _ppPositionDemandValueLabel->setText(QString("%1 ").arg(QString::number(value, 10)) + text);
 }
 
 void P402PpWidget::updatePositionActualLabel()
 {
     QString text;
-//    if (!_ppEnableRampCheckBox->isChecked())
-//    {
-//        text = "Enable Interpolation";
-//    }
+    //    if (!_ppEnableRampCheckBox->isChecked())
+    //    {
+    //        text = "Enable Interpolation";
+    //    }
 
-//    if (!text.isEmpty())
-//    {
-//        text = "(" + text + "  : Not Activated)";
-//    }
+    //    if (!text.isEmpty())
+    //    {
+    //        text = "(" + text + "  : Not Activated)";
+    //    }
 
     int value = _node->nodeOd()->value(_ppPositionActualValueObjectId).toInt();
-    _ppPositionActualValueLabel->setText( QString("%1 ").arg(QString::number(value, 10)) + text);
+    _ppPositionActualValueLabel->setText(QString("%1 ").arg(QString::number(value, 10)) + text);
 }
 void P402PpWidget::dataLogger()
 {
@@ -513,17 +513,17 @@ void P402PpWidget::createWidgets()
 
     _ppNewSetPointCheckBox = new QCheckBox();
     modeControlWordLayout->addRow(tr("New set-point (bit 4) :"), _ppNewSetPointCheckBox);
-    connect(_ppNewSetPointCheckBox, &QCheckBox::clicked, this,  &P402PpWidget::ppNewSetPointClicked);
+    connect(_ppNewSetPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::ppNewSetPointClicked);
     modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
     _ppChangeSetImmediatelyPointCheckBox = new QCheckBox();
     modeControlWordLayout->addRow(tr("Change set immediately (bit 5) :"), _ppChangeSetImmediatelyPointCheckBox);
-    connect(_ppChangeSetImmediatelyPointCheckBox, &QCheckBox::clicked, this,  &P402PpWidget::ppChangeSetImmediatelyPointCheckBoxRampClicked);
+    connect(_ppChangeSetImmediatelyPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::ppChangeSetImmediatelyPointCheckBoxRampClicked);
     modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
     _ppChangeOnSetPointCheckBox = new QCheckBox();
     modeControlWordLayout->addRow(tr("Change on set-point (bit 9) :"), _ppChangeOnSetPointCheckBox);
-    connect(_ppChangeOnSetPointCheckBox, &QCheckBox::clicked, this,  &P402PpWidget::ppChangeOnSetPointCheckBoxRampClicked);
+    connect(_ppChangeOnSetPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::ppChangeOnSetPointCheckBoxRampClicked);
     modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
@@ -558,8 +558,7 @@ void P402PpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         return;
     }
 
-    if ((objId == _ppPositionDemandValueObjectId) || (objId == _ppVelocityActualObjectId)
-        || (objId == _ppPolarityObjectId))
+    if ((objId == _ppPositionDemandValueObjectId) || (objId == _ppVelocityActualObjectId) || (objId == _ppPolarityObjectId))
     {
         if (flags == SDO::FlagsRequest::Error)
         {

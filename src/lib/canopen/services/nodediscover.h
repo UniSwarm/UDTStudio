@@ -23,8 +23,8 @@
 
 #include "service.h"
 
-#include <QTimer>
 #include <QQueue>
+#include <QTimer>
 
 #include "db/oddb.h"
 

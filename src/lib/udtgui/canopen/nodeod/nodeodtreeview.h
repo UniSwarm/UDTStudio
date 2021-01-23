@@ -23,9 +23,9 @@
 
 #include <QTreeView>
 
-#include "nodeoditemmodel.h"
-#include "nodeoditemdelegate.h"
 #include "nodeodfilterproxymodel.h"
+#include "nodeoditemdelegate.h"
+#include "nodeoditemmodel.h"
 
 #include <QAction>
 

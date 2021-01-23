@@ -20,13 +20,13 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/widget/indexspinbox.h"
-#include "services/services.h"
 #include "indexdb402.h"
 #include "profile/p402/nodeprofile402.h"
+#include "services/services.h"
 
 #include <QFormLayout>
-#include <QPushButton>
 #include <QGroupBox>
+#include <QPushButton>
 
 P402TqWidget::P402TqWidget(QWidget *parent)
     : QWidget(parent)
@@ -115,7 +115,7 @@ void P402TqWidget::setNode(Node *node, uint8_t axis)
         _tqMotorRatedCurrentSpinBox->setNode(node);
 
         int max = _node->nodeOd()->value(_tqMaxTorqueSpinBox->objId()).toInt();
-//        _tqTargetTorqueSlider->setValue(_node->nodeOd()->value(_tqTargetTorqueObjectId).toInt());
+        //        _tqTargetTorqueSlider->setValue(_node->nodeOd()->value(_tqTargetTorqueObjectId).toInt());
         _tqTargetTorqueSlider->setRange(-max, max);
         _tqTargetTorqueSlider->setTickInterval(max / 10);
         _tqSliderMinLabel->setNum(-max);
@@ -182,16 +182,13 @@ void P402TqWidget::pdoMapping()
     NodeObjectId controlWordObjectId = NodeObjectId(0x6040, 0, QMetaType::Type::UShort);
     NodeObjectId statusWordObjectId = NodeObjectId(0x6041, 0, QMetaType::Type::UShort);
 
-    QList<NodeObjectId> tqRpdoObjectList = {controlWordObjectId,
-                                            _tqTargetTorqueObjectId};
+    QList<NodeObjectId> tqRpdoObjectList = {controlWordObjectId, _tqTargetTorqueObjectId};
 
     _node->rpdos().at(0)->writeMapping(tqRpdoObjectList);
-    QList<NodeObjectId> tqTpdoObjectList = {statusWordObjectId,
-                                            _tqTorqueDemandObjectId};
+    QList<NodeObjectId> tqTpdoObjectList = {statusWordObjectId, _tqTorqueDemandObjectId};
 
     _node->tpdos().at(2)->writeMapping(tqTpdoObjectList);
 }
-
 
 void P402TqWidget::refreshData(NodeObjectId object)
 {
@@ -300,22 +297,22 @@ void P402TqWidget::createWidgets()
     _tqTorqueProfileTypeSpinBox = new IndexSpinBox();
     _tqTorqueProfileTypeSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     name = tr("To&rque Profile Type ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_PROFILE_TYPE, _axis).index(), 16).toUpper());
-//    tqLayout->addRow(name, _tqTorqueProfileTypeSpinBox);
+    //    tqLayout->addRow(name, _tqTorqueProfileTypeSpinBox);
 
     _tqMaxCurrentSpinBox = new IndexSpinBox();
     _tqMaxCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     name = tr("Max &Current ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_TQ_MAX_CURRENT, _axis).index(), 16).toUpper());
-//    tqLayout->addRow(name, _tqMaxCurrentSpinBox);
+    //    tqLayout->addRow(name, _tqMaxCurrentSpinBox);
 
     _tqMotorRatedTorqueSpinBox = new IndexSpinBox();
     _tqMotorRatedTorqueSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     name = tr("Mot&or Rated Torque ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_TORQUE, _axis).index(), 16).toUpper());
-//    tqLayout->addRow(name, _tqMotorRatedTorqueSpinBox);
+    //    tqLayout->addRow(name, _tqMotorRatedTorqueSpinBox);
 
     _tqMotorRatedCurrentSpinBox = new IndexSpinBox();
     _tqMotorRatedCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     name = tr("Motor Rate&d Current ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_CURRENT, _axis).index(), 16).toUpper());
-//    tqLayout->addRow(name, _tqMotorRatedCurrentSpinBox);
+    //    tqLayout->addRow(name, _tqMotorRatedCurrentSpinBox);
     tqGroupBox->setLayout(tqLayout);
 
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
@@ -350,11 +347,8 @@ void P402TqWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         return;
     }
 
-    if ((objId == _tqTargetTorqueObjectId)
-        || (objId == _tqTorqueDemandObjectId)
-        || (objId == _tqTorqueActualValueObjectId)
-        || (objId == _tqCurrentActualValueObjectId)
-        || (objId == _tqDCLinkVoltageObjectId))
+    if ((objId == _tqTargetTorqueObjectId) || (objId == _tqTorqueDemandObjectId) || (objId == _tqTorqueActualValueObjectId) || (objId == _tqCurrentActualValueObjectId) ||
+        (objId == _tqDCLinkVoltageObjectId))
     {
         if (flags == SDO::FlagsRequest::Error)
         {

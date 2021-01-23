@@ -21,8 +21,8 @@
 
 #include "udtgui_global.h"
 
-#include <QTreeView>
 #include <QSortFilterProxyModel>
+#include <QTreeView>
 
 #include "busnodesmodel.h"
 

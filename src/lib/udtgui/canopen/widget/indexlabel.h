@@ -21,8 +21,8 @@
 
 #include "../../udtgui_global.h"
 
-#include <QLabel>
 #include "abstractindexwidget.h"
+#include <QLabel>
 
 class UDTGUI_EXPORT IndexLabel : public QLabel, public AbstractIndexWidget
 {

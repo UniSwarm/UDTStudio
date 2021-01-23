@@ -19,7 +19,7 @@
 #include "timestamp.h"
 
 TimeStamp::TimeStamp(CanOpenBus *bus)
-    : Service (bus)
+    : Service(bus)
 {
 }
 

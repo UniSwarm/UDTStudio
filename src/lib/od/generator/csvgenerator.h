@@ -19,11 +19,11 @@
 #ifndef CSVGENERATOR_H
 #define CSVGENERATOR_H
 
-#include "od_global.h"
 #include "generator/generator.h"
+#include "od_global.h"
 
-#include <QTextStream>
 #include <QString>
+#include <QTextStream>
 
 #include "model/deviceconfiguration.h"
 #include "model/devicedescription.h"

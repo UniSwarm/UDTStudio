@@ -41,7 +41,8 @@ public:
     CanOpenBus *bus() const;
     void setBus(CanOpenBus *bus);
 
-    enum Column {
+    enum Column
+    {
         Time,
         CanId,
         Type,

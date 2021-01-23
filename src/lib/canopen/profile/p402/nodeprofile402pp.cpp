@@ -31,7 +31,9 @@ enum ControlWordIP : quint16
 };
 
 NodeProfile402Pp::NodeProfile402Pp(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
-    : _node(node), _axis(axis), _nodeProfile402(nodeProfile402)
+    : _node(node)
+    , _axis(axis)
+    , _nodeProfile402(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_SET_POINT, axis);
     _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, axis);
@@ -58,17 +60,17 @@ quint16 NodeProfile402Pp::getSpecificControlWord()
 
 void NodeProfile402Pp::setEnableRamp(bool ok)
 {
-//    if (ok)
-//    {
-//        _cmdControlWordSpecific |= CW_IP_EnableRamp;
-//    }
-//    else
-//    {
-//        _cmdControlWordSpecific = (_cmdControlWordSpecific & ~CW_IP_EnableRamp);
-//    }
+    //    if (ok)
+    //    {
+    //        _cmdControlWordSpecific |= CW_IP_EnableRamp;
+    //    }
+    //    else
+    //    {
+    //        _cmdControlWordSpecific = (_cmdControlWordSpecific & ~CW_IP_EnableRamp);
+    //    }
 }
 
-//bool NodeProfile402Pp::isEnableRamp(void)
+// bool NodeProfile402Pp::isEnableRamp(void)
 //{
 ////    return _cmdControlWordSpecific & CW_IP_EnableRamp;
 //}
@@ -145,9 +147,9 @@ void NodeProfile402Pp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
         {
             quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
             _cmdControlWordSpecific = (controlWord & (CW_PP_ChangeSetImmediately | CW_PP_AbsRel | CW_PP_ChangeOnSetPoint));
-            emit changeSetImmediatelyEvent((_cmdControlWordSpecific & CW_PP_ChangeSetImmediately ) >> 5);
-            emit changeOnSetPointEvent((_cmdControlWordSpecific & CW_PP_ChangeOnSetPoint ) >> 9);
-            emit absRelEvent((_cmdControlWordSpecific & CW_PP_AbsRel ) >> 6);
+            emit changeSetImmediatelyEvent((_cmdControlWordSpecific & CW_PP_ChangeSetImmediately) >> 5);
+            emit changeOnSetPointEvent((_cmdControlWordSpecific & CW_PP_ChangeOnSetPoint) >> 9);
+            emit absRelEvent((_cmdControlWordSpecific & CW_PP_AbsRel) >> 6);
         }
     }
 }

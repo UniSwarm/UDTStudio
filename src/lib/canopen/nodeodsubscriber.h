@@ -55,7 +55,7 @@ protected:
     void unRegisterIndex(const quint16 index);
     void unRegisterFullOd();
 
-    virtual void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) =0; // TODO constify flags param
+    virtual void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) = 0; // TODO constify flags param
 
 private:
     Node *_nodeInterrest;

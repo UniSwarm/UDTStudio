@@ -236,9 +236,7 @@ void NodeOd::unsubscribe(NodeOdSubscriber *object, const quint16 notifyIndex, co
     QMultiMap<quint32, Subscriber>::iterator itSub = _subscribers.begin();
     while (itSub != _subscribers.end())
     {
-        if ((*itSub).object == object
-            && (*itSub).notifyIndex == notifyIndex
-            && (*itSub).notifySubIndex == notifySubIndex)
+        if ((*itSub).object == object && (*itSub).notifyIndex == notifyIndex && (*itSub).notifySubIndex == notifySubIndex)
         {
             itSub = _subscribers.erase(itSub);
         }
@@ -387,14 +385,17 @@ QMetaType::Type NodeOd::dataTypeCiaToQt(const NodeSubIndex::DataType type)
     {
     case NodeSubIndex::NONE:
         break;
+
     case NodeSubIndex::VISIBLE_STRING:
     case NodeSubIndex::OCTET_STRING:
     case NodeSubIndex::UNICODE_STRING:
         return QMetaType::QByteArray;
     case NodeSubIndex::TIME_OF_DAY:
         break;
+
     case NodeSubIndex::TIME_DIFFERENCE:
         break;
+
     case NodeSubIndex::DDOMAIN:
         return QMetaType::QByteArray;
 

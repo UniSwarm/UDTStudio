@@ -84,15 +84,15 @@ private:
     IndexSpinBox *_ipSoftwarePositionLimitMaxSpinBox;
     IndexSpinBox *_ipHomeOffsetSpinBox;
     QSpinBox *_ipPolaritySpinBox;
-//    IndexSpinBox *_ipProfileVelocitySpinBox;
-//    IndexSpinBox *_ipEndVelocitySpinBox;
+    //    IndexSpinBox *_ipProfileVelocitySpinBox;
+    //    IndexSpinBox *_ipEndVelocitySpinBox;
     IndexSpinBox *_ipMaxProfileVelocitySpinBox;
     IndexSpinBox *_ipMaxMotorSpeedSpinBox;
-//    IndexSpinBox *_ipProfileAccelerationSpinBox;
-//    IndexSpinBox *_ipMaxAccelerationSpinBox;
-//    IndexSpinBox *_ipProfileDecelerationSpinBox;
-//    IndexSpinBox *_ipMaxDecelerationSpinBox;
-//    IndexSpinBox *_ipQuickStopDecelerationSpinBox;
+    //    IndexSpinBox *_ipProfileAccelerationSpinBox;
+    //    IndexSpinBox *_ipMaxAccelerationSpinBox;
+    //    IndexSpinBox *_ipProfileDecelerationSpinBox;
+    //    IndexSpinBox *_ipMaxDecelerationSpinBox;
+    //    IndexSpinBox *_ipQuickStopDecelerationSpinBox;
     QSpinBox *_targetPositionSpinBox;
     QCheckBox *_relativeTargetpositionSpinBox;
     QSpinBox *_durationSpinBox;
@@ -123,8 +123,6 @@ private:
     void pdoMapping();
     void refreshData(NodeObjectId object);
 
-
-
     void createWidgets();
 
     // NodeOdSubscriber interface
@@ -132,4 +130,4 @@ protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif  // P402IP_H
+#endif // P402IP_H

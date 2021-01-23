@@ -24,17 +24,29 @@
 #include "canopen.h"
 
 NodeObjectId::NodeObjectId()
-    : _busId(0xFF), _nodeId(0xFF), _index(0xFFFF), _subIndex(0xFF), _dataType(QMetaType::Type::UnknownType)
+    : _busId(0xFF)
+    , _nodeId(0xFF)
+    , _index(0xFFFF)
+    , _subIndex(0xFF)
+    , _dataType(QMetaType::Type::UnknownType)
 {
 }
 
 NodeObjectId::NodeObjectId(quint8 busId, quint8 nodeId, quint16 index, quint8 subIndex, QMetaType::Type dataType)
-    : _busId(busId), _nodeId(nodeId), _index(index), _subIndex(subIndex), _dataType(dataType)
+    : _busId(busId)
+    , _nodeId(nodeId)
+    , _index(index)
+    , _subIndex(subIndex)
+    , _dataType(dataType)
 {
 }
 
 NodeObjectId::NodeObjectId(quint16 index, quint8 subIndex, QMetaType::Type dataType)
-    : _busId(0xFF), _nodeId(0xFF), _index(index), _subIndex(subIndex), _dataType(dataType)
+    : _busId(0xFF)
+    , _nodeId(0xFF)
+    , _index(index)
+    , _subIndex(subIndex)
+    , _dataType(dataType)
 {
 }
 
@@ -49,10 +61,7 @@ NodeObjectId::NodeObjectId(const NodeObjectId &other)
 
 bool operator==(const NodeObjectId &a, const NodeObjectId &b)
 {
-    return (a.busId() == b.busId()
-            && a.nodeId() == b.nodeId()
-            && a.index() == b.index()
-            && a.subIndex() == b.subIndex());
+    return (a.busId() == b.busId() && a.nodeId() == b.nodeId() && a.index() == b.index() && a.subIndex() == b.subIndex());
 }
 
 quint64 NodeObjectId::key() const
@@ -198,10 +207,8 @@ NodeObjectId NodeObjectId::fromMimeData(const QString mimeData)
     }
 
     bool ok;
-    return NodeObjectId(static_cast<quint8>(fields[0].toUShort(&ok, 16)),
-                        static_cast<quint8>(fields[1].toUShort(&ok, 16)),
-                        fields[2].toUShort(&ok, 16),
-                        static_cast<quint8>(fields[3].toUShort(&ok, 16)));
+    return NodeObjectId(
+        static_cast<quint8>(fields[0].toUShort(&ok, 16)), static_cast<quint8>(fields[1].toUShort(&ok, 16)), fields[2].toUShort(&ok, 16), static_cast<quint8>(fields[3].toUShort(&ok, 16)));
 }
 
 quint8 NodeObjectId::nodeId() const

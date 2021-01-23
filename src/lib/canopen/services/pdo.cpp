@@ -228,7 +228,7 @@ void PDO::writeMapping(const QList<NodeObjectId> &objectList)
     {
         if (objectId.dataType() == QMetaType::Type::UnknownType)
         {
-            objectId.setDataType( _node->nodeOd()->dataType(objectId));
+            objectId.setDataType(_node->nodeOd()->dataType(objectId));
         }
     }
 
@@ -507,10 +507,8 @@ void PDO::managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequ
             if (flags == SDO::FlagsRequest::Error)
             {
                 // ERROR so cobId is invalid and mapping is disable
-                qDebug() << ">TPDO::odNotify : Index:SubIndex"
-                         << QString("0x%1").arg(QString::number(objId.index(), 16))
-                         << ":" << objId.subIndex() << ", Error : "
-                         << _node->nodeOd()->errorObject(objId);
+                qDebug() << ">TPDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index(), 16)) << ":" << objId.subIndex()
+                         << ", Error : " << _node->nodeOd()->errorObject(objId);
                 setError(ERROR_MODIFY_MAPPING);
                 _stateMapping = STATE_FREE;
                 return;
@@ -527,10 +525,8 @@ void PDO::managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequ
             if (flags == SDO::FlagsRequest::Error)
             {
                 // ERROR so cobId is invalid and mapping is disable
-                qDebug() << ">TPDO::odNotify : Index:SubIndex"
-                         << QString("0x%1").arg(QString::number(objId.index(), 16))
-                         << ":" << objId.subIndex() << ", Error : "
-                         << _node->nodeOd()->errorObject(objId);
+                qDebug() << ">TPDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index(), 16)) << ":" << objId.subIndex()
+                         << ", Error : " << _node->nodeOd()->errorObject(objId);
                 setError(ERROR_GENERAL_ERROR);
                 _stateMapping = STATE_FREE;
                 return;
@@ -557,9 +553,8 @@ void PDO::processMapping()
     {
     case STATE_FREE:
         // Deactivate the PDO
-        _node->writeObject(_objectCommList[PDO_COMM_COB_ID].index(),
-                           _objectCommList[PDO_COMM_COB_ID].subIndex(),
-                           QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toUInt() | COBID_VALID_NOT_VALID));
+        _node->writeObject(
+            _objectCommList[PDO_COMM_COB_ID].index(), _objectCommList[PDO_COMM_COB_ID].subIndex(), QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toUInt() | COBID_VALID_NOT_VALID));
         break;
 
     case STATE_DEACTIVATE:
@@ -598,9 +593,8 @@ void PDO::processMapping()
 
     case STATE_ENABLE:
         // Activate the PDO
-        _node->writeObject(_objectCommList[PDO_COMM_COB_ID].index(),
-                           _objectCommList[PDO_COMM_COB_ID].subIndex(),
-                           QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toInt() & COBID_MASK));
+        _node->writeObject(
+            _objectCommList[PDO_COMM_COB_ID].index(), _objectCommList[PDO_COMM_COB_ID].subIndex(), QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toInt() & COBID_MASK));
         break;
 
     case STATE_ACTIVATE:

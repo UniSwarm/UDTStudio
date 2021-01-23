@@ -9,7 +9,8 @@ BusNodesModel::BusNodesModel(QObject *parent)
 }
 
 BusNodesModel::BusNodesModel(CanOpen *canOpen, QObject *parent)
-    : QAbstractItemModel(parent), _canOpen(canOpen)
+    : QAbstractItemModel(parent)
+    , _canOpen(canOpen)
 {
 }
 

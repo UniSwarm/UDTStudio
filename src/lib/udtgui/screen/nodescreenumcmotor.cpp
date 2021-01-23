@@ -18,8 +18,8 @@
 
 #include "nodescreenumcmotor.h"
 
-#include "canopen/compositeWidget/pidwidget.h"
 #include "canopen/compositeWidget/motionsensorwidget.h"
+#include "canopen/compositeWidget/pidwidget.h"
 #include <QLayout>
 
 #include "canopen/widgetDebug/widgetdebug.h"

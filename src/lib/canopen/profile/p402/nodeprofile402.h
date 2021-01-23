@@ -39,17 +39,17 @@ public:
     enum Mode
     {
         MS = -1,
-        NoMode = 0,  //
-        PP = 1,      // Profile position mode
-        VL = 2,      // Velocity mode
-        PV = 3,      // Profile velocity mode
-        TQ = 4,      // Torque profile mode
-        HM = 6,      // Homing mode
-        IP = 7,      // Interpolated position mode
-        CSP = 8,     // Cyclic sync position mode
-        CSV = 9,     // Cyclic sync velocity mode
-        CST = 10,    // Cyclic sync torque mode
-        CSTCA = 11,  // Cyclic sync torque mode with commutation angle
+        NoMode = 0, //
+        PP = 1, // Profile position mode
+        VL = 2, // Velocity mode
+        PV = 3, // Profile velocity mode
+        TQ = 4, // Torque profile mode
+        HM = 6, // Homing mode
+        IP = 7, // Interpolated position mode
+        CSP = 8, // Cyclic sync position mode
+        CSV = 9, // Cyclic sync velocity mode
+        CST = 10, // Cyclic sync torque mode
+        CSTCA = 11, // Cyclic sync torque mode with commutation angle
         Reserved = 12
     };
 
@@ -170,4 +170,4 @@ public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif  // NODEPROFILE402_H
+#endif // NODEPROFILE402_H

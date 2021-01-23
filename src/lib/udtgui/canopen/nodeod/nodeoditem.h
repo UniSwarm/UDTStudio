@@ -26,12 +26,13 @@
 class UDTGUI_EXPORT NodeOdItem
 {
 public:
-    NodeOdItem(NodeOd *od, NodeOdItem *parent=nullptr);
-    NodeOdItem(NodeIndex *index, NodeOdItem *parent=nullptr);
-    NodeOdItem(NodeSubIndex *subIndex, NodeOdItem *parent=nullptr);
+    NodeOdItem(NodeOd *od, NodeOdItem *parent = nullptr);
+    NodeOdItem(NodeIndex *index, NodeOdItem *parent = nullptr);
+    NodeOdItem(NodeSubIndex *subIndex, NodeOdItem *parent = nullptr);
     ~NodeOdItem();
 
-    enum Type {
+    enum Type
+    {
         TOD,
         TIndex,
         TSubIndex

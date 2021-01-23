@@ -23,9 +23,9 @@
 
 #include "generator/generator.h"
 
+#include <QSet>
 #include <QString>
 #include <QTextStream>
-#include <QSet>
 
 #include "model/deviceconfiguration.h"
 #include "model/devicedescription.h"

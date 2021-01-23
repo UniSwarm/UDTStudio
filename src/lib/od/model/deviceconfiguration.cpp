@@ -138,7 +138,7 @@ DeviceConfiguration *DeviceConfiguration::fromDeviceDescription(const DeviceDesc
     deviceConfiguration->setNodeId(QString::number(nodeId));
     deviceConfiguration->setDummyUsages(deviceDescription->dummyUsages());
 
-    for (Index *index: deviceDescription->indexes())
+    for (Index *index : deviceDescription->indexes())
     {
         deviceConfiguration->addIndex(new Index(*index));
     }

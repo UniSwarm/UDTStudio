@@ -298,10 +298,13 @@ int SubIndex::length() const
     case SubIndex::OCTET_STRING:
     case SubIndex::UNICODE_STRING:
         break;
+
     case SubIndex::TIME_OF_DAY:
         break;
+
     case SubIndex::TIME_DIFFERENCE:
         break;
+
     case SubIndex::DDOMAIN:
         break;
 

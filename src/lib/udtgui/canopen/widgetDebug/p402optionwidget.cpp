@@ -18,8 +18,8 @@
 
 #include "p402optionwidget.h"
 
-#include "node.h"
 #include "indexdb402.h"
+#include "node.h"
 
 #include <QFormLayout>
 #include <QGroupBox>
@@ -334,12 +334,8 @@ void P402OptionWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
         return;
     }
 
-    if ((objId == _abortConnectionObjectId)
-        || (objId == _quickStopObjectId)
-        || (objId == _shutdownObjectId)
-        || (objId == _disableObjectId)
-        || (objId == _haltObjectId)
-        || (objId == _faultReactionObjectId))
+    if ((objId == _abortConnectionObjectId) || (objId == _quickStopObjectId) || (objId == _shutdownObjectId) || (objId == _disableObjectId) || (objId == _haltObjectId) ||
+        (objId == _faultReactionObjectId))
     {
         if (flags == SDO::FlagsRequest::Error)
         {

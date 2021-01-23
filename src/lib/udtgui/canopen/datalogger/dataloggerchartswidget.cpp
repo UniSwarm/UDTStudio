@@ -19,12 +19,12 @@
 #include "dataloggerchartswidget.h"
 
 #include <QDateTimeAxis>
-#include <QValueAxis>
-#include <QScatterSeries>
 #include <QDebug>
-#include <qmath.h>
-#include <QOpenGLWidget>
 #include <QMimeData>
+#include <QOpenGLWidget>
+#include <QScatterSeries>
+#include <QValueAxis>
+#include <qmath.h>
 
 using namespace QtCharts;
 
@@ -107,8 +107,7 @@ void DataLoggerChartsWidget::updateDlData(int id)
         qreal max = qCeil(_dataLogger->max());
         qreal border = qMax(qCeil((max - min) * .1), 1);
         qreal range = max - min + 2 * border;
-        if (min < _axisY->min() || min + border > _axisY->min()
-            || max > _axisY->max() || max - border < _axisY->max())
+        if (min < _axisY->min() || min + border > _axisY->min() || max > _axisY->max() || max - border < _axisY->max())
         {
             _axisY->setRange(min - border, max + border);
             if (range < 10.0)
@@ -204,7 +203,7 @@ void DataLoggerChartsWidget::setUseOpenGL(bool useOpenGL)
     {
         serie->setUseOpenGL(useOpenGL);
     }
-    QList<QOpenGLWidget *>glWidgets = findChildren<QOpenGLWidget*>();
+    QList<QOpenGLWidget *> glWidgets = findChildren<QOpenGLWidget *>();
     for (QOpenGLWidget *glWidget : glWidgets)
     {
         glWidget->update();

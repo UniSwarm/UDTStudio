@@ -23,8 +23,8 @@
 
 #include "generator/generator.h"
 
-#include <QTextStream>
 #include <QString>
+#include <QTextStream>
 
 #include "model/deviceconfiguration.h"
 #include "model/devicedescription.h"
@@ -39,7 +39,7 @@ public:
     bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath);
     bool generate(DeviceDescription *deviceDescription, const QString &filePath);
 
-  private:
+private:
     static QString accessToString(int access);
     static QString pdoToString(uint8_t accessType);
 

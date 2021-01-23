@@ -18,17 +18,17 @@
 
 #include <QDebug>
 
-#include "nmt.h"
 #include "canopenbus.h"
+#include "nmt.h"
 
-#define NMT_CS_START        0x01
-#define NMT_CS_STOP         0x02
-#define NMT_CS_PRE_OP       0x80
-#define NMT_CS_RESET_NODE   0x81
-#define NMT_CS_RESET_COMM   0x82
+#define NMT_CS_START 0x01
+#define NMT_CS_STOP 0x02
+#define NMT_CS_PRE_OP 0x80
+#define NMT_CS_RESET_NODE 0x81
+#define NMT_CS_RESET_COMM 0x82
 
 NMT::NMT(Node *node)
-    : Service (node)
+    : Service(node)
 {
     _cobId = 0x000;
     _nodeId = node->nodeId();

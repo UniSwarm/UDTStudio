@@ -23,7 +23,7 @@
 #include <QDebug>
 
 AbstractIndexWidget::AbstractIndexWidget(const NodeObjectId &objId)
-    :_objId(objId)
+    : _objId(objId)
 {
     setObjId(objId);
     _hint = DisplayDirectValue;

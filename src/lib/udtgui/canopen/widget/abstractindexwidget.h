@@ -49,9 +49,9 @@ public:
     QVariant value() const;
     QString stringValue() const;
 
-    //min max
-    //tooltip
-    //setunit
+    // min max
+    // tooltip
+    // setunit
 
 public slots:
     void readObject();
@@ -67,10 +67,10 @@ protected:
         Error,
         Invalid
     };
-    virtual void setDisplayValue(const QVariant &value, DisplayAttribute flags) =0;
+    virtual void setDisplayValue(const QVariant &value, DisplayAttribute flags) = 0;
     void requestWriteValue(const QVariant &value);
     void requestReadValue();
-    virtual bool isEditing() const =0;
+    virtual bool isEditing() const = 0;
     void cancelEdit();
 
     virtual void updateHint();

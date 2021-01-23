@@ -32,7 +32,7 @@ public:
     NodeScreen(QWidget *parent = nullptr);
 
     Node *node() const;
-    virtual QString title() const =0;
+    virtual QString title() const = 0;
     virtual QIcon icon() const;
 
 public slots:
@@ -40,7 +40,7 @@ public slots:
 
 protected:
     Node *_node;
-    virtual void setNodeInternal(Node *node, uint8_t axis = 0) =0;
+    virtual void setNodeInternal(Node *node, uint8_t axis = 0) = 0;
 };
 
 #endif // NODESCREEN_H

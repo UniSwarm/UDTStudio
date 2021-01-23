@@ -16,10 +16,10 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include "sdo.h"
+#include "canopenbus.h"
 #include <QDataStream>
 #include <QDebug>
-#include "canopenbus.h"
-#include "sdo.h"
 
 SDO::SDO(Node *node)
     : Service(node)
@@ -562,7 +562,7 @@ bool SDO::downloadDispatcher()
     quint8 cmd = 0;
 
     if (_requestCurrent->size >= 128) // block download
-    {        
+    {
         cmd = CCS::SDO_CCS_CLIENT_BLOCK_DOWNLOAD;
         cmd |= FlagBlock::BLOCK_SIZE;
 
@@ -577,7 +577,7 @@ bool SDO::downloadDispatcher()
         _requestCurrent->stay = _requestCurrent->size;
     }
     else
-    {        
+    {
         if (_requestCurrent->size <= 4) // expedited transfer
         {
             cmd = CCS::SDO_CCS_CLIENT_DOWNLOAD_INITIATE;
@@ -1415,7 +1415,7 @@ void SDO::arrangeDataDownload(QDataStream &request, const QVariant &data)
         break;
 
     case QMetaType::Float:
-        //request << data.value<float>();
+        // request << data.value<float>();
         {
             float f = data.toFloat();
             QByteArray bytes;

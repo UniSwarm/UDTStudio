@@ -29,8 +29,8 @@
 #include <QSpinBox>
 #include <QTabWidget>
 #include <QTimer>
-#include <QWidget>
 #include <QToolBar>
+#include <QWidget>
 
 class Node;
 class DataLogger;

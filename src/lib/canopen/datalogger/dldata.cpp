@@ -21,7 +21,7 @@
 #include "canopen.h"
 
 DLData::DLData(const NodeObjectId &objectId)
-    :_objectId(objectId)
+    : _objectId(objectId)
 {
     _node = nullptr;
     CanOpenBus *bus = CanOpen::bus(objectId.busId());

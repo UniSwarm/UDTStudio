@@ -22,7 +22,8 @@
 
 #include "services/pdo.h"
 
-PDOMappingWidget::PDOMappingWidget(QWidget *parent) : QWidget(parent)
+PDOMappingWidget::PDOMappingWidget(QWidget *parent)
+    : QWidget(parent)
 {
     _pdo = nullptr;
     createWidget();

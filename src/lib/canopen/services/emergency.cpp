@@ -20,7 +20,7 @@
 #include "canopenbus.h"
 
 Emergency::Emergency(Node *node)
-    : Service (node)
+    : Service(node)
 {
     _cobId = 0x80;
     _cobIds.append(_cobId + node->nodeId());

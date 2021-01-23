@@ -21,8 +21,8 @@
 
 #include "canopen_global.h"
 
-#include "nodesubindex.h"
 #include "nodeobjectid.h"
+#include "nodesubindex.h"
 
 class Node;
 class NodeOd;

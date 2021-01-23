@@ -19,8 +19,8 @@
 #include "pidwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
-#include "canopen/widget/indexspinbox.h"
 #include "canopen/widget/indexlabel.h"
+#include "canopen/widget/indexspinbox.h"
 #include "indexdb402.h"
 #include "node.h"
 #include "profile/p402/nodeprofile402.h"
@@ -255,7 +255,6 @@ void PidWidget::changeMode402()
 
     _savePushButton->setEnabled(false);
     _goTargetPushButton->setEnabled(false);
-
 }
 
 void PidWidget::mode402Changed(uint8_t axis, NodeProfile402::Mode modeNew)
@@ -280,7 +279,7 @@ void PidWidget::mode402Changed(uint8_t axis, NodeProfile402::Mode modeNew)
         break;
 
     case NodeProfile402::PP:
-    case NodeProfile402::IP :
+    case NodeProfile402::IP:
     case NodeProfile402::CSP:
     {
         _modePid = ModePid::MODE_PID_POSITION;

@@ -21,7 +21,7 @@
 
 class OdIndexDb
 {
-  public:
+public:
     OdIndexDb();
 };
 

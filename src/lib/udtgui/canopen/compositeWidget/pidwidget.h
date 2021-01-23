@@ -120,4 +120,4 @@ protected:
     void setIMode();
 };
 
-#endif  // PIDWIDGET_H
+#endif // PIDWIDGET_H

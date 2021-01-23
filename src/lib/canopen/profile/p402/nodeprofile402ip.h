@@ -61,4 +61,4 @@ public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif  // NODEPROFILE402IP_H
+#endif // NODEPROFILE402IP_H

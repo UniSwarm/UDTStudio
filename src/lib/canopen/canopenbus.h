@@ -24,8 +24,8 @@
 #include "node.h"
 #include "services/services.h"
 
-#include <QMap>
 #include <QCanBusDevice>
+#include <QMap>
 
 class CanOpen;
 

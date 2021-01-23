@@ -124,9 +124,8 @@ void RPDO::receiveSync()
     // Update data of object in NodeOd after a sync
     for (NodeObjectId objectIterator : _objectCurrentMapped)
     {
-        if (_dataObjectCurrentMapped.contains(objectIterator.key())
-            && _node->nodeOd()->indexExist(objectIterator.index())
-            && _node->nodeOd()->subIndexExist(objectIterator.index(), objectIterator.subIndex()))
+        if (_dataObjectCurrentMapped.contains(objectIterator.key()) && _node->nodeOd()->indexExist(objectIterator.index()) &&
+            _node->nodeOd()->subIndexExist(objectIterator.index(), objectIterator.subIndex()))
         {
             _node->nodeOd()->index(objectIterator.index())->subIndex(objectIterator.subIndex())->setValue(_dataObjectCurrentMapped.value(objectIterator.key()));
         }
@@ -190,7 +189,7 @@ void RPDO::prepareAndSendData()
         }
         if (_dataObjectCurrentMapped.contains(objectIterator.key()))
         {
-           convertQVariantToQDataStream(request, _dataObjectCurrentMapped.value(objectIterator.key()), _node->nodeOd()->dataType(objectIterator));
+            convertQVariantToQDataStream(request, _dataObjectCurrentMapped.value(objectIterator.key()), _node->nodeOd()->dataType(objectIterator));
         }
         else
         {

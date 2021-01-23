@@ -23,8 +23,8 @@
 
 #include <QWidget>
 
-#include "busnodestreeview.h"
 #include "busmanagerwidget.h"
+#include "busnodestreeview.h"
 #include "nodemanagerwidget.h"
 
 class UDTGUI_EXPORT BusNodesManagerView : public QWidget

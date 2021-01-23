@@ -30,7 +30,9 @@ enum ControlWordVL : quint16
 };
 
 NodeProfile402Vl::NodeProfile402Vl(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
-    : _node(node), _axis(axis), _nodeProfile402(nodeProfile402)
+    : _node(node)
+    , _axis(axis)
+    , _nodeProfile402(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, axis);
     _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, axis);
@@ -86,7 +88,7 @@ void NodeProfile402Vl::setUnlockRamp(bool ok)
 
 bool NodeProfile402Vl::isUnlockRamp(void)
 {
-   return _cmdControlWordSpecific & CW_VL_UnlockRamp;
+    return _cmdControlWordSpecific & CW_VL_UnlockRamp;
 }
 
 void NodeProfile402Vl::setReferenceRamp(bool ok)
@@ -122,9 +124,9 @@ void NodeProfile402Vl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
         {
             quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
             _cmdControlWordSpecific = (controlWord & (CW_VL_EnableRamp | CW_VL_ReferenceRamp | CW_VL_UnlockRamp));
-            emit _nodeProfile402->enableRampEvent((_cmdControlWordSpecific & CW_VL_EnableRamp ) >> 4);
-            emit _nodeProfile402->referenceRampEvent((_cmdControlWordSpecific & CW_VL_ReferenceRamp ) >> 6);
-            emit _nodeProfile402->unlockRampEvent((_cmdControlWordSpecific & CW_VL_UnlockRamp ) >> 5);
+            emit _nodeProfile402->enableRampEvent((_cmdControlWordSpecific & CW_VL_EnableRamp) >> 4);
+            emit _nodeProfile402->referenceRampEvent((_cmdControlWordSpecific & CW_VL_ReferenceRamp) >> 6);
+            emit _nodeProfile402->unlockRampEvent((_cmdControlWordSpecific & CW_VL_UnlockRamp) >> 5);
         }
     }
 }

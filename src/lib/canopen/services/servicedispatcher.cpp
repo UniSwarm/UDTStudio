@@ -18,12 +18,12 @@
 
 #include "servicedispatcher.h"
 
-#include <QDebug>
 #include "canopen.h"
 #include "node.h"
+#include <QDebug>
 
 ServiceDispatcher::ServiceDispatcher(CanOpenBus *bus)
-    : Service (bus)
+    : Service(bus)
 {
 }
 

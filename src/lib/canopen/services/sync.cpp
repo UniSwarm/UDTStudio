@@ -23,7 +23,7 @@
 const quint8 ONE_SHOT_TIMER = 20;
 
 Sync::Sync(CanOpenBus *bus)
-    : Service (bus)
+    : Service(bus)
 {
     _syncCobId = 0x80;
     _cobIds.append(_syncCobId);
@@ -59,7 +59,7 @@ void Sync::stopSync()
     _status = STOPPED;
 }
 
-Sync::Status  Sync::status()
+Sync::Status Sync::status()
 {
     return _status;
 }

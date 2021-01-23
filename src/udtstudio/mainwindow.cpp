@@ -21,24 +21,24 @@
 #include "model/deviceconfiguration.h"
 #include "parser/edsparser.h"
 
+#include <QAction>
 #include <QApplication>
 #include <QCanBus>
 #include <QDateTime>
-#include <QScreen>
+#include <QDockWidget>
 #include <QLayout>
 #include <QMenu>
 #include <QMenuBar>
-#include <QStatusBar>
-#include <QAction>
-#include <QDockWidget>
-#include <QSplitter>
-#include <QSettings>
 #include <QMessageBox>
+#include <QScreen>
+#include <QSettings>
+#include <QSplitter>
+#include <QStatusBar>
 
 #include <QDebug>
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent)
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
 {
     setWindowTitle(tr("UniSwarm UDTStudio"));
     setWindowIcon(QIcon(":/icons/img/udtstudio.ico"));
@@ -205,7 +205,7 @@ void MainWindow::connectDevice()
             bus->setBusName(settings.interfaceName + ":" + settings.deviceName);
             statusBar()->showMessage(tr("%1 - %2").arg(settings.interfaceName).arg(settings.deviceName));
             CanOpen::addBus(bus);
-            //connect(bus, &CanOpenBus::frameAvailable, _canFrameListView, &CanFrameListView::appendCanFrame);
+            // connect(bus, &CanOpenBus::frameAvailable, _canFrameListView, &CanFrameListView::appendCanFrame);
         }
     }
 }

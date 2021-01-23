@@ -21,7 +21,8 @@
 #include <QHBoxLayout>
 
 DataLoggerManagerWidget::DataLoggerManagerWidget(DataLogger *logger, QWidget *parent)
-    : QWidget(parent), _logger(logger)
+    : QWidget(parent)
+    , _logger(logger)
 {
     createWidgets();
     _chartWidget = nullptr;
@@ -100,7 +101,7 @@ void DataLoggerManagerWidget::createWidgets()
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
     _toolBar->addWidget(_logTimerSpinBox);
-    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),[=](int i){ setLogTimer(i); });
+    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
 
     // clear
     action = _toolBar->addAction(tr("Clear"));

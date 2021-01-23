@@ -70,4 +70,4 @@ public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif  // NODEPROFILE402VL_H
+#endif // NODEPROFILE402VL_H

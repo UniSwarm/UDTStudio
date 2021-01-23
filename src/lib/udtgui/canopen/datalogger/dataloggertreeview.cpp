@@ -18,14 +18,13 @@
 
 #include "dataloggertreeview.h"
 
-#include <QKeyEvent>
-#include <QHeaderView>
-#include <QFontMetrics>
-#include <QKeyEvent>
-#include <QItemSelectionModel>
-#include <QMessageBox>
-#include <QMenu>
 #include <QColorDialog>
+#include <QFontMetrics>
+#include <QHeaderView>
+#include <QItemSelectionModel>
+#include <QKeyEvent>
+#include <QMenu>
+#include <QMessageBox>
 #include <QTextStream>
 
 #include "node.h"

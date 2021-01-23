@@ -39,19 +39,19 @@ class IndexSpinBox;
 class P402PpWidget : public QWidget, public NodeOdSubscriber
 {
     Q_OBJECT
-  public:
+public:
     P402PpWidget(QWidget *parent = nullptr);
     ~P402PpWidget() override;
 
     Node *node() const;
     void readData();
 
-  public slots:
+public slots:
     void setNode(Node *value, uint8_t axis = 0);
     void updateData();
     void stop();
 
-  private:
+private:
     Node *_node;
     uint8_t _axis;
     CanOpenBus *_bus;
@@ -128,8 +128,8 @@ class P402PpWidget : public QWidget, public NodeOdSubscriber
     void createWidgets();
 
     // NodeOdSubscriber interface
-  protected:
+protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif  // P402PP_H
+#endif // P402PP_H

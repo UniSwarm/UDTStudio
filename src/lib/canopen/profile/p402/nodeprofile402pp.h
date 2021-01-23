@@ -32,7 +32,7 @@ class NodeProfile402;
 class CANOPEN_EXPORT NodeProfile402Pp : public QObject, public NodeOdSubscriber
 {
     Q_OBJECT
-  public:
+public:
     NodeProfile402Pp(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402);
 
     void setTarget(qint32 position);
@@ -42,19 +42,19 @@ class CANOPEN_EXPORT NodeProfile402Pp : public QObject, public NodeOdSubscriber
     void setEnableRamp(bool ok);
     bool isEnableRamp(void);
 
-    void applyNewSetPoint();  // bit 4 of controlWord front upright
-//    bool isUnlockRamp(void);
+    void applyNewSetPoint(); // bit 4 of controlWord front upright
+    //    bool isUnlockRamp(void);
 
-    void setChangeSetImmediately(bool ok);   // bit 5 of controlWord
-    bool isChangeSetImmediately(void);       // bit 5 of controlWord
+    void setChangeSetImmediately(bool ok); // bit 5 of controlWord
+    bool isChangeSetImmediately(void); // bit 5 of controlWord
 
-    void setChangeOnSetPoint(bool ok);  // bit 9 of controlWord
-    bool isChangeOnSetPoint(void);      // bit 9 of controlWord
+    void setChangeOnSetPoint(bool ok); // bit 9 of controlWord
+    bool isChangeOnSetPoint(void); // bit 9 of controlWord
 
     void setAbsRel(bool ok); // bit 6 of controlWord
-    bool isAbsRel(void);     // bit 6 of controlWord
+    bool isAbsRel(void); // bit 6 of controlWord
 
-  signals:
+signals:
     void isAppliedTarget();
     void enableRampEvent(bool ok);
 
@@ -62,7 +62,7 @@ class CANOPEN_EXPORT NodeProfile402Pp : public QObject, public NodeOdSubscriber
     void changeOnSetPointEvent(bool ok);
     void absRelEvent(bool ok);
 
-  private:
+private:
     Node *_node;
     uint8_t _axis;
     NodeProfile402 *_nodeProfile402;
@@ -73,8 +73,8 @@ class CANOPEN_EXPORT NodeProfile402Pp : public QObject, public NodeOdSubscriber
     quint16 _cmdControlWordSpecific;
 
     // NodeOdSubscriber interface
-  public:
+public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif  // NODEPROFILE402PP_H
+#endif // NODEPROFILE402PP_H

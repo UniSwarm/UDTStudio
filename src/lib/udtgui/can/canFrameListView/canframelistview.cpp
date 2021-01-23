@@ -18,15 +18,14 @@
 
 #include "canframelistview.h"
 
-#include <QScrollBar>
-#include <QHeaderView>
-#include <QFontMetrics>
-#include <QDebug>
 #include <QApplication>
 #include <QClipboard>
 #include <QContextMenuEvent>
-#include <QMenu>
+#include <QDebug>
 #include <QFontMetrics>
+#include <QHeaderView>
+#include <QMenu>
+#include <QScrollBar>
 
 CanFrameListView::CanFrameListView(QWidget *parent)
     : QTableView(parent)

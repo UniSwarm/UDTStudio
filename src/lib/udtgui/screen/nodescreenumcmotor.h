@@ -37,7 +37,6 @@ public:
     NodeScreenUmcMotor(QWidget *parent = nullptr);
 
 protected:
-
     uint8_t _axis;
     void createWidgets();
     PidWidget *_pidVelocityWidget;
@@ -59,4 +58,4 @@ public:
     void setNodeInternal(Node *node, uint8_t axis) override;
 };
 
-#endif  // NODESCREENUMCMOTOR_H
+#endif // NODESCREENUMCMOTOR_H

@@ -26,7 +26,8 @@ BusManagerWidget::BusManagerWidget(QWidget *parent)
 }
 
 BusManagerWidget::BusManagerWidget(CanOpenBus *bus, QWidget *parent)
-    : QWidget(parent), _bus(nullptr)
+    : QWidget(parent)
+    , _bus(nullptr)
 {
     createWidgets();
     setBus(bus);
@@ -131,7 +132,7 @@ void BusManagerWidget::createWidgets()
     _syncTimerSpinBox->setSuffix(" ms");
     _syncTimerSpinBox->setStatusTip(tr("Sets the interval of sync timer in ms"));
     _toolBar->addWidget(_syncTimerSpinBox);
-    connect(_syncTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),[=](int i){ setSyncTimer(i); });
+    connect(_syncTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setSyncTimer(i); });
 
     _actionSyncStart = _toolBar->addAction(tr("Start / stop sync"));
     _actionSyncStart->setIcon(QIcon(":/icons/img/icons8-sync.png"));

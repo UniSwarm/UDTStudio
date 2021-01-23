@@ -21,9 +21,9 @@
 
 #include "../../udtgui_global.h"
 
+#include <QAction>
 #include <QSortFilterProxyModel>
 #include <QTreeView>
-#include <QAction>
 
 #include "dataloggermodel.h"
 

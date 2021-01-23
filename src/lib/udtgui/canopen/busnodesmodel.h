@@ -39,7 +39,8 @@ public:
     CanOpenBus *bus(const QModelIndex &index) const;
     Node *node(const QModelIndex &index) const;
 
-    enum Column {
+    enum Column
+    {
         NodeId,
         Name,
         Status,

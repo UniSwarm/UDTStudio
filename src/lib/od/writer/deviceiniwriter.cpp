@@ -151,8 +151,7 @@ void DeviceIniWriter::writeComments(const QMap<QString, QString> &comments) cons
     *_file << "[Comments]"
            << "\r\n";
 
-    *_file << "Lines=" << comments.size()
-           << "\r\n";
+    *_file << "Lines=" << comments.size() << "\r\n";
 
     writeStringMap(comments);
 }
@@ -395,6 +394,6 @@ QString DeviceIniWriter::defaultValue(const SubIndex *subIndex) const
     }
     else
     {
-            return dataToString(subIndex->value());
+        return dataToString(subIndex->value());
     }
 }

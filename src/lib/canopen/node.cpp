@@ -16,15 +16,15 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <QDebug>
 #include "node.h"
+#include <QDebug>
 
 #include "canopenbus.h"
 #include "model/deviceconfiguration.h"
 #include "parser/edsparser.h"
-#include "services/services.h"
-#include "profile/p402/nodeprofile402.h"
 #include "profile/nodeprofilefactory.h"
+#include "profile/p402/nodeprofile402.h"
+#include "services/services.h"
 
 Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
     : _nodeId(nodeId)
@@ -276,7 +276,7 @@ RPDO *Node::isMappedObjectInRpdo(const NodeObjectId &object) const
 {
     for (RPDO *rpdo : _rpdos)
     {
-        if ( rpdo->isMappedObject(object))
+        if (rpdo->isMappedObject(object))
         {
             return rpdo;
         }

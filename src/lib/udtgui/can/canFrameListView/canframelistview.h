@@ -21,10 +21,10 @@
 
 #include "../../udtgui_global.h"
 
-#include <QTableView>
+#include <QAction>
 #include <QCanBus>
 #include <QCanBusFrame>
-#include <QAction>
+#include <QTableView>
 
 #include "canframemodel.h"
 

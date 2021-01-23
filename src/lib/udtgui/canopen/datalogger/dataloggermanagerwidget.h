@@ -26,8 +26,8 @@
 #include <QSpinBox>
 #include <QToolBar>
 
-#include "dataloggertreeview.h"
 #include "dataloggerchartswidget.h"
+#include "dataloggertreeview.h"
 
 class UDTGUI_EXPORT DataLoggerManagerWidget : public QWidget
 {

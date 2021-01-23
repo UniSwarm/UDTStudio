@@ -21,8 +21,8 @@
 
 #include "../../udtgui_global.h"
 
-#include <QAbstractSpinBox>
 #include "abstractindexwidget.h"
+#include <QAbstractSpinBox>
 
 class UDTGUI_EXPORT IndexSpinBox : public QAbstractSpinBox, public AbstractIndexWidget
 {

@@ -26,7 +26,8 @@ BusNodesManagerView::BusNodesManagerView(QWidget *parent)
 }
 
 BusNodesManagerView::BusNodesManagerView(CanOpen *canOpen, QWidget *parent)
-    : QWidget(parent), _canOpen(nullptr)
+    : QWidget(parent)
+    , _canOpen(nullptr)
 {
     createWidgets();
     setCanOpen(canOpen);

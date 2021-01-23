@@ -18,15 +18,16 @@
 
 #include "pdomappingpainter.h"
 
-#include <QWidget>
 #include <QDebug>
+#include <QWidget>
 #include <QtMath>
 
 const int yMargin = 5;
 const int xMargin = 3;
 
 PDOMappingPainter::PDOMappingPainter(QWidget *widget)
-    : QPainter(widget), _widget(widget)
+    : QPainter(widget)
+    , _widget(widget)
 {
     setRenderHint(QPainter::Antialiasing);
 }
@@ -49,9 +50,7 @@ void PDOMappingPainter::drawDragPos(const QRect &rect, double pos)
     setBrush(QBrush(Qt::darkRed));
     drawLine(x, 0, x, height);
     QPolygon arrow;
-    arrow << QPoint(x - (xMargin + 1), 0)
-          << QPoint(x + (xMargin + 1), 0)
-          << QPoint(x, yMargin);
+    arrow << QPoint(x - (xMargin + 1), 0) << QPoint(x + (xMargin + 1), 0) << QPoint(x, yMargin);
     drawPolygon(arrow);
 }
 
@@ -130,16 +129,11 @@ void PDOMappingPainter::drawMapping(const QRect &objRect, const NodeObjectId &no
 
     if (objName.isEmpty() || textRext.height() < fontMetrics.height() * 2)
     {
-        drawText(textRext, Qt::AlignCenter, QString("0x%1.%2")
-                                                .arg(QString::number(nodeObjectId.index(), 16).toUpper())
-                                                .arg(QString::number(nodeObjectId.subIndex(), 16).toUpper()));
+        drawText(textRext, Qt::AlignCenter, QString("0x%1.%2").arg(QString::number(nodeObjectId.index(), 16).toUpper()).arg(QString::number(nodeObjectId.subIndex(), 16).toUpper()));
     }
     else
     {
-        drawText(textRext, Qt::AlignCenter, QString("0x%1.%2\n%3")
-                                                .arg(QString::number(nodeObjectId.index(), 16).toUpper())
-                                                .arg(QString::number(nodeObjectId.subIndex(), 16).toUpper())
-                                                .arg(objName));
+        drawText(textRext, Qt::AlignCenter, QString("0x%1.%2\n%3").arg(QString::number(nodeObjectId.index(), 16).toUpper()).arg(QString::number(nodeObjectId.subIndex(), 16).toUpper()).arg(objName));
     }
 }
 

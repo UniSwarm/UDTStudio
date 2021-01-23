@@ -18,8 +18,8 @@
 
 #include "widgetdebug.h"
 
-#include "services/services.h"
 #include "indexdb402.h"
+#include "services/services.h"
 
 #include <QApplication>
 #include <QButtonGroup>
@@ -30,7 +30,9 @@
 #include "canopen/datalogger/dataloggerwidget.h"
 
 WidgetDebug::WidgetDebug(Node *node, uint8_t axis, QWidget *parent)
-    : QWidget(parent), _node(node), _axis(axis)
+    : QWidget(parent)
+    , _node(node)
+    , _axis(axis)
 {
     if (!_node)
     {
@@ -235,7 +237,7 @@ void WidgetDebug::stateChanged()
         _statusWordLabel->setText(tr("NotReadyToSwitchOn"));
         setCheckableStateMachine(STATE_NotReadyToSwitchOn);
     }
-    if (state ==  NodeProfile402::STATE_SwitchOnDisabled)
+    if (state == NodeProfile402::STATE_SwitchOnDisabled)
     {
         _statusWordLabel->setText(tr("SwitchOnDisabled"));
         setCheckableStateMachine(STATE_SwitchOnDisabled);
@@ -247,7 +249,7 @@ void WidgetDebug::stateChanged()
         _haltPushButton->setCheckable(false);
         _haltPushButton->setEnabled(false);
     }
-    if (state ==  NodeProfile402::STATE_ReadyToSwitchOn)
+    if (state == NodeProfile402::STATE_ReadyToSwitchOn)
     {
         _statusWordLabel->setText(tr("ReadyToSwitchOn"));
         setCheckableStateMachine(STATE_ReadyToSwitchOn);
@@ -259,7 +261,7 @@ void WidgetDebug::stateChanged()
         _haltPushButton->setCheckable(false);
         _haltPushButton->setEnabled(false);
     }
-    if (state ==  NodeProfile402::STATE_SwitchedOn)
+    if (state == NodeProfile402::STATE_SwitchedOn)
     {
         _statusWordLabel->setText(tr("SwitchedOn"));
         setCheckableStateMachine(STATE_SwitchedOn);
@@ -271,7 +273,7 @@ void WidgetDebug::stateChanged()
         _haltPushButton->setCheckable(false);
         _haltPushButton->setEnabled(false);
     }
-    if (state ==  NodeProfile402::STATE_OperationEnabled)
+    if (state == NodeProfile402::STATE_OperationEnabled)
     {
         _statusWordLabel->setText(tr("OperationEnabled"));
         setCheckableStateMachine(STATE_OperationEnabled);
@@ -283,7 +285,7 @@ void WidgetDebug::stateChanged()
         _haltPushButton->setEnabled(true);
         _haltPushButton->setCheckable(true);
     }
-    if (state ==  NodeProfile402::STATE_QuickStopActive)
+    if (state == NodeProfile402::STATE_QuickStopActive)
     {
         _statusWordLabel->setText(tr("QuickStopActive"));
         setCheckableStateMachine(STATE_QuickStopActive);
@@ -295,7 +297,7 @@ void WidgetDebug::stateChanged()
         _haltPushButton->setCheckable(false);
         _haltPushButton->setEnabled(false);
     }
-    if (state ==  NodeProfile402::STATE_FaultReactionActive)
+    if (state == NodeProfile402::STATE_FaultReactionActive)
     {
         _statusWordLabel->setText(tr("FaultReactionActive"));
         setCheckableStateMachine(STATE_FaultReactionActive);
@@ -307,7 +309,7 @@ void WidgetDebug::stateChanged()
         _haltPushButton->setCheckable(false);
         _haltPushButton->setEnabled(false);
     }
-    if (state ==  NodeProfile402::STATE_Fault)
+    if (state == NodeProfile402::STATE_Fault)
     {
         _statusWordLabel->setText(tr("Fault"));
         setCheckableStateMachine(STATE_Fault);
@@ -390,7 +392,7 @@ void WidgetDebug::eventHappened(quint8 event)
 
 void WidgetDebug::updateModeComboBox()
 {
-    QList<NodeProfile402::Mode> modeList  = _nodeProfile402->modesSupported();
+    QList<NodeProfile402::Mode> modeList = _nodeProfile402->modesSupported();
     _modeComboBox->clear();
 
     for (quint8 i = 0; i < modeList.size(); i++)

@@ -24,8 +24,8 @@
 #include <QWidget>
 
 #include "datalogger/datalogger.h"
-#include "dataloggermanagerwidget.h"
 #include "dataloggerchartswidget.h"
+#include "dataloggermanagerwidget.h"
 
 class UDTGUI_EXPORT DataLoggerWidget : public QWidget
 {

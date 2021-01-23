@@ -28,7 +28,9 @@ enum ControlWordIP : quint16
 };
 
 NodeProfile402Ip::NodeProfile402Ip(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
-    : _node(node), _axis(axis), _nodeProfile402(nodeProfile402)
+    : _node(node)
+    , _axis(axis)
+    , _nodeProfile402(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_SET_POINT, axis);
     _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, axis);

@@ -68,8 +68,8 @@ protected:
     QString _name;
     QColor _color;
 
-    QList <qreal> _values;
-    QList <QDateTime> _times;
+    QList<qreal> _values;
+    QList<QDateTime> _times;
 
     qreal _min;
     qreal _max;
