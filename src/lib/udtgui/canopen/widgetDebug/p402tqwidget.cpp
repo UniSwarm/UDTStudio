@@ -276,13 +276,13 @@ void P402TqWidget::createWidgets()
 
     _tqCurrentActualValueLabel = new QLabel("-");
     _tqCurrentActualValueLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    name = tr("Current Actual Value ") + QString("(0x%1) :").arg(QString::number(_tqCurrentActualValueObjectId.index(), 16).toUpper());
+    //    name = tr("Current Actual Value ") + QString("(0x%1) :").arg(QString::number(_tqCurrentActualValueObjectId.index(), 16).toUpper());
     tqLayout->addRow(name, _tqCurrentActualValueLabel);
 
     _tqDCLinkVoltageLabel = new QLabel("-");
     _tqDCLinkVoltageLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     name = tr("DC Link Voltage ") + QString("(0x%1) :").arg(QString::number(_tqDCLinkVoltageObjectId.index(), 16).toUpper());
-    tqLayout->addRow(name, _tqDCLinkVoltageLabel);
+    //    tqLayout->addRow(name, _tqDCLinkVoltageLabel);
 
     _tqTargetSlopeSpinBox = new IndexSpinBox();
     _tqTargetSlopeSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
