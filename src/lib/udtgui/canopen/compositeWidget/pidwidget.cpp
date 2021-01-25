@@ -74,11 +74,14 @@ void PidWidget::setNode(Node *node, uint8_t axis)
     _dSpinBox->setNode(node);
     _pSpinBox->setNode(node);
     _iSpinBox->setNode(node);
-    //_dSpinBox->setNode(node);
     _actualValueLabel->setNode(node);
-    _tempMotorLabel->setNode(node);
-    _tempDriver1Label->setNode(node);
-    _tempDriver2Label->setNode(node);
+    _inputLabel->setNode(node);
+    _errorLabel->setNode(node);
+    _integratorLabel->setNode(node);
+    _outputLabel->setNode(node);
+//    _tempMotorLabel->setNode(node);
+//    _tempDriver1Label->setNode(node);
+//    _tempDriver2Label->setNode(node);
     _minSpinBox->setNode(node);
     _maxSpinBox->setNode(node);
     _thresholdSpinBox->setNode(node);
@@ -88,6 +91,11 @@ void PidWidget::setMode(PidWidget::ModePid mode)
 {
     _modePid = mode;
     setIMode();
+}
+
+void PidWidget::start()
+{
+    _dataLogger->start(_logTimerSpinBox->value());
 }
 
 void PidWidget::setIMode()
@@ -104,9 +112,9 @@ void PidWidget::setIMode()
     NodeObjectId pidIntegratorStatus_ObjId;
     NodeObjectId pidOutputStatus_ObjId;
     NodeObjectId actualValue_ObjId;
-    NodeObjectId tempMotor_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_MOTOR_1, _axis);
-    NodeObjectId tempDriver1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_1, _axis);
-    NodeObjectId tempDriver2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_2, _axis);
+//    NodeObjectId tempMotor_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_MOTOR_1, _axis);
+//    NodeObjectId tempDriver1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_1, _axis);
+//    NodeObjectId tempDriver2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_2, _axis);
 
     if (!_nodeProfile402)
     {
@@ -119,7 +127,7 @@ void PidWidget::setIMode()
         break;
 
     case MODE_PID_VELOCITY:
-        pidGroupBox->setTitle(tr("PID Velocity"));
+        _pidGroupBox->setTitle(tr("PID Velocity"));
         actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_P, _axis);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_I, _axis);
@@ -135,7 +143,7 @@ void PidWidget::setIMode()
         break;
 
     case MODE_PID_TORQUE:
-        pidGroupBox->setTitle(tr("PID Torque"));
+        _pidGroupBox->setTitle(tr("PID Torque"));
         actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE, _axis);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_P, _axis);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_I, _axis);
@@ -152,7 +160,7 @@ void PidWidget::setIMode()
         break;
 
     case MODE_PID_POSITION:
-        pidGroupBox->setTitle(tr("PID Position"));
+        _pidGroupBox->setTitle(tr("PID Position"));
         actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, _axis);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_P, _axis);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_I, _axis);
@@ -171,10 +179,17 @@ void PidWidget::setIMode()
     _pSpinBox->setObjId(pidP_ObjId);
     _iSpinBox->setObjId(pidI_ObjId);
     _dSpinBox->setObjId(pidD_ObjId);
+
     _actualValueLabel->setObjId(actualValue_ObjId);
-    _tempMotorLabel->setObjId(tempMotor_ObjId);
-    _tempDriver1Label->setObjId(tempDriver1_ObjId);
-    _tempDriver2Label->setObjId(tempDriver2_ObjId);
+
+    _inputLabel->setObjId(pidInputStatus_ObjId);
+    _errorLabel->setObjId(pidErrorStatus_ObjId);
+    _integratorLabel->setObjId(pidIntegratorStatus_ObjId);
+    _outputLabel->setObjId(pidOutputStatus_ObjId);
+
+//    _tempMotorLabel->setObjId(tempMotor_ObjId);
+//    _tempDriver1Label->setObjId(tempDriver1_ObjId);
+//    _tempDriver2Label->setObjId(tempDriver2_ObjId);
     _minSpinBox->setObjId(pidMin_ObjId);
     _maxSpinBox->setObjId(pidMax_ObjId);
     _thresholdSpinBox->setObjId(pidThreshold_ObjId);
@@ -415,23 +430,68 @@ void PidWidget::readStatus()
     _iSpinBox->readObject();
     _dSpinBox->readObject();
     _actualValueLabel->readObject();
-    _tempMotorLabel->readObject();
-    _tempDriver1Label->readObject();
-    _tempDriver2Label->readObject();
+    _inputLabel->readObject();
+    _errorLabel->readObject();
+    _integratorLabel->readObject();
+    _outputLabel->readObject();
+}
+
+void PidWidget::setLogTimer(int ms)
+{
+    _dataLogger->start(ms);
 }
 
 void PidWidget::createWidgets()
 {
+    _dataLogger = new DataLogger();
+    _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
+
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
 
     QSplitter *splitter = new QSplitter();
     layout->addWidget(splitter);
 
+    // toolbar
+    _pidToolBar = new QToolBar(tr("Axis commands"));
+    QActionGroup *loggerActionGroup = new QActionGroup(this);
+    loggerActionGroup->setExclusive(true);
+    QAction *action;
+
+    // start
+    action = loggerActionGroup->addAction(tr("Start object reading of axis"));
+    action->setCheckable(true);
+    action->setIcon(QIcon(":/icons/img/icons8-play.png"));
+    action->setStatusTip(tr("Start object reading of axis"));
+    connect(action, &QAction::triggered, this, &PidWidget::start);
+
+    // stop
+    action = loggerActionGroup->addAction(tr("Stop object reading of axis"));
+    action->setCheckable(true);
+    action->setIcon(QIcon(":/icons/img/icons8-stop.png"));
+    action->setStatusTip(tr("Stop object reading of axis"));
+    connect(action, &QAction::triggered, _dataLogger, &DataLogger::stop);
+
+    // clear
+    action = loggerActionGroup->addAction(tr("Clear"));
+    action->setIcon(QIcon(":/icons/img/icons8-broom.png"));
+    action->setStatusTip(tr("Clear all data"));
+    connect(action, &QAction::triggered, _dataLogger, &DataLogger::clear);
+    _pidToolBar->addActions(loggerActionGroup->actions());
+
+    // timer
+    _logTimerSpinBox = new QSpinBox();
+    _logTimerSpinBox->setRange(10, 5000);
+    _logTimerSpinBox->setValue(500);
+    _logTimerSpinBox->setSuffix(" ms");
+    _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
+    _pidToolBar->addWidget(_logTimerSpinBox);
+    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
+
     QWidget *pidWidget = new QWidget(this);
     QVBoxLayout *actionLayout = new QVBoxLayout(pidWidget);
 
-    pidGroupBox = new QGroupBox(tr("PID"));
+    _pidGroupBox = new QGroupBox(tr("PID"));
     QFormLayout *pidLayout = new QFormLayout();
 
     _pSpinBox = new IndexSpinBox();
@@ -458,25 +518,34 @@ void PidWidget::createWidgets()
     _thresholdSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     pidLayout->addRow(tr("&Threshold :"), _thresholdSpinBox);
 
-    pidGroupBox->setLayout(pidLayout);
+    _pidGroupBox->setLayout(pidLayout);
 
+    // Status
     QGroupBox *statusGroupBox = new QGroupBox(tr("Status"));
     QFormLayout *statusLayout = new QFormLayout();
 
     _actualValueLabel = new IndexLabel();
     statusLayout->addRow(tr("&Actual Value :"), _actualValueLabel);
 
-    _tempMotorLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Temperature Motor :"), _tempMotorLabel);
+    _inputLabel = new IndexLabel();
+    _inputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    statusLayout->addRow(tr("&Input :"), _inputLabel);
 
-    _tempDriver1Label = new IndexLabel();
-    statusLayout->addRow(tr("&Temperature Driver1 :"), _tempDriver1Label);
+    _errorLabel = new IndexLabel();
+    _errorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    statusLayout->addRow(tr("&Error :"), _errorLabel);
 
-    _tempDriver2Label = new IndexLabel();
-    statusLayout->addRow(tr("&Temperature Driver2 :"), _tempDriver2Label);
+    _integratorLabel = new IndexLabel();
+    _integratorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    statusLayout->addRow(tr("&Integrator :"), _integratorLabel);
+
+    _outputLabel = new IndexLabel();
+    _outputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    statusLayout->addRow(tr("&Output :"), _outputLabel);
 
     statusGroupBox->setLayout(statusLayout);
 
+    // Target
     QGroupBox *targetGroupBox = new QGroupBox(tr("Target"));
     QFormLayout *targetLayout = new QFormLayout();
 
@@ -503,24 +572,23 @@ void PidWidget::createWidgets()
     targetLayout->addRow(tr("&Measurement window :"), _windowSpinBox);
     targetLayout->addRow(tr("&Time limit after the end of the last target :"), _stopDataLoggerSpinBox);
 
-    _savePushButton = new QPushButton(tr("&Save"));
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    _savePushButton = new QPushButton(tr("&Screenshot logger"));
+    buttonLayout->addWidget(_savePushButton);
     connect(_savePushButton, &QPushButton::clicked, this, &PidWidget::savePosition);
 
     _goTargetPushButton = new QPushButton(tr("G&O"));
+    buttonLayout->addWidget(_goTargetPushButton);
     connect(_goTargetPushButton, &QPushButton::clicked, this, &PidWidget::manageMeasurement);
 
+    targetLayout->addRow(buttonLayout);
     targetGroupBox->setLayout(targetLayout);
 
-    actionLayout->addWidget(pidGroupBox);
+    actionLayout->addWidget(_pidToolBar);
+    actionLayout->addWidget(_pidGroupBox);
     actionLayout->addWidget(statusGroupBox);
     actionLayout->addWidget(targetGroupBox);
-    actionLayout->addWidget(_savePushButton);
-    actionLayout->addWidget(_goTargetPushButton);
-    splitter->addWidget(pidWidget);
-
-    _dataLogger = new DataLogger();
-    _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
-
+    splitter->addWidget(pidWidget);    
     splitter->addWidget(_dataLoggerChartsWidget);
     setLayout(layout);
 }

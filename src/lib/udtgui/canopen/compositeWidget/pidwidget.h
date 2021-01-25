@@ -29,6 +29,7 @@
 #include <QSpinBox>
 #include <QTabWidget>
 #include <QTimer>
+#include <QToolBar>
 #include <QWidget>
 
 class Node;
@@ -58,9 +59,9 @@ public:
 public slots:
     void setNode(Node *node, uint8_t axis = 0);
     void setMode(PidWidget::ModePid mode);
+    void start();
 
 protected:
-    void createWidgets();
 
     Node *_node;
     uint8_t _axis;
@@ -70,10 +71,14 @@ protected:
 
     DataLogger *_dataLogger;
     DataLoggerChartsWidget *_dataLoggerChartsWidget;
+
+    QToolBar *_pidToolBar;
+    QSpinBox *_logTimerSpinBox;
+
     QTimer _timer;
     QTimer _readStatusTimer;
 
-    QGroupBox *pidGroupBox;
+    QGroupBox *_pidGroupBox;
     IndexSpinBox *_pSpinBox;
     IndexSpinBox *_iSpinBox;
     IndexSpinBox *_dSpinBox;
@@ -82,9 +87,15 @@ protected:
     IndexSpinBox *_thresholdSpinBox;
 
     IndexLabel *_actualValueLabel;
-    IndexLabel *_tempMotorLabel;
-    IndexLabel *_tempDriver1Label;
-    IndexLabel *_tempDriver2Label;
+
+    IndexLabel *_inputLabel;
+    IndexLabel *_errorLabel;
+    IndexLabel *_integratorLabel;
+    IndexLabel *_outputLabel;
+
+//    IndexLabel *_tempMotorLabel;
+//    IndexLabel *_tempDriver1Label;
+//    IndexLabel *_tempDriver2Label;
 
     QSpinBox *_firstTargetSpinBox;
     QSpinBox *_secondTargetSpinBox;
@@ -118,6 +129,9 @@ protected:
     void stopDataLogger();
     void readStatus();
     void setIMode();
+    void setLogTimer(int ms);
+
+    void createWidgets();
 };
 
 #endif // PIDWIDGET_H
