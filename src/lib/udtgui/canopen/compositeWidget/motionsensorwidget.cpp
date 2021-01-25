@@ -233,10 +233,8 @@ void MotionSensorWidget::setIMode()
     _valueLabel_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
     _dataLogger->removeData(_rawDataValueLabel_ObjId);
-    _dataLogger->removeData(_flagLabel_ObjId);
     _dataLogger->removeData(_valueLabel_ObjId);
     _dataLogger->addData(_rawDataValueLabel_ObjId);
-    _dataLogger->addData(_flagLabel_ObjId);
     _dataLogger->addData(_valueLabel_ObjId);
 }
 
@@ -247,6 +245,9 @@ void MotionSensorWidget::setLogTimer(int ms)
 
 void MotionSensorWidget::createWidgets()
 {
+    _dataLogger = new DataLogger();
+    _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
+
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
 
@@ -255,29 +256,39 @@ void MotionSensorWidget::createWidgets()
 
     // toolbar
     _sensorToolBar = new QToolBar(tr("Axis commands"));
-    QActionGroup *groupNmt = new QActionGroup(this);
-    groupNmt->setExclusive(true);
+    QActionGroup *loggerActionGroup = new QActionGroup(this);
+    loggerActionGroup->setExclusive(true);
     QAction *action;
-    action = groupNmt->addAction(tr("Start object reading of axis"));
+
+    // start
+    action = loggerActionGroup->addAction(tr("Start object reading of axis"));
     action->setCheckable(true);
     action->setIcon(QIcon(":/icons/img/icons8-play.png"));
     action->setStatusTip(tr("Start object reading of axis"));
     connect(action, &QAction::triggered, this, &MotionSensorWidget::start);
 
-    action = groupNmt->addAction(tr("Stop object reading of axis"));
+    // stop
+    action = loggerActionGroup->addAction(tr("Stop object reading of axis"));
     action->setCheckable(true);
     action->setIcon(QIcon(":/icons/img/icons8-stop.png"));
     action->setStatusTip(tr("Stop object reading of axis"));
     connect(action, &QAction::triggered, this, &MotionSensorWidget::stop);
 
-    _sensorToolBar->addActions(groupNmt->actions());
+    // clear
+    action = loggerActionGroup->addAction(tr("Clear"));
+    action->setIcon(QIcon(":/icons/img/icons8-broom.png"));
+    action->setStatusTip(tr("Clear all data"));
+    connect(action, &QAction::triggered, _dataLogger, &DataLogger::clear);
+    _sensorToolBar->addActions(loggerActionGroup->actions());
+
+    // timer
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
     _logTimerSpinBox->setValue(500);
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
-    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
     _sensorToolBar->addWidget(_logTimerSpinBox);
+    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
 
     QWidget *MotionSensorWidget = new QWidget(this);
     QVBoxLayout *actionLayout = new QVBoxLayout(MotionSensorWidget);
@@ -374,9 +385,6 @@ void MotionSensorWidget::createWidgets()
     actionLayout->addWidget(statusGroupBox);
     actionLayout->addWidget(filterGroupBox);
     splitter->addWidget(MotionSensorWidget);
-
-    _dataLogger = new DataLogger();
-    _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
 
     splitter->addWidget(_dataLoggerChartsWidget);
     setLayout(layout);
