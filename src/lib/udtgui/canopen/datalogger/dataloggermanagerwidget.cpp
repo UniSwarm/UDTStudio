@@ -97,7 +97,7 @@ void DataLoggerManagerWidget::createWidgets()
 
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
-    _logTimerSpinBox->setValue(1000);
+    _logTimerSpinBox->setValue(500);
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
     _toolBar->addWidget(_logTimerSpinBox);
