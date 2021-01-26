@@ -29,8 +29,12 @@
 #include <QPushButton>
 
 P402TqWidget::P402TqWidget(QWidget *parent)
-    : QWidget(parent)
+    : QScrollArea(parent)
 {
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setWidgetResizable(true);
+
     _node = nullptr;
 }
 
@@ -233,6 +237,7 @@ void P402TqWidget::refreshData(NodeObjectId object)
 
 void P402TqWidget::createWidgets()
 {
+    QWidget *widget = new QWidget();
     QString name;
     QLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
@@ -337,7 +342,8 @@ void P402TqWidget::createWidgets()
     layout->addWidget(tqGroupBox);
     layout->addItem(tqButtonLayout);
 
-    setLayout(layout);
+    widget->setLayout(layout);
+    setWidget(widget);
 }
 
 void P402TqWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

@@ -28,12 +28,12 @@
 #include <QLabel>
 #include <QSlider>
 #include <QSpinBox>
-#include <QWidget>
+#include <QScrollArea>
 
 class NodeProfile402;
 class IndexSpinBox;
 
-class P402VlWidget : public QWidget, public NodeOdSubscriber
+class P402VlWidget : public QScrollArea, public NodeOdSubscriber
 {
     Q_OBJECT
 public:

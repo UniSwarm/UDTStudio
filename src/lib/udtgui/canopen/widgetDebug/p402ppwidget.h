@@ -30,13 +30,13 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSpinBox>
-#include <QWidget>
+#include <QScrollArea>
 
 class NodeProfile402;
 class NodeObjectId;
 class IndexSpinBox;
 
-class P402PpWidget : public QWidget, public NodeOdSubscriber
+class P402PpWidget : public QScrollArea, public NodeOdSubscriber
 {
     Q_OBJECT
 public:

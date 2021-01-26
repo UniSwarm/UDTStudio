@@ -36,8 +36,12 @@
 #include <QtMath>
 
 P402PpWidget::P402PpWidget(QWidget *parent)
-    : QWidget(parent)
+    : QScrollArea(parent)
 {
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setWidgetResizable(true);
+
     _node = nullptr;
     _nodeProfile402 = nullptr;
 }
@@ -321,6 +325,7 @@ void P402PpWidget::refreshData(NodeObjectId object)
 
 void P402PpWidget::createWidgets()
 {
+    QWidget *widget = new QWidget();
     QString name;
     QLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
@@ -548,7 +553,8 @@ void P402PpWidget::createWidgets()
     layout->addWidget(modeControlWordGroupBox);
     layout->addItem(ipButtonLayout);
 
-    setLayout(layout);
+    widget->setLayout(layout);
+    setWidget(widget);
 }
 
 void P402PpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

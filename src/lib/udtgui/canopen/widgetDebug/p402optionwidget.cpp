@@ -26,8 +26,12 @@
 #include <QRadioButton>
 
 P402OptionWidget::P402OptionWidget(QWidget *parent)
-    : QWidget(parent)
+    : QScrollArea(parent)
 {
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setWidgetResizable(true);
+
     _node = nullptr;
 }
 
@@ -197,6 +201,7 @@ void P402OptionWidget::refreshData(NodeObjectId object)
 
 void P402OptionWidget::createWidgets()
 {
+    QWidget *widget = new QWidget();
     QString name;
     // SECOND COLUMM
     QLayout *layout = new QVBoxLayout();
@@ -324,7 +329,8 @@ void P402OptionWidget::createWidgets()
     layout->addWidget(faultReactionOptionGroupBox);
     // END SECOND COLUMM
 
-    setLayout(layout);
+    widget->setLayout(layout);
+    setWidget(widget);
 }
 
 void P402OptionWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

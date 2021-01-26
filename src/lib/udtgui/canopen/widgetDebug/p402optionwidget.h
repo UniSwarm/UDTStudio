@@ -24,11 +24,11 @@
 #include "nodeodsubscriber.h"
 
 #include <QButtonGroup>
-#include <QWidget>
+#include <QScrollArea>
 
 class Node;
 
-class P402OptionWidget : public QWidget, public NodeOdSubscriber
+class P402OptionWidget : public QScrollArea, public NodeOdSubscriber
 {
     Q_OBJECT
 public:

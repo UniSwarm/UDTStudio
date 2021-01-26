@@ -30,8 +30,12 @@
 #include <QPushButton>
 
 P402VlWidget::P402VlWidget(QWidget *parent)
-    : QWidget(parent)
+    : QScrollArea(parent)
 {
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setWidgetResizable(true);
+
     _node = nullptr;
     _nodeProfile402 = nullptr;
 }
@@ -325,6 +329,7 @@ void P402VlWidget::refreshData(NodeObjectId object)
 
 void P402VlWidget::createWidgets()
 {
+    QWidget *widget = new QWidget();
     QString name;
     QLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
@@ -483,7 +488,8 @@ void P402VlWidget::createWidgets()
     layout->addWidget(modeControlWordGroupBox);
     layout->addItem(vlButtonLayout);
 
-    setLayout(layout);
+    widget->setLayout(layout);
+    setWidget(widget);
 }
 
 void P402VlWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

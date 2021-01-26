@@ -618,19 +618,15 @@ void WidgetDebug::createWidgets()
     _stackedWidget->addWidget(_p402ip);
     _stackedWidget->addWidget(_p402tq);
     _stackedWidget->addWidget(_p402pp);
-
-    QScrollArea *stackedScrollArea = new QScrollArea();
-    stackedScrollArea->setWidget(_stackedWidget);
-    stackedScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    stackedScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    stackedScrollArea->setWidgetResizable(true);
+    _stackedWidget->setMinimumWidth(550);
 
     QHBoxLayout *hBoxLayout = new QHBoxLayout();
     hBoxLayout->setMargin(0);
     hBoxLayout->addWidget(p402ScrollArea);
-    hBoxLayout->addWidget(stackedScrollArea);
+    hBoxLayout->addWidget(_stackedWidget);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
+    vBoxLayout->setMargin(2);
     vBoxLayout->addWidget(_toolBar);
     vBoxLayout->addLayout(hBoxLayout);
     setLayout(vBoxLayout);
