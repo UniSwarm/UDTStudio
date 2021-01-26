@@ -454,11 +454,9 @@ void P402IpWidget::createWidgets()
     ipLayout->addRow(ipPositionRangelLimitLabel);
     QLayout *ipPositionRangelLimitlayout = new QHBoxLayout();
     _ipPositionRangelLimitMinSpinBox = new IndexSpinBox();
-    //    _ipPositionRangelLimitMinSpinBox->setSuffix(" inc");
     _ipPositionRangelLimitMinSpinBox->setToolTip("min");
     ipPositionRangelLimitlayout->addWidget(_ipPositionRangelLimitMinSpinBox);
     _ipPositionRangelLimitMaxSpinBox = new IndexSpinBox();
-    //    _ipPositionRangelLimitMaxSpinBox->setSuffix(" inc");
     _ipPositionRangelLimitMaxSpinBox->setToolTip("max");
     ipPositionRangelLimitlayout->addWidget(_ipPositionRangelLimitMaxSpinBox);
     ipLayout->addRow(ipPositionRangelLimitlayout);
@@ -468,14 +466,10 @@ void P402IpWidget::createWidgets()
     ipLayout->addRow(ipSoftwarePositionLimitLabel);
     QLayout *ipSoftwarePositionLimitlayout = new QHBoxLayout();
     _ipSoftwarePositionLimitMinSpinBox = new IndexSpinBox();
-    //    _ipSoftwarePositionLimitMinSpinBox->setSuffix(" inc");
     _ipSoftwarePositionLimitMinSpinBox->setToolTip("min");
-    //    std::numeric_limits<int>::max());
     ipSoftwarePositionLimitlayout->addWidget(_ipSoftwarePositionLimitMinSpinBox);
     _ipSoftwarePositionLimitMaxSpinBox = new IndexSpinBox();
-    //    _ipSoftwarePositionLimitMaxSpinBox->setSuffix(" inc");
     _ipSoftwarePositionLimitMaxSpinBox->setToolTip("max");
-    //    std::numeric_limits<int>::max());
     ipSoftwarePositionLimitlayout->addWidget(_ipSoftwarePositionLimitMaxSpinBox);
     ipLayout->addRow(ipSoftwarePositionLimitlayout);
 
@@ -484,7 +478,6 @@ void P402IpWidget::createWidgets()
     QLayout *ipHomeOffsetlayout = new QVBoxLayout();
     QLabel *ipHomeOffsetLabel = new QLabel(name);
     _ipHomeOffsetSpinBox = new IndexSpinBox();
-    //    _ipHomeOffsetSpinBox->setSuffix(" inc");
     _ipHomeOffsetSpinBox->setToolTip("");
     ipHomeOffsetlayout->addWidget(ipHomeOffsetLabel);
     ipHomeOffsetlayout->addWidget(_ipHomeOffsetSpinBox);

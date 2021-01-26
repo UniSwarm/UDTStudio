@@ -45,7 +45,6 @@ public:
     explicit PidWidget(QWidget *parent = nullptr);
 
     Node *node() const;
-
     QString title() const;
 
     enum ModePid
@@ -59,10 +58,12 @@ public:
 public slots:
     void setNode(Node *node, uint8_t axis = 0);
     void setMode(PidWidget::ModePid mode);
-    void start();
+
+protected slots:
+    void toggleStartLogger(bool start);
+    void setLogTimer(int ms);
 
 protected:
-
     Node *_node;
     uint8_t _axis;
     ModePid _modePid;
@@ -72,8 +73,9 @@ protected:
     DataLogger *_dataLogger;
     DataLoggerChartsWidget *_dataLoggerChartsWidget;
 
-    QToolBar *_pidToolBar;
+    QToolBar *_toolBar;
     QSpinBox *_logTimerSpinBox;
+    QAction *_startStopAction;
 
     QTimer _timer;
     QTimer _readStatusTimer;
@@ -92,10 +94,6 @@ protected:
     IndexLabel *_errorLabel;
     IndexLabel *_integratorLabel;
     IndexLabel *_outputLabel;
-
-//    IndexLabel *_tempMotorLabel;
-//    IndexLabel *_tempDriver1Label;
-//    IndexLabel *_tempDriver2Label;
 
     QSpinBox *_firstTargetSpinBox;
     QSpinBox *_secondTargetSpinBox;
@@ -118,20 +116,17 @@ protected:
 
     State _state;
 
-    void statusNodeChanged(Node::Status status);
-
+    void setIMode();
+    void screenshotSave();
     void changeMode402();
-    void savePosition();
     void mode402Changed(uint8_t axis, NodeProfile402::Mode modeNew);
     void manageMeasurement();
     void stopFirstMeasurement();
     void stopSecondMeasurement();
     void stopDataLogger();
     void readStatus();
-    void setIMode();
-    void setLogTimer(int ms);
-
     void createWidgets();
+    void statusNodeChanged(Node::Status status);
 };
 
 #endif // PIDWIDGET_H

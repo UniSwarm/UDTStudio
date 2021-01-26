@@ -26,6 +26,8 @@
 #include <QDebug>
 #include <QFormLayout>
 #include <QPushButton>
+#include <QScrollBar>
+#include <QSplitter>
 
 #include "canopen/datalogger/dataloggerwidget.h"
 
@@ -128,7 +130,7 @@ void WidgetDebug::statusNodeChanged()
         }
         else
         {
-            stop();
+            toggleStartLogger(false);
         }
         _p402ip->updateData();
         _p402vl->updateData();
@@ -137,10 +139,23 @@ void WidgetDebug::statusNodeChanged()
     }
 }
 
-void WidgetDebug::start()
+void WidgetDebug::gotoStateOEClicked()
 {
-    if (_node)
+    toggleStartLogger(true);
+    _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
+}
+
+void WidgetDebug::toggleStartLogger(bool start)
+{
+    if (!_node)
     {
+        return;
+    }
+
+    if (start)
+    {
+        _startStopAction->setIcon(QIcon(":/icons/img/icons8-stop.png"));
+
         if (_node->status() != Node::STARTED)
         {
             _node->sendStart();
@@ -152,12 +167,10 @@ void WidgetDebug::start()
         _stateMachineGroupBox->setEnabled(true);
         _statusWordGroupBox->setEnabled(true);
     }
-}
-
-void WidgetDebug::stop()
-{
-    if (_node)
+    else
     {
+        _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
+
         _timer.stop();
 
         _stackedWidget->setEnabled(false);
@@ -167,15 +180,12 @@ void WidgetDebug::stop()
     }
 }
 
-void WidgetDebug::gotoStateOEClicked()
+void WidgetDebug::setLogTimer(int ms)
 {
-    start();
-    _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
-}
-
-void WidgetDebug::setTimer(int ms)
-{
-    _timer.start(ms);
+    if (_startStopAction->isChecked())
+    {
+        _timer.start(ms);
+    }
 }
 
 void WidgetDebug::readDataTimer()
@@ -459,53 +469,48 @@ void WidgetDebug::createWidgets()
 {
     QString name;
 
-    QLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
+    // toolbar
+    _toolBar = new QToolBar(tr("Axis commands"));
+    _toolBar->setIconSize(QSize(20, 20));
 
-    // toolbar nmt
-    _nmtToolBar = new QToolBar(tr("Axis commands"));
-    QActionGroup *groupNmt = new QActionGroup(this);
-    groupNmt->setExclusive(true);
-    QAction *action;
-    action = groupNmt->addAction(tr("Start object reading of axis"));
-    action->setCheckable(true);
-    action->setIcon(QIcon(":/icons/img/icons8-play.png"));
-    action->setStatusTip(tr("Start object reading of axis"));
-    connect(action, &QAction::triggered, this, &WidgetDebug::start);
+    // start stop
+    _startStopAction = _toolBar->addAction(tr("Start / stop"));
+    _startStopAction->setCheckable(true);
+    _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
+    _startStopAction->setStatusTip(tr("Start or stop the data logger"));
+    connect(_startStopAction, &QAction::triggered, this, &WidgetDebug::toggleStartLogger);
 
-    action = groupNmt->addAction(tr("Stop object reading of axis"));
-    action->setCheckable(true);
-    action->setIcon(QIcon(":/icons/img/icons8-stop.png"));
-    action->setStatusTip(tr("Stop object reading of axis"));
-    connect(action, &QAction::triggered, this, &WidgetDebug::stop);
-
-    _nmtToolBar->addActions(groupNmt->actions());
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
     _logTimerSpinBox->setValue(500);
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
-    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setTimer(i); });
+    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
     connect(&_timer, &QTimer::timeout, this, &WidgetDebug::readDataTimer);
-    _nmtToolBar->addWidget(_logTimerSpinBox);
-
-    _nmtToolBar->addSeparator();
 
     QAction *option402 = new QAction();
     option402->setCheckable(true);
     option402->setIcon(QIcon(":/icons/img/icons8-settings.png"));
     option402->setToolTip(tr("Option code"));
     connect(option402, &QAction::triggered, this, &WidgetDebug::displayOption402);
-    _nmtToolBar->addAction(option402);
+
+    _toolBar->addWidget(_logTimerSpinBox);
+    _toolBar->addSeparator();
+    _toolBar->addAction(option402);
+
+    QWidget *p402Widget = new QWidget();
+    QLayout *p402layout = new QVBoxLayout(p402Widget);
+    p402layout->setMargin(0);
 
     // Group Box Mode
     _modeGroupBox = new QGroupBox(tr("Mode"));
     QFormLayout *modeLayout = new QFormLayout();
     _modeComboBox = new QComboBox();
-    name = tr("Modes of operation ") + QString("(0x%1)").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, _axis).index(), 16));
-    modeLayout->addRow(name, _modeComboBox);
+    name = tr("Modes of operation ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, _axis).index(), 16));
+    modeLayout->addRow(new QLabel(name));
+    modeLayout->addRow(_modeComboBox);
     _modeGroupBox->setLayout(modeLayout);
-    layout->addWidget(_modeGroupBox);
+    p402layout->addWidget(_modeGroupBox);
 
     // End Group Box State Machine
 
@@ -589,9 +594,17 @@ void WidgetDebug::createWidgets()
     _statusWordGroupBox->setLayout(statusWordLayout);
     // END Group Box Status Word
 
-    layout->addWidget(_stateMachineGroupBox);
-    layout->addWidget(_controlWordGroupBox);
-    layout->addWidget(_statusWordGroupBox);
+    p402layout->addWidget(_stateMachineGroupBox);
+    p402layout->addWidget(_controlWordGroupBox);
+    p402layout->addWidget(_statusWordGroupBox);
+
+    QScrollArea *p402ScrollArea = new QScrollArea();
+    p402ScrollArea->setWidget(p402Widget);
+    p402ScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    p402ScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    p402ScrollArea->setWidgetResizable(true);
+    p402ScrollArea->setMaximumWidth(370);
+    p402ScrollArea->setMinimumWidth(370);
 
     _p402Option = new P402OptionWidget();
     _p402vl = new P402VlWidget();
@@ -606,13 +619,19 @@ void WidgetDebug::createWidgets()
     _stackedWidget->addWidget(_p402tq);
     _stackedWidget->addWidget(_p402pp);
 
+    QScrollArea *stackedScrollArea = new QScrollArea();
+    stackedScrollArea->setWidget(_stackedWidget);
+    stackedScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    stackedScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    stackedScrollArea->setWidgetResizable(true);
+
     QHBoxLayout *hBoxLayout = new QHBoxLayout();
     hBoxLayout->setMargin(0);
-    hBoxLayout->addLayout(layout);
-    hBoxLayout->addWidget(_stackedWidget);
+    hBoxLayout->addWidget(p402ScrollArea);
+    hBoxLayout->addWidget(stackedScrollArea);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
-    vBoxLayout->addWidget(_nmtToolBar);
+    vBoxLayout->addWidget(_toolBar);
     vBoxLayout->addLayout(hBoxLayout);
     setLayout(vBoxLayout);
 }

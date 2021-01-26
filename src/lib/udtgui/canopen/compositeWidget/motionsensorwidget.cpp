@@ -45,6 +45,22 @@ Node *MotionSensorWidget::node() const
     return _node;
 }
 
+QString MotionSensorWidget::title() const
+{
+    switch (_mode)
+    {
+    case MotionSensorWidget::MODE_SENSOR_NONE:
+        return tr("None");
+    case MODE_SENSOR_POSITION:
+        return tr("Position sensor");
+    case MODE_SENSOR_VELOCITY:
+        return tr("Velocity sensor");
+    case MODE_SENSOR_TORQUE:
+        return tr("Torque sensor");
+    }
+    return QString();
+}
+
 void MotionSensorWidget::setNode(Node *node, uint8_t axis)
 {
     _node = node;
@@ -95,14 +111,26 @@ void MotionSensorWidget::setMode(MotionSensorWidget::ModeSensor mode)
     setIMode();
 }
 
-void MotionSensorWidget::start()
+void MotionSensorWidget::toggleStartLogger(bool start)
 {
-    _dataLogger->start(_logTimerSpinBox->value());
+    if (start)
+    {
+        _startStopAction->setIcon(QIcon(":/icons/img/icons8-stop.png"));
+        _dataLogger->start(_logTimerSpinBox->value());
+    }
+    else
+    {
+        _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
+        _dataLogger->stop();
+    }
 }
 
-void MotionSensorWidget::stop()
+void MotionSensorWidget::setLogTimer(int ms)
 {
-    _dataLogger->stop();
+    if (_startStopAction->isChecked())
+    {
+        _dataLogger->start(ms);
+    }
 }
 
 void MotionSensorWidget::setIMode()
@@ -238,11 +266,6 @@ void MotionSensorWidget::setIMode()
     _dataLogger->addData(_valueLabel_ObjId);
 }
 
-void MotionSensorWidget::setLogTimer(int ms)
-{
-    _dataLogger->start(ms);
-}
-
 void MotionSensorWidget::createWidgets()
 {
     _dataLogger = new DataLogger();
@@ -251,47 +274,37 @@ void MotionSensorWidget::createWidgets()
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
 
-    QSplitter *splitter = new QSplitter();
+    QSplitter *splitter = new QSplitter(Qt::Horizontal);
     layout->addWidget(splitter);
 
     // toolbar
-    _sensorToolBar = new QToolBar(tr("Axis commands"));
-    QActionGroup *loggerActionGroup = new QActionGroup(this);
-    loggerActionGroup->setExclusive(true);
-    QAction *action;
+    _toolBar = new QToolBar(tr("Data logger commands"));
+    _toolBar->setIconSize(QSize(20, 20));
 
-    // start
-    action = loggerActionGroup->addAction(tr("Start object reading of axis"));
-    action->setCheckable(true);
-    action->setIcon(QIcon(":/icons/img/icons8-play.png"));
-    action->setStatusTip(tr("Start object reading of axis"));
-    connect(action, &QAction::triggered, this, &MotionSensorWidget::start);
+    // start stop
+    _startStopAction = _toolBar->addAction(tr("Start / stop"));
+    _startStopAction->setCheckable(true);
+    _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
+    _startStopAction->setStatusTip(tr("Start or stop the data logger"));
+    connect(_startStopAction, &QAction::triggered, this, &MotionSensorWidget::toggleStartLogger);
 
-    // stop
-    action = loggerActionGroup->addAction(tr("Stop object reading of axis"));
-    action->setCheckable(true);
-    action->setIcon(QIcon(":/icons/img/icons8-stop.png"));
-    action->setStatusTip(tr("Stop object reading of axis"));
-    connect(action, &QAction::triggered, this, &MotionSensorWidget::stop);
+    _logTimerSpinBox = new QSpinBox();
+    _logTimerSpinBox->setRange(10, 5000);
+    _logTimerSpinBox->setValue(1000);
+    _logTimerSpinBox->setSuffix(" ms");
+    _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
+    _toolBar->addWidget(_logTimerSpinBox);
+    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
 
     // clear
-    action = loggerActionGroup->addAction(tr("Clear"));
+    QAction *action;
+    action = _toolBar->addAction(tr("Clear"));
     action->setIcon(QIcon(":/icons/img/icons8-broom.png"));
     action->setStatusTip(tr("Clear all data"));
     connect(action, &QAction::triggered, _dataLogger, &DataLogger::clear);
-    _sensorToolBar->addActions(loggerActionGroup->actions());
 
-    // timer
-    _logTimerSpinBox = new QSpinBox();
-    _logTimerSpinBox->setRange(10, 5000);
-    _logTimerSpinBox->setValue(500);
-    _logTimerSpinBox->setSuffix(" ms");
-    _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
-    _sensorToolBar->addWidget(_logTimerSpinBox);
-    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
-
-    QWidget *MotionSensorWidget = new QWidget(this);
-    QVBoxLayout *actionLayout = new QVBoxLayout(MotionSensorWidget);
+    QWidget *motionSensorWidget = new QWidget(this);
+    QVBoxLayout *actionLayout = new QVBoxLayout(motionSensorWidget);
 
     sensorConfigGroupBox = new QGroupBox(tr("Sensor config"));
     QFormLayout *configLayout = new QFormLayout();
@@ -377,17 +390,25 @@ void MotionSensorWidget::createWidgets()
 
     QGroupBox *targetGroupBox = new QGroupBox(tr("Target"));
     QFormLayout *targetLayout = new QFormLayout();
-
     targetGroupBox->setLayout(targetLayout);
 
-    actionLayout->addWidget(_sensorToolBar);
     actionLayout->addWidget(sensorConfigGroupBox);
     actionLayout->addWidget(statusGroupBox);
     actionLayout->addWidget(filterGroupBox);
-    splitter->addWidget(MotionSensorWidget);
 
+    QScrollArea *motionSensorScrollArea = new QScrollArea;
+    motionSensorScrollArea->setWidget(motionSensorWidget);
+    motionSensorScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    motionSensorScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    motionSensorScrollArea->setWidgetResizable(true);
+
+    splitter->addWidget(motionSensorScrollArea);
     splitter->addWidget(_dataLoggerChartsWidget);
-    setLayout(layout);
+
+    QVBoxLayout *vBoxLayout = new QVBoxLayout();
+    vBoxLayout->addWidget(_toolBar);
+    vBoxLayout->addWidget(splitter);
+    setLayout(vBoxLayout);
 }
 
 void MotionSensorWidget::statusNodeChanged(Node::Status status)
@@ -400,20 +421,4 @@ void MotionSensorWidget::statusNodeChanged(Node::Status status)
     {
         this->setEnabled(false);
     }
-}
-
-QString MotionSensorWidget::title() const
-{
-    switch (_mode)
-    {
-    case MotionSensorWidget::MODE_SENSOR_NONE:
-        return tr("None");
-    case MODE_SENSOR_POSITION:
-        return tr("Position sensor");
-    case MODE_SENSOR_VELOCITY:
-        return tr("Velocity sensor");
-    case MODE_SENSOR_TORQUE:
-        return tr("Torque sensor");
-    }
-    return QString();
 }

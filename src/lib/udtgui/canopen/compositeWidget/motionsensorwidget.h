@@ -45,7 +45,6 @@ public:
     explicit MotionSensorWidget(QWidget *parent = nullptr);
 
     Node *node() const;
-
     QString title() const;
 
     enum ModeSensor
@@ -59,12 +58,12 @@ public:
 public slots:
     void setNode(Node *node, uint8_t axis = 0);
     void setMode(MotionSensorWidget::ModeSensor mode);
-    void start();
-    void stop();
+
+protected slots:
+    void toggleStartLogger(bool start);
+    void setLogTimer(int ms);
 
 protected:
-    void createWidgets();
-
     Node *_node;
     uint8_t _axis;
     ModeSensor _mode;
@@ -72,8 +71,9 @@ protected:
     DataLogger *_dataLogger;
     DataLoggerChartsWidget *_dataLoggerChartsWidget;
 
-    QToolBar *_sensorToolBar;
+    QToolBar *_toolBar;
     QSpinBox *_logTimerSpinBox;
+    QAction *_startStopAction;
 
     QGroupBox *sensorConfigGroupBox;
 
@@ -110,9 +110,9 @@ protected:
 
     State _state;
 
-    void statusNodeChanged(Node::Status status);
     void setIMode();
-    void setLogTimer(int ms);
+    void createWidgets();
+    void statusNodeChanged(Node::Status status);
 };
 
 #endif // MOTIONSENSORWIDGET_H

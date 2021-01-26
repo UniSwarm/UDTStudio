@@ -35,6 +35,7 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QPushButton>
+#include <QScrollArea>
 #include <QSpinBox>
 #include <QStackedWidget>
 #include <QToolBar>
@@ -53,9 +54,11 @@ public:
 
 public slots:
     void setNode(Node *value, uint8_t axis = 0);
-    void start();
-    void stop();
     void gotoStateOEClicked();
+
+protected slots:
+    void toggleStartLogger(bool start);
+    void setLogTimer(int ms);
 
 private:
     Node *_node;
@@ -87,8 +90,10 @@ private:
     P402TqWidget *_p402tq;
     P402PpWidget *_p402pp;
 
-    QToolBar *_nmtToolBar;
+    QToolBar *_toolBar;
     QSpinBox *_logTimerSpinBox;
+    QAction *_startStopAction;
+
     QGroupBox *_modeGroupBox;
     QGroupBox *_stateMachineGroupBox;
     QGroupBox *_controlWordGroupBox;
@@ -104,8 +109,6 @@ private:
     QButtonGroup *_stateMachineGroup;
 
     void statusNodeChanged();
-
-    void setTimer(int ms);
     void readDataTimer();
 
     void modeChanged(uint8_t axis, NodeProfile402::Mode modeNew);

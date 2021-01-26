@@ -48,6 +48,22 @@ Node *PidWidget::node() const
     return _node;
 }
 
+QString PidWidget::title() const
+{
+    switch (_modePid)
+    {
+    case PidWidget::MODE_PID_NONE:
+        return tr("None");
+    case MODE_PID_POSITION:
+        return tr("Position PID");
+    case MODE_PID_VELOCITY:
+        return tr("Velocity PID");
+    case MODE_PID_TORQUE:
+        return tr("Torque PID");
+    }
+    return QString();
+}
+
 void PidWidget::setNode(Node *node, uint8_t axis)
 {
     _node = node;
@@ -79,9 +95,6 @@ void PidWidget::setNode(Node *node, uint8_t axis)
     _errorLabel->setNode(node);
     _integratorLabel->setNode(node);
     _outputLabel->setNode(node);
-//    _tempMotorLabel->setNode(node);
-//    _tempDriver1Label->setNode(node);
-//    _tempDriver2Label->setNode(node);
     _minSpinBox->setNode(node);
     _maxSpinBox->setNode(node);
     _thresholdSpinBox->setNode(node);
@@ -93,9 +106,26 @@ void PidWidget::setMode(PidWidget::ModePid mode)
     setIMode();
 }
 
-void PidWidget::start()
+void PidWidget::toggleStartLogger(bool start)
 {
-    _dataLogger->start(_logTimerSpinBox->value());
+    if (start)
+    {
+        _startStopAction->setIcon(QIcon(":/icons/img/icons8-stop.png"));
+        _dataLogger->start(_logTimerSpinBox->value());
+    }
+    else
+    {
+        _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
+        _dataLogger->stop();
+    }
+}
+
+void PidWidget::setLogTimer(int ms)
+{
+    if (_startStopAction->isChecked())
+    {
+        _dataLogger->start(ms);
+    }
 }
 
 void PidWidget::setIMode()
@@ -112,9 +142,6 @@ void PidWidget::setIMode()
     NodeObjectId pidIntegratorStatus_ObjId;
     NodeObjectId pidOutputStatus_ObjId;
     NodeObjectId actualValue_ObjId;
-//    NodeObjectId tempMotor_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_MOTOR_1, _axis);
-//    NodeObjectId tempDriver1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_1, _axis);
-//    NodeObjectId tempDriver2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER_2, _axis);
 
     if (!_nodeProfile402)
     {
@@ -187,9 +214,6 @@ void PidWidget::setIMode()
     _integratorLabel->setObjId(pidIntegratorStatus_ObjId);
     _outputLabel->setObjId(pidOutputStatus_ObjId);
 
-//    _tempMotorLabel->setObjId(tempMotor_ObjId);
-//    _tempDriver1Label->setObjId(tempDriver1_ObjId);
-//    _tempDriver2Label->setObjId(tempDriver2_ObjId);
     _minSpinBox->setObjId(pidMin_ObjId);
     _maxSpinBox->setObjId(pidMax_ObjId);
     _thresholdSpinBox->setObjId(pidThreshold_ObjId);
@@ -211,7 +235,7 @@ void PidWidget::setIMode()
     //_dataLogger->addData(pidOutputStatus_ObjId);
 }
 
-void PidWidget::savePosition()
+void PidWidget::screenshotSave()
 {
     QPixmap pixmap = _dataLoggerChartsWidget->grab();
     QString file = QString("%1_%2.png").arg(title()).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz"));
@@ -436,57 +460,42 @@ void PidWidget::readStatus()
     _outputLabel->readObject();
 }
 
-void PidWidget::setLogTimer(int ms)
-{
-    _dataLogger->start(ms);
-}
-
 void PidWidget::createWidgets()
 {
     _dataLogger = new DataLogger();
     _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
+    QVBoxLayout *glayout = new QVBoxLayout();
+    glayout->setMargin(0);
 
-    QSplitter *splitter = new QSplitter();
-    layout->addWidget(splitter);
+    QSplitter *splitter = new QSplitter(Qt::Horizontal);
+    glayout->addWidget(splitter);
 
     // toolbar
-    _pidToolBar = new QToolBar(tr("Axis commands"));
-    QActionGroup *loggerActionGroup = new QActionGroup(this);
-    loggerActionGroup->setExclusive(true);
-    QAction *action;
+    _toolBar = new QToolBar(tr("Data logger commands"));
+    _toolBar->setIconSize(QSize(20, 20));
 
-    // start
-    action = loggerActionGroup->addAction(tr("Start object reading of axis"));
-    action->setCheckable(true);
-    action->setIcon(QIcon(":/icons/img/icons8-play.png"));
-    action->setStatusTip(tr("Start object reading of axis"));
-    connect(action, &QAction::triggered, this, &PidWidget::start);
+    // start stop
+    _startStopAction = _toolBar->addAction(tr("Start / stop"));
+    _startStopAction->setCheckable(true);
+    _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
+    _startStopAction->setStatusTip(tr("Start or stop the data logger"));
+    connect(_startStopAction, &QAction::triggered, this, &PidWidget::toggleStartLogger);
 
-    // stop
-    action = loggerActionGroup->addAction(tr("Stop object reading of axis"));
-    action->setCheckable(true);
-    action->setIcon(QIcon(":/icons/img/icons8-stop.png"));
-    action->setStatusTip(tr("Stop object reading of axis"));
-    connect(action, &QAction::triggered, _dataLogger, &DataLogger::stop);
+    _logTimerSpinBox = new QSpinBox();
+    _logTimerSpinBox->setRange(10, 5000);
+    _logTimerSpinBox->setValue(1000);
+    _logTimerSpinBox->setSuffix(" ms");
+    _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
+    _toolBar->addWidget(_logTimerSpinBox);
+    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
 
     // clear
-    action = loggerActionGroup->addAction(tr("Clear"));
+    QAction *action;
+    action = _toolBar->addAction(tr("Clear"));
     action->setIcon(QIcon(":/icons/img/icons8-broom.png"));
     action->setStatusTip(tr("Clear all data"));
     connect(action, &QAction::triggered, _dataLogger, &DataLogger::clear);
-    _pidToolBar->addActions(loggerActionGroup->actions());
-
-    // timer
-    _logTimerSpinBox = new QSpinBox();
-    _logTimerSpinBox->setRange(10, 5000);
-    _logTimerSpinBox->setValue(500);
-    _logTimerSpinBox->setSuffix(" ms");
-    _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
-    _pidToolBar->addWidget(_logTimerSpinBox);
-    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
 
     QWidget *pidWidget = new QWidget(this);
     QVBoxLayout *actionLayout = new QVBoxLayout(pidWidget);
@@ -575,7 +584,7 @@ void PidWidget::createWidgets()
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     _savePushButton = new QPushButton(tr("&Screenshot logger"));
     buttonLayout->addWidget(_savePushButton);
-    connect(_savePushButton, &QPushButton::clicked, this, &PidWidget::savePosition);
+    connect(_savePushButton, &QPushButton::clicked, this, &PidWidget::screenshotSave);
 
     _goTargetPushButton = new QPushButton(tr("G&O"));
     buttonLayout->addWidget(_goTargetPushButton);
@@ -584,13 +593,23 @@ void PidWidget::createWidgets()
     targetLayout->addRow(buttonLayout);
     targetGroupBox->setLayout(targetLayout);
 
-    actionLayout->addWidget(_pidToolBar);
     actionLayout->addWidget(_pidGroupBox);
     actionLayout->addWidget(statusGroupBox);
     actionLayout->addWidget(targetGroupBox);
-    splitter->addWidget(pidWidget);    
+
+    QScrollArea *pidScrollArea = new QScrollArea;
+    pidScrollArea->setWidget(pidWidget);
+    pidScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    pidScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    pidScrollArea->setWidgetResizable(true);
+
+    splitter->addWidget(pidScrollArea);
     splitter->addWidget(_dataLoggerChartsWidget);
-    setLayout(layout);
+
+    QVBoxLayout *vBoxLayout = new QVBoxLayout();
+    vBoxLayout->addWidget(_toolBar);
+    vBoxLayout->addWidget(splitter);
+    setLayout(vBoxLayout);
 }
 
 void PidWidget::statusNodeChanged(Node::Status status)
@@ -603,20 +622,4 @@ void PidWidget::statusNodeChanged(Node::Status status)
     {
         this->setEnabled(false);
     }
-}
-
-QString PidWidget::title() const
-{
-    switch (_modePid)
-    {
-    case PidWidget::MODE_PID_NONE:
-        return tr("None");
-    case MODE_PID_POSITION:
-        return tr("Position PID");
-    case MODE_PID_VELOCITY:
-        return tr("Velocity PID");
-    case MODE_PID_TORQUE:
-        return tr("Torque PID");
-    }
-    return QString();
 }
