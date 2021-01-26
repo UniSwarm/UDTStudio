@@ -408,6 +408,7 @@ void MotionSensorWidget::createWidgets()
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->addWidget(_toolBar);
     vBoxLayout->addWidget(splitter);
+    vBoxLayout->setMargin(2);
     setLayout(vBoxLayout);
 }
 
