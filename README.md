@@ -27,3 +27,12 @@ make -j
 ```
 
 Binaries will be placed in `bin/` directory.
+
+## EDS File
+
+UDT Studio use an environment variable `EDS_PATH` to read EDS files :
+
+`EDS_PATH="pathToEdsRepertory"`
+
+`export EDS_PATH`
+
