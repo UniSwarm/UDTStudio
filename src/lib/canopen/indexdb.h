@@ -89,6 +89,8 @@ public:
     //    static QVariant defaultValue(const NodeObjectId &nodeObjectId);
     //    static QString unit(const NodeObjectId &nodeObjectId);
     //    static QString description(const NodeObjectId &nodeObjectId);
+
+    static bool isQ1516(const NodeObjectId &objId, quint16 profileNumber);
 };
 
 #endif // INDEXDB_H
