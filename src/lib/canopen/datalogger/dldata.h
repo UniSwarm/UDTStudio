@@ -61,6 +61,9 @@ public:
     qreal max() const;
     void resetMinMax();
 
+    bool isQ1516() const;
+    void setQ1516(bool q1516);
+
 protected:
     NodeObjectId _objectId;
     Node *_node;
@@ -73,6 +76,8 @@ protected:
 
     qreal _min;
     qreal _max;
+
+    bool _q1516;
 };
 
 #endif // DLDATA_H

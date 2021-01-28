@@ -196,7 +196,14 @@ void DataLogger::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 
     const QVariant &value = dlData->node()->nodeOd()->value(dlData->objectId());
     const QDateTime &dateTime = dlData->node()->nodeOd()->lastModification(dlData->objectId());
-    dlData->appendData(value.toDouble(), dateTime);
+    double valueDouble = value.toDouble();
+
+    if (dlData->isQ1516())
+    {
+        valueDouble /= 65536.0;
+    }
+
+    dlData->appendData(valueDouble, dateTime);
 
     emit dataChanged(_dataList.indexOf(dlData));
 }

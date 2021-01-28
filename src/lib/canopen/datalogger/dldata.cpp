@@ -20,10 +20,14 @@
 
 #include "canopen.h"
 
+#include "indexdb.h"
+
 DLData::DLData(const NodeObjectId &objectId)
     : _objectId(objectId)
 {
     _node = nullptr;
+    _q1516 = false;
+
     CanOpenBus *bus = CanOpen::bus(objectId.busId());
     if (bus)
     {
@@ -33,6 +37,8 @@ DLData::DLData(const NodeObjectId &objectId)
         {
             _name = nodeSubIndex->nodeIndex()->name() + "." + nodeSubIndex->name();
         }
+
+        _q1516 = IndexDb::isQ1516(objectId, _node->profileNumber());
     }
 
     resetMinMax();
@@ -149,4 +155,14 @@ void DLData::resetMinMax()
 {
     _min = std::numeric_limits<int>::max();
     _max = std::numeric_limits<int>::min();
+}
+
+bool DLData::isQ1516() const
+{
+    return _q1516;
+}
+
+void DLData::setQ1516(bool q1516)
+{
+    _q1516 = q1516;
 }
