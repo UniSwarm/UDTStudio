@@ -407,6 +407,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4023 + axisDecal)), 0x8};
     case OD_MS_TORQUE_SENSOR_THRESHOLD_MODE:
         return {static_cast<quint16>((0x4023 + axisDecal)), 0x9};
+    case OD_MS_TORQUE_SENSOR_FREQUENCY_DIVIDER:
+        return {static_cast<quint16>((0x4023 + axisDecal)), 0x0A};
     case OD_MS_TORQUE_SENSOR_PRE_OFFSET:
         return {static_cast<quint16>((0x4023 + axisDecal)), 0x2};
     case OD_MS_TORQUE_SENSOR_SCALE:
@@ -468,6 +470,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4043 + axisDecal)), 0x8};
     case OD_MS_VELOCITY_SENSOR_THRESHOLD_MODE:
         return {static_cast<quint16>((0x4043 + axisDecal)), 0x9};
+    case OD_MS_VELOCITY_SENSOR_FREQUENCY_DIVIDER:
+        return {static_cast<quint16>((0x4043 + axisDecal)), 0x0A};
     case OD_MS_VELOCITY_SENSOR_PRE_OFFSET:
         return {static_cast<quint16>((0x4043 + axisDecal)), 0x2};
     case OD_MS_VELOCITY_SENSOR_SCALE:
@@ -529,6 +533,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4063 + axisDecal)), 0x8};
     case OD_MS_POSITION_SENSOR_THRESHOLD_MODE:
         return {static_cast<quint16>((0x4063 + axisDecal)), 0x9};
+    case OD_MS_POSITION_SENSOR_FREQUENCY_DIVIDER:
+        return {static_cast<quint16>((0x4063 + axisDecal)), 0x0A};
     case OD_MS_POSITION_SENSOR_PRE_OFFSET:
         return {static_cast<quint16>((0x4063 + axisDecal)), 0x2};
     case OD_MS_POSITION_SENSOR_SCALE:

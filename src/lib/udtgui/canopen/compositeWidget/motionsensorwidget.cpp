@@ -92,7 +92,8 @@ void MotionSensorWidget::setNode(Node *node, uint8_t axis)
     _scaleSpinBox->setNode(node);
     _postOffsetSpinBox->setNode(node);
     _errorMinSpinBox->setNode(node);
-    _errorMaxsetSpinBox->setNode(node);
+    _errorMaxSpinBox->setNode(node);
+    _frequencyDividerSpinBox->setNode(node);
 
     _rawDataValueLabel->setNode(node);
     _flagLabel->setNode(node);
@@ -143,7 +144,8 @@ void MotionSensorWidget::setIMode()
     NodeObjectId _scaleSpinBox_ObjId;
     NodeObjectId _postOffsetSpinBox_ObjId;
     NodeObjectId _errorMinSpinBox_ObjId;
-    NodeObjectId _errorMaxsetSpinBox_ObjId;
+    NodeObjectId _errorMaxSpinBox_ObjId;
+    NodeObjectId _frequencyDividerSpinBox_ObjId;
 
     NodeObjectId _rawDataValueLabel_ObjId;
     NodeObjectId _flagLabel_ObjId;
@@ -175,7 +177,8 @@ void MotionSensorWidget::setIMode()
         _scaleSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_SCALE, _axis);
         _postOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_POST_OFFSET, _axis);
         _errorMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_ERROR_MIN, _axis);
-        _errorMaxsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_ERROR_MAX, _axis);
+        _errorMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_ERROR_MAX, _axis);
+        _frequencyDividerSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_FREQUENCY_DIVIDER, _axis);
 
         _rawDataValueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_STATUS_RAWDATA, _axis);
         _flagLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_STATUS_FLAG, _axis);
@@ -199,7 +202,8 @@ void MotionSensorWidget::setIMode()
         _scaleSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_SCALE, _axis);
         _postOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_POST_OFFSET, _axis);
         _errorMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_ERROR_MIN, _axis);
-        _errorMaxsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_ERROR_MAX, _axis);
+        _errorMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_ERROR_MAX, _axis);
+        _frequencyDividerSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_FREQUENCY_DIVIDER, _axis);
 
         _rawDataValueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_STATUS_RAWDATA, _axis);
         _flagLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_STATUS_FLAG, _axis);
@@ -222,7 +226,8 @@ void MotionSensorWidget::setIMode()
         _scaleSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_SCALE, _axis);
         _postOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_POST_OFFSET, _axis);
         _errorMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_ERROR_MIN, _axis);
-        _errorMaxsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_ERROR_MAX, _axis);
+        _errorMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_ERROR_MAX, _axis);
+        _frequencyDividerSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_FREQUENCY_DIVIDER, _axis);
 
         _rawDataValueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_STATUS_RAWDATA, _axis);
         _flagLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_STATUS_FLAG, _axis);
@@ -244,7 +249,8 @@ void MotionSensorWidget::setIMode()
     _scaleSpinBox->setObjId(_scaleSpinBox_ObjId);
     _postOffsetSpinBox->setObjId(_postOffsetSpinBox_ObjId);
     _errorMinSpinBox->setObjId(_errorMinSpinBox_ObjId);
-    _errorMaxsetSpinBox->setObjId(_errorMaxsetSpinBox_ObjId);
+    _errorMaxSpinBox->setObjId(_errorMaxSpinBox_ObjId);
+    _frequencyDividerSpinBox->setObjId(_frequencyDividerSpinBox_ObjId);
 
     _rawDataValueLabel->setObjId(_rawDataValueLabel_ObjId);
     _flagLabel->setObjId(_flagLabel_ObjId);
@@ -329,9 +335,9 @@ void MotionSensorWidget::createWidgets()
     _errorMinSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     configLayout->addRow(tr("Err&or min :"), _errorMinSpinBox);
 
-    _errorMaxsetSpinBox = new IndexSpinBox();
-    _errorMaxsetSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    configLayout->addRow(tr("Error m&ax :"), _errorMaxsetSpinBox);
+    _errorMaxSpinBox = new IndexSpinBox();
+    _errorMaxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    configLayout->addRow(tr("Error m&ax :"), _errorMaxSpinBox);
 
     _thresholdMinSpinBox = new IndexSpinBox();
     _thresholdMinSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
@@ -342,8 +348,12 @@ void MotionSensorWidget::createWidgets()
     configLayout->addRow(tr("T&hreshold max :"), _thresholdMaxSpinBox);
 
     _thresholdModeSpinBox = new IndexSpinBox();
-    _thresholdModeSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    _thresholdModeSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     configLayout->addRow(tr("Th&reshold mode :"), _thresholdModeSpinBox);
+
+    _frequencyDividerSpinBox = new IndexSpinBox();
+    _frequencyDividerSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
+    configLayout->addRow(tr("&Frequency divider :"), _frequencyDividerSpinBox);
 
     sensorConfigGroupBox->setLayout(configLayout);
 
