@@ -1415,12 +1415,9 @@ void SDO::arrangeDataDownload(QDataStream &request, const QVariant &data)
         break;
 
     case QMetaType::Float:
-        // request << data.value<float>();
         {
             float f = data.toFloat();
-            QByteArray bytes;
-            bytes.append((char *)&f, 4);
-            request << bytes;
+            request.writeRawData((char *)&f, 4);
         }
         break;
 
