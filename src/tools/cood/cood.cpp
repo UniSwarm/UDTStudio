@@ -41,8 +41,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("OD");
     QCoreApplication::setApplicationVersion("1.0");
 
-    QTextStream out(stdout);
-    QTextStream err(stderr);
+    QTextStream out(stdout, QIODevice::WriteOnly);
+    QTextStream err(stderr, QIODevice::WriteOnly);
 
     QCommandLineParser cliParser;
     cliParser.setApplicationDescription(QCoreApplication::translate("main", "Object dictionary command line interface."));
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
                                                      << "duplicate",
                                        QCoreApplication::translate("main", "Duplicate profile"),
                                        "duplicate");
-    duplicateOption.setDefaultValue("1");
+    duplicateOption.setDefaultValue("0");
     cliParser.addOption(duplicateOption);
 
     cliParser.process(app);
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     const QStringList files = cliParser.positionalArguments();
     if (files.isEmpty())
     {
-        err << QCoreApplication::translate("main", "error (1): input file is needed") << Qt::endl;
+        err << QCoreApplication::translate("main", "error (1): input file is needed") << endl;
         cliParser.showHelp(-1);
     }
     const QString &inputFile = files.at(0);
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
             nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
             if (nodeid == 0 || nodeid >= 126)
             {
-                err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << Qt::endl;
+                err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << endl;
                 return -2;
             }
         }
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        err << QCoreApplication::translate("main", "error (3): invalid input file format, .eds or .dcf accepted") << Qt::endl;
+        err << QCoreApplication::translate("main", "error (3): invalid input file format, .eds or .dcf accepted") << endl;
         return -3;
     }
 
@@ -145,8 +145,11 @@ int main(int argc, char *argv[])
         uint8_t duplicate = 0;
         duplicate = static_cast<uint8_t>(cliParser.value("duplicate").toUInt());
 
-        ProfileDuplicate profileDuplicate;
-        profileDuplicate.duplicate(deviceDescription, duplicate);
+        if (duplicate != 0)
+        {
+            ProfileDuplicate profileDuplicate;
+            profileDuplicate.duplicate(deviceDescription, duplicate);
+        }
 
         EdsWriter edsWriter;
         edsWriter.write(deviceDescription, outputFile);
@@ -171,7 +174,7 @@ int main(int argc, char *argv[])
     {
         delete deviceDescription;
         delete deviceConfiguration;
-        err << QCoreApplication::translate("main", "error (4): invalid output file format, .c, .h, .dcf, .eds, .csv or .tex accepted") << Qt::endl;
+        err << QCoreApplication::translate("main", "error (4): invalid output file format, .c, .h, .dcf, .eds, .csv or .tex accepted") << endl;
         return -4;
     }
 
