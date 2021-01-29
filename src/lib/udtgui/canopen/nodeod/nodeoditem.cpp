@@ -561,6 +561,10 @@ QVariant NodeOdItem::formatValue(NodeSubIndex *subIndex, NodeOdItem::ViewType vi
         break;
 
     case NodeSubIndex::REAL32:
+        zero = 8;
+        floatingPoint = true;
+        break;
+
     case NodeSubIndex::REAL64:
         zero = 16;
         floatingPoint = true;
@@ -590,7 +594,19 @@ QVariant NodeOdItem::formatValue(NodeSubIndex *subIndex, NodeOdItem::ViewType vi
     }
     else if (floatingPoint)
     {
-        valueStr = QString::number(mvalue.toReal(), 0, 'f');
+        qreal real = mvalue.toReal();
+        valueStr = QString::number(real, 'f', 8);
+        if (zero == 8)
+        {
+            float fval = mvalue.toReal();
+            const quint32 *i = reinterpret_cast<const quint32 *>(&fval);
+            hexStr = "0x" + QString::number(*i, 16).rightJustified(zero, '0').toUpper();
+        }
+        else
+        {
+            const quint64 *i = reinterpret_cast<const quint64 *>(&real);
+            hexStr = "0x" + QString::number(*i, 16).rightJustified(zero, '0').toUpper();
+        }
     }
     else
     {
