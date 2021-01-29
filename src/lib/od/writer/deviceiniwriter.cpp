@@ -244,7 +244,7 @@ void DeviceIniWriter::writeRecord(Index *index) const
 
     for (SubIndex *subIndex : index->subIndexes())
     {
-        *_file << "[" << QString::number(index->index(), base).toUpper() << "sub" << subIndex->subIndex() << "]\r\n";
+        *_file << "[" << QString::number(index->index(), base).toUpper() << "sub" << QString::number(subIndex->subIndex(), 16).toUpper() << "]\r\n";
         *_file << "ParameterName=" << subIndex->name() << "\r\n";
         *_file << "ObjectType=" << valueToString(Index::Object::VAR, base, 1) << "\r\n";
         *_file << "DataType=" << valueToString(subIndex->dataType(), base, 4) << "\r\n";
