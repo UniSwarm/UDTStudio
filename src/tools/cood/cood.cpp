@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     QTextStream err(stderr);
 
     QCommandLineParser cliParser;
-    cliParser.setApplicationDescription(QCoreApplication::translate("main", "Object Dicitonary command line interface."));
+    cliParser.setApplicationDescription(QCoreApplication::translate("main", "Object dictionary command line interface."));
     cliParser.addHelpOption();
     cliParser.addVersionOption();
     cliParser.addPositionalArgument("file", QCoreApplication::translate("main", "Object dictionary file (dcf or eds)."), "file");
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     const QStringList files = cliParser.positionalArguments();
     if (files.isEmpty())
     {
-        err << "error (1): input file is needed" << endl;
+        err << QCoreApplication::translate("main", "error (1): input file is needed") << Qt::endl;
         cliParser.showHelp(-1);
     }
     const QString &inputFile = files.at(0);
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
             nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
             if (nodeid == 0 || nodeid >= 126)
             {
-                err << "error (2): invalid node id, nodeId > 0 && nodeId < 126" << endl;
+                err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << Qt::endl;
                 return -2;
             }
         }
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        err << "error (3): invalid input file format, .eds or .dcf accepted" << endl;
+        err << QCoreApplication::translate("main", "error (3): invalid input file format, .eds or .dcf accepted") << Qt::endl;
         return -3;
     }
 
@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
     {
         delete deviceDescription;
         delete deviceConfiguration;
-        err << "error (4): invalid output file format, .c, .h, .dcf, .eds, .csv or .tex accepted" << endl;
+        err << QCoreApplication::translate("main", "error (4): invalid output file format, .c, .h, .dcf, .eds, .csv or .tex accepted") << Qt::endl;
         return -4;
     }
 

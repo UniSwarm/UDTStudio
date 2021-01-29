@@ -8,7 +8,7 @@ DESTDIR = "$$PWD/../../../bin"
 HEADERS += \
 
 SOURCES += \
-    $$PWD/main.cpp
+    $$PWD/cood.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/
 
