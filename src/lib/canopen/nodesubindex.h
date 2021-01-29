@@ -125,6 +125,10 @@ public:
     int byteLength() const;
     int bitLength() const;
 
+    // Object interpretation
+    bool isQ1516() const;
+    void setQ1516(bool q1516);
+
     const QDateTime &lastModification() const;
 
 private:
@@ -145,6 +149,9 @@ private:
     QVariant _highLimit;
 
     QDateTime _lastModification;
+
+    // TODO add enum for interpretation
+    bool _q1516;
 };
 
 #endif // NODESUBINDEX_H

@@ -30,6 +30,7 @@ NodeSubIndex::NodeSubIndex(const quint8 subIndex)
     _dataType = NONE;
 
     _error = 0;
+    _q1516 = false;
 }
 
 NodeSubIndex::NodeSubIndex(const NodeSubIndex &other)
@@ -48,6 +49,9 @@ NodeSubIndex::NodeSubIndex(const NodeSubIndex &other)
     _highLimit = other._highLimit;
 
     _lastModification = other._lastModification;
+
+    _error = 0;
+    _q1516 = false;
 }
 
 /**
@@ -602,6 +606,16 @@ int NodeSubIndex::bitLength() const
         return 64;
     }
     return 0;
+}
+
+bool NodeSubIndex::isQ1516() const
+{
+    return _q1516;
+}
+
+void NodeSubIndex::setQ1516(bool q1516)
+{
+    _q1516 = q1516;
 }
 
 const QDateTime &NodeSubIndex::lastModification() const

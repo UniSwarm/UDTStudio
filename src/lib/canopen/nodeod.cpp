@@ -19,6 +19,7 @@
 #include <QDebug>
 
 #include "model/deviceconfiguration.h"
+#include "indexdb.h"
 #include "node.h"
 #include "nodeod.h"
 #include "nodeodsubscriber.h"
@@ -370,6 +371,7 @@ bool NodeOd::loadEds(const QString &fileName)
             nodeSubIndex->setLowLimit(odSubIndex->lowLimit());
             nodeSubIndex->setHighLimit(odSubIndex->highLimit());
             nodeIndex->addSubIndex(nodeSubIndex);
+            nodeSubIndex->setQ1516(IndexDb::isQ1516(nodeSubIndex->objectId(), _node->profileNumber()));
         }
     }
 
