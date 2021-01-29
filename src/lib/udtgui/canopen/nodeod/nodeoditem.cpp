@@ -552,7 +552,7 @@ QVariant NodeOdItem::formatValue(const QVariant &value, NodeSubIndex::DataType d
     {
         if (sign)
         {
-            return QVariant(QString("%1 (0x%2)").arg(mvalue.toInt()).arg(QString::number(mvalue.toInt(), 16).rightJustified(zero, '0').toUpper()));
+            return QVariant(QString("%1 (0x%2)").arg(mvalue.toInt()).arg(QString::number(mvalue.toInt(), 16).rightJustified(zero, '0').right(zero).toUpper()));
         }
         else
         {
