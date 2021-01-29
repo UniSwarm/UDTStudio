@@ -70,7 +70,13 @@ protected:
     void addChild(quint16 index, NodeOdItem *child);
     void createChildren();
 
-    QVariant formatValue(const QVariant &value, NodeSubIndex::DataType dataType) const;
+    enum ViewType
+    {
+        ViewValue,
+        ViewHex,
+        ViewHybrid
+    };
+    QVariant formatValue(NodeSubIndex *subIndex, ViewType viewType) const;
     QVariant formatEditValue(const QVariant &value) const;
 };
 

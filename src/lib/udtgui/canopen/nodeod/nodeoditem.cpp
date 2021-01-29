@@ -139,7 +139,7 @@ QVariant NodeOdItem::data(int column, int role) const
             case NodeOdItemModel::Value:
                 if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
                 {
-                    QVariant value = formatValue(_index->subIndex(0)->value(), _index->subIndex(0)->dataType());
+                    QVariant value = formatValue(_index->subIndex(0), ViewHybrid);
                     if (_index->subIndex(0)->error() != 0)
                     {
                         return "*" + value.toString();
@@ -204,7 +204,7 @@ QVariant NodeOdItem::data(int column, int role) const
                 return QVariant(_subIndex->accessString());
 
             case NodeOdItemModel::Value:
-                QVariant value = formatValue(_subIndex->value(), _subIndex->dataType());
+                QVariant value = formatValue(_subIndex, ViewHybrid);
                 if (_subIndex->error() != 0)
                 {
                     return "*" + value.toString();
@@ -468,16 +468,18 @@ void NodeOdItem::createChildren()
     }
 }
 
-QVariant NodeOdItem::formatValue(const QVariant &value, NodeSubIndex::DataType dataType) const
+QVariant NodeOdItem::formatValue(NodeSubIndex *subIndex, NodeOdItem::ViewType viewType) const
 {
-    QVariant mvalue = value;
+    QVariant mvalue = subIndex->value();
     int zero = 0;
     bool sign = true;
     bool floatingPoint = false;
-    switch (dataType)
+    bool string = false;
+
+    switch (subIndex->dataType())
     {
     case NodeSubIndex::BOOLEAN:
-        if (value.toInt() == 1)
+        if (mvalue.toInt() == 1)
         {
             return QVariant(true);
         }
@@ -488,48 +490,72 @@ QVariant NodeOdItem::formatValue(const QVariant &value, NodeSubIndex::DataType d
 
     case NodeSubIndex::UNSIGNED8:
         sign = false;
+        zero = 2;
+        break;
+
     case NodeSubIndex::INTEGER8:
         zero = 2;
         break;
 
     case NodeSubIndex::UNSIGNED16:
         sign = false;
+        zero = 4;
+        break;
+
     case NodeSubIndex::INTEGER16:
         zero = 4;
         break;
 
     case NodeSubIndex::UNSIGNED24:
         sign = false;
+        zero = 6;
+        break;
+
     case NodeSubIndex::INTEGER24:
         zero = 6;
         break;
 
     case NodeSubIndex::UNSIGNED32:
         sign = false;
+        zero = 8;
+        break;
+
     case NodeSubIndex::INTEGER32:
         zero = 8;
         break;
 
     case NodeSubIndex::UNSIGNED40:
         sign = false;
+        zero = 10;
+        break;
+
     case NodeSubIndex::INTEGER40:
         zero = 10;
         break;
 
     case NodeSubIndex::UNSIGNED48:
         sign = false;
+        zero = 12;
+        break;
+
     case NodeSubIndex::INTEGER48:
         zero = 12;
         break;
 
     case NodeSubIndex::UNSIGNED56:
         sign = false;
+        zero = 14;
+        break;
+
     case NodeSubIndex::INTEGER56:
         zero = 14;
         break;
 
     case NodeSubIndex::UNSIGNED64:
         sign = false;
+        zero = 16;
+        break;
+
     case NodeSubIndex::INTEGER64:
         zero = 16;
         break;
@@ -540,25 +566,58 @@ QVariant NodeOdItem::formatValue(const QVariant &value, NodeSubIndex::DataType d
         floatingPoint = true;
         break;
 
+    case NodeSubIndex::VISIBLE_STRING:
+    case NodeSubIndex::OCTET_STRING:
+    case NodeSubIndex::UNICODE_STRING:
+        string = true;
+        break;
+
     default:
-        return value;
+        return mvalue;
     }
 
-    if (floatingPoint)
+    QString valueStr;
+    QString hexStr;
+
+    if (string)
     {
-        return QVariant(QString("%1").arg(mvalue.toReal(), 0, 'f'));
+        QString str = mvalue.toString();
+        QByteArray strArray;
+        strArray.append(str.toUtf8());
+        zero = str.size() * 2;
+        valueStr = "\"" + str + "\"";
+        hexStr = "0x" + strArray.toHex().toUpper();
+    }
+    else if (floatingPoint)
+    {
+        valueStr = QString::number(mvalue.toReal(), 0, 'f');
     }
     else
     {
         if (sign)
         {
-            return QVariant(QString("%1 (0x%2)").arg(mvalue.toInt()).arg(QString::number(mvalue.toInt(), 16).rightJustified(zero, '0').right(zero).toUpper()));
+            valueStr = QString::number(mvalue.toInt());
+            hexStr = "0x" + QString::number(mvalue.toInt(), 16).rightJustified(zero, '0').right(zero).toUpper();
         }
         else
         {
-            return QVariant(QString("%1 (0x%2)").arg(mvalue.toUInt()).arg(QString::number(mvalue.toUInt(), 16).rightJustified(zero, '0').toUpper()));
+            valueStr = QString::number(mvalue.toUInt());
+            hexStr = "0x" + QString::number(mvalue.toUInt(), 16).rightJustified(zero, '0').toUpper();
         }
     }
+
+    switch (viewType)
+    {
+    case NodeOdItem::ViewValue:
+        return QVariant(valueStr);
+
+    case NodeOdItem::ViewHex:
+        return QVariant(hexStr);
+
+    case NodeOdItem::ViewHybrid:
+        return QVariant(QString("%1 (%2)").arg(valueStr).arg(hexStr));
+    }
+    return QVariant();
 }
 
 QVariant NodeOdItem::formatEditValue(const QVariant &value) const
