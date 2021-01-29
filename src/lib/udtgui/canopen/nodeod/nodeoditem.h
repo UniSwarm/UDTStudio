@@ -74,10 +74,11 @@ protected:
     {
         ViewValue,
         ViewHex,
-        ViewHybrid
+        ViewHybrid,
+        EditValue,
+        EditHex
     };
     QVariant formatValue(NodeSubIndex *subIndex, ViewType viewType) const;
-    QVariant formatEditValue(const QVariant &value) const;
 };
 
 #endif // NODEODITEM_H

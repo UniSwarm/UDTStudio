@@ -122,7 +122,14 @@ QVariant NodeOdItem::data(int column, int role) const
             case NodeOdItemModel::Type:
                 if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1)
                 {
-                    return QVariant(NodeSubIndex::dataTypeStr(_index->subIndex(0)->dataType()));
+                    if (_index->subIndex(0)->isQ1516())
+                    {
+                        return QVariant(QString("Q1516"));
+                    }
+                    else
+                    {
+                        return QVariant(NodeSubIndex::dataTypeStr(_index->subIndex(0)->dataType()));
+                    }
                 }
                 else
                 {
@@ -155,7 +162,7 @@ QVariant NodeOdItem::data(int column, int role) const
             case NodeOdItemModel::Value:
                 if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
                 {
-                    QVariant value = formatEditValue(_index->subIndex(0)->value());
+                    QVariant value = formatValue(_index->subIndex(0), EditValue);
                     value.convert(QMetaType::QString);
                     return value;
                 }
@@ -198,7 +205,14 @@ QVariant NodeOdItem::data(int column, int role) const
                 return QVariant(_subIndex->name());
 
             case NodeOdItemModel::Type:
-                return QVariant(NodeSubIndex::dataTypeStr(_subIndex->dataType()));
+                if (_subIndex->isQ1516())
+                {
+                    return QVariant(QString("Q1516"));
+                }
+                else
+                {
+                    return QVariant(NodeSubIndex::dataTypeStr(_subIndex->dataType()));
+                }
 
             case NodeOdItemModel::Acces:
                 return QVariant(_subIndex->accessString());
@@ -217,7 +231,7 @@ QVariant NodeOdItem::data(int column, int role) const
             switch (column)
             {
             case NodeOdItemModel::Value:
-                QVariant value = formatEditValue(_subIndex->value());
+                QVariant value = formatValue(_subIndex, EditValue);
                 value.convert(QMetaType::QString);
                 return value;
             }
@@ -318,6 +332,10 @@ bool NodeOdItem::setData(int column, const QVariant &value, int role, Node *node
                 default:
                     break;
                 }
+            }
+            else if (subIndex->isQ1516())
+            {
+                valueToWrite.setValue(valueToWrite.toDouble() * 65536.0);
             }
         }
 
@@ -612,7 +630,14 @@ QVariant NodeOdItem::formatValue(NodeSubIndex *subIndex, NodeOdItem::ViewType vi
     {
         if (sign)
         {
-            valueStr = QString::number(mvalue.toInt());
+            if (subIndex->isQ1516())
+            {
+                valueStr = QString::number(static_cast<double>(mvalue.toInt()) / 65536.0, 'f', 8);
+            }
+            else
+            {
+                valueStr = QString::number(mvalue.toInt());
+            }
             hexStr = "0x" + QString::number(mvalue.toInt(), 16).rightJustified(zero, '0').right(zero).toUpper();
         }
         else
@@ -624,37 +649,16 @@ QVariant NodeOdItem::formatValue(NodeSubIndex *subIndex, NodeOdItem::ViewType vi
 
     switch (viewType)
     {
+    case NodeOdItem::EditValue:
     case NodeOdItem::ViewValue:
         return QVariant(valueStr);
 
     case NodeOdItem::ViewHex:
+    case NodeOdItem::EditHex:
         return QVariant(hexStr);
 
     case NodeOdItem::ViewHybrid:
         return QVariant(QString("%1 (%2)").arg(valueStr).arg(hexStr));
     }
     return QVariant();
-}
-
-QVariant NodeOdItem::formatEditValue(const QVariant &value) const
-{
-    QVariant mvalue = value;
-    switch (QMetaType::Type(value.type()))
-    {
-    case QMetaType::UChar:
-    case QMetaType::UShort:
-    case QMetaType::UInt:
-    case QMetaType::ULongLong:
-    case QMetaType::Double:
-        return QVariant(QString("%1").arg(mvalue.toUInt()));
-
-    case QMetaType::SChar:
-    case QMetaType::Short:
-    case QMetaType::Int:
-    case QMetaType::LongLong:
-        return QVariant(QString("%1").arg(mvalue.toInt()));
-
-    default:
-        return value;
-    }
 }
