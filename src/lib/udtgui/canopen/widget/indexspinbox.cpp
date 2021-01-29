@@ -140,17 +140,17 @@ void IndexSpinBox::updateHint()
     switch (_hint)
     {
     case AbstractIndexWidget::DisplayDirectValue:
-        validator = new QRegularExpressionValidator(QRegularExpression("[0-9]+"));
+        validator = new QRegularExpressionValidator(QRegularExpression("\\-?[0-9]+"));
         break;
 
     case AbstractIndexWidget::DisplayHexa:
-        validator = new QRegularExpressionValidator(QRegularExpression("(0x)?[0-9A-F]+"));
+        validator = new QRegularExpressionValidator(QRegularExpression("\\-?(0x)?[0-9A-F]+"));
         break;
 
     case AbstractIndexWidget::DisplayQ15_16:
     case AbstractIndexWidget::DisplayQ1_15:
     case AbstractIndexWidget::DisplayFloat:
-        validator = new QRegularExpressionValidator(QRegularExpression("[0-9]*(\\.[0-9]*)?(e-?[0-9]*)?"));
+        validator = new QRegularExpressionValidator(QRegularExpression("\\-?[0-9]*(\\.[0-9]*)?(e-?[0-9]*)?"));
         break;
     }
     lineEdit()->setValidator(validator);
