@@ -176,38 +176,36 @@ void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
             {
                 accessType += SubIndex::READ + SubIndex::WRITE;
             }
-
             else if (accessString == "wo")
             {
                 accessType += SubIndex::WRITE;
             }
-
-            else if (accessString == "ro" || accessString == "const")
+            else if (accessString == "ro")
             {
                 accessType += SubIndex::READ;
             }
+            else if (accessString == "const")
+            {
+                accessType += SubIndex::READ;
+                accessType += SubIndex::CONST;
+            }
         }
-
         else if (key == "PDOMapping")
         {
             accessType += readPdoMapping();
         }
-
         else if (key == "ParameterName")
         {
             name = value;
         }
-
         else if (key == "LowLimit")
         {
             lowLimit = readLowLimit();
         }
-
         else if (key == "HighLimit")
         {
             highLimit = readHighLimit();
         }
-
         else if (key == "DataType")
         {
             dataType = readDataType();

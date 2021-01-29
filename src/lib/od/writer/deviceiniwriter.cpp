@@ -333,6 +333,9 @@ QString DeviceIniWriter::accessToString(int access) const
     case SubIndex::READ + SubIndex::TPDO:
         return QString("ro");
 
+    case SubIndex::READ + SubIndex::CONST:
+        return QString("const");
+
     case SubIndex::WRITE:
     case SubIndex::WRITE + SubIndex::RPDO:
         return QString("ro");
@@ -358,6 +361,10 @@ QString DeviceIniWriter::accessToString(int access) const
  */
 QString DeviceIniWriter::dataToString(const QVariant &value) const
 {
+    if (value.type() == QVariant::String)
+    {
+        return "\"" + value.toString() + "\"";
+    }
     return value.toString();
 }
 

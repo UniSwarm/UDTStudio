@@ -39,7 +39,8 @@ public:
         READ = 0x01,
         WRITE = 0x02,
         TPDO = 0x04,
-        RPDO = 0x08
+        RPDO = 0x08,
+        CONST = 0x10
     };
     AccessType accessType() const;
     void setAccessType(const AccessType accessType);
