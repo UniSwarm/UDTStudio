@@ -239,7 +239,7 @@ void DeviceIniWriter::writeRecord(Index *index) const
     *_file << "[" << QString::number(index->index(), base).toUpper() << "]\r\n";
     *_file << "ParameterName=" << index->name() << "\r\n";
     *_file << "ObjectType=" << valueToString(index->objectType(), base) << "\r\n";
-    *_file << "SubNumber=" << valueToString(index->subIndexesCount(), base) << "\r\n";
+    *_file << "SubNumber=" << valueToString(index->subIndexesCount()) << "\r\n";
     *_file << "\r\n";
 
     for (SubIndex *subIndex : index->subIndexes())
@@ -310,11 +310,15 @@ QString DeviceIniWriter::valueToString(int value, int base, int width) const
     switch (base)
     {
     case 10:
-        return QString(value);
+        return QString::number(value);
 
     case 16:
-        QString t = QString("0x" + QString::number(value, base).rightJustified(width, '0').toUpper());
-        return t;
+        QString v = QString::number(value, base).rightJustified(width, '0').toUpper();
+        if (width > 0)
+        {
+            v = v.right(width);
+        }
+        return "0x" +v;
     }
 
     return QString("");
@@ -397,7 +401,11 @@ QString DeviceIniWriter::defaultValue(const SubIndex *subIndex) const
 {
     if (subIndex->hasNodeId() && _isDescription)
     {
-        return "$NODEID+" + valueToString(subIndex->value().toInt(), 16);
+        return "$NODEID+" + valueToString(subIndex->value().toInt(), 16, subIndex->length() * 2);
+    }
+    else if (subIndex->isHexValue())
+    {
+        return valueToString(subIndex->value().toInt(), 16, subIndex->length() * 2);
     }
     else
     {

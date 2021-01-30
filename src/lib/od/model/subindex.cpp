@@ -27,6 +27,7 @@ SubIndex::SubIndex(const uint8_t subIndex)
     _subIndex = subIndex;
     _accessType = NONE;
     _hasNodeId = false;
+    _isHexVal = false;
     _dataType = INVALID;
 }
 
@@ -45,6 +46,7 @@ SubIndex::SubIndex(const SubIndex &other)
     _highLimit = other.highLimit();
 
     _hasNodeId = other.hasNodeId();
+    _isHexVal = other.isHexValue();
     _dataType = other.dataType();
 }
 
@@ -198,6 +200,16 @@ void SubIndex::setValue(const QVariant &value)
 void SubIndex::clearValue()
 {
     _value.clear();
+}
+
+bool SubIndex::isHexValue() const
+{
+    return _isHexVal;
+}
+
+void SubIndex::setHexValue(bool hex)
+{
+    _isHexVal = hex;
 }
 
 /**

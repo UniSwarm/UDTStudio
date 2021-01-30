@@ -37,7 +37,7 @@ public:
     void readSubIndexes(DeviceModel *deviceModel) const;
     void readIndex(Index *index) const;
     void readSubIndex(SubIndex *subIndex) const;
-    QVariant readData(bool *nodeId) const;
+    QVariant readData(bool *nodeId, bool *isHexValue) const;
     void readFileInfo(DeviceModel *deviceModel) const;
     void readDummyUsage(DeviceModel *deviceModel) const;
     void readComments(DeviceModel *deviceModel) const;

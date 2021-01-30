@@ -156,7 +156,8 @@ void DeviceIniParser::readIndex(Index *index) const
  */
 void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
 {
-    bool hasNodeId = 0;
+    bool hasNodeId = false;
+    bool isHexValue = false;
     uint8_t accessType = 0;
     uint16_t dataType = SubIndex::INVALID;
     QString name;
@@ -211,7 +212,7 @@ void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
             dataType = readDataType();
         }
 
-        data = readData(&hasNodeId);
+        data = readData(&hasNodeId, &isHexValue);
     }
 
     subIndex->setAccessType(static_cast<SubIndex::AccessType>(accessType));
@@ -221,6 +222,7 @@ void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
     subIndex->setLowLimit(lowLimit);
     subIndex->setHighLimit(highLimit);
     subIndex->setHasNodeId(hasNodeId);
+    subIndex->setHexValue(isHexValue);
 }
 
 /**
@@ -228,7 +230,7 @@ void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
  * @param dcf or eds file
  * @return data
  */
-QVariant DeviceIniParser::readData(bool *nodeId) const
+QVariant DeviceIniParser::readData(bool *nodeId, bool *isHexValue) const
 {
     QString stringValue;
 
@@ -249,10 +251,16 @@ QVariant DeviceIniParser::readData(bool *nodeId) const
 
     uint16_t dataType = readDataType();
 
-    int base = 10;
+    int base;
     if (stringValue.startsWith("0x"))
     {
         base = 16;
+        *isHexValue = true;
+    }
+    else
+    {
+        base = 10;
+        *isHexValue = false;
     }
 
     if (stringValue.isEmpty())

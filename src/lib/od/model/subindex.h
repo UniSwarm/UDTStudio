@@ -65,6 +65,8 @@ public:
     const QVariant &value() const;
     void setValue(const QVariant &value);
     void clearValue();
+    bool isHexValue() const;
+    void setHexValue(bool hex);
 
     // =============== Data type ==================
     enum DataType
@@ -114,6 +116,7 @@ protected:
     QVariant _highLimit;
 
     bool _hasNodeId;
+    bool _isHexVal;
 };
 
 #endif // SUBINDEX_H
