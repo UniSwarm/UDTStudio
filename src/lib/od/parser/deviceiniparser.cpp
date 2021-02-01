@@ -164,6 +164,7 @@ void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
     QVariant data;
     QVariant lowLimit;
     QVariant highLimit;
+    uint32_t objFlags = 0;
 
     for (const QString &key : _file->allKeys())
     {
@@ -211,6 +212,10 @@ void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
         {
             dataType = readDataType();
         }
+        else if (key == "ObjFlags")
+        {
+            objFlags = readObjFlags();
+        }
 
         data = readData(&hasNodeId, &isHexValue);
     }
@@ -223,6 +228,7 @@ void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
     subIndex->setHighLimit(highLimit);
     subIndex->setHasNodeId(hasNodeId);
     subIndex->setHexValue(isHexValue);
+    subIndex->setObjFlags(objFlags);
 }
 
 /**
@@ -243,7 +249,6 @@ QVariant DeviceIniParser::readData(bool *nodeId, bool *isHexValue) const
         stringValue = _file->value("DefaultValue").toString().mid(8);
         *nodeId = true;
     }
-
     else
     {
         stringValue = _file->value("DefaultValue").toString();
@@ -418,4 +423,18 @@ uint16_t DeviceIniParser::readDataType() const
 
     bool ok;
     return static_cast<uint16_t>(dataType.toInt(&ok, base));
+}
+
+uint32_t DeviceIniParser::readObjFlags() const
+{
+    QString objFlags = _file->value("ObjFlags").toString();
+
+    int base = 10;
+    if (objFlags.startsWith("0x"))
+    {
+        base = 16;
+    }
+
+    bool ok;
+    return static_cast<uint32_t>(objFlags.toInt(&ok, base));
 }

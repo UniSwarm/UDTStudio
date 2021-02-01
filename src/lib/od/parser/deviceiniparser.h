@@ -47,6 +47,7 @@ public:
     QVariant readLowLimit() const;
     QVariant readHighLimit() const;
     uint16_t readDataType() const;
+    uint32_t readObjFlags() const;
 
     QSettings *_file;
 };

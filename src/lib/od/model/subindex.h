@@ -104,6 +104,9 @@ public:
 
     int length() const;
 
+    uint32_t objFlags() const;
+    void setObjFlags(const uint32_t &objFlags);
+
 protected:
     AccessType _accessType;
     uint8_t _subIndex;
@@ -114,6 +117,8 @@ protected:
 
     QVariant _lowLimit;
     QVariant _highLimit;
+
+    uint32_t _objFlags;
 
     bool _hasNodeId;
     bool _isHexVal;

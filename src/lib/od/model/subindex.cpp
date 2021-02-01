@@ -29,6 +29,7 @@ SubIndex::SubIndex(const uint8_t subIndex)
     _hasNodeId = false;
     _isHexVal = false;
     _dataType = INVALID;
+    _objFlags = 0;
 }
 
 /**
@@ -44,6 +45,8 @@ SubIndex::SubIndex(const SubIndex &other)
 
     _lowLimit = other.lowLimit();
     _highLimit = other.highLimit();
+
+    _objFlags = other.objFlags();
 
     _hasNodeId = other.hasNodeId();
     _isHexVal = other.isHexValue();
@@ -356,4 +359,14 @@ int SubIndex::length() const
         return 8;
     }
     return 0;
+}
+
+uint32_t SubIndex::objFlags() const
+{
+    return _objFlags;
+}
+
+void SubIndex::setObjFlags(const uint32_t &objFlags)
+{
+    _objFlags = objFlags;
 }
