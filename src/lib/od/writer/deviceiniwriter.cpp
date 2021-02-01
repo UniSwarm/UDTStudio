@@ -18,6 +18,7 @@
 
 #include "deviceiniwriter.h"
 
+#include <QCollator>
 #include <QDateTime>
 
 /**
@@ -291,7 +292,14 @@ void DeviceIniWriter::writeLimit(const SubIndex *subIndex) const
  */
 void DeviceIniWriter::writeStringMap(const QMap<QString, QString> &map) const
 {
-    for (const QString &key : map.keys())
+    QList<QString> keys = map.keys();
+
+    QCollator collator;
+    collator.setNumericMode(true);
+
+    std::sort(keys.begin(), keys.end(), [&collator](const QString &file1, const QString &file2) { return collator.compare(file1, file2) < 0; });
+
+    for (const QString &key : keys)
     {
         *_file << key << "=" << map.value(key) << "\r\n";
     }
@@ -318,7 +326,7 @@ QString DeviceIniWriter::valueToString(int value, int base, int width) const
         {
             v = v.right(width);
         }
-        return "0x" +v;
+        return "0x" + v;
     }
 
     return QString("");
