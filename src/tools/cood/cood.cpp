@@ -27,6 +27,7 @@
 #include "parser/dcfparser.h"
 #include "parser/edsparser.h"
 #include "utility/profileduplicate.h"
+#include "utility/configurationapply.h"
 #include "writer/dcfwriter.h"
 #include "writer/edswriter.h"
 #include <cstdint>
@@ -69,6 +70,12 @@ int main(int argc, char *argv[])
                                        "duplicate");
     duplicateOption.setDefaultValue("0");
     cliParser.addOption(duplicateOption);
+
+    QCommandLineOption configurationOption(QStringList() << "c"
+                                                     << "configuration",
+                                       QCoreApplication::translate("main", "Configuration apply"),
+                                       "duplicate");
+    cliParser.addOption(configurationOption);
 
     cliParser.process(app);
 
@@ -123,6 +130,13 @@ int main(int argc, char *argv[])
     {
         err << QCoreApplication::translate("main", "error (3): invalid input file format, .eds or .dcf accepted") << endl;
         return -3;
+    }
+
+    QString iniFile = cliParser.value("c");
+    if (!iniFile.isEmpty())
+    {
+        ConfigurationApply configurationApply;
+        configurationApply.apply(deviceConfiguration, iniFile);
     }
 
     // OUTPUT FILE

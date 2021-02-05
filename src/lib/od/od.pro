@@ -30,7 +30,8 @@ HEADERS += \
     $$PWD/db/oddb.h \
     $$PWD/db/odindexdb.h \
     $$PWD/generator/csvgenerator.h \
-    $$PWD/utility/profileduplicate.h
+    $$PWD/utility/profileduplicate.h \
+    $$PWD/utility/configurationapply.h
 
 SOURCES += \
     $$PWD/model/index.cpp \
@@ -54,4 +55,5 @@ SOURCES += \
     $$PWD/db/oddb.cpp \
     $$PWD/db/odindexdb.cpp \
     $$PWD/generator/csvgenerator.cpp \
-    $$PWD/utility/profileduplicate.cpp
+    $$PWD/utility/profileduplicate.cpp \
+    $$PWD/utility/configurationapply.cpp
