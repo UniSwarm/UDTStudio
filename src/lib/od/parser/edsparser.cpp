@@ -18,6 +18,7 @@
 
 #include "edsparser.h"
 
+#include <QFile>
 #include <QRegularExpression>
 #include <QSettings>
 
@@ -44,41 +45,47 @@ EdsParser::~EdsParser()
  */
 DeviceDescription *EdsParser::parse(const QString &path) const
 {
-    DeviceDescription *deviceDescription = new DeviceDescription();
+    DeviceDescription *deviceDescription;
 
-    QSettings file(path, QSettings::IniFormat);
-    DeviceIniParser parser(&file);
+    if (!QFile(path).exists())
+    {
+        return nullptr;
+    }
+
+    deviceDescription = new DeviceDescription();
+
+    QSettings iniFile(path, QSettings::IniFormat);
+    DeviceIniParser parser(&iniFile);
 
     // infos
-    for (const QString &group : file.childGroups())
+    for (const QString &group : iniFile.childGroups())
     {
         if (group == "DeviceInfo")
         {
-            file.beginGroup(group);
+            iniFile.beginGroup(group);
             parser.readDeviceInfo(deviceDescription);
-            file.endGroup();
+            iniFile.endGroup();
             continue;
         }
         else if (group == "FileInfo")
         {
-            file.beginGroup(group);
+            iniFile.beginGroup(group);
             parser.readFileInfo(deviceDescription);
-            file.endGroup();
+            iniFile.endGroup();
             continue;
         }
         else if (group == "DummyUsage")
         {
-            file.beginGroup(group);
+            iniFile.beginGroup(group);
             parser.readDummyUsage(deviceDescription);
-            file.endGroup();
+            iniFile.endGroup();
             continue;
         }
-
         else if (group == "Comments")
         {
-            file.beginGroup(group);
+            iniFile.beginGroup(group);
             parser.readComments(deviceDescription);
-            file.endGroup();
+            iniFile.endGroup();
             continue;
         }
     }
