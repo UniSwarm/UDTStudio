@@ -1,0 +1,107 @@
+/**
+ ** This file is part of the UDTStudio project.
+ ** Copyright 2019-2021 UniSwarm
+ **
+ ** This program is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU General Public License as published by
+ ** the Free Software Foundation, either version 3 of the License, or
+ ** (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ ** GNU General Public License for more details.
+ **
+ ** You should have received a copy of the GNU General Public License
+ ** along with this program. If not, see <http://www.gnu.org/licenses/>.
+ **/
+
+#include "odmerger.h"
+
+#include <QDebug>
+#define dbg() qDebug().noquote().nospace()
+
+ODMerger::ODMerger()
+{
+}
+
+void ODMerger::merge(DeviceDescription *deviceDescription, DeviceDescription *secondDeviceDescription)
+{
+    for (Index *index2 : secondDeviceDescription->indexes())
+    {
+        Index *index = deviceDescription->index(index2->index());
+        if (!index)
+        {
+            dbg() << "Missing index 0x" << indexStr(index2) << " " << index2->name();
+            deviceDescription->addIndex(new Index(*index2));
+        }
+        else
+        {
+            if (index->name() != index2->name())
+            {
+                dbg() << "Change index name 0x" << indexStr(index) << " to \"" << index->name() << "\"";
+                index->setName(index2->name());
+            }
+            if (index->objectType() != index2->objectType())
+            {
+                dbg() << "Change index objectType 0x" << indexStr(index) << " to " << index->objectType();
+                index->setObjectType(index2->objectType());
+            }
+            mergeIndex(index, secondDeviceDescription->index(index2->index()));
+        }
+    }
+
+    for (Index *index : deviceDescription->indexes())
+    {
+        if (!secondDeviceDescription->indexExist(index->index()))
+        {
+            dbg() << "Extra index 0x" << indexStr(index) << " \"" << index->name() << "\"";
+        }
+    }
+}
+
+void ODMerger::mergeIndex(Index *index, Index *index2)
+{
+    for (SubIndex *subIndex2 : index2->subIndexes())
+    {
+        SubIndex *subIndex = index->subIndex(subIndex2->subIndex());
+        if (!subIndex)
+        {
+            dbg() << "+ Missing subindex 0x" << indexStr(index) << "." << subIndex2->subIndex() << " : \"" << index->name() << "\"";
+            index->addSubIndex(new SubIndex(*index2->subIndex(subIndex2->subIndex())));
+        }
+        else
+        {
+            if (subIndex->name() != subIndex2->name())
+            {
+                dbg() << "+ Change subindex name 0x" << indexStr(index) << "." << subIndex2->subIndex() << " to \"" << index->name() << "\"";
+                subIndex->setName(subIndex2->name());
+            }
+            if (subIndex->accessType() != subIndex2->accessType())
+            {
+                dbg() << "+ Change subindex accessType 0x" << indexStr(index) << "." << subIndex2->subIndex() << " to " << subIndex2->accessType();
+                subIndex->setAccessType(subIndex2->accessType());
+            }
+            if (subIndex->dataType() != subIndex2->dataType())
+            {
+                dbg() << "+ Change subindex dataType 0x" << indexStr(index) << "." << subIndex2->subIndex() << " to " << subIndex2->dataType();
+                subIndex->setDataType(subIndex2->dataType());
+            }
+            if (subIndex->lowLimit() != subIndex2->lowLimit())
+            {
+                dbg() << "+ Change subindex lowLimit 0x" << indexStr(index) << "." << subIndex2->subIndex() << " to " << subIndex2->lowLimit();
+                subIndex->setLowLimit(subIndex2->lowLimit());
+            }
+            if (subIndex->highLimit() != subIndex2->highLimit())
+            {
+                dbg() << "+ Change subindex highLimit 0x" << indexStr(index) << "." << subIndex2->subIndex() << " to " << subIndex2->highLimit();
+                subIndex->setLowLimit(subIndex2->highLimit());
+            }
+        }
+    }
+}
+
+QString ODMerger::indexStr(Index *index)
+{
+    return QString::number(index->index(), 16).toUpper();
+}

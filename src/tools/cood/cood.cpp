@@ -26,10 +26,12 @@
 #include "model/devicemodel.h"
 #include "parser/dcfparser.h"
 #include "parser/edsparser.h"
-#include "utility/profileduplicate.h"
 #include "utility/configurationapply.h"
+#include "utility/odmerger.h"
+#include "utility/profileduplicate.h"
 #include "writer/dcfwriter.h"
 #include "writer/edswriter.h"
+
 #include <cstdint>
 
 /**
@@ -60,22 +62,24 @@ int main(int argc, char *argv[])
     QCommandLineOption nodeIdOption(QStringList() << "n"
                                                   << "nodeid",
                                     QCoreApplication::translate("main", "CANOpen Node Id."),
-                                    "nodeid");
-    nodeIdOption.setDefaultValue("0");
+                                    "0");
     cliParser.addOption(nodeIdOption);
 
     QCommandLineOption duplicateOption(QStringList() << "d"
                                                      << "duplicate",
                                        QCoreApplication::translate("main", "Duplicate profile"),
-                                       "duplicate");
-    duplicateOption.setDefaultValue("0");
+                                       "0");
     cliParser.addOption(duplicateOption);
 
     QCommandLineOption configurationOption(QStringList() << "c"
-                                                     << "configuration",
-                                       QCoreApplication::translate("main", "Configuration apply"),
-                                       "duplicate");
+                                                         << "configuration",
+                                           QCoreApplication::translate("main", "Configuration apply"));
     cliParser.addOption(configurationOption);
+
+    QCommandLineOption mergeOption(QStringList() << "m"
+                                                 << "merge",
+                                   QCoreApplication::translate("main", "Merge 2 eds files"));
+    cliParser.addOption(mergeOption);
 
     cliParser.process(app);
 
@@ -119,6 +123,11 @@ int main(int argc, char *argv[])
     {
         EdsParser parser;
         deviceDescription = parser.parse(inputFile);
+        if (!deviceDescription)
+        {
+            err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist") << endl;
+            return -5;
+        }
         deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, nodeid);
     }
     else if (inSuffix == "dcf")
@@ -132,7 +141,7 @@ int main(int argc, char *argv[])
         return -3;
     }
 
-    QString iniFile = cliParser.value("c");
+    QString iniFile = cliParser.value("configuration");
     if (!iniFile.isEmpty())
     {
         ConfigurationApply configurationApply;
@@ -140,29 +149,51 @@ int main(int argc, char *argv[])
     }
 
     // OUTPUT FILE
-    CGenerator cgenerator;
-    DcfWriter dcfWriter;
     if (outSuffix == "c")
     {
+        CGenerator cgenerator;
         cgenerator.generateC(deviceConfiguration, outputFile);
     }
     else if (outSuffix == "h")
     {
+        CGenerator cgenerator;
         cgenerator.generateH(deviceConfiguration, outputFile);
     }
     else if (outSuffix == "dcf")
     {
+        DcfWriter dcfWriter;
         dcfWriter.write(deviceConfiguration, outputFile);
     }
     else if (outSuffix == "eds" && deviceDescription)
     {
         uint8_t duplicate = 0;
         duplicate = static_cast<uint8_t>(cliParser.value("duplicate").toUInt());
-
         if (duplicate != 0)
         {
             ProfileDuplicate profileDuplicate;
             profileDuplicate.duplicate(deviceDescription, duplicate);
+        }
+
+        if (cliParser.isSet("merge"))
+        {
+            if (files.size() < 2)
+            {
+                delete deviceDescription;
+                delete deviceConfiguration;
+                err << QCoreApplication::translate("main", "error (6): invalid number of eds inputs file, need more than one") << endl;
+                return -6;
+            }
+            EdsParser parser;
+            DeviceDescription *secondDeviceDescription = parser.parse(files.at(1));
+            if (!secondDeviceDescription)
+            {
+                delete deviceDescription;
+                delete deviceConfiguration;
+                err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist") << endl;
+                return -5;
+            }
+            ODMerger merger;
+            merger.merge(deviceDescription, secondDeviceDescription);
         }
 
         EdsWriter edsWriter;
@@ -180,6 +211,8 @@ int main(int argc, char *argv[])
     }
     else if (QFileInfo(outputFile).isDir())
     {
+        CGenerator cgenerator;
+        DcfWriter dcfWriter;
         cgenerator.generateC(deviceConfiguration, QString(outputFile + "/od_data.c"));
         cgenerator.generateH(deviceConfiguration, QString(outputFile + "/od_data.h"));
         dcfWriter.write(deviceConfiguration, QString(outputFile + "/out.dcf"));
