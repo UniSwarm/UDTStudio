@@ -19,7 +19,7 @@
 #include "configurationapply.h"
 
 #include <QSettings>
-#include <QDebug>
+
 ConfigurationApply::ConfigurationApply()
 {
 }
@@ -108,6 +108,9 @@ QVariant ConfigurationApply::readData(SubIndex::DataType dataType, QString strin
     case SubIndex::VISIBLE_STRING:
     case SubIndex::OCTET_STRING:
         return QVariant(stringValue);
+
+    default:
+        return QVariant();
     }
 
     return QVariant();

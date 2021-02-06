@@ -24,18 +24,15 @@
 #include "../model/deviceconfiguration.h"
 #include "../model/devicedescription.h"
 
-
-
 class OD_EXPORT ConfigurationApply
 {
-  public:
+public:
     ConfigurationApply();
 
     void apply(DeviceConfiguration *deviceDescription, const QString &fileIniPath);
 
-  private:
+private:
     QVariant readData(SubIndex::DataType dataType, QString stringValue) const;
-
 };
 
 #endif // CONFIGURATIONAPPLY_H
