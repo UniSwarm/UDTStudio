@@ -44,9 +44,11 @@ public:
     const QMap<uint8_t, SubIndex *> &subIndexes() const;
 
     SubIndex *subIndex(uint8_t subIndex) const;
+    SubIndex *subIndex(QString nameSubIndex) const;
     void addSubIndex(SubIndex *subIndex);
     int subIndexesCount();
-    bool subIndexExist(uint8_t subIndex);
+    bool subIndexExist(uint8_t subIndex);    
+    bool subIndexExist(QString nameSubIndex);
 
     // =========== Object type ====================
     enum Object

@@ -111,6 +111,23 @@ SubIndex *Index::subIndex(uint8_t subIndex) const
 }
 
 /**
+ * @brief return the subIndex with the name of subIndex
+ * @param subi-index number
+ * @return a sub-index
+ */
+SubIndex *Index::subIndex(QString nameSubIndex) const
+{
+    for (SubIndex *subIndex : _subIndexes)
+    {
+        if (subIndex->name() == nameSubIndex)
+        {
+            return subIndex;
+        }
+    }
+    return nullptr;
+}
+
+/**
  * @brief inserts a new sub-index, if the sub-index already exists,
  * replaces it by the new sub-index
  * @param subIndex
@@ -139,6 +156,25 @@ int Index::subIndexesCount()
 bool Index::subIndexExist(uint8_t subIndex)
 {
     return _subIndexes.contains(subIndex);
+}
+
+/**
+ * @brief returns true if the map contains a sub-index with the name of subIndex;
+ *  otherwise returns false
+ * @param nameSubIndex
+ * @return true if the map contains a sub-index with the number subIndex,
+ * otherwise returns false
+ */
+bool Index::subIndexExist(QString nameSubIndex)
+{
+    for (SubIndex *subIndex : _subIndexes)
+    {
+        if (subIndex->name() == nameSubIndex)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 /**

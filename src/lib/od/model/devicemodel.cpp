@@ -128,6 +128,23 @@ Index *DeviceModel::index(uint16_t index) const
 }
 
 /**
+ * @brief returns the value associated with the name of index
+ * @param index
+ * @return an Index*
+ */
+Index *DeviceModel::index(QString name) const
+{
+    for (Index *index : _indexes)
+    {
+        if (index->name() == name)
+        {
+            return index;
+        }
+    }
+    return nullptr;
+}
+
+/**
  * @brief inserts a new index. If the index already exist, replaces it with the new index
  * @param index
  */
@@ -155,6 +172,23 @@ bool DeviceModel::indexExist(uint16_t index) const
     return _indexes.contains(index);
 }
 
+/**
+ * @brief returns true if the map contains an item with name of index; otherwise returns false.
+ * @param key
+ * @return boolean
+ */
+bool DeviceModel::indexExist(QString name) const
+{
+    for (Index *index : _indexes)
+    {
+        if (index->name() == name)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void DeviceModel::deleteIndex(Index *index)
 {
     _indexes.remove(index->index());
@@ -171,9 +205,25 @@ SubIndex *DeviceModel::subIndex(uint16_t index, uint8_t subIndex) const
     return mindex->subIndex(subIndex);
 }
 
+SubIndex *DeviceModel::subIndex(QString index, QString subIndex) const
+{
+    Index *mindex = this->index(index);
+    if (!mindex)
+    {
+        return nullptr;
+    }
+
+    return mindex->subIndex(subIndex);
+}
+
 bool DeviceModel::subIndexExist(uint16_t index, uint8_t subIndex) const
 {
-    return (this->subIndex(index, subIndex) != 0);
+    return (this->subIndex(index, subIndex) != nullptr);
+}
+
+bool DeviceModel::subIndexExist(QString index, QString subIndex) const
+{
+    return (this->subIndex(index, subIndex) != nullptr);
 }
 
 QVariant DeviceModel::subIndexValue(uint16_t index, uint8_t subIndex, const QVariant &defaultValue) const
