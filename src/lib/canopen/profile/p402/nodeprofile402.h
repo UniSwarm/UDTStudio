@@ -116,13 +116,19 @@ signals:
 private:
     uint8_t _axis;
 
-    enum State
+    enum StateState
     {
-        NONE,
-        STATE_CHANGE,
-        MODE_CHANGE,
+        NONE_STATE = 0,
+        STATE_CHANGE =1,
     };
-    State _state;
+    StateState _stateState;
+
+    enum StateMode
+    {
+        NONE_MODE = 0,
+        MODE_CHANGE = 1,
+    };
+    StateMode _stateMode;
 
     NodeObjectId _modesOfOperationObjectId;
     NodeObjectId _modesOfOperationDisplayObjectId;

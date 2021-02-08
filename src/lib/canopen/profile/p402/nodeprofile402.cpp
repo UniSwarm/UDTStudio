@@ -113,7 +113,8 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
     _currentMode = NoMode;
     _requestedChangeMode = NoMode;
-    _state = NONE;
+    _stateMode = NONE_MODE;
+    _stateState = NONE_STATE;
 
     _cmdControlWord = 0;
 }
@@ -145,7 +146,7 @@ bool NodeProfile402::setMode(Mode mode)
     if ((mode == NoMode) || (mode == PP) || (mode == VL) || (mode == PV) || (mode == TQ) || (mode == HM) || (mode == IP) || (mode == CSP) || (mode == CSV) || (mode == CST) || (mode == CSTCA))
     {
         _node->writeObject(_modesOfOperationObjectId, QVariant(mode));
-        _state = MODE_CHANGE;
+        _stateMode = MODE_CHANGE;
         _requestedChangeMode = mode;
 
         if (_requestedChangeMode == Mode::VL)
@@ -244,7 +245,7 @@ void NodeProfile402::goToState(const State402 state)
     {
         return;
     }
-    _state = STATE_CHANGE;
+    _stateState = STATE_CHANGE;
     _requestedStateMachine = state;
     manageState(_requestedStateMachine);
 }
@@ -710,13 +711,12 @@ void NodeProfile402::manageStateStatusWord(quint16 statusWord)
         _stateMachineCurrent = STATE_Fault;
     }
 
-    if ((_state == STATE_CHANGE) && (_requestedStateMachine != _stateMachineCurrent))
+    if ((_stateState == STATE_CHANGE) && (_requestedStateMachine != _stateMachineCurrent))
     {
         manageState(_requestedStateMachine);
         return;
     }
-
-    _state = NONE;
+    _stateState = NONE_STATE;
     emit stateChanged();
 }
 
@@ -822,22 +822,20 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
 
     if (objId == _modesOfOperationDisplayObjectId)
     {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            _currentMode = NoMode;
-        }
-        else
+        if (flags != SDO::FlagsRequest::Error)
         {
             NodeProfile402::Mode mode = static_cast<NodeProfile402::Mode>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
-            if ((_state == MODE_CHANGE) && (_requestedChangeMode != mode))
+            if ((_stateMode == NodeProfile402::MODE_CHANGE) && (_requestedChangeMode != mode))
             {
                 _modeTimer.singleShot(TIMER_READ_MODE_OPERATION_DISPLAY, this, SLOT(readModeOfOperationDisplay()));
                 return;
             }
 
             _currentMode = mode;
-            emit modeChanged(_axis, _currentMode);
-            _state = NONE;
+            _requestedChangeMode = _currentMode;
+            _stateMode = NodeProfile402::StateMode::NONE_MODE;
+            emit modeChanged(_axis, _currentMode);            
+            return;
         }
     }
 
