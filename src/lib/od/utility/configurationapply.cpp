@@ -36,7 +36,6 @@ void ConfigurationApply::apply(DeviceConfiguration *deviceDescription, const QSt
         uint16_t indexId = 0;
         uint8_t subIndexId = 0;
 
-
         if (childKey.contains(QRegExp("^[0-9]")))
         {
             // Find by id
@@ -162,6 +161,4 @@ QVariant ConfigurationApply::readData(SubIndex::DataType dataType, QString strin
     default:
         return QVariant();
     }
-
-    return QVariant();
 }
