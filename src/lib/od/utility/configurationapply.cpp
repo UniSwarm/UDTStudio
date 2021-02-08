@@ -36,25 +36,75 @@ void ConfigurationApply::apply(DeviceConfiguration *deviceDescription, const QSt
         uint16_t indexId = 0;
         uint8_t subIndexId = 0;
 
-        if (childKey.contains("sub"))
+
+        if (childKey.contains(QRegExp("^[0-9]")))
         {
-            QStringList keys = childKey.split("sub");
-            indexId = static_cast<uint16_t>(keys[0].toUInt(&ok, 16));
-            subIndexId = static_cast<uint8_t>(keys[1].toUInt(&ok, 16));
+            // Find by id
+            if (childKey.contains("sub"))
+            {
+                QStringList keys = childKey.split("sub");
+                indexId = static_cast<uint16_t>(keys[0].toUInt(&ok, 16));
+                subIndexId = static_cast<uint8_t>(keys[1].toUInt(&ok, 16));
+            }
+            else
+            {
+                indexId = static_cast<uint16_t>(childKey.toUInt(&ok, 16));
+                subIndexId = 0;
+            }
+
+            if (deviceDescription->indexExist(indexId))
+            {
+                QString value = settings.value(childKey).toString();
+                Index *index = deviceDescription->index(indexId);
+                if (index->subIndexExist(subIndexId))
+                {
+                    SubIndex *sub = index->subIndex(subIndexId);
+                    if (sub->value().isValid())
+                    {
+                        sub->setValue(readData(sub->dataType(), value));
+                    }
+                }
+            }
         }
         else
         {
-            indexId = static_cast<uint16_t>(childKey.toUInt(&ok, 16));
-        }
+            // Find by String
+            QString indexName;
+            QString subIndexName;
 
-        if (deviceDescription->indexExist(indexId))
-        {
-            QString value = settings.value(childKey).toString();
-            Index *index = deviceDescription->index(indexId);
-            SubIndex *sub = index->subIndex(subIndexId);
-            if (sub->value().isValid())
+            if (childKey.contains("."))
             {
-                sub->setValue(readData(sub->dataType(), value));
+                QStringList keys = childKey.split(".");
+                indexName = keys[0];
+                subIndexName = keys[1];
+
+                if (deviceDescription->indexExist(indexName))
+                {
+                    QString value = settings.value(childKey).toString();
+                    Index *index = deviceDescription->index(indexName);
+                    if (index->subIndexExist(subIndexName))
+                    {
+                        SubIndex *sub = index->subIndex(subIndexName);
+                        if (sub->value().isValid())
+                        {
+                            sub->setValue(readData(sub->dataType(), value));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                indexName = childKey;
+                if (deviceDescription->indexExist(indexName))
+                {
+                    QString value = settings.value(childKey).toString();
+                    Index *index = deviceDescription->index(indexName);
+                    SubIndex *sub = index->subIndex(0);
+                    if (sub->value().isValid())
+                    {
+                        sub->setValue(readData(sub->dataType(), value));
+                    }
+                }
             }
         }
     }
