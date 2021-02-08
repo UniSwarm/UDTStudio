@@ -233,6 +233,7 @@ void WidgetDebug::modeChanged(uint8_t axis, NodeProfile402::Mode modeNew)
     }
     int m = _listModeComboBox.indexOf(modeNew);
     _modeComboBox->setCurrentIndex(m);
+    _modeComboBox->setEnabled(true);
 }
 
 void WidgetDebug::stateChanged()
@@ -435,10 +436,8 @@ void WidgetDebug::modeIndexChanged(int id)
     {
         return;
     }
-    if (_nodeProfile402->actualMode() != _listModeComboBox.at(id))
-    {
-        _nodeProfile402->setMode(_listModeComboBox.at(id));
-    }
+    _modeComboBox->setEnabled(false);
+    _nodeProfile402->setMode(_listModeComboBox.at(id));
 }
 
 void WidgetDebug::stateMachineClicked(int id)
