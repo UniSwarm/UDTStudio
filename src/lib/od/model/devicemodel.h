@@ -53,13 +53,17 @@ public:
 
     const QMap<uint16_t, Index *> &indexes() const;
     Index *index(uint16_t index) const;
+    Index *index(QString name) const;
     void addIndex(Index *index);
     int indexCount() const;
     bool indexExist(uint16_t index) const;
+    bool indexExist(QString name) const;
     void deleteIndex(Index *index);
 
     SubIndex *subIndex(uint16_t index, uint8_t subIndex) const;
+    SubIndex *subIndex(QString index, QString subIndex) const;
     bool subIndexExist(uint16_t index, uint8_t subIndex) const;
+    bool subIndexExist(QString index, QString subIndex) const;
     QVariant subIndexValue(uint16_t index, uint8_t subIndex, const QVariant &defaultValue = QVariant()) const;
 
     QString fileName() const;
