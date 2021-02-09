@@ -16,12 +16,12 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "nodeprofile402tq.h"
+#include "modetq.h"
 #include "indexdb402.h"
 #include "node.h"
 #include "nodeprofile402.h"
 
-NodeProfile402Tq::NodeProfile402Tq(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
+ModeTq::ModeTq(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
     : _node(node)
     , _axis(axis)
     , _nodeProfile402(nodeProfile402)
@@ -36,17 +36,17 @@ NodeProfile402Tq::NodeProfile402Tq(Node *node, uint8_t axis, NodeProfile402 *nod
     _cmdControlWordSpecific = 0;
 }
 
-void NodeProfile402Tq::setTarget(qint16 torque)
+void ModeTq::setTarget(qint16 torque)
 {
     _node->writeObject(_targetObjectId, QVariant(torque));
 }
 
-quint16 NodeProfile402Tq::getSpecificControlWord()
+quint16 ModeTq::getSpecificControlWord()
 {
     return _cmdControlWordSpecific;
 }
 
-void NodeProfile402Tq::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void ModeTq::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (objId == _targetObjectId)
     {

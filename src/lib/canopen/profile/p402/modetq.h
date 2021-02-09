@@ -16,8 +16,8 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef NODEPROFILE402VL_H
-#define NODEPROFILE402VL_H
+#ifndef MODETQ_H
+#define MODETQ_H
 
 #include "canopen_global.h"
 
@@ -25,43 +25,28 @@
 
 #include <QObject>
 
-class Node;
 class NodeObjectId;
 class NodeProfile402;
 
-class CANOPEN_EXPORT NodeProfile402Vl : public QObject, public NodeOdSubscriber
+class CANOPEN_EXPORT ModeTq : public QObject, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
-    NodeProfile402Vl(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402);
+    ModeTq(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402);
 
-    void setTarget(qint16 velocity);
+    void setTarget(qint16 torque);
 
     quint16 getSpecificControlWord();
 
-    void setEnableRamp(bool ok);
-    bool isEnableRamp(void);
-
-    void setUnlockRamp(bool ok);
-    bool isUnlockRamp(void);
-
-    void setReferenceRamp(bool ok);
-    bool isReferenceRamp(void);
-
 signals:
     void isAppliedTarget();
-    void enableRampEvent(bool ok);
-    void referenceRampEvent(bool ok);
-    void unlockRampEvent(bool ok);
 
 private:
     Node *_node;
     uint8_t _axis;
-    quint8 _mode;
-
     NodeProfile402 *_nodeProfile402;
 
-    NodeObjectId _controlWordObjectId;
+    quint8 _mode;
     NodeObjectId _targetObjectId;
     quint16 _cmdControlWordSpecific;
 
@@ -70,4 +55,4 @@ public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // NODEPROFILE402VL_H
+#endif // MODETQ_H

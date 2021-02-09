@@ -21,10 +21,10 @@
 #include "node.h"
 #include "nodeobjectid.h"
 #include "nodeodsubscriber.h"
-#include "nodeprofile402ip.h"
-#include "nodeprofile402pp.h"
-#include "nodeprofile402tq.h"
-#include "nodeprofile402vl.h"
+#include "modeip.h"
+#include "modepp.h"
+#include "modetq.h"
+#include "modevl.h"
 
 #define TIMER_READ_MODE_OPERATION_DISPLAY 100u
 
@@ -104,10 +104,10 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
 
     connect(_node, &Node::statusChanged, this, &NodeProfile402::statusNodeChanged);
 
-    _p402Ip = new NodeProfile402Ip(_node, axis, this);
-    _p402Tq = new NodeProfile402Tq(_node, axis, this);
-    _p402Vl = new NodeProfile402Vl(_node, axis, this);
-    _p402Pp = new NodeProfile402Pp(_node, axis, this);
+    _p402Ip = new ModeIp(_node, axis, this);
+    _p402Tq = new ModeTq(_node, axis, this);
+    _p402Vl = new ModeVl(_node, axis, this);
+    _p402Pp = new ModePp(_node, axis, this);
 
     _requestedStateMachine = State402::STATE_NotReadyToSwitchOn;
     _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;

@@ -16,8 +16,8 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef NODEPROFILE402PP_H
-#define NODEPROFILE402pP_H
+#ifndef MODEIP_H
+#define MODEIP_H
 
 #include "canopen_global.h"
 
@@ -29,11 +29,11 @@ class Node;
 class NodeObjectId;
 class NodeProfile402;
 
-class CANOPEN_EXPORT NodeProfile402Pp : public QObject, public NodeOdSubscriber
+class CANOPEN_EXPORT ModeIp : public QObject, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
-    NodeProfile402Pp(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402);
+    ModeIp(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402);
 
     void setTarget(qint32 position);
 
@@ -42,25 +42,9 @@ public:
     void setEnableRamp(bool ok);
     bool isEnableRamp(void);
 
-    void applyNewSetPoint(); // bit 4 of controlWord front upright
-    //    bool isUnlockRamp(void);
-
-    void setChangeSetImmediately(bool ok); // bit 5 of controlWord
-    bool isChangeSetImmediately(void); // bit 5 of controlWord
-
-    void setChangeOnSetPoint(bool ok); // bit 9 of controlWord
-    bool isChangeOnSetPoint(void); // bit 9 of controlWord
-
-    void setAbsRel(bool ok); // bit 6 of controlWord
-    bool isAbsRel(void); // bit 6 of controlWord
-
 signals:
     void isAppliedTarget();
     void enableRampEvent(bool ok);
-
-    void changeSetImmediatelyEvent(bool ok);
-    void changeOnSetPointEvent(bool ok);
-    void absRelEvent(bool ok);
 
 private:
     Node *_node;
@@ -77,4 +61,4 @@ public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // NODEPROFILE402PP_H
+#endif // MODEIP_H

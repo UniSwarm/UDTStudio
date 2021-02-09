@@ -16,8 +16,8 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef NODEPROFILE402IP_H
-#define NODEPROFILE402IP_H
+#ifndef MODEVL_H
+#define MODEVL_H
 
 #include "canopen_global.h"
 
@@ -29,29 +29,38 @@ class Node;
 class NodeObjectId;
 class NodeProfile402;
 
-class CANOPEN_EXPORT NodeProfile402Ip : public QObject, public NodeOdSubscriber
+class CANOPEN_EXPORT ModeVl : public QObject, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
-    NodeProfile402Ip(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402);
+    ModeVl(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402);
 
-    void setTarget(qint32 position);
+    void setTarget(qint16 velocity);
 
     quint16 getSpecificControlWord();
 
     void setEnableRamp(bool ok);
     bool isEnableRamp(void);
 
+    void setUnlockRamp(bool ok);
+    bool isUnlockRamp(void);
+
+    void setReferenceRamp(bool ok);
+    bool isReferenceRamp(void);
+
 signals:
     void isAppliedTarget();
     void enableRampEvent(bool ok);
+    void referenceRampEvent(bool ok);
+    void unlockRampEvent(bool ok);
 
 private:
     Node *_node;
     uint8_t _axis;
+    quint8 _mode;
+
     NodeProfile402 *_nodeProfile402;
 
-    quint8 _mode;
     NodeObjectId _controlWordObjectId;
     NodeObjectId _targetObjectId;
     quint16 _cmdControlWordSpecific;
@@ -61,4 +70,4 @@ public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // NODEPROFILE402IP_H
+#endif // MODEVL_H

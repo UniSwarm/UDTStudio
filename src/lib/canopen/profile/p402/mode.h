@@ -16,43 +16,22 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef NODEPROFILE402TQ_H
-#define NODEPROFILE402TQ_H
+#ifndef MODE_H
+#define MODE_H
 
 #include "canopen_global.h"
 
+#include "../../services/service.h"
+
 #include "nodeodsubscriber.h"
 
-#include <QObject>
-
-class NodeObjectId;
-class NodeProfile402;
-
-class CANOPEN_EXPORT NodeProfile402Tq : public QObject, public NodeOdSubscriber
+class CANOPEN_EXPORT Mode : public QObject, public NodeOdSubscriber
 {
-    Q_OBJECT
 public:
-    NodeProfile402Tq(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402);
+    Mode(Node *node);
 
-    void setTarget(qint16 torque);
-
-    quint16 getSpecificControlWord();
-
-signals:
-    void isAppliedTarget();
-
-private:
+protected:
     Node *_node;
-    uint8_t _axis;
-    NodeProfile402 *_nodeProfile402;
-
-    quint8 _mode;
-    NodeObjectId _targetObjectId;
-    quint16 _cmdControlWordSpecific;
-
-    // NodeOdSubscriber interface
-public:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // NODEPROFILE402TQ_H
+#endif // MODE_H

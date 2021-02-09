@@ -25,10 +25,10 @@
 #include "node.h"
 
 class NodeObjectId;
-class NodeProfile402Vl;
-class NodeProfile402Ip;
-class NodeProfile402Tq;
-class NodeProfile402Pp;
+class ModeVl;
+class ModeIp;
+class ModeTq;
+class ModePp;
 
 class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
 {
@@ -145,10 +145,10 @@ private:
 
     uint8_t _eventStatusWord;
 
-    NodeProfile402Ip *_p402Ip;
-    NodeProfile402Tq *_p402Tq;
-    NodeProfile402Vl *_p402Vl;
-    NodeProfile402Pp *_p402Pp;
+    ModeIp *_p402Ip;
+    ModeTq *_p402Tq;
+    ModeVl *_p402Vl;
+    ModePp *_p402Pp;
 
     QTimer _modeTimer;
 

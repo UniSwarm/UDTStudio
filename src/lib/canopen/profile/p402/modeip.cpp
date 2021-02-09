@@ -16,7 +16,7 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "nodeprofile402ip.h"
+#include "modeip.h"
 #include "indexdb402.h"
 #include "node.h"
 #include "nodeprofile402.h"
@@ -27,7 +27,7 @@ enum ControlWordIP : quint16
     CW_Halt = 0x100
 };
 
-NodeProfile402Ip::NodeProfile402Ip(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
+ModeIp::ModeIp(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
     : _node(node)
     , _axis(axis)
     , _nodeProfile402(nodeProfile402)
@@ -45,17 +45,17 @@ NodeProfile402Ip::NodeProfile402Ip(Node *node, uint8_t axis, NodeProfile402 *nod
     _cmdControlWordSpecific = CW_IP_EnableRamp;
 }
 
-void NodeProfile402Ip::setTarget(qint32 position)
+void ModeIp::setTarget(qint32 position)
 {
     _node->writeObject(_targetObjectId, QVariant(position));
 }
 
-quint16 NodeProfile402Ip::getSpecificControlWord()
+quint16 ModeIp::getSpecificControlWord()
 {
     return _cmdControlWordSpecific & CW_IP_EnableRamp;
 }
 
-void NodeProfile402Ip::setEnableRamp(bool ok)
+void ModeIp::setEnableRamp(bool ok)
 {
     if (ok)
     {
@@ -67,12 +67,12 @@ void NodeProfile402Ip::setEnableRamp(bool ok)
     }
 }
 
-bool NodeProfile402Ip::isEnableRamp(void)
+bool ModeIp::isEnableRamp(void)
 {
     return _cmdControlWordSpecific & CW_IP_EnableRamp;
 }
 
-void NodeProfile402Ip::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void ModeIp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (objId == _targetObjectId)
     {

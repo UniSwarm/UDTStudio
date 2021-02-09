@@ -33,16 +33,16 @@ SOURCES += \
     $$PWD/datalogger/datalogger.cpp \
     $$PWD/datalogger/dldata.cpp \
     $$PWD/profile/nodeprofile.cpp \
-    $$PWD/profile/p402/nodeprofile402ip.cpp \
-    $$PWD/profile/p402/nodeprofile402tq.cpp \
-    $$PWD/profile/p402/nodeprofile402vl.cpp \
+    $$PWD/profile/p402/mode.cpp \
+    $$PWD/profile/p402/modeip.cpp \
+    $$PWD/profile/p402/modetq.cpp \
+    $$PWD/profile/p402/modevl.cpp \
+    $$PWD/profile/p402/modepp.cpp \
     $$PWD/profile/p402/nodeprofile402.cpp \
     $$PWD/indexdb.cpp \
     $$PWD/indexdb401.cpp \
     $$PWD/indexdb402.cpp \
-    $$PWD/profile/nodeprofilefactory.cpp \
-    profile/p402/nodeprofile402pp.cpp
-
+    $$PWD/profile/nodeprofilefactory.cpp
 
 HEADERS += \
     $$PWD/canopen_global.h \
@@ -70,15 +70,16 @@ HEADERS += \
     $$PWD/datalogger/datalogger.h \
     $$PWD/datalogger/dldata.h \
     $$PWD/profile/nodeprofile.h \
-    $$PWD/profile/p402/nodeprofile402ip.h \
-    $$PWD/profile/p402/nodeprofile402tq.h \
-    $$PWD/profile/p402/nodeprofile402vl.h \
+    $$PWD/profile/p402/mode.h \
+    $$PWD/profile/p402/modeip.h \
+    $$PWD/profile/p402/modepp.h \
+    $$PWD/profile/p402/modetq.h \
+    $$PWD/profile/p402/modevl.h \
     $$PWD/profile/p402/nodeprofile402.h \
     $$PWD/indexdb.h \
     $$PWD/indexdb401.h \
     $$PWD/indexdb402.h \
-    $$PWD/profile/nodeprofilefactory.h \
-    profile/p402/nodeprofile402pp.h
+    $$PWD/profile/nodeprofilefactory.h
 
 INCLUDEPATH += $$PWD/../od/
 

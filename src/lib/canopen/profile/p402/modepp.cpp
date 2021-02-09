@@ -16,7 +16,7 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "nodeprofile402pp.h"
+#include "modepp.h"
 #include "indexdb402.h"
 #include "node.h"
 #include "nodeprofile402.h"
@@ -30,7 +30,7 @@ enum ControlWordIP : quint16
     CW_Halt = 0x100
 };
 
-NodeProfile402Pp::NodeProfile402Pp(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
+ModePp::ModePp(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
     : _node(node)
     , _axis(axis)
     , _nodeProfile402(nodeProfile402)
@@ -48,17 +48,17 @@ NodeProfile402Pp::NodeProfile402Pp(Node *node, uint8_t axis, NodeProfile402 *nod
     _cmdControlWordSpecific = CW_PP_NewSetPoint;
 }
 
-void NodeProfile402Pp::setTarget(qint32 position)
+void ModePp::setTarget(qint32 position)
 {
     _node->writeObject(_targetObjectId, QVariant(position));
 }
 
-quint16 NodeProfile402Pp::getSpecificControlWord()
+quint16 ModePp::getSpecificControlWord()
 {
     return _cmdControlWordSpecific;
 }
 
-void NodeProfile402Pp::setEnableRamp(bool ok)
+void ModePp::setEnableRamp(bool ok)
 {
     //    if (ok)
     //    {
@@ -70,18 +70,18 @@ void NodeProfile402Pp::setEnableRamp(bool ok)
     //    }
 }
 
-// bool NodeProfile402Pp::isEnableRamp(void)
+// bool ModePp::isEnableRamp(void)
 //{
 ////    return _cmdControlWordSpecific & CW_IP_EnableRamp;
 //}
 
-void NodeProfile402Pp::applyNewSetPoint()
+void ModePp::applyNewSetPoint()
 {
     quint16 cmdControlWordSpecific = static_cast<quint16>((_node->nodeOd()->value(_controlWordObjectId).toUInt() | CW_PP_NewSetPoint));
     _node->writeObject(_controlWordObjectId, QVariant(cmdControlWordSpecific));
 }
 
-void NodeProfile402Pp::setChangeSetImmediately(bool ok)
+void ModePp::setChangeSetImmediately(bool ok)
 {
     if (ok)
     {
@@ -93,12 +93,12 @@ void NodeProfile402Pp::setChangeSetImmediately(bool ok)
     }
 }
 
-bool NodeProfile402Pp::isChangeSetImmediately()
+bool ModePp::isChangeSetImmediately()
 {
     return _cmdControlWordSpecific & CW_PP_ChangeSetImmediately;
 }
 
-void NodeProfile402Pp::setChangeOnSetPoint(bool ok)
+void ModePp::setChangeOnSetPoint(bool ok)
 {
     if (ok)
     {
@@ -110,12 +110,12 @@ void NodeProfile402Pp::setChangeOnSetPoint(bool ok)
     }
 }
 
-bool NodeProfile402Pp::isChangeOnSetPoint()
+bool ModePp::isChangeOnSetPoint()
 {
     return _cmdControlWordSpecific & CW_PP_ChangeOnSetPoint;
 }
 
-void NodeProfile402Pp::setAbsRel(bool ok)
+void ModePp::setAbsRel(bool ok)
 {
     if (ok)
     {
@@ -127,12 +127,12 @@ void NodeProfile402Pp::setAbsRel(bool ok)
     }
 }
 
-bool NodeProfile402Pp::isAbsRel()
+bool ModePp::isAbsRel()
 {
     return _cmdControlWordSpecific & CW_PP_AbsRel;
 }
 
-void NodeProfile402Pp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void ModePp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (objId == _targetObjectId)
     {

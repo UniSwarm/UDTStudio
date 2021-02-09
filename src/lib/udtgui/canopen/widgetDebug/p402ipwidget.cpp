@@ -26,7 +26,7 @@
 #include "canopen/widget/indexlabel.h"
 #include "indexdb402.h"
 #include "profile/p402/nodeprofile402.h"
-#include "profile/p402/nodeprofile402ip.h"
+#include "profile/p402/modeip.h"
 
 #include <QFormLayout>
 #include <QGroupBox>

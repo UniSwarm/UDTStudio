@@ -16,7 +16,7 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "nodeprofile402vl.h"
+#include "modevl.h"
 #include "indexdb402.h"
 #include "node.h"
 #include "nodeprofile402.h"
@@ -29,7 +29,7 @@ enum ControlWordVL : quint16
     CW_Halt = 0x100
 };
 
-NodeProfile402Vl::NodeProfile402Vl(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
+ModeVl::ModeVl(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
     : _node(node)
     , _axis(axis)
     , _nodeProfile402(nodeProfile402)
@@ -47,17 +47,17 @@ NodeProfile402Vl::NodeProfile402Vl(Node *node, uint8_t axis, NodeProfile402 *nod
     _cmdControlWordSpecific = CW_VL_EnableRamp | CW_VL_UnlockRamp | CW_VL_ReferenceRamp;
 }
 
-void NodeProfile402Vl::setTarget(qint16 velocity)
+void ModeVl::setTarget(qint16 velocity)
 {
     _node->writeObject(_targetObjectId, QVariant(velocity));
 }
 
-quint16 NodeProfile402Vl::getSpecificControlWord()
+quint16 ModeVl::getSpecificControlWord()
 {
     return _cmdControlWordSpecific;
 }
 
-void NodeProfile402Vl::setEnableRamp(bool ok)
+void ModeVl::setEnableRamp(bool ok)
 {
     if (ok)
     {
@@ -69,12 +69,12 @@ void NodeProfile402Vl::setEnableRamp(bool ok)
     }
 }
 
-bool NodeProfile402Vl::isEnableRamp(void)
+bool ModeVl::isEnableRamp(void)
 {
     return _cmdControlWordSpecific & CW_VL_EnableRamp;
 }
 
-void NodeProfile402Vl::setUnlockRamp(bool ok)
+void ModeVl::setUnlockRamp(bool ok)
 {
     if (ok)
     {
@@ -86,12 +86,12 @@ void NodeProfile402Vl::setUnlockRamp(bool ok)
     }
 }
 
-bool NodeProfile402Vl::isUnlockRamp(void)
+bool ModeVl::isUnlockRamp(void)
 {
     return _cmdControlWordSpecific & CW_VL_UnlockRamp;
 }
 
-void NodeProfile402Vl::setReferenceRamp(bool ok)
+void ModeVl::setReferenceRamp(bool ok)
 {
     if (ok)
     {
@@ -103,12 +103,12 @@ void NodeProfile402Vl::setReferenceRamp(bool ok)
     }
 }
 
-bool NodeProfile402Vl::isReferenceRamp(void)
+bool ModeVl::isReferenceRamp(void)
 {
     return _cmdControlWordSpecific & CW_VL_ReferenceRamp;
 }
 
-void NodeProfile402Vl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void ModeVl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (objId == _targetObjectId)
     {
