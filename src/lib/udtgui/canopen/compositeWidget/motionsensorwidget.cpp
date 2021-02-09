@@ -437,7 +437,7 @@ void MotionSensorWidget::statusNodeChanged(Node::Status status)
 
 void MotionSensorWidget::stateChanged()
 {
-    if (_nodeProfile402->currentState() != NodeProfile402::STATE_OperationEnabled)
+    if (_nodeProfile402->currentState() == NodeProfile402::STATE_OperationEnabled)
     {
         sensorConfigGroupBox->setEnabled(false);
         _filterGroupBox->setEnabled(false);
