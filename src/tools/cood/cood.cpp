@@ -62,23 +62,25 @@ int main(int argc, char *argv[])
     QCommandLineOption nodeIdOption(QStringList() << "n"
                                                   << "nodeid",
                                     QCoreApplication::translate("main", "CANOpen Node Id."),
-                                    "0");
+                                    "nodeid");
     cliParser.addOption(nodeIdOption);
 
     QCommandLineOption duplicateOption(QStringList() << "d"
                                                      << "duplicate",
                                        QCoreApplication::translate("main", "Duplicate profile"),
-                                       "0");
+                                       "duplicate");
     cliParser.addOption(duplicateOption);
 
     QCommandLineOption configurationOption(QStringList() << "c"
                                                          << "configuration",
-                                           QCoreApplication::translate("main", "Configuration apply"));
+                                           QCoreApplication::translate("main", "Configuration apply"),
+                                           "configuration");
     cliParser.addOption(configurationOption);
 
     QCommandLineOption mergeOption(QStringList() << "m"
                                                  << "merge",
-                                   QCoreApplication::translate("main", "Merge 2 eds files"));
+                                   QCoreApplication::translate("main", "Merge 2 eds files"),
+                                   "merge");
     cliParser.addOption(mergeOption);
 
     cliParser.process(app);
