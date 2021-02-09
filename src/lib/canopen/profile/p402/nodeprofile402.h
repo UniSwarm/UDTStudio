@@ -123,19 +123,18 @@ private:
     };
     StateState _stateState;
 
-    enum StateMode
-    {
-        NONE_MODE = 0,
-        MODE_CHANGE = 1,
-    };
-    StateMode _stateMode;
-
     NodeObjectId _modesOfOperationObjectId;
     NodeObjectId _modesOfOperationDisplayObjectId;
     NodeObjectId _supportedDriveModesObjectId;
     NodeObjectId _controlWordObjectId;
     NodeObjectId _statusWordObjectId;
 
+    enum StateMode
+    {
+        NONE_MODE = 0,
+        MODE_CHANGE = 1,
+    };
+    StateMode _stateMode;
     Mode _currentMode;
     Mode _requestedChangeMode;
     QList<Mode> _supportedModes;

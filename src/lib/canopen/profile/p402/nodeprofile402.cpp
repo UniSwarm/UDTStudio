@@ -440,16 +440,10 @@ void NodeProfile402::statusNodeChanged(Node::Status status)
 {
     if (status == Node::STARTED)
     {
-        _requestedStateMachine = State402::STATE_ReadyToSwitchOn;
-        _stateMachineCurrent = State402::STATE_ReadyToSwitchOn;
         _node->readObject(_modesOfOperationDisplayObjectId);
-        _node->readObject(_statusWordObjectId);
     }
-    else
-    {
-        _requestedStateMachine = State402::STATE_ReadyToSwitchOn;
-        _stateMachineCurrent = State402::STATE_ReadyToSwitchOn;
-    }
+
+    _node->readObject(_statusWordObjectId);
 }
 
 void NodeProfile402::activeSpecificBitControlWord(quint16 &cmdControlWord)
