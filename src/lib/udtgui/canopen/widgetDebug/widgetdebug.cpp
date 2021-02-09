@@ -20,6 +20,7 @@
 
 #include "indexdb402.h"
 #include "services/services.h"
+#include "canopen/widget/indexlabel.h"
 
 #include <QApplication>
 #include <QButtonGroup>
@@ -113,6 +114,11 @@ void WidgetDebug::setNode(Node *node, uint8_t axis)
         statusNodeChanged();
         modeChanged(_axis, _nodeProfile402->actualMode());
         stateChanged();
+
+        _controlWordLabel->setNode(_node);
+        _statusWordLabel->setNode(_node);
+        _controlWordLabel->setObjId(_controlWordObjectId);
+        _statusWordLabel->setObjId(_statusWordObjectId);
     }
 }
 
@@ -237,8 +243,7 @@ void WidgetDebug::modeChanged(uint8_t axis, NodeProfile402::Mode modeNew)
     int m = _listModeComboBox.indexOf(modeNew);
     _modeComboBox->setCurrentIndex(m);
     _modeComboBox->setEnabled(true);
-
-    _stackedWidget->currentWidget()->setEnabled(true);
+    _modeLabel->clear();
 }
 
 void WidgetDebug::stateChanged()
@@ -246,16 +251,16 @@ void WidgetDebug::stateChanged()
     NodeProfile402::State402 state = _nodeProfile402->currentState();
 
     _controlWordLabel->setText(QLatin1String("0x") + QString::number(_node->nodeOd()->value(_controlWordObjectId).toUInt(), 16).toUpper().rightJustified(4, '0'));
-    _statusWordRawLabel->setText(QLatin1String("0x") + QString::number(_node->nodeOd()->value(_statusWordObjectId).toUInt(), 16).toUpper().rightJustified(4, '0'));
+    _statusWordLabel->setText(QLatin1String("0x") + QString::number(_node->nodeOd()->value(_statusWordObjectId).toUInt(), 16).toUpper().rightJustified(4, '0'));
 
     if (state == NodeProfile402::STATE_NotReadyToSwitchOn)
     {
-        _statusWordLabel->setText(tr("NotReadyToSwitchOn"));
+        _statusWordStateLabel->setText(tr("NotReadyToSwitchOn"));
         setCheckableStateMachine(STATE_NotReadyToSwitchOn);
     }
     if (state == NodeProfile402::STATE_SwitchOnDisabled)
     {
-        _statusWordLabel->setText(tr("SwitchOnDisabled"));
+        _statusWordStateLabel->setText(tr("SwitchOnDisabled"));
         setCheckableStateMachine(STATE_SwitchOnDisabled);
         _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
         _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
@@ -267,7 +272,7 @@ void WidgetDebug::stateChanged()
     }
     if (state == NodeProfile402::STATE_ReadyToSwitchOn)
     {
-        _statusWordLabel->setText(tr("ReadyToSwitchOn"));
+        _statusWordStateLabel->setText(tr("ReadyToSwitchOn"));
         setCheckableStateMachine(STATE_ReadyToSwitchOn);
         _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
         _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
@@ -279,7 +284,7 @@ void WidgetDebug::stateChanged()
     }
     if (state == NodeProfile402::STATE_SwitchedOn)
     {
-        _statusWordLabel->setText(tr("SwitchedOn"));
+        _statusWordStateLabel->setText(tr("SwitchedOn"));
         setCheckableStateMachine(STATE_SwitchedOn);
         _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
         _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
@@ -291,7 +296,7 @@ void WidgetDebug::stateChanged()
     }
     if (state == NodeProfile402::STATE_OperationEnabled)
     {
-        _statusWordLabel->setText(tr("OperationEnabled"));
+        _statusWordStateLabel->setText(tr("OperationEnabled"));
         setCheckableStateMachine(STATE_OperationEnabled);
         _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
         _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
@@ -303,7 +308,7 @@ void WidgetDebug::stateChanged()
     }
     if (state == NodeProfile402::STATE_QuickStopActive)
     {
-        _statusWordLabel->setText(tr("QuickStopActive"));
+        _statusWordStateLabel->setText(tr("QuickStopActive"));
         setCheckableStateMachine(STATE_QuickStopActive);
         _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
         _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
@@ -315,7 +320,7 @@ void WidgetDebug::stateChanged()
     }
     if (state == NodeProfile402::STATE_FaultReactionActive)
     {
-        _statusWordLabel->setText(tr("FaultReactionActive"));
+        _statusWordStateLabel->setText(tr("FaultReactionActive"));
         setCheckableStateMachine(STATE_FaultReactionActive);
         _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(false);
         _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
@@ -327,7 +332,7 @@ void WidgetDebug::stateChanged()
     }
     if (state == NodeProfile402::STATE_Fault)
     {
-        _statusWordLabel->setText(tr("Fault"));
+        _statusWordStateLabel->setText(tr("Fault"));
         setCheckableStateMachine(STATE_Fault);
         _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
         _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
@@ -442,7 +447,7 @@ void WidgetDebug::modeIndexChanged(int id)
         return;
     }
     _modeComboBox->setEnabled(false);
-        _stackedWidget->currentWidget()->setEnabled(false);
+    _modeLabel->setText("Mode change in progress");
     _nodeProfile402->setMode(_listModeComboBox.at(id));
 }
 
@@ -514,6 +519,9 @@ void WidgetDebug::createWidgets()
     name = tr("Modes of operation ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, _axis).index(), 16));
     modeLayout->addRow(new QLabel(name));
     modeLayout->addRow(_modeComboBox);
+
+    _modeLabel = new QLabel();
+    modeLayout->addWidget(_modeLabel);
     _modeGroupBox->setLayout(modeLayout);
     p402layout->addWidget(_modeGroupBox);
 
@@ -571,7 +579,8 @@ void WidgetDebug::createWidgets()
     _controlWordGroupBox->setLayout(controlWordLayout);
     connect(_haltPushButton, &QPushButton::clicked, this, &WidgetDebug::haltClicked);
 
-    _controlWordLabel = new QLabel("0x0000");
+    _controlWordLabel = new IndexLabel();
+    _controlWordLabel->setDisplayHint(AbstractIndexWidget::DisplayHexa);
     controlWordLayout->addRow(tr("ControlWord sended:"), _controlWordLabel);
 
     QPushButton *_gotoOEPushButton = new QPushButton(tr("Operation enabled quickly"));
@@ -586,10 +595,11 @@ void WidgetDebug::createWidgets()
     _statusWordGroupBox = new QGroupBox(name);
     QFormLayout *statusWordLayout = new QFormLayout();
 
-    _statusWordRawLabel = new QLabel();
-    statusWordLayout->addRow(tr("StatusWord raw:"), _statusWordRawLabel);
-    _statusWordLabel = new QLabel();
-    statusWordLayout->addRow(tr("StatusWord State:"), _statusWordLabel);
+    _statusWordLabel = new IndexLabel();
+    _statusWordLabel->setDisplayHint(AbstractIndexWidget::DisplayHexa);
+    statusWordLayout->addRow(tr("StatusWord raw:"), _statusWordLabel);
+    _statusWordStateLabel = new QLabel();
+    statusWordLayout->addRow(tr("StatusWord State:"), _statusWordStateLabel);
 
     _informationLabel = new QLabel();
     statusWordLayout->addRow(tr("Information :"), _informationLabel);

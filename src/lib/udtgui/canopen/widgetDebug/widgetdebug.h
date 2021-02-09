@@ -41,6 +41,8 @@
 #include <QToolBar>
 #include <QWidget>
 
+class IndexLabel;
+
 class UDTGUI_EXPORT WidgetDebug : public QWidget, public NodeOdSubscriber
 {
     Q_OBJECT
@@ -95,18 +97,22 @@ private:
     QAction *_startStopAction;
 
     QGroupBox *_modeGroupBox;
-    QGroupBox *_stateMachineGroupBox;
-    QGroupBox *_controlWordGroupBox;
-    QGroupBox *_statusWordGroupBox;
     QComboBox *_modeComboBox;
     QList<NodeProfile402::Mode> _listModeComboBox;
-    QLabel *_controlWordLabel;
+    QLabel *_modeLabel;
+
+    QGroupBox *_stateMachineGroupBox;
+    QButtonGroup *_stateMachineGroup;
+
+    QGroupBox *_controlWordGroupBox;
     QPushButton *_haltPushButton;
-    QLabel *_statusWordRawLabel;
-    QLabel *_statusWordLabel;
+    IndexLabel *_controlWordLabel;
+
+    QGroupBox *_statusWordGroupBox;
+    IndexLabel *_statusWordLabel;
+    QLabel *_statusWordStateLabel;
     QLabel *_informationLabel;
     QLabel *_warningLabel;
-    QButtonGroup *_stateMachineGroup;
 
     void statusNodeChanged();
     void readDataTimer();
