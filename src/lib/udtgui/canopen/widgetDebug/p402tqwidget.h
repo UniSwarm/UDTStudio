@@ -30,6 +30,7 @@
 
 class NodeProfile402;
 class IndexSpinBox;
+class IndexLabel;
 
 class P402TqWidget : public QScrollArea, public NodeOdSubscriber
 {
@@ -61,10 +62,10 @@ private:
     NodeObjectId _tqCurrentActualValueObjectId;
     NodeObjectId _tqDCLinkVoltageObjectId;
 
-    QLabel *_tqTorqueDemandLabel;
-    QLabel *_tqTorqueActualValueLabel;
-    QLabel *_tqCurrentActualValueLabel;
-    QLabel *_tqDCLinkVoltageLabel;
+    IndexLabel *_tqTorqueDemandLabel;
+    IndexLabel *_tqTorqueActualValueLabel;
+    IndexLabel *_tqCurrentActualValueLabel;
+    IndexLabel *_tqDCLinkVoltageLabel;
     QSpinBox *_tqTargetTorqueSpinBox;
     QSlider *_tqTargetTorqueSlider;
     QLabel *_tqSliderMinLabel;
@@ -82,7 +83,6 @@ private:
 
     void dataLogger();
     void pdoMapping();
-    void refreshData(NodeObjectId object);
 
     void createWidgets();
 

@@ -35,6 +35,7 @@
 class NodeProfile402;
 class NodeObjectId;
 class IndexSpinBox;
+class IndexLabel;
 
 class P402IpWidget : public QScrollArea, public NodeOdSubscriber
 {
@@ -60,7 +61,7 @@ private:
     NodeObjectId _ipDataRecordObjectId;
     NodeObjectId _ipBufferClearObjectId;
     NodeObjectId _ipPositionDemandValueObjectId;
-    NodeObjectId _ipVelocityActualObjectId;
+    NodeObjectId _ipPositionActualValueObjectId;
     NodeObjectId _ipTimePeriodIndexObjectId;
     NodeObjectId _ipTimePeriodUnitsObjectId;
     NodeObjectId _ipPolarityObjectId;
@@ -71,7 +72,8 @@ private:
     QCheckBox *_ipEnableRampCheckBox;
 
     QLineEdit *_ipDataRecordLineEdit;
-    QLabel *_ipPositionDemandValueLabel;
+    IndexLabel *_ipPositionDemandValueLabel;
+    IndexLabel *_ipPositionAcualValueLabel;
 
     IndexSpinBox *_ipTimePeriodUnitSpinBox;
     IndexSpinBox *_ipTimePeriodIndexSpinBox;
@@ -121,7 +123,6 @@ private:
 
     void dataLogger();
     void pdoMapping();
-    void refreshData(NodeObjectId object);
 
     void createWidgets();
 

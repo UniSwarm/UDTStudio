@@ -19,6 +19,7 @@
 #include "p402tqwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
+#include "canopen/widget/indexlabel.h"
 #include "canopen/widget/indexspinbox.h"
 #include "indexdb402.h"
 #include "profile/p402/nodeprofile402.h"
@@ -110,6 +111,11 @@ void P402TqWidget::setNode(Node *node, uint8_t axis)
         registerObjId(_tqDCLinkVoltageObjectId);
         setNodeInterrest(_node);
 
+        _tqTorqueDemandLabel->setObjId(_tqTorqueDemandObjectId);
+        _tqTorqueActualValueLabel->setObjId(_tqTorqueActualValueObjectId);
+        _tqCurrentActualValueLabel->setObjId(_tqCurrentActualValueObjectId);
+        _tqDCLinkVoltageLabel->setObjId(_tqDCLinkVoltageObjectId);
+
         _tqTargetSlopeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_SLOPE, axis));
         _tqTorqueProfileTypeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_PROFILE_TYPE, axis));
         _tqMaxTorqueSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_MAX_TORQUE, axis));
@@ -146,11 +152,8 @@ void P402TqWidget::updateData()
         if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::Mode::TQ)
         {
             setEnabled(true);
-            _node->readObject(_tqTargetTorqueObjectId);
-            _node->readObject(_tqTorqueDemandObjectId);
-            _node->readObject(_tqTorqueActualValueObjectId);
-            _node->readObject(_tqCurrentActualValueObjectId);
-            _node->readObject(_tqDCLinkVoltageObjectId);
+            _tqTorqueDemandLabel->readObject();
+            _tqTorqueActualValueLabel->readObject();
         }
     }
 }
@@ -199,51 +202,9 @@ void P402TqWidget::pdoMapping()
     _node->tpdos().at(2)->writeMapping(tqTpdoObjectList);
 }
 
-void P402TqWidget::refreshData(NodeObjectId object)
-{
-    int value;
-    if (_node->nodeOd()->indexExist(object.index()))
-    {
-        if (object == _tqTargetTorqueObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            if (!_tqTargetTorqueSpinBox->hasFocus())
-            {
-                _tqTargetTorqueSpinBox->setValue(value);
-            }
-            if (!_tqTargetTorqueSlider->isSliderDown())
-            {
-                //_tqTargetTorqueSlider->setValue(value);
-            }
-        }
-
-        if (object == _tqTorqueActualValueObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _tqTorqueActualValueLabel->setNum(value);
-        }
-        if (object == _tqCurrentActualValueObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _tqCurrentActualValueLabel->setNum(value);
-        }
-        if (object == _tqDCLinkVoltageObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _tqDCLinkVoltageLabel->setNum(value);
-        }
-        if (object == _tqTorqueDemandObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _tqTorqueDemandLabel->setNum(value);
-        }
-    }
-}
-
 void P402TqWidget::createWidgets()
 {
     QWidget *widget = new QWidget();
-    QString name;
     QLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
 
@@ -253,8 +214,7 @@ void P402TqWidget::createWidgets()
 
     _tqTargetTorqueSpinBox = new QSpinBox();
     _tqTargetTorqueSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    name = tr("Target torque (0x%1) :").arg(QString::number(_tqTargetTorqueObjectId.index(), 16).toUpper());
-    tqLayout->addRow(name, _tqTargetTorqueSpinBox);
+    tqLayout->addRow(tr("Target torque"), _tqTargetTorqueSpinBox);
 
     _tqTargetTorqueSlider = new QSlider(Qt::Horizontal);
     _tqTargetTorqueSlider->setTickPosition(QSlider::TicksBelow);
@@ -274,55 +234,35 @@ void P402TqWidget::createWidgets()
     connect(_tqTargetTorqueSlider, &QSlider::valueChanged, this, &P402TqWidget::tqTargetTorqueSliderChanged);
     connect(_tqTargetTorqueSpinBox, &QSpinBox::editingFinished, this, &P402TqWidget::tqTargetTorqueSpinboxFinished);
 
-    _tqTorqueDemandLabel = new QLabel("-");
-    _tqTorqueDemandLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    name = tr("Torque demand ") + QString("(0x%1) :").arg(QString::number(_tqTorqueDemandObjectId.index(), 16).toUpper());
-    tqLayout->addRow(name, _tqTorqueDemandLabel);
+    _tqTorqueDemandLabel = new IndexLabel();
+    tqLayout->addRow(tr("Torque demand "), _tqTorqueDemandLabel);
 
-    _tqTorqueActualValueLabel = new QLabel("-");
-    _tqTorqueActualValueLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    name = tr("Torque actual value ") + QString("(0x%1) :").arg(QString::number(_tqTorqueActualValueObjectId.index(), 16).toUpper());
-    tqLayout->addRow(name, _tqTorqueActualValueLabel);
+    _tqTorqueActualValueLabel = new IndexLabel();
+    tqLayout->addRow(tr("Torque actual value "), _tqTorqueActualValueLabel);
 
-    _tqCurrentActualValueLabel = new QLabel("-");
-    _tqCurrentActualValueLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    //    name = tr("Current Actual Value ") + QString("(0x%1) :").arg(QString::number(_tqCurrentActualValueObjectId.index(), 16).toUpper());
-    tqLayout->addRow(name, _tqCurrentActualValueLabel);
+    _tqCurrentActualValueLabel = new IndexLabel();
+    //tqLayout->addRow(name, _tqCurrentActualValueLabel);
 
-    _tqDCLinkVoltageLabel = new QLabel("-");
-    _tqDCLinkVoltageLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    name = tr("DC Link Voltage ") + QString("(0x%1) :").arg(QString::number(_tqDCLinkVoltageObjectId.index(), 16).toUpper());
-    //    tqLayout->addRow(name, _tqDCLinkVoltageLabel);
+    _tqDCLinkVoltageLabel = new IndexLabel();
+    //    tqLayout->addRow(tr("DC Link Voltage "), _tqDCLinkVoltageLabel);
 
     _tqTargetSlopeSpinBox = new IndexSpinBox();
-    _tqTargetSlopeSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
-    name = tr("T&arget Slope ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_SLOPE, _axis).index(), 16).toUpper());
-    tqLayout->addRow(name, _tqTargetSlopeSpinBox);
+    tqLayout->addRow(tr("T&arget Slope "), _tqTargetSlopeSpinBox);
 
     _tqMaxTorqueSpinBox = new IndexSpinBox();
-    _tqMaxTorqueSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
-    name = tr("Ma&x torque ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_TQ_MAX_TORQUE, _axis).index(), 16).toUpper());
-    tqLayout->addRow(name, _tqMaxTorqueSpinBox);
+    tqLayout->addRow(tr("Ma&x torque "), _tqMaxTorqueSpinBox);
 
     _tqTorqueProfileTypeSpinBox = new IndexSpinBox();
-    _tqTorqueProfileTypeSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
-    name = tr("To&rque Profile Type ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_PROFILE_TYPE, _axis).index(), 16).toUpper());
-    //    tqLayout->addRow(name, _tqTorqueProfileTypeSpinBox);
+    //    tqLayout->addRow(tr("To&rque Profile Type "), _tqTorqueProfileTypeSpinBox);
 
     _tqMaxCurrentSpinBox = new IndexSpinBox();
-    _tqMaxCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
-    name = tr("Max &Current ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_TQ_MAX_CURRENT, _axis).index(), 16).toUpper());
-    //    tqLayout->addRow(name, _tqMaxCurrentSpinBox);
+    //    tqLayout->addRow(tr("Max &Current "), _tqMaxCurrentSpinBox);
 
     _tqMotorRatedTorqueSpinBox = new IndexSpinBox();
-    _tqMotorRatedTorqueSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
-    name = tr("Mot&or Rated Torque ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_TORQUE, _axis).index(), 16).toUpper());
-    //    tqLayout->addRow(name, _tqMotorRatedTorqueSpinBox);
+    //    tqLayout->addRow(tr("Mot&or Rated Torque "), _tqMotorRatedTorqueSpinBox);
 
     _tqMotorRatedCurrentSpinBox = new IndexSpinBox();
-    _tqMotorRatedCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
-    name = tr("Motor Rate&d Current ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_CURRENT, _axis).index(), 16).toUpper());
-    //    tqLayout->addRow(name, _tqMotorRatedCurrentSpinBox);
+    //    tqLayout->addRow(tr("Motor Rate&d Current "), _tqMotorRatedCurrentSpinBox);
     tqGroupBox->setLayout(tqLayout);
 
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
@@ -358,13 +298,19 @@ void P402TqWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         return;
     }
 
-    if ((objId == _tqTargetTorqueObjectId) || (objId == _tqTorqueDemandObjectId) || (objId == _tqTorqueActualValueObjectId) || (objId == _tqCurrentActualValueObjectId) ||
-        (objId == _tqDCLinkVoltageObjectId))
+    if (objId == _tqTargetTorqueObjectId)
     {
-        if (flags == SDO::FlagsRequest::Error)
+        if (flags != SDO::FlagsRequest::Error)
         {
-            return;
+            int value = _node->nodeOd()->value(objId).toInt();
+            if (!_tqTargetTorqueSpinBox->hasFocus())
+            {
+                _tqTargetTorqueSpinBox->setValue(value);
+            }
+            if (!_tqTargetTorqueSlider->isSliderDown())
+            {
+                //_tqTargetTorqueSlider->setValue(value);
+            }
         }
-        refreshData(objId);
     }
 }
