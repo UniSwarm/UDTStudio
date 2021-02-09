@@ -25,6 +25,16 @@ NodeProfile::NodeProfile(Node *node)
 {
 }
 
+Node *NodeProfile::node() const
+{
+    return _node;
+}
+
+quint8 NodeProfile::axisId() const
+{
+    return _axisId;
+}
+
 bool NodeProfile::status() const
 {
     return false;
