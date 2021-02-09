@@ -76,7 +76,6 @@ protected:
     QAction *_startStopAction;
 
     QGroupBox *sensorConfigGroupBox;
-
     IndexSpinBox *_sensorSelectSpinBox;
     IndexSpinBox *_thresholdMinSpinBox;
     IndexSpinBox *_thresholdMaxSpinBox;
@@ -92,6 +91,7 @@ protected:
     IndexLabel *_flagLabel;
     IndexLabel *_valueLabel;
 
+    QGroupBox *_filterGroupBox;
     IndexSpinBox *_filterSelect;
     IndexSpinBox *_param0;
     IndexSpinBox *_param1;
@@ -114,6 +114,7 @@ protected:
     void setIMode();
     void createWidgets();
     void statusNodeChanged(Node::Status status);
+    void stateChanged();
 };
 
 #endif // MOTIONSENSORWIDGET_H

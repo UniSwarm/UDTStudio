@@ -81,6 +81,7 @@ void MotionSensorWidget::setNode(Node *node, uint8_t axis)
     if (!_node->profiles().isEmpty())
     {
         _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+        connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &MotionSensorWidget::stateChanged);
     }
     setIMode();
 
@@ -168,7 +169,7 @@ void MotionSensorWidget::setIMode()
         break;
 
     case MODE_SENSOR_VELOCITY:
-        sensorConfigGroupBox->setTitle(tr("Sensor Velocity"));
+        sensorConfigGroupBox->setTitle(tr("Velocity sensor"));
         _sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_SELECT, _axis);
         _thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_THRESHOLD_MIN, _axis);
         _thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_THRESHOLD_MAX, _axis);
@@ -193,7 +194,7 @@ void MotionSensorWidget::setIMode()
         break;
 
     case MODE_SENSOR_TORQUE:
-        sensorConfigGroupBox->setTitle(tr("Sensor Torque"));
+        sensorConfigGroupBox->setTitle(tr("Torque sensor"));
         _sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_SELECT, _axis);
         _thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_THRESHOLD_MIN, _axis);
         _thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_THRESHOLD_MAX, _axis);
@@ -217,7 +218,7 @@ void MotionSensorWidget::setIMode()
         break;
 
     case MODE_SENSOR_POSITION:
-        sensorConfigGroupBox->setTitle(tr("Sensor Position"));
+        sensorConfigGroupBox->setTitle(tr("Position sensor"));
         _sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_SELECT, _axis);
         _thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_THRESHOLD_MIN, _axis);
         _thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_THRESHOLD_MAX, _axis);
@@ -373,7 +374,7 @@ void MotionSensorWidget::createWidgets()
 
     statusGroupBox->setLayout(statusLayout);
 
-    QGroupBox *filterGroupBox = new QGroupBox(tr("Sensor filter"));
+    _filterGroupBox = new QGroupBox(tr("Sensor filter"));
     QFormLayout *filterLayout = new QFormLayout();
 
     _filterSelect = new IndexSpinBox();
@@ -396,7 +397,7 @@ void MotionSensorWidget::createWidgets()
     _param3->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     filterLayout->addRow(tr("Param_&3:"), _param3);
 
-    filterGroupBox->setLayout(filterLayout);
+    _filterGroupBox->setLayout(filterLayout);
 
     QGroupBox *targetGroupBox = new QGroupBox(tr("Target"));
     QFormLayout *targetLayout = new QFormLayout();
@@ -404,7 +405,7 @@ void MotionSensorWidget::createWidgets()
 
     actionLayout->addWidget(sensorConfigGroupBox);
     actionLayout->addWidget(statusGroupBox);
-    actionLayout->addWidget(filterGroupBox);
+    actionLayout->addWidget(_filterGroupBox);
 
     QScrollArea *motionSensorScrollArea = new QScrollArea;
     motionSensorScrollArea->setWidget(motionSensorWidget);
@@ -424,12 +425,26 @@ void MotionSensorWidget::createWidgets()
 
 void MotionSensorWidget::statusNodeChanged(Node::Status status)
 {
-    if (status == Node::STARTED)
+    if (status == Node::STOPPED)
     {
-        this->setEnabled(true);
+        this->setEnabled(false);
     }
     else
     {
-        this->setEnabled(false);
+        this->setEnabled(true);
+    }
+}
+
+void MotionSensorWidget::stateChanged()
+{
+    if (_nodeProfile402->currentState() != NodeProfile402::STATE_OperationEnabled)
+    {
+        sensorConfigGroupBox->setEnabled(false);
+        _filterGroupBox->setEnabled(false);
+    }
+    else
+    {
+        sensorConfigGroupBox->setEnabled(true);
+        _filterGroupBox->setEnabled(true);
     }
 }

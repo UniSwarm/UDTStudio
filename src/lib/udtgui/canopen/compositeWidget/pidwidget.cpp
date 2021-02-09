@@ -615,7 +615,7 @@ void PidWidget::createWidgets()
 
 void PidWidget::statusNodeChanged(Node::Status status)
 {
-    if (status == Node::STARTED)
+    if (status != Node::STOPPED)
     {
         this->setEnabled(true);
     }
