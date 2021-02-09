@@ -21,18 +21,16 @@
 #include "node.h"
 #include "nodeprofile402.h"
 
-ModeTq::ModeTq(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
-    : _node(node)
-    , _axis(axis)
-    , _nodeProfile402(nodeProfile402)
+ModeTq::ModeTq(NodeProfile402 *nodeProfile402)
+    : Mode(nodeProfile402)
 {
-    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TARGET_TORQUE, axis);
+    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TARGET_TORQUE, _axisId);
     _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
     setNodeInterrest(_node);
     registerObjId(_targetObjectId);
 
-    _mode = 4;
+    _mode = NodeProfile402::OperationMode::TQ;
     _cmdControlWordSpecific = 0;
 }
 

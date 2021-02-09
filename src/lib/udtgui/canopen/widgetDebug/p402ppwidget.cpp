@@ -60,7 +60,7 @@ void P402PpWidget::readData()
 {
     if (_node)
     {
-        if (_nodeProfile402->actualMode() == NodeProfile402::Mode::PP)
+        if (_nodeProfile402->actualMode() == NodeProfile402::OperationMode::PP)
         {
             _node->readObject(_ppPositionDemandValueObjectId);
             _node->readObject(_ppPositionActualValueObjectId);
@@ -152,7 +152,7 @@ void P402PpWidget::updateData()
 {
     if (_node)
     {
-        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::Mode::PP)
+        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::OperationMode::PP)
         {
             setEnabled(true);
             _node->readObject(_ppPositionDemandValueObjectId);

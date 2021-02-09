@@ -19,21 +19,17 @@
 #ifndef MODEPP_H
 #define MODEPP_H
 
-#include "canopen_global.h"
-
-#include "nodeodsubscriber.h"
-
-#include <QObject>
+#include "mode.h"
 
 class Node;
 class NodeObjectId;
 class NodeProfile402;
 
-class CANOPEN_EXPORT ModePp : public QObject, public NodeOdSubscriber
+class ModePp : public Mode
 {
     Q_OBJECT
 public:
-    ModePp(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402);
+    ModePp(NodeProfile402 *nodeProfile402);
 
     void setTarget(qint32 position);
 
@@ -63,10 +59,6 @@ signals:
     void absRelEvent(bool ok);
 
 private:
-    Node *_node;
-    uint8_t _axis;
-    NodeProfile402 *_nodeProfile402;
-
     quint8 _mode;
     NodeObjectId _controlWordObjectId;
     NodeObjectId _targetObjectId;

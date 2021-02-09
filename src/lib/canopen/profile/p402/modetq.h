@@ -19,20 +19,16 @@
 #ifndef MODETQ_H
 #define MODETQ_H
 
-#include "canopen_global.h"
-
-#include "nodeodsubscriber.h"
-
-#include <QObject>
+#include "mode.h"
 
 class NodeObjectId;
 class NodeProfile402;
 
-class CANOPEN_EXPORT ModeTq : public QObject, public NodeOdSubscriber
+class ModeTq : public Mode
 {
     Q_OBJECT
 public:
-    ModeTq(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402);
+    ModeTq(NodeProfile402 *nodeProfile402);
 
     void setTarget(qint16 torque);
 
@@ -42,10 +38,6 @@ signals:
     void isAppliedTarget();
 
 private:
-    Node *_node;
-    uint8_t _axis;
-    NodeProfile402 *_nodeProfile402;
-
     quint8 _mode;
     NodeObjectId _targetObjectId;
     quint16 _cmdControlWordSpecific;

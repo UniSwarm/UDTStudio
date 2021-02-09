@@ -29,13 +29,11 @@ enum ControlWordVL : quint16
     CW_Halt = 0x100
 };
 
-ModeVl::ModeVl(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
-    : _node(node)
-    , _axis(axis)
-    , _nodeProfile402(nodeProfile402)
+ModeVl::ModeVl(NodeProfile402 *nodeProfile402)
+    : Mode(nodeProfile402)
 {
-    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, axis);
-    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, axis);
+    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, _axisId);
+    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, _axisId);
     _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     _controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
@@ -43,7 +41,7 @@ ModeVl::ModeVl(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
     registerObjId(_targetObjectId);
     registerObjId(_controlWordObjectId);
 
-    _mode = 2;
+    _mode = NodeProfile402::OperationMode::VL;
     _cmdControlWordSpecific = CW_VL_EnableRamp | CW_VL_UnlockRamp | CW_VL_ReferenceRamp;
 }
 

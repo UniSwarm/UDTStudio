@@ -29,6 +29,7 @@ class ModeVl;
 class ModeIp;
 class ModeTq;
 class ModePp;
+class Mode;
 
 class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
 {
@@ -36,7 +37,7 @@ class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
 public:
     NodeProfile402(Node *node, uint8_t axis);
 
-    enum Mode
+    enum OperationMode
     {
         MS = -1,
         NoMode = 0, //
@@ -53,11 +54,11 @@ public:
         Reserved = 12
     };
 
-    Mode actualMode();
-    bool setMode(Mode mode);
-    QString modeStr(NodeProfile402::Mode mode);
-    bool isModeSupported(Mode mode);
-    QList<Mode> modesSupported();
+    OperationMode actualMode();
+    bool setMode(OperationMode mode);
+    QString modeStr(NodeProfile402::OperationMode mode);
+    bool isModeSupported(OperationMode mode);
+    QList<OperationMode> modesSupported();
 
     enum State402
     {
@@ -101,8 +102,10 @@ public:
     void setReferenceRamp(bool ok);
     bool isReferenceRamp(void);
 
+    const Mode *mode(OperationMode mode) const;
+
 signals:
-    void modeChanged(uint8_t axis, Mode modeNew);
+    void modeChanged(uint8_t axis, OperationMode modeNew);
     void stateChanged();
     void isHalted(bool state);
     void eventHappened(quint8 Event402);
@@ -114,7 +117,6 @@ signals:
     void supportedDriveModesUdpdated();
 
 private:
-    uint8_t _axis;
 
     enum StateState
     {
@@ -135,9 +137,9 @@ private:
         MODE_CHANGE = 1,
     };
     StateMode _stateMode;
-    Mode _currentMode;
-    Mode _requestedChangeMode;
-    QList<Mode> _supportedModes;
+    OperationMode _currentMode;
+    OperationMode _requestedChangeMode;
+    QList<OperationMode> _supportedModes;
 
     quint16 _cmdControlWord;
     State402 _stateMachineCurrent;
@@ -145,10 +147,12 @@ private:
 
     uint8_t _eventStatusWord;
 
-    ModeIp *_p402Ip;
-    ModeTq *_p402Tq;
-    ModeVl *_p402Vl;
-    ModePp *_p402Pp;
+    QMap<OperationMode, Mode*> _modes;
+
+    ModeIp *_modeIp;
+    ModeTq *_modeTq;
+    ModeVl *_modeVl;
+    ModePp *_modePp;
 
     QTimer _modeTimer;
 

@@ -30,13 +30,11 @@ enum ControlWordIP : quint16
     CW_Halt = 0x100
 };
 
-ModePp::ModePp(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
-    : _node(node)
-    , _axis(axis)
-    , _nodeProfile402(nodeProfile402)
+ModePp::ModePp(NodeProfile402 *nodeProfile402)
+    : Mode(nodeProfile402)
 {
-    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_SET_POINT, axis);
-    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, axis);
+    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_SET_POINT, _axisId);
+    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, _axisId);
     _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     _controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
@@ -44,7 +42,7 @@ ModePp::ModePp(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402)
     registerObjId(_targetObjectId);
     registerObjId(_controlWordObjectId);
 
-    _mode = 7;
+    _mode = NodeProfile402::OperationMode::PP;
     _cmdControlWordSpecific = CW_PP_NewSetPoint;
 }
 

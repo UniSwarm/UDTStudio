@@ -61,7 +61,7 @@ void P402IpWidget::readData()
 {
     if (_node)
     {
-        if (_nodeProfile402->actualMode() == NodeProfile402::Mode::IP)
+        if (_nodeProfile402->actualMode() == NodeProfile402::OperationMode::IP)
         {
             _ipPositionDemandValueLabel->readObject();
             _ipPositionAcualValueLabel->readObject();
@@ -165,7 +165,7 @@ void P402IpWidget::updateData()
 {
     if (_node)
     {
-        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::Mode::IP)
+        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::OperationMode::IP)
         {
             setEnabled(true);
             _ipPositionDemandValueLabel->readObject();

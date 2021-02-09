@@ -54,7 +54,7 @@ void P402VlWidget::readData()
 {
     if (_node)
     {
-        if (_nodeProfile402->actualMode() == NodeProfile402::Mode::VL)
+        if (_nodeProfile402->actualMode() == NodeProfile402::OperationMode::VL)
         {
             _node->readObject(_vlVelocityDemandObjectId);
             _node->readObject(_vlVelocityActualObjectId);
@@ -159,7 +159,7 @@ void P402VlWidget::updateData()
 {
     if (_node)
     {
-        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::Mode::VL)
+        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::OperationMode::VL)
         {
             this->setEnabled(true);
             _node->readObject(_vlTargetVelocityObjectId);

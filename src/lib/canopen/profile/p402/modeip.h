@@ -19,21 +19,16 @@
 #ifndef MODEIP_H
 #define MODEIP_H
 
-#include "canopen_global.h"
+#include "mode.h"
 
-#include "nodeodsubscriber.h"
-
-#include <QObject>
-
-class Node;
 class NodeObjectId;
 class NodeProfile402;
 
-class CANOPEN_EXPORT ModeIp : public QObject, public NodeOdSubscriber
+class ModeIp : public Mode
 {
     Q_OBJECT
 public:
-    ModeIp(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402);
+    ModeIp(NodeProfile402 *nodeProfile402);
 
     void setTarget(qint32 position);
 
@@ -47,10 +42,6 @@ signals:
     void enableRampEvent(bool ok);
 
 private:
-    Node *_node;
-    uint8_t _axis;
-    NodeProfile402 *_nodeProfile402;
-
     quint8 _mode;
     NodeObjectId _controlWordObjectId;
     NodeObjectId _targetObjectId;

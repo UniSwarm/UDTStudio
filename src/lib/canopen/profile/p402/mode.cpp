@@ -19,9 +19,11 @@
 #include "mode.h"
 
 #include "node.h"
+#include "nodeprofile402.h"
 
-Mode::Mode(Node *node)
-    : _node(node)
+Mode::Mode(NodeProfile402 *nodeProfile402)
+    : _nodeProfile402(nodeProfile402)
 {
-
+    _node = _nodeProfile402->node();
+    _axisId = _nodeProfile402->axisId();
 }

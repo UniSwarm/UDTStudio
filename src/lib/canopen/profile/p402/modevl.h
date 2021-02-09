@@ -19,21 +19,16 @@
 #ifndef MODEVL_H
 #define MODEVL_H
 
-#include "canopen_global.h"
+#include "mode.h"
 
-#include "nodeodsubscriber.h"
-
-#include <QObject>
-
-class Node;
 class NodeObjectId;
 class NodeProfile402;
 
-class CANOPEN_EXPORT ModeVl : public QObject, public NodeOdSubscriber
+class ModeVl : public Mode
 {
     Q_OBJECT
 public:
-    ModeVl(Node *node, uint8_t axis, NodeProfile402 *nodeProfile402);
+    ModeVl(NodeProfile402 *nodeProfile402);
 
     void setTarget(qint16 velocity);
 
@@ -55,12 +50,7 @@ signals:
     void unlockRampEvent(bool ok);
 
 private:
-    Node *_node;
-    uint8_t _axis;
     quint8 _mode;
-
-    NodeProfile402 *_nodeProfile402;
-
     NodeObjectId _controlWordObjectId;
     NodeObjectId _targetObjectId;
     quint16 _cmdControlWordSpecific;

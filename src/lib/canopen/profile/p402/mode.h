@@ -25,13 +25,17 @@
 
 #include "nodeodsubscriber.h"
 
+class NodeProfile402;
+
 class CANOPEN_EXPORT Mode : public QObject, public NodeOdSubscriber
 {
 public:
-    Mode(Node *node);
+    Mode(NodeProfile402 *nodeProfile402);
 
 protected:
     Node *_node;
+    NodeProfile402 *_nodeProfile402;
+    uint8_t _axisId;
 };
 
 #endif // MODE_H

@@ -98,7 +98,7 @@ private:
 
     QGroupBox *_modeGroupBox;
     QComboBox *_modeComboBox;
-    QList<NodeProfile402::Mode> _listModeComboBox;
+    QList<NodeProfile402::OperationMode> _listModeComboBox;
     QLabel *_modeLabel;
 
     QGroupBox *_stateMachineGroupBox;
@@ -117,7 +117,7 @@ private:
     void statusNodeChanged();
     void readDataTimer();
 
-    void modeChanged(uint8_t axis, NodeProfile402::Mode modeNew);
+    void modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew);
     void stateChanged();
     void isHalted(bool state);
     void eventHappened(quint8 event);

@@ -206,7 +206,7 @@ void WidgetDebug::readDataTimer()
     }
 }
 
-void WidgetDebug::modeChanged(uint8_t axis, NodeProfile402::Mode modeNew)
+void WidgetDebug::modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew)
 {
     if (_axis != axis)
     {
@@ -413,7 +413,7 @@ void WidgetDebug::eventHappened(quint8 event)
 
 void WidgetDebug::updateModeComboBox()
 {
-    QList<NodeProfile402::Mode> modeList = _nodeProfile402->modesSupported();
+    QList<NodeProfile402::OperationMode> modeList = _nodeProfile402->modesSupported();
     _modeComboBox->clear();
 
     for (quint8 i = 0; i < modeList.size(); i++)

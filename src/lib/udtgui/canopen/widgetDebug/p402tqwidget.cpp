@@ -53,7 +53,7 @@ void P402TqWidget::readData()
 {
     if (_node)
     {
-        if (_nodeProfile402->actualMode() == NodeProfile402::Mode::TQ)
+        if (_nodeProfile402->actualMode() == NodeProfile402::OperationMode::TQ)
         {
             _node->readObject(_tqTorqueDemandObjectId);
             _node->readObject(_tqTorqueActualValueObjectId);
@@ -149,7 +149,7 @@ void P402TqWidget::updateData()
 {
     if (_node)
     {
-        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::Mode::TQ)
+        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::OperationMode::TQ)
         {
             setEnabled(true);
             _tqTorqueDemandLabel->readObject();

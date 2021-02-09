@@ -75,8 +75,7 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
         return;
     }
 
-    _axis = axis;
-    _node = node;
+    _axisId = axis;
 
     _modesOfOperationObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, axis);
     _modesOfOperationDisplayObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION_DISPLAY, axis);
@@ -104,10 +103,14 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
 
     connect(_node, &Node::statusChanged, this, &NodeProfile402::statusNodeChanged);
 
-    _p402Ip = new ModeIp(_node, axis, this);
-    _p402Tq = new ModeTq(_node, axis, this);
-    _p402Vl = new ModeVl(_node, axis, this);
-    _p402Pp = new ModePp(_node, axis, this);
+    _modeIp = new ModeIp(this);
+    _modeTq = new ModeTq(this);
+    _modeVl = new ModeVl(this);
+    _modePp = new ModePp(this);
+    _modes.insert(IP, _modeIp);
+    _modes.insert(TQ, _modeTq);
+    _modes.insert(VL, _modeVl);
+    _modes.insert(PP, _modePp);
 
     _requestedStateMachine = State402::STATE_NotReadyToSwitchOn;
     _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
@@ -119,24 +122,24 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     _cmdControlWord = 0;
 }
 
-NodeProfile402::Mode NodeProfile402::actualMode()
+NodeProfile402::OperationMode NodeProfile402::actualMode()
 {
     if ((_currentMode == NoMode) || (_currentMode == PP) || (_currentMode == VL) || (_currentMode == PV) || (_currentMode == TQ) || (_currentMode == HM) || (_currentMode == IP) ||
         (_currentMode == CSP) || (_currentMode == CSV) || (_currentMode == CST) || (_currentMode == CSTCA))
     {
-        return static_cast<Mode>(_currentMode);
+        return static_cast<OperationMode>(_currentMode);
     }
     else if (_currentMode < 0)
     {
-        return Mode::MS;
+        return OperationMode::MS;
     }
     else
     {
-        return Mode::Reserved;
+        return OperationMode::Reserved;
     }
 }
 
-bool NodeProfile402::setMode(Mode mode)
+bool NodeProfile402::setMode(OperationMode mode)
 {
     if (_currentMode == mode)
     {
@@ -149,26 +152,26 @@ bool NodeProfile402::setMode(Mode mode)
         _stateMode = MODE_CHANGE;
         _requestedChangeMode = mode;
 
-        if (_requestedChangeMode == Mode::VL)
+        if (_requestedChangeMode == OperationMode::VL)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Vl->getSpecificControlWord();
-            emit enableRampEvent(_p402Vl->isEnableRamp());
-            emit referenceRampEvent(_p402Vl->isReferenceRamp());
-            emit unlockRampEvent(_p402Vl->isUnlockRamp());
+            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeVl->getSpecificControlWord();
+            emit enableRampEvent(_modeVl->isEnableRamp());
+            emit referenceRampEvent(_modeVl->isReferenceRamp());
+            emit unlockRampEvent(_modeVl->isUnlockRamp());
         }
-        else if (_requestedChangeMode == Mode::IP)
+        else if (_requestedChangeMode == OperationMode::IP)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Ip->getSpecificControlWord();
-            emit enableRampEvent(_p402Ip->isEnableRamp());
+            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeIp->getSpecificControlWord();
+            emit enableRampEvent(_modeIp->isEnableRamp());
         }
-        else if (_requestedChangeMode == Mode::TQ)
+        else if (_requestedChangeMode == OperationMode::TQ)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Tq->getSpecificControlWord();
+            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeTq->getSpecificControlWord();
         }
 
-        else if (_requestedChangeMode == Mode::PP)
+        else if (_requestedChangeMode == OperationMode::PP)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Pp->getSpecificControlWord();
+            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modePp->getSpecificControlWord();
         }
 
         return true;
@@ -179,31 +182,31 @@ bool NodeProfile402::setMode(Mode mode)
     }
 }
 
-QString NodeProfile402::modeStr(NodeProfile402::Mode mode)
+QString NodeProfile402::modeStr(NodeProfile402::OperationMode mode)
 {
     switch (mode)
     {
-    case Mode::NoMode:
+    case OperationMode::NoMode:
         return tr("No mode");
-    case Mode::PP:
+    case OperationMode::PP:
         return tr("Profile position (PP)");
-    case Mode::VL:
+    case OperationMode::VL:
         return tr("Velocity (VL)");
-    case Mode::PV:
+    case OperationMode::PV:
         return tr("Profile velocity (PV)");
-    case Mode::TQ:
+    case OperationMode::TQ:
         return tr("Torque profile(TQ)");
-    case Mode::HM:
+    case OperationMode::HM:
         return tr("Homing (HM)");
-    case Mode::IP:
+    case OperationMode::IP:
         return tr("Interpolated position (IP)");
-    case Mode::CSP:
+    case OperationMode::CSP:
         return tr("Cyclic sync position (CSP)");
-    case Mode::CSV:
+    case OperationMode::CSV:
         return tr("Cyclic sync velocity (CSV)");
-    case Mode::CST:
+    case OperationMode::CST:
         return tr("Cyclic sync torque (CST)");
-    case Mode::CSTCA:
+    case OperationMode::CSTCA:
         return tr("Cyclic sync torque mode with commutation angle (CTCA)");
     default:
         if (_currentMode < 0)
@@ -217,9 +220,9 @@ QString NodeProfile402::modeStr(NodeProfile402::Mode mode)
     }
 }
 
-bool NodeProfile402::isModeSupported(Mode mode)
+bool NodeProfile402::isModeSupported(OperationMode mode)
 {
-    for (const Mode &modesupported : _supportedModes)
+    for (const OperationMode &modesupported : _supportedModes)
     {
         if (modesupported == mode)
         {
@@ -229,7 +232,7 @@ bool NodeProfile402::isModeSupported(Mode mode)
     return false;
 }
 
-QList<NodeProfile402::Mode> NodeProfile402::modesSupported()
+QList<NodeProfile402::OperationMode> NodeProfile402::modesSupported()
 {
     return _supportedModes;
 }
@@ -304,25 +307,25 @@ void NodeProfile402::setTarget(qint32 target)
         break;
 
     case NodeProfile402::PP:
-        _p402Pp->setTarget(target);
+        _modePp->setTarget(target);
         break;
 
     case NodeProfile402::VL:
-        _p402Vl->setTarget(static_cast<qint16>(target));
+        _modeVl->setTarget(static_cast<qint16>(target));
         break;
 
     case NodeProfile402::PV:
         break;
 
     case NodeProfile402::TQ:
-        _p402Tq->setTarget(static_cast<qint16>(target));
+        _modeTq->setTarget(static_cast<qint16>(target));
         break;
 
     case NodeProfile402::HM:
         break;
 
     case NodeProfile402::IP:
-        _p402Ip->setTarget(target);
+        _modeIp->setTarget(target);
         break;
 
     case NodeProfile402::CSP:
@@ -367,73 +370,78 @@ QString NodeProfile402::event402Str(quint8 event402)
 
 void NodeProfile402::setEnableRamp(bool ok)
 {
-    if (_currentMode == Mode::VL)
+    if (_currentMode == OperationMode::VL)
     {
-        _p402Vl->setEnableRamp(ok);
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Vl->getSpecificControlWord();
+        _modeVl->setEnableRamp(ok);
+        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeVl->getSpecificControlWord();
     }
-    if (_currentMode == Mode::IP)
+    if (_currentMode == OperationMode::IP)
     {
-        _p402Ip->setEnableRamp(ok);
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Ip->getSpecificControlWord();
+        _modeIp->setEnableRamp(ok);
+        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeIp->getSpecificControlWord();
     }
-    if (_currentMode == Mode::PP)
+    if (_currentMode == OperationMode::PP)
     {
-        _p402Pp->setEnableRamp(ok);
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Ip->getSpecificControlWord();
+        _modePp->setEnableRamp(ok);
+        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeIp->getSpecificControlWord();
     }
     _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
 }
 
 bool NodeProfile402::isEnableRamp()
 {
-    if (_currentMode == Mode::VL)
+    if (_currentMode == OperationMode::VL)
     {
-        return _p402Vl->isEnableRamp();
+        return _modeVl->isEnableRamp();
     }
-    if (_currentMode == Mode::IP)
+    if (_currentMode == OperationMode::IP)
     {
-        return _p402Ip->isEnableRamp();
+        return _modeIp->isEnableRamp();
     }
     return false;
 }
 
 void NodeProfile402::setUnlockRamp(bool ok)
 {
-    if (_currentMode == Mode::VL)
+    if (_currentMode == OperationMode::VL)
     {
-        _p402Vl->setUnlockRamp(ok);
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Vl->getSpecificControlWord();
+        _modeVl->setUnlockRamp(ok);
+        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeVl->getSpecificControlWord();
     }
     _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
 }
 
 bool NodeProfile402::isUnlockRamp()
 {
-    if (_currentMode == Mode::VL)
+    if (_currentMode == OperationMode::VL)
     {
-        return _p402Vl->isUnlockRamp();
+        return _modeVl->isUnlockRamp();
     }
     return false;
 }
 
 void NodeProfile402::setReferenceRamp(bool ok)
 {
-    if (_currentMode == Mode::VL)
+    if (_currentMode == OperationMode::VL)
     {
-        _p402Vl->setReferenceRamp(ok);
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Vl->getSpecificControlWord();
+        _modeVl->setReferenceRamp(ok);
+        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeVl->getSpecificControlWord();
     }
     _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
 }
 
 bool NodeProfile402::isReferenceRamp()
 {
-    if (_currentMode == Mode::VL)
+    if (_currentMode == OperationMode::VL)
     {
-        return _p402Vl->isReferenceRamp();
+        return _modeVl->isReferenceRamp();
     }
     return false;
+}
+
+const Mode *NodeProfile402::mode(NodeProfile402::OperationMode mode) const
+{
+    return _modes[mode];
 }
 
 void NodeProfile402::statusNodeChanged(Node::Status status)
@@ -457,25 +465,25 @@ void NodeProfile402::activeSpecificBitControlWord(quint16 &cmdControlWord)
         break;
 
     case NodeProfile402::PP:
-        cmdControlWord |= _p402Pp->getSpecificControlWord();
+        cmdControlWord |= _modePp->getSpecificControlWord();
         break;
 
     case NodeProfile402::VL:
-        cmdControlWord |= _p402Vl->getSpecificControlWord();
+        cmdControlWord |= _modeVl->getSpecificControlWord();
         break;
 
     case NodeProfile402::PV:
         break;
 
     case NodeProfile402::TQ:
-        cmdControlWord |= _p402Tq->getSpecificControlWord();
+        cmdControlWord |= _modeTq->getSpecificControlWord();
         break;
 
     case NodeProfile402::HM:
         break;
 
     case NodeProfile402::IP:
-        cmdControlWord |= _p402Ip->getSpecificControlWord();
+        cmdControlWord |= _modeIp->getSpecificControlWord();
         break;
 
     case NodeProfile402::CSP:
@@ -506,22 +514,22 @@ void NodeProfile402::manageState(const State402 state)
         return;
     }
 
-    if (_currentMode == Mode::VL)
+    if (_currentMode == OperationMode::VL)
     {
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Vl->getSpecificControlWord();
+        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeVl->getSpecificControlWord();
     }
-    else if (_currentMode == Mode::IP)
+    else if (_currentMode == OperationMode::IP)
     {
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Ip->getSpecificControlWord();
+        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeIp->getSpecificControlWord();
     }
-    else if (_currentMode == Mode::TQ)
+    else if (_currentMode == OperationMode::TQ)
     {
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Tq->getSpecificControlWord();
+        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeTq->getSpecificControlWord();
     }
 
-    else if (_currentMode == Mode::PP)
+    else if (_currentMode == OperationMode::PP)
     {
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Pp->getSpecificControlWord();
+        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modePp->getSpecificControlWord();
     }
 
     switch (_stateMachineCurrent)
@@ -659,18 +667,18 @@ void NodeProfile402::manageStateStatusWord(quint16 statusWord)
     }
     if ((statusWord & SW_StateMask1) == SW_StateSwitchOnDisabled)
     {
-        if (_currentMode == Mode::VL)
+        if (_currentMode == OperationMode::VL)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Vl->getSpecificControlWord();
-            emit enableRampEvent(_p402Vl->isEnableRamp());
-            emit referenceRampEvent(_p402Vl->isReferenceRamp());
-            emit unlockRampEvent(_p402Vl->isUnlockRamp());
+            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeVl->getSpecificControlWord();
+            emit enableRampEvent(_modeVl->isEnableRamp());
+            emit referenceRampEvent(_modeVl->isReferenceRamp());
+            emit unlockRampEvent(_modeVl->isUnlockRamp());
         }
 
-        if (_currentMode == Mode::IP)
+        if (_currentMode == OperationMode::IP)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _p402Ip->getSpecificControlWord();
-            emit enableRampEvent(_p402Ip->isEnableRamp());
+            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeIp->getSpecificControlWord();
+            emit enableRampEvent(_modeIp->isEnableRamp());
         }
 
         _stateMachineCurrent = STATE_SwitchOnDisabled;
@@ -719,7 +727,7 @@ void NodeProfile402::manageSupportedDriveModes(quint32 supportedDriveModes)
     _supportedModes.clear();
     if ((supportedDriveModes & 0x7EF) == 0)
     {
-        _supportedModes.append(Mode::NoMode);
+        _supportedModes.append(OperationMode::NoMode);
         return;
     }
     for (quint32 i = 0; i <= 10; i++)
@@ -727,43 +735,43 @@ void NodeProfile402::manageSupportedDriveModes(quint32 supportedDriveModes)
         switch ((supportedDriveModes & (1 << i)))
         {
         case 0x1:
-            _supportedModes.append(Mode::PP);
+            _supportedModes.append(OperationMode::PP);
             break;
 
         case 0x2:
-            _supportedModes.append(Mode::VL);
+            _supportedModes.append(OperationMode::VL);
             break;
 
         case 0x4:
-            _supportedModes.append(Mode::PV);
+            _supportedModes.append(OperationMode::PV);
             break;
 
         case 0x8:
-            _supportedModes.append(Mode::TQ);
+            _supportedModes.append(OperationMode::TQ);
             break;
 
         case 0x20:
-            _supportedModes.append(Mode::HM);
+            _supportedModes.append(OperationMode::HM);
             break;
 
         case 0x40:
-            _supportedModes.append(Mode::IP);
+            _supportedModes.append(OperationMode::IP);
             break;
 
         case 0x80:
-            _supportedModes.append(Mode::CSP);
+            _supportedModes.append(OperationMode::CSP);
             break;
 
         case 0x100:
-            _supportedModes.append(Mode::CSV);
+            _supportedModes.append(OperationMode::CSV);
             break;
 
         case 0x200:
-            _supportedModes.append(Mode::CST);
+            _supportedModes.append(OperationMode::CST);
             break;
 
         case 0x400:
-            _supportedModes.append(Mode::CSTCA);
+            _supportedModes.append(OperationMode::CSTCA);
             break;
         }
     }
@@ -798,10 +806,10 @@ void NodeProfile402::reset()
 
     manageSupportedDriveModes(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
 
-    _p402Ip->setEnableRamp(true);
-    _p402Vl->setEnableRamp(true);
-    _p402Vl->setUnlockRamp(true);
-    _p402Vl->setReferenceRamp(true);
+    _modeIp->setEnableRamp(true);
+    _modeVl->setEnableRamp(true);
+    _modeVl->setUnlockRamp(true);
+    _modeVl->setReferenceRamp(true);
 }
 
 void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
@@ -818,7 +826,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
     {
         if (flags != SDO::FlagsRequest::Error)
         {
-            NodeProfile402::Mode mode = static_cast<NodeProfile402::Mode>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
+            NodeProfile402::OperationMode mode = static_cast<NodeProfile402::OperationMode>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
             if ((_stateMode == NodeProfile402::MODE_CHANGE) && (_requestedChangeMode != mode))
             {
                 _modeTimer.singleShot(TIMER_READ_MODE_OPERATION_DISPLAY, this, SLOT(readModeOfOperationDisplay()));
@@ -828,7 +836,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
             _currentMode = mode;
             _requestedChangeMode = _currentMode;
             _stateMode = NodeProfile402::StateMode::NONE_MODE;
-            emit modeChanged(_axis, _currentMode);            
+            emit modeChanged(_axisId, _currentMode);
             return;
         }
     }

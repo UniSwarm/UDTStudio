@@ -296,7 +296,7 @@ void PidWidget::changeMode402()
     _goTargetPushButton->setEnabled(false);
 }
 
-void PidWidget::mode402Changed(uint8_t axis, NodeProfile402::Mode modeNew)
+void PidWidget::mode402Changed(uint8_t axis, NodeProfile402::OperationMode modeNew)
 {
     if (!_nodeProfile402)
     {
