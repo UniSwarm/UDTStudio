@@ -206,6 +206,9 @@ void WidgetDebug::modeChanged(uint8_t axis, NodeProfile402::Mode modeNew)
     {
         return;
     }
+    // Patch because the widget Tarqet torque and velocity are not an IndexSpinbox so not read automaticaly
+    _p402vl->reset();
+    _p402tq->reset();
 
     if (modeNew == NodeProfile402::IP)
     {
@@ -234,6 +237,8 @@ void WidgetDebug::modeChanged(uint8_t axis, NodeProfile402::Mode modeNew)
     int m = _listModeComboBox.indexOf(modeNew);
     _modeComboBox->setCurrentIndex(m);
     _modeComboBox->setEnabled(true);
+
+    _stackedWidget->currentWidget()->setEnabled(true);
 }
 
 void WidgetDebug::stateChanged()
@@ -437,6 +442,7 @@ void WidgetDebug::modeIndexChanged(int id)
         return;
     }
     _modeComboBox->setEnabled(false);
+        _stackedWidget->currentWidget()->setEnabled(false);
     _nodeProfile402->setMode(_listModeComboBox.at(id));
 }
 

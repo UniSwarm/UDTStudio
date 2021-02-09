@@ -43,6 +43,8 @@ public:
     Node *node() const;
 
     void readData();
+    void reset();
+
 signals:
 
 public slots:

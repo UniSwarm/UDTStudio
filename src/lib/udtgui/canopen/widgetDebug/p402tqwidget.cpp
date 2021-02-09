@@ -60,6 +60,11 @@ void P402TqWidget::readData()
     }
 }
 
+void P402TqWidget::reset()
+{
+    _node->readObject(_tqTargetTorqueObjectId);
+}
+
 void P402TqWidget::setNode(Node *node, uint8_t axis)
 {
     if (node != _node)

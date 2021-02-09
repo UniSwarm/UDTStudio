@@ -62,6 +62,11 @@ void P402VlWidget::readData()
     }
 }
 
+void P402VlWidget::reset()
+{
+    _node->readObject(_vlTargetVelocityObjectId);
+}
+
 void P402VlWidget::setNode(Node *node, uint8_t axis)
 {
     if (node != _node)
