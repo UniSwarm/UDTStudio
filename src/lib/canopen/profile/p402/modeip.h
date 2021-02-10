@@ -30,22 +30,29 @@ class ModeIp : public Mode
 public:
     ModeIp(NodeProfile402 *nodeProfile402);
 
-    void setTarget(qint32 position);
-
-    quint16 getSpecificControlWord();
-
     void setEnableRamp(bool ok);
     bool isEnableRamp(void);
 
+
+public slots:
+    void bufferClear();
+
+
 signals:
-    void isAppliedTarget();
     void enableRampEvent(bool ok);
 
 private:
     quint8 _mode;
-    NodeObjectId _controlWordObjectId;
     NodeObjectId _targetObjectId;
-    quint16 _cmdControlWordSpecific;
+    NodeObjectId _bufferClearObjectId;
+
+    quint16 _cmdControlWordFlag;
+
+    // Mode interface
+public:
+    void setTarget(qint32 target) override;
+    quint16 getSpecificCwFlag() override;
+    void setCwDefaultflag() override;
 
     // NodeOdSubscriber interface
 public:

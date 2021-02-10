@@ -93,26 +93,15 @@ public:
 
     QString event402Str(quint8 Event402);
 
-    void setEnableRamp(bool ok);
-    bool isEnableRamp(void);
+    Mode *mode(OperationMode mode) const;
 
-    void setUnlockRamp(bool ok);
-    bool isUnlockRamp(void);
-
-    void setReferenceRamp(bool ok);
-    bool isReferenceRamp(void);
-
-    const Mode *mode(OperationMode mode) const;
+    void setDefaultModeValue();
 
 signals:
     void modeChanged(uint8_t axis, OperationMode modeNew);
     void stateChanged();
     void isHalted(bool state);
     void eventHappened(quint8 Event402);
-
-    void enableRampEvent(bool ok);
-    void referenceRampEvent(bool ok);
-    void unlockRampEvent(bool ok);
 
     void supportedDriveModesUdpdated();
 
@@ -131,34 +120,31 @@ private:
     NodeObjectId _controlWordObjectId;
     NodeObjectId _statusWordObjectId;
 
-    enum StateMode
+    enum ModeState
     {
         NONE_MODE = 0,
         MODE_CHANGE = 1,
     };
-    StateMode _stateMode;
-    OperationMode _currentMode;
-    OperationMode _requestedChangeMode;
-    QList<OperationMode> _supportedModes;
+    ModeState _modeState;
+    OperationMode _modeCurrent;
+    OperationMode _modeRequested;
+    QList<OperationMode> _modesSupported;
 
-    quint16 _cmdControlWord;
+    quint16 _controlWord;
     State402 _stateMachineCurrent;
-    State402 _requestedStateMachine;
+    State402 _stateMachineRequested;
 
-    uint8_t _eventStatusWord;
-
-    QMap<OperationMode, Mode*> _modes;
+    uint8_t _statusWordEvent;
 
     ModeIp *_modeIp;
     ModeTq *_modeTq;
     ModeVl *_modeVl;
     ModePp *_modePp;
+    QMap<OperationMode, Mode*> _modes;
 
     QTimer _modeTimer;
 
     void statusNodeChanged(Node::Status status);
-
-    void activeSpecificBitControlWord(quint16 &cmdControlWord);
     void manageState(const State402 state);
 
     void manageEventStatusWord(quint16 statusWord);

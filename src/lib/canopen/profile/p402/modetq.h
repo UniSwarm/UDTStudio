@@ -30,17 +30,19 @@ class ModeTq : public Mode
 public:
     ModeTq(NodeProfile402 *nodeProfile402);
 
-    void setTarget(qint16 torque);
-
-    quint16 getSpecificControlWord();
-
 signals:
     void isAppliedTarget();
 
 private:
     quint8 _mode;
     NodeObjectId _targetObjectId;
-    quint16 _cmdControlWordSpecific;
+    quint16 _cmdControlWordFlag;
+
+    // Mode interface
+public:
+    void setTarget(qint32 target) override;
+    quint16 getSpecificCwFlag() override;
+    void setCwDefaultflag() override;
 
     // NodeOdSubscriber interface
 public:

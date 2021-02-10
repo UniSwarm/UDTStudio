@@ -30,10 +30,6 @@ class ModeVl : public Mode
 public:
     ModeVl(NodeProfile402 *nodeProfile402);
 
-    void setTarget(qint16 velocity);
-
-    quint16 getSpecificControlWord();
-
     void setEnableRamp(bool ok);
     bool isEnableRamp(void);
 
@@ -44,16 +40,20 @@ public:
     bool isReferenceRamp(void);
 
 signals:
-    void isAppliedTarget();
     void enableRampEvent(bool ok);
     void referenceRampEvent(bool ok);
     void unlockRampEvent(bool ok);
 
 private:
     quint8 _mode;
-    NodeObjectId _controlWordObjectId;
     NodeObjectId _targetObjectId;
-    quint16 _cmdControlWordSpecific;
+    quint16 _cmdControlWordFlag;
+
+    // Mode interface
+public:
+    void setTarget(qint32 target) override;
+    quint16 getSpecificCwFlag() override;
+    void setCwDefaultflag() override;
 
     // NodeOdSubscriber interface
 public:

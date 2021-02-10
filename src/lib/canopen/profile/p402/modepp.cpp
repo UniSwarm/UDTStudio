@@ -27,127 +27,135 @@ enum ControlWordIP : quint16
     CW_PP_ChangeSetImmediately = 0x20,
     CW_PP_AbsRel = 0x40,
     CW_PP_ChangeOnSetPoint = 0x200,
-    CW_Halt = 0x100
+    CW_Mask = 0x270
 };
 
 ModePp::ModePp(NodeProfile402 *nodeProfile402)
     : Mode(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_SET_POINT, _axisId);
-    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, _axisId);
     _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    _controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
     setNodeInterrest(_node);
     registerObjId(_targetObjectId);
     registerObjId(_controlWordObjectId);
 
     _mode = NodeProfile402::OperationMode::PP;
-    _cmdControlWordSpecific = CW_PP_NewSetPoint;
+    setCwDefaultflag();
 }
 
-void ModePp::setTarget(qint32 position)
+void ModePp::newSetPoint(bool ok)
 {
-    _node->writeObject(_targetObjectId, QVariant(position));
+    if (ok)
+    {
+        _cmdControlWordFlag |= CW_PP_NewSetPoint;
+    }
+    else
+    {
+        _cmdControlWordFlag = (_cmdControlWordFlag & ~CW_PP_NewSetPoint);
+    }
+
+    quint16 cw = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    cw = (cw & ~CW_Mask) | _cmdControlWordFlag;
+    _node->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
-quint16 ModePp::getSpecificControlWord()
+bool ModePp::isNewSetPoint()
 {
-    return _cmdControlWordSpecific;
-}
-
-void ModePp::setEnableRamp(bool ok)
-{
-    //    if (ok)
-    //    {
-    //        _cmdControlWordSpecific |= CW_IP_EnableRamp;
-    //    }
-    //    else
-    //    {
-    //        _cmdControlWordSpecific = (_cmdControlWordSpecific & ~CW_IP_EnableRamp);
-    //    }
-}
-
-// bool ModePp::isEnableRamp(void)
-//{
-////    return _cmdControlWordSpecific & CW_IP_EnableRamp;
-//}
-
-void ModePp::applyNewSetPoint()
-{
-    quint16 cmdControlWordSpecific = static_cast<quint16>((_node->nodeOd()->value(_controlWordObjectId).toUInt() | CW_PP_NewSetPoint));
-    _node->writeObject(_controlWordObjectId, QVariant(cmdControlWordSpecific));
+    return (_cmdControlWordFlag & CW_PP_NewSetPoint) >> 4;
 }
 
 void ModePp::setChangeSetImmediately(bool ok)
 {
     if (ok)
     {
-        _cmdControlWordSpecific |= CW_PP_ChangeSetImmediately;
+        _cmdControlWordFlag |= CW_PP_ChangeSetImmediately;
     }
     else
     {
-        _cmdControlWordSpecific = (_cmdControlWordSpecific & ~CW_PP_ChangeSetImmediately);
+        _cmdControlWordFlag = (_cmdControlWordFlag & ~CW_PP_ChangeSetImmediately);
     }
+    quint16 cw = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    cw = (cw & ~CW_Mask) | _cmdControlWordFlag;
+    _node->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
 bool ModePp::isChangeSetImmediately()
 {
-    return _cmdControlWordSpecific & CW_PP_ChangeSetImmediately;
+    return (_cmdControlWordFlag & CW_PP_ChangeSetImmediately) >> 5;
+}
+
+bool ModePp::isAbsRel()
+{
+    return (_cmdControlWordFlag & CW_PP_AbsRel) >> 6;
 }
 
 void ModePp::setChangeOnSetPoint(bool ok)
 {
     if (ok)
     {
-        _cmdControlWordSpecific |= CW_PP_ChangeOnSetPoint;
+        _cmdControlWordFlag |= CW_PP_ChangeOnSetPoint;
     }
     else
     {
-        _cmdControlWordSpecific = (_cmdControlWordSpecific & ~CW_PP_ChangeOnSetPoint);
+        _cmdControlWordFlag = (_cmdControlWordFlag & ~CW_PP_ChangeOnSetPoint);
     }
+    quint16 cw = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    cw = (cw & ~CW_Mask) | _cmdControlWordFlag;
+    _node->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
 bool ModePp::isChangeOnSetPoint()
 {
-    return _cmdControlWordSpecific & CW_PP_ChangeOnSetPoint;
+    return (_cmdControlWordFlag & CW_PP_ChangeOnSetPoint) >> 9;
 }
 
 void ModePp::setAbsRel(bool ok)
 {
     if (ok)
     {
-        _cmdControlWordSpecific |= CW_PP_AbsRel;
+        _cmdControlWordFlag |= CW_PP_AbsRel;
     }
     else
     {
-        _cmdControlWordSpecific = (_cmdControlWordSpecific & ~CW_PP_AbsRel);
+        _cmdControlWordFlag = (_cmdControlWordFlag & ~CW_PP_AbsRel);
     }
+    quint16 cw = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    cw = (cw & ~CW_Mask) | _cmdControlWordFlag;
+    _node->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
-bool ModePp::isAbsRel()
+void ModePp::setTarget(qint32 target)
 {
-    return _cmdControlWordSpecific & CW_PP_AbsRel;
+    _node->writeObject(_targetObjectId, QVariant(target));
+}
+
+quint16 ModePp::getSpecificCwFlag()
+{
+    return _cmdControlWordFlag & CW_Mask;
+}
+
+void ModePp::setCwDefaultflag()
+{
+    _cmdControlWordFlag = CW_PP_NewSetPoint;
+    quint16 cw = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    cw = (cw & ~CW_Mask) | _cmdControlWordFlag;
+    _node->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
 void ModePp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if (objId == _targetObjectId)
-    {
-        if (flags != SDO::FlagsRequest::Error)
-        {
-            emit isAppliedTarget();
-        }
-    }
     if ((objId == _controlWordObjectId) && _nodeProfile402->actualMode() == _mode)
     {
         if (flags != SDO::FlagsRequest::Error)
         {
             quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
-            _cmdControlWordSpecific = (controlWord & (CW_PP_ChangeSetImmediately | CW_PP_AbsRel | CW_PP_ChangeOnSetPoint));
-            emit changeSetImmediatelyEvent((_cmdControlWordSpecific & CW_PP_ChangeSetImmediately) >> 5);
-            emit changeOnSetPointEvent((_cmdControlWordSpecific & CW_PP_ChangeOnSetPoint) >> 9);
-            emit absRelEvent((_cmdControlWordSpecific & CW_PP_AbsRel) >> 6);
+            _cmdControlWordFlag = controlWord & CW_Mask;
+
+            emit changeSetImmediatelyEvent((_cmdControlWordFlag & CW_PP_NewSetPoint) >> 4);
+            emit changeSetImmediatelyEvent((_cmdControlWordFlag & CW_PP_ChangeSetImmediately) >> 5);
+            emit absRelEvent((_cmdControlWordFlag & CW_PP_AbsRel) >> 6);
+            emit changeOnSetPointEvent((_cmdControlWordFlag & CW_PP_ChangeOnSetPoint) >> 9);
         }
     }
 }

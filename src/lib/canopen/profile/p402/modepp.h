@@ -22,7 +22,6 @@
 #include "mode.h"
 
 class Node;
-class NodeObjectId;
 class NodeProfile402;
 
 class ModePp : public Mode
@@ -31,38 +30,33 @@ class ModePp : public Mode
 public:
     ModePp(NodeProfile402 *nodeProfile402);
 
-    void setTarget(qint32 position);
-
-    quint16 getSpecificControlWord();
-
-    void setEnableRamp(bool ok);
-    bool isEnableRamp(void);
-
-    void applyNewSetPoint(); // bit 4 of controlWord front upright
-    //    bool isUnlockRamp(void);
+    void newSetPoint(bool ok); // bit 4 of controlWord front upright
+    bool isNewSetPoint(void); // bit 4 of controlWord front upright
 
     void setChangeSetImmediately(bool ok); // bit 5 of controlWord
     bool isChangeSetImmediately(void); // bit 5 of controlWord
 
-    void setChangeOnSetPoint(bool ok); // bit 9 of controlWord
-    bool isChangeOnSetPoint(void); // bit 9 of controlWord
-
     void setAbsRel(bool ok); // bit 6 of controlWord
     bool isAbsRel(void); // bit 6 of controlWord
 
-signals:
-    void isAppliedTarget();
-    void enableRampEvent(bool ok);
+    void setChangeOnSetPoint(bool ok); // bit 9 of controlWord
+    bool isChangeOnSetPoint(void); // bit 9 of controlWord
 
+signals:
     void changeSetImmediatelyEvent(bool ok);
-    void changeOnSetPointEvent(bool ok);
     void absRelEvent(bool ok);
+    void changeOnSetPointEvent(bool ok);
 
 private:
     quint8 _mode;
-    NodeObjectId _controlWordObjectId;
     NodeObjectId _targetObjectId;
-    quint16 _cmdControlWordSpecific;
+    quint16 _cmdControlWordFlag;
+
+    // Mode interface
+public:
+    void setTarget(qint32 target) override;
+    quint16 getSpecificCwFlag() override;
+    void setCwDefaultflag() override;
 
     // NodeOdSubscriber interface
 public:

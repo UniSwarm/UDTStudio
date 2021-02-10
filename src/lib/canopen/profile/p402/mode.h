@@ -32,10 +32,16 @@ class CANOPEN_EXPORT Mode : public QObject, public NodeOdSubscriber
 public:
     Mode(NodeProfile402 *nodeProfile402);
 
+    virtual void setTarget(qint32 tarqet) = 0;
+    virtual quint16 getSpecificCwFlag() = 0;
+    virtual void setCwDefaultflag() = 0;
+
 protected:
     Node *_node;
     NodeProfile402 *_nodeProfile402;
     uint8_t _axisId;
+
+    NodeObjectId _controlWordObjectId;
 };
 
 #endif // MODE_H

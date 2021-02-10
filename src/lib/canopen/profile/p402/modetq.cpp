@@ -31,26 +31,24 @@ ModeTq::ModeTq(NodeProfile402 *nodeProfile402)
     registerObjId(_targetObjectId);
 
     _mode = NodeProfile402::OperationMode::TQ;
-    _cmdControlWordSpecific = 0;
+    setCwDefaultflag();
 }
 
-void ModeTq::setTarget(qint16 torque)
+void ModeTq::setTarget(qint32 target)
 {
-    _node->writeObject(_targetObjectId, QVariant(torque));
+    _node->writeObject(_targetObjectId, QVariant(static_cast<qint16>(target)));
 }
 
-quint16 ModeTq::getSpecificControlWord()
+quint16 ModeTq::getSpecificCwFlag()
 {
-    return _cmdControlWordSpecific;
+    return _cmdControlWordFlag;
+}
+
+void ModeTq::setCwDefaultflag()
+{
+    _cmdControlWordFlag = 0;
 }
 
 void ModeTq::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if (objId == _targetObjectId)
-    {
-        if (flags != SDO::FlagsRequest::Error)
-        {
-            emit isAppliedTarget();
-        }
-    }
 }

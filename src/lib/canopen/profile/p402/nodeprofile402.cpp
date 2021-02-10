@@ -36,7 +36,7 @@ enum ControlWord : quint16
     CW_EnableOperation = 0x08,
     CW_FaultReset = 0x80,
     CW_Halt = 0x100,
-    CW_OperationModeSpecific = 0x70,
+    CW_OperationModeSpecific = 0x270,
     CW_ManufacturerSpecific = 0xF800,
 
     CW_Mask = 0x8F
@@ -112,24 +112,24 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     _modes.insert(VL, _modeVl);
     _modes.insert(PP, _modePp);
 
-    _requestedStateMachine = State402::STATE_NotReadyToSwitchOn;
+    _stateMachineRequested = State402::STATE_NotReadyToSwitchOn;
     _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
-    _currentMode = NoMode;
-    _requestedChangeMode = NoMode;
-    _stateMode = NONE_MODE;
+    _modeCurrent = NoMode;
+    _modeRequested = NoMode;
+    _modeState = NONE_MODE;
     _stateState = NONE_STATE;
 
-    _cmdControlWord = 0;
+    _controlWord = 0;
 }
 
 NodeProfile402::OperationMode NodeProfile402::actualMode()
 {
-    if ((_currentMode == NoMode) || (_currentMode == PP) || (_currentMode == VL) || (_currentMode == PV) || (_currentMode == TQ) || (_currentMode == HM) || (_currentMode == IP) ||
-        (_currentMode == CSP) || (_currentMode == CSV) || (_currentMode == CST) || (_currentMode == CSTCA))
+    if ((_modeCurrent == NoMode) || (_modeCurrent == PP) || (_modeCurrent == VL) || (_modeCurrent == PV) || (_modeCurrent == TQ) || (_modeCurrent == HM) || (_modeCurrent == IP) ||
+        (_modeCurrent == CSP) || (_modeCurrent == CSV) || (_modeCurrent == CST) || (_modeCurrent == CSTCA))
     {
-        return static_cast<OperationMode>(_currentMode);
+        return static_cast<OperationMode>(_modeCurrent);
     }
-    else if (_currentMode < 0)
+    else if (_modeCurrent < 0)
     {
         return OperationMode::MS;
     }
@@ -141,7 +141,7 @@ NodeProfile402::OperationMode NodeProfile402::actualMode()
 
 bool NodeProfile402::setMode(OperationMode mode)
 {
-    if (_currentMode == mode)
+    if (_modeCurrent == mode)
     {
         return true;
     }
@@ -149,31 +149,8 @@ bool NodeProfile402::setMode(OperationMode mode)
     if ((mode == NoMode) || (mode == PP) || (mode == VL) || (mode == PV) || (mode == TQ) || (mode == HM) || (mode == IP) || (mode == CSP) || (mode == CSV) || (mode == CST) || (mode == CSTCA))
     {
         _node->writeObject(_modesOfOperationObjectId, QVariant(mode));
-        _stateMode = MODE_CHANGE;
-        _requestedChangeMode = mode;
-
-        if (_requestedChangeMode == OperationMode::VL)
-        {
-            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeVl->getSpecificControlWord();
-            emit enableRampEvent(_modeVl->isEnableRamp());
-            emit referenceRampEvent(_modeVl->isReferenceRamp());
-            emit unlockRampEvent(_modeVl->isUnlockRamp());
-        }
-        else if (_requestedChangeMode == OperationMode::IP)
-        {
-            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeIp->getSpecificControlWord();
-            emit enableRampEvent(_modeIp->isEnableRamp());
-        }
-        else if (_requestedChangeMode == OperationMode::TQ)
-        {
-            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeTq->getSpecificControlWord();
-        }
-
-        else if (_requestedChangeMode == OperationMode::PP)
-        {
-            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modePp->getSpecificControlWord();
-        }
-
+        _modeState = MODE_CHANGE;
+        _modeRequested = mode;
         return true;
     }
     else
@@ -209,7 +186,7 @@ QString NodeProfile402::modeStr(NodeProfile402::OperationMode mode)
     case OperationMode::CSTCA:
         return tr("Cyclic sync torque mode with commutation angle (CTCA)");
     default:
-        if (_currentMode < 0)
+        if (_modeCurrent < 0)
         {
             return tr("Manufacturer-specific");
         }
@@ -222,7 +199,7 @@ QString NodeProfile402::modeStr(NodeProfile402::OperationMode mode)
 
 bool NodeProfile402::isModeSupported(OperationMode mode)
 {
-    for (const OperationMode &modesupported : _supportedModes)
+    for (const OperationMode &modesupported : _modesSupported)
     {
         if (modesupported == mode)
         {
@@ -234,7 +211,7 @@ bool NodeProfile402::isModeSupported(OperationMode mode)
 
 QList<NodeProfile402::OperationMode> NodeProfile402::modesSupported()
 {
-    return _supportedModes;
+    return _modesSupported;
 }
 
 NodeProfile402::State402 NodeProfile402::currentState() const
@@ -249,8 +226,8 @@ void NodeProfile402::goToState(const State402 state)
         return;
     }
     _stateState = STATE_CHANGE;
-    _requestedStateMachine = state;
-    manageState(_requestedStateMachine);
+    _stateMachineRequested = state;
+    manageState(_stateMachineRequested);
 }
 
 QString NodeProfile402::stateStr(State402 state) const
@@ -282,13 +259,13 @@ bool NodeProfile402::toggleHalt()
     quint16 cmdControlWord;
     if (_stateMachineCurrent == STATE_OperationEnabled)
     {
-        if ((_cmdControlWord & CW_Halt) != 0)
+        if ((_controlWord & CW_Halt) != 0)
         {
-            cmdControlWord = (_cmdControlWord & ~CW_Halt);
+            cmdControlWord = (_controlWord & ~CW_Halt);
         }
         else
         {
-            cmdControlWord = _cmdControlWord | CW_Halt;
+            cmdControlWord = _controlWord | CW_Halt;
         }
         _node->writeObject(_controlWordObjectId, QVariant(cmdControlWord));
         return 0;
@@ -298,51 +275,7 @@ bool NodeProfile402::toggleHalt()
 
 void NodeProfile402::setTarget(qint32 target)
 {
-    switch (_currentMode)
-    {
-    case NodeProfile402::MS:
-        break;
-
-    case NodeProfile402::NoMode:
-        break;
-
-    case NodeProfile402::PP:
-        _modePp->setTarget(target);
-        break;
-
-    case NodeProfile402::VL:
-        _modeVl->setTarget(static_cast<qint16>(target));
-        break;
-
-    case NodeProfile402::PV:
-        break;
-
-    case NodeProfile402::TQ:
-        _modeTq->setTarget(static_cast<qint16>(target));
-        break;
-
-    case NodeProfile402::HM:
-        break;
-
-    case NodeProfile402::IP:
-        _modeIp->setTarget(target);
-        break;
-
-    case NodeProfile402::CSP:
-        break;
-
-    case NodeProfile402::CSV:
-        break;
-
-    case NodeProfile402::CST:
-        break;
-
-    case NodeProfile402::CSTCA:
-        break;
-
-    case NodeProfile402::Reserved:
-        break;
-    }
+    _modes[_modeCurrent]->setTarget(target);
 }
 
 QString NodeProfile402::event402Str(quint8 event402)
@@ -368,78 +301,13 @@ QString NodeProfile402::event402Str(quint8 event402)
     }
 }
 
-void NodeProfile402::setEnableRamp(bool ok)
+void NodeProfile402::setDefaultModeValue()
 {
-    if (_currentMode == OperationMode::VL)
-    {
-        _modeVl->setEnableRamp(ok);
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeVl->getSpecificControlWord();
-    }
-    if (_currentMode == OperationMode::IP)
-    {
-        _modeIp->setEnableRamp(ok);
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeIp->getSpecificControlWord();
-    }
-    if (_currentMode == OperationMode::PP)
-    {
-        _modePp->setEnableRamp(ok);
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeIp->getSpecificControlWord();
-    }
-    _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
+    _modes[_modeCurrent]->setCwDefaultflag();
 }
 
-bool NodeProfile402::isEnableRamp()
-{
-    if (_currentMode == OperationMode::VL)
-    {
-        return _modeVl->isEnableRamp();
-    }
-    if (_currentMode == OperationMode::IP)
-    {
-        return _modeIp->isEnableRamp();
-    }
-    return false;
-}
 
-void NodeProfile402::setUnlockRamp(bool ok)
-{
-    if (_currentMode == OperationMode::VL)
-    {
-        _modeVl->setUnlockRamp(ok);
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeVl->getSpecificControlWord();
-    }
-    _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
-}
-
-bool NodeProfile402::isUnlockRamp()
-{
-    if (_currentMode == OperationMode::VL)
-    {
-        return _modeVl->isUnlockRamp();
-    }
-    return false;
-}
-
-void NodeProfile402::setReferenceRamp(bool ok)
-{
-    if (_currentMode == OperationMode::VL)
-    {
-        _modeVl->setReferenceRamp(ok);
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeVl->getSpecificControlWord();
-    }
-    _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
-}
-
-bool NodeProfile402::isReferenceRamp()
-{
-    if (_currentMode == OperationMode::VL)
-    {
-        return _modeVl->isReferenceRamp();
-    }
-    return false;
-}
-
-const Mode *NodeProfile402::mode(NodeProfile402::OperationMode mode) const
+Mode *NodeProfile402::mode(NodeProfile402::OperationMode mode) const
 {
     return _modes[mode];
 }
@@ -454,55 +322,6 @@ void NodeProfile402::statusNodeChanged(Node::Status status)
     _node->readObject(_statusWordObjectId);
 }
 
-void NodeProfile402::activeSpecificBitControlWord(quint16 &cmdControlWord)
-{
-    switch (_currentMode)
-    {
-    case NodeProfile402::MS:
-        break;
-
-    case NodeProfile402::NoMode:
-        break;
-
-    case NodeProfile402::PP:
-        cmdControlWord |= _modePp->getSpecificControlWord();
-        break;
-
-    case NodeProfile402::VL:
-        cmdControlWord |= _modeVl->getSpecificControlWord();
-        break;
-
-    case NodeProfile402::PV:
-        break;
-
-    case NodeProfile402::TQ:
-        cmdControlWord |= _modeTq->getSpecificControlWord();
-        break;
-
-    case NodeProfile402::HM:
-        break;
-
-    case NodeProfile402::IP:
-        cmdControlWord |= _modeIp->getSpecificControlWord();
-        break;
-
-    case NodeProfile402::CSP:
-        break;
-
-    case NodeProfile402::CSV:
-        break;
-
-    case NodeProfile402::CST:
-        break;
-
-    case NodeProfile402::CSTCA:
-        break;
-
-    case NodeProfile402::Reserved:
-        break;
-    }
-}
-
 void NodeProfile402::manageState(const State402 state)
 {
     if (!_node)
@@ -514,23 +333,10 @@ void NodeProfile402::manageState(const State402 state)
         return;
     }
 
-    if (_currentMode == OperationMode::VL)
-    {
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeVl->getSpecificControlWord();
-    }
-    else if (_currentMode == OperationMode::IP)
-    {
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeIp->getSpecificControlWord();
-    }
-    else if (_currentMode == OperationMode::TQ)
-    {
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeTq->getSpecificControlWord();
-    }
-
-    else if (_currentMode == OperationMode::PP)
-    {
-        _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modePp->getSpecificControlWord();
-    }
+    // Reset specific flag of mode
+    _controlWord = (_controlWord & ~CW_OperationModeSpecific);
+    // Apply specific flag of mode
+    _controlWord |= _modes[_modeCurrent]->getSpecificCwFlag();
 
     switch (_stateMachineCurrent)
     {
@@ -538,74 +344,72 @@ void NodeProfile402::manageState(const State402 state)
     case STATE_SwitchOnDisabled:
         if (state >= STATE_ReadyToSwitchOn)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_Mask);
-            _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop);
+            _controlWord = (_controlWord & ~CW_Mask);
+            _controlWord |= (CW_EnableVoltage | CW_QuickStop);
         }
         break;
 
     case STATE_ReadyToSwitchOn:
         if (state == STATE_SwitchOnDisabled)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_Mask);
+            _controlWord = (_controlWord & ~CW_Mask);
         }
         else if (state >= STATE_SwitchedOn)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_Mask);
-            _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn);
+            _controlWord = (_controlWord & ~CW_Mask);
+            _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn);
         }
         else if (state >= STATE_OperationEnabled)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_Mask);
-            _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn | CW_EnableOperation);
-            activeSpecificBitControlWord(_cmdControlWord);
+            _controlWord = (_controlWord & ~CW_Mask);
+            _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn | CW_EnableOperation);
         }
         break;
 
     case STATE_SwitchedOn:
         if (state == STATE_OperationEnabled)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_Mask);
-            _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn | CW_EnableOperation);
-            activeSpecificBitControlWord(_cmdControlWord);
+            _controlWord = (_controlWord & ~CW_Mask);
+            _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn | CW_EnableOperation);
         }
         if (state == STATE_ReadyToSwitchOn)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_Mask);
-            _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop);
+            _controlWord = (_controlWord & ~CW_Mask);
+            _controlWord |= (CW_EnableVoltage | CW_QuickStop);
         }
         if (state == STATE_SwitchOnDisabled)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_Mask);
+            _controlWord = (_controlWord & ~CW_Mask);
         }
         break;
 
     case STATE_OperationEnabled:
         if (state == STATE_SwitchOnDisabled)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_Mask);
-            _cmdControlWord = (_cmdControlWord & ~CW_Mask);
+            _controlWord = (_controlWord & ~CW_Mask);
+            _controlWord = (_controlWord & ~CW_Mask);
         }
         if (state == STATE_ReadyToSwitchOn)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_Mask);
-            _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop);
+            _controlWord = (_controlWord & ~CW_Mask);
+            _controlWord |= (CW_EnableVoltage | CW_QuickStop);
         }
         if (state == STATE_SwitchedOn)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_Mask);
-            _cmdControlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn);
+            _controlWord = (_controlWord & ~CW_Mask);
+            _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn);
         }
         if (state == STATE_QuickStopActive)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_Mask);
-            _cmdControlWord |= (CW_EnableVoltage);
+            _controlWord = (_controlWord & ~CW_Mask);
+            _controlWord |= (CW_EnableVoltage);
         }
         break;
 
     case STATE_QuickStopActive:
         if (state == STATE_SwitchOnDisabled)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_Mask);
+            _controlWord = (_controlWord & ~CW_Mask);
         }
         break;
 
@@ -615,14 +419,14 @@ void NodeProfile402::manageState(const State402 state)
     case STATE_Fault:
         if (state >= STATE_SwitchOnDisabled)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_Mask);
-            _cmdControlWord |= (CW_FaultReset);
+            _controlWord = (_controlWord & ~CW_Mask);
+            _controlWord |= (CW_FaultReset);
         }
         break;
     }
 
-    _cmdControlWord = (_cmdControlWord & ~CW_Halt);
-    _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
+    _controlWord = (_controlWord & ~CW_Halt);
+    _node->writeObject(_controlWordObjectId, QVariant(_controlWord));
 }
 
 void NodeProfile402::manageEventStatusWord(quint16 statusWord)
@@ -652,10 +456,10 @@ void NodeProfile402::manageEventStatusWord(quint16 statusWord)
     {
         eventStatusWord += FollowingError;
     }
-    if (eventStatusWord != _eventStatusWord)
+    if (eventStatusWord != _statusWordEvent)
     {
-        _eventStatusWord = eventStatusWord;
-        emit eventHappened(_eventStatusWord);
+        _statusWordEvent = eventStatusWord;
+        emit eventHappened(_statusWordEvent);
     }
 }
 
@@ -667,25 +471,11 @@ void NodeProfile402::manageStateStatusWord(quint16 statusWord)
     }
     if ((statusWord & SW_StateMask1) == SW_StateSwitchOnDisabled)
     {
-        if (_currentMode == OperationMode::VL)
-        {
-            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeVl->getSpecificControlWord();
-            emit enableRampEvent(_modeVl->isEnableRamp());
-            emit referenceRampEvent(_modeVl->isReferenceRamp());
-            emit unlockRampEvent(_modeVl->isUnlockRamp());
-        }
-
-        if (_currentMode == OperationMode::IP)
-        {
-            _cmdControlWord = (_cmdControlWord & ~CW_OperationModeSpecific) | _modeIp->getSpecificControlWord();
-            emit enableRampEvent(_modeIp->isEnableRamp());
-        }
-
         _stateMachineCurrent = STATE_SwitchOnDisabled;
-        if ((_cmdControlWord & CW_Mask) == CW_FaultReset)
+        if ((_controlWord & CW_Mask) == CW_FaultReset)
         {
-            _cmdControlWord = (_cmdControlWord & ~CW_FaultReset);
-            _node->writeObject(_controlWordObjectId, QVariant(_cmdControlWord));
+            _controlWord = (_controlWord & ~CW_FaultReset);
+            _node->writeObject(_controlWordObjectId, QVariant(_controlWord));
         }
     }
     if ((statusWord & SW_StateMask2) == SW_StateReadyToSwitchOn)
@@ -713,9 +503,9 @@ void NodeProfile402::manageStateStatusWord(quint16 statusWord)
         _stateMachineCurrent = STATE_Fault;
     }
 
-    if ((_stateState == STATE_CHANGE) && (_requestedStateMachine != _stateMachineCurrent))
+    if ((_stateState == STATE_CHANGE) && (_stateMachineRequested != _stateMachineCurrent))
     {
-        manageState(_requestedStateMachine);
+        manageState(_stateMachineRequested);
         return;
     }
     _stateState = NONE_STATE;
@@ -724,10 +514,10 @@ void NodeProfile402::manageStateStatusWord(quint16 statusWord)
 
 void NodeProfile402::manageSupportedDriveModes(quint32 supportedDriveModes)
 {
-    _supportedModes.clear();
+    _modesSupported.clear();
     if ((supportedDriveModes & 0x7EF) == 0)
     {
-        _supportedModes.append(OperationMode::NoMode);
+        _modesSupported.append(OperationMode::NoMode);
         return;
     }
     for (quint32 i = 0; i <= 10; i++)
@@ -735,43 +525,43 @@ void NodeProfile402::manageSupportedDriveModes(quint32 supportedDriveModes)
         switch ((supportedDriveModes & (1 << i)))
         {
         case 0x1:
-            _supportedModes.append(OperationMode::PP);
+            _modesSupported.append(OperationMode::PP);
             break;
 
         case 0x2:
-            _supportedModes.append(OperationMode::VL);
+            _modesSupported.append(OperationMode::VL);
             break;
 
         case 0x4:
-            _supportedModes.append(OperationMode::PV);
+            _modesSupported.append(OperationMode::PV);
             break;
 
         case 0x8:
-            _supportedModes.append(OperationMode::TQ);
+            _modesSupported.append(OperationMode::TQ);
             break;
 
         case 0x20:
-            _supportedModes.append(OperationMode::HM);
+            _modesSupported.append(OperationMode::HM);
             break;
 
         case 0x40:
-            _supportedModes.append(OperationMode::IP);
+            _modesSupported.append(OperationMode::IP);
             break;
 
         case 0x80:
-            _supportedModes.append(OperationMode::CSP);
+            _modesSupported.append(OperationMode::CSP);
             break;
 
         case 0x100:
-            _supportedModes.append(OperationMode::CSV);
+            _modesSupported.append(OperationMode::CSV);
             break;
 
         case 0x200:
-            _supportedModes.append(OperationMode::CST);
+            _modesSupported.append(OperationMode::CST);
             break;
 
         case 0x400:
-            _supportedModes.append(OperationMode::CSTCA);
+            _modesSupported.append(OperationMode::CSTCA);
             break;
         }
     }
@@ -800,16 +590,17 @@ QString NodeProfile402::profileNumberStr() const
 
 void NodeProfile402::reset()
 {
-    _requestedStateMachine = State402::STATE_NotReadyToSwitchOn;
+    _stateMachineRequested = State402::STATE_NotReadyToSwitchOn;
     _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
-    _currentMode = NoMode;
+    _modeCurrent = NoMode;
 
     manageSupportedDriveModes(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
 
-    _modeIp->setEnableRamp(true);
-    _modeVl->setEnableRamp(true);
-    _modeVl->setUnlockRamp(true);
-    _modeVl->setReferenceRamp(true);
+    // TODO : improve set default value or read value on device?
+    _modeIp->setCwDefaultflag();
+    _modePp->setCwDefaultflag();
+    _modeTq->setCwDefaultflag();
+    _modeVl->setCwDefaultflag();
 }
 
 void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
@@ -827,16 +618,20 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
         if (flags != SDO::FlagsRequest::Error)
         {
             NodeProfile402::OperationMode mode = static_cast<NodeProfile402::OperationMode>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
-            if ((_stateMode == NodeProfile402::MODE_CHANGE) && (_requestedChangeMode != mode))
+            if ((_modeState == NodeProfile402::MODE_CHANGE) && (_modeRequested != mode))
             {
                 _modeTimer.singleShot(TIMER_READ_MODE_OPERATION_DISPLAY, this, SLOT(readModeOfOperationDisplay()));
                 return;
             }
 
-            _currentMode = mode;
-            _requestedChangeMode = _currentMode;
-            _stateMode = NodeProfile402::StateMode::NONE_MODE;
-            emit modeChanged(_axisId, _currentMode);
+            _modeCurrent = mode;
+            _modeRequested = _modeCurrent;
+            _modeState = NodeProfile402::ModeState::NONE_MODE;
+
+            // Send new ControlWord with specific flag
+            manageState(_stateMachineCurrent);
+
+            emit modeChanged(_axisId, _modeCurrent);
             return;
         }
     }
@@ -855,11 +650,11 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
         if (flags != SDO::FlagsRequest::Error)
         {
             quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toInt());
-            if ((_cmdControlWord & CW_Halt) != (controlWord & CW_Halt))
+            if ((_controlWord & CW_Halt) != (controlWord & CW_Halt))
             {
                 emit isHalted(static_cast<bool>(((controlWord & CW_Halt) >> 8)));
             }
-            _cmdControlWord = controlWord;
+            _controlWord = controlWord;
             _node->readObject(_statusWordObjectId);
         }
     }
