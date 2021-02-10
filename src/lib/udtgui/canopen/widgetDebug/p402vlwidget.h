@@ -1,4 +1,4 @@
-/**
+﻿/**
  ** This file is part of the UDTStudio project.
  ** Copyright 2019-2021 UniSwarm
  **
@@ -60,48 +60,48 @@ private:
     NodeProfile402 *_nodeProfile402;
     ModeVl *_modeVl;
 
-    NodeObjectId _vlVelocityTargetObjectId;
-    NodeObjectId _vlVelocityDemandObjectId;
-    NodeObjectId _vlVelocityActualObjectId;
+    NodeObjectId _velocityTargetObjectId;
+    NodeObjectId _velocityDemandObjectId;
+    NodeObjectId _velocityActualObjectId;
 
-    QSpinBox *_vlTargetVelocitySpinBox;
-    QSlider *_vlTargetVelocitySlider;
-    QLabel *_vlSliderMinLabel;
-    QLabel *_vlSliderMaxLabel;
-    QLabel *_vlInfoLabel;
+    QSpinBox *_targetVelocitySpinBox;
+    QSlider *_targetVelocitySlider;
+    QLabel *_sliderMinLabel;
+    QLabel *_sliderMaxLabel;
+    QLabel *_infoLabel;
 
-    IndexLabel *_vlVelocityDemandLabel;
-    IndexLabel *_vlVelocityActualLabel;
+    IndexLabel *_velocityDemandLabel;
+    IndexLabel *_velocityActualLabel;
 
-    IndexSpinBox *_vlMinVelocityMinMaxAmountSpinBox;
-    IndexSpinBox *_vlMaxVelocityMinMaxAmountSpinBox;
-    IndexSpinBox *_vlAccelerationDeltaSpeedSpinBox;
-    IndexSpinBox *_vlAccelerationDeltaTimeSpinBox;
-    IndexSpinBox *_vlDecelerationDeltaSpeedSpinBox;
-    IndexSpinBox *_vlDecelerationDeltaTimeSpinBox;
-    IndexSpinBox *_vlQuickStopDeltaSpeedSpinBox;
-    IndexSpinBox *_vlQuickStopDeltaTimeSpinBox;
-    IndexSpinBox *_vlSetPointFactorNumeratorSpinBox;
-    IndexSpinBox *_vlSetPointFactorDenominatorSpinBox;
-    IndexSpinBox *_vlDimensionFactorNumeratorSpinBox;
-    IndexSpinBox *_vlDimensionFactorDenominatorSpinBox;
+    IndexSpinBox *_minVelocityMinMaxAmountSpinBox;
+    IndexSpinBox *_maxVelocityMinMaxAmountSpinBox;
+    IndexSpinBox *_accelerationDeltaSpeedSpinBox;
+    IndexSpinBox *_accelerationDeltaTimeSpinBox;
+    IndexSpinBox *_decelerationDeltaSpeedSpinBox;
+    IndexSpinBox *_decelerationDeltaTimeSpinBox;
+    IndexSpinBox *_quickStopDeltaSpeedSpinBox;
+    IndexSpinBox *_quickStopDeltaTimeSpinBox;
+    IndexSpinBox *_setPointFactorNumeratorSpinBox;
+    IndexSpinBox *_setPointFactorDenominatorSpinBox;
+    IndexSpinBox *_dimensionFactorNumeratorSpinBox;
+    IndexSpinBox *_dimensionFactorDenominatorSpinBox;
 
-    QCheckBox *_vlEnableRampCheckBox;
-    QCheckBox *_vlUnlockRampCheckBox;
-    QCheckBox *_vlReferenceRampCheckBox;
+    QCheckBox *_enableRampCheckBox;
+    QCheckBox *_unlockRampCheckBox;
+    QCheckBox *_referenceRampCheckBox;
 
-    void vlTargetVelocitySpinboxFinished();
-    void vlTargetVelocitySliderChanged();
-    void vlMinVelocityMinMaxAmountSpinboxFinished();
-    void vllMaxVelocityMinMaxAmountSpinboxFinished();
+    void targetVelocitySpinboxFinished();
+    void targetVelocitySliderChanged();
+    void minVelocityMinMaxAmountSpinboxFinished();
+    void maxVelocityMinMaxAmountSpinboxFinished();
 
-    void vlEnableRampClicked(bool ok);
-    void vlUnlockRampClicked(bool ok);
-    void vlReferenceRampClicked(bool ok);
+    void enableRampClicked(bool ok);
+    void unlockRampClicked(bool ok);
+    void referenceRampClicked(bool ok);
 
-    void vlEnableRampEvent(bool ok);
-    void vlUnlockRampEvent(bool ok);
-    void vlReferenceRamp(bool ok);
+    void enableRampEvent(bool ok);
+    void unlockRampEvent(bool ok);
+    void referenceRamp(bool ok);
 
     void updateInformationLabel();
 

@@ -58,43 +58,44 @@ private:
     NodeProfile402 *_nodeProfile402;
     ModeIp *_modeIp;
 
-    NodeObjectId _ipDataRecordObjectId;
-    NodeObjectId _ipBufferClearObjectId;
-    NodeObjectId _ipPositionDemandValueObjectId;
-    NodeObjectId _ipPositionActualValueObjectId;
-    NodeObjectId _ipTimePeriodIndexObjectId;
-    NodeObjectId _ipTimePeriodUnitsObjectId;
-    NodeObjectId _ipPolarityObjectId;
+    NodeObjectId _dataRecordObjectId;
+    NodeObjectId _bufferClearObjectId;
+    NodeObjectId _positionDemandValueObjectId;
+    NodeObjectId _positionActualValueObjectId;
+    NodeObjectId _timePeriodIndexObjectId;
+    NodeObjectId _timePeriodUnitsObjectId;
+    NodeObjectId _polarityObjectId;
 
     int _iteratorForSendDataRecord;
     QStringList _listDataRecord;
 
-    QCheckBox *_ipEnableRampCheckBox;
 
-    QLineEdit *_ipDataRecordLineEdit;
-    IndexLabel *_ipPositionDemandValueLabel;
-    IndexLabel *_ipPositionAcualValueLabel;
+    QLineEdit *_dataRecordLineEdit;
+    IndexLabel *_positionDemandValueLabel;
+    IndexLabel *_positionAcualValueLabel;
 
-    IndexSpinBox *_ipTimePeriodUnitSpinBox;
-    IndexSpinBox *_ipTimePeriodIndexSpinBox;
+    IndexSpinBox *_timePeriodUnitSpinBox;
+    IndexSpinBox *_timePeriodIndexSpinBox;
 
     QPushButton *_clearBufferPushButton;
 
-    IndexSpinBox *_ipPositionRangelLimitMinSpinBox;
-    IndexSpinBox *_ipPositionRangelLimitMaxSpinBox;
-    IndexSpinBox *_ipSoftwarePositionLimitMinSpinBox;
-    IndexSpinBox *_ipSoftwarePositionLimitMaxSpinBox;
-    IndexSpinBox *_ipHomeOffsetSpinBox;
-    QSpinBox *_ipPolaritySpinBox;
+    IndexSpinBox *_positionRangelLimitMinSpinBox;
+    IndexSpinBox *_positionRangelLimitMaxSpinBox;
+    IndexSpinBox *_softwarePositionLimitMinSpinBox;
+    IndexSpinBox *_softwarePositionLimitMaxSpinBox;
+    IndexSpinBox *_homeOffsetSpinBox;
+    QSpinBox *_polaritySpinBox;
     //    IndexSpinBox *_ipProfileVelocitySpinBox;
     //    IndexSpinBox *_ipEndVelocitySpinBox;
-    IndexSpinBox *_ipMaxProfileVelocitySpinBox;
-    IndexSpinBox *_ipMaxMotorSpeedSpinBox;
+    IndexSpinBox *_maxProfileVelocitySpinBox;
+    IndexSpinBox *_maxMotorSpeedSpinBox;
     //    IndexSpinBox *_ipProfileAccelerationSpinBox;
     //    IndexSpinBox *_ipMaxAccelerationSpinBox;
     //    IndexSpinBox *_ipProfileDecelerationSpinBox;
     //    IndexSpinBox *_ipMaxDecelerationSpinBox;
     //    IndexSpinBox *_ipQuickStopDecelerationSpinBox;
+    QCheckBox *_enableRampCheckBox;
+
     QSpinBox *_targetPositionSpinBox;
     QCheckBox *_relativeTargetpositionSpinBox;
     QSpinBox *_durationSpinBox;
@@ -104,12 +105,12 @@ private:
     QVector<int> _pointSinusoidalVector;
     QTimer _sendPointSinusoidalTimer;
 
-    void ipDataRecordLineEditFinished();
-    void ipSendDataRecord();
+    void dataRecordLineEditFinished();
+    void sendDataRecord();
 
-    void ipPolarityEditingFinished();
-    void ipClearBufferClicked();
-    void ipEnableRampClicked(bool ok);
+    void polarityEditingFinished();
+    void bufferClearClicked();
+    void enableRampClicked(bool ok);
     void enableRampEvent(bool ok);
 
     void updatePositionDemandLabel(void);

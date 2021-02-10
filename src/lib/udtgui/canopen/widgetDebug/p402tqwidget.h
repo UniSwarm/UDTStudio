@@ -56,30 +56,32 @@ private:
 
     NodeProfile402 *_nodeProfile402;
 
-    NodeObjectId _tqTorqueDemandObjectId;
-    NodeObjectId _tqTorqueTargetObjectId;
-    NodeObjectId _tqTorqueActualValueObjectId;
-    NodeObjectId _tqCurrentActualValueObjectId;
-    NodeObjectId _tqDCLinkVoltageObjectId;
+    NodeObjectId _torqueDemandObjectId;
+    NodeObjectId _torqueTargetObjectId;
+    NodeObjectId _torqueActualValueObjectId;
+    NodeObjectId _currentActualValueObjectId;
+    NodeObjectId _dcLinkVoltageObjectId;
 
-    IndexLabel *_tqTorqueDemandLabel;
-    IndexLabel *_tqTorqueActualValueLabel;
-    IndexLabel *_tqCurrentActualValueLabel;
-    IndexLabel *_tqDCLinkVoltageLabel;
-    QSpinBox *_tqTargetTorqueSpinBox;
-    QSlider *_tqTargetTorqueSlider;
-    QLabel *_tqSliderMinLabel;
-    QLabel *_tqSliderMaxLabel;
-    IndexSpinBox *_tqTargetSlopeSpinBox;
-    IndexSpinBox *_tqTorqueProfileTypeSpinBox;
-    IndexSpinBox *_tqMaxTorqueSpinBox;
-    IndexSpinBox *_tqMaxCurrentSpinBox;
-    IndexSpinBox *_tqMotorRatedTorqueSpinBox;
-    IndexSpinBox *_tqMotorRatedCurrentSpinBox;
+    QSpinBox *_targetTorqueSpinBox;
+    QSlider *_targetTorqueSlider;
+    QLabel *_sliderMinLabel;
+    QLabel *_sliderMaxLabel;
 
-    void tqTargetTorqueSpinboxFinished();
-    void tqTargetTorqueSliderChanged();
-    void tqMaxTorqueSpinboxFinished();
+    IndexLabel *_torqueDemandLabel;
+    IndexLabel *_torqueActualValueLabel;
+    IndexLabel *_currentActualValueLabel;
+
+    IndexSpinBox *_targetSlopeSpinBox;
+    IndexSpinBox *_torqueProfileTypeSpinBox;
+    IndexSpinBox *_maxTorqueSpinBox;
+    IndexSpinBox *_maxCurrentSpinBox;
+    IndexSpinBox *_motorRatedTorqueSpinBox;
+    IndexSpinBox *_motorRatedCurrentSpinBox;
+    IndexLabel *_dcLinkVoltageLabel;
+
+    void targetTorqueSpinboxFinished();
+    void targetTorqueSliderChanged();
+    void maxTorqueSpinboxFinished();
 
     void dataLogger();
     void pdoMapping();

@@ -58,45 +58,43 @@ private:
     NodeProfile402 *_nodeProfile402;
     ModePp *_modePp;
 
-    NodeObjectId _ppTargetPositionObjectId;
-    NodeObjectId _ppPositionDemandValueObjectId;
-    NodeObjectId _ppPositionActualValueObjectId;
-    NodeObjectId _ppPolarityObjectId;
+    NodeObjectId _targetPositionObjectId;
+    NodeObjectId _positionDemandValueObjectId;
+    NodeObjectId _positionActualValueObjectId;
+    NodeObjectId _polarityObjectId;
 
     int _iteratorForSendDataRecord;
     QStringList _listDataRecord;
 
-    QCheckBox *_ppNewSetPointCheckBox;
-    QCheckBox *_ppChangeSetImmediatelyPointCheckBox;
-    QCheckBox *_ppAbsRelCheckBox;
-    QCheckBox *_ppChangeOnSetPointCheckBox;
+    QCheckBox *_newSetPointCheckBox;
+    QCheckBox *_changeSetImmediatelyPointCheckBox;
+    QCheckBox *_absRelCheckBox;
+    QCheckBox *_changeOnSetPointCheckBox;
 
-    QLineEdit *_ppTargetPositionLineEdit;
-    QLabel *_ppInfoLabel;
+    QLineEdit *_targetPositionLineEdit;
+    QLabel *_infoLabel;
 
-    IndexLabel *_ppPositionDemandValueLabel;
-    IndexLabel *_ppPositionActualValueLabel;
+    IndexLabel *_positionDemandValueLabel;
+    IndexLabel *_positionActualValueLabel;
 
-    IndexSpinBox *_ppTimePeriodUnitSpinBox;
-    IndexSpinBox *_ppTimePeriodIndexSpinBox;
+    IndexSpinBox *_timePeriodUnitSpinBox;
+    IndexSpinBox *_timePeriodIndexSpinBox;
 
-    QPushButton *_clearBufferPushButton;
-
-    IndexSpinBox *_ppPositionRangelLimitMinSpinBox;
-    IndexSpinBox *_ppPositionRangelLimitMaxSpinBox;
-    IndexSpinBox *_ppSoftwarePositionLimitMinSpinBox;
-    IndexSpinBox *_ppSoftwarePositionLimitMaxSpinBox;
-    IndexSpinBox *_ppHomeOffsetSpinBox;
-    QSpinBox *_ppPolaritySpinBox;
-    IndexSpinBox *_ppProfileVelocitySpinBox;
-    IndexSpinBox *_ppEndVelocitySpinBox;
-    IndexSpinBox *_ppMaxProfileVelocitySpinBox;
-    IndexSpinBox *_ppMaxMotorSpeedSpinBox;
-    IndexSpinBox *_ppProfileAccelerationSpinBox;
-    IndexSpinBox *_ppMaxAccelerationSpinBox;
-    IndexSpinBox *_ppProfileDecelerationSpinBox;
-    IndexSpinBox *_ppMaxDecelerationSpinBox;
-    IndexSpinBox *_ppQuickStopDecelerationSpinBox;
+    IndexSpinBox *_positionRangelLimitMinSpinBox;
+    IndexSpinBox *_positionRangelLimitMaxSpinBox;
+    IndexSpinBox *_softwarePositionLimitMinSpinBox;
+    IndexSpinBox *_softwarePositionLimitMaxSpinBox;
+    IndexSpinBox *_homeOffsetSpinBox;
+    QSpinBox *_polaritySpinBox;
+    IndexSpinBox *_profileVelocitySpinBox;
+    IndexSpinBox *_endVelocitySpinBox;
+    IndexSpinBox *_maxProfileVelocitySpinBox;
+    IndexSpinBox *_maxMotorSpeedSpinBox;
+    IndexSpinBox *_profileAccelerationSpinBox;
+    IndexSpinBox *_maxAccelerationSpinBox;
+    IndexSpinBox *_profileDecelerationSpinBox;
+    IndexSpinBox *_maxDecelerationSpinBox;
+    IndexSpinBox *_quickStopDecelerationSpinBox;
 
     QSpinBox *_targetPositionSpinBox;
     QCheckBox *_relativeTargetpositionSpinBox;
@@ -107,21 +105,21 @@ private:
     QVector<int> _pointSinusoidalVector;
     QTimer _sendPointSinusoidalTimer;
 
-    void ppTargetPositionLineEditFinished();
-    void ipSendDataRecord();
+    void targetPositionLineEditFinished();
+    void sendDataRecord();
 
-    void ipPolarityEditingFinished();
+    void polarityEditingFinished();
 
-    void ppNewSetPointClicked(bool ok);
+    void newSetPointClicked(bool ok);
     void newSetPointEvent(bool ok);
 
-    void ppChangeSetImmediatelyPointCheckBoxRampClicked(bool ok);
+    void changeSetImmediatelyPointCheckBoxRampClicked(bool ok);
     void changeSetImmediatelyPointEvent(bool ok);
 
-    void ppAbsRelCheckBoxRampClicked(bool ok);
+    void absRelCheckBoxRampClicked(bool ok);
     void absRelEvent(bool ok);
 
-    void ppChangeOnSetPointCheckBoxRampClicked(bool ok);
+    void changeOnSetPointCheckBoxRampClicked(bool ok);
     void changeOnSetPointEvent(bool ok);
 
     void updateInformationLabel(void);
