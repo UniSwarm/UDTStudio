@@ -25,7 +25,6 @@
 #include "nodeodsubscriber.h"
 
 #include <QCheckBox>
-
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
@@ -33,8 +32,9 @@
 #include <QScrollArea>
 
 class NodeProfile402;
-class NodeObjectId;
+class ModePp;
 class IndexSpinBox;
+class IndexLabel;
 
 class P402PpWidget : public QScrollArea, public NodeOdSubscriber
 {
@@ -56,11 +56,11 @@ private:
     uint8_t _axis;
     CanOpenBus *_bus;
     NodeProfile402 *_nodeProfile402;
+    ModePp *_modePp;
 
     NodeObjectId _ppTargetPositionObjectId;
     NodeObjectId _ppPositionDemandValueObjectId;
     NodeObjectId _ppPositionActualValueObjectId;
-    NodeObjectId _ppVelocityActualObjectId;
     NodeObjectId _ppPolarityObjectId;
 
     int _iteratorForSendDataRecord;
@@ -68,11 +68,12 @@ private:
 
     QCheckBox *_ppNewSetPointCheckBox;
     QCheckBox *_ppChangeSetImmediatelyPointCheckBox;
+    QCheckBox *_ppAbsRelCheckBox;
     QCheckBox *_ppChangeOnSetPointCheckBox;
 
     QLineEdit *_ppTargetPositionLineEdit;
-    QLabel *_ppPositionDemandValueLabel;
-    QLabel *_ppPositionActualValueLabel;
+    IndexLabel *_ppPositionDemandValueLabel;
+    IndexLabel *_ppPositionActualValueLabel;
 
     IndexSpinBox *_ppTimePeriodUnitSpinBox;
     IndexSpinBox *_ppTimePeriodIndexSpinBox;
@@ -109,13 +110,16 @@ private:
 
     void ipPolarityEditingFinished();
 
-    void ppNewSetPointClicked(int id);
+    void ppNewSetPointClicked(bool ok);
     void newSetPointEvent(bool ok);
 
-    void ppChangeSetImmediatelyPointCheckBoxRampClicked(int id);
+    void ppChangeSetImmediatelyPointCheckBoxRampClicked(bool ok);
     void changeSetImmediatelyPointEvent(bool ok);
 
-    void ppChangeOnSetPointCheckBoxRampClicked(int id);
+    void ppAbsRelCheckBoxRampClicked(bool ok);
+    void absRelEvent(bool ok);
+
+    void ppChangeOnSetPointCheckBoxRampClicked(bool ok);
     void changeOnSetPointEvent(bool ok);
 
     void updatePositionDemandLabel(void);

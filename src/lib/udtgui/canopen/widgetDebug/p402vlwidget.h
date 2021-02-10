@@ -31,7 +31,9 @@
 #include <QScrollArea>
 
 class NodeProfile402;
+class ModeVl;
 class IndexSpinBox;
+class IndexLabel;
 
 class P402VlWidget : public QScrollArea, public NodeOdSubscriber
 {
@@ -56,6 +58,7 @@ private:
     uint8_t _axis;
 
     NodeProfile402 *_nodeProfile402;
+    ModeVl *_modeVl;
 
     NodeObjectId _vlTargetVelocityObjectId;
     NodeObjectId _vlVelocityDemandObjectId;
@@ -69,8 +72,9 @@ private:
     QSlider *_vlTargetVelocitySlider;
     QLabel *_vlSliderMinLabel;
     QLabel *_vlSliderMaxLabel;
-    QLabel *_vlVelocityDemandLabel;
-    QLabel *_vlVelocityActualLabel;
+
+    IndexLabel *_vlVelocityDemandLabel;
+    IndexLabel *_vlVelocityActualLabel;
 
     IndexSpinBox *_vlMinVelocityMinMaxAmountSpinBox;
     IndexSpinBox *_vlMaxVelocityMinMaxAmountSpinBox;

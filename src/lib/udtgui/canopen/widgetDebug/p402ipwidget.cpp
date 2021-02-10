@@ -19,11 +19,11 @@
 #include "p402ipwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
-#include "canopenbus.h"
-#include "services/services.h"
-
 #include "canopen/widget/indexspinbox.h"
 #include "canopen/widget/indexlabel.h"
+#include "services/services.h"
+#include "canopenbus.h"
+
 #include "indexdb402.h"
 #include "profile/p402/nodeprofile402.h"
 #include "profile/p402/modeip.h"
@@ -110,8 +110,9 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
         if (!_node->profiles().isEmpty())
         {
             _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
-            connect(_nodeProfile402, &NodeProfile402::enableRampEvent, this, &P402IpWidget::enableRampEvent);
-            enableRampEvent(_nodeProfile402->isEnableRamp());
+            _modeIp = dynamic_cast<ModeIp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::IP));
+            connect(_modeIp, &ModeIp::enableRampEvent, this, &P402IpWidget::enableRampEvent);
+            enableRampEvent(_modeIp->isEnableRamp());
         }
 
         connect(&_sendPointSinusoidalTimer, &QTimer::timeout, this, &P402IpWidget::sendDataRecordTargetWithSdo);
@@ -170,10 +171,6 @@ void P402IpWidget::updateData()
             setEnabled(true);
             _ipPositionDemandValueLabel->readObject();
             _ipPositionAcualValueLabel->readObject();
-
-            // TODO : move that to NodePorfile402IP
-            quint8 value = 1;
-            _node->writeObject(_ipBufferClearObjectId, QVariant(value));
         }
         else
         {
@@ -226,29 +223,16 @@ void P402IpWidget::ipPolarityEditingFinished()
 
 void P402IpWidget::ipClearBufferClicked()
 {
-    quint8 value = 0;
-
-    if (_clearBufferPushButton->isChecked())
-    {
-        value = 0;
-        _node->writeObject(_ipBufferClearObjectId, QVariant(value));
-        _clearBufferPushButton->setChecked(false);
-    }
-    else
-    {
-        value = 1;
-        _node->writeObject(_ipBufferClearObjectId, QVariant(value));
-        _clearBufferPushButton->setChecked(true);
-    }
+    _modeIp->bufferClear();
 }
 
-void P402IpWidget::ipEnableRampClicked(int id)
+void P402IpWidget::ipEnableRampClicked(bool ok)
 {
     // 0 Disable interpolation
     // 1 Enable interpolation
     if (_nodeProfile402)
     {
-        _nodeProfile402->setEnableRamp(id);
+        _modeIp->setEnableRamp(ok);
     }
     updatePositionDemandLabel();
 }
@@ -415,7 +399,6 @@ void P402IpWidget::pdoMapping()
 void P402IpWidget::createWidgets()
 {
     QWidget *widget = new QWidget();
-    QString name;
     QLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
 
@@ -424,18 +407,17 @@ void P402IpWidget::createWidgets()
     QFormLayout *ipLayout = new QFormLayout();
 
     _ipDataRecordLineEdit = new QLineEdit();
-    name = tr("Data record ") + QString("(0x%1) :").arg(QString::number(_ipDataRecordObjectId.index(), 16).toUpper());
-    ipLayout->addRow(name, _ipDataRecordLineEdit);
+    ipLayout->addRow(tr("Data record "), _ipDataRecordLineEdit);
     _ipDataRecordLineEdit->setToolTip("Separated by ,");
     connect(_ipDataRecordLineEdit, &QLineEdit::editingFinished, this, &P402IpWidget::ipDataRecordLineEditFinished);
 
     _ipPositionDemandValueLabel = new IndexLabel();
-    ipLayout->addRow(tr("Position demand value "), _ipPositionDemandValueLabel);
+    ipLayout->addRow(tr("Position demand value :"), _ipPositionDemandValueLabel);
 
     _ipPositionAcualValueLabel = new IndexLabel();
-    ipLayout->addRow(tr("Position actual value "), _ipPositionAcualValueLabel);
+    ipLayout->addRow(tr("Position actual value :"), _ipPositionAcualValueLabel);
 
-    QLabel *ipTimePeriodLabel = new QLabel(tr("Interpolation time period ") + "unit*10^index:");
+    QLabel *ipTimePeriodLabel = new QLabel(tr("Interpolation time period ") + "unit*10^index :");
     ipLayout->addRow(ipTimePeriodLabel);
     QLayout *ipTimePeriodlayout = new QHBoxLayout();
     _ipTimePeriodUnitSpinBox = new IndexSpinBox();
@@ -448,12 +430,10 @@ void P402IpWidget::createWidgets()
     ipLayout->addRow(ipTimePeriodlayout);
 
     _clearBufferPushButton = new QPushButton(tr("Clear Buffer"));
-    _clearBufferPushButton->setCheckable(true);
-    _clearBufferPushButton->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
     ipLayout->addRow(_clearBufferPushButton);
     connect(_clearBufferPushButton, &QPushButton::clicked, this, &P402IpWidget::ipClearBufferClicked);
 
-    QLabel *ipPositionRangelLimitLabel = new QLabel(tr("Position range limit "));
+    QLabel *ipPositionRangelLimitLabel = new QLabel(tr("Position range limit :"));
     ipLayout->addRow(ipPositionRangelLimitLabel);
     QLayout *ipPositionRangelLimitlayout = new QHBoxLayout();
     _ipPositionRangelLimitMinSpinBox = new IndexSpinBox();
@@ -464,7 +444,7 @@ void P402IpWidget::createWidgets()
     ipPositionRangelLimitlayout->addWidget(_ipPositionRangelLimitMaxSpinBox);
     ipLayout->addRow(ipPositionRangelLimitlayout);
 
-    QLabel *ipSoftwarePositionLimitLabel = new QLabel(tr("Software position limit "));
+    QLabel *ipSoftwarePositionLimitLabel = new QLabel(tr("Software position limit :"));
     ipLayout->addRow(ipSoftwarePositionLimitLabel);
     QLayout *ipSoftwarePositionLimitlayout = new QHBoxLayout();
     _ipSoftwarePositionLimitMinSpinBox = new IndexSpinBox();
@@ -477,14 +457,14 @@ void P402IpWidget::createWidgets()
 
     // Add Home offset (0x607C) and Polarity (0x607E)
     QLayout *ipHomeOffsetlayout = new QVBoxLayout();
-    QLabel *ipHomeOffsetLabel = new QLabel(tr("Home offset "));
+    QLabel *ipHomeOffsetLabel = new QLabel(tr("Home offset :"));
     _ipHomeOffsetSpinBox = new IndexSpinBox();
     _ipHomeOffsetSpinBox->setToolTip("");
     ipHomeOffsetlayout->addWidget(ipHomeOffsetLabel);
     ipHomeOffsetlayout->addWidget(_ipHomeOffsetSpinBox);
 
     QLayout *ipPolaritylayout = new QVBoxLayout();
-    QLabel *ipPolarityLabel = new QLabel(tr("Polarity "));
+    QLabel *ipPolarityLabel = new QLabel(tr("Polarity :"));
     _ipPolaritySpinBox = new QSpinBox();
     _ipPolaritySpinBox->setToolTip("0 = x1, 1 = x(-1)");
     _ipPolaritySpinBox->setRange(0, 1);
@@ -522,7 +502,7 @@ void P402IpWidget::createWidgets()
 
     // Add Max profile velocity (0x607F) and Max motor speed (0x6080)
     QLayout *ipMaxProfileVelocitylayout = new QVBoxLayout();
-    QLabel *ipMaxProfileVelocityLabel = new QLabel(tr("Max profile velocity "));
+    QLabel *ipMaxProfileVelocityLabel = new QLabel(tr("Max profile velocity :"));
     _ipMaxProfileVelocitySpinBox = new IndexSpinBox();
     //    _ipMaxProfileVelocitySpinBox->setSuffix(" inc/period");
     _ipMaxProfileVelocitySpinBox->setToolTip("");
@@ -530,7 +510,7 @@ void P402IpWidget::createWidgets()
     ipMaxProfileVelocitylayout->addWidget(_ipMaxProfileVelocitySpinBox);
 
     QLayout *ipMaxMotorSpeedlayout = new QVBoxLayout();
-    QLabel *ipMaxMotorSpeedLabel = new QLabel(tr("Max motor speedy "));
+    QLabel *ipMaxMotorSpeedLabel = new QLabel(tr("Max motor speed :"));
     _ipMaxMotorSpeedSpinBox = new IndexSpinBox();
     //    _ipMaxMotorSpeedSpinBox->setSuffix(" inc/period");
     _ipMaxMotorSpeedSpinBox->setToolTip("");

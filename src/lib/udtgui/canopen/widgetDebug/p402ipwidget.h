@@ -25,7 +25,6 @@
 #include "nodeodsubscriber.h"
 
 #include <QCheckBox>
-
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
@@ -33,7 +32,7 @@
 #include <QScrollArea>
 
 class NodeProfile402;
-class NodeObjectId;
+class ModeIp;
 class IndexSpinBox;
 class IndexLabel;
 
@@ -57,6 +56,7 @@ private:
     uint8_t _axis;
     CanOpenBus *_bus;
     NodeProfile402 *_nodeProfile402;
+    ModeIp *_modeIp;
 
     NodeObjectId _ipDataRecordObjectId;
     NodeObjectId _ipBufferClearObjectId;
@@ -109,7 +109,7 @@ private:
 
     void ipPolarityEditingFinished();
     void ipClearBufferClicked();
-    void ipEnableRampClicked(int id);
+    void ipEnableRampClicked(bool ok);
     void enableRampEvent(bool ok);
 
     void updatePositionDemandLabel(void);

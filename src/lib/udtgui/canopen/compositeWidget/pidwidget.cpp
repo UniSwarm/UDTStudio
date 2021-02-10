@@ -226,13 +226,9 @@ void PidWidget::setIMode()
     _dataLogger->removeData(pidInputStatus_ObjId);
     _dataLogger->removeData(pidErrorStatus_ObjId);
     _dataLogger->removeData(target_ObjId);
-    //_dataLogger->removeData(pidIntegratorStatus_ObjId);
-    //_dataLogger->removeData(pidOutputStatus_ObjId);
     _dataLogger->addData(pidInputStatus_ObjId);
     _dataLogger->addData(pidErrorStatus_ObjId);
     _dataLogger->addData(target_ObjId);
-    //_dataLogger->addData(pidIntegratorStatus_ObjId);
-    //_dataLogger->addData(pidOutputStatus_ObjId);
 }
 
 void PidWidget::screenshotSave()
@@ -257,7 +253,7 @@ void PidWidget::changeMode402()
         break;
 
     case MODE_PID_POSITION:
-        _nodeProfile402->setEnableRamp(true);
+        _nodeProfile402->setDefaultModeValue();
         if (_nodeProfile402->actualMode() != NodeProfile402::IP)
         {
             _nodeProfile402->setMode(NodeProfile402::IP);
@@ -269,7 +265,7 @@ void PidWidget::changeMode402()
         break;
 
     case MODE_PID_VELOCITY:
-        _nodeProfile402->setEnableRamp(false);
+        _nodeProfile402->setDefaultModeValue();
         if (_nodeProfile402->actualMode() != NodeProfile402::VL)
         {
             _nodeProfile402->setMode(NodeProfile402::VL);

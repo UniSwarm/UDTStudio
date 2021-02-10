@@ -19,13 +19,12 @@
 #include "p402ppwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
-#include "canopenbus.h"
+#include "canopen/widget/indexspinbox.h"
 #include "services/services.h"
 
-#include "canopen/widget/indexspinbox.h"
 #include "indexdb402.h"
 #include "profile/p402/nodeprofile402.h"
-#include "profile/p402/modeip.h"
+#include "profile/p402/modepp.h"
 
 #include <QFormLayout>
 #include <QGroupBox>
@@ -34,6 +33,8 @@
 #include <QString>
 #include <QStringList>
 #include <QtMath>
+
+#include <canopen/widget/indexlabel.h>
 
 P402PpWidget::P402PpWidget(QWidget *parent)
     : QScrollArea(parent)
@@ -110,9 +111,16 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
         if (!_node->profiles().isEmpty())
         {
             _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
-            connect(_nodeProfile402, &NodeProfile402::enableRampEvent, this, &P402PpWidget::newSetPointEvent);
-            newSetPointEvent(_nodeProfile402->isEnableRamp());
+            _modePp = dynamic_cast<ModePp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::PP));
+
+            newSetPointEvent(_modePp->isNewSetPoint());
+            changeSetImmediatelyPointEvent(_modePp->isChangeSetImmediately());
+            absRelEvent(_modePp->isAbsRel());
+            changeOnSetPointEvent(_modePp->isChangeOnSetPoint());
         }
+
+        _ppPositionDemandValueLabel->setObjId(_ppPositionDemandValueObjectId);
+        _ppPositionActualValueLabel->setObjId(_ppPositionActualValueObjectId);
 
         _ppPositionRangelLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MIN, axis));
         _ppPositionRangelLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MAX, axis));
@@ -128,6 +136,9 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
         _ppProfileDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_DECELERATION, axis));
         _ppMaxDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_DECELERATION, axis));
         _ppQuickStopDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_QUICK_STOP_DECELERATION, axis));
+
+        _ppPositionDemandValueLabel->setNode(node);
+        _ppPositionActualValueLabel->setNode(node);
 
         _ppPositionRangelLimitMinSpinBox->setNode(node);
         _ppPositionRangelLimitMaxSpinBox->setNode(node);
@@ -155,8 +166,8 @@ void P402PpWidget::updateData()
         if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::OperationMode::PP)
         {
             setEnabled(true);
-            _node->readObject(_ppPositionDemandValueObjectId);
-            _node->readObject(_ppPositionActualValueObjectId);
+            _ppPositionDemandValueLabel->readObject();
+            _ppPositionActualValueLabel->readObject();
         }
         else
         {
@@ -206,13 +217,13 @@ void P402PpWidget::ipPolarityEditingFinished()
     _node->writeObject(_ppPolarityObjectId, QVariant(value));
 }
 
-void P402PpWidget::ppNewSetPointClicked(int id)
+void P402PpWidget::ppNewSetPointClicked(bool ok)
 {
     // 0 Disable interpolation
     // 1 Enable interpolation
     if (_nodeProfile402)
     {
-        _nodeProfile402->setEnableRamp(id);
+        _modePp->newSetPoint(ok);
     }
     updatePositionDemandLabel();
 }
@@ -223,11 +234,11 @@ void P402PpWidget::newSetPointEvent(bool ok)
     updatePositionDemandLabel();
 }
 
-void P402PpWidget::ppChangeSetImmediatelyPointCheckBoxRampClicked(int id)
+void P402PpWidget::ppChangeSetImmediatelyPointCheckBoxRampClicked(bool ok)
 {
     if (_nodeProfile402)
     {
-        //        _nodeProfile402->setEnableRamp(id);
+        _modePp->setChangeSetImmediately(ok);
     }
     updatePositionDemandLabel();
 }
@@ -238,11 +249,24 @@ void P402PpWidget::changeSetImmediatelyPointEvent(bool ok)
     updatePositionDemandLabel();
 }
 
-void P402PpWidget::ppChangeOnSetPointCheckBoxRampClicked(int id)
+void P402PpWidget::ppAbsRelCheckBoxRampClicked(bool ok)
 {
     if (_nodeProfile402)
     {
-        //        _nodeProfile402->setEnableRamp(id);
+        _modePp->setAbsRel(ok);
+    }
+}
+
+void P402PpWidget::absRelEvent(bool ok)
+{
+    _ppAbsRelCheckBox->setChecked(ok);
+}
+
+void P402PpWidget::ppChangeOnSetPointCheckBoxRampClicked(bool ok)
+{
+    if (_nodeProfile402)
+    {
+        _modePp->setChangeOnSetPoint(ok);
     }
     updatePositionDemandLabel();
 }
@@ -250,7 +274,6 @@ void P402PpWidget::ppChangeOnSetPointCheckBoxRampClicked(int id)
 void P402PpWidget::changeOnSetPointEvent(bool ok)
 {
     _ppChangeOnSetPointCheckBox->setChecked(ok);
-    updatePositionDemandLabel();
 }
 
 void P402PpWidget::updatePositionDemandLabel()
@@ -326,7 +349,6 @@ void P402PpWidget::refreshData(NodeObjectId object)
 void P402PpWidget::createWidgets()
 {
     QWidget *widget = new QWidget();
-    QString name;
     QLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
 
@@ -335,63 +357,47 @@ void P402PpWidget::createWidgets()
     QFormLayout *ipLayout = new QFormLayout();
 
     _ppTargetPositionLineEdit = new QLineEdit();
-    name = tr("Position_Target ") + QString("(0x%1) :").arg(QString::number(_ppTargetPositionObjectId.index(), 16).toUpper());
-    ipLayout->addRow(name, _ppTargetPositionLineEdit);
+    ipLayout->addRow(tr("Position_Target :"), _ppTargetPositionLineEdit);
     connect(_ppTargetPositionLineEdit, &QLineEdit::editingFinished, this, &P402PpWidget::ppTargetPositionLineEditFinished);
 
-    _ppPositionDemandValueLabel = new QLabel("-");
-    _ppPositionDemandValueLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    name = tr("Position demand value ") + QString("(0x%1) :").arg(QString::number(_ppPositionDemandValueObjectId.index(), 16).toUpper());
-    ipLayout->addRow(name, _ppPositionDemandValueLabel);
+    _ppPositionDemandValueLabel = new IndexLabel();
+    ipLayout->addRow(tr("Position demand value :"), _ppPositionDemandValueLabel);
 
-    _ppPositionActualValueLabel = new QLabel("-");
-    _ppPositionActualValueLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    name = tr("Position actual value ") + QString("(0x%1) :").arg(QString::number(_ppPositionActualValueObjectId.index(), 16).toUpper());
-    ipLayout->addRow(name, _ppPositionActualValueLabel);
+    _ppPositionActualValueLabel = new IndexLabel();
+    ipLayout->addRow(tr("Position actual value :"), _ppPositionActualValueLabel);
 
-    name = tr("Position range limit ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MAX, _axis).index(), 16).toUpper());
-    QLabel *ipPositionRangelLimitLabel = new QLabel(name);
+    QLabel *ipPositionRangelLimitLabel = new QLabel(tr("Position range limit :"));
     ipLayout->addRow(ipPositionRangelLimitLabel);
     QLayout *ipPositionRangelLimitlayout = new QHBoxLayout();
     _ppPositionRangelLimitMinSpinBox = new IndexSpinBox();
-    //    _ppPositionRangelLimitMinSpinBox->setSuffix(" inc");
     _ppPositionRangelLimitMinSpinBox->setToolTip("min");
     ipPositionRangelLimitlayout->addWidget(_ppPositionRangelLimitMinSpinBox);
     _ppPositionRangelLimitMaxSpinBox = new IndexSpinBox();
-    //    _ppPositionRangelLimitMaxSpinBox->setSuffix(" inc");
     _ppPositionRangelLimitMaxSpinBox->setToolTip("max");
     ipPositionRangelLimitlayout->addWidget(_ppPositionRangelLimitMaxSpinBox);
     ipLayout->addRow(ipPositionRangelLimitlayout);
 
-    name = tr("Software position limit ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MAX, _axis).index(), 16).toUpper());
-    QLabel *ipSoftwarePositionLimitLabel = new QLabel(name);
+    QLabel *ipSoftwarePositionLimitLabel = new QLabel(tr("Software position limit :"));
     ipLayout->addRow(ipSoftwarePositionLimitLabel);
     QLayout *ipSoftwarePositionLimitlayout = new QHBoxLayout();
     _ppSoftwarePositionLimitMinSpinBox = new IndexSpinBox();
-    //    _ppSoftwarePositionLimitMinSpinBox->setSuffix(" inc");
     _ppSoftwarePositionLimitMinSpinBox->setToolTip("min");
-    //    std::numeric_limits<int>::max());
     ipSoftwarePositionLimitlayout->addWidget(_ppSoftwarePositionLimitMinSpinBox);
     _ppSoftwarePositionLimitMaxSpinBox = new IndexSpinBox();
-    //    _ppSoftwarePositionLimitMaxSpinBox->setSuffix(" inc");
     _ppSoftwarePositionLimitMaxSpinBox->setToolTip("max");
-    //    std::numeric_limits<int>::max());
     ipSoftwarePositionLimitlayout->addWidget(_ppSoftwarePositionLimitMaxSpinBox);
     ipLayout->addRow(ipSoftwarePositionLimitlayout);
 
-    name = tr("Home offset ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_HM_HOME_OFFSET, _axis).index(), 16).toUpper());
     // Add Home offset (0x607C) and Polarity (0x607E)
     QLayout *ipHomeOffsetlayout = new QVBoxLayout();
-    QLabel *ipHomeOffsetLabel = new QLabel(name);
+    QLabel *ipHomeOffsetLabel = new QLabel(tr("Home offset :"));
     _ppHomeOffsetSpinBox = new IndexSpinBox();
-    //    _ppHomeOffsetSpinBox->setSuffix(" inc");
     _ppHomeOffsetSpinBox->setToolTip("");
     ipHomeOffsetlayout->addWidget(ipHomeOffsetLabel);
     ipHomeOffsetlayout->addWidget(_ppHomeOffsetSpinBox);
 
-    name = tr("Polarity ") + QString("(0x%1) ").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY, _axis).index(), 16).toUpper()) + "bit 7)";
     QLayout *ipPolaritylayout = new QVBoxLayout();
-    QLabel *ipPolarityLabel = new QLabel(name);
+    QLabel *ipPolarityLabel = new QLabel(tr("Polarity :"));
     _ppPolaritySpinBox = new QSpinBox();
     _ppPolaritySpinBox->setToolTip("0 = x1, 1 = x(-1)");
     _ppPolaritySpinBox->setRange(0, 1);
@@ -405,20 +411,16 @@ void P402PpWidget::createWidgets()
 
     // Add Profile velocity (0x6081) and Max motor speed (0x6080)
     QLayout *ipProfileVelocitylayout = new QVBoxLayout();
-    QLabel *ipProfileVelocityLabel = new QLabel(tr("Profile velocity (0x6081) :"));
+    QLabel *ipProfileVelocityLabel = new QLabel(tr("Profile velocity :"));
     _ppProfileVelocitySpinBox = new IndexSpinBox();
-    //    _ppProfileVelocitySpinBox->setSuffix(" inc/s");
     _ppProfileVelocitySpinBox->setToolTip("");
-    //    _ppProfileVelocitySpinBox->setRange(0, std::numeric_limits<int>::max());
     ipProfileVelocitylayout->addWidget(ipProfileVelocityLabel);
     ipProfileVelocitylayout->addWidget(_ppProfileVelocitySpinBox);
 
     QLayout *ipEndVelocitylayout = new QVBoxLayout();
-    QLabel *ipEndVelocityLabel = new QLabel(tr("End velocity (0x6082) :"));
+    QLabel *ipEndVelocityLabel = new QLabel(tr("End velocity :"));
     _ppEndVelocitySpinBox = new IndexSpinBox();
-    //    _ppEndVelocitySpinBox->setSuffix(" inc/s");
     _ppEndVelocitySpinBox->setToolTip("");
-    //    _ppEndVelocitySpinBox->setRange(0, std::numeric_limits<int>::max());
     ipEndVelocitylayout->addWidget(ipEndVelocityLabel);
     ipEndVelocitylayout->addWidget(_ppEndVelocitySpinBox);
 
@@ -429,19 +431,15 @@ void P402PpWidget::createWidgets()
 
     // Add Max profile velocity (0x607F) and Max motor speed (0x6080)
     QLayout *ipMaxProfileVelocitylayout = new QVBoxLayout();
-    name = tr("Max profile velocity ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_PROFILE_VELOCITY, _axis).index(), 16).toUpper());
-    QLabel *ipMaxProfileVelocityLabel = new QLabel(name);
+    QLabel *ipMaxProfileVelocityLabel = new QLabel(tr("Max profile velocity :"));
     _ppMaxProfileVelocitySpinBox = new IndexSpinBox();
-    //    _ppMaxProfileVelocitySpinBox->setSuffix(" inc/period");
     _ppMaxProfileVelocitySpinBox->setToolTip("");
     ipMaxProfileVelocitylayout->addWidget(ipMaxProfileVelocityLabel);
     ipMaxProfileVelocitylayout->addWidget(_ppMaxProfileVelocitySpinBox);
 
     QLayout *ipMaxMotorSpeedlayout = new QVBoxLayout();
-    name = tr("Max motor speedy ") + QString("(0x%1) : ").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_MOTOR_SPEED, _axis).index(), 16).toUpper());
-    QLabel *ipMaxMotorSpeedLabel = new QLabel(name);
+    QLabel *ipMaxMotorSpeedLabel = new QLabel(tr("Max motor speedy :"));
     _ppMaxMotorSpeedSpinBox = new IndexSpinBox();
-    //    _ppMaxMotorSpeedSpinBox->setSuffix(" inc/period");
     _ppMaxMotorSpeedSpinBox->setToolTip("");
     ipMaxMotorSpeedlayout->addWidget(ipMaxMotorSpeedLabel);
     ipMaxMotorSpeedlayout->addWidget(_ppMaxMotorSpeedSpinBox);
@@ -453,20 +451,16 @@ void P402PpWidget::createWidgets()
 
     // Add Profile acceleration (0x6083) and Max acceleration (0x60C5)
     QLayout *ipProfileAccelerationlayout = new QVBoxLayout();
-    QLabel *ipProfileAccelerationLabel = new QLabel(tr("Profile acceleration (0x6083) :"));
+    QLabel *ipProfileAccelerationLabel = new QLabel(tr("Profile acceleration :"));
     _ppProfileAccelerationSpinBox = new IndexSpinBox();
-    //    _ppProfileAccelerationSpinBox->setSuffix(" inc/s2");
     _ppProfileAccelerationSpinBox->setToolTip("");
-    //    _ppProfileAccelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
     ipProfileAccelerationlayout->addWidget(ipProfileAccelerationLabel);
     ipProfileAccelerationlayout->addWidget(_ppProfileAccelerationSpinBox);
 
     QLayout *ipMaxAccelerationlayout = new QVBoxLayout();
-    QLabel *ipMaxAccelerationLabel = new QLabel(tr("Max acceleration (0x60C5) :"));
+    QLabel *ipMaxAccelerationLabel = new QLabel(tr("Max acceleration :"));
     _ppMaxAccelerationSpinBox = new IndexSpinBox();
-    //    _ppMaxAccelerationSpinBox->setSuffix(" inc/s2");
     _ppMaxAccelerationSpinBox->setToolTip("");
-    //    _ppMaxAccelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
     ipMaxAccelerationlayout->addWidget(ipMaxAccelerationLabel);
     ipMaxAccelerationlayout->addWidget(_ppMaxAccelerationSpinBox);
 
@@ -477,20 +471,16 @@ void P402PpWidget::createWidgets()
 
     // Add Profile deceleration (0x6084) and Max deceleration (0x60C6)
     QLayout *ipProfileDecelerationlayout = new QVBoxLayout();
-    QLabel *ipProfileDecelerationLabel = new QLabel(tr("Profile deceleration (0x6084) :"));
+    QLabel *ipProfileDecelerationLabel = new QLabel(tr("Profile deceleration :"));
     _ppProfileDecelerationSpinBox = new IndexSpinBox();
-    //    _ppProfileDecelerationSpinBox->setSuffix(" inc/s2");
     _ppProfileDecelerationSpinBox->setToolTip("");
-    //    _ppProfileDecelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
     ipProfileDecelerationlayout->addWidget(ipProfileDecelerationLabel);
     ipProfileDecelerationlayout->addWidget(_ppProfileDecelerationSpinBox);
 
     QLayout *ipMaxDecelerationlayout = new QVBoxLayout();
-    QLabel *ipMaxDecelerationLabel = new QLabel(tr("Max deceleration (0x60C6) :"));
+    QLabel *ipMaxDecelerationLabel = new QLabel(tr("Max deceleration :"));
     _ppMaxDecelerationSpinBox = new IndexSpinBox();
-    //    _ppMaxDecelerationSpinBox->setSuffix(" inc/s2");
     _ppMaxDecelerationSpinBox->setToolTip("");
-    //    _ppMaxDecelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
     ipMaxDecelerationlayout->addWidget(ipMaxDecelerationLabel);
     ipMaxDecelerationlayout->addWidget(_ppMaxDecelerationSpinBox);
 
@@ -501,11 +491,9 @@ void P402PpWidget::createWidgets()
 
     // Add Quick stop deceleration (0x6085)
     QLayout *ipQuickStopDecelerationlayout = new QVBoxLayout();
-    QLabel *ipQuickStopDecelerationLabel = new QLabel(tr("Quick stop deceleration (0x6085) :"));
+    QLabel *ipQuickStopDecelerationLabel = new QLabel(tr("Quick stop deceleration :"));
     _ppQuickStopDecelerationSpinBox = new IndexSpinBox();
-    //    _ppQuickStopDecelerationSpinBox->setSuffix(" inc/s2");
     _ppQuickStopDecelerationSpinBox->setToolTip("");
-    //    _ppQuickStopDecelerationSpinBox->setRange(0, std::numeric_limits<int>::max());
     ipQuickStopDecelerationlayout->addWidget(ipQuickStopDecelerationLabel);
     ipQuickStopDecelerationlayout->addWidget(_ppQuickStopDecelerationSpinBox);
     ipLayout->addRow(ipQuickStopDecelerationlayout);
@@ -526,8 +514,12 @@ void P402PpWidget::createWidgets()
     connect(_ppChangeSetImmediatelyPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::ppChangeSetImmediatelyPointCheckBoxRampClicked);
     modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
+    _ppAbsRelCheckBox = new QCheckBox();
+    modeControlWordLayout->addRow(tr("Change on set-point (bit 9) :"), _ppAbsRelCheckBox);
+    connect(_ppAbsRelCheckBox, &QCheckBox::clicked, this, &P402PpWidget::ppAbsRelCheckBoxRampClicked);
+
     _ppChangeOnSetPointCheckBox = new QCheckBox();
-    modeControlWordLayout->addRow(tr("Change on set-point (bit 9) :"), _ppChangeOnSetPointCheckBox);
+    modeControlWordLayout->addRow(tr("Abs/Rel (bit 6) :"), _ppChangeOnSetPointCheckBox);
     connect(_ppChangeOnSetPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::ppChangeOnSetPointCheckBoxRampClicked);
     modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
@@ -564,7 +556,7 @@ void P402PpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         return;
     }
 
-    if ((objId == _ppPositionDemandValueObjectId) || (objId == _ppVelocityActualObjectId) || (objId == _ppPolarityObjectId))
+    if ((objId == _ppPositionDemandValueObjectId) || (objId == _ppPolarityObjectId))
     {
         if (flags == SDO::FlagsRequest::Error)
         {
