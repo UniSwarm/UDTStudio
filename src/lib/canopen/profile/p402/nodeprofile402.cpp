@@ -591,8 +591,10 @@ QString NodeProfile402::profileNumberStr() const
 void NodeProfile402::reset()
 {
     _stateMachineRequested = State402::STATE_NotReadyToSwitchOn;
-    _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
-    _modeCurrent = NoMode;
+
+    _node->readObject(_modesOfOperationDisplayObjectId);
+    _node->readObject(_controlWordObjectId);
+    _node->readObject(_statusWordObjectId);
 
     manageSupportedDriveModes(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
 
