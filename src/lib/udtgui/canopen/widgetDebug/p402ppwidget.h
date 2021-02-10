@@ -72,6 +72,8 @@ private:
     QCheckBox *_ppChangeOnSetPointCheckBox;
 
     QLineEdit *_ppTargetPositionLineEdit;
+    QLabel *_ppInfoLabel;
+
     IndexLabel *_ppPositionDemandValueLabel;
     IndexLabel *_ppPositionActualValueLabel;
 
@@ -122,12 +124,10 @@ private:
     void ppChangeOnSetPointCheckBoxRampClicked(bool ok);
     void changeOnSetPointEvent(bool ok);
 
-    void updatePositionDemandLabel(void);
-    void updatePositionActualLabel(void);
+    void updateInformationLabel(void);
 
     void dataLogger();
     void pdoMapping();
-    void refreshData(NodeObjectId object);
 
     void createWidgets();
 

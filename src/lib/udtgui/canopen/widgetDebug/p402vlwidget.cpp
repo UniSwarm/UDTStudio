@@ -20,6 +20,7 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/widget/indexspinbox.h"
+#include "canopen/widget/indexlabel.h"
 #include "services/services.h"
 
 #include "indexdb402.h"
@@ -29,8 +30,6 @@
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QPushButton>
-
-#include <canopen/widget/indexlabel.h>
 
 P402VlWidget::P402VlWidget(QWidget *parent)
     : QScrollArea(parent)
@@ -59,15 +58,15 @@ void P402VlWidget::readData()
     {
         if (_nodeProfile402->actualMode() == NodeProfile402::OperationMode::VL)
         {
-            _node->readObject(_vlVelocityDemandObjectId);
-            _node->readObject(_vlVelocityActualObjectId);
+            _vlVelocityDemandLabel->readObject();
+            _vlVelocityActualLabel->readObject();
         }
     }
 }
 
 void P402VlWidget::reset()
 {
-    _node->readObject(_vlTargetVelocityObjectId);
+    _node->readObject(_vlVelocityTargetObjectId);
 }
 
 void P402VlWidget::setNode(Node *node, uint8_t axis)
@@ -89,30 +88,27 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
     _node = node;
     if (_node)
     {
-        _vlVelocityDemandObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND, axis);
-        _vlVelocityActualObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, axis);
-        _vlTargetVelocityObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, axis);
+        _vlVelocityDemandObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND, _axis);
+        _vlVelocityActualObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis);
+        _vlVelocityTargetObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, _axis);
 
         createWidgets();
 
-        _vlTargetVelocityObjectId.setBusId(_node->busId());
+        _vlVelocityTargetObjectId.setBusId(_node->busId());
         _vlVelocityDemandObjectId.setBusId(_node->busId());
         _vlVelocityActualObjectId.setBusId(_node->busId());
-        _vlTargetVelocityObjectId.setNodeId(_node->nodeId());
+        _vlVelocityTargetObjectId.setNodeId(_node->nodeId());
         _vlVelocityDemandObjectId.setNodeId(_node->nodeId());
         _vlVelocityActualObjectId.setNodeId(_node->nodeId());
-        _vlTargetVelocityObjectId.setDataType(QMetaType::Type::Short);
+        _vlVelocityTargetObjectId.setDataType(QMetaType::Type::Short);
         _vlVelocityDemandObjectId.setDataType(QMetaType::Type::Short);
         _vlVelocityActualObjectId.setDataType(QMetaType::Type::Short);
 
-        registerObjId(_vlTargetVelocityObjectId);
-        registerObjId(_vlVelocityDemandObjectId);
-        registerObjId(_vlVelocityActualObjectId);
-
+        registerObjId(_vlVelocityTargetObjectId);
         setNodeInterrest(node);
 
-        _vlVelocityDemandLabel->setObjId(_vlVelocityDemandObjectId);
-        _vlVelocityActualLabel->setObjId(_vlVelocityActualObjectId);
+        _vlVelocityDemandLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND, _axis));
+        _vlVelocityActualLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis));
 
         _vlMinVelocityMinMaxAmountSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_MIN, axis));
         _vlMaxVelocityMinMaxAmountSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_MAX, axis));
@@ -144,7 +140,7 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
         _vlDimensionFactorDenominatorSpinBox->setNode(node);
 
         int max = _node->nodeOd()->value(_vlMaxVelocityMinMaxAmountSpinBox->objId()).toInt();
-        _vlTargetVelocitySlider->setValue(_node->nodeOd()->value(_vlTargetVelocityObjectId).toInt());
+        _vlTargetVelocitySlider->setValue(_node->nodeOd()->value(_vlVelocityTargetObjectId).toInt());
         _vlTargetVelocitySlider->setRange(-max, max);
 
         if (!_node->profiles().isEmpty())
@@ -173,9 +169,9 @@ void P402VlWidget::updateData()
         if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::OperationMode::VL)
         {
             this->setEnabled(true);
-            _node->readObject(_vlTargetVelocityObjectId);
-            _node->readObject(_vlVelocityDemandObjectId);
-            _node->readObject(_vlVelocityActualObjectId);
+            _node->readObject(_vlVelocityTargetObjectId);
+            _vlVelocityDemandLabel->readObject();
+            _vlVelocityActualLabel->readObject();
         }
     }
 }
@@ -183,13 +179,13 @@ void P402VlWidget::updateData()
 void P402VlWidget::vlTargetVelocitySpinboxFinished()
 {
     qint16 value = static_cast<qint16>(_vlTargetVelocitySpinBox->value());
-    _node->writeObject(_vlTargetVelocityObjectId, QVariant(value));
+    _node->writeObject(_vlVelocityTargetObjectId, QVariant(value));
     _vlTargetVelocitySlider->setValue(value);
 }
 void P402VlWidget::vlTargetVelocitySliderChanged()
 {
     qint16 value = static_cast<qint16>(_vlTargetVelocitySpinBox->value());
-    _node->writeObject(_vlTargetVelocityObjectId, QVariant(value));
+    _node->writeObject(_vlVelocityTargetObjectId, QVariant(value));
 }
 
 void P402VlWidget::vlMinVelocityMinMaxAmountSpinboxFinished()
@@ -242,22 +238,22 @@ void P402VlWidget::vlReferenceRampClicked(bool ok)
 void P402VlWidget::vlEnableRampEvent(bool ok)
 {
     _vlEnableRampCheckBox->setChecked(ok);
-    updateVelocityDemandLabel();
+    updateInformationLabel();
 }
 
 void P402VlWidget::vlUnlockRampEvent(bool ok)
 {
     _vlUnlockRampCheckBox->setChecked(ok);
-    updateVelocityDemandLabel();
+    updateInformationLabel();
 }
 
 void P402VlWidget::vlReferenceRamp(bool ok)
 {
     _vlReferenceRampCheckBox->setChecked(ok);
-    updateVelocityDemandLabel();
+    updateInformationLabel();
 }
 
-void P402VlWidget::updateVelocityDemandLabel()
+void P402VlWidget::updateInformationLabel()
 {
     QString text;
     if (!_vlEnableRampCheckBox->isChecked())
@@ -282,11 +278,9 @@ void P402VlWidget::updateVelocityDemandLabel()
     }
     if (!text.isEmpty())
     {
-        text = "(" + text + "  : Not Activated)";
+        text = "  : Not Activated";
     }
-
-    int value = _node->nodeOd()->value(_vlVelocityDemandObjectId).toInt();
-    _vlVelocityDemandLabel->setText(QString("%1 ").arg(QString::number(value, 10)) + text);
+    _vlInfoLabel->setText(text);
 }
 
 void P402VlWidget::dataLogger()
@@ -295,7 +289,7 @@ void P402VlWidget::dataLogger()
     DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
 
     dataLogger->addData(_vlVelocityActualObjectId);
-    dataLogger->addData(_vlTargetVelocityObjectId);
+    dataLogger->addData(_vlVelocityTargetObjectId);
     dataLogger->addData(_vlVelocityDemandObjectId);
 
     _dataLoggerWidget->show();
@@ -308,40 +302,11 @@ void P402VlWidget::pdoMapping()
     controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     statusWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
-    QList<NodeObjectId> vlRpdoObjectList = {controlWordObjectId, _vlTargetVelocityObjectId};
+    QList<NodeObjectId> vlRpdoObjectList = {controlWordObjectId, _vlVelocityTargetObjectId};
     _node->rpdos().at(0)->writeMapping(vlRpdoObjectList);
 
     QList<NodeObjectId> vlTpdoObjectList = {statusWordObjectId, _vlVelocityDemandObjectId};
     _node->tpdos().at(2)->writeMapping(vlTpdoObjectList);
-}
-
-void P402VlWidget::refreshData(NodeObjectId object)
-{
-    int value;
-    if (_node->nodeOd()->indexExist(object.index()))
-    {
-        if (object == _vlTargetVelocityObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            if (!_vlTargetVelocitySpinBox->hasFocus())
-            {
-                _vlTargetVelocitySpinBox->setValue(value);
-            }
-            if (!_vlTargetVelocitySlider->isSliderDown())
-            {
-                //_vlTargetVelocitySlider->setValue(value);
-            }
-        }
-        if (object == _vlVelocityDemandObjectId)
-        {
-            updateVelocityDemandLabel();
-        }
-        if (object == _vlVelocityActualObjectId)
-        {
-            value = _node->nodeOd()->value(object).toInt();
-            _vlVelocityActualLabel->setNum(value);
-        }
-    }
 }
 
 void P402VlWidget::createWidgets()
@@ -356,7 +321,7 @@ void P402VlWidget::createWidgets()
 
     _vlTargetVelocitySpinBox = new QSpinBox();
     _vlTargetVelocitySpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    vlLayout->addRow(tr("Target velocity "), _vlTargetVelocitySpinBox);
+    vlLayout->addRow(tr("Target velocity :"), _vlTargetVelocitySpinBox);
 
     _vlTargetVelocitySlider = new QSlider(Qt::Horizontal);
     _vlTargetVelocitySlider->setTickPosition(QSlider::TicksBothSides);
@@ -376,11 +341,14 @@ void P402VlWidget::createWidgets()
     connect(_vlTargetVelocitySlider, &QSlider::valueChanged, this, &P402VlWidget::vlTargetVelocitySliderChanged);
     connect(_vlTargetVelocitySpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::vlTargetVelocitySpinboxFinished);
 
+    _vlInfoLabel = new QLabel();
+    vlLayout->addRow(tr("Information :"), _vlInfoLabel);
+
     _vlVelocityDemandLabel = new IndexLabel();
-    vlLayout->addRow(tr("Velocity_demand "), _vlVelocityDemandLabel);
+    vlLayout->addRow(tr("Velocity demand "), _vlVelocityDemandLabel);
 
     _vlVelocityActualLabel = new IndexLabel();
-    vlLayout->addRow(tr("Velocity_actual_value "), _vlVelocityActualLabel);
+    vlLayout->addRow(tr("Velocity actual value "), _vlVelocityActualLabel);
 
     QLabel *vlVelocityMinMaxAmountLabel = new QLabel(tr("Velocity min max amount :"));
     vlLayout->addRow(vlVelocityMinMaxAmountLabel);
@@ -503,12 +471,19 @@ void P402VlWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         return;
     }
 
-    if ((objId == _vlTargetVelocityObjectId) || (objId == _vlVelocityDemandObjectId) || (objId == _vlVelocityActualObjectId))
+    if (objId == _vlVelocityTargetObjectId)
     {
-        if (flags == SDO::FlagsRequest::Error)
+        if (flags != SDO::FlagsRequest::Error)
         {
-            return;
+            int value = _node->nodeOd()->value(objId).toInt();
+            if (!_vlTargetVelocitySpinBox->hasFocus())
+            {
+                _vlTargetVelocitySpinBox->setValue(value);
+            }
+            if (!_vlTargetVelocitySlider->isSliderDown())
+            {
+                //_vlTargetVelocitySlider->setValue(value);
+            }
         }
-        refreshData(objId);
     }
 }

@@ -102,8 +102,6 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
         _ipPolarityObjectId.setBusId(_node->busId());
 
         registerObjId(_ipDataRecordObjectId);
-        registerObjId(_ipPositionDemandValueObjectId);
-        registerObjId(_ipPositionActualValueObjectId);
         registerObjId(_ipPolarityObjectId);
         setNodeInterrest(node);
 
@@ -117,8 +115,8 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
 
         connect(&_sendPointSinusoidalTimer, &QTimer::timeout, this, &P402IpWidget::sendDataRecordTargetWithSdo);
 
-        _ipPositionDemandValueLabel->setObjId(_ipPositionDemandValueObjectId);
-        _ipPositionAcualValueLabel->setObjId(_ipPositionActualValueObjectId);
+        _ipPositionDemandValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, axis));
+        _ipPositionAcualValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, axis));
 
         _ipTimePeriodUnitSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_UNITS, axis));
         _ipTimePeriodIndexSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_INDEX, axis));
@@ -654,33 +652,11 @@ void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     {
         return;
     }
-
-    if (objId == _ipPositionDemandValueObjectId)
+    if (objId == _ipPolarityObjectId)
     {
         if (flags != SDO::FlagsRequest::Error)
         {
-            if (objId == _ipPositionDemandValueObjectId)
-            {
-                updatePositionDemandLabel();
-            }
-        }
-    }
-    if ((objId == _ipDataRecordObjectId))
-    {
-        if (flags != SDO::FlagsRequest::Error)
-        {
-            if (!_listDataRecord.isEmpty())
-            {
-                ipSendDataRecord();
-            }
-        }        
-    }
-
-    if ((objId == _ipBufferClearObjectId) && (objId.subIndex() == 0x02))
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            return;
+            ipPolarityEditingFinished();
         }
     }
 }

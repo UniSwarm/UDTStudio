@@ -103,8 +103,6 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
         _ppPolarityObjectId.setNodeId(_node->nodeId());
 
         registerObjId(_ppTargetPositionObjectId);
-        registerObjId(_ppPositionDemandValueObjectId);
-        registerObjId(_ppPositionActualValueObjectId);
         registerObjId(_ppPolarityObjectId);
         setNodeInterrest(node);
 
@@ -225,13 +223,13 @@ void P402PpWidget::ppNewSetPointClicked(bool ok)
     {
         _modePp->newSetPoint(ok);
     }
-    updatePositionDemandLabel();
+    updateInformationLabel();
 }
 
 void P402PpWidget::newSetPointEvent(bool ok)
 {
     _ppNewSetPointCheckBox->setChecked(ok);
-    updatePositionDemandLabel();
+    updateInformationLabel();
 }
 
 void P402PpWidget::ppChangeSetImmediatelyPointCheckBoxRampClicked(bool ok)
@@ -240,13 +238,13 @@ void P402PpWidget::ppChangeSetImmediatelyPointCheckBoxRampClicked(bool ok)
     {
         _modePp->setChangeSetImmediately(ok);
     }
-    updatePositionDemandLabel();
+    updateInformationLabel();
 }
 
 void P402PpWidget::changeSetImmediatelyPointEvent(bool ok)
 {
     _ppChangeSetImmediatelyPointCheckBox->setChecked(ok);
-    updatePositionDemandLabel();
+    updateInformationLabel();
 }
 
 void P402PpWidget::ppAbsRelCheckBoxRampClicked(bool ok)
@@ -268,7 +266,7 @@ void P402PpWidget::ppChangeOnSetPointCheckBoxRampClicked(bool ok)
     {
         _modePp->setChangeOnSetPoint(ok);
     }
-    updatePositionDemandLabel();
+    updateInformationLabel();
 }
 
 void P402PpWidget::changeOnSetPointEvent(bool ok)
@@ -276,24 +274,7 @@ void P402PpWidget::changeOnSetPointEvent(bool ok)
     _ppChangeOnSetPointCheckBox->setChecked(ok);
 }
 
-void P402PpWidget::updatePositionDemandLabel()
-{
-    QString text;
-    //    if (!_ppNewSetPointCheckBox->isChecked())
-    //    {
-    //        text = "Enable Interpolation";
-    //    }
-
-    //    if (!text.isEmpty())
-    //    {
-    //        text = "(" + text + "  : Not Activated)";
-    //    }
-
-    int value = _node->nodeOd()->value(_ppPositionDemandValueObjectId).toInt();
-    _ppPositionDemandValueLabel->setText(QString("%1 ").arg(QString::number(value, 10)) + text);
-}
-
-void P402PpWidget::updatePositionActualLabel()
+void P402PpWidget::updateInformationLabel()
 {
     QString text;
     //    if (!_ppEnableRampCheckBox->isChecked())
@@ -306,8 +287,7 @@ void P402PpWidget::updatePositionActualLabel()
     //        text = "(" + text + "  : Not Activated)";
     //    }
 
-    int value = _node->nodeOd()->value(_ppPositionActualValueObjectId).toInt();
-    _ppPositionActualValueLabel->setText(QString("%1 ").arg(QString::number(value, 10)) + text);
+    _ppInfoLabel->setText(text);
 }
 void P402PpWidget::dataLogger()
 {
@@ -331,21 +311,6 @@ void P402PpWidget::pdoMapping()
     _node->tpdos().at(2)->writeMapping(ipTpdoObjectList);
 }
 
-void P402PpWidget::refreshData(NodeObjectId object)
-{
-    if (_node->nodeOd()->indexExist(object.index()))
-    {
-        if (object == _ppPositionDemandValueObjectId)
-        {
-            updatePositionDemandLabel();
-        }
-        if (object == _ppPositionActualValueObjectId)
-        {
-            updatePositionActualLabel();
-        }
-    }
-}
-
 void P402PpWidget::createWidgets()
 {
     QWidget *widget = new QWidget();
@@ -359,6 +324,9 @@ void P402PpWidget::createWidgets()
     _ppTargetPositionLineEdit = new QLineEdit();
     ipLayout->addRow(tr("Position_Target :"), _ppTargetPositionLineEdit);
     connect(_ppTargetPositionLineEdit, &QLineEdit::editingFinished, this, &P402PpWidget::ppTargetPositionLineEditFinished);
+
+    _ppInfoLabel = new QLabel();
+    ipLayout->addRow(tr("Information :"), _ppInfoLabel);
 
     _ppPositionDemandValueLabel = new IndexLabel();
     ipLayout->addRow(tr("Position demand value :"), _ppPositionDemandValueLabel);
@@ -556,23 +524,22 @@ void P402PpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         return;
     }
 
-    if ((objId == _ppPositionDemandValueObjectId) || (objId == _ppPolarityObjectId))
+    if (objId == _ppPolarityObjectId)
     {
-        if (flags == SDO::FlagsRequest::Error)
+        if (flags != SDO::FlagsRequest::Error)
         {
-            return;
+            ipPolarityEditingFinished();
         }
-        refreshData(objId);
     }
+
     if ((objId == _ppTargetPositionObjectId))
     {
-        if (flags == SDO::FlagsRequest::Error)
+        if (flags != SDO::FlagsRequest::Error)
         {
-            return;
-        }
-        if (!_listDataRecord.isEmpty())
-        {
-            ipSendDataRecord();
-        }
+            if (!_listDataRecord.isEmpty())
+            {
+                ipSendDataRecord();
+            }
+        }        
     }
 }

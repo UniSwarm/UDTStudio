@@ -60,18 +60,15 @@ private:
     NodeProfile402 *_nodeProfile402;
     ModeVl *_modeVl;
 
-    NodeObjectId _vlTargetVelocityObjectId;
+    NodeObjectId _vlVelocityTargetObjectId;
     NodeObjectId _vlVelocityDemandObjectId;
     NodeObjectId _vlVelocityActualObjectId;
-
-    QCheckBox *_vlEnableRampCheckBox;
-    QCheckBox *_vlUnlockRampCheckBox;
-    QCheckBox *_vlReferenceRampCheckBox;
 
     QSpinBox *_vlTargetVelocitySpinBox;
     QSlider *_vlTargetVelocitySlider;
     QLabel *_vlSliderMinLabel;
     QLabel *_vlSliderMaxLabel;
+    QLabel *_vlInfoLabel;
 
     IndexLabel *_vlVelocityDemandLabel;
     IndexLabel *_vlVelocityActualLabel;
@@ -89,6 +86,10 @@ private:
     IndexSpinBox *_vlDimensionFactorNumeratorSpinBox;
     IndexSpinBox *_vlDimensionFactorDenominatorSpinBox;
 
+    QCheckBox *_vlEnableRampCheckBox;
+    QCheckBox *_vlUnlockRampCheckBox;
+    QCheckBox *_vlReferenceRampCheckBox;
+
     void vlTargetVelocitySpinboxFinished();
     void vlTargetVelocitySliderChanged();
     void vlMinVelocityMinMaxAmountSpinboxFinished();
@@ -102,11 +103,10 @@ private:
     void vlUnlockRampEvent(bool ok);
     void vlReferenceRamp(bool ok);
 
-    void updateVelocityDemandLabel();
+    void updateInformationLabel();
 
     void dataLogger();
     void pdoMapping();
-    void refreshData(NodeObjectId object);
 
     void createWidgets();
 

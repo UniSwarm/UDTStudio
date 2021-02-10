@@ -57,7 +57,7 @@ private:
     NodeProfile402 *_nodeProfile402;
 
     NodeObjectId _tqTorqueDemandObjectId;
-    NodeObjectId _tqTargetTorqueObjectId;
+    NodeObjectId _tqTorqueTargetObjectId;
     NodeObjectId _tqTorqueActualValueObjectId;
     NodeObjectId _tqCurrentActualValueObjectId;
     NodeObjectId _tqDCLinkVoltageObjectId;
