@@ -59,7 +59,7 @@ enum StatusWord : quint16
     SW_EventWarning = 0x80,
     SW_EventRemote = 0x200,
     SW_EventTargetReached = 0x400,
-    SW_EventFollowingError = 0x2000,
+    SW_EventFollowingError = 0x2000,    // -> specific ip
     SW_EventInternalLimitActive = 0x800,
     SW_EventMask = 0xE90,
 
@@ -96,21 +96,17 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     registerObjId(_controlWordObjectId);
     registerObjId(_statusWordObjectId);
 
-    manageSupportedDriveModes(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
+    decodeSupportedDriveModes(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
 
     _node->readObject(_modesOfOperationDisplayObjectId);
     _node->readObject(_controlWordObjectId);
 
     connect(_node, &Node::statusChanged, this, &NodeProfile402::statusNodeChanged);
 
-    _modeIp = new ModeIp(this);
-    _modeTq = new ModeTq(this);
-    _modeVl = new ModeVl(this);
-    _modePp = new ModePp(this);
-    _modes.insert(IP, _modeIp);
-    _modes.insert(TQ, _modeTq);
-    _modes.insert(VL, _modeVl);
-    _modes.insert(PP, _modePp);
+    _modes.insert(IP, new ModeIp(this));
+    _modes.insert(TQ, new ModeTq(this));
+    _modes.insert(VL, new ModeVl(this));
+    _modes.insert(PP, new ModePp(this));
 
     _stateMachineRequested = State402::STATE_NotReadyToSwitchOn;
     _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
@@ -227,7 +223,7 @@ void NodeProfile402::goToState(const State402 state)
     }
     _stateState = STATE_CHANGE;
     _stateMachineRequested = state;
-    manageState(_stateMachineRequested);
+    changeStateMachine(_stateMachineRequested);
 }
 
 QString NodeProfile402::stateStr(State402 state) const
@@ -322,7 +318,7 @@ void NodeProfile402::statusNodeChanged(Node::Status status)
     _node->readObject(_statusWordObjectId);
 }
 
-void NodeProfile402::manageState(const State402 state)
+void NodeProfile402::changeStateMachine(const State402 state)
 {
     if (!_node)
     {
@@ -429,8 +425,9 @@ void NodeProfile402::manageState(const State402 state)
     _node->writeObject(_controlWordObjectId, QVariant(_controlWord));
 }
 
-void NodeProfile402::manageEventStatusWord(quint16 statusWord)
+void NodeProfile402::decodeEventStatusWord(quint16 statusWord)
 {
+    // TODO miss decode specific bit from mode
     quint8 eventStatusWord = 0;
     if (statusWord & SW_EventVoltageEnabled)
     {
@@ -463,7 +460,7 @@ void NodeProfile402::manageEventStatusWord(quint16 statusWord)
     }
 }
 
-void NodeProfile402::manageStateStatusWord(quint16 statusWord)
+void NodeProfile402::decodeStateMachineStatusWord(quint16 statusWord)
 {
     if ((statusWord & SW_StateMask1) == SW_StateNotReadyToSwitchOn)
     {
@@ -505,14 +502,14 @@ void NodeProfile402::manageStateStatusWord(quint16 statusWord)
 
     if ((_stateState == STATE_CHANGE) && (_stateMachineRequested != _stateMachineCurrent))
     {
-        manageState(_stateMachineRequested);
+        changeStateMachine(_stateMachineRequested);
         return;
     }
     _stateState = NONE_STATE;
     emit stateChanged();
 }
 
-void NodeProfile402::manageSupportedDriveModes(quint32 supportedDriveModes)
+void NodeProfile402::decodeSupportedDriveModes(quint32 supportedDriveModes)
 {
     _modesSupported.clear();
     if ((supportedDriveModes & 0x7EF) == 0)
@@ -596,13 +593,13 @@ void NodeProfile402::reset()
     _node->readObject(_controlWordObjectId);
     _node->readObject(_statusWordObjectId);
 
-    manageSupportedDriveModes(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
+    decodeSupportedDriveModes(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
 
     // TODO : improve set default value or read value on device?
-    _modeIp->setCwDefaultflag();
-    _modePp->setCwDefaultflag();
-    _modeTq->setCwDefaultflag();
-    _modeVl->setCwDefaultflag();
+    _modes[IP]->setCwDefaultflag();
+    _modes[PP]->setCwDefaultflag();
+    _modes[TQ]->setCwDefaultflag();
+    _modes[VL]->setCwDefaultflag();
 }
 
 void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
@@ -631,7 +628,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
             _modeState = NodeProfile402::ModeState::NONE_MODE;
 
             // Send new ControlWord with specific flag
-            manageState(_stateMachineCurrent);
+            changeStateMachine(_stateMachineCurrent);
 
             emit modeChanged(_axisId, _modeCurrent);
             return;
@@ -643,7 +640,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
         if (flags != SDO::FlagsRequest::Error)
         {
             quint32 modes = static_cast<quint32>(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
-            manageSupportedDriveModes(modes);
+            decodeSupportedDriveModes(modes);
         }
     }
 
@@ -666,8 +663,8 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
         if (flags != SDO::FlagsRequest::Error)
         {
             quint16 statusWord = static_cast<quint16>(_node->nodeOd()->value(_statusWordObjectId).toUInt());
-            manageStateStatusWord(statusWord);
-            manageEventStatusWord(statusWord);
+            decodeStateMachineStatusWord(statusWord);
+            decodeEventStatusWord(statusWord);
         }
     }
 }

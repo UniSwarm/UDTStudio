@@ -136,20 +136,16 @@ private:
 
     uint8_t _statusWordEvent;
 
-    ModeIp *_modeIp;
-    ModeTq *_modeTq;
-    ModeVl *_modeVl;
-    ModePp *_modePp;
     QMap<OperationMode, Mode*> _modes;
 
     QTimer _modeTimer;
 
     void statusNodeChanged(Node::Status status);
-    void manageState(const State402 state);
+    void changeStateMachine(const State402 state);
 
-    void manageEventStatusWord(quint16 statusWord);
-    void manageStateStatusWord(quint16 statusWord);
-    void manageSupportedDriveModes(quint32 supportedDriveModes);
+    void decodeEventStatusWord(quint16 statusWord);
+    void decodeStateMachineStatusWord(quint16 statusWord);
+    void decodeSupportedDriveModes(quint32 supportedDriveModes);
 
 private slots:
     void readModeOfOperationDisplay(void);
