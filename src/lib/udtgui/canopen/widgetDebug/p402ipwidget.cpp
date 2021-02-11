@@ -232,30 +232,12 @@ void P402IpWidget::enableRampClicked(bool ok)
     {
         _modeIp->setEnableRamp(ok);
     }
-    updatePositionDemandLabel();
 }
 
 void P402IpWidget::enableRampEvent(bool ok)
 {
     _enableRampCheckBox->setChecked(ok);
-    updatePositionDemandLabel();
-}
-
-void P402IpWidget::updatePositionDemandLabel()
-{
-    QString text;
-    if (!_enableRampCheckBox->isChecked())
-    {
-        text = "Enable Interpolation";
-    }
-
-    if (!text.isEmpty())
-    {
-        text = "(" + text + "  : Not Activated)";
-    }
-
-    int value = _node->nodeOd()->value(_positionDemandValueObjectId).toInt();
-    _positionDemandValueLabel->setText(QString("%1 ").arg(QString::number(value, 10)) + text);
+    updateInformationLabel();
 }
 
 // each period * 5 -> we send 5 set-point, for have always value in buffer in device
@@ -372,6 +354,16 @@ void P402IpWidget::readActualBufferSize()
     _node->readObject(_bufferClearObjectId);
 }
 
+void P402IpWidget::updateInformationLabel()
+{
+    QString text;
+    if (!_enableRampCheckBox->isChecked())
+    {
+        text = "Interpolation is disabled";
+    }
+    _infoLabel->setText(text);
+}
+
 void P402IpWidget::dataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
@@ -408,6 +400,10 @@ void P402IpWidget::createWidgets()
     ipLayout->addRow(tr("Data record "), _dataRecordLineEdit);
     _dataRecordLineEdit->setToolTip("Separated by ,");
     connect(_dataRecordLineEdit, &QLineEdit::editingFinished, this, &P402IpWidget::dataRecordLineEditFinished);
+
+    _infoLabel = new QLabel();
+    _infoLabel->setStyleSheet("QLabel { color : red; }");
+    ipLayout->addRow(tr("Information :"), _infoLabel);
 
     _positionDemandValueLabel = new IndexLabel();
     ipLayout->addRow(tr("Position demand value :"), _positionDemandValueLabel);

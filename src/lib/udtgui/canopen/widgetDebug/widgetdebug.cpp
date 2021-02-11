@@ -138,10 +138,6 @@ void WidgetDebug::statusNodeChanged()
         {
             toggleStartLogger(false);
         }
-        _p402ip->updateData();
-        _p402vl->updateData();
-        _p402tq->updateData();
-        _p402pp->updateData();
     }
 }
 

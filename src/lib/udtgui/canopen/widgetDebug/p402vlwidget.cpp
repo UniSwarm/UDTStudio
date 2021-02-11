@@ -209,7 +209,6 @@ void P402VlWidget::enableRampClicked(bool ok)
 
     if (_nodeProfile402)
     {
-//        _nodeProfile402->setEnableRamp(ok);
         _modeVl->setEnableRamp(ok);
     }
 }
@@ -258,27 +257,23 @@ void P402VlWidget::updateInformationLabel()
     QString text;
     if (!_enableRampCheckBox->isChecked())
     {
-        text = "Enable Ramp";
+        text = "Ramp is disabled";
     }
     if (!_unlockRampCheckBox->isChecked())
     {
         if (!text.isEmpty())
         {
-            text.append(", ");
+            text.append(" & ");
         }
-        text += "Unlock Ramp";
+        text += "Ramp is locked";
     }
     if (!_referenceRampCheckBox->isChecked())
     {
         if (!text.isEmpty())
         {
-            text.append(", ");
+            text.append(" & ");
         }
-        text += "Not set ramp to zero";
-    }
-    if (!text.isEmpty())
-    {
-        text = "  : Not Activated";
+        text += "Ramp set to 0";
     }
     _infoLabel->setText(text);
 }
@@ -342,6 +337,7 @@ void P402VlWidget::createWidgets()
     connect(_targetVelocitySpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::targetVelocitySpinboxFinished);
 
     _infoLabel = new QLabel();
+    _infoLabel->setStyleSheet("QLabel { color : red; }");
     vlLayout->addRow(tr("Information :"), _infoLabel);
 
     _velocityDemandLabel = new IndexLabel();

@@ -69,8 +69,9 @@ private:
     int _iteratorForSendDataRecord;
     QStringList _listDataRecord;
 
-
     QLineEdit *_dataRecordLineEdit;
+    QLabel *_infoLabel;
+
     IndexLabel *_positionDemandValueLabel;
     IndexLabel *_positionAcualValueLabel;
 
@@ -113,14 +114,14 @@ private:
     void enableRampClicked(bool ok);
     void enableRampEvent(bool ok);
 
-    void updatePositionDemandLabel(void);
-
     void goTargetPosition();
     void stopTargetPosition();
     void calculatePointSinusoidalMotionProfile(qint32 initialPosition);
     void sendDataRecordTargetWithPdo();
     void sendDataRecordTargetWithSdo();
     void readActualBufferSize();
+
+    void updateInformationLabel();
 
     void dataLogger();
     void pdoMapping();

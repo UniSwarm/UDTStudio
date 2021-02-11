@@ -282,11 +282,6 @@ void P402PpWidget::updateInformationLabel()
     //        text = "Enable Interpolation";
     //    }
 
-    //    if (!text.isEmpty())
-    //    {
-    //        text = "(" + text + "  : Not Activated)";
-    //    }
-
     _infoLabel->setText(text);
 }
 void P402PpWidget::dataLogger()
