@@ -14,10 +14,22 @@ Qt module used :
 - core
 - gui
 - widgets
-- serialport
+- charts
 - serialbus
 
+## QT5 for UDTStudio : charts + serial buses
+```
+sudo apt install make g++ qt5-default libqt5serialbus5-dev libqt5serialbus5-plugins libqt5charts5-dev
+```
+
 ## Build
+
+Do not forget to init and update submodule before build :
+
+```
+git submodule init
+git submodule update
+```
 
 ```
 mkdir build
@@ -33,6 +45,3 @@ Binaries will be placed in `bin/` directory.
 UDT Studio use an environment variable `EDS_PATH` to read EDS files :
 
 `EDS_PATH="pathToEdsRepertory"`
-
-`export EDS_PATH`
-
