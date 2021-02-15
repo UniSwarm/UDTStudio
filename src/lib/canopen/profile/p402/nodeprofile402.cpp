@@ -98,7 +98,6 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     // Specific
     _fgPolaritybjectId = IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY, axis);
     _fgPolaritybjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    _fgPolaritybjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
     setNodeInterrest(node);
     registerObjId(_modesOfOperationObjectId);
@@ -110,9 +109,6 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     registerObjId(_fgPolaritybjectId);
 
     decodeSupportedDriveModes(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
-
-    _node->readObject(_modesOfOperationDisplayObjectId);
-    _node->readObject(_controlWordObjectId);
 
     connect(_node, &Node::statusChanged, this, &NodeProfile402::statusNodeChanged);
 
@@ -129,6 +125,17 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     _stateState = NONE_STATE;
 
     _controlWord = 0;
+}
+
+void NodeProfile402::init()
+{
+    // TODO : redesign the process for default value
+    _modes[IP]->setCwDefaultflag();
+    _modes[PP]->setCwDefaultflag();
+    _modes[TQ]->setCwDefaultflag();
+    _modes[VL]->setCwDefaultflag();
+    _node->readObject(_modesOfOperationDisplayObjectId);
+    _node->readObject(_controlWordObjectId);
 }
 
 NodeProfile402::OperationMode NodeProfile402::actualMode()

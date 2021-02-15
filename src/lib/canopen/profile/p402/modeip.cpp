@@ -35,13 +35,10 @@ ModeIp::ModeIp(NodeProfile402 *nodeProfile402)
     _bufferClearObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_BUFFER_CLEAR, _axisId);
     _bufferClearObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
-    setNodeInterrest(_node);
-    registerObjId(_targetObjectId);
-    registerObjId(_controlWordObjectId);    
-    registerObjId(_bufferClearObjectId);
-
     _mode = NodeProfile402::OperationMode::IP;
-    setCwDefaultflag();
+
+    // TODO : redesign the process for default value witg setCwDefaultflag()
+    _cmdControlWordFlag = CW_IP_EnableRamp;
 }
 
 void ModeIp::setEnableRamp(bool ok)

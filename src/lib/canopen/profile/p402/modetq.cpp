@@ -27,11 +27,7 @@ ModeTq::ModeTq(NodeProfile402 *nodeProfile402)
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TARGET_TORQUE, _axisId);
     _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
-    setNodeInterrest(_node);
-    registerObjId(_targetObjectId);
-
     _mode = NodeProfile402::OperationMode::TQ;
-    setCwDefaultflag();
 }
 
 void ModeTq::setTarget(qint32 target)

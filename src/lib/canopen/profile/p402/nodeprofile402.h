@@ -54,6 +54,8 @@ public:
         Reserved = 12
     };
 
+    void init();
+
     OperationMode actualMode();
     bool setMode(OperationMode mode);
     QString modeStr(NodeProfile402::OperationMode mode);

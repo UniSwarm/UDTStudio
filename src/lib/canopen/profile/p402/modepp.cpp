@@ -36,12 +36,9 @@ ModePp::ModePp(NodeProfile402 *nodeProfile402)
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_SET_POINT, _axisId);
     _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
-    setNodeInterrest(_node);
-    registerObjId(_targetObjectId);
-    registerObjId(_controlWordObjectId);
-
     _mode = NodeProfile402::OperationMode::PP;
-    setCwDefaultflag();
+    // TODO : redesign the process for default value witg setCwDefaultflag()
+    _cmdControlWordFlag = CW_PP_NewSetPoint;
 }
 
 void ModePp::newSetPoint(bool ok)

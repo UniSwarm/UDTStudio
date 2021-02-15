@@ -35,12 +35,10 @@ ModeVl::ModeVl(NodeProfile402 *nodeProfile402)
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, _axisId);
     _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
-    setNodeInterrest(_node);
-    registerObjId(_targetObjectId);
-    registerObjId(_controlWordObjectId);
-
     _mode = NodeProfile402::OperationMode::VL;
-    setCwDefaultflag();
+
+    // TODO : redesign the process for default value witg setCwDefaultflag()
+    _cmdControlWordFlag = CW_VL_EnableRamp | CW_VL_UnlockRamp | CW_VL_ReferenceRamp;
 }
 
 void ModeVl::setEnableRamp(bool ok)

@@ -92,6 +92,7 @@ void WidgetDebug::setNode(Node *node, uint8_t axis)
         _statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD, axis);
 
         _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+        _nodeProfile402->init();
 
         createWidgets();
         setCheckableStateMachine(2);
