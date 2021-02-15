@@ -91,7 +91,6 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
         _positionDemandValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, axis);
         _positionActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, axis);
         _targetPositionObjectId = IndexDb402::getObjectId(IndexDb402::OD_PP_TARGET_POSITION, axis);
-        _polarityObjectId = IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY, axis);
 
         createWidgets();
 
@@ -99,11 +98,8 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
         _positionDemandValueObjectId.setNodeId(_node->nodeId());
         _positionActualValueObjectId.setBusId(_node->busId());
         _positionActualValueObjectId.setNodeId(_node->nodeId());
-        _polarityObjectId.setBusId(_node->busId());
-        _polarityObjectId.setNodeId(_node->nodeId());
 
         registerObjId(_targetPositionObjectId);
-        registerObjId(_polarityObjectId);
         setNodeInterrest(node);
 
         if (!_node->profiles().isEmpty())
@@ -503,14 +499,6 @@ void P402PpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     if ((!_node) || (_node->status() != Node::STARTED))
     {
         return;
-    }
-
-    if (objId == _polarityObjectId)
-    {
-        if (flags != SDO::FlagsRequest::Error)
-        {
-            polarityEditingFinished();
-        }
     }
 
     if ((objId == _targetPositionObjectId))

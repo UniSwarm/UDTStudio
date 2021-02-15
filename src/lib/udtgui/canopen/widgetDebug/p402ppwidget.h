@@ -61,7 +61,6 @@ private:
     NodeObjectId _targetPositionObjectId;
     NodeObjectId _positionDemandValueObjectId;
     NodeObjectId _positionActualValueObjectId;
-    NodeObjectId _polarityObjectId;
 
     int _iteratorForSendDataRecord;
     QStringList _listDataRecord;
