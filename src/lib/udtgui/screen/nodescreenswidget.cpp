@@ -96,9 +96,12 @@ void NodeScreensWidget::addNode(Node *node)
             screen->setNode(node, i);
             nodeScreens.screens.append(screen);
         }
-        screen = new NodeScreenSynchro();
-        screen->setNode(node, 12);
-        nodeScreens.screens.append(screen);
+        if (node->countProfile() != 0)
+        {
+            screen = new NodeScreenSynchro();
+            screen->setNode(node, 12);
+            nodeScreens.screens.append(screen);
+        }
     }
 
     // add NodeScreensStruct to nodeIt
