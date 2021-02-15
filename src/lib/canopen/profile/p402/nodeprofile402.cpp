@@ -67,6 +67,12 @@ enum StatusWord : quint16
     SW_ManufacturerSpecific = 0xC000
 };
 
+enum FgPolarity
+{
+    MASK_POLARITY_VELOCITY = 0x40,
+    MASK_POLARITY_POSITION = 0x80
+};
+
 NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     : NodeProfile(node)
 {
@@ -89,12 +95,19 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     _controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     _statusWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
+    // Specific
+    _fgPolaritybjectId = IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY, axis);
+    _fgPolaritybjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    _fgPolaritybjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+
     setNodeInterrest(node);
     registerObjId(_modesOfOperationObjectId);
     registerObjId(_modesOfOperationDisplayObjectId);
     registerObjId(_supportedDriveModesObjectId);
     registerObjId(_controlWordObjectId);
     registerObjId(_statusWordObjectId);
+    // Specific
+    registerObjId(_fgPolaritybjectId);
 
     decodeSupportedDriveModes(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
 
@@ -300,6 +313,33 @@ QString NodeProfile402::event402Str(quint8 event402)
 void NodeProfile402::setDefaultModeValue()
 {
     _modes[_modeCurrent]->setCwDefaultflag();
+}
+
+// be used only for profile position (pp) mode and cyclic sync position mode (csp).
+void NodeProfile402::setPolarityPosition(bool polarity)
+{
+    quint8 value = static_cast<quint8>(_node->nodeOd()->value(_fgPolaritybjectId).toInt());
+    value = (value & ~MASK_POLARITY_POSITION) | (MASK_POLARITY_POSITION & static_cast<uint8_t>(MASK_POLARITY_POSITION * polarity));
+    _node->writeObject(_fgPolaritybjectId, QVariant(value));
+}
+
+void NodeProfile402::setPolarityVelocity(bool polarity)
+{
+    quint8 value = static_cast<quint8>(_node->nodeOd()->value(_fgPolaritybjectId).toInt());
+    value = (value & ~MASK_POLARITY_VELOCITY) | (MASK_POLARITY_VELOCITY & static_cast<uint8_t>(MASK_POLARITY_VELOCITY * polarity));
+    _node->writeObject(_fgPolaritybjectId, QVariant(value));
+}
+
+bool NodeProfile402::polarityPosition()
+{
+    bool value = (static_cast<quint8>(_node->nodeOd()->value(_fgPolaritybjectId).toInt()) & MASK_POLARITY_POSITION) >> 7;
+    return value;
+}
+
+bool NodeProfile402::polarityVelocity()
+{
+    bool value = (static_cast<quint8>(_node->nodeOd()->value(_fgPolaritybjectId).toInt()) & MASK_POLARITY_VELOCITY) >> 6;
+    return value;
 }
 
 

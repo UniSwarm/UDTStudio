@@ -108,8 +108,6 @@ private:
     void targetPositionLineEditFinished();
     void sendDataRecord();
 
-    void polarityEditingFinished();
-
     void newSetPointClicked(bool ok);
     void newSetPointEvent(bool ok);
 

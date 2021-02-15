@@ -97,6 +97,11 @@ public:
 
     void setDefaultModeValue();
 
+    void setPolarityPosition(bool polarity);
+    void setPolarityVelocity(bool polarity);
+    bool polarityPosition();
+    bool polarityVelocity();
+
 signals:
     void modeChanged(uint8_t axis, OperationMode modeNew);
     void stateChanged();
@@ -119,6 +124,8 @@ private:
     NodeObjectId _supportedDriveModesObjectId;
     NodeObjectId _controlWordObjectId;
     NodeObjectId _statusWordObjectId;
+
+    NodeObjectId _fgPolaritybjectId;
 
     enum ModeState
     {

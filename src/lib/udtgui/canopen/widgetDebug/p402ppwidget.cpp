@@ -200,21 +200,6 @@ void P402PpWidget::sendDataRecord()
     }
 }
 
-void P402PpWidget::polarityEditingFinished()
-{
-    quint8 value = static_cast<quint8>(_node->nodeOd()->value(_polarityObjectId).toInt());
-
-    if (_polaritySpinBox->value() == 0)
-    {
-        value = value & 0x7F;
-    }
-    else
-    {
-        value = value | 0x80;
-    }
-    _node->writeObject(_polarityObjectId, QVariant(value));
-}
-
 void P402PpWidget::newSetPointClicked(bool ok)
 {
     // 0 Disable interpolation
@@ -366,6 +351,7 @@ void P402PpWidget::createWidgets()
     _polaritySpinBox->setRange(0, 1);
     ipPolaritylayout->addWidget(ipPolarityLabel);
     ipPolaritylayout->addWidget(_polaritySpinBox);
+    connect(_polaritySpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { _nodeProfile402->setPolarityPosition(i); });
 
     QHBoxLayout *ipHomePolaritylayout = new QHBoxLayout();
     ipHomePolaritylayout->addLayout(ipHomeOffsetlayout);
