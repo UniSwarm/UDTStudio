@@ -660,67 +660,57 @@ void NodeProfile402::reset()
 
 void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (flags & SDO::FlagsRequest::Error)
+    {
+        return;
+    }
+
     if (objId == _modesOfOperationObjectId)
     {
-        if (flags != SDO::FlagsRequest::Error)
-        {
-            _node->readObject(_modesOfOperationDisplayObjectId);
-        }
+        _node->readObject(_modesOfOperationDisplayObjectId);
     }
 
     if (objId == _modesOfOperationDisplayObjectId)
     {
-        if (flags != SDO::FlagsRequest::Error)
+        NodeProfile402::OperationMode mode = static_cast<NodeProfile402::OperationMode>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
+        if ((_modeState == NodeProfile402::MODE_CHANGE) && (_modeRequested != mode))
         {
-            NodeProfile402::OperationMode mode = static_cast<NodeProfile402::OperationMode>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
-            if ((_modeState == NodeProfile402::MODE_CHANGE) && (_modeRequested != mode))
-            {
-                _modeTimer.singleShot(TIMER_READ_MODE_OPERATION_DISPLAY, this, SLOT(readModeOfOperationDisplay()));
-                return;
-            }
-
-            _modeCurrent = mode;
-            _modeRequested = _modeCurrent;
-            _modeState = NodeProfile402::ModeState::NONE_MODE;
-
-            // Send new ControlWord with specific flag
-            changeStateMachine(_stateMachineCurrent);
-
-            emit modeChanged(_axisId, _modeCurrent);
+            _modeTimer.singleShot(TIMER_READ_MODE_OPERATION_DISPLAY, this, SLOT(readModeOfOperationDisplay()));
             return;
         }
+
+        _modeCurrent = mode;
+        _modeRequested = _modeCurrent;
+        _modeState = NodeProfile402::ModeState::NONE_MODE;
+
+        // Send new ControlWord with specific flag
+        changeStateMachine(_stateMachineCurrent);
+
+        emit modeChanged(_axisId, _modeCurrent);
+        return;
     }
 
     if (objId == _supportedDriveModesObjectId)
     {
-        if (flags != SDO::FlagsRequest::Error)
-        {
-            quint32 modes = static_cast<quint32>(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
-            decodeSupportedDriveModes(modes);
-        }
+        quint32 modes = static_cast<quint32>(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
+        decodeSupportedDriveModes(modes);
     }
 
     if (objId == _controlWordObjectId)
     {
-        if (flags != SDO::FlagsRequest::Error)
+        quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toInt());
+        if ((_controlWord & CW_Halt) != (controlWord & CW_Halt))
         {
-            quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toInt());
-            if ((_controlWord & CW_Halt) != (controlWord & CW_Halt))
-            {
-                emit isHalted(static_cast<bool>(((controlWord & CW_Halt) >> 8)));
-            }
-            _controlWord = controlWord;
-            _node->readObject(_statusWordObjectId);
+            emit isHalted(static_cast<bool>(((controlWord & CW_Halt) >> 8)));
         }
+        _controlWord = controlWord;
+        _node->readObject(_statusWordObjectId);
     }
 
     if (objId == _statusWordObjectId)
     {
-        if (flags != SDO::FlagsRequest::Error)
-        {
-            quint16 statusWord = static_cast<quint16>(_node->nodeOd()->value(_statusWordObjectId).toUInt());
-            decodeStateMachineStatusWord(statusWord);
-            decodeEventStatusWord(statusWord);
-        }
+        quint16 statusWord = static_cast<quint16>(_node->nodeOd()->value(_statusWordObjectId).toUInt());
+        decodeStateMachineStatusWord(statusWord);
+        decodeEventStatusWord(statusWord);
     }
 }
