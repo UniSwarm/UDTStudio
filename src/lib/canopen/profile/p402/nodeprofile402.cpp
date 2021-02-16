@@ -291,7 +291,10 @@ bool NodeProfile402::toggleHalt()
 
 void NodeProfile402::setTarget(qint32 target)
 {
-    _modes[_modeCurrent]->setTarget(target);
+    if (_modeCurrent != OperationMode::NoMode)
+    {
+        _modes[_modeCurrent]->setTarget(target);
+    }
 }
 
 QString NodeProfile402::event402Str(quint8 event402)
@@ -319,7 +322,10 @@ QString NodeProfile402::event402Str(quint8 event402)
 
 void NodeProfile402::setDefaultModeValue()
 {
-    _modes[_modeCurrent]->setCwDefaultflag();
+    if (_modeCurrent != OperationMode::NoMode)
+    {
+        _modes[_modeCurrent]->setCwDefaultflag();
+    }
 }
 
 // be used only for profile position (pp) mode and cyclic sync position mode (csp).
@@ -379,7 +385,10 @@ void NodeProfile402::changeStateMachine(const State402 state)
     // Reset specific flag of mode
     _controlWord = (_controlWord & ~CW_OperationModeSpecific);
     // Apply specific flag of mode
-    _controlWord |= _modes[_modeCurrent]->getSpecificCwFlag();
+    if (_modeCurrent != OperationMode::NoMode)
+    {
+        _controlWord |= _modes[_modeCurrent]->getSpecificCwFlag();
+    }
 
     switch (_stateMachineCurrent)
     {
