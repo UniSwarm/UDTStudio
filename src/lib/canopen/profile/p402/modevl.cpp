@@ -37,6 +37,9 @@ ModeVl::ModeVl(NodeProfile402 *nodeProfile402)
 
     _mode = NodeProfile402::OperationMode::VL;
 
+    setNodeInterrest(nodeProfile402->node());
+    registerObjId(_controlWordObjectId);
+
     // TODO : redesign the process for default value witg setCwDefaultflag()
     _cmdControlWordFlag = CW_VL_EnableRamp | CW_VL_UnlockRamp | CW_VL_ReferenceRamp;
 }
@@ -121,16 +124,18 @@ void ModeVl::setCwDefaultflag()
 
 void ModeVl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (flags & SDO::FlagsRequest::Error)
+    {
+        return;
+    }
+
     if ((objId == _controlWordObjectId) && _nodeProfile402->actualMode() == _mode)
     {
-        if (flags != SDO::FlagsRequest::Error)
-        {
-            quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
-            _cmdControlWordFlag = controlWord & CW_Mask;
+        quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+        _cmdControlWordFlag = controlWord & CW_Mask;
 
-            emit enableRampEvent((_cmdControlWordFlag & CW_VL_EnableRamp) >> 4);
-            emit referenceRampEvent((_cmdControlWordFlag & CW_VL_ReferenceRamp) >> 6);
-            emit unlockRampEvent((_cmdControlWordFlag & CW_VL_UnlockRamp) >> 5);
-        }
+        emit enableRampEvent((_cmdControlWordFlag & CW_VL_EnableRamp) >> 4);
+        emit referenceRampEvent((_cmdControlWordFlag & CW_VL_ReferenceRamp) >> 6);
+        emit unlockRampEvent((_cmdControlWordFlag & CW_VL_UnlockRamp) >> 5);
     }
 }

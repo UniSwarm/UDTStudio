@@ -37,6 +37,9 @@ ModeIp::ModeIp(NodeProfile402 *nodeProfile402)
 
     _mode = NodeProfile402::OperationMode::IP;
 
+    setNodeInterrest(nodeProfile402->node());
+    registerObjId(_controlWordObjectId);
+
     // TODO : redesign the process for default value witg setCwDefaultflag()
     _cmdControlWordFlag = CW_IP_EnableRamp;
 }
@@ -87,17 +90,19 @@ void ModeIp::setCwDefaultflag()
 
 void ModeIp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (flags & SDO::FlagsRequest::Error)
+    {
+        return;
+    }
+
     if ((objId == _controlWordObjectId) && _nodeProfile402->actualMode() == _mode)
     {
-        if (flags != SDO::FlagsRequest::Error)
-        {
-            quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+        quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
 
-            if (_cmdControlWordFlag != (controlWord & (CW_IP_EnableRamp)))
-            {
-                emit enableRampEvent(_cmdControlWordFlag >> 4);
-            }
-            _cmdControlWordFlag = (controlWord & (CW_IP_EnableRamp));
+        if (_cmdControlWordFlag != (controlWord & (CW_IP_EnableRamp)))
+        {
+            emit enableRampEvent(_cmdControlWordFlag >> 4);
         }
+        _cmdControlWordFlag = (controlWord & (CW_IP_EnableRamp));
     }
 }

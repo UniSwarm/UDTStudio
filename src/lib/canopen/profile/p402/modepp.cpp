@@ -37,6 +37,10 @@ ModePp::ModePp(NodeProfile402 *nodeProfile402)
     _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
     _mode = NodeProfile402::OperationMode::PP;
+
+    setNodeInterrest(nodeProfile402->node());
+    registerObjId(_controlWordObjectId);
+
     // TODO : redesign the process for default value witg setCwDefaultflag()
     _cmdControlWordFlag = CW_PP_NewSetPoint;
 }
@@ -142,17 +146,19 @@ void ModePp::setCwDefaultflag()
 
 void ModePp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (flags & SDO::FlagsRequest::Error)
+    {
+        return;
+    }
+
     if ((objId == _controlWordObjectId) && _nodeProfile402->actualMode() == _mode)
     {
-        if (flags != SDO::FlagsRequest::Error)
-        {
-            quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
-            _cmdControlWordFlag = controlWord & CW_Mask;
+        quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+        _cmdControlWordFlag = controlWord & CW_Mask;
 
-            emit changeSetImmediatelyEvent((_cmdControlWordFlag & CW_PP_NewSetPoint) >> 4);
-            emit changeSetImmediatelyEvent((_cmdControlWordFlag & CW_PP_ChangeSetImmediately) >> 5);
-            emit absRelEvent((_cmdControlWordFlag & CW_PP_AbsRel) >> 6);
-            emit changeOnSetPointEvent((_cmdControlWordFlag & CW_PP_ChangeOnSetPoint) >> 9);
-        }
+        emit changeSetImmediatelyEvent((_cmdControlWordFlag & CW_PP_NewSetPoint) >> 4);
+        emit changeSetImmediatelyEvent((_cmdControlWordFlag & CW_PP_ChangeSetImmediately) >> 5);
+        emit absRelEvent((_cmdControlWordFlag & CW_PP_AbsRel) >> 6);
+        emit changeOnSetPointEvent((_cmdControlWordFlag & CW_PP_ChangeOnSetPoint) >> 9);
     }
 }
