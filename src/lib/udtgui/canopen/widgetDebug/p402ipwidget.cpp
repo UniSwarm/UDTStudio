@@ -96,10 +96,10 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
 
         createWidgets();
 
-        _positionDemandValueObjectId.setBusId(_node->busId());
-        _positionActualValueObjectId.setNodeId(_node->nodeId());
-        _bufferClearObjectId.setBusId(_node->busId());
-        _polarityObjectId.setBusId(_node->busId());
+        _positionDemandValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _positionActualValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _bufferClearObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _polarityObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
         registerObjId(_dataRecordObjectId);
         registerObjId(_polarityObjectId);
