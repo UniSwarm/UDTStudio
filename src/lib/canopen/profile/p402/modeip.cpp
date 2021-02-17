@@ -98,11 +98,8 @@ void ModeIp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     if ((objId == _controlWordObjectId) && _nodeProfile402->actualMode() == _mode)
     {
         quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+        _cmdControlWordFlag = controlWord & CW_IP_EnableRamp;
 
-        if (_cmdControlWordFlag != (controlWord & (CW_IP_EnableRamp)))
-        {
-            emit enableRampEvent(_cmdControlWordFlag >> 4);
-        }
-        _cmdControlWordFlag = (controlWord & (CW_IP_EnableRamp));
+        emit enableRampEvent(_cmdControlWordFlag >> 4);
     }
 }
