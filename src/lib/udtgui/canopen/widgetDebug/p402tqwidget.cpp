@@ -94,16 +94,11 @@ void P402TqWidget::setNode(Node *node, uint8_t axis)
         _currentActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_CURRENT_ACTUAL_VALUE, axis);
         _dcLinkVoltageObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_DC_LINK_CIRCUIT_VOLTAGE, axis);
 
-        _torqueDemandObjectId.setBusId(_node->busId());
-        _torqueDemandObjectId.setNodeId(_node->nodeId());
-        _torqueTargetObjectId.setBusId(_node->busId());
-        _torqueTargetObjectId.setNodeId(_node->nodeId());
-        _torqueActualValueObjectId.setBusId(_node->busId());
-        _torqueActualValueObjectId.setNodeId(_node->nodeId());
-        _currentActualValueObjectId.setBusId(_node->busId());
-        _currentActualValueObjectId.setNodeId(_node->nodeId());
-        _dcLinkVoltageObjectId.setBusId(_node->busId());
-        _dcLinkVoltageObjectId.setNodeId(_node->nodeId());
+        _torqueDemandObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _torqueTargetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _torqueActualValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _currentActualValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _dcLinkVoltageObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
         createWidgets();
 
@@ -293,6 +288,11 @@ void P402TqWidget::createWidgets()
 
 void P402TqWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (flags & SDO::FlagsRequest::Error)
+    {
+        return;
+    }
+
     if ((!_node) || (_node->status() != Node::STARTED))
     {
         return;
@@ -300,17 +300,14 @@ void P402TqWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 
     if (objId == _torqueTargetObjectId)
     {
-        if (flags != SDO::FlagsRequest::Error)
+        int value = _node->nodeOd()->value(objId).toInt();
+        if (!_targetTorqueSpinBox->hasFocus())
         {
-            int value = _node->nodeOd()->value(objId).toInt();
-            if (!_targetTorqueSpinBox->hasFocus())
-            {
-                _targetTorqueSpinBox->setValue(value);
-            }
-            if (!_targetTorqueSlider->isSliderDown())
-            {
-                //_tqTargetTorqueSlider->setValue(value);
-            }
+            _targetTorqueSpinBox->setValue(value);
+        }
+        if (!_targetTorqueSlider->isSliderDown())
+        {
+            //_tqTargetTorqueSlider->setValue(value);
         }
     }
 }

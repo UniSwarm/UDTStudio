@@ -335,6 +335,11 @@ void P402OptionWidget::createWidgets()
 
 void P402OptionWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (flags & SDO::FlagsRequest::Error)
+    {
+        return;
+    }
+
     if ((!_node) || (_node->status() != Node::STARTED))
     {
         return;
@@ -343,10 +348,6 @@ void P402OptionWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
     if ((objId == _abortConnectionObjectId) || (objId == _quickStopObjectId) || (objId == _shutdownObjectId) || (objId == _disableObjectId) || (objId == _haltObjectId) ||
         (objId == _faultReactionObjectId))
     {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-            return;
-        }
         refreshData(objId);
     }
 }

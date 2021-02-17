@@ -94,12 +94,9 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
 
         createWidgets();
 
-        _velocityTargetObjectId.setBusId(_node->busId());
-        _velocityDemandObjectId.setBusId(_node->busId());
-        _velocityActualObjectId.setBusId(_node->busId());
-        _velocityTargetObjectId.setNodeId(_node->nodeId());
-        _velocityDemandObjectId.setNodeId(_node->nodeId());
-        _velocityActualObjectId.setNodeId(_node->nodeId());
+        _velocityTargetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _velocityDemandObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _velocityActualObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
         _velocityTargetObjectId.setDataType(QMetaType::Type::Short);
         _velocityDemandObjectId.setDataType(QMetaType::Type::Short);
         _velocityActualObjectId.setDataType(QMetaType::Type::Short);
@@ -462,6 +459,11 @@ void P402VlWidget::createWidgets()
 
 void P402VlWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (flags & SDO::FlagsRequest::Error)
+    {
+        return;
+    }
+
     if ((!_node) || (_node->status() != Node::STARTED))
     {
         return;
@@ -469,17 +471,14 @@ void P402VlWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 
     if (objId == _velocityTargetObjectId)
     {
-        if (flags != SDO::FlagsRequest::Error)
+        int value = _node->nodeOd()->value(objId).toInt();
+        if (!_targetVelocitySpinBox->hasFocus())
         {
-            int value = _node->nodeOd()->value(objId).toInt();
-            if (!_targetVelocitySpinBox->hasFocus())
-            {
-                _targetVelocitySpinBox->setValue(value);
-            }
-            if (!_targetVelocitySlider->isSliderDown())
-            {
-                //_vlTargetVelocitySlider->setValue(value);
-            }
+            _targetVelocitySpinBox->setValue(value);
+        }
+        if (!_targetVelocitySlider->isSliderDown())
+        {
+            //_vlTargetVelocitySlider->setValue(value);
         }
     }
 }

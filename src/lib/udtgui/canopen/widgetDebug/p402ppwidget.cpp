@@ -94,10 +94,8 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
 
         createWidgets();
 
-        _positionDemandValueObjectId.setBusId(_node->busId());
-        _positionDemandValueObjectId.setNodeId(_node->nodeId());
-        _positionActualValueObjectId.setBusId(_node->busId());
-        _positionActualValueObjectId.setNodeId(_node->nodeId());
+        _positionDemandValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _positionActualValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
         registerObjId(_targetPositionObjectId);
         setNodeInterrest(node);
@@ -496,6 +494,11 @@ void P402PpWidget::createWidgets()
 
 void P402PpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (flags & SDO::FlagsRequest::Error)
+    {
+        return;
+    }
+
     if ((!_node) || (_node->status() != Node::STARTED))
     {
         return;
@@ -503,12 +506,9 @@ void P402PpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 
     if ((objId == _targetPositionObjectId))
     {
-        if (flags != SDO::FlagsRequest::Error)
+        if (!_listDataRecord.isEmpty())
         {
-            if (!_listDataRecord.isEmpty())
-            {
-                sendDataRecord();
-            }
-        }        
+            sendDataRecord();
+        }
     }
 }

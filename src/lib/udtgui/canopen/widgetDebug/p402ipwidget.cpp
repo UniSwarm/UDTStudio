@@ -644,15 +644,17 @@ void P402IpWidget::createWidgets()
 
 void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (flags & SDO::FlagsRequest::Error)
+    {
+        return;
+    }
+
     if ((!_node) || (_node->status() != Node::STARTED))
     {
         return;
     }
     if (objId == _polarityObjectId)
     {
-        if (flags != SDO::FlagsRequest::Error)
-        {
-            polarityEditingFinished();
-        }
+        polarityEditingFinished();
     }
 }
