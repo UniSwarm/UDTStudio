@@ -380,7 +380,7 @@ QString CGenerator::typeToString(const uint16_t &type)
 QString CGenerator::varNameToString(const QString &name)
 {
     QString modified;
-    modified = name.toLower();
+    modified = name;
 
     for (int i = 0; i < modified.count(); i++)
     {
