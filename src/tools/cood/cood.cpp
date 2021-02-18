@@ -147,7 +147,10 @@ int main(int argc, char *argv[])
     if (!iniFile.isEmpty())
     {
         ConfigurationApply configurationApply;
-        configurationApply.apply(deviceConfiguration, iniFile);
+        if (!configurationApply.apply(deviceConfiguration, iniFile))
+        {
+            return -6;
+        }
     }
 
     // OUTPUT FILE

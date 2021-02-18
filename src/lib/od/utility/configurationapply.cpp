@@ -18,14 +18,24 @@
 
 #include "configurationapply.h"
 
+#include <QFileInfo>
 #include <QSettings>
+
+#include <QDebug>
+#define dbg() qDebug().noquote().nospace()
 
 ConfigurationApply::ConfigurationApply()
 {
 }
 
-void ConfigurationApply::apply(DeviceConfiguration *deviceDescription, const QString &fileIniPath)
+bool ConfigurationApply::apply(DeviceConfiguration *deviceDescription, const QString &fileIniPath)
 {
+    if (!QFileInfo::exists(fileIniPath))
+    {
+        dbg() << "File Configuration not exist: " << fileIniPath;
+        return false;
+    }
+
     QSettings settings(fileIniPath, QSettings::IniFormat);
     settings.beginGroup("Default");
 
@@ -58,11 +68,18 @@ void ConfigurationApply::apply(DeviceConfiguration *deviceDescription, const QSt
                 if (index->subIndexExist(subIndexId))
                 {
                     SubIndex *sub = index->subIndex(subIndexId);
-                    if (sub->value().isValid())
-                    {
-                        sub->setValue(readData(sub->dataType(), value));
-                    }
+                    sub->setValue(readData(sub->dataType(), value));
                 }
+                else
+                {
+                    dbg() << "Configuration | SubIndex not exist: " << indexId << subIndexId;
+                    return false;
+                }
+            }
+            else
+            {
+                dbg() << "Configuration | Index not exist: " << indexId;
+                return false;
             }
         }
         else
@@ -84,11 +101,18 @@ void ConfigurationApply::apply(DeviceConfiguration *deviceDescription, const QSt
                     if (index->subIndexExist(subIndexName))
                     {
                         SubIndex *sub = index->subIndex(subIndexName);
-                        if (sub->value().isValid())
-                        {
-                            sub->setValue(readData(sub->dataType(), value));
-                        }
+                        sub->setValue(readData(sub->dataType(), value));
                     }
+                    else
+                    {
+                        dbg() << "Configuration | SubIndex not exist: " << indexName << subIndexName;
+                        return false;
+                    }
+                }                
+                else
+                {
+                    dbg() << "Configuration | Index not exist: " << indexName;
+                    return false;
                 }
             }
             else
@@ -99,15 +123,19 @@ void ConfigurationApply::apply(DeviceConfiguration *deviceDescription, const QSt
                     QString value = settings.value(childKey).toString();
                     Index *index = deviceDescription->index(indexName);
                     SubIndex *sub = index->subIndex(0);
-                    if (sub->value().isValid())
-                    {
-                        sub->setValue(readData(sub->dataType(), value));
-                    }
+                    sub->setValue(readData(sub->dataType(), value));
+                }
+
+                else
+                {
+                    dbg() << "Configuration | Index not exist: " << indexName;
+                    return false;
                 }
             }
         }
     }
     settings.endGroup();
+    return true;
 }
 
 /**

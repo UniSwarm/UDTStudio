@@ -29,7 +29,7 @@ class OD_EXPORT ConfigurationApply
 public:
     ConfigurationApply();
 
-    void apply(DeviceConfiguration *deviceDescription, const QString &fileIniPath);
+    bool apply(DeviceConfiguration *deviceDescription, const QString &fileIniPath);
 
 private:
     QVariant readData(SubIndex::DataType dataType, QString stringValue) const;
