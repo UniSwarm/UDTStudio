@@ -244,9 +244,13 @@ QVariant DeviceIniParser::readData(bool *nodeId, bool *isHexValue) const
     {
         stringValue = "";
     }
-    else if (_file->value("DefaultValue").toString().startsWith("$NODEID+"))
+    else if (_file->value("DefaultValue").toString().startsWith("$NODEID"))
     {
         stringValue = _file->value("DefaultValue").toString().mid(8);
+        if (stringValue.isEmpty())
+        {
+            stringValue = "0";
+        }
         *nodeId = true;
     }
     else

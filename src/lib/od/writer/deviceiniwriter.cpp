@@ -417,7 +417,12 @@ QString DeviceIniWriter::defaultValue(const SubIndex *subIndex) const
 {
     if (subIndex->hasNodeId() && _isDescription)
     {
-        return "$NODEID+" + valueToString(subIndex->value().toInt(), 16, subIndex->length() * 2);
+        QString string = "$NODEID";
+        if (subIndex->value().toInt() != 0)
+        {
+            string += "+" + valueToString(subIndex->value().toInt(), 16, subIndex->length() * 2);
+        }
+        return string;
     }
     else if (subIndex->isHexValue())
     {
