@@ -294,8 +294,8 @@ void PidWidget::changeMode402()
         break;
     }
 
-    _savePushButton->setEnabled(false);
-    _goTargetPushButton->setEnabled(false);
+    _savePushButton->setEnabled(true);
+    _startTargetPushButton->setEnabled(false);
 }
 
 void PidWidget::mode402Changed(uint8_t axis, NodeProfile402::OperationMode modeNew)
@@ -346,7 +346,7 @@ void PidWidget::mode402Changed(uint8_t axis, NodeProfile402::OperationMode modeN
         _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
         break;
     }
-    _timer.start(_windowSpinBox->value());
+    _timer.start(_windowFirstTargetSpinBox->value());
 }
 
 void PidWidget::manageMeasurement()
@@ -374,7 +374,7 @@ void PidWidget::manageMeasurement()
 
     case PidWidget::LAUCH_SECOND_TARGET:
         stopSecondMeasurement();
-        _timer.start(_windowSpinBox->value() + _stopDataLoggerSpinBox->value());
+        _timer.start(_stopDataLoggerSpinBox->value());
         _state = STOP_DATALOGGER;
         break;
 
@@ -401,17 +401,17 @@ void PidWidget::stopFirstMeasurement()
     {
         int actualPosition = _node->nodeOd()->value(_actualValueLabel->objId()).toInt();
         _nodeProfile402->setTarget((_secondTargetSpinBox->value() - actualPosition) + actualPosition);
-        _timer.start(_windowSpinBox->value());
+        _timer.start(_windowSecondTargetSpinBox->value());
         break;
     }
     case MODE_PID_VELOCITY:
         _nodeProfile402->setTarget(_secondTargetSpinBox->value());
-        _timer.start(_windowSpinBox->value());
+        _timer.start(_windowSecondTargetSpinBox->value());
         break;
 
     case MODE_PID_TORQUE:
         _nodeProfile402->setTarget(_secondTargetSpinBox->value());
-        _timer.start(_windowSpinBox->value());
+        _timer.start(_windowSecondTargetSpinBox->value());
         break;
     }
 }
@@ -440,13 +440,19 @@ void PidWidget::stopSecondMeasurement()
     }
 }
 
+void PidWidget::stopMeasurement()
+{
+    _state = PidWidget::STOP_DATALOGGER;
+    manageMeasurement();
+}
+
 void PidWidget::stopDataLogger()
 {
     _timer.stop();
     _state = NONE;
     _dataLogger->stop();
     _savePushButton->setEnabled(true);
-    _goTargetPushButton->setEnabled(true);
+    _startTargetPushButton->setEnabled(true);
     disconnect(_nodeProfile402, &NodeProfile402::modeChanged, this, &PidWidget::mode402Changed);
 }
 
@@ -563,37 +569,48 @@ void PidWidget::createWidgets()
     QGroupBox *targetGroupBox = new QGroupBox(tr("Target"));
     QFormLayout *targetLayout = new QFormLayout();
 
+    QHBoxLayout *firstTargetLayout = new QHBoxLayout();
     _firstTargetSpinBox = new QSpinBox();
     _firstTargetSpinBox->setValue(200);
     _firstTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    targetLayout->addRow(tr("&Fisrt Target :"), _firstTargetSpinBox);
+    _windowFirstTargetSpinBox = new QSpinBox();
+    _windowFirstTargetSpinBox->setRange(10, 5000);
+    _windowFirstTargetSpinBox->setValue(500);
+    _windowFirstTargetSpinBox->setSuffix(" ms");
+    firstTargetLayout->addWidget(_firstTargetSpinBox);
+    firstTargetLayout->addWidget(_windowFirstTargetSpinBox);
+    targetLayout->addRow(tr("Fisrt Target :"), firstTargetLayout);
 
+    QHBoxLayout *secondTargetLayout = new QHBoxLayout();
     _secondTargetSpinBox = new QSpinBox();
     _secondTargetSpinBox->setValue(100);
     _secondTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    targetLayout->addRow(tr("&Second Target :"), _secondTargetSpinBox);
-
-    _windowSpinBox = new QSpinBox();
-    _windowSpinBox->setRange(10, 5000);
-    _windowSpinBox->setValue(500);
-    _windowSpinBox->setSuffix(" ms");
+    _windowSecondTargetSpinBox = new QSpinBox();
+    _windowSecondTargetSpinBox->setRange(10, 5000);
+    _windowSecondTargetSpinBox->setValue(500);
+    _windowSecondTargetSpinBox->setSuffix(" ms");
+    secondTargetLayout->addWidget(_secondTargetSpinBox);
+    secondTargetLayout->addWidget(_windowSecondTargetSpinBox);
+    targetLayout->addRow(tr("Second Target :"), secondTargetLayout);
 
     _stopDataLoggerSpinBox = new QSpinBox();
     _stopDataLoggerSpinBox->setRange(10, 5000);
     _stopDataLoggerSpinBox->setValue(100);
     _stopDataLoggerSpinBox->setSuffix(" ms");
-
-    targetLayout->addRow(tr("&Measurement window :"), _windowSpinBox);
-    targetLayout->addRow(tr("&Time limit after the end of the last target :"), _stopDataLoggerSpinBox);
+    targetLayout->addRow(tr("&End time :"), _stopDataLoggerSpinBox);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     _savePushButton = new QPushButton(tr("&Screenshot logger"));
-    buttonLayout->addWidget(_savePushButton);
+    targetLayout->addRow(_savePushButton);
     connect(_savePushButton, &QPushButton::clicked, this, &PidWidget::screenshotSave);
 
-    _goTargetPushButton = new QPushButton(tr("G&O"));
-    buttonLayout->addWidget(_goTargetPushButton);
-    connect(_goTargetPushButton, &QPushButton::clicked, this, &PidWidget::manageMeasurement);
+    _stopTargetPushButton = new QPushButton(tr("Stop"));
+    buttonLayout->addWidget(_stopTargetPushButton);
+    connect(_stopTargetPushButton, &QPushButton::clicked, this, &PidWidget::stopMeasurement);
+
+    _startTargetPushButton = new QPushButton(tr("Start"));
+    buttonLayout->addWidget(_startTargetPushButton);
+    connect(_startTargetPushButton, &QPushButton::clicked, this, &PidWidget::manageMeasurement);
 
     targetLayout->addRow(buttonLayout);
     targetGroupBox->setLayout(targetLayout);

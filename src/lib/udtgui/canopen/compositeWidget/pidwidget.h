@@ -98,10 +98,12 @@ protected:
 
     QSpinBox *_firstTargetSpinBox;
     QSpinBox *_secondTargetSpinBox;
-    QSpinBox *_windowSpinBox;
+    QSpinBox *_windowFirstTargetSpinBox;
+    QSpinBox *_windowSecondTargetSpinBox;
     QSpinBox *_stopDataLoggerSpinBox;
 
-    QPushButton *_goTargetPushButton;
+    QPushButton *_stopTargetPushButton;
+    QPushButton *_startTargetPushButton;
     QPushButton *_savePushButton;
 
     NodeProfile402 *_nodeProfile402;
@@ -124,6 +126,7 @@ protected:
     void manageMeasurement();
     void stopFirstMeasurement();
     void stopSecondMeasurement();
+    void stopMeasurement();
     void stopDataLogger();
     void readStatus();
     void createWidgets();
