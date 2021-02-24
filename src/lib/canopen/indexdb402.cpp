@@ -391,6 +391,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4021 + axisDecal)), 0x5};
     case OD_MS_TORQUE_PID_THRESHOLD:
         return {static_cast<quint16>((0x4021 + axisDecal)), 0x6};
+    case OD_MS_TORQUE_PID_FREQDIVIDER:
+        return {static_cast<quint16>((0x4021 + axisDecal)), 0x7};
     // a1_Torque_sensor_status
     case OD_MS_TORQUE_SENSOR_STATUS_RAWDATA:
         return {static_cast<quint16>((0x4022 + axisDecal)), 0x1};
@@ -454,6 +456,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4041 + axisDecal)), 0x5};
     case OD_MS_VELOCITY_PID_THRESHOLD:
         return {static_cast<quint16>((0x4041 + axisDecal)), 0x6};
+    case OD_MS_VELOCITY_PID_FREQDIVIDER:
+        return {static_cast<quint16>((0x4041 + axisDecal)), 0x7};
     // a1_Velocity_sensor_status
     case OD_MS_VELOCITY_SENSOR_STATUS_RAWDATA:
         return {static_cast<quint16>((0x4042 + axisDecal)), 0x1};
@@ -517,6 +521,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4061 + axisDecal)), 0x5};
     case OD_MS_POSITION_PID_THRESHOLD:
         return {static_cast<quint16>((0x4061 + axisDecal)), 0x6};
+    case OD_MS_POSITION_PID_FREQDIVIDER:
+        return {static_cast<quint16>((0x4061 + axisDecal)), 0x7};
     // a1_Position_sensor_status
     case OD_MS_POSITION_SENSOR_STATUS_RAWDATA:
         return {static_cast<quint16>((0x4062 + axisDecal)), 0x1};
@@ -587,6 +593,7 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
 
 QString IndexDb402::name(const NodeObjectId &nodeObjectId)
 {
+    Q_UNUSED(nodeObjectId)
     return QString();
 }
 

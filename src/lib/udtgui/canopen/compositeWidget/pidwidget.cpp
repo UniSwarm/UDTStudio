@@ -98,6 +98,7 @@ void PidWidget::setNode(Node *node, uint8_t axis)
     _minSpinBox->setNode(node);
     _maxSpinBox->setNode(node);
     _thresholdSpinBox->setNode(node);
+    _freqDividerSpinBox->setNode(node);
 }
 
 void PidWidget::setMode(PidWidget::ModePid mode)
@@ -136,6 +137,7 @@ void PidWidget::setIMode()
     NodeObjectId pidMin_ObjId;
     NodeObjectId pidMax_ObjId;
     NodeObjectId pidThreshold_ObjId;
+    NodeObjectId pidFreqDivider_ObjId;
     NodeObjectId target_ObjId;
     NodeObjectId pidInputStatus_ObjId;
     NodeObjectId pidErrorStatus_ObjId;
@@ -162,11 +164,12 @@ void PidWidget::setIMode()
         pidMin_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_MIN, _axis);
         pidMax_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_MAX, _axis);
         pidThreshold_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_THRESHOLD, _axis);
+        pidFreqDivider_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_FREQDIVIDER, _axis);
         pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_INPUT, _axis);
         pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_ERROR, _axis);
         pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_INTEGRATOR, _axis);
         pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_OUTPUT, _axis);
-        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, _axis);
+        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND, _axis);
         break;
 
     case MODE_PID_TORQUE:
@@ -178,11 +181,12 @@ void PidWidget::setIMode()
         pidMin_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_MIN, _axis);
         pidMax_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_MAX, _axis);
         pidThreshold_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_THRESHOLD, _axis);
+        pidFreqDivider_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_FREQDIVIDER, _axis);
         pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_INPUT, _axis);
         pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_ERROR, _axis);
         pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_INTEGRATOR, _axis);
         pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_OUTPUT, _axis);
-        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TARGET_TORQUE, _axis);
+        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_DEMAND, _axis);
         _node->readObject(target_ObjId);
         break;
 
@@ -195,11 +199,12 @@ void PidWidget::setIMode()
         pidMin_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_MIN, _axis);
         pidMax_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_MAX, _axis);
         pidThreshold_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_THRESHOLD, _axis);
+        pidFreqDivider_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_FREQDIVIDER, _axis);
         pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_INPUT, _axis);
         pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_ERROR, _axis);
         pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_INTEGRATOR, _axis);
         pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_OUTPUT, _axis);
-        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PP_TARGET_POSITION, _axis);
+        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, _axis);
         break;
     }
 
@@ -217,6 +222,7 @@ void PidWidget::setIMode()
     _minSpinBox->setObjId(pidMin_ObjId);
     _maxSpinBox->setObjId(pidMax_ObjId);
     _thresholdSpinBox->setObjId(pidThreshold_ObjId);
+    _freqDividerSpinBox->setObjId(pidFreqDivider_ObjId);
 
     pidInputStatus_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
     pidErrorStatus_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
@@ -522,6 +528,9 @@ void PidWidget::createWidgets()
     _thresholdSpinBox = new IndexSpinBox();
     _thresholdSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     pidLayout->addRow(tr("&Threshold :"), _thresholdSpinBox);
+
+    _freqDividerSpinBox = new IndexSpinBox();
+    pidLayout->addRow(tr("&Frequency divider :"), _freqDividerSpinBox);
 
     _pidGroupBox->setLayout(pidLayout);
 

@@ -87,6 +87,7 @@ protected:
     IndexSpinBox *_minSpinBox;
     IndexSpinBox *_maxSpinBox;
     IndexSpinBox *_thresholdSpinBox;
+    IndexSpinBox *_freqDividerSpinBox;
 
     IndexLabel *_actualValueLabel;
 
