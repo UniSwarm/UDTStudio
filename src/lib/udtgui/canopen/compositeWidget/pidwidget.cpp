@@ -476,9 +476,6 @@ void PidWidget::createWidgets()
     QVBoxLayout *glayout = new QVBoxLayout();
     glayout->setMargin(0);
 
-    QSplitter *splitter = new QSplitter(Qt::Horizontal);
-    glayout->addWidget(splitter);
-
     // toolbar
     _toolBar = new QToolBar(tr("Data logger commands"));
     _toolBar->setIconSize(QSize(20, 20));
@@ -625,8 +622,11 @@ void PidWidget::createWidgets()
     pidScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     pidScrollArea->setWidgetResizable(true);
 
+    QSplitter *splitter = new QSplitter(Qt::Horizontal);
+    glayout->addWidget(splitter);
     splitter->addWidget(pidScrollArea);
     splitter->addWidget(_dataLoggerChartsWidget);
+    splitter->setSizes(QList<int>() << 100 << 300);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->addWidget(_toolBar);

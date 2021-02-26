@@ -37,6 +37,7 @@ class DataLogger;
 class DataLoggerChartsWidget;
 class IndexSpinBox;
 class IndexLabel;
+class IndexComboBox;
 
 class UDTGUI_EXPORT MotionSensorWidget : public QWidget
 {
@@ -75,8 +76,8 @@ protected:
     QSpinBox *_logTimerSpinBox;
     QAction *_startStopAction;
 
-    QGroupBox *sensorConfigGroupBox;
-    IndexSpinBox *_sensorSelectSpinBox;
+    QGroupBox *_sensorConfigGroupBox;
+    IndexComboBox *_sensorSelectSpinBox;
     IndexSpinBox *_thresholdMinSpinBox;
     IndexSpinBox *_thresholdMaxSpinBox;
     IndexSpinBox *_thresholdModeSpinBox;
@@ -92,7 +93,7 @@ protected:
     IndexLabel *_valueLabel;
 
     QGroupBox *_filterGroupBox;
-    IndexSpinBox *_filterSelect;
+    IndexComboBox *_filterSelect;
     IndexSpinBox *_param0;
     IndexSpinBox *_param1;
     IndexSpinBox *_param2;

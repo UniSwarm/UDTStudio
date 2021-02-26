@@ -19,8 +19,10 @@
 #include "motionsensorwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
+#include "canopen/widget/indexcombobox.h"
 #include "canopen/widget/indexlabel.h"
 #include "canopen/widget/indexspinbox.h"
+
 #include "indexdb402.h"
 #include "node.h"
 #include "profile/p402/nodeprofile402.h"
@@ -169,7 +171,7 @@ void MotionSensorWidget::setIMode()
         break;
 
     case MODE_SENSOR_VELOCITY:
-        sensorConfigGroupBox->setTitle(tr("Velocity sensor"));
+        _sensorConfigGroupBox->setTitle(tr("Velocity sensor"));
         _sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_SELECT, _axis);
         _thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_THRESHOLD_MIN, _axis);
         _thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_THRESHOLD_MAX, _axis);
@@ -194,7 +196,7 @@ void MotionSensorWidget::setIMode()
         break;
 
     case MODE_SENSOR_TORQUE:
-        sensorConfigGroupBox->setTitle(tr("Torque sensor"));
+        _sensorConfigGroupBox->setTitle(tr("Torque sensor"));
         _sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_SELECT, _axis);
         _thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_THRESHOLD_MIN, _axis);
         _thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_THRESHOLD_MAX, _axis);
@@ -218,7 +220,7 @@ void MotionSensorWidget::setIMode()
         break;
 
     case MODE_SENSOR_POSITION:
-        sensorConfigGroupBox->setTitle(tr("Position sensor"));
+        _sensorConfigGroupBox->setTitle(tr("Position sensor"));
         _sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_SELECT, _axis);
         _thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_THRESHOLD_MIN, _axis);
         _thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_THRESHOLD_MAX, _axis);
@@ -281,9 +283,6 @@ void MotionSensorWidget::createWidgets()
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
 
-    QSplitter *splitter = new QSplitter(Qt::Horizontal);
-    layout->addWidget(splitter);
-
     // toolbar
     _toolBar = new QToolBar(tr("Data logger commands"));
     _toolBar->setIconSize(QSize(20, 20));
@@ -313,10 +312,10 @@ void MotionSensorWidget::createWidgets()
     QWidget *motionSensorWidget = new QWidget(this);
     QVBoxLayout *actionLayout = new QVBoxLayout(motionSensorWidget);
 
-    sensorConfigGroupBox = new QGroupBox(tr("Sensor config"));
+    _sensorConfigGroupBox = new QGroupBox(tr("Sensor config"));
     QFormLayout *configLayout = new QFormLayout();
 
-    _sensorSelectSpinBox = new IndexSpinBox();
+    _sensorSelectSpinBox = new IndexComboBox();
     _sensorSelectSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     configLayout->addRow(tr("&Sensor select :"), _sensorSelectSpinBox);
 
@@ -356,7 +355,7 @@ void MotionSensorWidget::createWidgets()
     _frequencyDividerSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     configLayout->addRow(tr("&Frequency divider :"), _frequencyDividerSpinBox);
 
-    sensorConfigGroupBox->setLayout(configLayout);
+    _sensorConfigGroupBox->setLayout(configLayout);
 
     QGroupBox *statusGroupBox = new QGroupBox(tr("Sensor status"));
     QFormLayout *statusLayout = new QFormLayout();
@@ -377,8 +376,9 @@ void MotionSensorWidget::createWidgets()
     _filterGroupBox = new QGroupBox(tr("Sensor filter"));
     QFormLayout *filterLayout = new QFormLayout();
 
-    _filterSelect = new IndexSpinBox();
-    _filterSelect->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
+    _filterSelect = new IndexComboBox();
+    _filterSelect->addItem("No filter", QVariant(0));
+    _filterSelect->addItem("Averaging", QVariant(1));
     filterLayout->addRow(tr("Filter select:"), _filterSelect);
 
     _param0 = new IndexSpinBox();
@@ -403,7 +403,7 @@ void MotionSensorWidget::createWidgets()
     QFormLayout *targetLayout = new QFormLayout();
     targetGroupBox->setLayout(targetLayout);
 
-    actionLayout->addWidget(sensorConfigGroupBox);
+    actionLayout->addWidget(_sensorConfigGroupBox);
     actionLayout->addWidget(statusGroupBox);
     actionLayout->addWidget(_filterGroupBox);
 
@@ -413,8 +413,11 @@ void MotionSensorWidget::createWidgets()
     motionSensorScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     motionSensorScrollArea->setWidgetResizable(true);
 
+    QSplitter *splitter = new QSplitter(Qt::Horizontal);
+    layout->addWidget(splitter);
     splitter->addWidget(motionSensorScrollArea);
     splitter->addWidget(_dataLoggerChartsWidget);
+    splitter->setSizes(QList<int>() << 100 << 300);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->addWidget(_toolBar);
@@ -439,12 +442,12 @@ void MotionSensorWidget::stateChanged()
 {
     if (_nodeProfile402->currentState() == NodeProfile402::STATE_OperationEnabled)
     {
-        sensorConfigGroupBox->setEnabled(false);
+        _sensorConfigGroupBox->setEnabled(false);
         _filterGroupBox->setEnabled(false);
     }
     else
     {
-        sensorConfigGroupBox->setEnabled(true);
+        _sensorConfigGroupBox->setEnabled(true);
         _filterGroupBox->setEnabled(true);
     }
 }
