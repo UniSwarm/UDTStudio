@@ -113,7 +113,7 @@ NodeObjectId IndexDb402::getObjectId(IndexDb402::OdObject object, uint axis, uin
         return {static_cast<quint16>((0x606F + axisDecal)), 0x0};
     case OD_PV_VELOCITY_THRESHOLD_TIME:
         return {static_cast<quint16>((0x6070 + axisDecal)), 0x0};
-    case OD_TQ_TARGET_TORQUE:
+    case OD_TQ_TORQUE_TARGET:
         return {static_cast<quint16>((0x6071 + axisDecal)), 0x0};
     case OD_TQ_MAX_TORQUE:
         return {static_cast<quint16>((0x6072 + axisDecal)), 0x0};
@@ -131,7 +131,7 @@ NodeObjectId IndexDb402::getObjectId(IndexDb402::OdObject object, uint axis, uin
         return {static_cast<quint16>((0x6078 + axisDecal)), 0x0};
     case OD_TQ_DC_LINK_CIRCUIT_VOLTAGE:
         return {static_cast<quint16>((0x6079 + axisDecal)), 0x0};
-    case OD_PP_TARGET_POSITION:
+    case OD_PP_POSITION_TARGET:
         return {static_cast<quint16>((0x607A + axisDecal)), 0x0};
     case OD_PC_POSITION_RANGE_LIMIT_MIN:
         return {static_cast<quint16>((0x607B + axisDecal)), 0x1};
@@ -223,11 +223,11 @@ NodeObjectId IndexDb402::getObjectId(IndexDb402::OdObject object, uint axis, uin
         return {static_cast<quint16>((0x60BD + axisDecal)), 0x0};
     case OD_IP_SUB_MODE_SELECT:
         return {static_cast<quint16>((0x60C0 + axisDecal)), 0x0};
-    case OD_IP_SET_POINT:
+    case OD_IP_DATA_RECORD_SET_POINT:
         return {static_cast<quint16>((0x60C1 + axisDecal)), 0x1};
-    case OD_IP_TIME_UNITS:
+    case OD_IP_TIME_PERIOD_TIME_UNITS:
         return {static_cast<quint16>((0x60C2 + axisDecal)), 0x1};
-    case OD_IP_TIME_INDEX:
+    case OD_IP_TIME_PERIOD_TIME_INDEX:
         return {static_cast<quint16>((0x60C2 + axisDecal)), 0x2};
     case OD_IP_MAXIMUM_BUFFER_SIZE:
         return {static_cast<quint16>((0x60C4 + axisDecal)), 0x1};
@@ -259,7 +259,7 @@ NodeObjectId IndexDb402::getObjectId(IndexDb402::OdObject object, uint axis, uin
         return {static_cast<quint16>((0x60FE + axisDecal)), 0x1};
     case OD_DIGITAL_OUTPUTS_BIT_MASK:
         return {static_cast<quint16>((0x60FE + axisDecal)), 0x2};
-    case OD_PV_TARGET_VELOCITY:
+    case OD_PV_VELOCITY_TARGET:
         return {static_cast<quint16>((0x60FF + axisDecal)), 0x0};
     case OD_MOTOR_TYPE:
         return {static_cast<quint16>((0x6402 + axisDecal)), 0x0};
@@ -588,164 +588,5 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4082 + axisDecal)), 0x2};
     default:
         return NodeObjectId();
-    }
-}
-
-QString IndexDb402::name(const NodeObjectId &nodeObjectId)
-{
-    Q_UNUSED(nodeObjectId)
-    return QString();
-}
-
-QString IndexDb402::name(IndexDb402::OdObject object, uint axis, uint opt2)
-{
-    Q_UNUSED(axis)
-    Q_UNUSED(opt2)
-
-    switch (object)
-    {
-    case OD_MS_BOARD_VOLTAGE_INPUT:
-        return QString("Board_voltage_input");
-    case OD_MS_MANUFACTURE_DATE:
-        return QString("Manufacture_date");
-    case OD_MS_CALIBRATION_DATE:
-        return QString("Calibration_date");
-    case OD_MS_FIRMWARE_BUILD_DATE:
-        return QString("Firmware_build_date");
-    case OD_MS_BOARD_LED:
-        return QString("Board_led");
-    case OD_MS_CPU1_TEMPERATURE:
-        return QString("cpu1_Temperature");
-    case OD_MS_CPU1_LIFE_CYCLE:
-        return QString("cpu1_Life_cycle");
-    case OD_MS_CPU1_ERROR:
-        return QString("cpu1_Error");
-    case OD_MS_CPU1_MIN_CYCLE_US:
-        return QString("");
-    case OD_MS_CPU1_MAX_CYCLE_US:
-        return QString("cpu1_Max_cycle_us");
-    case OD_MS_CPU1_MEAN_CYCLE_US:
-        return QString("cpu1_Mean_cycle_us");
-    case OD_MS_NODE_ID:
-        return QString("Node_ID");
-    case OD_MS_BIT_RATE:
-        return QString("Bit_rate");
-
-    case OD_MS_TEMPERATURE_MOTOR_1:
-        return QString("Temperature_motor_1");
-    case OD_MS_TEMPERATURE_DRIVER_1:
-        return QString("Temperature_driver_1");
-    case OD_MS_TEMPERATURE_DRIVER_2:
-        return QString("Temperature_driver_2");
-    case OD_MS_BACK_EMF_A:
-        return QString("Back_EMF_A");
-    case OD_MS_BACK_EMF_B:
-        return QString("Back_EMF_B");
-    case OD_MS_BACK_EMF_C:
-        return QString("Back_EMF_C");
-    case OD_MS_BACK_EMF_D:
-        return QString("Back_EMF_D");
-    case OD_MS_CURRENT_A:
-        return QString("Current_A");
-    case OD_MS_CURRENT_B:
-        return QString("Current_B");
-    case OD_MS_CURRENT_C:
-        return QString("Current_C");
-    case OD_MS_CURRENT_D:
-        return QString("Current_D");
-    case OD_MS_BLDC_CODER:
-        return QString("Bldc_coder");
-    case OD_MS_BLDC_TIME_CODER:
-        return QString("Bldc_time_coder");
-    case OD_MS_BLDC_PHASE:
-        return QString("Bldc_phase");
-    case OD_MS_BLDC_BRIDGE_PWM:
-        return QString("Bldc_bridge_pwm");
-
-    case OD_MS_VELOCITY_PID_INPUT:
-    case OD_MS_POSITION_PID_INPUT:
-    case OD_MS_TORQUE_PID_INPUT:
-        return QString("input");
-    case OD_MS_VELOCITY_PID_ERROR:
-    case OD_MS_TORQUE_PID_ERROR:
-    case OD_MS_POSITION_PID_ERROR:
-        return QString("error");
-    case OD_MS_VELOCITY_PID_INTEGRATOR:
-    case OD_MS_POSITION_PID_INTEGRATOR:
-    case OD_MS_TORQUE_PID_INTEGRATOR:
-        return QString("integrator");
-    case OD_MS_VELOCITY_PID_OUTPUT:
-    case OD_MS_POSITION_PID_OUTPUT:
-    case OD_MS_TORQUE_PID_OUTPUT:
-        return QString("output");
-    case OD_MS_VELOCITY_PID_P:
-    case OD_MS_POSITION_PID_P:
-    case OD_MS_TORQUE_PID_P:
-        return QString("P");
-    case OD_MS_VELOCITY_PID_I:
-    case OD_MS_POSITION_PID_I:
-    case OD_MS_TORQUE_PID_I:
-        return QString("I");
-    case OD_MS_VELOCITY_PID_D:
-    case OD_MS_POSITION_PID_D:
-    case OD_MS_TORQUE_PID_D:
-        return QString("D");
-    case OD_MS_VELOCITY_PID_MIN:
-    case OD_MS_POSITION_PID_MIN:
-    case OD_MS_TORQUE_PID_MIN:
-        return QString("pid_min");
-    case OD_MS_VELOCITY_PID_MAX:
-    case OD_MS_POSITION_PID_MAX:
-    case OD_MS_TORQUE_PID_MAX:
-        return QString("pid_max");
-    case OD_MS_VELOCITY_PID_THRESHOLD:
-    case OD_MS_POSITION_PID_THRESHOLD:
-    case OD_MS_TORQUE_PID_THRESHOLD:
-        return QString("pid_threshold");
-    case OD_MS_VELOCITY_SENSOR_SELECT:
-    case OD_MS_POSITION_SENSOR_SELECT:
-    case OD_MS_TORQUE_SENSOR_SELECT:
-        return QString("sensor_select");
-    case OD_MS_VELOCITY_SENSOR_THRESHOLD_MIN:
-    case OD_MS_POSITION_SENSOR_THRESHOLD_MIN:
-    case OD_MS_TORQUE_SENSOR_THRESHOLD_MIN:
-        return QString("numerator");
-    case OD_MS_VELOCITY_SENSOR_THRESHOLD_MAX:
-    case OD_MS_POSITION_SENSOR_THRESHOLD_MAX:
-    case OD_MS_TORQUE_SENSOR_THRESHOLD_MAX:
-        return QString("denominator");
-    case OD_MS_VELOCITY_SENSOR_THRESHOLD_MODE:
-    case OD_MS_POSITION_SENSOR_THRESHOLD_MODE:
-    case OD_MS_TORQUE_SENSOR_THRESHOLD_MODE:
-        return QString("offset");
-    case OD_MS_VELOCITY_SENSOR_PRE_OFFSET:
-    case OD_MS_POSITION_SENSOR_PRE_OFFSET:
-    case OD_MS_TORQUE_SENSOR_PRE_OFFSET:
-        return QString("min");
-    case OD_MS_VELOCITY_SENSOR_SCALE:
-    case OD_MS_POSITION_SENSOR_SCALE:
-    case OD_MS_TORQUE_SENSOR_SCALE:
-        return QString("max");
-
-    case OD_MS_CONF_MOTOR_PEAK_CURRENT:
-        return QString("peak_current");
-    case OD_MS_CONF_MOTOR_POLE_PAIR:
-        return QString("pole_pair");
-    case OD_MS_CONF_MOTOR_MAX_VELOCITY:
-        return QString("max_velocity");
-    case OD_MS_CONF_MOTOR_VELOCITY_CONSTANT:
-        return QString("velocity_constant");
-    case OD_MS_CONF_MOTOR_CURRENT_TEMPERATURE:
-        return QString("current_temperature");
-    case OD_MS_CONF_TEMP_SENSOR_TYPE:
-        return QString("sensor_type");
-    case OD_MS_CONF_TEMP_SENSOR_CONSTANT:
-        return QString("sensor_constant");
-    case OD_MS_CONF_BRAKE_MAINTAIN:
-        return QString("brake_maintain");
-    case OD_MS_CONF_BRAKE_PEAK:
-        return QString("brake_peak");
-    default:
-        return QString();
     }
 }

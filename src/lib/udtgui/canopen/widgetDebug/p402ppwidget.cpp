@@ -90,7 +90,7 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
     {
         _positionDemandValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, axis);
         _positionActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, axis);
-        _targetPositionObjectId = IndexDb402::getObjectId(IndexDb402::OD_PP_TARGET_POSITION, axis);
+        _targetPositionObjectId = IndexDb402::getObjectId(IndexDb402::OD_PP_POSITION_TARGET, axis);
 
         createWidgets();
 

@@ -29,7 +29,7 @@ enum ControlWordIP : quint16
 ModeIp::ModeIp(NodeProfile402 *nodeProfile402)
     : Mode(nodeProfile402)
 {
-    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_SET_POINT, _axisId);
+    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_DATA_RECORD_SET_POINT, _axisId);
     _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
     _bufferClearObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_BUFFER_CLEAR, _axisId);

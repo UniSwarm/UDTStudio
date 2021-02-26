@@ -216,7 +216,7 @@ public:
         OD_PV_VELOCITY_WINDOW_TIME,
         OD_PV_VELOCITY_THRESHOLD,
         OD_PV_VELOCITY_THRESHOLD_TIME,
-        OD_TQ_TARGET_TORQUE,
+        OD_TQ_TORQUE_TARGET,
         OD_TQ_MAX_TORQUE,
         OD_TQ_MAX_CURRENT,
         OD_TQ_TORQUE_DEMAND,
@@ -225,7 +225,7 @@ public:
         OD_TQ_TORQUE_ACTUAL_VALUE,
         OD_TQ_CURRENT_ACTUAL_VALUE,
         OD_TQ_DC_LINK_CIRCUIT_VOLTAGE,
-        OD_PP_TARGET_POSITION,
+        OD_PP_POSITION_TARGET,
         OD_PC_POSITION_RANGE_LIMIT_MIN,
         OD_PC_POSITION_RANGE_LIMIT_MAX,
         OD_HM_HOME_OFFSET,
@@ -271,9 +271,9 @@ public:
         OD_TP_TOUCH_PROBE_POS_2_POS_VALUE,
         OD_TP_TOUCH_PROBE_POS_2_NEG_VALUE,
         OD_IP_SUB_MODE_SELECT,
-        OD_IP_SET_POINT,
-        OD_IP_TIME_UNITS,
-        OD_IP_TIME_INDEX,
+        OD_IP_DATA_RECORD_SET_POINT,
+        OD_IP_TIME_PERIOD_TIME_UNITS,
+        OD_IP_TIME_PERIOD_TIME_INDEX,
         OD_IP_MAXIMUM_BUFFER_SIZE,
         OD_IP_ACTUAL_BUFFER_SIZE,
         OD_IP_BUFFER_ORGANIZATION,
@@ -289,7 +289,7 @@ public:
         OD_DIGITAL_INPUTS,
         OD_DIGITAL_OUTPUTS_PHYSICAL_OUTPUTS,
         OD_DIGITAL_OUTPUTS_BIT_MASK,
-        OD_PV_TARGET_VELOCITY,
+        OD_PV_VELOCITY_TARGET,
         OD_MOTOR_TYPE,
         OD_MOTOR_CATALOGUE_NUMBER,
         OD_MOTOR_MANUFACTURER,
@@ -307,8 +307,6 @@ public:
 private:
     static NodeObjectId getObjectIdMs(OdObject object, uint axis = 0, uint opt2 = 0);
     // FUTURE
-    static QString name(const NodeObjectId &nodeObjectId);
-    static QString name(IndexDb402::OdObject object, uint axis, uint opt2);
     //    static QVariant min(const NodeObjectId &nodeObjectId);
     //    static QVariant max(const NodeObjectId &nodeObjectId);
     //    static QVariant defaultValue(const NodeObjectId &nodeObjectId);
