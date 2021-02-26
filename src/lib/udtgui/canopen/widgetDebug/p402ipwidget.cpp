@@ -98,11 +98,8 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
 
         _positionDemandValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
         _positionActualValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-        _bufferClearObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-        _polarityObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
         registerObjId(_dataRecordObjectId);
-        registerObjId(_polarityObjectId);
         setNodeInterrest(node);
 
         if (!_node->profiles().isEmpty())
@@ -118,8 +115,8 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
         _positionDemandValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, axis));
         _positionAcualValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, axis));
 
-        _timePeriodUnitSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_UNITS, axis));
-        _timePeriodIndexSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_INDEX, axis));
+        _timePeriodUnitSpinBox->setObjId(_timePeriodUnitsObjectId);
+        _timePeriodIndexSpinBox->setObjId(_timePeriodIndexObjectId);
         _positionRangelLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MIN, axis));
         _positionRangelLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MAX, axis));
         _softwarePositionLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MIN, axis));
@@ -191,32 +188,15 @@ void P402IpWidget::dataRecordLineEditFinished()
 
 void P402IpWidget::sendDataRecord()
 {
-    if (_iteratorForSendDataRecord < _listDataRecord.size())
+    while (!_listDataRecord.isEmpty())
     {
-        qint32 value = _listDataRecord.at(_iteratorForSendDataRecord).toInt();
+        qint32 value = _listDataRecord.first().toInt();
         _node->writeObject(_dataRecordObjectId, QVariant(value));
-        _iteratorForSendDataRecord++;
+        _listDataRecord.removeFirst();
     }
-    else
-    {
-        _dataRecordLineEdit->clear();
-        _listDataRecord.clear();
-    }
-}
 
-void P402IpWidget::polarityEditingFinished()
-{
-    quint8 value = static_cast<quint8>(_node->nodeOd()->value(_polarityObjectId).toInt());
-
-    if (_polaritySpinBox->value() == 0)
-    {
-        value = value & 0x7F;
-    }
-    else
-    {
-        value = value | 0x80;
-    }
-    _node->writeObject(_polarityObjectId, QVariant(value));
+    _dataRecordLineEdit->clear();
+    _listDataRecord.clear();
 }
 
 void P402IpWidget::bufferClearClicked()
@@ -241,23 +221,32 @@ void P402IpWidget::enableRampEvent(bool ok)
 }
 
 // each period * 5 -> we send 5 set-point, for have always value in buffer in device
-void P402IpWidget::goTargetPosition()
+void P402IpWidget::startTargetPosition()
 {
-    quint32 unit = 0;
-    qint32 index = 0;
+    quint8 unit = 0;
+    qint8 index = 0;
     qreal period = 0;
+    qint32 target = 0;
 
     qint32 initialPosition = _node->nodeOd()->value(_positionDemandValueObjectId).toInt();
-    calculatePointSinusoidalMotionProfile(initialPosition);
 
-    quint8 value = 1;
-    _node->writeObject(_bufferClearObjectId, QVariant(value));
-
-    unit = static_cast<quint32>(_node->nodeOd()->value(_timePeriodIndexObjectId).toUInt());
-    index = static_cast<qint32>(_node->nodeOd()->value(_timePeriodUnitsObjectId).toUInt());
-
+    unit = static_cast<quint8>(_node->nodeOd()->value(_timePeriodUnitsObjectId).toUInt());
+    index = static_cast<qint8>(_node->nodeOd()->value(_timePeriodIndexObjectId).toUInt());
     period = qPow(10, index);
     period = unit * period * 1000;
+
+    if (_relativeTargetpositionSpinBox->isChecked())
+    {
+        target = _targetPositionSpinBox->value();
+    }
+    else
+    {
+        target = _targetPositionSpinBox->value() - initialPosition;
+    }
+
+    calculatePointSinusoidalMotionProfile(target, initialPosition, period);
+
+    bufferClearClicked();
 
     if (_bus->sync()->status() == Sync::Status::STOPPED)
     {
@@ -276,30 +265,13 @@ void P402IpWidget::stopTargetPosition()
     _dataRecordLineEdit->setEnabled(true);
 }
 
-void P402IpWidget::calculatePointSinusoidalMotionProfile(qint32 initialPosition)
+void P402IpWidget::calculatePointSinusoidalMotionProfile(qint32 targetPosition, qint32 initialPosition, qreal periodMs)
 {
-    qint32 target = 0;
     quint32 duration = 0;
-    quint32 unit = 0;
-    qint32 index = 0;
-    qreal period = 0;
-
-    if (_relativeTargetpositionSpinBox->isChecked())
-    {
-        target = _targetPositionSpinBox->value();
-    }
-    else
-    {
-        target = _targetPositionSpinBox->value() - initialPosition;
-    }
 
     duration = static_cast<quint32>(_durationSpinBox->value());
-    unit = static_cast<quint32>(_node->nodeOd()->value(_timePeriodIndexObjectId).toUInt());
-    index = static_cast<qint32>(_node->nodeOd()->value(_timePeriodUnitsObjectId).toUInt());
 
-    period = qPow(10, index);
-    period = unit * period * 1000;
-    if (period == 0.0)
+    if (periodMs == 0.0)
     {
         return;
     }
@@ -309,8 +281,8 @@ void P402IpWidget::calculatePointSinusoidalMotionProfile(qint32 initialPosition)
     for (quint32 i = 0; i <= duration; i++)
     {
         qreal pos = ((M_PI * i) / duration) + M_PI;
-        pos = (((target / 2) * qCos(pos)) + (target / 2)) + initialPosition;
-        if (((i % static_cast<quint32>(period)) == 0) && (i != 0))
+        pos = (((targetPosition / 2) * qCos(pos)) + (targetPosition / 2)) + initialPosition;
+        if (((i % static_cast<quint32>(periodMs)) == 0) && (i != 0))
         {
             _pointSinusoidalVector.insert(static_cast<int>(j), static_cast<qint32>(pos));
             j++;
@@ -347,11 +319,6 @@ void P402IpWidget::sendDataRecordTargetWithSdo()
         _node->writeObject(_dataRecordObjectId, QVariant(_pointSinusoidalVector.at(i)));
     }
     _pointSinusoidalVector.remove(0, i);
-}
-
-void P402IpWidget::readActualBufferSize()
-{
-    _node->readObject(_bufferClearObjectId);
 }
 
 void P402IpWidget::updateInformationLabel()
@@ -464,6 +431,7 @@ void P402IpWidget::createWidgets()
     _polaritySpinBox->setRange(0, 1);
     ipPolaritylayout->addWidget(ipPolarityLabel);
     ipPolaritylayout->addWidget(_polaritySpinBox);
+    connect(_polaritySpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { _nodeProfile402->setPolarityPosition(i); });
 
     QHBoxLayout *ipHomePolaritylayout = new QHBoxLayout();
     ipHomePolaritylayout->addLayout(ipHomeOffsetlayout);
@@ -595,9 +563,9 @@ void P402IpWidget::createWidgets()
 
     QHBoxLayout *buttonGoStoplayout = new QHBoxLayout();
 
-    _goTargetPushButton = new QPushButton(tr("GO"));
-    connect(_goTargetPushButton, &QPushButton::clicked, this, &P402IpWidget::goTargetPosition);
-    _stopTargetPushButton = new QPushButton(tr("STOP"));
+    _goTargetPushButton = new QPushButton(tr("Start"));
+    connect(_goTargetPushButton, &QPushButton::clicked, this, &P402IpWidget::startTargetPosition);
+    _stopTargetPushButton = new QPushButton(tr("Stop"));
     connect(_stopTargetPushButton, &QPushButton::clicked, this, &P402IpWidget::stopTargetPosition);
     buttonGoStoplayout->addWidget(_stopTargetPushButton);
     buttonGoStoplayout->addWidget(_goTargetPushButton);
@@ -652,9 +620,5 @@ void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     if ((!_node) || (_node->status() != Node::STARTED))
     {
         return;
-    }
-    if (objId == _polarityObjectId)
-    {
-        polarityEditingFinished();
     }
 }

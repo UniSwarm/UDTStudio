@@ -114,12 +114,11 @@ private:
     void enableRampClicked(bool ok);
     void enableRampEvent(bool ok);
 
-    void goTargetPosition();
+    void startTargetPosition();
     void stopTargetPosition();
-    void calculatePointSinusoidalMotionProfile(qint32 initialPosition);
+    void calculatePointSinusoidalMotionProfile(qint32 targetPosition, qint32 initialPosition, qreal periodMs);
     void sendDataRecordTargetWithPdo();
     void sendDataRecordTargetWithSdo();
-    void readActualBufferSize();
 
     void updateInformationLabel();
 
