@@ -122,7 +122,14 @@ QString AbstractIndexWidget::pstringValue(const QVariant &value, const AbstractI
     switch (hint)
     {
     case AbstractIndexWidget::DisplayDirectValue:
-        str = value.toString();
+        if (value.userType() != QMetaType::QString)
+        {
+            str = QString::number(value.toInt());
+        }
+        else
+        {
+            str = value.toString();
+        }
         break;
 
     case AbstractIndexWidget::DisplayHexa:
