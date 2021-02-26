@@ -39,6 +39,7 @@ protected:
     // AbstractIndexWidget interface
 protected:
     void updateObjId() override;
+    void setInternalIndex(int index);
 };
 
 #endif // INDEXCOMBOBOX_H
