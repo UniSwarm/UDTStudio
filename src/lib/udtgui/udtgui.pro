@@ -38,6 +38,8 @@ HEADERS += \
     $$PWD/canopen/pdo/pdomappingwidget.h \
     $$PWD/canopen/widget/abstractindexwidget.h \
     $$PWD/canopen/widget/indexspinbox.h \
+    $$PWD/canopen/widget/indexlabel.h \
+    $$PWD/canopen/widget/indexcombobox.h \
     $$PWD/canopen/widgetDebug/widgetdebug.h \
     $$PWD/canopen/widgetDebug/p402optionwidget.h \
     $$PWD/canopen/widgetDebug/p402vlwidget.h \
@@ -49,7 +51,6 @@ HEADERS += \
     $$PWD/screen/nodescreenpdo.h \
     $$PWD/canopen/compositeWidget/pidwidget.h \
     $$PWD/screen/nodescreenumcmotor.h \
-    $$PWD/canopen/widget/indexlabel.h \
     $$PWD/canopen/widgetDebug/p402ppwidget.h \
     $$PWD/canopen/compositeWidget/motionsensorwidget.h \
     $$PWD/screen/nodescreensynchro.h
@@ -84,6 +85,8 @@ SOURCES += \
     $$PWD/canopen/pdo/pdomappingwidget.cpp \
     $$PWD/canopen/widget/abstractindexwidget.cpp \
     $$PWD/canopen/widget/indexspinbox.cpp \
+    $$PWD/canopen/widget/indexlabel.cpp \
+    $$PWD/canopen/widget/indexcombobox.cpp \
     $$PWD/canopen/widgetDebug/widgetdebug.cpp \
     $$PWD/canopen/widgetDebug/p402optionwidget.cpp \
     $$PWD/canopen/widgetDebug/p402vlwidget.cpp \
@@ -95,7 +98,6 @@ SOURCES += \
     $$PWD/screen/nodescreenpdo.cpp \
     $$PWD/canopen/compositeWidget/pidwidget.cpp \
     $$PWD/screen/nodescreenumcmotor.cpp \
-    $$PWD/canopen/widget/indexlabel.cpp \
     $$PWD/canopen/widgetDebug/p402ppwidget.cpp \
     $$PWD/canopen/compositeWidget/motionsensorwidget.cpp \
     $$PWD/screen/nodescreensynchro.cpp
