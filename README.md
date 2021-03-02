@@ -44,4 +44,6 @@ Binaries will be placed in `bin/` directory.
 
 UDT Studio use an environment variable `EDS_PATH` to read EDS files :
 
-`EDS_PATH="pathToEdsRepertory"`
+`export EDS_PATH="pathToEdsRepertory"`
+
+You can permanently set it by pushing it to your ~/.profile file.
