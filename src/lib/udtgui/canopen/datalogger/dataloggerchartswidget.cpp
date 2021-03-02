@@ -35,7 +35,7 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
 
     _chart = new QtCharts::QChart();
     _chart->legend()->hide();
-    _chart->setTitle("Logger");
+    //_chart->setTitle("Logger");
     _chart->legend()->setVisible(true);
     _chart->legend()->setAlignment(Qt::AlignBottom);
     //_chart->setTheme(QtCharts::QChart::ChartThemeBlueCerulean);
@@ -45,11 +45,11 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
     _axisX = new QtCharts::QDateTimeAxis();
     _axisX->setTickCount(10);
     _axisX->setFormat("hh:mm:ss");
-    _axisX->setTitleText("Time");
+    //_axisX->setTitleText("Time");
 
     _axisY = new QtCharts::QValueAxis();
     _axisY->setLabelFormat("%i");
-    _axisY->setTitleText("Value");
+    //_axisY->setTitleText("Value");
 
     setDataLogger(dataLogger);
     _idPending = -1;
