@@ -21,6 +21,7 @@
 
 #include <QDebug>
 #include <QFileInfo>
+#include <QFileDialog>
 #include <QFormLayout>
 
 #include "services/services.h"
@@ -64,6 +65,9 @@ void NodeManagerWidget::setNode(Node *node)
     }
     _groupBox->setEnabled(_node);
     _groupNmt->setEnabled(_node);
+
+    _actionLoadEds->setEnabled(_node);
+    _actionReLoadEds->setEnabled(_node);
 
     updateData();
 }
@@ -138,6 +142,32 @@ void NodeManagerWidget::resetNode()
     }
 }
 
+void NodeManagerWidget::loadEds(const QString &edsFileName)
+{
+    if (_node)
+    {
+        QString fileName = edsFileName;
+        if (fileName.isEmpty())
+        {
+            fileName = QFileDialog::getOpenFileName(this, tr("Choose eds file"), QString(), tr("Eds file (*.eds)"));
+            if (fileName.isEmpty())
+            {
+                return;
+            }
+        }
+        _node->loadEds(fileName);
+        updateData();
+    }
+}
+
+void NodeManagerWidget::reloadEds()
+{
+    if (_node)
+    {
+        _node->loadEds(_node->edsFileName());
+    }
+}
+
 void NodeManagerWidget::createWidgets()
 {
     QLayout *layout = new QVBoxLayout();
@@ -187,6 +217,20 @@ void NodeManagerWidget::createWidgets()
     connect(_actionReset, &QAction::triggered, this, &NodeManagerWidget::resetNode);
 
     _toolBar->addActions(_groupNmt->actions());
+
+    // EDS actions
+    _toolBar->addSeparator();
+
+    _actionLoadEds = _toolBar->addAction(tr("Load eds"));
+    _actionLoadEds->setIcon(QIcon(":/icons/img/icons8-import-file.png"));
+    _actionLoadEds->setStatusTip(tr("Load an eds file as object dictionary description"));
+    connect(_actionLoadEds, &QAction::triggered,  [=](){loadEds();});
+
+    _actionReLoadEds = _toolBar->addAction(tr("Reload eds"));
+    _actionReLoadEds->setIcon(QIcon(":/icons/img/icons8-restore-page.png"));
+    _actionReLoadEds->setStatusTip(tr("Reload the current eds file"));
+    connect(_actionReLoadEds, &QAction::triggered, this, &NodeManagerWidget::reloadEds);
+
     layoutGroupBox->addRow(_toolBar);
 
     _nodeNameEdit = new QLineEdit();
@@ -203,6 +247,16 @@ void NodeManagerWidget::createWidgets()
     layout->addWidget(_groupBox);
 
     setLayout(layout);
+}
+
+QAction *NodeManagerWidget::actionReLoadEds() const
+{
+    return _actionReLoadEds;
+}
+
+QAction *NodeManagerWidget::actionLoadEds() const
+{
+    return _actionLoadEds;
 }
 
 QAction *NodeManagerWidget::actionReset() const

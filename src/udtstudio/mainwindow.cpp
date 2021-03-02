@@ -137,6 +137,10 @@ void MainWindow::createMenus()
     nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionStop());
     nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionReset());
     nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionResetCom());
+    nodeMenu->addSeparator();
+
+    nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionLoadEds());
+    nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionReLoadEds());
 
     // ============= View =============
     QMenu *viewMenu = menuBar()->addMenu(tr("&View"));

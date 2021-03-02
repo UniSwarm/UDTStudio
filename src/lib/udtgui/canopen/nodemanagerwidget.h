@@ -47,6 +47,9 @@ public:
     QAction *actionResetCom() const;
     QAction *actionReset() const;
 
+    QAction *actionLoadEds() const;
+    QAction *actionReLoadEds() const;
+
 signals:
 
 public slots:
@@ -58,6 +61,9 @@ public slots:
     void stop();
     void resetCom();
     void resetNode();
+
+    void loadEds(const QString &edsFileName = QString());
+    void reloadEds();
 
 protected:
     void createWidgets();
@@ -73,6 +79,9 @@ protected:
     QLineEdit *_nodeNameEdit;
     QLabel *_nodeStatusLabel;
     QLabel *_edsFileNameLabel;
+
+    QAction *_actionLoadEds;
+    QAction *_actionReLoadEds;
 
     Node *_node;
 
