@@ -21,8 +21,8 @@
 
 #include "../udtgui_global.h"
 
-#include "nodeodsubscriber.h"
 #include <QWidget>
+#include "nodeodsubscriber.h"
 
 #include <QGroupBox>
 #include <QLabel>
@@ -69,8 +69,10 @@ protected:
     QAction *_actionResetCom;
     QAction *_actionReset;
     QGroupBox *_groupBox;
+
     QLineEdit *_nodeNameEdit;
     QLabel *_nodeStatusLabel;
+    QLabel *_edsFileNameLabel;
 
     Node *_node;
 

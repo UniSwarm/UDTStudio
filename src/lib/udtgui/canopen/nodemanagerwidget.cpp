@@ -20,6 +20,7 @@
 #include "indexdb.h"
 
 #include <QDebug>
+#include <QFileInfo>
 #include <QFormLayout>
 
 #include "services/services.h"
@@ -73,6 +74,9 @@ void NodeManagerWidget::updateData()
     {
         _nodeNameEdit->setText(_node->name());
         _nodeStatusLabel->setText(_node->statusStr());
+
+        _edsFileNameLabel->setText(QFileInfo(_node->edsFileName()).fileName());
+        _edsFileNameLabel->setToolTip(_node->edsFileName());
 
         // status button update
         _groupNmt->blockSignals(true);
@@ -190,6 +194,10 @@ void NodeManagerWidget::createWidgets()
 
     _nodeStatusLabel = new QLabel();
     layoutGroupBox->addRow(tr("Status :"), _nodeStatusLabel);
+
+    _edsFileNameLabel = new QLabel();
+    _edsFileNameLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    layoutGroupBox->addRow(tr("Eds file name :"), _edsFileNameLabel);
 
     _groupBox->setLayout(layoutGroupBox);
     layout->addWidget(_groupBox);
