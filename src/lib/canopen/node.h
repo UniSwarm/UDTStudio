@@ -57,6 +57,8 @@ public:
     void writeObject(const quint16 index, const quint8 subindex, const QVariant &data);
 
     void loadEds(const QString &fileName);
+    const QString &edsFileName() const;
+
     void updateFirmware(const QByteArray &prog);
 
     enum Status

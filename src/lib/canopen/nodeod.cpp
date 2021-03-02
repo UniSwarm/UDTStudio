@@ -381,6 +381,11 @@ bool NodeOd::loadEds(const QString &fileName)
     return true;
 }
 
+const QString &NodeOd::edsFileName() const
+{
+    return _fileName;
+}
+
 QMetaType::Type NodeOd::dataTypeCiaToQt(const NodeSubIndex::DataType type)
 {
     switch (type)

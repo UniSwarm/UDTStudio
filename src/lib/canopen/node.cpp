@@ -360,6 +360,11 @@ void Node::loadEds(const QString &fileName)
     _nodeOd->loadEds(fileName);
 }
 
+const QString &Node::edsFileName() const
+{
+    return _nodeOd->edsFileName();
+}
+
 void Node::updateFirmware(const QByteArray &prog)
 {
     quint16 index = 0x1F50;
