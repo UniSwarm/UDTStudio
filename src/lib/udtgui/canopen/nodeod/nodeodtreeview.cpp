@@ -201,7 +201,7 @@ void NodeOdTreeView::createActions()
     addAction(_readAllAction);
 
     _copyAction = new QAction(this);
-    _copyAction->setText(tr("Copy"));
+    _copyAction->setText(tr("&Copy"));
     _copyAction->setShortcut(QKeySequence::Copy);
     _copyAction->setShortcutContext(Qt::WidgetShortcut);
     _copyAction->setIcon(QIcon(":/icons/img/icons8-copy"));
@@ -210,6 +210,11 @@ void NodeOdTreeView::createActions()
 #endif
     connect(_copyAction, &QAction::triggered, this, &NodeOdTreeView::copy);
     addAction(_copyAction);
+
+    _expandAllAction = new QAction(this);
+    _expandAllAction->setText(tr("&Expend all"));
+    connect(_expandAllAction, &QAction::triggered, this, &QTreeView::expandAll);
+    addAction(_expandAllAction);
 }
 
 void NodeOdTreeView::updateSelect(const QItemSelection &selected, const QItemSelection &deselected)
@@ -228,5 +233,6 @@ void NodeOdTreeView::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(_readAction);
     menu.addAction(_readAllAction);
     menu.addAction(_copyAction);
+    menu.addAction(_expandAllAction);
     menu.exec(event->globalPos());
 }
