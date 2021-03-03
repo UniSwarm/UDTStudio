@@ -111,8 +111,8 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
             changeOnSetPointEvent(_modePp->isChangeOnSetPoint());
         }
 
-        _positionDemandValueLabel->setObjId(_positionDemandValueObjectId);
-        _positionActualValueLabel->setObjId(_positionActualValueObjectId);
+        _positionDemandValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, axis));
+        _positionActualValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, axis));
 
         _positionRangelLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MIN, axis));
         _positionRangelLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MAX, axis));
@@ -256,11 +256,10 @@ void P402PpWidget::changeOnSetPointEvent(bool ok)
 void P402PpWidget::updateInformationLabel()
 {
     QString text;
-    //    if (!_ppEnableRampCheckBox->isChecked())
-    //    {
-    //        text = "Enable Interpolation";
-    //    }
-
+    if (!_newSetPointCheckBox->isChecked())
+    {
+        text = "New set-point disabled";
+    }
     _infoLabel->setText(text);
 }
 void P402PpWidget::dataLogger()
@@ -332,20 +331,20 @@ void P402PpWidget::createWidgets()
 
     // Add Home offset (0x607C) and Polarity (0x607E)
     QLayout *ipHomeOffsetlayout = new QVBoxLayout();
-    QLabel *ipHomeOffsetLabel = new QLabel(tr("Home offset :"));
+//    QLabel *ipHomeOffsetLabel = new QLabel(tr("Home offset :"));
     _homeOffsetSpinBox = new IndexSpinBox();
-    _homeOffsetSpinBox->setToolTip("");
-    ipHomeOffsetlayout->addWidget(ipHomeOffsetLabel);
-    ipHomeOffsetlayout->addWidget(_homeOffsetSpinBox);
+//    _homeOffsetSpinBox->setToolTip("");
+//    ipHomeOffsetlayout->addWidget(ipHomeOffsetLabel);
+//    ipHomeOffsetlayout->addWidget(_homeOffsetSpinBox);
 
-    QLayout *ipPolaritylayout = new QVBoxLayout();
-    QLabel *ipPolarityLabel = new QLabel(tr("Polarity :"));
+    QVBoxLayout *ipPolaritylayout = new QVBoxLayout();
+//    QLabel *ipPolarityLabel = new QLabel(tr("Polarity :"));
     _polaritySpinBox = new QSpinBox();
-    _polaritySpinBox->setToolTip("0 = x1, 1 = x(-1)");
-    _polaritySpinBox->setRange(0, 1);
-    ipPolaritylayout->addWidget(ipPolarityLabel);
-    ipPolaritylayout->addWidget(_polaritySpinBox);
-    connect(_polaritySpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { _nodeProfile402->setPolarityPosition(i); });
+//    _polaritySpinBox->setToolTip("0 = x1, 1 = x(-1)");
+//    _polaritySpinBox->setRange(0, 1);
+//    ipPolaritylayout->addWidget(ipPolarityLabel);
+//    ipPolaritylayout->addWidget(_polaritySpinBox);
+//    connect(_polaritySpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { _nodeProfile402->setPolarityPosition(i); });
 
     QHBoxLayout *ipHomePolaritylayout = new QHBoxLayout();
     ipHomePolaritylayout->addLayout(ipHomeOffsetlayout);
@@ -353,37 +352,34 @@ void P402PpWidget::createWidgets()
     ipLayout->addRow(ipHomePolaritylayout);
 
     // Add Profile velocity (0x6081) and Max motor speed (0x6080)
-    QLayout *ipProfileVelocitylayout = new QVBoxLayout();
+    QVBoxLayout *ipProfileVelocitylayout = new QVBoxLayout();
     QLabel *ipProfileVelocityLabel = new QLabel(tr("Profile velocity :"));
     _profileVelocitySpinBox = new IndexSpinBox();
-    _profileVelocitySpinBox->setToolTip("");
     ipProfileVelocitylayout->addWidget(ipProfileVelocityLabel);
     ipProfileVelocitylayout->addWidget(_profileVelocitySpinBox);
 
-    QLayout *ipEndVelocitylayout = new QVBoxLayout();
-    QLabel *ipEndVelocityLabel = new QLabel(tr("End velocity :"));
+//    QVBoxLayout *ipEndVelocitylayout = new QVBoxLayout();
+//    QLabel *ipEndVelocityLabel = new QLabel(tr("End velocity :"));
     _endVelocitySpinBox = new IndexSpinBox();
-    _endVelocitySpinBox->setToolTip("");
-    ipEndVelocitylayout->addWidget(ipEndVelocityLabel);
-    ipEndVelocitylayout->addWidget(_endVelocitySpinBox);
+    //_endVelocitySpinBox->setToolTip("");
+//    ipEndVelocitylayout->addWidget(ipEndVelocityLabel);
+//    ipEndVelocitylayout->addWidget(_endVelocitySpinBox);
 
     QHBoxLayout *ipMaxVelocitylayout = new QHBoxLayout();
     ipMaxVelocitylayout->addLayout(ipProfileVelocitylayout);
-    ipMaxVelocitylayout->addLayout(ipEndVelocitylayout);
+    //ipMaxVelocitylayout->addLayout(ipEndVelocitylayout);
     ipLayout->addRow(ipMaxVelocitylayout);
 
     // Add Max profile velocity (0x607F) and Max motor speed (0x6080)
     QLayout *ipMaxProfileVelocitylayout = new QVBoxLayout();
     QLabel *ipMaxProfileVelocityLabel = new QLabel(tr("Max profile velocity :"));
     _maxProfileVelocitySpinBox = new IndexSpinBox();
-    _maxProfileVelocitySpinBox->setToolTip("");
     ipMaxProfileVelocitylayout->addWidget(ipMaxProfileVelocityLabel);
     ipMaxProfileVelocitylayout->addWidget(_maxProfileVelocitySpinBox);
 
     QLayout *ipMaxMotorSpeedlayout = new QVBoxLayout();
-    QLabel *ipMaxMotorSpeedLabel = new QLabel(tr("Max motor speedy :"));
+    QLabel *ipMaxMotorSpeedLabel = new QLabel(tr("Max motor speed :"));
     _maxMotorSpeedSpinBox = new IndexSpinBox();
-    _maxMotorSpeedSpinBox->setToolTip("");
     ipMaxMotorSpeedlayout->addWidget(ipMaxMotorSpeedLabel);
     ipMaxMotorSpeedlayout->addWidget(_maxMotorSpeedSpinBox);
 
@@ -396,14 +392,12 @@ void P402PpWidget::createWidgets()
     QLayout *ipProfileAccelerationlayout = new QVBoxLayout();
     QLabel *ipProfileAccelerationLabel = new QLabel(tr("Profile acceleration :"));
     _profileAccelerationSpinBox = new IndexSpinBox();
-    _profileAccelerationSpinBox->setToolTip("");
     ipProfileAccelerationlayout->addWidget(ipProfileAccelerationLabel);
     ipProfileAccelerationlayout->addWidget(_profileAccelerationSpinBox);
 
     QLayout *ipMaxAccelerationlayout = new QVBoxLayout();
     QLabel *ipMaxAccelerationLabel = new QLabel(tr("Max acceleration :"));
     _maxAccelerationSpinBox = new IndexSpinBox();
-    _maxAccelerationSpinBox->setToolTip("");
     ipMaxAccelerationlayout->addWidget(ipMaxAccelerationLabel);
     ipMaxAccelerationlayout->addWidget(_maxAccelerationSpinBox);
 
@@ -416,14 +410,12 @@ void P402PpWidget::createWidgets()
     QLayout *ipProfileDecelerationlayout = new QVBoxLayout();
     QLabel *ipProfileDecelerationLabel = new QLabel(tr("Profile deceleration :"));
     _profileDecelerationSpinBox = new IndexSpinBox();
-    _profileDecelerationSpinBox->setToolTip("");
     ipProfileDecelerationlayout->addWidget(ipProfileDecelerationLabel);
     ipProfileDecelerationlayout->addWidget(_profileDecelerationSpinBox);
 
     QLayout *ipMaxDecelerationlayout = new QVBoxLayout();
     QLabel *ipMaxDecelerationLabel = new QLabel(tr("Max deceleration :"));
     _maxDecelerationSpinBox = new IndexSpinBox();
-    _maxDecelerationSpinBox->setToolTip("");
     ipMaxDecelerationlayout->addWidget(ipMaxDecelerationLabel);
     ipMaxDecelerationlayout->addWidget(_maxDecelerationSpinBox);
 
@@ -433,13 +425,13 @@ void P402PpWidget::createWidgets()
     ipLayout->addRow(ipProfileDecelerationHlayout);
 
     // Add Quick stop deceleration (0x6085)
-    QLayout *ipQuickStopDecelerationlayout = new QVBoxLayout();
-    QLabel *ipQuickStopDecelerationLabel = new QLabel(tr("Quick stop deceleration :"));
+//    QLayout *ipQuickStopDecelerationlayout = new QVBoxLayout();
+//    QLabel *ipQuickStopDecelerationLabel = new QLabel(tr("Quick stop deceleration :"));
      _quickStopDecelerationSpinBox = new IndexSpinBox();
-     _quickStopDecelerationSpinBox->setToolTip("");
-    ipQuickStopDecelerationlayout->addWidget(ipQuickStopDecelerationLabel);
-    ipQuickStopDecelerationlayout->addWidget( _quickStopDecelerationSpinBox);
-    ipLayout->addRow(ipQuickStopDecelerationlayout);
+//     _quickStopDecelerationSpinBox->setToolTip("");
+//    ipQuickStopDecelerationlayout->addWidget(ipQuickStopDecelerationLabel);
+//    ipQuickStopDecelerationlayout->addWidget( _quickStopDecelerationSpinBox);
+//    ipLayout->addRow(ipQuickStopDecelerationlayout);
 
     ipGroupBox->setLayout(ipLayout);
 
@@ -453,18 +445,18 @@ void P402PpWidget::createWidgets()
     modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
     _changeSetImmediatelyPointCheckBox = new QCheckBox();
-    modeControlWordLayout->addRow(tr("Change set immediately (bit 5) :"), _changeSetImmediatelyPointCheckBox);
-    connect(_changeSetImmediatelyPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::changeSetImmediatelyPointCheckBoxRampClicked);
-    modeControlWordGroupBox->setLayout(modeControlWordLayout);
+//    modeControlWordLayout->addRow(tr("Change set immediately (bit 5) :"), _changeSetImmediatelyPointCheckBox);
+//    connect(_changeSetImmediatelyPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::changeSetImmediatelyPointCheckBoxRampClicked);
+//    modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
     _absRelCheckBox = new QCheckBox();
-    modeControlWordLayout->addRow(tr("Change on set-point (bit 9) :"), _absRelCheckBox);
-    connect(_absRelCheckBox, &QCheckBox::clicked, this, &P402PpWidget::absRelCheckBoxRampClicked);
+//    modeControlWordLayout->addRow(tr("Change on set-point (bit 9) :"), _absRelCheckBox);
+//    connect(_absRelCheckBox, &QCheckBox::clicked, this, &P402PpWidget::absRelCheckBoxRampClicked);
 
     _changeOnSetPointCheckBox = new QCheckBox();
-    modeControlWordLayout->addRow(tr("Abs/Rel (bit 6) :"), _changeOnSetPointCheckBox);
-    connect(_changeOnSetPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::changeOnSetPointCheckBoxRampClicked);
-    modeControlWordGroupBox->setLayout(modeControlWordLayout);
+//    modeControlWordLayout->addRow(tr("Abs/Rel (bit 6) :"), _changeOnSetPointCheckBox);
+//    connect(_changeOnSetPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::changeOnSetPointCheckBoxRampClicked);
+//    modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402PpWidget::dataLogger);
