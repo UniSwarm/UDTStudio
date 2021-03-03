@@ -49,6 +49,13 @@ void NodeOdSubscriber::setNodeInterrest(Node *nodeInterrest)
     if (_nodeInterrest)
     {
         _nodeInterrest->nodeOd()->unsubscribe(this);
+        for (NodeObjectId &objId : _objIdList)
+        {
+            if (objId.node() == _nodeInterrest)
+            {
+                objId.setBusIdNodeId(0xFF, 0xFF);
+            }
+        }
     }
 
     _nodeInterrest = nodeInterrest;
