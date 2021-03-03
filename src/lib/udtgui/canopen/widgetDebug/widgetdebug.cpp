@@ -181,6 +181,13 @@ void WidgetDebug::toggleStartLogger(bool start)
         _stateMachineGroupBox->setEnabled(false);
         _statusWordGroupBox->setEnabled(false);
     }
+
+    if (_startStopAction->isChecked() != start)
+    {
+        _startStopAction->blockSignals(true);
+        _startStopAction->setChecked(start);
+        _startStopAction->blockSignals(false);
+    }
 }
 
 void WidgetDebug::setLogTimer(int ms)

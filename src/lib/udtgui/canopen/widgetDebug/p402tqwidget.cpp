@@ -157,12 +157,11 @@ void P402TqWidget::targetTorqueSpinboxFinished()
 {
     qint16 value = static_cast<qint16>(_targetTorqueSpinBox->value());
     _node->writeObject(_torqueTargetObjectId, QVariant(value));
-    _targetTorqueSlider->setValue(value);
 }
 
 void P402TqWidget::targetTorqueSliderChanged()
 {
-    qint16 value = static_cast<qint16>(_targetTorqueSpinBox->value());
+    qint16 value = static_cast<qint16>(_targetTorqueSlider->value());
     _node->writeObject(_torqueTargetObjectId, QVariant(value));
 }
 
@@ -225,7 +224,6 @@ void P402TqWidget::createWidgets()
     labelSliderLayout->addWidget(_sliderMaxLabel);
     tqLayout->addRow(labelSliderLayout);
 
-    connect(_targetTorqueSlider, &QSlider::valueChanged, _targetTorqueSpinBox, &QSpinBox::setValue);
     connect(_targetTorqueSlider, &QSlider::valueChanged, this, &P402TqWidget::targetTorqueSliderChanged);
     connect(_targetTorqueSpinBox, &QSpinBox::editingFinished, this, &P402TqWidget::targetTorqueSpinboxFinished);
 
@@ -303,11 +301,15 @@ void P402TqWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         int value = _node->nodeOd()->value(objId).toInt();
         if (!_targetTorqueSpinBox->hasFocus())
         {
+            _targetTorqueSpinBox->blockSignals(true);
             _targetTorqueSpinBox->setValue(value);
+            _targetTorqueSpinBox->blockSignals(false);
         }
         if (!_targetTorqueSlider->isSliderDown())
         {
-            //_tqTargetTorqueSlider->setValue(value);
+            _targetTorqueSlider->blockSignals(true);
+            _targetTorqueSlider->setValue(value);
+            _targetTorqueSlider->blockSignals(false);
         }
     }
 }

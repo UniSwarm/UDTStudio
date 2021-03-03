@@ -154,7 +154,6 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
             referenceRamp(_modeVl->isReferenceRamp());
         }
 
-        connect(_minVelocityMinMaxAmountSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::minVelocityMinMaxAmountSpinboxFinished);
         connect(_maxVelocityMinMaxAmountSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::maxVelocityMinMaxAmountSpinboxFinished);
     }
 }
@@ -177,18 +176,12 @@ void P402VlWidget::targetVelocitySpinboxFinished()
 {
     qint16 value = static_cast<qint16>(_targetVelocitySpinBox->value());
     _node->writeObject(_velocityTargetObjectId, QVariant(value));
-    _targetVelocitySlider->setValue(value);
-}
-void P402VlWidget::targetVelocitySliderChanged()
-{
-    qint16 value = static_cast<qint16>(_targetVelocitySpinBox->value());
-    _node->writeObject(_velocityTargetObjectId, QVariant(value));
 }
 
-void P402VlWidget::minVelocityMinMaxAmountSpinboxFinished()
+void P402VlWidget::targetVelocitySliderChanged()
 {
-    //    int min = _node->nodeOd()->value(_vlMinVelocityMinMaxAmountSpinBox->objId()).toInt();
-    //    _vlTargetVelocitySlider->setMinimum(min);
+    qint16 value = static_cast<qint16>(_targetVelocitySlider->value());
+    _node->writeObject(_velocityTargetObjectId, QVariant(value));
 }
 
 void P402VlWidget::maxVelocityMinMaxAmountSpinboxFinished()
@@ -329,7 +322,6 @@ void P402VlWidget::createWidgets()
     labelSliderLayout->addWidget(_sliderMaxLabel);
     vlLayout->addRow(labelSliderLayout);
 
-    connect(_targetVelocitySlider, &QSlider::valueChanged, _targetVelocitySpinBox, &QSpinBox::setValue);
     connect(_targetVelocitySlider, &QSlider::valueChanged, this, &P402VlWidget::targetVelocitySliderChanged);
     connect(_targetVelocitySpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::targetVelocitySpinboxFinished);
 
@@ -474,11 +466,15 @@ void P402VlWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         int value = _node->nodeOd()->value(objId).toInt();
         if (!_targetVelocitySpinBox->hasFocus())
         {
+            _targetVelocitySpinBox->blockSignals(true);
             _targetVelocitySpinBox->setValue(value);
+            _targetVelocitySpinBox->blockSignals(false);
         }
         if (!_targetVelocitySlider->isSliderDown())
         {
-            //_vlTargetVelocitySlider->setValue(value);
+            _targetVelocitySlider->blockSignals(true);
+            _targetVelocitySlider->setValue(value);
+            _targetVelocitySlider->blockSignals(false);
         }
     }
 }
