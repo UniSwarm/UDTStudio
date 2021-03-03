@@ -90,7 +90,7 @@ void MotionSensorWidget::setNode(Node *node, uint8_t axis)
     _sensorSelectSpinBox->setNode(node);
     _thresholdMinSpinBox->setNode(node);
     _thresholdMaxSpinBox->setNode(node);
-    _thresholdModeSpinBox->setNode(node);
+    _thresholdModeComboBox->setNode(node);
     _preOffsetSpinBox->setNode(node);
     _scaleSpinBox->setNode(node);
     _postOffsetSpinBox->setNode(node);
@@ -247,7 +247,7 @@ void MotionSensorWidget::setIMode()
     _sensorSelectSpinBox->setObjId(_sensorSelectSpinBox_ObjId);
     _thresholdMinSpinBox->setObjId(_thresholdMinSpinBox_ObjId);
     _thresholdMaxSpinBox->setObjId(_thresholdMaxSpinBox_ObjId);
-    _thresholdModeSpinBox->setObjId(_thresholdModeSpinBox_ObjId);
+    _thresholdModeComboBox->setObjId(_thresholdModeSpinBox_ObjId);
     _preOffsetSpinBox->setObjId(_preOffsetSpinBox_ObjId);
     _scaleSpinBox->setObjId(_scaleSpinBox_ObjId);
     _postOffsetSpinBox->setObjId(_postOffsetSpinBox_ObjId);
@@ -347,9 +347,10 @@ void MotionSensorWidget::createWidgets()
     _thresholdMaxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     configLayout->addRow(tr("T&hreshold max :"), _thresholdMaxSpinBox);
 
-    _thresholdModeSpinBox = new IndexSpinBox();
-    _thresholdModeSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
-    configLayout->addRow(tr("Th&reshold mode :"), _thresholdModeSpinBox);
+    _thresholdModeComboBox = new IndexComboBox();
+    _thresholdModeComboBox->addItem("No threshold", QVariant(0));
+    _thresholdModeComboBox->addItem("Min-max mode", QVariant(1));
+    configLayout->addRow(tr("Th&reshold mode :"), _thresholdModeComboBox);
 
     _frequencyDividerSpinBox = new IndexSpinBox();
     _frequencyDividerSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);

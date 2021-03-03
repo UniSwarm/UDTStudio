@@ -80,7 +80,7 @@ protected:
     IndexComboBox *_sensorSelectSpinBox;
     IndexSpinBox *_thresholdMinSpinBox;
     IndexSpinBox *_thresholdMaxSpinBox;
-    IndexSpinBox *_thresholdModeSpinBox;
+    IndexComboBox *_thresholdModeComboBox;
     IndexSpinBox *_preOffsetSpinBox;
     IndexSpinBox *_scaleSpinBox;
     IndexSpinBox *_postOffsetSpinBox;
