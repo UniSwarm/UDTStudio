@@ -28,7 +28,7 @@ ConfigurationApply::ConfigurationApply()
 {
 }
 
-bool ConfigurationApply::apply(DeviceConfiguration *deviceDescription, const QString &fileIniPath)
+bool ConfigurationApply::apply(DeviceModel *deviceDescription, const QString &fileIniPath)
 {
     if (!QFileInfo::exists(fileIniPath))
     {

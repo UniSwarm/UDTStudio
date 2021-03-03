@@ -151,6 +151,10 @@ int main(int argc, char *argv[])
         {
             return -6;
         }
+        if (!configurationApply.apply(deviceDescription, iniFile))
+        {
+            return -6;
+        }
     }
 
     // OUTPUT FILE
