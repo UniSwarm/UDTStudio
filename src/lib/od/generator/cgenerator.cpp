@@ -995,14 +995,23 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
  */
 void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile)
 {
+    QString value;
     switch (subIndex->dataType())
     {
     case SubIndex::VISIBLE_STRING:
     case SubIndex::OCTET_STRING:
         cFile << "static const char " << stringNameToString(subIndex) << "[]"
-              << " = "
-              << "\"" << subIndex->value().toString() << "\""
-              << ";\n";
+              << " = ";
+        value = subIndex->value().toString();
+        if (value.startsWith("__") && value.endsWith("__") && value.size() > 4)  // value contain preprocessor value
+        {
+            // Keep value without double quote
+        }
+        else
+        {
+            value = "\"" + value + "\"";
+        }
+        cFile << value << ";\n";
         break;
 
     default:
