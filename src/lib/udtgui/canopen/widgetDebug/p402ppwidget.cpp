@@ -445,9 +445,9 @@ void P402PpWidget::createWidgets()
     modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
     _changeSetImmediatelyPointCheckBox = new QCheckBox();
-//    modeControlWordLayout->addRow(tr("Change set immediately (bit 5) :"), _changeSetImmediatelyPointCheckBox);
-//    connect(_changeSetImmediatelyPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::changeSetImmediatelyPointCheckBoxRampClicked);
-//    modeControlWordGroupBox->setLayout(modeControlWordLayout);
+    modeControlWordLayout->addRow(tr("Change set immediately (bit 5) :"), _changeSetImmediatelyPointCheckBox);
+    connect(_changeSetImmediatelyPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::changeSetImmediatelyPointCheckBoxRampClicked);
+    modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
     _absRelCheckBox = new QCheckBox();
 //    modeControlWordLayout->addRow(tr("Change on set-point (bit 9) :"), _absRelCheckBox);
