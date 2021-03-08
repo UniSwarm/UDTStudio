@@ -4,7 +4,11 @@
 [![Build Status](https://travis-ci.org/UniSwarm/UDTStudio.svg?branch=master)](https://travis-ci.org/UniSwarm/UDTStudio)
 [![Build status](https://ci.appveyor.com/api/projects/status/7ts34vord4jnooub?svg=true)](https://ci.appveyor.com/project/sebcaux/udevkit-ide)
 
-Tools for UniSwarm products.
+CANOpen tools for UniSwarm products.
+
+![Screenshot UMC](screenshot-umc.png)
+
+![Screenshot PDO](screenshot-pdo.png)
 
 ## dependencies
 ### Qt > 5.9
@@ -18,24 +22,25 @@ Qt module used :
 - serialbus
 
 ## QT5 for UDTStudio : charts + serial buses
+
 ```
-sudo apt install make g++ qt5-default libqt5serialbus5-dev libqt5serialbus5-plugins libqt5charts5-dev
+sudo apt install git make g++ qt5-default libqt5serialbus5-dev libqt5serialbus5-plugins libqt5charts5-dev
 ```
 
 ## Build
 
-Do not forget to init and update submodule before build :
+Do not forget to init and update submodule before build.
 
 ```
+git clone https://github.com/UniSwarm/UDTStudio.git
+cd UDTStudio
 git submodule init
 git submodule update
-```
 
-```
 mkdir build
 cd build
 qmake ../src
-make -j
+make -j`nproc`
 ```
 
 Binaries will be placed in `bin/` directory.
