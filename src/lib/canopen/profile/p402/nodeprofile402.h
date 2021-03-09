@@ -90,7 +90,8 @@ public:
         FollowingError = 0x04,
         VoltageEnabled = 0x8,
         Remote = 0x10,
-        TargetReached = 0x20
+        TargetReached = 0x20,
+        ModeSpecific = 0x40
     };
 
     QString event402Str(quint8 Event402);

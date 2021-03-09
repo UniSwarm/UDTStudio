@@ -59,6 +59,7 @@ enum StatusWord : quint16
     SW_EventWarning = 0x80,
     SW_EventRemote = 0x200,
     SW_EventTargetReached = 0x400,
+    SW_EventSetPointAcknowledgeIpModeActive = 0x1000,
     SW_EventFollowingError = 0x2000,    // -> specific ip
     SW_EventInternalLimitActive = 0x800,
     SW_EventMask = 0xE90,
@@ -315,6 +316,19 @@ QString NodeProfile402::event402Str(quint8 event402)
         return tr("Remote");
     case Event402::TargetReached:
         return tr("Target Reached");
+    case Event402::ModeSpecific:
+        if (_modeCurrent == OperationMode::PP)
+        {
+            return tr("Set-point acknowledge");
+        }
+        else if (_modeCurrent == OperationMode::IP)
+        {
+            return tr("Ip Mode Active");
+        }
+        else
+        {
+            return QString();
+        }
     default:
         return QString();
     }
@@ -508,6 +522,10 @@ void NodeProfile402::decodeEventStatusWord(quint16 statusWord)
     if (statusWord & SW_EventFollowingError)
     {
         eventStatusWord += FollowingError;
+    }
+    if (statusWord & SW_EventSetPointAcknowledgeIpModeActive)
+    {
+        eventStatusWord += ModeSpecific;
     }
     if (eventStatusWord != _statusWordEvent)
     {

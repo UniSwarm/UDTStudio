@@ -381,6 +381,14 @@ void WidgetDebug::eventHappened(quint8 event)
         }
         text.append(_nodeProfile402->event402Str(NodeProfile402::TargetReached));
     }
+    if (event & NodeProfile402::ModeSpecific)
+    {
+        if (!text.isEmpty())
+        {
+            text.append(", ");
+        }
+        text.append(_nodeProfile402->event402Str(NodeProfile402::ModeSpecific));
+    }
 
     _informationLabel->clear();
     _informationLabel->setText(text);
