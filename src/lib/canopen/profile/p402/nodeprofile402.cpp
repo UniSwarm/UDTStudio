@@ -323,7 +323,8 @@ QString NodeProfile402::event402Str(quint8 event402)
         }
         else if (_modeCurrent == OperationMode::IP)
         {
-            return tr("Ip Mode Active");
+            //return tr("Ip Mode Active");
+            return QString();
         }
         else
         {

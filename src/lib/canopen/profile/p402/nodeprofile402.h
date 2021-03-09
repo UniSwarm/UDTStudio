@@ -157,7 +157,7 @@ private:
     void decodeStateMachineStatusWord(quint16 statusWord);
     void decodeSupportedDriveModes(quint32 supportedDriveModes);
 
-private slots:
+public slots:
     void readModeOfOperationDisplay(void);
 
 public:

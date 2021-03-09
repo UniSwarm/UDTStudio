@@ -452,6 +452,7 @@ void WidgetDebug::readAllObject()
 {
     if (_node)
     {
+        _nodeProfile402->readModeOfOperationDisplay();
         _node->readObject(_statusWordObjectId);
         _p402ip->readAllObject();
         _p402vl->readAllObject();
