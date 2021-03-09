@@ -96,6 +96,7 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
 
         _positionDemandValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
         _positionActualValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _targetPositionObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
         registerObjId(_targetPositionObjectId);
         setNodeInterrest(node);
@@ -177,6 +178,16 @@ void P402PpWidget::targetPositionLineEditFinished()
     _listDataRecord = _targetPositionLineEdit->text().split(QLatin1Char(','), QString::SkipEmptyParts);
     _iteratorForSendDataRecord = 0;
     sendDataRecord();
+}
+
+void P402PpWidget::goOneLineEditFinished()
+{
+    _nodeProfile402->setTarget(_goOneLineEdit->text().toInt());
+}
+
+void P402PpWidget::twoOneLineEditFinished()
+{
+    _nodeProfile402->setTarget(_goTwoLineEdit->text().toInt());
 }
 
 void P402PpWidget::sendDataRecord()
@@ -267,6 +278,7 @@ void P402PpWidget::dataLogger()
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
     dataLogger->addData(_positionDemandValueObjectId);
+    dataLogger->addData(_targetPositionObjectId);
     _dataLoggerWidget->show();
 }
 
@@ -297,6 +309,25 @@ void P402PpWidget::createWidgets()
     _targetPositionLineEdit = new QLineEdit();
     ipLayout->addRow(tr("Position_Target :"), _targetPositionLineEdit);
     connect(_targetPositionLineEdit, &QLineEdit::editingFinished, this, &P402PpWidget::targetPositionLineEditFinished);
+
+    QHBoxLayout *goOneLayout = new QHBoxLayout();
+    _goOneLineEdit = new QLineEdit();
+    _goOnePushButton = new QPushButton(tr("Go"));
+    goOneLayout->addWidget(_goOneLineEdit);
+    goOneLayout->addWidget(_goOnePushButton);
+    QHBoxLayout *goTwoLayout = new QHBoxLayout();
+    _goTwoLineEdit = new QLineEdit();
+    _goTwoPushButton = new QPushButton(tr("Go"));
+    goTwoLayout->addWidget(_goTwoLineEdit);
+    goTwoLayout->addWidget(_goTwoPushButton);
+    QHBoxLayout *goLayout = new QHBoxLayout();
+    goLayout->addLayout(goOneLayout);
+    goLayout->addLayout(goTwoLayout);
+    ipLayout->addRow("", goLayout);
+    connect(_goOneLineEdit, &QLineEdit::returnPressed, this, &P402PpWidget::goOneLineEditFinished);
+    connect(_goTwoLineEdit, &QLineEdit::returnPressed, this, &P402PpWidget::twoOneLineEditFinished);
+    connect(_goOnePushButton, &QPushButton::clicked, this, &P402PpWidget::goOneLineEditFinished);
+    connect(_goTwoPushButton, &QPushButton::clicked, this, &P402PpWidget::twoOneLineEditFinished);
 
     _infoLabel = new QLabel();
     ipLayout->addRow(tr("Information :"), _infoLabel);
