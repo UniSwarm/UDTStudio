@@ -309,6 +309,15 @@ void MotionSensorWidget::createWidgets()
     action->setStatusTip(tr("Clear all data"));
     connect(action, &QAction::triggered, _dataLogger, &DataLogger::clear);
 
+    _toolBar->addSeparator();
+
+    // read all action
+    QAction * readAllAction = _toolBar->addAction(tr("Read all"));
+    readAllAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    readAllAction->setShortcut(QKeySequence("Ctrl+R"));
+    readAllAction->setStatusTip(tr("Read all the objects of the current window"));
+    connect(readAllAction, &QAction::triggered, this, &MotionSensorWidget::readAllObject);
+
     QWidget *motionSensorWidget = new QWidget(this);
     QVBoxLayout *actionLayout = new QVBoxLayout(motionSensorWidget);
 
@@ -451,4 +460,28 @@ void MotionSensorWidget::stateChanged()
         _sensorConfigGroupBox->setEnabled(true);
         _filterGroupBox->setEnabled(true);
     }
+}
+
+void MotionSensorWidget::readAllObject()
+{
+    _sensorSelectSpinBox->readObject();
+    _thresholdMinSpinBox->readObject();
+    _thresholdMaxSpinBox->readObject();
+    _thresholdModeComboBox->readObject();
+    _preOffsetSpinBox->readObject();
+    _scaleSpinBox->readObject();
+    _postOffsetSpinBox->readObject();
+    _errorMinSpinBox->readObject();
+    _errorMaxSpinBox->readObject();
+    _frequencyDividerSpinBox->readObject();
+
+    _rawDataValueLabel->readObject();
+    _flagLabel->readObject();
+    _valueLabel->readObject();
+
+    _filterSelect->readObject();
+    _param0->readObject();
+    _param1->readObject();
+    _param2->readObject();
+    _param3->readObject();
 }

@@ -45,6 +45,7 @@ public:
 
     Node *node() const;
     void readData();
+    void readAllObject();
 
 public slots:
     void setNode(Node *value, uint8_t axis = 0);
@@ -71,6 +72,11 @@ private:
     QCheckBox *_changeOnSetPointCheckBox;
 
     QLineEdit *_targetPositionLineEdit;
+    QLineEdit *_goOneLineEdit;
+    QLineEdit *_goTwoLineEdit;
+    QPushButton *_goOnePushButton;
+    QPushButton *_goTwoPushButton;
+
     QLabel *_infoLabel;
 
     IndexLabel *_positionDemandValueLabel;
@@ -105,6 +111,8 @@ private:
     QTimer _sendPointSinusoidalTimer;
 
     void targetPositionLineEditFinished();
+    void goOneLineEditFinished();
+    void twoOneLineEditFinished();
     void sendDataRecord();
 
     void newSetPointClicked(bool ok);

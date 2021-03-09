@@ -129,6 +129,7 @@ protected:
     void stopMeasurement();
     void stopDataLogger();
     void readStatus();
+    void readAllObject();
     void createWidgets();
     void statusNodeChanged(Node::Status status);
 };

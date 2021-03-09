@@ -45,6 +45,19 @@ Node *P402OptionWidget::node() const
     return _node;
 }
 
+void P402OptionWidget::readAllObject()
+{
+    if (_node)
+    {
+        _node->readObject(_abortConnectionObjectId);
+        _node->readObject(_quickStopObjectId);
+        _node->readObject(_shutdownObjectId);
+        _node->readObject(_disableObjectId);
+        _node->readObject(_haltObjectId);
+        _node->readObject(_faultReactionObjectId);
+    }
+}
+
 void P402OptionWidget::setNode(Node *node, uint8_t axis)
 {
     if (node != _node)
@@ -91,12 +104,7 @@ void P402OptionWidget::updateData()
         if (_node->status() == Node::STARTED)
         {
             this->setEnabled(true);
-            _node->readObject(_abortConnectionObjectId);
-            _node->readObject(_quickStopObjectId);
-            _node->readObject(_shutdownObjectId);
-            _node->readObject(_disableObjectId);
-            _node->readObject(_haltObjectId);
-            _node->readObject(_faultReactionObjectId);
+            readAllObject();
         }
     }
 }

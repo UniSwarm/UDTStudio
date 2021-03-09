@@ -64,6 +64,23 @@ void P402TqWidget::readData()
     }
 }
 
+void P402TqWidget::readAllObject()
+{
+    if (_node)
+    {
+        _torqueDemandLabel->readObject();
+        _torqueActualValueLabel->readObject();
+        //_currentActualValueLabel->readObject();
+        _targetSlopeSpinBox->readObject();
+        //_torqueProfileTypeSpinBox->readObject();
+        _maxTorqueSpinBox->readObject();
+        //_maxCurrentSpinBox->readObject();
+        //_motorRatedTorqueSpinBox->readObject();
+        //_motorRatedCurrentSpinBox->readObject();
+        //_dcLinkVoltageLabel->readObject();
+    }
+}
+
 void P402TqWidget::reset()
 {
     _node->readObject(_torqueTargetObjectId);

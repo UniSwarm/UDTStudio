@@ -116,6 +116,7 @@ protected:
     void createWidgets();
     void statusNodeChanged(Node::Status status);
     void stateChanged();
+    void readAllObject();
 };
 
 #endif // MOTIONSENSORWIDGET_H

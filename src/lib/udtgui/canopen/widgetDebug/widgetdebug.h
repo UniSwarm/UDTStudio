@@ -125,6 +125,7 @@ private:
     void updateModeComboBox();
 
     void displayOption402();
+    void readAllObject();
     void modeIndexChanged(int id);
     void stateMachineClicked(int id);
     void haltClicked();

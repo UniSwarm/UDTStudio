@@ -45,6 +45,7 @@ public:
     Node *node() const;
 
     void readData();
+    void readAllObject();
     void reset();
 
 signals:

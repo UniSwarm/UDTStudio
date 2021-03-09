@@ -468,6 +468,18 @@ void PidWidget::readStatus()
     _outputLabel->readObject();
 }
 
+void PidWidget::readAllObject()
+{
+    _pSpinBox->readObject();
+    _iSpinBox->readObject();
+    _dSpinBox->readObject();
+    _minSpinBox->readObject();
+    _maxSpinBox->readObject();
+    _thresholdSpinBox->readObject();
+    _freqDividerSpinBox->readObject();
+    readStatus();
+}
+
 void PidWidget::createWidgets()
 {
     _dataLogger = new DataLogger();
@@ -501,6 +513,15 @@ void PidWidget::createWidgets()
     action->setIcon(QIcon(":/icons/img/icons8-broom.png"));
     action->setStatusTip(tr("Clear all data"));
     connect(action, &QAction::triggered, _dataLogger, &DataLogger::clear);
+
+    _toolBar->addSeparator();
+
+    // read all action
+    QAction * readAllAction = _toolBar->addAction(tr("Read all"));
+    readAllAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    readAllAction->setShortcut(QKeySequence("Ctrl+R"));
+    readAllAction->setStatusTip(tr("Read all the objects of the current window"));
+    connect(readAllAction, &QAction::triggered, this, &PidWidget::readAllObject);
 
     QWidget *pidWidget = new QWidget(this);
     QVBoxLayout *actionLayout = new QVBoxLayout(pidWidget);

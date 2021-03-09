@@ -69,6 +69,27 @@ void P402IpWidget::readData()
     }
 }
 
+void P402IpWidget::readAllObject()
+{
+    if (_node)
+    {
+        _node->readObject(_positionDemandValueObjectId);
+        _node->readObject(_positionActualValueObjectId);
+
+        _positionRangelLimitMinSpinBox->readObject();
+        _positionRangelLimitMaxSpinBox->readObject();
+        _softwarePositionLimitMinSpinBox->readObject();
+        _softwarePositionLimitMaxSpinBox->readObject();
+        //_profileVelocitySpinBox->readObject();
+        _maxProfileVelocitySpinBox->readObject();
+        _maxMotorSpeedSpinBox->readObject();
+        //_profileAccelerationSpinBox->readObject();
+        //_maxAccelerationSpinBox->readObject();
+        //_profileDecelerationSpinBox->readObject();
+        //_maxDecelerationSpinBox->readObject();
+    }
+}
+
 void P402IpWidget::setNode(Node *node, uint8_t axis)
 {
     if (node != _node)
@@ -436,7 +457,7 @@ void P402IpWidget::createWidgets()
     QHBoxLayout *ipHomePolaritylayout = new QHBoxLayout();
     ipHomePolaritylayout->addLayout(ipHomeOffsetlayout);
     ipHomePolaritylayout->addLayout(ipPolaritylayout);
-    ipLayout->addRow(ipHomePolaritylayout);
+    //ipLayout->addRow(ipHomePolaritylayout);
 
     //    // Add Profile velocity (0x6081) and Max motor speed (0x6080)
     //    QLayout *ipProfileVelocitylayout = new QVBoxLayout();

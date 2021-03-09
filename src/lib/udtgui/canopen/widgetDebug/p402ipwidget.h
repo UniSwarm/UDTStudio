@@ -45,6 +45,7 @@ public:
 
     Node *node() const;
     void readData();
+    void readAllObject();
 
 public slots:
     void setNode(Node *value, uint8_t axis = 0);

@@ -439,6 +439,19 @@ void WidgetDebug::displayOption402()
         _stackedWidget->setCurrentWidget(_p402Option);
     }
 }
+
+void WidgetDebug::readAllObject()
+{
+    if (_node)
+    {
+        _node->readObject(_statusWordObjectId);
+        _p402ip->readAllObject();
+        _p402vl->readAllObject();
+        _p402tq->readAllObject();
+        _p402pp->readAllObject();
+    }
+}
+
 void WidgetDebug::modeIndexChanged(int id)
 {
     if (!_node)
@@ -508,9 +521,17 @@ void WidgetDebug::createWidgets()
     option402->setToolTip(tr("Option code"));
     connect(option402, &QAction::triggered, this, &WidgetDebug::displayOption402);
 
+    // read all action
+    QAction * readAllAction = _toolBar->addAction(tr("Read all"));
+    readAllAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    readAllAction->setShortcut(QKeySequence("Ctrl+R"));
+    readAllAction->setStatusTip(tr("Read all the objects of the current window"));
+    connect(readAllAction, &QAction::triggered, this, &WidgetDebug::readAllObject);
+
     _toolBar->addWidget(_logTimerSpinBox);
     _toolBar->addSeparator();
     _toolBar->addAction(option402);
+    _toolBar->addAction(readAllAction);
 
     QWidget *p402Widget = new QWidget();
     QLayout *p402layout = new QVBoxLayout(p402Widget);

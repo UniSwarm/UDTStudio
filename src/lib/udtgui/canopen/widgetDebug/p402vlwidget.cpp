@@ -64,6 +64,27 @@ void P402VlWidget::readData()
     }
 }
 
+void P402VlWidget::readAllObject()
+{
+    if (_node)
+    {
+        _velocityDemandLabel->readObject();
+        _velocityActualLabel->readObject();
+        _minVelocityMinMaxAmountSpinBox->readObject();
+        _maxVelocityMinMaxAmountSpinBox->readObject();
+        _accelerationDeltaSpeedSpinBox->readObject();
+        _accelerationDeltaTimeSpinBox->readObject();
+        _decelerationDeltaSpeedSpinBox->readObject();
+        _decelerationDeltaTimeSpinBox->readObject();
+        _quickStopDeltaSpeedSpinBox->readObject();
+        _quickStopDeltaTimeSpinBox->readObject();
+        _setPointFactorNumeratorSpinBox->readObject();
+        _setPointFactorDenominatorSpinBox->readObject();
+        _dimensionFactorNumeratorSpinBox->readObject();
+        _dimensionFactorDenominatorSpinBox->readObject();
+    }
+}
+
 void P402VlWidget::reset()
 {
     _node->readObject(_velocityTargetObjectId);

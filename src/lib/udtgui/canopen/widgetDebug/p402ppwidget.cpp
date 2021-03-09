@@ -63,9 +63,29 @@ void P402PpWidget::readData()
     {
         if (_nodeProfile402->actualMode() == NodeProfile402::OperationMode::PP)
         {
-            _node->readObject(_positionDemandValueObjectId);
-            _node->readObject(_positionActualValueObjectId);
+            _positionDemandValueLabel->readObject();
+            _positionActualValueLabel->readObject();
         }
+    }
+}
+
+void P402PpWidget::readAllObject()
+{
+    if (_node)
+    {
+        _positionDemandValueLabel->readObject();
+        _positionActualValueLabel->readObject();
+        _positionRangelLimitMinSpinBox->readObject();
+        _positionRangelLimitMaxSpinBox->readObject();
+        _softwarePositionLimitMinSpinBox->readObject();
+        _softwarePositionLimitMaxSpinBox->readObject();
+        _profileVelocitySpinBox->readObject();
+        _maxProfileVelocitySpinBox->readObject();
+        _maxMotorSpeedSpinBox->readObject();
+        _profileAccelerationSpinBox->readObject();
+        _maxAccelerationSpinBox->readObject();
+        _profileDecelerationSpinBox->readObject();
+        _maxDecelerationSpinBox->readObject();
     }
 }
 
