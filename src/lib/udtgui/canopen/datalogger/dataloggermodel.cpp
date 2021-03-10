@@ -84,7 +84,7 @@ void DataLoggerModel::updateDataLoggerList()
 
 void DataLoggerModel::updateDlData(int id)
 {
-    QModelIndex modelIndexTL = index(id, Node, QModelIndex());
+    QModelIndex modelIndexTL = index(id, NodeName, QModelIndex());
     QModelIndex modelIndexBR = index(id, ColumnCount - 1, QModelIndex());
     if (modelIndexTL.isValid() && modelIndexBR.isValid())
     {
@@ -129,7 +129,7 @@ QVariant DataLoggerModel::headerData(int section, Qt::Orientation orientation, i
     case Qt::DisplayRole:
         switch (section)
         {
-        case Node:
+        case NodeName:
             return QVariant(tr("Node"));
         case Index:
             return QVariant(tr("Index"));
@@ -149,6 +149,7 @@ QVariant DataLoggerModel::headerData(int section, Qt::Orientation orientation, i
 
 QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
 {
+    Node *node;
     if (!index.isValid() || !_dataLogger)
     {
         return QVariant();
@@ -165,8 +166,16 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
         switch (index.column())
         {
-        case Node:
-            return QVariant(QString("%1.%2 %3").arg(dlData->node()->busId()).arg(dlData->node()->nodeId()).arg(dlData->node()->name()));
+        case NodeName:
+            node = dlData->node();
+            if (node)
+            {
+                return QVariant(QString("%1.%2 %3").arg(node->busId()).arg(node->nodeId()).arg(node->name()));
+            }
+            else
+            {
+                return QVariant(tr("Unknown"));
+            }
 
         case Index:
             return QVariant(QString("0x%1.%2").arg(QString::number(dlData->objectId().index(), 16)).arg(QString::number(dlData->objectId().subIndex(), 16)));
@@ -188,7 +197,7 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
         }
 
     case Qt::DecorationRole:
-        if (index.column() == Node)
+        if (index.column() == NodeName)
         {
             QPixmap pix(24, 24);
             pix.fill(dlData->color());
@@ -271,7 +280,7 @@ QMimeData *DataLoggerModel::mimeData(const QModelIndexList &indexes) const
 
     foreach (QModelIndex index, indexes)
     {
-        if (index.isValid() && index.column() == Node)
+        if (index.isValid() && index.column() == NodeName)
         {
             const DLData *dlData = _dataLogger->dataList().at(index.row());
             encodedData.append(dlData->objectId().mimeData() + ":");

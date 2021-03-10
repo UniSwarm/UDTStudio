@@ -40,7 +40,7 @@ public:
 
     enum Column
     {
-        Node,
+        NodeName,
         Index,
         Name,
         Value,
