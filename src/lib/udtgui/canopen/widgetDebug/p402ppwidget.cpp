@@ -327,8 +327,8 @@ void P402PpWidget::createWidgets()
     QFormLayout *ipLayout = new QFormLayout();
 
     _targetPositionLineEdit = new QLineEdit();
-    ipLayout->addRow(tr("Position_Target :"), _targetPositionLineEdit);
-    connect(_targetPositionLineEdit, &QLineEdit::editingFinished, this, &P402PpWidget::targetPositionLineEditFinished);
+    //ipLayout->addRow(tr("Position_Target :"), _targetPositionLineEdit);
+    //connect(_targetPositionLineEdit, &QLineEdit::editingFinished, this, &P402PpWidget::targetPositionLineEditFinished);
 
     QHBoxLayout *goOneLayout = new QHBoxLayout();
     _goOneLineEdit = new QLineEdit();
@@ -343,7 +343,7 @@ void P402PpWidget::createWidgets()
     QHBoxLayout *goLayout = new QHBoxLayout();
     goLayout->addLayout(goOneLayout);
     goLayout->addLayout(goTwoLayout);
-    ipLayout->addRow("", goLayout);
+    ipLayout->addRow("Position_Target :", goLayout);
     connect(_goOneLineEdit, &QLineEdit::returnPressed, this, &P402PpWidget::goOneLineEditFinished);
     connect(_goTwoLineEdit, &QLineEdit::returnPressed, this, &P402PpWidget::twoOneLineEditFinished);
     connect(_goOnePushButton, &QPushButton::clicked, this, &P402PpWidget::goOneLineEditFinished);

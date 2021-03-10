@@ -369,7 +369,7 @@ void WidgetDebug::eventHappened(quint8 event)
     {
         if (!text.isEmpty())
         {
-            text.append(", ");
+            text.append(",\n");
         }
         text.append(_nodeProfile402->event402Str(NodeProfile402::Remote));
     }
@@ -377,7 +377,7 @@ void WidgetDebug::eventHappened(quint8 event)
     {
         if (!text.isEmpty())
         {
-            text.append(", ");
+            text.append(",\n");
         }
         text.append(_nodeProfile402->event402Str(NodeProfile402::TargetReached));
     }
@@ -385,7 +385,7 @@ void WidgetDebug::eventHappened(quint8 event)
     {
         if (!text.isEmpty())
         {
-            text.append(", ");
+            text.append(",\n");
         }
         text.append(_nodeProfile402->event402Str(NodeProfile402::ModeSpecific));
     }
@@ -403,7 +403,7 @@ void WidgetDebug::eventHappened(quint8 event)
     {
         if (!text.isEmpty())
         {
-            text.append(", ");
+            text.append(",\n");
         }
         text.append(_nodeProfile402->event402Str(NodeProfile402::Warning));
     }
@@ -414,7 +414,7 @@ void WidgetDebug::eventHappened(quint8 event)
         {
             if (!text.isEmpty())
             {
-                text.append(", ");
+                text.append(",\n");
             }
             text.append(_nodeProfile402->event402Str(NodeProfile402::FollowingError));
         }
