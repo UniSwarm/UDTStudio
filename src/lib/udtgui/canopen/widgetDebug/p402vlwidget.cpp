@@ -213,6 +213,11 @@ void P402VlWidget::maxVelocityMinMaxAmountSpinboxFinished()
     _sliderMaxLabel->setNum(max);
 }
 
+void P402VlWidget::setZeroButton()
+{
+    _nodeProfile402->setTarget(0);
+}
+
 void P402VlWidget::enableRampClicked(bool ok)
 {
     // 0 -> Velocity demand value shall be controlled in any other
@@ -329,10 +334,6 @@ void P402VlWidget::createWidgets()
     _targetVelocitySpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
     vlLayout->addRow(tr("Target velocity :"), _targetVelocitySpinBox);
 
-    _targetVelocitySlider = new QSlider(Qt::Horizontal);
-    _targetVelocitySlider->setTickPosition(QSlider::TicksBothSides);
-    vlLayout->addRow(_targetVelocitySlider);
-
     QLayout *labelSliderLayout = new QHBoxLayout();
     _sliderMinLabel = new QLabel("min");
     labelSliderLayout->addWidget(_sliderMinLabel);
@@ -343,8 +344,21 @@ void P402VlWidget::createWidgets()
     labelSliderLayout->addWidget(_sliderMaxLabel);
     vlLayout->addRow(labelSliderLayout);
 
+    _targetVelocitySlider = new QSlider(Qt::Horizontal);
+    _targetVelocitySlider->setTickPosition(QSlider::TicksBothSides);
+    vlLayout->addRow(_targetVelocitySlider);
+
     connect(_targetVelocitySlider, &QSlider::valueChanged, this, &P402VlWidget::targetVelocitySliderChanged);
     connect(_targetVelocitySpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::targetVelocitySpinboxFinished);
+
+    QPushButton *setZeroButton = new QPushButton();
+    setZeroButton->setText("Set to 0");
+    connect(setZeroButton, &QPushButton::clicked, this, &P402VlWidget::setZeroButton);
+    QLayout *setZeroLayout = new QHBoxLayout();
+    setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
+    setZeroLayout->addWidget(setZeroButton);
+    setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
+    vlLayout->addRow(setZeroLayout);
 
     _infoLabel = new QLabel();
     _infoLabel->setStyleSheet("QLabel { color : red; }");

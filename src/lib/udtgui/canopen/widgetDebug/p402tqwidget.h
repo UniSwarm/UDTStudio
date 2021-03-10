@@ -84,6 +84,7 @@ private:
     void targetTorqueSliderChanged();
     void maxTorqueSpinboxFinished();
 
+    void setZeroButton();
     void dataLogger();
     void pdoMapping();
 

@@ -332,12 +332,14 @@ void P402PpWidget::createWidgets()
 
     QHBoxLayout *goOneLayout = new QHBoxLayout();
     _goOneLineEdit = new QLineEdit();
-    _goOnePushButton = new QPushButton(tr("Go"));
+    _goOneLineEdit->setPlaceholderText(tr("Target one"));
+    _goOnePushButton = new QPushButton(tr("Go one"));
     goOneLayout->addWidget(_goOneLineEdit);
     goOneLayout->addWidget(_goOnePushButton);
     QHBoxLayout *goTwoLayout = new QHBoxLayout();
     _goTwoLineEdit = new QLineEdit();
-    _goTwoPushButton = new QPushButton(tr("Go"));
+    _goTwoLineEdit->setPlaceholderText(tr("Target two"));
+    _goTwoPushButton = new QPushButton(tr("Go two"));
     goTwoLayout->addWidget(_goTwoLineEdit);
     goTwoLayout->addWidget(_goTwoPushButton);
     QHBoxLayout *goLayout = new QHBoxLayout();

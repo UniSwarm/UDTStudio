@@ -94,6 +94,7 @@ private:
     void targetVelocitySpinboxFinished();
     void targetVelocitySliderChanged();
     void maxVelocityMinMaxAmountSpinboxFinished();
+    void setZeroButton();
 
     void enableRampClicked(bool ok);
     void unlockRampClicked(bool ok);

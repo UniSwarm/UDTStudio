@@ -190,6 +190,11 @@ void P402TqWidget::maxTorqueSpinboxFinished()
     _sliderMaxLabel->setNum(max);
 }
 
+void P402TqWidget::setZeroButton()
+{
+    _nodeProfile402->setTarget(0);
+}
+
 void P402TqWidget::dataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
@@ -227,10 +232,6 @@ void P402TqWidget::createWidgets()
     _targetTorqueSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
     tqLayout->addRow(tr("Target torque"), _targetTorqueSpinBox);
 
-    _targetTorqueSlider = new QSlider(Qt::Horizontal);
-    _targetTorqueSlider->setTickPosition(QSlider::TicksBelow);
-    tqLayout->addRow(_targetTorqueSlider);
-
     QLayout *labelSliderLayout = new QHBoxLayout();
     _sliderMinLabel = new QLabel("min");
     labelSliderLayout->addWidget(_sliderMinLabel);
@@ -241,8 +242,21 @@ void P402TqWidget::createWidgets()
     labelSliderLayout->addWidget(_sliderMaxLabel);
     tqLayout->addRow(labelSliderLayout);
 
+    _targetTorqueSlider = new QSlider(Qt::Horizontal);
+    _targetTorqueSlider->setTickPosition(QSlider::TicksBelow);
+    tqLayout->addRow(_targetTorqueSlider);
+
     connect(_targetTorqueSlider, &QSlider::valueChanged, this, &P402TqWidget::targetTorqueSliderChanged);
     connect(_targetTorqueSpinBox, &QSpinBox::editingFinished, this, &P402TqWidget::targetTorqueSpinboxFinished);
+
+    QPushButton *setZeroButton = new QPushButton();
+    setZeroButton->setText("Set to 0");
+    connect(setZeroButton, &QPushButton::clicked, this, &P402TqWidget::setZeroButton);
+    QLayout *setZeroLayout = new QHBoxLayout();
+    setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
+    setZeroLayout->addWidget(setZeroButton);
+    setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
+    tqLayout->addRow(setZeroLayout);
 
     _torqueDemandLabel = new IndexLabel();
     tqLayout->addRow(tr("Torque demand :"), _torqueDemandLabel);
