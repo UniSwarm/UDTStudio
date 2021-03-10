@@ -156,7 +156,7 @@ void PidWidget::setIMode()
         break;
 
     case MODE_PID_VELOCITY:
-        _pidGroupBox->setTitle(tr("PID Velocity"));
+        _pidGroupBox->setTitle(tr("PID Velocity configuration"));
         actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_P, _axis);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_I, _axis);
@@ -173,7 +173,7 @@ void PidWidget::setIMode()
         break;
 
     case MODE_PID_TORQUE:
-        _pidGroupBox->setTitle(tr("PID Torque"));
+        _pidGroupBox->setTitle(tr("PID Torque configuration"));
         actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE, _axis);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_P, _axis);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_I, _axis);
@@ -191,7 +191,7 @@ void PidWidget::setIMode()
         break;
 
     case MODE_PID_POSITION:
-        _pidGroupBox->setTitle(tr("PID Position"));
+        _pidGroupBox->setTitle(tr("PID Position configuration"));
         actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, _axis);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_P, _axis);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_I, _axis);
@@ -541,13 +541,20 @@ void PidWidget::createWidgets()
     _dSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     pidLayout->addRow(tr("&D :"), _dSpinBox);
 
+    QLayout *minMaxlayout = new QHBoxLayout();
+    minMaxlayout->setSpacing(0);
     _minSpinBox = new IndexSpinBox();
     _minSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("Mi&n :"), _minSpinBox);
-
+    minMaxlayout->addWidget(_minSpinBox);
+    QLabel *errorRangeSepLabel = new QLabel(tr("-"));
+    errorRangeSepLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    minMaxlayout->addWidget(errorRangeSepLabel);
     _maxSpinBox = new IndexSpinBox();
     _maxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("Ma&x :"), _maxSpinBox);
+    minMaxlayout->addWidget(_maxSpinBox);
+    QLabel *errorRangeLabel = new QLabel(tr("&Min max :"));
+    errorRangeLabel->setBuddy(errorRangeLabel);
+    pidLayout->addRow(errorRangeLabel, minMaxlayout);
 
     _thresholdSpinBox = new IndexSpinBox();
     _thresholdSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
@@ -559,7 +566,7 @@ void PidWidget::createWidgets()
     _pidGroupBox->setLayout(pidLayout);
 
     // Status
-    QGroupBox *statusGroupBox = new QGroupBox(tr("Status"));
+    QGroupBox *statusGroupBox = new QGroupBox(tr("PID status"));
     QFormLayout *statusLayout = new QFormLayout();
 
     _actualValueLabel = new IndexLabel();
@@ -584,7 +591,7 @@ void PidWidget::createWidgets()
     statusGroupBox->setLayout(statusLayout);
 
     // Target
-    QGroupBox *targetGroupBox = new QGroupBox(tr("Target"));
+    QGroupBox *targetGroupBox = new QGroupBox(tr("PID test"));
     QFormLayout *targetLayout = new QFormLayout();
 
     QHBoxLayout *firstTargetLayout = new QHBoxLayout();
@@ -593,7 +600,7 @@ void PidWidget::createWidgets()
     _firstTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
     _windowFirstTargetSpinBox = new QSpinBox();
     _windowFirstTargetSpinBox->setRange(10, 5000);
-    _windowFirstTargetSpinBox->setValue(500);
+    _windowFirstTargetSpinBox->setValue(3000);
     _windowFirstTargetSpinBox->setSuffix(" ms");
     firstTargetLayout->addWidget(_firstTargetSpinBox);
     firstTargetLayout->addWidget(_windowFirstTargetSpinBox);
@@ -605,7 +612,7 @@ void PidWidget::createWidgets()
     _secondTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
     _windowSecondTargetSpinBox = new QSpinBox();
     _windowSecondTargetSpinBox->setRange(10, 5000);
-    _windowSecondTargetSpinBox->setValue(500);
+    _windowSecondTargetSpinBox->setValue(3000);
     _windowSecondTargetSpinBox->setSuffix(" ms");
     secondTargetLayout->addWidget(_secondTargetSpinBox);
     secondTargetLayout->addWidget(_windowSecondTargetSpinBox);
