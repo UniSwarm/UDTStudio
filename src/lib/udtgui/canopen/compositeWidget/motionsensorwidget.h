@@ -25,6 +25,7 @@
 
 #include <QFormLayout>
 #include <QGroupBox>
+#include <QLabel>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QTabWidget>
@@ -99,6 +100,9 @@ protected:
     IndexSpinBox *_param2;
     IndexSpinBox *_param3;
 
+    QLabel *_informationLabel;
+    QPushButton *_enableButton;
+
     NodeProfile402 *_nodeProfile402;
 
     enum State
@@ -117,6 +121,8 @@ protected:
     void statusNodeChanged(Node::Status status);
     void stateChanged();
     void readAllObject();
+
+    void goEnableButton();
 };
 
 #endif // MOTIONSENSORWIDGET_H

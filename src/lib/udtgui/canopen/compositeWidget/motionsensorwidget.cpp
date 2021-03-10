@@ -312,7 +312,7 @@ void MotionSensorWidget::createWidgets()
     _toolBar->addSeparator();
 
     // read all action
-    QAction * readAllAction = _toolBar->addAction(tr("Read all"));
+    QAction * readAllAction = _toolBar->addAction(tr("Read all objects"));
     readAllAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
     readAllAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));
@@ -409,13 +409,24 @@ void MotionSensorWidget::createWidgets()
 
     _filterGroupBox->setLayout(filterLayout);
 
+    QGroupBox *informationGroupBox = new QGroupBox(tr("Information"));
+    _informationLabel = new QLabel(tr("Not available in \"Operation Enabled\""));
+    _enableButton = new QPushButton(tr("Unlock, Go to \"Switched On\""));
+    connect(_enableButton, &QPushButton::clicked, this, &MotionSensorWidget::goEnableButton);
+
+    QVBoxLayout *informationLayout = new QVBoxLayout();
+    informationLayout->addWidget(_informationLabel);
+    informationLayout->addWidget(_enableButton);
+    informationGroupBox->setLayout(informationLayout);
+
     QGroupBox *targetGroupBox = new QGroupBox(tr("Target"));
     QFormLayout *targetLayout = new QFormLayout();
     targetGroupBox->setLayout(targetLayout);
 
+    actionLayout->addWidget(informationGroupBox);
     actionLayout->addWidget(_sensorConfigGroupBox);
-    actionLayout->addWidget(statusGroupBox);
     actionLayout->addWidget(_filterGroupBox);
+    actionLayout->addWidget(statusGroupBox);
 
     QScrollArea *motionSensorScrollArea = new QScrollArea;
     motionSensorScrollArea->setWidget(motionSensorWidget);
@@ -454,11 +465,15 @@ void MotionSensorWidget::stateChanged()
     {
         _sensorConfigGroupBox->setEnabled(false);
         _filterGroupBox->setEnabled(false);
+        _enableButton->setEnabled(true);
+        _informationLabel->show();
     }
     else
     {
         _sensorConfigGroupBox->setEnabled(true);
         _filterGroupBox->setEnabled(true);
+        _enableButton->setEnabled(false);
+        _informationLabel->hide();
     }
 }
 
@@ -484,4 +499,9 @@ void MotionSensorWidget::readAllObject()
     _param1->readObject();
     _param2->readObject();
     _param3->readObject();
+}
+
+void MotionSensorWidget::goEnableButton()
+{
+    _nodeProfile402->goToState(NodeProfile402::STATE_SwitchedOn);
 }
