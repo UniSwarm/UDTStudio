@@ -171,7 +171,7 @@ void MotionSensorWidget::setIMode()
         break;
 
     case MODE_SENSOR_VELOCITY:
-        _sensorConfigGroupBox->setTitle(tr("Velocity sensor"));
+        _sensorConfigGroupBox->setTitle(tr("Velocity sensor configuration"));
         _sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_SELECT, _axis);
         _thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_THRESHOLD_MIN, _axis);
         _thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_THRESHOLD_MAX, _axis);
@@ -196,7 +196,7 @@ void MotionSensorWidget::setIMode()
         break;
 
     case MODE_SENSOR_TORQUE:
-        _sensorConfigGroupBox->setTitle(tr("Torque sensor"));
+        _sensorConfigGroupBox->setTitle(tr("Torque sensor configuration"));
         _sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_SELECT, _axis);
         _thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_THRESHOLD_MIN, _axis);
         _thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_THRESHOLD_MAX, _axis);
@@ -220,7 +220,7 @@ void MotionSensorWidget::setIMode()
         break;
 
     case MODE_SENSOR_POSITION:
-        _sensorConfigGroupBox->setTitle(tr("Position sensor"));
+        _sensorConfigGroupBox->setTitle(tr("Position sensor configuration"));
         _sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_SELECT, _axis);
         _thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_THRESHOLD_MIN, _axis);
         _thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_THRESHOLD_MAX, _axis);
@@ -340,26 +340,41 @@ void MotionSensorWidget::createWidgets()
     _postOffsetSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     configLayout->addRow(tr("&Post offset :"), _postOffsetSpinBox);
 
+    QLayout *errorRangelayout = new QHBoxLayout();
+    errorRangelayout->setSpacing(0);
     _errorMinSpinBox = new IndexSpinBox();
     _errorMinSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    configLayout->addRow(tr("Err&or min :"), _errorMinSpinBox);
-
+    errorRangelayout->addWidget(_errorMinSpinBox);
+    QLabel *errorRangeSepLabel = new QLabel(tr("-"));
+    errorRangeSepLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    errorRangelayout->addWidget(errorRangeSepLabel);
     _errorMaxSpinBox = new IndexSpinBox();
     _errorMaxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    configLayout->addRow(tr("Error m&ax :"), _errorMaxSpinBox);
-
-    _thresholdMinSpinBox = new IndexSpinBox();
-    _thresholdMinSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    configLayout->addRow(tr("&Threshold min :"), _thresholdMinSpinBox);
-
-    _thresholdMaxSpinBox = new IndexSpinBox();
-    _thresholdMaxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    configLayout->addRow(tr("T&hreshold max :"), _thresholdMaxSpinBox);
+    errorRangelayout->addWidget(_errorMaxSpinBox);
+    QLabel *errorRangeLabel = new QLabel(tr("&Error range :"));
+    errorRangeLabel->setBuddy(_errorMinSpinBox);
+    configLayout->addRow(errorRangeLabel, errorRangelayout);
 
     _thresholdModeComboBox = new IndexComboBox();
     _thresholdModeComboBox->addItem("No threshold", QVariant(0));
     _thresholdModeComboBox->addItem("Min-max mode", QVariant(1));
+    _thresholdModeComboBox->addItem("Old value mode", QVariant(3));
     configLayout->addRow(tr("Th&reshold mode :"), _thresholdModeComboBox);
+
+    QLayout *thresholdlayout = new QHBoxLayout();
+    thresholdlayout->setSpacing(0);
+    _thresholdMinSpinBox = new IndexSpinBox();
+    _thresholdMinSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    thresholdlayout->addWidget(_thresholdMinSpinBox);
+    QLabel *thresholdSepLabel = new QLabel(tr("-"));
+    thresholdSepLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    thresholdlayout->addWidget(thresholdSepLabel);
+    _thresholdMaxSpinBox = new IndexSpinBox();
+    _thresholdMaxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    thresholdlayout->addWidget(_thresholdMaxSpinBox);
+    QLabel *thresholdLabel = new QLabel(tr("&Threshold :"));
+    thresholdLabel->setBuddy(_thresholdMinSpinBox);
+    configLayout->addRow(thresholdLabel, thresholdlayout);
 
     _frequencyDividerSpinBox = new IndexSpinBox();
     _frequencyDividerSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
