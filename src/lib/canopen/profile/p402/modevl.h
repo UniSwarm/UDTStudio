@@ -19,12 +19,14 @@
 #ifndef MODEVL_H
 #define MODEVL_H
 
+#include "canopen_global.h"
+
 #include "mode.h"
 
 class NodeObjectId;
 class NodeProfile402;
 
-class ModeVl : public Mode
+class CANOPEN_EXPORT ModeVl : public Mode
 {
     Q_OBJECT
 public:

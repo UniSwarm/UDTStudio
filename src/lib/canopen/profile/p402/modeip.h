@@ -19,12 +19,14 @@
 #ifndef MODEIP_H
 #define MODEIP_H
 
+#include "canopen_global.h"
+
 #include "mode.h"
 
 class NodeObjectId;
 class NodeProfile402;
 
-class ModeIp : public Mode
+class CANOPEN_EXPORT ModeIp : public Mode
 {
     Q_OBJECT
 public:
