@@ -39,8 +39,6 @@
 P402PpWidget::P402PpWidget(QWidget *parent)
     : QScrollArea(parent)
 {
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setWidgetResizable(true);
 
     _node = nullptr;
@@ -324,7 +322,7 @@ void P402PpWidget::createWidgets()
 
     // Group Box IP mode
     QGroupBox *ipGroupBox = new QGroupBox(tr(" Profile position mode"));
-    QFormLayout *ipLayout = new QFormLayout();
+    QFormLayout *qfLayout = new QFormLayout();
 
     _targetPositionLineEdit = new QLineEdit();
     //ipLayout->addRow(tr("Position_Target :"), _targetPositionLineEdit);
@@ -345,137 +343,95 @@ void P402PpWidget::createWidgets()
     QHBoxLayout *goLayout = new QHBoxLayout();
     goLayout->addLayout(goOneLayout);
     goLayout->addLayout(goTwoLayout);
-    ipLayout->addRow("Position_Target :", goLayout);
+    qfLayout->addRow("Position_Target :", goLayout);
     connect(_goOneLineEdit, &QLineEdit::returnPressed, this, &P402PpWidget::goOneLineEditFinished);
     connect(_goTwoLineEdit, &QLineEdit::returnPressed, this, &P402PpWidget::twoOneLineEditFinished);
     connect(_goOnePushButton, &QPushButton::clicked, this, &P402PpWidget::goOneLineEditFinished);
     connect(_goTwoPushButton, &QPushButton::clicked, this, &P402PpWidget::twoOneLineEditFinished);
 
     _infoLabel = new QLabel();
-    ipLayout->addRow(tr("Information :"), _infoLabel);
+    _infoLabel->setStyleSheet("QLabel { color : red; }");
+    qfLayout->addRow(tr("Information :"), _infoLabel);
 
     _positionDemandValueLabel = new IndexLabel();
-    ipLayout->addRow(tr("Position demand value :"), _positionDemandValueLabel);
+    qfLayout->addRow(tr("Position demand value :"), _positionDemandValueLabel);
 
     _positionActualValueLabel = new IndexLabel();
-    ipLayout->addRow(tr("Position actual value :"), _positionActualValueLabel);
+    qfLayout->addRow(tr("Position actual value :"), _positionActualValueLabel);
 
-    QLabel *ipPositionRangelLimitLabel = new QLabel(tr("Position range limit :"));
-    ipLayout->addRow(ipPositionRangelLimitLabel);
-    QLayout *ipPositionRangelLimitlayout = new QHBoxLayout();
+    QLayout *positionRangelLimitlayout = new QHBoxLayout();
+    positionRangelLimitlayout->setSpacing(0);
     _positionRangelLimitMinSpinBox = new IndexSpinBox();
-    _positionRangelLimitMinSpinBox->setToolTip("min");
-    ipPositionRangelLimitlayout->addWidget(_positionRangelLimitMinSpinBox);
+    positionRangelLimitlayout->addWidget(_positionRangelLimitMinSpinBox);
+    QLabel *label = new QLabel(tr(":"));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    positionRangelLimitlayout->addWidget(label);
     _positionRangelLimitMaxSpinBox = new IndexSpinBox();
-    _positionRangelLimitMaxSpinBox->setToolTip("max");
-    ipPositionRangelLimitlayout->addWidget(_positionRangelLimitMaxSpinBox);
-    ipLayout->addRow(ipPositionRangelLimitlayout);
+    positionRangelLimitlayout->addWidget(_positionRangelLimitMaxSpinBox);
+    label = new QLabel(tr("&Position range limit :"));
+    label->setToolTip(tr("Min, Max"));
+    label->setBuddy(_positionRangelLimitMinSpinBox);
+    qfLayout->addRow(label, positionRangelLimitlayout);
 
-    QLabel *ipSoftwarePositionLimitLabel = new QLabel(tr("Software position limit :"));
-    ipLayout->addRow(ipSoftwarePositionLimitLabel);
-    QLayout *ipSoftwarePositionLimitlayout = new QHBoxLayout();
+    QLayout *softwarePositionLimitlayout = new QHBoxLayout();
+    softwarePositionLimitlayout->setSpacing(0);
     _softwarePositionLimitMinSpinBox = new IndexSpinBox();
-    _softwarePositionLimitMinSpinBox->setToolTip("min");
-    ipSoftwarePositionLimitlayout->addWidget(_softwarePositionLimitMinSpinBox);
+    softwarePositionLimitlayout->addWidget(_softwarePositionLimitMinSpinBox);
+    label = new QLabel(tr(":"));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    softwarePositionLimitlayout->addWidget(label);
     _softwarePositionLimitMaxSpinBox = new IndexSpinBox();
-    _softwarePositionLimitMaxSpinBox->setToolTip("max");
-    ipSoftwarePositionLimitlayout->addWidget(_softwarePositionLimitMaxSpinBox);
-    ipLayout->addRow(ipSoftwarePositionLimitlayout);
+    softwarePositionLimitlayout->addWidget(_softwarePositionLimitMaxSpinBox);
+    label = new QLabel(tr("&Software position limit :"));
+    label->setToolTip(tr("Min, Max"));
+    label->setBuddy(_softwarePositionLimitMinSpinBox);
+    qfLayout->addRow(label, softwarePositionLimitlayout);
 
-    // Add Home offset (0x607C) and Polarity (0x607E)
-    QLayout *ipHomeOffsetlayout = new QVBoxLayout();
-//    QLabel *ipHomeOffsetLabel = new QLabel(tr("Home offset :"));
-    _homeOffsetSpinBox = new IndexSpinBox();
-//    _homeOffsetSpinBox->setToolTip("");
-//    ipHomeOffsetlayout->addWidget(ipHomeOffsetLabel);
-//    ipHomeOffsetlayout->addWidget(_homeOffsetSpinBox);
-
-    QVBoxLayout *ipPolaritylayout = new QVBoxLayout();
-//    QLabel *ipPolarityLabel = new QLabel(tr("Polarity :"));
-    _polaritySpinBox = new QSpinBox();
-//    _polaritySpinBox->setToolTip("0 = x1, 1 = x(-1)");
-//    _polaritySpinBox->setRange(0, 1);
-//    ipPolaritylayout->addWidget(ipPolarityLabel);
-//    ipPolaritylayout->addWidget(_polaritySpinBox);
-//    connect(_polaritySpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { _nodeProfile402->setPolarityPosition(i); });
-
-    QHBoxLayout *ipHomePolaritylayout = new QHBoxLayout();
-    ipHomePolaritylayout->addLayout(ipHomeOffsetlayout);
-    ipHomePolaritylayout->addLayout(ipPolaritylayout);
-    ipLayout->addRow(ipHomePolaritylayout);
+    QFrame *frame = new QFrame();
+    frame->setFrameStyle(QFrame::HLine);
+    frame->setFrameShadow(QFrame::Sunken);
+    qfLayout->addRow(frame);
 
     // Add Profile velocity (0x6081) and Max motor speed (0x6080)
-    QVBoxLayout *ipProfileVelocitylayout = new QVBoxLayout();
-    QLabel *ipProfileVelocityLabel = new QLabel(tr("Profile velocity :"));
     _profileVelocitySpinBox = new IndexSpinBox();
-    ipProfileVelocitylayout->addWidget(ipProfileVelocityLabel);
-    ipProfileVelocitylayout->addWidget(_profileVelocitySpinBox);
+    qfLayout->addRow(tr("Profile velocity :"), _profileVelocitySpinBox);
 
-//    QVBoxLayout *ipEndVelocitylayout = new QVBoxLayout();
-//    QLabel *ipEndVelocityLabel = new QLabel(tr("End velocity :"));
     _endVelocitySpinBox = new IndexSpinBox();
-    //_endVelocitySpinBox->setToolTip("");
-//    ipEndVelocitylayout->addWidget(ipEndVelocityLabel);
-//    ipEndVelocitylayout->addWidget(_endVelocitySpinBox);
-
-    QHBoxLayout *ipMaxVelocitylayout = new QHBoxLayout();
-    ipMaxVelocitylayout->addLayout(ipProfileVelocitylayout);
-    //ipMaxVelocitylayout->addLayout(ipEndVelocitylayout);
-    ipLayout->addRow(ipMaxVelocitylayout);
+    //qfLayout->addRow(tr("End velocity :"), _endVelocitySpinBox);
 
     // Add Max profile velocity (0x607F) and Max motor speed (0x6080)
-    QLayout *ipMaxProfileVelocitylayout = new QVBoxLayout();
-    QLabel *ipMaxProfileVelocityLabel = new QLabel(tr("Max profile velocity :"));
     _maxProfileVelocitySpinBox = new IndexSpinBox();
-    ipMaxProfileVelocitylayout->addWidget(ipMaxProfileVelocityLabel);
-    ipMaxProfileVelocitylayout->addWidget(_maxProfileVelocitySpinBox);
+    qfLayout->addRow(tr("Max profile velocity :"), _maxProfileVelocitySpinBox);
 
-    QLayout *ipMaxMotorSpeedlayout = new QVBoxLayout();
-    QLabel *ipMaxMotorSpeedLabel = new QLabel(tr("Max motor speed :"));
     _maxMotorSpeedSpinBox = new IndexSpinBox();
-    ipMaxMotorSpeedlayout->addWidget(ipMaxMotorSpeedLabel);
-    ipMaxMotorSpeedlayout->addWidget(_maxMotorSpeedSpinBox);
+    qfLayout->addRow(tr("Max motor speed :"), _maxMotorSpeedSpinBox);
 
-    QHBoxLayout *ipVelocitylayout = new QHBoxLayout();
-    ipVelocitylayout->addLayout(ipMaxProfileVelocitylayout);
-    ipVelocitylayout->addLayout(ipMaxMotorSpeedlayout);
-    ipLayout->addRow(ipVelocitylayout);
+    frame = new QFrame();
+    frame->setFrameStyle(QFrame::HLine);
+    frame->setFrameShadow(QFrame::Sunken);
+    qfLayout->addRow(frame);
 
     // Add Profile acceleration (0x6083) and Max acceleration (0x60C5)
-    QLayout *ipProfileAccelerationlayout = new QVBoxLayout();
-    QLabel *ipProfileAccelerationLabel = new QLabel(tr("Profile acceleration :"));
+    QLayout *accelerationlayout = new QHBoxLayout();
     _profileAccelerationSpinBox = new IndexSpinBox();
-    ipProfileAccelerationlayout->addWidget(ipProfileAccelerationLabel);
-    ipProfileAccelerationlayout->addWidget(_profileAccelerationSpinBox);
-
-    QLayout *ipMaxAccelerationlayout = new QVBoxLayout();
-    QLabel *ipMaxAccelerationLabel = new QLabel(tr("Max acceleration :"));
+    accelerationlayout->addWidget(_profileAccelerationSpinBox);
     _maxAccelerationSpinBox = new IndexSpinBox();
-    ipMaxAccelerationlayout->addWidget(ipMaxAccelerationLabel);
-    ipMaxAccelerationlayout->addWidget(_maxAccelerationSpinBox);
-
-    QHBoxLayout *ipProfileAccelerationHlayout = new QHBoxLayout();
-    ipProfileAccelerationHlayout->addLayout(ipProfileAccelerationlayout);
-    ipProfileAccelerationHlayout->addLayout(ipMaxAccelerationlayout);
-    ipLayout->addRow(ipProfileAccelerationHlayout);
+    label = new QLabel(tr("Max :"));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    accelerationlayout->addWidget(label);
+    accelerationlayout->addWidget(_maxAccelerationSpinBox);
+    qfLayout->addRow(tr("Profile acceleration :"), accelerationlayout);
 
     // Add Profile deceleration (0x6084) and Max deceleration (0x60C6)
-    QLayout *ipProfileDecelerationlayout = new QVBoxLayout();
-    QLabel *ipProfileDecelerationLabel = new QLabel(tr("Profile deceleration :"));
+    QLayout *decelerationlayout = new QHBoxLayout();
     _profileDecelerationSpinBox = new IndexSpinBox();
-    ipProfileDecelerationlayout->addWidget(ipProfileDecelerationLabel);
-    ipProfileDecelerationlayout->addWidget(_profileDecelerationSpinBox);
-
-    QLayout *ipMaxDecelerationlayout = new QVBoxLayout();
-    QLabel *ipMaxDecelerationLabel = new QLabel(tr("Max deceleration :"));
+    decelerationlayout->addWidget(_profileDecelerationSpinBox);
     _maxDecelerationSpinBox = new IndexSpinBox();
-    ipMaxDecelerationlayout->addWidget(ipMaxDecelerationLabel);
-    ipMaxDecelerationlayout->addWidget(_maxDecelerationSpinBox);
-
-    QHBoxLayout *ipProfileDecelerationHlayout = new QHBoxLayout();
-    ipProfileDecelerationHlayout->addLayout(ipProfileDecelerationlayout);
-    ipProfileDecelerationHlayout->addLayout(ipMaxDecelerationlayout);
-    ipLayout->addRow(ipProfileDecelerationHlayout);
+    label = new QLabel(tr("Max :"));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    decelerationlayout->addWidget(label);
+    decelerationlayout->addWidget(_maxDecelerationSpinBox);
+    qfLayout->addRow(tr("Profile deceleration :"), decelerationlayout);
 
     // Add Quick stop deceleration (0x6085)
 //    QLayout *ipQuickStopDecelerationlayout = new QVBoxLayout();
@@ -486,7 +442,23 @@ void P402PpWidget::createWidgets()
 //    ipQuickStopDecelerationlayout->addWidget( _quickStopDecelerationSpinBox);
 //    ipLayout->addRow(ipQuickStopDecelerationlayout);
 
-    ipGroupBox->setLayout(ipLayout);
+     frame = new QFrame();
+     frame->setFrameStyle(QFrame::HLine);
+     frame->setFrameShadow(QFrame::Sunken);
+     qfLayout->addRow(frame);
+
+     // Add Home offset (0x607C)
+     _homeOffsetSpinBox = new IndexSpinBox();
+     qfLayout->addRow(tr("Home offset :"), _homeOffsetSpinBox);
+
+     // Polarity (0x607E)
+     _polaritySpinBox = new QSpinBox();
+     _polaritySpinBox->setToolTip("0 = x1, 1 = x(-1)");
+     _polaritySpinBox->setRange(0, 1);
+     qfLayout->addRow(tr("Polarity :"), _polaritySpinBox);
+     connect(_polaritySpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { _nodeProfile402->setPolarityPosition(i); });
+
+    ipGroupBox->setLayout(qfLayout);
 
     // Group Box Control Word
     QGroupBox *modeControlWordGroupBox = new QGroupBox(tr("Control Word (0x6040) bit 4"));

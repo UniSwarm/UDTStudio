@@ -34,8 +34,6 @@
 P402VlWidget::P402VlWidget(QWidget *parent)
     : QScrollArea(parent)
 {
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setWidgetResizable(true);
 
     _node = nullptr;
@@ -325,6 +323,7 @@ void P402VlWidget::createWidgets()
     QWidget *widget = new QWidget();
     QLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
+    QLabel *label;
 
     // Group Box VL mode
     QGroupBox *vlGroupBox = new QGroupBox(tr("Velocity mode"));
@@ -370,72 +369,99 @@ void P402VlWidget::createWidgets()
     _velocityActualLabel = new IndexLabel();
     vlLayout->addRow(tr("Velocity actual value "), _velocityActualLabel);
 
-    QLabel *vlVelocityMinMaxAmountLabel = new QLabel(tr("Velocity min max amount :"));
-    vlLayout->addRow(vlVelocityMinMaxAmountLabel);
-    QLayout *vlVelocityMinMaxAmountlayout = new QHBoxLayout();
-
+    QLayout *minMaxAmountlayout = new QHBoxLayout();
+    minMaxAmountlayout->setSpacing(0);
     _minVelocityMinMaxAmountSpinBox = new IndexSpinBox();
-    _minVelocityMinMaxAmountSpinBox->setToolTip("min ");
-    vlVelocityMinMaxAmountlayout->addWidget(_minVelocityMinMaxAmountSpinBox);
+    minMaxAmountlayout->addWidget(_minVelocityMinMaxAmountSpinBox);
+    label = new QLabel(tr(":"));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    minMaxAmountlayout->addWidget(label);
     _maxVelocityMinMaxAmountSpinBox = new IndexSpinBox();
-    _maxVelocityMinMaxAmountSpinBox->setToolTip("max ");
-    vlVelocityMinMaxAmountlayout->addWidget(_maxVelocityMinMaxAmountSpinBox);
-    vlLayout->addRow(vlVelocityMinMaxAmountlayout);
+    minMaxAmountlayout->addWidget(_maxVelocityMinMaxAmountSpinBox);
+    label = new QLabel(tr("Min/Max amo&unt :"));
+    label->setToolTip("Min, Max");
+    label->setBuddy(_minVelocityMinMaxAmountSpinBox);
+    vlLayout->addRow(label, minMaxAmountlayout);
 
-    QLabel *vlVelocityAccelerationLabel = new QLabel(tr("Velocity acceleration :"));
-    vlLayout->addRow(vlVelocityAccelerationLabel);
-    QLayout *vlVelocityAccelerationlayout = new QHBoxLayout();
+    QFrame *frame = new QFrame();
+    frame->setFrameStyle(QFrame::HLine);
+    frame->setFrameShadow(QFrame::Sunken);
+    vlLayout->addRow(frame);
+
+    QLayout *accelerationlayout = new QHBoxLayout();
+    accelerationlayout->setSpacing(0);
     _accelerationDeltaSpeedSpinBox = new IndexSpinBox();
-    _accelerationDeltaSpeedSpinBox->setToolTip("Delta Speed (inc/ms)");
-    vlVelocityAccelerationlayout->addWidget(_accelerationDeltaSpeedSpinBox);
+    accelerationlayout->addWidget(_accelerationDeltaSpeedSpinBox);
+    label = new QLabel(tr("/"));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    accelerationlayout->addWidget(label);
     _accelerationDeltaTimeSpinBox = new IndexSpinBox();
-    _accelerationDeltaTimeSpinBox->setToolTip("Delta Time (ms)");
-    vlVelocityAccelerationlayout->addWidget(_accelerationDeltaTimeSpinBox);
-    vlLayout->addRow(vlVelocityAccelerationlayout);
+    accelerationlayout->addWidget(_accelerationDeltaTimeSpinBox);
+    label = new QLabel(tr("&Acceleration :"));
+    label->setToolTip(QString(QChar(0x0394)) + "speed, " + QString(QChar(0x0394)) + "time");
+    label->setBuddy(_accelerationDeltaSpeedSpinBox);
+    vlLayout->addRow(label, accelerationlayout);
 
-    QLabel *vlVelocityDecelerationLabel = new QLabel(tr("Velocity deceleration :"));
-    vlLayout->addRow(vlVelocityDecelerationLabel);
-    QLayout *vlVelocityDecelerationlayout = new QHBoxLayout();
+    QLayout *decelerationlayout = new QHBoxLayout();
+    decelerationlayout->setSpacing(0);
     _decelerationDeltaSpeedSpinBox = new IndexSpinBox();
-    _decelerationDeltaSpeedSpinBox->setToolTip("Delta Speed (inc/ms)");
-    vlVelocityDecelerationlayout->addWidget(_decelerationDeltaSpeedSpinBox);
+    decelerationlayout->addWidget(_decelerationDeltaSpeedSpinBox);
+    label = new QLabel(tr("/"));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    decelerationlayout->addWidget(label);
     _decelerationDeltaTimeSpinBox = new IndexSpinBox();
-    _decelerationDeltaTimeSpinBox->setToolTip("Delta Time (ms)");
-    vlVelocityDecelerationlayout->addWidget(_decelerationDeltaTimeSpinBox);
-    vlLayout->addRow(vlVelocityDecelerationlayout);
+    decelerationlayout->addWidget(_decelerationDeltaTimeSpinBox);
+    label = new QLabel(tr("&Deceleration :"));
+    label->setToolTip(QString(QChar(0x0394)) + "speed, " + QString(QChar(0x0394)) + "time");
+    label->setBuddy(_decelerationDeltaSpeedSpinBox);
+    vlLayout->addRow(label, decelerationlayout);
 
-    QLabel *vlVelocityQuickStopLabel = new QLabel(tr("Velocity quick stop :"));
-    vlLayout->addRow(vlVelocityQuickStopLabel);
-    QLayout *vlVelocityQuickStoplayout = new QHBoxLayout();
+    QHBoxLayout *quickStoplayout = new QHBoxLayout();
+    quickStoplayout->setSpacing(0);
     _quickStopDeltaSpeedSpinBox = new IndexSpinBox();
-    _quickStopDeltaSpeedSpinBox->setToolTip("Delta Speed (inc/ms)");
-    vlVelocityQuickStoplayout->addWidget(_quickStopDeltaSpeedSpinBox);
+    quickStoplayout->addWidget(_quickStopDeltaSpeedSpinBox);
+    label = new QLabel(tr("/"));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    quickStoplayout->addWidget(label);
     _quickStopDeltaTimeSpinBox = new IndexSpinBox();
-    _quickStopDeltaTimeSpinBox->setToolTip("Delta Time (ms)");
-    vlVelocityQuickStoplayout->addWidget(_quickStopDeltaTimeSpinBox);
-    vlLayout->addRow(vlVelocityQuickStoplayout);
+    quickStoplayout->addWidget(_quickStopDeltaTimeSpinBox);
+    label = new QLabel(tr("&Quick stop deceleration:"));
+    label->setToolTip(QString(QChar(0x0394)) + "speed, " + QString(QChar(0x0394)) + "time");
+    label->setBuddy(_quickStopDeltaSpeedSpinBox);
+    vlLayout->addRow(label, quickStoplayout);
 
-    QLabel *vlSetPointFactorLabel = new QLabel(tr("Set-point factor :"));
-    vlLayout->addRow(vlSetPointFactorLabel);
-    QLayout *vlSetPointFactorlayout = new QHBoxLayout();
+    frame = new QFrame();
+    frame->setFrameStyle(QFrame::HLine);
+    frame->setFrameShadow(QFrame::Sunken);
+    vlLayout->addRow(frame);
+
+    QLayout *stPointFactorlayout = new QHBoxLayout();
+    stPointFactorlayout->setSpacing(0);
     _setPointFactorNumeratorSpinBox = new IndexSpinBox();
-    _setPointFactorNumeratorSpinBox->setToolTip("Numerator");
-    vlSetPointFactorlayout->addWidget(_setPointFactorNumeratorSpinBox);
+    stPointFactorlayout->addWidget(_setPointFactorNumeratorSpinBox);
+    label = new QLabel(tr("/"));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    stPointFactorlayout->addWidget(label);
     _setPointFactorDenominatorSpinBox = new IndexSpinBox();
-    _setPointFactorDenominatorSpinBox->setToolTip("Denominator");
-    vlSetPointFactorlayout->addWidget(_setPointFactorDenominatorSpinBox);
-    vlLayout->addRow(vlSetPointFactorlayout);
+    stPointFactorlayout->addWidget(_setPointFactorDenominatorSpinBox);
+    label = new QLabel(tr("&Set-point factor :"));
+    label->setToolTip("&Numerator, Denominator");
+    label->setBuddy(_setPointFactorNumeratorSpinBox);
+    vlLayout->addRow(label, stPointFactorlayout);
 
-    QLabel *vlDimensionFactorLabel = new QLabel(tr("Dimension factor :"));
-    vlLayout->addRow(vlDimensionFactorLabel);
-    QLayout *vlDimensionFactorlayout = new QHBoxLayout();
+    QLayout *dimensionFactorlayout = new QHBoxLayout();
+    dimensionFactorlayout->setSpacing(0);
     _dimensionFactorNumeratorSpinBox = new IndexSpinBox();
-    _dimensionFactorNumeratorSpinBox->setToolTip("Numerator");
-    vlDimensionFactorlayout->addWidget(_dimensionFactorNumeratorSpinBox);
+    dimensionFactorlayout->addWidget(_dimensionFactorNumeratorSpinBox);
+    label = new QLabel(tr("/"));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    dimensionFactorlayout->addWidget(label);
     _dimensionFactorDenominatorSpinBox = new IndexSpinBox();
-    _dimensionFactorDenominatorSpinBox->setToolTip("Denominator");
-    vlDimensionFactorlayout->addWidget(_dimensionFactorDenominatorSpinBox);
-    vlLayout->addRow(vlDimensionFactorlayout);
+    dimensionFactorlayout->addWidget(_dimensionFactorDenominatorSpinBox);
+    label = new QLabel(tr("D&imension factor :"));
+    label->setToolTip("Numerator, Denominator");
+    label->setBuddy(_dimensionFactorNumeratorSpinBox);
+    vlLayout->addRow(label, dimensionFactorlayout);
 
     vlGroupBox->setLayout(vlLayout);
 

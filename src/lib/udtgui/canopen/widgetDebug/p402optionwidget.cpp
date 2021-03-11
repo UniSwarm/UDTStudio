@@ -28,8 +28,6 @@
 P402OptionWidget::P402OptionWidget(QWidget *parent)
     : QScrollArea(parent)
 {
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setWidgetResizable(true);
 
     _node = nullptr;

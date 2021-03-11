@@ -85,17 +85,13 @@ private:
     IndexSpinBox *_positionRangelLimitMaxSpinBox;
     IndexSpinBox *_softwarePositionLimitMinSpinBox;
     IndexSpinBox *_softwarePositionLimitMaxSpinBox;
-    IndexSpinBox *_homeOffsetSpinBox;
-    QSpinBox *_polaritySpinBox;
-    //    IndexSpinBox *_ipProfileVelocitySpinBox;
-    //    IndexSpinBox *_ipEndVelocitySpinBox;
+
     IndexSpinBox *_maxProfileVelocitySpinBox;
     IndexSpinBox *_maxMotorSpeedSpinBox;
-    //    IndexSpinBox *_ipProfileAccelerationSpinBox;
-    //    IndexSpinBox *_ipMaxAccelerationSpinBox;
-    //    IndexSpinBox *_ipProfileDecelerationSpinBox;
-    //    IndexSpinBox *_ipMaxDecelerationSpinBox;
-    //    IndexSpinBox *_ipQuickStopDecelerationSpinBox;
+
+    IndexSpinBox *_homeOffsetSpinBox;
+    QSpinBox *_polaritySpinBox;
+
     QCheckBox *_enableRampCheckBox;
 
     QSpinBox *_targetPositionSpinBox;

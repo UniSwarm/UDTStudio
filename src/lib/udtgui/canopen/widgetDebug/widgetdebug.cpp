@@ -518,7 +518,7 @@ void WidgetDebug::createWidgets()
 
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
-    _logTimerSpinBox->setValue(500);
+    _logTimerSpinBox->setValue(100);
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
     connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
@@ -649,8 +649,6 @@ void WidgetDebug::createWidgets()
 
     QScrollArea *p402ScrollArea = new QScrollArea();
     p402ScrollArea->setWidget(p402Widget);
-    p402ScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    p402ScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     p402ScrollArea->setWidgetResizable(true);
     p402ScrollArea->setMaximumWidth(370);
     p402ScrollArea->setMinimumWidth(370);
