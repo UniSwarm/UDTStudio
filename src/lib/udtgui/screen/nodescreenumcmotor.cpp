@@ -23,6 +23,7 @@
 #include <QLayout>
 
 #include "canopen/widgetDebug/widgetdebug.h"
+#include <canopen/compositeWidget/motorwidget.h>
 
 NodeScreenUmcMotor::NodeScreenUmcMotor(QWidget *parent)
     : NodeScreen(parent)
@@ -48,6 +49,8 @@ void NodeScreenUmcMotor::createWidgets()
     ");
 
     layout->addWidget(_tabWidget);
+
+    _motorConfigWidget = new MotorWidget() ;
 
     _pidVelocityWidget = new PidWidget();
     _pidTorqueWidget = new PidWidget();
@@ -87,6 +90,9 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)
 
     _widgetDebug->setNode(node, axis);
     _tabWidget->addTab(_widgetDebug, " " + _widgetDebug->title() + " ");
+
+    _motorConfigWidget->setNode(node);
+    _tabWidget->addTab(_motorConfigWidget, " " + _motorConfigWidget->title() + " ");
 
     _motionSensorTorqueWidget->setMode(MotionSensorWidget::MODE_SENSOR_TORQUE);
     _motionSensorTorqueWidget->setNode(node, axis);

@@ -29,6 +29,7 @@ class PidWidget;
 class NodeProfile402;
 class WidgetDebug;
 class MotionSensorWidget;
+class MotorWidget;
 
 class UDTGUI_EXPORT NodeScreenUmcMotor : public NodeScreen
 {
@@ -38,7 +39,10 @@ public:
 
 protected:
     uint8_t _axis;
-    void createWidgets();
+    void createWidgets();    
+
+    MotorWidget *_motorConfigWidget;
+
     PidWidget *_pidVelocityWidget;
     PidWidget *_pidPositionWidget;
     PidWidget *_pidTorqueWidget;
