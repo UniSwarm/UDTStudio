@@ -88,6 +88,7 @@ protected:
     IndexSpinBox *_errorMinSpinBox;
     IndexSpinBox *_errorMaxSpinBox;
     IndexSpinBox *_frequencyDividerSpinBox;
+    IndexSpinBox *_configBitSpinBox;
 
     IndexLabel *_rawDataValueLabel;
     IndexLabel *_flagLabel;

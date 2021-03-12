@@ -97,6 +97,7 @@ void MotionSensorWidget::setNode(Node *node, uint8_t axis)
     _errorMinSpinBox->setNode(node);
     _errorMaxSpinBox->setNode(node);
     _frequencyDividerSpinBox->setNode(node);
+    _configBitSpinBox->setNode(node);
 
     _rawDataValueLabel->setNode(node);
     _flagLabel->setNode(node);
@@ -149,6 +150,7 @@ void MotionSensorWidget::setIMode()
     NodeObjectId _errorMinSpinBox_ObjId;
     NodeObjectId _errorMaxSpinBox_ObjId;
     NodeObjectId _frequencyDividerSpinBox_ObjId;
+    NodeObjectId _configBitSpinBox_ObjId;
 
     NodeObjectId _rawDataValueLabel_ObjId;
     NodeObjectId _flagLabel_ObjId;
@@ -182,6 +184,7 @@ void MotionSensorWidget::setIMode()
         _errorMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_ERROR_MIN, _axis);
         _errorMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_ERROR_MAX, _axis);
         _frequencyDividerSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_FREQUENCY_DIVIDER, _axis);
+        _configBitSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_CONFIG_BIT, _axis);
 
         _rawDataValueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_STATUS_RAWDATA, _axis);
         _flagLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_STATUS_FLAG, _axis);
@@ -207,6 +210,7 @@ void MotionSensorWidget::setIMode()
         _errorMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_ERROR_MIN, _axis);
         _errorMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_ERROR_MAX, _axis);
         _frequencyDividerSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_FREQUENCY_DIVIDER, _axis);
+        _configBitSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_CONFIG_BIT, _axis);
 
         _rawDataValueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_STATUS_RAWDATA, _axis);
         _flagLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_STATUS_FLAG, _axis);
@@ -231,6 +235,7 @@ void MotionSensorWidget::setIMode()
         _errorMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_ERROR_MIN, _axis);
         _errorMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_ERROR_MAX, _axis);
         _frequencyDividerSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_FREQUENCY_DIVIDER, _axis);
+        _configBitSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_CONFIG_BIT, _axis);
 
         _rawDataValueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_STATUS_RAWDATA, _axis);
         _flagLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_STATUS_FLAG, _axis);
@@ -254,6 +259,7 @@ void MotionSensorWidget::setIMode()
     _errorMinSpinBox->setObjId(_errorMinSpinBox_ObjId);
     _errorMaxSpinBox->setObjId(_errorMaxSpinBox_ObjId);
     _frequencyDividerSpinBox->setObjId(_frequencyDividerSpinBox_ObjId);
+    _configBitSpinBox->setObjId(_configBitSpinBox_ObjId);
 
     _rawDataValueLabel->setObjId(_rawDataValueLabel_ObjId);
     _flagLabel->setObjId(_flagLabel_ObjId);
@@ -380,6 +386,10 @@ void MotionSensorWidget::createWidgets()
     _frequencyDividerSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     configLayout->addRow(tr("&Frequency divider :"), _frequencyDividerSpinBox);
 
+    _configBitSpinBox = new IndexSpinBox();
+    _configBitSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
+    configLayout->addRow(tr("&Config bit :"), _configBitSpinBox);
+
     _sensorConfigGroupBox->setLayout(configLayout);
 
     QGroupBox *statusGroupBox = new QGroupBox(tr("Sensor status"));
@@ -504,6 +514,7 @@ void MotionSensorWidget::readAllObject()
     _errorMinSpinBox->readObject();
     _errorMaxSpinBox->readObject();
     _frequencyDividerSpinBox->readObject();
+    _configBitSpinBox->readObject();
 
     _rawDataValueLabel->readObject();
     _flagLabel->readObject();

@@ -360,14 +360,29 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4003 + axisDecal)), 0x3};
     case OD_MS_CURRENT_D:
         return {static_cast<quint16>((0x4003 + axisDecal)), 0x4};
-    case OD_MS_BLDC_CODER:
+
+    case OD_MS_MOTOR_STATUS_CODER:
         return {static_cast<quint16>((0x4006 + axisDecal)), 0x1};
-    case OD_MS_BLDC_TIME_CODER:
+    case OD_MS_MOTOR_STATUS_TIME_CODER:
         return {static_cast<quint16>((0x4006 + axisDecal)), 0x2};
-    case OD_MS_BLDC_PHASE:
+    case OD_MS_MOTOR_STATUS_PHASE:
         return {static_cast<quint16>((0x4006 + axisDecal)), 0x3};
-    case OD_MS_BLDC_BRIDGE_PWM:
+    case OD_MS_MOTOR_STATUS_BRIDGE_PWM:
         return {static_cast<quint16>((0x4006 + axisDecal)), 0x4};
+
+    case OD_MS_MOTOR_CONF_TYPE:
+        return {static_cast<quint16>((0x4007 + axisDecal)), 0x1};
+    case OD_MS_MOTOR_CONF_PEAK_CURRENT:
+        return {static_cast<quint16>((0x4007 + axisDecal)), 0x2};
+    case OD_MS_MOTOR_CONF_POLE_PAIR:
+        return {static_cast<quint16>((0x4007 + axisDecal)), 0x3};
+    case OD_MS_MOTOR_CONF_MAX_VELOCITY:
+        return {static_cast<quint16>((0x4007 + axisDecal)), 0x4};
+    case OD_MS_MOTOR_CONF_VELOCITY_CONSTANT:
+        return {static_cast<quint16>((0x4007 + axisDecal)), 0x5};
+    case OD_MS_MOTOR_CONF_CURRENT_CONSTANT:
+        return {static_cast<quint16>((0x4007 + axisDecal)), 0x6};
+
     // RANGE CONTROL LOOP TORQUE
     // a1_Torque_status_PID
     case OD_MS_TORQUE_PID_INPUT:
@@ -411,6 +426,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4023 + axisDecal)), 0x9};
     case OD_MS_TORQUE_SENSOR_FREQUENCY_DIVIDER:
         return {static_cast<quint16>((0x4023 + axisDecal)), 0x0A};
+    case OD_MS_TORQUE_SENSOR_CONFIG_BIT:
+        return {static_cast<quint16>((0x4023 + axisDecal)), 0x0B};
     case OD_MS_TORQUE_SENSOR_PRE_OFFSET:
         return {static_cast<quint16>((0x4023 + axisDecal)), 0x2};
     case OD_MS_TORQUE_SENSOR_SCALE:
@@ -476,6 +493,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4043 + axisDecal)), 0x9};
     case OD_MS_VELOCITY_SENSOR_FREQUENCY_DIVIDER:
         return {static_cast<quint16>((0x4043 + axisDecal)), 0x0A};
+    case OD_MS_VELOCITY_SENSOR_CONFIG_BIT:
+        return {static_cast<quint16>((0x4043 + axisDecal)), 0x0B};
     case OD_MS_VELOCITY_SENSOR_PRE_OFFSET:
         return {static_cast<quint16>((0x4043 + axisDecal)), 0x2};
     case OD_MS_VELOCITY_SENSOR_SCALE:
@@ -541,6 +560,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4063 + axisDecal)), 0x9};
     case OD_MS_POSITION_SENSOR_FREQUENCY_DIVIDER:
         return {static_cast<quint16>((0x4063 + axisDecal)), 0x0A};
+    case OD_MS_POSITION_SENSOR_CONFIG_BIT:
+        return {static_cast<quint16>((0x4063 + axisDecal)), 0x0B};
     case OD_MS_POSITION_SENSOR_PRE_OFFSET:
         return {static_cast<quint16>((0x4063 + axisDecal)), 0x2};
     case OD_MS_POSITION_SENSOR_SCALE:
@@ -564,18 +585,7 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4064 + axisDecal)), 0x5};
 
     // CONFIGURATION OF AXIS
-    case OD_MS_CONF_MOTOR_TYPE:
-        return {static_cast<quint16>((0x4080 + axisDecal)), 0x1};
-    case OD_MS_CONF_MOTOR_PEAK_CURRENT:
-        return {static_cast<quint16>((0x4080 + axisDecal)), 0x2};
-    case OD_MS_CONF_MOTOR_POLE_PAIR:
-        return {static_cast<quint16>((0x4080 + axisDecal)), 0x3};
-    case OD_MS_CONF_MOTOR_MAX_VELOCITY:
-        return {static_cast<quint16>((0x4080 + axisDecal)), 0x4};
-    case OD_MS_CONF_MOTOR_VELOCITY_CONSTANT:
-        return {static_cast<quint16>((0x4080 + axisDecal)), 0x5};
-    case OD_MS_CONF_MOTOR_CURRENT_TEMPERATURE:
-        return {static_cast<quint16>((0x4080 + axisDecal)), 0x6};
+
     case OD_MS_CONF_TEMP_SENSOR_TYPE:
         return {static_cast<quint16>((0x4081 + axisDecal)), 0x1};
     case OD_MS_CONF_TEMP_SENSOR_CONSTANT:
