@@ -29,13 +29,15 @@
 #include <QSlider>
 #include <QSpinBox>
 #include <QScrollArea>
+#include <QGroupBox>
+#include <QFormLayout>
 
 class NodeProfile402;
 class ModeVl;
 class IndexSpinBox;
 class IndexLabel;
 
-class P402VlWidget : public QScrollArea, public NodeOdSubscriber
+class P402VlWidget : public QWidget, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
@@ -109,7 +111,16 @@ private:
     void dataLogger();
     void pdoMapping();
 
+    // Creation widgets
+    QFormLayout *_modeLayout;
     void createWidgets();
+    void targetWidgets();
+    void informationWidgets();
+    void limitWidgets();
+    void accelDeccelWidgets();
+    void factorWidgets();
+    QGroupBox *controlWordWidgets();
+    QHBoxLayout *buttonWidgets();
 
     // NodeOdSubscriber interface
 protected:
