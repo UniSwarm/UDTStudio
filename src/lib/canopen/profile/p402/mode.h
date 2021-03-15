@@ -37,9 +37,7 @@ public:
     virtual void setCwDefaultflag() = 0;
 
 protected:
-    Node *_node;
     NodeProfile402 *_nodeProfile402;
-    uint8_t _axisId;
 
     NodeObjectId _controlWordObjectId;
 };

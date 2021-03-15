@@ -25,6 +25,16 @@ NodeProfile::NodeProfile(Node *node)
 {
 }
 
+quint8 NodeProfile::busId() const
+{
+    return _node->busId();
+}
+
+quint8 NodeProfile::nodeId() const
+{
+    return _node->nodeId();
+}
+
 Node *NodeProfile::node() const
 {
     return _node;

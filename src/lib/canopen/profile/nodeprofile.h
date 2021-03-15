@@ -31,6 +31,9 @@ class CANOPEN_EXPORT NodeProfile : public QObject, public NodeOdSubscriber
 {
 public:
     NodeProfile(Node *node);
+
+    quint8 busId() const;
+    quint8 nodeId() const;
     Node *node() const;
 
     quint8 axisId() const;

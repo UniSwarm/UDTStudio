@@ -24,15 +24,15 @@
 ModeTq::ModeTq(NodeProfile402 *nodeProfile402)
     : Mode(nodeProfile402)
 {
-    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_TARGET, _axisId);
-    _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_TARGET, _nodeProfile402->axisId());
+    _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 
     _mode = NodeProfile402::OperationMode::TQ;
 }
 
 void ModeTq::setTarget(qint32 target)
 {
-    _node->writeObject(_targetObjectId, QVariant(static_cast<qint16>(target)));
+    _nodeProfile402->node()->writeObject(_targetObjectId, QVariant(static_cast<qint16>(target)));
 }
 
 quint16 ModeTq::getSpecificCwFlag()

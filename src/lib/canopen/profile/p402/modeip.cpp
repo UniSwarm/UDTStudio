@@ -29,15 +29,15 @@ enum ControlWordIP : quint16
 ModeIp::ModeIp(NodeProfile402 *nodeProfile402)
     : Mode(nodeProfile402)
 {
-    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_DATA_RECORD_SET_POINT, _axisId);
-    _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_DATA_RECORD_SET_POINT, _nodeProfile402->axisId());
+    _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 
-    _bufferClearObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_BUFFER_CLEAR, _axisId);
-    _bufferClearObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    _bufferClearObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_BUFFER_CLEAR, _nodeProfile402->axisId());
+    _bufferClearObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 
     _mode = NodeProfile402::OperationMode::IP;
 
-    setNodeInterrest(nodeProfile402->node());
+    setNodeInterrest(_nodeProfile402->node());
     registerObjId(_controlWordObjectId);
 
     // TODO : redesign the process for default value witg setCwDefaultflag()
@@ -54,9 +54,9 @@ void ModeIp::setEnableRamp(bool ok)
     {
         _cmdControlWordFlag = (_cmdControlWordFlag & ~CW_IP_EnableRamp);
     }
-    quint16 cw = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    quint16 cw = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
     cw = (cw & ~CW_IP_EnableRamp) | _cmdControlWordFlag;
-    _node->writeObject(_controlWordObjectId, QVariant(cw));
+    _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
 bool ModeIp::isEnableRamp(void)
@@ -67,12 +67,12 @@ bool ModeIp::isEnableRamp(void)
 void ModeIp::bufferClear()
 {
     quint8 value = 0;
-    _node->writeObject(_bufferClearObjectId, QVariant(value));
+    _nodeProfile402->node()->writeObject(_bufferClearObjectId, QVariant(value));
 }
 
 void ModeIp::setTarget(qint32 target)
 {
-    _node->writeObject(_targetObjectId, QVariant(target));
+    _nodeProfile402->node()->writeObject(_targetObjectId, QVariant(target));
 }
 
 quint16 ModeIp::getSpecificCwFlag()
@@ -83,9 +83,9 @@ quint16 ModeIp::getSpecificCwFlag()
 void ModeIp::setCwDefaultflag()
 {
     _cmdControlWordFlag = CW_IP_EnableRamp;
-    quint16 cw = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    quint16 cw = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
     cw = (cw & ~CW_IP_EnableRamp) | _cmdControlWordFlag;
-    _node->writeObject(_controlWordObjectId, QVariant(cw));
+    _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
 void ModeIp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
@@ -97,7 +97,7 @@ void ModeIp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 
     if ((objId == _controlWordObjectId) && _nodeProfile402->actualMode() == _mode)
     {
-        quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+        quint16 controlWord = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
         _cmdControlWordFlag = controlWord & CW_IP_EnableRamp;
 
         emit enableRampEvent(_cmdControlWordFlag >> 4);

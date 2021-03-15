@@ -33,12 +33,12 @@ enum ControlWordIP : quint16
 ModePp::ModePp(NodeProfile402 *nodeProfile402)
     : Mode(nodeProfile402)
 {
-    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_PP_POSITION_TARGET, _axisId);
-    _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_PP_POSITION_TARGET, _nodeProfile402->axisId());
+    _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 
     _mode = NodeProfile402::OperationMode::PP;
 
-    setNodeInterrest(nodeProfile402->node());
+    setNodeInterrest(_nodeProfile402->node());
     registerObjId(_controlWordObjectId);
 
     // TODO : redesign the process for default value witg setCwDefaultflag()
@@ -56,9 +56,9 @@ void ModePp::newSetPoint(bool ok)
         _cmdControlWordFlag = (_cmdControlWordFlag & ~CW_PP_NewSetPoint);
     }
 
-    quint16 cw = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    quint16 cw = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
     cw = (cw & ~CW_Mask) | _cmdControlWordFlag;
-    _node->writeObject(_controlWordObjectId, QVariant(cw));
+    _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
 bool ModePp::isNewSetPoint()
@@ -76,9 +76,9 @@ void ModePp::setChangeSetImmediately(bool ok)
     {
         _cmdControlWordFlag = (_cmdControlWordFlag & ~CW_PP_ChangeSetImmediately);
     }
-    quint16 cw = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    quint16 cw = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
     cw = (cw & ~CW_Mask) | _cmdControlWordFlag;
-    _node->writeObject(_controlWordObjectId, QVariant(cw));
+    _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
 bool ModePp::isChangeSetImmediately()
@@ -101,9 +101,9 @@ void ModePp::setChangeOnSetPoint(bool ok)
     {
         _cmdControlWordFlag = (_cmdControlWordFlag & ~CW_PP_ChangeOnSetPoint);
     }
-    quint16 cw = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    quint16 cw = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
     cw = (cw & ~CW_Mask) | _cmdControlWordFlag;
-    _node->writeObject(_controlWordObjectId, QVariant(cw));
+    _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
 bool ModePp::isChangeOnSetPoint()
@@ -121,14 +121,14 @@ void ModePp::setAbsRel(bool ok)
     {
         _cmdControlWordFlag = (_cmdControlWordFlag & ~CW_PP_AbsRel);
     }
-    quint16 cw = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    quint16 cw = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
     cw = (cw & ~CW_Mask) | _cmdControlWordFlag;
-    _node->writeObject(_controlWordObjectId, QVariant(cw));
+    _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
 void ModePp::setTarget(qint32 target)
 {
-    _node->writeObject(_targetObjectId, QVariant(target));
+    _nodeProfile402->node()->writeObject(_targetObjectId, QVariant(target));
 }
 
 quint16 ModePp::getSpecificCwFlag()
@@ -139,9 +139,9 @@ quint16 ModePp::getSpecificCwFlag()
 void ModePp::setCwDefaultflag()
 {
     _cmdControlWordFlag = CW_PP_NewSetPoint;
-    quint16 cw = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+    quint16 cw = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
     cw = (cw & ~CW_Mask) | _cmdControlWordFlag;
-    _node->writeObject(_controlWordObjectId, QVariant(cw));
+    _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
 void ModePp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
@@ -153,7 +153,7 @@ void ModePp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 
     if ((objId == _controlWordObjectId) && _nodeProfile402->actualMode() == _mode)
     {
-        quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toUInt());
+        quint16 controlWord = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
         _cmdControlWordFlag = controlWord & CW_Mask;
 
         emit changeSetImmediatelyEvent((_cmdControlWordFlag & CW_PP_NewSetPoint) >> 4);
