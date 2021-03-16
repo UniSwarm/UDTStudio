@@ -30,11 +30,9 @@
 #include <QPushButton>
 
 P402VlWidget::P402VlWidget(QWidget *parent)
-    : QWidget(parent)
+    : P402Mode(parent)
 {
-    //setWidgetResizable(true);
-
-    _node = nullptr;
+    createWidgets();
     _nodeProfile402 = nullptr;
 }
 
@@ -43,20 +41,12 @@ P402VlWidget::~P402VlWidget()
     unRegisterFullOd();
 }
 
-Node *P402VlWidget::node() const
-{
-    return _node;
-}
-
-void P402VlWidget::readData()
+void P402VlWidget::updateData()
 {
     if (_node)
     {
-        if (_nodeProfile402->actualMode() == NodeProfile402::OperationMode::VL)
-        {
-            _velocityDemandLabel->readObject();
-            _velocityActualLabel->readObject();
-        }
+        _velocityDemandLabel->readObject();
+        _velocityActualLabel->readObject();
     }
 }
 
@@ -88,13 +78,11 @@ void P402VlWidget::reset()
 
 void P402VlWidget::setNode(Node *node, uint8_t axis)
 {
-    if (node != _node)
+    if (!node)
     {
-        if (_node)
-        {
-            disconnect(_node, &Node::statusChanged, this, &P402VlWidget::updateData);
-        }
+        return;
     }
+    _node = node;
 
     if (axis > 8)
     {
@@ -102,14 +90,11 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
     }
     _axis = axis;
 
-    _node = node;
     if (_node)
     {
         _velocityDemandObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND, _axis);
         _velocityActualObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis);
         _velocityTargetObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, _axis);
-
-        createWidgets();
 
         _velocityTargetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
         _velocityDemandObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
@@ -172,20 +157,6 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
         }
 
         connect(_maxVelocityMinMaxAmountSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::maxVelocityMinMaxAmountSpinboxFinished);
-    }
-}
-
-void P402VlWidget::updateData()
-{
-    if (_node)
-    {
-        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::OperationMode::VL)
-        {
-            this->setEnabled(true);
-            _node->readObject(_velocityTargetObjectId);
-            _velocityDemandLabel->readObject();
-            _velocityActualLabel->readObject();
-        }
     }
 }
 

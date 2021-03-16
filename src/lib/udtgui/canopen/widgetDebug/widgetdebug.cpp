@@ -1,4 +1,4 @@
-/**
+﻿/**
  ** This file is part of the UDTStudio project.
  ** Copyright 2019-2021 UniSwarm
  **
@@ -37,6 +37,8 @@ WidgetDebug::WidgetDebug(Node *node, uint8_t axis, QWidget *parent)
     , _node(node)
     , _axis(axis)
 {
+    createWidgets();
+
     if (!_node)
     {
         return;
@@ -52,7 +54,6 @@ WidgetDebug::WidgetDebug(Node *node, uint8_t axis, QWidget *parent)
 
 WidgetDebug::~WidgetDebug()
 {
-    unRegisterFullOd();
 }
 
 Node *WidgetDebug::node() const
@@ -84,8 +85,6 @@ void WidgetDebug::setNode(Node *node, uint8_t axis)
     }
     _axis = axis;
 
-    setNodeInterrest(node);
-
     if (_node)
     {
         _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, axis);
@@ -94,9 +93,7 @@ void WidgetDebug::setNode(Node *node, uint8_t axis)
         _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
         _nodeProfile402->init();
 
-        createWidgets();
         setCheckableStateMachine(2);
-
         updateModeComboBox();
 
         connect(_modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int id) { modeIndexChanged(id); });
@@ -104,13 +101,14 @@ void WidgetDebug::setNode(Node *node, uint8_t axis)
         connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &WidgetDebug::stateChanged);
         connect(_nodeProfile402, &NodeProfile402::isHalted, this, &WidgetDebug::isHalted);
         connect(_nodeProfile402, &NodeProfile402::eventHappened, this, &WidgetDebug::eventHappened);
+
         connect(_node, &Node::statusChanged, this, &WidgetDebug::statusNodeChanged);
 
-        _p402Option->setNode(_node, axis);
-        _p402vl->setNode(_node, axis);
-        _p402ip->setNode(_node, axis);
-        _p402tq->setNode(_node, axis);
-        _p402pp->setNode(_node, axis);
+        _modes[NodeProfile402::NoMode]->setNode(_node, axis);
+        _modes[NodeProfile402::VL]->setNode(_node, axis);
+        _modes[NodeProfile402::TQ]->setNode(_node, axis);
+        _modes[NodeProfile402::IP]->setNode(_node, axis);
+        _modes[NodeProfile402::PP]->setNode(_node, axis);
 
         statusNodeChanged();
         modeChanged(_axis, _nodeProfile402->actualMode());
@@ -142,108 +140,31 @@ void WidgetDebug::statusNodeChanged()
     }
 }
 
-void WidgetDebug::gotoStateOEClicked()
-{
-    toggleStartLogger(true);
-    _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
-}
-
-void WidgetDebug::toggleStartLogger(bool start)
-{
-    if (!_node)
-    {
-        return;
-    }
-
-    if (start)
-    {
-        _startStopAction->setIcon(QIcon(":/icons/img/icons8-stop.png"));
-
-        if (_node->status() != Node::STARTED)
-        {
-            _node->sendStart();
-        }
-        _timer.start(_logTimerSpinBox->value());
-
-        _stackedWidget->setEnabled(true);
-        _modeGroupBox->setEnabled(true);
-        _stateMachineGroupBox->setEnabled(true);
-        _statusWordGroupBox->setEnabled(true);
-    }
-    else
-    {
-        _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
-
-        _timer.stop();
-
-        _stackedWidget->setEnabled(false);
-        _modeGroupBox->setEnabled(true);
-        _stateMachineGroupBox->setEnabled(false);
-        _statusWordGroupBox->setEnabled(false);
-    }
-
-    if (_startStopAction->isChecked() != start)
-    {
-        _startStopAction->blockSignals(true);
-        _startStopAction->setChecked(start);
-        _startStopAction->blockSignals(false);
-    }
-}
-
-void WidgetDebug::setLogTimer(int ms)
-{
-    if (_startStopAction->isChecked())
-    {
-        _timer.start(ms);
-    }
-}
-
-void WidgetDebug::readDataTimer()
-{
-    if (_node)
-    {
-        _node->readObject(_statusWordObjectId);
-        _p402ip->readData();
-        _p402vl->readData();
-        _p402tq->readData();
-        _p402pp->readData();
-    }
-}
-
 void WidgetDebug::modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew)
 {
     if (_axis != axis)
     {
         return;
     }
-    // Patch because the widget Tarqet torque and velocity are not an IndexSpinbox so not read automaticaly
-    _p402vl->reset();
-    _p402tq->reset();
 
-    if (modeNew == NodeProfile402::IP)
+    if ((modeNew == NodeProfile402::IP)
+        || (modeNew == NodeProfile402::VL)
+        || (modeNew == NodeProfile402::TQ)
+        || (modeNew == NodeProfile402::PP))
     {
-        _stackedWidget->setCurrentWidget(_p402ip);
-    }
-    else if (modeNew == NodeProfile402::VL)
-    {
-        _p402ip->stop();
-        _stackedWidget->setCurrentWidget(_p402vl);
-    }
-    else if (modeNew == NodeProfile402::TQ)
-    {
-        _p402ip->stop();
-        _stackedWidget->setCurrentWidget(_p402tq);
-    }
-    else if (modeNew == NodeProfile402::PP)
-    {
-        _p402ip->stop();
-        _stackedWidget->setCurrentWidget(_p402pp);
+        P402Mode *mode = dynamic_cast<P402Mode*>(_stackedWidget->currentWidget());
+        // resset : Patch because the widget Tarqet torque and velocity are not an IndexSpinbox so not read automaticaly
+        mode->reset();
+        mode->stop();
+        _option402Action->setChecked(false);
+        _stackedWidget->setCurrentWidget(_modes[modeNew]);
     }
     else
     {
-        _p402ip->stop();
-        _stackedWidget->setCurrentWidget(_p402Option);
+        _option402Action->setChecked(true);
+        _stackedWidget->setCurrentWidget(_modes[NodeProfile402::NoMode]);
     }
+
     int m = _listModeComboBox.indexOf(modeNew);
     _modeComboBox->setCurrentIndex(m);
     _modeComboBox->setEnabled(true);
@@ -349,6 +270,102 @@ void WidgetDebug::stateChanged()
     update();
 }
 
+void WidgetDebug::modeIndexChanged(int id)
+{
+    if (!_node)
+    {
+        return;
+    }
+
+    if (id == -1)
+    {
+        return;
+    }
+    _modeComboBox->setEnabled(false);
+    _modeLabel->setText("Mode change in progress");
+    _nodeProfile402->setMode(_listModeComboBox.at(id));
+}
+
+void WidgetDebug::gotoStateOEClicked()
+{
+    toggleStartLogger(true);
+    _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
+}
+
+void WidgetDebug::toggleStartLogger(bool start)
+{
+    if (!_node)
+    {
+        return;
+    }
+
+    if (start)
+    {
+        _startStopAction->setIcon(QIcon(":/icons/img/icons8-stop.png"));
+
+        if (_node->status() != Node::STARTED)
+        {
+            _node->sendStart();
+        }
+        _updateDataTimer.start(_logTimerSpinBox->value());
+
+        _stackedWidget->setEnabled(true);
+        _modeGroupBox->setEnabled(true);
+        _stateMachineGroupBox->setEnabled(true);
+        _statusWordGroupBox->setEnabled(true);
+    }
+    else
+    {
+        _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
+
+        _updateDataTimer.stop();
+
+        _stackedWidget->setEnabled(false);
+        _modeGroupBox->setEnabled(true);
+        _stateMachineGroupBox->setEnabled(false);
+        _statusWordGroupBox->setEnabled(false);
+    }
+
+    if (_startStopAction->isChecked() != start)
+    {
+        _startStopAction->blockSignals(true);
+        _startStopAction->setChecked(start);
+        _startStopAction->blockSignals(false);
+    }
+}
+
+void WidgetDebug::setLogTimer(int ms)
+{
+    if (_startStopAction->isChecked())
+    {
+        _updateDataTimer.start(ms);
+    }
+}
+
+void WidgetDebug::updateData()
+{
+    if (_node)
+    {
+        _node->readObject(_statusWordObjectId);
+        P402Mode *mode = dynamic_cast<P402Mode*>(_stackedWidget->currentWidget());
+        mode->updateData();
+    }
+}
+
+void WidgetDebug::readAllObject()
+{
+    if (_node)
+    {
+        _nodeProfile402->readModeOfOperationDisplay();
+        _node->readObject(_statusWordObjectId);
+
+        P402Mode *mode = dynamic_cast<P402Mode*>(_stackedWidget->currentWidget());
+        mode->readAllObject();
+    }
+}
+
+
+
 void WidgetDebug::isHalted(bool state)
 {
     _haltPushButton->setChecked(state);
@@ -437,44 +454,15 @@ void WidgetDebug::updateModeComboBox()
 
 void WidgetDebug::displayOption402()
 {
-    if (_stackedWidget->currentWidget() == _p402Option)
+    if (_stackedWidget->currentWidget() == _modes[NodeProfile402::NoMode])
     {
         modeChanged(_axis, _nodeProfile402->actualMode());
     }
     else
     {
-        _p402Option->updateData();
-        _stackedWidget->setCurrentWidget(_p402Option);
+        _modes[NodeProfile402::NoMode]->readAllObject();
+        _stackedWidget->setCurrentWidget(_modes[NodeProfile402::NoMode]);
     }
-}
-
-void WidgetDebug::readAllObject()
-{
-    if (_node)
-    {
-        _nodeProfile402->readModeOfOperationDisplay();
-        _node->readObject(_statusWordObjectId);
-        _p402ip->readAllObject();
-        _p402vl->readAllObject();
-        _p402tq->readAllObject();
-        _p402pp->readAllObject();
-    }
-}
-
-void WidgetDebug::modeIndexChanged(int id)
-{
-    if (!_node)
-    {
-        return;
-    }
-
-    if (id == -1)
-    {
-        return;
-    }
-    _modeComboBox->setEnabled(false);
-    _modeLabel->setText("Mode change in progress");
-    _nodeProfile402->setMode(_listModeComboBox.at(id));
 }
 
 void WidgetDebug::stateMachineClicked(int id)
@@ -504,19 +492,19 @@ void WidgetDebug::setCheckableStateMachine(int id)
 void WidgetDebug::createWidgets()
 {
     // Widget P402
-    _p402Option = new P402OptionWidget();
-    _p402vl = new P402VlWidget();
-    _p402ip = new P402IpWidget();
-    _p402tq = new P402TqWidget();
-    _p402pp = new P402PpWidget();
+    _modes.insert(NodeProfile402::VL, new P402VlWidget());
+    _modes.insert(NodeProfile402::IP, new P402IpWidget());
+    _modes.insert(NodeProfile402::TQ, new P402TqWidget());
+    _modes.insert(NodeProfile402::PP, new P402PpWidget());
+    _modes.insert(NodeProfile402::NoMode, new P402OptionWidget());
 
     // Stacked Widget
     _stackedWidget = new QStackedWidget;
-    _stackedWidget->addWidget(_p402Option);
-    _stackedWidget->addWidget(_p402vl);
-    _stackedWidget->addWidget(_p402ip);
-    _stackedWidget->addWidget(_p402tq);
-    _stackedWidget->addWidget(_p402pp);
+    _stackedWidget->addWidget(_modes[NodeProfile402::NoMode]);
+    _stackedWidget->addWidget(_modes[NodeProfile402::VL]);
+    _stackedWidget->addWidget(_modes[NodeProfile402::IP]);
+    _stackedWidget->addWidget(_modes[NodeProfile402::TQ]);
+    _stackedWidget->addWidget(_modes[NodeProfile402::PP]);
     _stackedWidget->setMinimumWidth(550);
 
     // Create interface
@@ -568,13 +556,13 @@ QToolBar *WidgetDebug::toolBarWidgets()
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
     connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
-    connect(&_timer, &QTimer::timeout, this, &WidgetDebug::readDataTimer);
+    connect(&_updateDataTimer, &QTimer::timeout, this, &WidgetDebug::updateData);
 
-    QAction *option402 = new QAction();
-    option402->setCheckable(true);
-    option402->setIcon(QIcon(":/icons/img/icons8-settings.png"));
-    option402->setToolTip(tr("Option code"));
-    connect(option402, &QAction::triggered, this, &WidgetDebug::displayOption402);
+    _option402Action = new QAction();
+    _option402Action->setCheckable(true);
+    _option402Action->setIcon(QIcon(":/icons/img/icons8-settings.png"));
+    _option402Action->setToolTip(tr("Option code"));
+    connect(_option402Action, &QAction::triggered, this, &WidgetDebug::displayOption402);
 
     // read all action
     QAction * readAllObjectAction = toolBar->addAction(tr("Read all objects"));
@@ -585,7 +573,7 @@ QToolBar *WidgetDebug::toolBarWidgets()
 
     toolBar->addWidget(_logTimerSpinBox);
     toolBar->addSeparator();
-    toolBar->addAction(option402);
+    toolBar->addAction(_option402Action);
     toolBar->addAction(readAllObjectAction);
 
     return toolBar;
@@ -700,29 +688,4 @@ QGroupBox *WidgetDebug::statusWordWidgets()
     groupBox->setLayout(layout);
 
     return groupBox;
-}
-
-void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
-{
-    Q_UNUSED(objId)
-    Q_UNUSED(flags)
-
-    if (!_node)
-    {
-        return;
-    }
-}
-
-void WidgetDebug::closeEvent(QCloseEvent *event)
-{
-    if (event->type() == QEvent::Close)
-    {
-    }
-}
-
-void WidgetDebug::showEvent(QShowEvent *event)
-{
-    if (event->type() == QEvent::Show)
-    {
-    }
 }

@@ -22,38 +22,21 @@
 #include "../../udtgui_global.h"
 
 #include "nodeodsubscriber.h"
+#include "p402mode.h"
 
 #include <QButtonGroup>
 #include <QGroupBox>
 
 class Node;
 
-class P402OptionWidget : public QWidget, public NodeOdSubscriber
+class P402OptionWidget : public P402Mode
 {
     Q_OBJECT
 public:
     P402OptionWidget(QWidget *parent = nullptr);
     ~P402OptionWidget() override;
 
-    Node *node() const;
-
-    void readAllObject();
-
-public slots:
-    void setNode(Node *value, uint8_t axis = 0);
-    void updateData();
-
-    void abortConnectionOptionClicked(int id);
-    void quickStopOptionClicked(int id);
-    void shutdownOptionClicked(int id);
-    void disableOptionClicked(int id);
-    void haltOptionClicked(int id);
-    void faultReactionOptionClicked(int id);
-
 private:
-    Node *_node;
-    uint8_t _axis;
-
     NodeObjectId _abortConnectionObjectId;
     NodeObjectId _quickStopObjectId;
     NodeObjectId _shutdownObjectId;
@@ -68,9 +51,14 @@ private:
     QButtonGroup *_haltOptionGroup;
     QButtonGroup *_faultReactionOptionGroup;
 
-    void refreshData(NodeObjectId object);
+    void abortConnectionOptionClicked(int id);
+    void quickStopOptionClicked(int id);
+    void shutdownOptionClicked(int id);
+    void disableOptionClicked(int id);
+    void haltOptionClicked(int id);
+    void faultReactionOptionClicked(int id);
 
-    // Creation widgets
+    // Create widgets
     void createWidgets();
     QGroupBox *abortConnectionWidgets();
     QGroupBox *quickStopWidgets();
@@ -82,6 +70,13 @@ private:
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+
+    // P402Mode interface
+public:
+    void readAllObject() override;
+
+public slots:
+    void setNode(Node *value, uint8_t axis) override;
 };
 
 #endif // P402OPTION_H

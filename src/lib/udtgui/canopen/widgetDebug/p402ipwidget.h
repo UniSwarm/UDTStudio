@@ -23,6 +23,7 @@
 
 #include "node.h"
 #include "nodeodsubscriber.h"
+#include "p402mode.h"
 
 #include <QCheckBox>
 #include <QLabel>
@@ -37,26 +38,14 @@ class ModeIp;
 class IndexSpinBox;
 class IndexLabel;
 
-class P402IpWidget : public QWidget, public NodeOdSubscriber
+class P402IpWidget : public P402Mode
 {
     Q_OBJECT
 public:
     P402IpWidget(QWidget *parent = nullptr);
     ~P402IpWidget() override;
 
-    Node *node() const;
-    void readData();
-    void readAllObject();
-
-public slots:
-    void setNode(Node *value, uint8_t axis = 0);
-    void updateData();
-    void stop();
-
 private:
-    Node *_node;
-    uint8_t _axis;
-    CanOpenBus *_bus;
     NodeProfile402 *_nodeProfile402;
     ModeIp *_modeIp;
 
@@ -138,6 +127,15 @@ private:
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+
+    // P402Mode interface
+public:
+    void updateData() override;
+    void readAllObject() override;
+    void stop() override;
+
+public slots:
+    void setNode(Node *value, uint8_t axis) override;
 };
 
 #endif // P402IP_H

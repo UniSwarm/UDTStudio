@@ -33,10 +33,10 @@
 #include <QtMath>
 
 P402IpWidget::P402IpWidget(QWidget *parent)
-    : QWidget(parent)
+    : P402Mode(parent)
 {
-    _node = nullptr;
     _nodeProfile402 = nullptr;
+    createWidgets();
 }
 
 P402IpWidget::~P402IpWidget()
@@ -44,20 +44,12 @@ P402IpWidget::~P402IpWidget()
     unRegisterFullOd();
 }
 
-Node *P402IpWidget::node() const
-{
-    return _node;
-}
-
-void P402IpWidget::readData()
+void P402IpWidget::updateData()
 {
     if (_node)
     {
-        if (_nodeProfile402->actualMode() == NodeProfile402::OperationMode::IP)
-        {
-            _positionDemandValueLabel->readObject();
-            _positionAcualValueLabel->readObject();
-        }
+        _positionDemandValueLabel->readObject();
+        _positionAcualValueLabel->readObject();
     }
 }
 
@@ -79,13 +71,11 @@ void P402IpWidget::readAllObject()
 
 void P402IpWidget::setNode(Node *node, uint8_t axis)
 {
-    if (node != _node)
+    if (!node)
     {
-        if (_node)
-        {
-            disconnect(_node, &Node::statusChanged, this, &P402IpWidget::updateData);
-        }
+        return;
     }
+    _node = node;
 
     if (axis > 8)
     {
@@ -93,7 +83,6 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
     }
     _axis = axis;
 
-    _node = node;
     if (_node)
     {
         _positionDemandValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, axis);
@@ -101,8 +90,6 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
         _dataRecordObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_DATA_RECORD_SET_POINT, axis);
         _timePeriodIndexObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_PERIOD_TIME_INDEX, axis);
         _timePeriodUnitsObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_PERIOD_TIME_UNITS, axis);
-
-        createWidgets();
 
         _positionDemandValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
         _positionActualValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
@@ -146,27 +133,10 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
         _maxProfileVelocitySpinBox->setNode(node);
         _maxMotorSpeedSpinBox->setNode(node);
 
-        _bus = _node->bus();
-        connect(_bus->sync(), &Sync::signalBeforeSync, this, &P402IpWidget::sendDataRecordTargetWithPdo);
+        connect(_node->bus()->sync(), &Sync::signalBeforeSync, this, &P402IpWidget::sendDataRecordTargetWithPdo);
     }
 }
 
-void P402IpWidget::updateData()
-{
-    if (_node)
-    {
-        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::OperationMode::IP)
-        {
-            setEnabled(true);
-            _positionDemandValueLabel->readObject();
-            _positionAcualValueLabel->readObject();
-        }
-        else
-        {
-            stop();
-        }
-    }
-}
 
 void P402IpWidget::stop()
 {
@@ -242,7 +212,7 @@ void P402IpWidget::startTargetPosition()
 
     bufferClearClicked();
 
-    if (_bus->sync()->status() == Sync::Status::STOPPED)
+    if (_node->bus()->sync()->status() == Sync::Status::STOPPED)
     {
         sendDataRecordTargetWithSdo();
         _sendPointSinusoidalTimer.start(static_cast<int>(period) * 5);

@@ -33,9 +33,9 @@
 #include <canopen/widget/indexlabel.h>
 
 P402PpWidget::P402PpWidget(QWidget *parent)
-    : QWidget(parent)
+    : P402Mode(parent)
 {
-    _node = nullptr;
+    createWidgets();
     _nodeProfile402 = nullptr;
 }
 
@@ -44,20 +44,12 @@ P402PpWidget::~P402PpWidget()
     unRegisterFullOd();
 }
 
-Node *P402PpWidget::node() const
-{
-    return _node;
-}
-
-void P402PpWidget::readData()
+void P402PpWidget::updateData()
 {
     if (_node)
     {
-        if (_nodeProfile402->actualMode() == NodeProfile402::OperationMode::PP)
-        {
-            _positionDemandValueLabel->readObject();
-            _positionActualValueLabel->readObject();
-        }
+        _positionDemandValueLabel->readObject();
+        _positionActualValueLabel->readObject();
     }
 }
 
@@ -83,13 +75,11 @@ void P402PpWidget::readAllObject()
 
 void P402PpWidget::setNode(Node *node, uint8_t axis)
 {
-    if (node != _node)
+    if (!node)
     {
-        if (_node)
-        {
-            disconnect(_node, &Node::statusChanged, this, &P402PpWidget::updateData);
-        }
+        return;
     }
+    _node = node;
 
     if (axis > 8)
     {
@@ -97,14 +87,11 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
     }
     _axis = axis;
 
-    _node = node;
     if (_node)
     {
         _positionDemandValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, axis);
         _positionActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, axis);
         _targetPositionObjectId = IndexDb402::getObjectId(IndexDb402::OD_PP_POSITION_TARGET, axis);
-
-        createWidgets();
 
         _positionDemandValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
         _positionActualValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
@@ -159,30 +146,7 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
         _profileDecelerationSpinBox->setNode(node);
         _maxDecelerationSpinBox->setNode(node);
          _quickStopDecelerationSpinBox->setNode(node);
-
-        _bus = _node->bus();
     }
-}
-
-void P402PpWidget::updateData()
-{
-    if (_node)
-    {
-        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::OperationMode::PP)
-        {
-            setEnabled(true);
-            _positionDemandValueLabel->readObject();
-            _positionActualValueLabel->readObject();
-        }
-        else
-        {
-            stop();
-        }
-    }
-}
-
-void P402PpWidget::stop()
-{
 }
 
 void P402PpWidget::targetPositionLineEditFinished()

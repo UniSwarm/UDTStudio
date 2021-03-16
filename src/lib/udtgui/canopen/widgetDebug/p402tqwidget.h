@@ -23,6 +23,9 @@
 #include "node.h"
 #include "nodeodsubscriber.h"
 
+
+#include "p402mode.h"
+
 #include <QLabel>
 #include <QSlider>
 #include <QSpinBox>
@@ -32,30 +35,16 @@
 class NodeProfile402;
 class IndexSpinBox;
 class IndexLabel;
+class P402Mode;
 
-class P402TqWidget : public QWidget, public NodeOdSubscriber
+class P402TqWidget : public P402Mode
 {
     Q_OBJECT
 public:
     P402TqWidget(QWidget *parent = nullptr);
     ~P402TqWidget() override;
 
-    Node *node() const;
-
-    void readData();
-    void readAllObject();
-    void reset();
-
-signals:
-
-public slots:
-    void setNode(Node *value, uint8_t axis = 0);
-    void updateData();
-
 private:
-    Node *_node;
-    uint8_t _axis;
-
     NodeProfile402 *_nodeProfile402;
 
     NodeObjectId _torqueDemandObjectId;
@@ -89,7 +78,7 @@ private:
     void dataLogger();
     void pdoMapping();
 
-    // Creation widgets
+    // Create widgets
     QFormLayout *_modeLayout;
     void createWidgets();
     void targetWidgets();
@@ -101,6 +90,15 @@ private:
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+
+    // P402Mode interface
+public:
+    void updateData() override;
+    void readAllObject() override;
+    void reset() override;
+
+public slots:
+    void setNode(Node *value, uint8_t axis) override;
 };
 
 #endif // P402TQ_H

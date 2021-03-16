@@ -54,7 +54,8 @@ HEADERS += \
     $$PWD/canopen/widgetDebug/p402ppwidget.h \
     $$PWD/canopen/compositeWidget/motionsensorwidget.h \
     $$PWD/screen/nodescreensynchro.h \
-    $$PWD/canopen/compositeWidget/motorwidget.h
+    $$PWD/canopen/compositeWidget/motorwidget.h \
+    canopen/widgetDebug/p402mode.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -102,7 +103,8 @@ SOURCES += \
     $$PWD/canopen/widgetDebug/p402ppwidget.cpp \
     $$PWD/canopen/compositeWidget/motionsensorwidget.cpp \
     $$PWD/screen/nodescreensynchro.cpp \
-    $$PWD/canopen/compositeWidget/motorwidget.cpp
+    $$PWD/canopen/compositeWidget/motorwidget.cpp \
+    canopen/widgetDebug/p402mode.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 

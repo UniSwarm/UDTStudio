@@ -43,7 +43,7 @@
 
 class IndexLabel;
 
-class UDTGUI_EXPORT WidgetDebug : public QWidget, public NodeOdSubscriber
+class UDTGUI_EXPORT WidgetDebug : public QWidget
 {
     Q_OBJECT
 public:
@@ -66,8 +66,9 @@ private:
     Node *_node;
     uint8_t _axis;
 
-    QTimer _timer;
-    QTimer _operationEnabledTimer;
+    QMap<NodeProfile402::OperationMode, P402Mode*> _modes;
+
+    QTimer _updateDataTimer;
 
     enum State
     {
@@ -86,14 +87,13 @@ private:
     NodeProfile402 *_nodeProfile402;
 
     QStackedWidget *_stackedWidget;
-    P402OptionWidget *_p402Option;
-    P402VlWidget *_p402vl;
-    P402IpWidget *_p402ip;
-    P402TqWidget *_p402tq;
-    P402PpWidget *_p402pp;
 
+    // Logger timer
     QSpinBox *_logTimerSpinBox;
+
+    // Toolbar action
     QAction *_startStopAction;
+    QAction *_option402Action;
 
     QGroupBox *_modeGroupBox;
     QComboBox *_modeComboBox;
@@ -114,18 +114,19 @@ private:
     QLabel *_warningLabel;
 
     void statusNodeChanged();
-    void readDataTimer();
-
     void modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew);
     void stateChanged();
+    void modeIndexChanged(int id);
+
+    void updateData();
+    void readAllObject();
+
     void isHalted(bool state);
     void eventHappened(quint8 event);
 
     void updateModeComboBox();
 
     void displayOption402();
-    void readAllObject();
-    void modeIndexChanged(int id);
     void stateMachineClicked(int id);
     void haltClicked();
 
@@ -138,15 +139,6 @@ private:
     QGroupBox *stateMachineWidgets();
     QGroupBox *controlWordWidgets();
     QGroupBox *statusWordWidgets();
-
-    // NodeOdSubscriber interface
-protected:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
-
-    // QObject interface
-public:
-    void closeEvent(QCloseEvent *event) override;
-    void showEvent(QShowEvent *event) override;
 };
 
 #endif // WIDGETDEBUG_H

@@ -30,9 +30,9 @@
 #include <QPushButton>
 
 P402TqWidget::P402TqWidget(QWidget *parent)
-    : QWidget(parent)
+    : P402Mode(parent)
 {
-    _node = nullptr;
+    createWidgets();
     _nodeProfile402 = nullptr;
 }
 
@@ -41,20 +41,12 @@ P402TqWidget::~P402TqWidget()
     unRegisterFullOd();
 }
 
-Node *P402TqWidget::node() const
-{
-    return _node;
-}
-
-void P402TqWidget::readData()
+void P402TqWidget::updateData()
 {
     if (_node)
     {
-        if (_nodeProfile402->actualMode() == NodeProfile402::OperationMode::TQ)
-        {
-            _torqueDemandLabel->readObject();
-            _torqueActualValueLabel->readObject();
-        }
+        _torqueDemandLabel->readObject();
+        _torqueActualValueLabel->readObject();
     }
 }
 
@@ -82,13 +74,11 @@ void P402TqWidget::reset()
 
 void P402TqWidget::setNode(Node *node, uint8_t axis)
 {
-    if (node != _node)
+    if (!node)
     {
-        if (_node)
-        {
-            disconnect(_node, &Node::statusChanged, this, &P402TqWidget::updateData);
-        }
+        return;
     }
+    _node = node;
 
     if (axis > 8)
     {
@@ -96,7 +86,6 @@ void P402TqWidget::setNode(Node *node, uint8_t axis)
     }
     _axis = axis;
 
-    _node = node;
     if (_node)
     {
         _torqueDemandObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_DEMAND, axis);
@@ -111,7 +100,7 @@ void P402TqWidget::setNode(Node *node, uint8_t axis)
         _currentActualValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
         _dcLinkVoltageObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
-        createWidgets();
+
 
         registerObjId(_torqueTargetObjectId);
         setNodeInterrest(_node);
@@ -150,19 +139,19 @@ void P402TqWidget::setNode(Node *node, uint8_t axis)
     }
 }
 
-void P402TqWidget::updateData()
-{
-    if (_node)
-    {
-        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::OperationMode::TQ)
-        {
-            setEnabled(true);
-            _node->readObject(_torqueTargetObjectId);
-            _torqueDemandLabel->readObject();
-            _torqueActualValueLabel->readObject();
-        }
-    }
-}
+//void P402TqWidget::updateData()
+//{
+//    if (_node)
+//    {
+//        if (_node->status() == Node::STARTED && _nodeProfile402->actualMode() == NodeProfile402::OperationMode::TQ)
+//        {
+//            setEnabled(true);
+//            _node->readObject(_torqueTargetObjectId);
+//            _torqueDemandLabel->readObject();
+//            _torqueActualValueLabel->readObject();
+//        }
+//    }
+//}
 
 void P402TqWidget::targetTorqueSpinboxFinished()
 {
