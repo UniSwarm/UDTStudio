@@ -131,7 +131,7 @@ private:
     void limitWidgets();
     void slopeWidgets();
     void homePolarityWidgets();
-    QGroupBox *sinuMotionProfileWidgets();
+    QGroupBox *sinusoidalMotionProfileWidgets();
     QGroupBox *controlWordWidgets();
     QHBoxLayout *buttonWidgets();
 
