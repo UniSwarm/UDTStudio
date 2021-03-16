@@ -696,15 +696,18 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
             _modeTimer.singleShot(TIMER_READ_MODE_OPERATION_DISPLAY, this, SLOT(readModeOfOperationDisplay()));
             return;
         }
+        if (_modeCurrent != mode)
+        {
+            _modeCurrent = mode;
+            emit modeChanged(_axisId, _modeCurrent);
+        }
 
-        _modeCurrent = mode;
         _modeRequested = _modeCurrent;
         _modeState = NodeProfile402::ModeState::NONE_MODE;
 
         // Send new ControlWord with specific flag
         changeStateMachine(_stateMachineCurrent);
 
-        emit modeChanged(_axisId, _modeCurrent);
         return;
     }
 
