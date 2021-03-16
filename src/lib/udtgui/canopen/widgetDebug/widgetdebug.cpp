@@ -503,14 +503,60 @@ void WidgetDebug::setCheckableStateMachine(int id)
 
 void WidgetDebug::createWidgets()
 {
-    QString name;
+    // Widget P402
+    _p402Option = new P402OptionWidget();
+    _p402vl = new P402VlWidget();
+    _p402ip = new P402IpWidget();
+    _p402tq = new P402TqWidget();
+    _p402pp = new P402PpWidget();
 
-    // toolbar
-    _toolBar = new QToolBar(tr("Axis commands"));
-    _toolBar->setIconSize(QSize(20, 20));
+    // Stacked Widget
+    _stackedWidget = new QStackedWidget;
+    _stackedWidget->addWidget(_p402Option);
+    _stackedWidget->addWidget(_p402vl);
+    _stackedWidget->addWidget(_p402ip);
+    _stackedWidget->addWidget(_p402tq);
+    _stackedWidget->addWidget(_p402pp);
+    _stackedWidget->setMinimumWidth(550);
 
-    // start stop
-    _startStopAction = _toolBar->addAction(tr("Start / stop"));
+    // Create interface
+    QWidget *controlWidget = new QWidget();
+    QLayout *controlLayout = new QVBoxLayout(controlWidget);
+    controlLayout->setMargin(0);
+
+    _modeGroupBox = modeWidgets();
+    controlLayout->addWidget(_modeGroupBox);
+    _stateMachineGroupBox = stateMachineWidgets();
+    controlLayout->addWidget(_stateMachineGroupBox);
+    _controlWordGroupBox = controlWordWidgets();
+    controlLayout->addWidget(_controlWordGroupBox);
+    _statusWordGroupBox = statusWordWidgets();
+    controlLayout->addWidget(_statusWordGroupBox);
+
+    QScrollArea *scrollArea = new QScrollArea();
+    scrollArea->setWidget(controlWidget);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setMaximumWidth(370);
+    scrollArea->setMinimumWidth(370);
+
+    QHBoxLayout *hBoxLayout = new QHBoxLayout();
+    hBoxLayout->setMargin(0);
+    hBoxLayout->addWidget(scrollArea);
+    hBoxLayout->addWidget(_stackedWidget);
+
+    QVBoxLayout *vBoxLayout = new QVBoxLayout();
+    vBoxLayout->setMargin(2);
+    vBoxLayout->addWidget(toolBarWidgets());
+    vBoxLayout->addLayout(hBoxLayout);
+    setLayout(vBoxLayout);
+}
+
+QToolBar *WidgetDebug::toolBarWidgets()
+{
+    QToolBar *toolBar = new QToolBar(tr("Axis commands"));
+    toolBar->setIconSize(QSize(20, 20));
+
+    _startStopAction = toolBar->addAction(tr("Start / stop"));
     _startStopAction->setCheckable(true);
     _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
     _startStopAction->setStatusTip(tr("Start or stop the data logger"));
@@ -531,152 +577,129 @@ void WidgetDebug::createWidgets()
     connect(option402, &QAction::triggered, this, &WidgetDebug::displayOption402);
 
     // read all action
-    QAction * readAllAction = _toolBar->addAction(tr("Read all objects"));
-    readAllAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
-    readAllAction->setShortcut(QKeySequence("Ctrl+R"));
-    readAllAction->setStatusTip(tr("Read all the objects of the current window"));
-    connect(readAllAction, &QAction::triggered, this, &WidgetDebug::readAllObject);
+    QAction * readAllObjectAction = toolBar->addAction(tr("Read all objects"));
+    readAllObjectAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    readAllObjectAction->setShortcut(QKeySequence("Ctrl+R"));
+    readAllObjectAction->setStatusTip(tr("Read all the objects of the current window"));
+    connect(readAllObjectAction, &QAction::triggered, this, &WidgetDebug::readAllObject);
 
-    _toolBar->addWidget(_logTimerSpinBox);
-    _toolBar->addSeparator();
-    _toolBar->addAction(option402);
-    _toolBar->addAction(readAllAction);
+    toolBar->addWidget(_logTimerSpinBox);
+    toolBar->addSeparator();
+    toolBar->addAction(option402);
+    toolBar->addAction(readAllObjectAction);
 
-    QWidget *p402Widget = new QWidget();
-    QLayout *p402layout = new QVBoxLayout(p402Widget);
-    p402layout->setMargin(0);
+    return toolBar;
+}
 
-    // Group Box Mode
-    _modeGroupBox = new QGroupBox(tr("Mode"));
-    QFormLayout *modeLayout = new QFormLayout();
+QGroupBox *WidgetDebug::modeWidgets()
+{
+    QString name;
+    QGroupBox *groupBox = new QGroupBox(tr("Mode"));
+    QFormLayout *layout = new QFormLayout();
+
     _modeComboBox = new QComboBox();
     name = tr("Modes of operation ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, _axis).index(), 16));
-    modeLayout->addRow(new QLabel(name));
-    modeLayout->addRow(_modeComboBox);
+    layout->addRow(new QLabel(name));
+    layout->addRow(_modeComboBox);
 
     _modeLabel = new QLabel();
-    modeLayout->addWidget(_modeLabel);
-    _modeGroupBox->setLayout(modeLayout);
-    p402layout->addWidget(_modeGroupBox);
+    layout->addWidget(_modeLabel);
+    groupBox->setLayout(layout);
 
-    // End Group Box State Machine
+    return groupBox;
+}
 
-    // Group Box State Machine
-    _stateMachineGroupBox = new QGroupBox(tr("State Machine"));
-    _stateMachineGroupBox->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
-    QFormLayout *stateMachineLayoutGroupBox = new QFormLayout();
+QGroupBox *WidgetDebug::stateMachineWidgets()
+{
+    QGroupBox *groupBox = new QGroupBox(tr("State Machine"));
+    groupBox->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
+    QFormLayout *layout = new QFormLayout();
 
     _stateMachineGroup = new QButtonGroup(this);
     _stateMachineGroup->setExclusive(true);
 
     QPushButton *stateNotReadyToSwitchOnPushButton = new QPushButton(tr("1_Not ready to switch on"));
     stateNotReadyToSwitchOnPushButton->setEnabled(false);
-    stateMachineLayoutGroupBox->addRow(stateNotReadyToSwitchOnPushButton);
+    layout->addRow(stateNotReadyToSwitchOnPushButton);
     _stateMachineGroup->addButton(stateNotReadyToSwitchOnPushButton, STATE_NotReadyToSwitchOn);
     QPushButton *stateSwitchOnDisabledPushButton = new QPushButton(tr("2_Switch on disabled"));
-    stateMachineLayoutGroupBox->addRow(stateSwitchOnDisabledPushButton);
+    layout->addRow(stateSwitchOnDisabledPushButton);
     _stateMachineGroup->addButton(stateSwitchOnDisabledPushButton, STATE_SwitchOnDisabled);
     QPushButton *stateReadyToSwitchOnPushButton = new QPushButton(tr("3_Ready to switch on"));
-    stateMachineLayoutGroupBox->addRow(stateReadyToSwitchOnPushButton);
+    layout->addRow(stateReadyToSwitchOnPushButton);
     _stateMachineGroup->addButton(stateReadyToSwitchOnPushButton, STATE_ReadyToSwitchOn);
     QPushButton *stateSwitchedOnPushButton = new QPushButton(tr("4_Switched on"));
-    stateMachineLayoutGroupBox->addRow(stateSwitchedOnPushButton);
+    layout->addRow(stateSwitchedOnPushButton);
     _stateMachineGroup->addButton(stateSwitchedOnPushButton, STATE_SwitchedOn);
     QPushButton *stateOperationEnabledPushButton = new QPushButton(tr("5_Operation enabled"));
-    stateMachineLayoutGroupBox->addRow(stateOperationEnabledPushButton);
+    layout->addRow(stateOperationEnabledPushButton);
     _stateMachineGroup->addButton(stateOperationEnabledPushButton, STATE_OperationEnabled);
     QPushButton *stateQuickStopActivePushButton = new QPushButton(tr("6_Quick stop active"));
-    stateMachineLayoutGroupBox->addRow(stateQuickStopActivePushButton);
+    layout->addRow(stateQuickStopActivePushButton);
     _stateMachineGroup->addButton(stateQuickStopActivePushButton, STATE_QuickStopActive);
     QPushButton *stateFaultReactionActivePushButton = new QPushButton(tr("7_Fault reaction active"));
     stateFaultReactionActivePushButton->setEnabled(false);
-    stateMachineLayoutGroupBox->addRow(stateFaultReactionActivePushButton);
+    layout->addRow(stateFaultReactionActivePushButton);
     _stateMachineGroup->addButton(stateFaultReactionActivePushButton, STATE_FaultReactionActive);
     QPushButton *stateFaultPushButton = new QPushButton(tr("8_Fault"));
     stateFaultPushButton->setEnabled(false);
-    stateMachineLayoutGroupBox->addRow(stateFaultPushButton);
+    layout->addRow(stateFaultPushButton);
     _stateMachineGroup->addButton(stateFaultPushButton, STATE_Fault);
 
     connect(_stateMachineGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { stateMachineClicked(id); });
-    _stateMachineGroupBox->setLayout(stateMachineLayoutGroupBox);
-    // END Group Box State Machine
 
-    // Group Box Control Word
+    groupBox->setLayout(layout);
+    return groupBox;
+}
 
-    _controlWordGroupBox = new QGroupBox(tr("Control Word ") + QString("(0x%1)").arg(QString::number(_controlWordObjectId.index(), 16)));
-    QFormLayout *controlWordLayout = new QFormLayout();
+QGroupBox *WidgetDebug::controlWordWidgets()
+{
+    QGroupBox *groupBox = new QGroupBox(tr("Control Word ") + QString("(0x%1)").arg(QString::number(_controlWordObjectId.index(), 16)));
+    QFormLayout *layout = new QFormLayout();
 
     _haltPushButton = new QPushButton(tr("Halt"));
     _haltPushButton->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
     _haltPushButton->setEnabled(false);
-    controlWordLayout->addRow(_haltPushButton);
-    _controlWordGroupBox->setLayout(controlWordLayout);
+    layout->addRow(_haltPushButton);
+    groupBox->setLayout(layout);
     connect(_haltPushButton, &QPushButton::clicked, this, &WidgetDebug::haltClicked);
 
     _controlWordLabel = new IndexLabel();
     _controlWordLabel->setDisplayHint(AbstractIndexWidget::DisplayHexa);
-    controlWordLayout->addRow(tr("ControlWord sended:"), _controlWordLabel);
+    layout->addRow(tr("ControlWord sended:"), _controlWordLabel);
 
     QPushButton *_gotoOEPushButton = new QPushButton(tr("Operation enabled quickly"));
-    controlWordLayout->addRow(_gotoOEPushButton);
+    layout->addRow(_gotoOEPushButton);
     connect(_gotoOEPushButton, &QPushButton::clicked, this, &WidgetDebug::gotoStateOEClicked);
 
-    _controlWordGroupBox->setLayout(controlWordLayout);
-    // END Group Box Control Word
+    groupBox->setLayout(layout);
+    return groupBox;
+}
 
-    // Group Box Status Word
+QGroupBox *WidgetDebug::statusWordWidgets()
+{
+    QString name;
     name = tr("Status Word ") + QString("(0x%1)").arg(QString::number(_statusWordObjectId.index(), 16));
-    _statusWordGroupBox = new QGroupBox(name);
-    QFormLayout *statusWordLayout = new QFormLayout();
+    QGroupBox *groupBox = new QGroupBox(name);
+    QFormLayout *layout = new QFormLayout();
 
     _statusWordLabel = new IndexLabel();
     _statusWordLabel->setDisplayHint(AbstractIndexWidget::DisplayHexa);
-    statusWordLayout->addRow(tr("StatusWord raw:"), _statusWordLabel);
+    layout->addRow(tr("StatusWord raw:"), _statusWordLabel);
+
     _statusWordStateLabel = new QLabel();
-    statusWordLayout->addRow(tr("StatusWord State:"), _statusWordStateLabel);
+    layout->addRow(tr("StatusWord State:"), _statusWordStateLabel);
 
     _informationLabel = new QLabel();
-    statusWordLayout->addRow(tr("Information :"), _informationLabel);
+    layout->addRow(tr("Information :"), _informationLabel);
+
     _warningLabel = new QLabel();
     _warningLabel->setStyleSheet("QLabel { color : red; }");
-    statusWordLayout->addRow(tr("Warning :"), _warningLabel);
-    _statusWordGroupBox->setLayout(statusWordLayout);
-    // END Group Box Status Word
+    layout->addRow(tr("Warning :"), _warningLabel);
 
-    p402layout->addWidget(_stateMachineGroupBox);
-    p402layout->addWidget(_controlWordGroupBox);
-    p402layout->addWidget(_statusWordGroupBox);
+    groupBox->setLayout(layout);
 
-    QScrollArea *p402ScrollArea = new QScrollArea();
-    p402ScrollArea->setWidget(p402Widget);
-    p402ScrollArea->setWidgetResizable(true);
-    p402ScrollArea->setMaximumWidth(370);
-    p402ScrollArea->setMinimumWidth(370);
-
-    _p402Option = new P402OptionWidget();
-    _p402vl = new P402VlWidget();
-    _p402ip = new P402IpWidget();
-    _p402tq = new P402TqWidget();
-    _p402pp = new P402PpWidget();
-
-    _stackedWidget = new QStackedWidget;
-    _stackedWidget->addWidget(_p402Option);
-    _stackedWidget->addWidget(_p402vl);
-    _stackedWidget->addWidget(_p402ip);
-    _stackedWidget->addWidget(_p402tq);
-    _stackedWidget->addWidget(_p402pp);
-    _stackedWidget->setMinimumWidth(550);
-
-    QHBoxLayout *hBoxLayout = new QHBoxLayout();
-    hBoxLayout->setMargin(0);
-    hBoxLayout->addWidget(p402ScrollArea);
-    hBoxLayout->addWidget(_stackedWidget);
-
-    QVBoxLayout *vBoxLayout = new QVBoxLayout();
-    vBoxLayout->setMargin(2);
-    vBoxLayout->addWidget(_toolBar);
-    vBoxLayout->addLayout(hBoxLayout);
-    setLayout(vBoxLayout);
+    return groupBox;
 }
 
 void WidgetDebug::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

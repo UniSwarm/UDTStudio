@@ -92,7 +92,6 @@ private:
     P402TqWidget *_p402tq;
     P402PpWidget *_p402pp;
 
-    QToolBar *_toolBar;
     QSpinBox *_logTimerSpinBox;
     QAction *_startStopAction;
 
@@ -132,7 +131,13 @@ private:
 
     void setCheckableStateMachine(int id);
 
+    // Create widgets
     void createWidgets();
+    QToolBar *toolBarWidgets();
+    QGroupBox *modeWidgets();
+    QGroupBox *stateMachineWidgets();
+    QGroupBox *controlWordWidgets();
+    QGroupBox *statusWordWidgets();
 
     // NodeOdSubscriber interface
 protected:

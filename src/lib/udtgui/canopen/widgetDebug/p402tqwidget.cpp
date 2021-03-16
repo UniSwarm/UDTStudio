@@ -27,15 +27,11 @@
 #include "profile/p402/nodeprofile402.h"
 #include "profile/p402/modetq.h"
 
-#include <QFormLayout>
-#include <QGroupBox>
 #include <QPushButton>
 
 P402TqWidget::P402TqWidget(QWidget *parent)
-    : QScrollArea(parent)
+    : QWidget(parent)
 {
-    setWidgetResizable(true);
-
     _node = nullptr;
     _nodeProfile402 = nullptr;
 }
@@ -218,31 +214,63 @@ void P402TqWidget::pdoMapping()
 
 void P402TqWidget::createWidgets()
 {
-    QWidget *widget = new QWidget();
-    QLayout *layout = new QVBoxLayout();
+    // Group Box TQ mode
+    QGroupBox *modeGroupBox = new QGroupBox(tr("Torque mode"));
+    _modeLayout = new QFormLayout();
+
+    targetWidgets();
+    informationWidgets();
+    limitWidgets();
+
+    QFrame *frame = new QFrame();
+    frame->setFrameStyle(QFrame::HLine);
+    frame->setFrameShadow(QFrame::Sunken);
+    _modeLayout->addRow(frame);
+
+    slopeWidgets();
+
+    modeGroupBox->setLayout(_modeLayout);
+
+    // Create interface
+    QWidget *widget = new QWidget(this);
+    QVBoxLayout *layout = new QVBoxLayout(widget);
     layout->setMargin(0);
 
-    // Group Box TQ mode
-    QGroupBox *tqGroupBox = new QGroupBox(tr("Torque mode"));
-    QFormLayout *tqLayout = new QFormLayout();
+    layout->addWidget(modeGroupBox);;
 
+    QScrollArea *scrollArea = new QScrollArea;
+    scrollArea->setWidget(widget);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    QVBoxLayout *vBoxLayout = new QVBoxLayout();
+    vBoxLayout->addWidget(scrollArea);
+    vBoxLayout->addLayout(buttonWidgets());
+    vBoxLayout->setMargin(0);
+    setLayout(vBoxLayout);
+}
+
+void P402TqWidget::targetWidgets()
+{
     _targetTorqueSpinBox = new QSpinBox();
     _targetTorqueSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    tqLayout->addRow(tr("Target torque"), _targetTorqueSpinBox);
+    _modeLayout->addRow(tr("Target torque"), _targetTorqueSpinBox);
 
     QLayout *labelSliderLayout = new QHBoxLayout();
+
     _sliderMinLabel = new QLabel("min");
     labelSliderLayout->addWidget(_sliderMinLabel);
     labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
     labelSliderLayout->addWidget(new QLabel("0"));
     labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
+
     _sliderMaxLabel = new QLabel("max");
     labelSliderLayout->addWidget(_sliderMaxLabel);
-    tqLayout->addRow(labelSliderLayout);
+    _modeLayout->addRow(labelSliderLayout);
 
     _targetTorqueSlider = new QSlider(Qt::Horizontal);
     _targetTorqueSlider->setTickPosition(QSlider::TicksBelow);
-    tqLayout->addRow(_targetTorqueSlider);
+    _modeLayout->addRow(_targetTorqueSlider);
 
     connect(_targetTorqueSlider, &QSlider::valueChanged, this, &P402TqWidget::targetTorqueSliderChanged);
     connect(_targetTorqueSpinBox, &QSpinBox::editingFinished, this, &P402TqWidget::targetTorqueSpinboxFinished);
@@ -250,43 +278,55 @@ void P402TqWidget::createWidgets()
     QPushButton *setZeroButton = new QPushButton();
     setZeroButton->setText("Set to 0");
     connect(setZeroButton, &QPushButton::clicked, this, &P402TqWidget::setZeroButton);
+
     QLayout *setZeroLayout = new QHBoxLayout();
     setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
     setZeroLayout->addWidget(setZeroButton);
     setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
-    tqLayout->addRow(setZeroLayout);
+    _modeLayout->addRow(setZeroLayout);
+}
 
+void P402TqWidget::informationWidgets()
+{
     _torqueDemandLabel = new IndexLabel();
-    tqLayout->addRow(tr("Torque demand :"), _torqueDemandLabel);
+    _modeLayout->addRow(tr("Torque demand :"), _torqueDemandLabel);
 
     _torqueActualValueLabel = new IndexLabel();
-    tqLayout->addRow(tr("Torque actual value :"), _torqueActualValueLabel);
+    _modeLayout->addRow(tr("Torque actual value :"), _torqueActualValueLabel);
 
     _currentActualValueLabel = new IndexLabel();
-    //tqLayout->addRow(name, _tqCurrentActualValueLabel);
+    //_modeLayout->addRow(name, _tqCurrentActualValueLabel);
 
     _dcLinkVoltageLabel = new IndexLabel();
-    //    tqLayout->addRow(tr("DC Link Voltage "), _tqDCLinkVoltageLabel);
+    //_modeLayout->addRow(tr("DC Link Voltage "), _tqDCLinkVoltageLabel);
+}
 
-    _targetSlopeSpinBox = new IndexSpinBox();
-    tqLayout->addRow(tr("T&arget Slope "), _targetSlopeSpinBox);
-
+void P402TqWidget::limitWidgets()
+{
     _maxTorqueSpinBox = new IndexSpinBox();
-    tqLayout->addRow(tr("Ma&x torque "), _maxTorqueSpinBox);
+    _modeLayout->addRow(tr("Ma&x torque "), _maxTorqueSpinBox);
 
     _torqueProfileTypeSpinBox = new IndexSpinBox();
-    //    tqLayout->addRow(tr("To&rque Profile Type "), _tqTorqueProfileTypeSpinBox);
+    //    _modeLayout->addRow(tr("To&rque Profile Type "), _tqTorqueProfileTypeSpinBox);
 
     _maxCurrentSpinBox = new IndexSpinBox();
-    //    tqLayout->addRow(tr("Max &Current "), _tqMaxCurrentSpinBox);
+    //    _modeLayout->addRow(tr("Max &Current "), _tqMaxCurrentSpinBox);
 
     _motorRatedTorqueSpinBox = new IndexSpinBox();
-    //    tqLayout->addRow(tr("Mot&or Rated Torque "), _tqMotorRatedTorqueSpinBox);
+    //    _modeLayout->addRow(tr("Mot&or Rated Torque "), _tqMotorRatedTorqueSpinBox);
 
     _motorRatedCurrentSpinBox = new IndexSpinBox();
-    //    tqLayout->addRow(tr("Motor Rate&d Current "), _tqMotorRatedCurrentSpinBox);
-    tqGroupBox->setLayout(tqLayout);
+    //    _modeLayout->addRow(tr("Motor Rate&d Current "), _tqMotorRatedCurrentSpinBox);
+}
 
+void P402TqWidget::slopeWidgets()
+{
+    _targetSlopeSpinBox = new IndexSpinBox();
+    _modeLayout->addRow(tr("T&arget Slope "), _targetSlopeSpinBox);
+}
+
+QHBoxLayout *P402TqWidget::buttonWidgets()
+{
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402TqWidget::dataLogger);
 
@@ -300,17 +340,14 @@ void P402TqWidget::createWidgets()
     tqModeLabel->setPixmap(tqModePixmap);
     QPushButton *imgPushButton = new QPushButton(tr("Diagram TQ mode"));
     connect(imgPushButton, SIGNAL(clicked()), tqModeLabel, SLOT(show()));
-    QHBoxLayout *tqButtonLayout = new QHBoxLayout();
-    tqButtonLayout->setSpacing(5);
-    tqButtonLayout->addWidget(dataLoggerPushButton);
-    tqButtonLayout->addWidget(mappingPdoPushButton);
-    tqButtonLayout->addWidget(imgPushButton);
 
-    layout->addWidget(tqGroupBox);
-    layout->addItem(tqButtonLayout);
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->setSpacing(5);
+    layout->addWidget(dataLoggerPushButton);
+    layout->addWidget(mappingPdoPushButton);
+    layout->addWidget(imgPushButton);
 
-    widget->setLayout(layout);
-    setWidget(widget);
+    return layout;
 }
 
 void P402TqWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

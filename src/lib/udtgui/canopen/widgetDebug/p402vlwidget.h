@@ -28,7 +28,6 @@
 #include <QLabel>
 #include <QSlider>
 #include <QSpinBox>
-#include <QScrollArea>
 #include <QGroupBox>
 #include <QFormLayout>
 

@@ -28,19 +28,13 @@
 #include "profile/p402/nodeprofile402.h"
 #include "profile/p402/modeip.h"
 
-#include <QFormLayout>
-#include <QGroupBox>
-#include <QLineEdit>
-#include <QPushButton>
 #include <QString>
 #include <QStringList>
 #include <QtMath>
 
 P402IpWidget::P402IpWidget(QWidget *parent)
-    : QScrollArea(parent)
+    : QWidget(parent)
 {
-    setWidgetResizable(true);
-
     _node = nullptr;
     _nodeProfile402 = nullptr;
 }
@@ -355,14 +349,53 @@ void P402IpWidget::pdoMapping()
 
 void P402IpWidget::createWidgets()
 {
-    QWidget *widget = new QWidget();
-    QVBoxLayout *layout = new QVBoxLayout();
+    // Group Box IP mode
+    QGroupBox *modeGroupBox = new QGroupBox(tr(" Interpolated position mode"));
+    _modeLayout = new QFormLayout();
+
+    targetWidgets();
+    informationWidgets();
+    limitWidgets();
+
+    QFrame *frame = new QFrame();
+    frame->setFrameStyle(QFrame::HLine);
+    frame->setFrameShadow(QFrame::Sunken);
+    _modeLayout->addRow(frame);
+
+    slopeWidgets();
+
+    frame = new QFrame();
+    frame->setFrameStyle(QFrame::HLine);
+    frame->setFrameShadow(QFrame::Sunken);
+    _modeLayout->addRow(frame);
+
+    homePolarityWidgets();
+
+    modeGroupBox->setLayout(_modeLayout);
+
+    // Create interface
+    QWidget *widget = new QWidget(this);
+    QVBoxLayout *layout = new QVBoxLayout(widget);
     layout->setMargin(0);
 
-    // Group Box IP mode
-    QGroupBox *ipGroupBox = new QGroupBox(tr(" Interpolated position mode"));
-    QFormLayout *qfLayout = new QFormLayout();
+    layout->addWidget(modeGroupBox);
+    layout->addWidget(sinusoidalMotionProfileWidgets());
+    layout->addWidget(controlWordWidgets());
 
+    QScrollArea *scrollArea = new QScrollArea;
+    scrollArea->setWidget(widget);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    QVBoxLayout *vBoxLayout = new QVBoxLayout();
+    vBoxLayout->addWidget(scrollArea);
+    vBoxLayout->addLayout(buttonWidgets());
+    vBoxLayout->setMargin(0);
+    setLayout(vBoxLayout);
+}
+
+void P402IpWidget::targetWidgets()
+{
     QLayout *dataRecordlayout = new QHBoxLayout();
     _dataRecordLineEdit = new QLineEdit();
     _dataRecordLineEdit->setToolTip("Separated by ,");
@@ -373,95 +406,110 @@ void P402IpWidget::createWidgets()
 
     dataRecordlayout->addWidget(_dataRecordLineEdit);
     dataRecordlayout->addWidget(_clearBufferPushButton);
-    qfLayout->addRow(tr("Data record "), dataRecordlayout);
+    _modeLayout->addRow(tr("Data record "), dataRecordlayout);
+}
 
+void P402IpWidget::informationWidgets()
+{
     _infoLabel = new QLabel();
     _infoLabel->setStyleSheet("QLabel { color : red; }");
-    qfLayout->addRow(tr("Information :"), _infoLabel);
+    _modeLayout->addRow(tr("Information :"), _infoLabel);
 
     _positionDemandValueLabel = new IndexLabel();
-    qfLayout->addRow(tr("Position demand value :"), _positionDemandValueLabel);
+    _modeLayout->addRow(tr("Position demand value :"), _positionDemandValueLabel);
 
     _positionAcualValueLabel = new IndexLabel();
-    qfLayout->addRow(tr("Position actual value :"), _positionAcualValueLabel);
+    _modeLayout->addRow(tr("Position actual value :"), _positionAcualValueLabel);
+}
 
-    QLayout *positionRangelLimitlayout = new QHBoxLayout();
-    positionRangelLimitlayout->setSpacing(0);
+void P402IpWidget::limitWidgets()
+{
+    // POSITION RANGE LIMIT
+    QLayout *positionLayout = new QHBoxLayout();
+    positionLayout->setSpacing(0);
+
     _positionRangelLimitMinSpinBox = new IndexSpinBox();
-    positionRangelLimitlayout->addWidget(_positionRangelLimitMinSpinBox);
+    positionLayout->addWidget(_positionRangelLimitMinSpinBox);
     QLabel *label = new QLabel(tr(":"));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    positionRangelLimitlayout->addWidget(label);
+    positionLayout->addWidget(label);
+
     _positionRangelLimitMaxSpinBox = new IndexSpinBox();
-    positionRangelLimitlayout->addWidget(_positionRangelLimitMaxSpinBox);
+    positionLayout->addWidget(_positionRangelLimitMaxSpinBox);
     label = new QLabel(tr("&Position range limit :"));
     label->setToolTip(tr("Min, Max"));
     label->setBuddy(_positionRangelLimitMinSpinBox);
-    qfLayout->addRow(label, positionRangelLimitlayout);
+    _modeLayout->addRow(label, positionLayout);
 
-    QLayout *softwarePositionLimitlayout = new QHBoxLayout();
-    softwarePositionLimitlayout->setSpacing(0);
+    // SOFTWARE RANGE LIMIT
+    QLayout *softwareLayout = new QHBoxLayout();
+    softwareLayout->setSpacing(0);
+
     _softwarePositionLimitMinSpinBox = new IndexSpinBox();
-    softwarePositionLimitlayout->addWidget(_softwarePositionLimitMinSpinBox);
+    softwareLayout->addWidget(_softwarePositionLimitMinSpinBox);
     label = new QLabel(tr(":"));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    softwarePositionLimitlayout->addWidget(label);
+    softwareLayout->addWidget(label);
+
     _softwarePositionLimitMaxSpinBox = new IndexSpinBox();
-    softwarePositionLimitlayout->addWidget(_softwarePositionLimitMaxSpinBox);
+    softwareLayout->addWidget(_softwarePositionLimitMaxSpinBox);
     label = new QLabel(tr("&Software position limit :"));
     label->setToolTip(tr("Min, Max"));
     label->setBuddy(_softwarePositionLimitMinSpinBox);
-    qfLayout->addRow(label, softwarePositionLimitlayout);
 
-    // Add Max profile velocity (0x607F)
+    _modeLayout->addRow(label, softwareLayout);
+
+    // Max profile velocity (0x607F)
     _maxProfileVelocitySpinBox = new IndexSpinBox();
-    qfLayout->addRow(tr("Max profile velocity :"), _maxProfileVelocitySpinBox);
+    _modeLayout->addRow(tr("Max profile velocity :"), _maxProfileVelocitySpinBox);
 
-    // Add Max motor speed (0x6080)
+    // Max motor speed (0x6080)
     _maxMotorSpeedSpinBox = new IndexSpinBox();
-    qfLayout->addRow(tr("Max motor speed :"), _maxMotorSpeedSpinBox);
+    _modeLayout->addRow(tr("Max motor speed :"), _maxMotorSpeedSpinBox);
+}
 
-    QFrame *frame = new QFrame();
-    frame->setFrameStyle(QFrame::HLine);
-    frame->setFrameShadow(QFrame::Sunken);
-    qfLayout->addRow(frame);
-
+void P402IpWidget::slopeWidgets()
+{
     QLayout *ipTimePeriodlayout = new QHBoxLayout();
     ipTimePeriodlayout->setSpacing(0);
+
     _timePeriodUnitSpinBox = new IndexSpinBox();
     ipTimePeriodlayout->addWidget(_timePeriodUnitSpinBox);
-    label = new QLabel(tr("unit.10<sup>index</sup>"));
+
+    QLabel *label = new QLabel(tr("unit.10<sup>index</sup>"));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     ipTimePeriodlayout->addWidget(label);
+
     _timePeriodIndexSpinBox = new IndexSpinBox();
     _timePeriodIndexSpinBox->setDisplayHint(AbstractIndexWidget::DisplayHint::DisplayDirectValue);
     ipTimePeriodlayout->addWidget(_timePeriodIndexSpinBox);
+
     label = new QLabel(tr("&Interpolation time period :"));
     label->setToolTip(tr("unit, index (unit*10^index)"));
     label->setBuddy(_timePeriodUnitSpinBox);
-    qfLayout->addRow(label, ipTimePeriodlayout);
 
-    frame = new QFrame();
-    frame->setFrameStyle(QFrame::HLine);
-    frame->setFrameShadow(QFrame::Sunken);
-    qfLayout->addRow(frame);
+    _modeLayout->addRow(label, ipTimePeriodlayout);
+}
 
-    // Add Home offset (0x607C)
+void P402IpWidget::homePolarityWidgets()
+{
+    // Home offset (0x607C)
     _homeOffsetSpinBox = new IndexSpinBox();
-    qfLayout->addRow(tr("Home offset :"), _homeOffsetSpinBox);
+    _modeLayout->addRow(tr("Home offset :"), _homeOffsetSpinBox);
 
     // Polarity (0x607E)
     _polaritySpinBox = new QSpinBox();
     _polaritySpinBox->setToolTip("0 = x1, 1 = x(-1)");
     _polaritySpinBox->setRange(0, 1);
-    qfLayout->addRow(tr("Polarity :"), _polaritySpinBox);
+    _modeLayout->addRow(tr("Polarity :"), _polaritySpinBox);
+
     connect(_polaritySpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { _nodeProfile402->setPolarityPosition(i); });
+}
 
-    ipGroupBox->setLayout(qfLayout);
-
-    // Group Box GeneratorSinusoidal
-    QGroupBox *generatorSinusoidalGroupBox = new QGroupBox(tr("Sinusoidal Motion Profile"));
-    QFormLayout *generatorSinusoidalLayout = new QFormLayout();
+QGroupBox *P402IpWidget::sinusoidalMotionProfileWidgets()
+{
+    QGroupBox *groupBox = new QGroupBox(tr("Sinusoidal Motion Profile"));
+    QFormLayout *layout = new QFormLayout();
 
     QHBoxLayout *buttonGoStoplayout = new QHBoxLayout();
 
@@ -480,27 +528,37 @@ void P402IpWidget::createWidgets()
     buttonGoStoplayout->addWidget(_goTargetPushButton);
 
     buttonGoStoplayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed));
-    generatorSinusoidalLayout->addRow(tr("Target position :"), buttonGoStoplayout);
+    layout->addRow(tr("Target position :"), buttonGoStoplayout);
 
     _relativeTargetpositionSpinBox = new QCheckBox();
-    generatorSinusoidalLayout->addRow(tr("Relative target position :"), _relativeTargetpositionSpinBox);
+    layout->addRow(tr("Relative target position :"), _relativeTargetpositionSpinBox);
 
     _durationSpinBox = new QSpinBox();
-    generatorSinusoidalLayout->addRow(tr("Duration :"), _durationSpinBox);
+    layout->addRow(tr("Duration :"), _durationSpinBox);
     _durationSpinBox->setSuffix(" ms");
     _durationSpinBox->setRange(0, std::numeric_limits<int>::max());
 
-    generatorSinusoidalGroupBox->setLayout(generatorSinusoidalLayout);
+    groupBox->setLayout(layout);
 
+    return groupBox;
+}
+
+QGroupBox *P402IpWidget::controlWordWidgets()
+{
     // Group Box Control Word
-    QGroupBox *modeControlWordGroupBox = new QGroupBox(tr("Control Word (0x6040) bit 4"));
-    QFormLayout *modeControlWordLayout = new QFormLayout();
+    QGroupBox *groupBox = new QGroupBox(tr("Control Word (0x6040) bit 4"));
+    QFormLayout *layout = new QFormLayout();
 
     _enableRampCheckBox = new QCheckBox();
-    modeControlWordLayout->addRow(tr("Enable interpolation (bit 4) :"), _enableRampCheckBox);
+    layout->addRow(tr("Enable interpolation (bit 4) :"), _enableRampCheckBox);
     connect(_enableRampCheckBox, &QCheckBox::clicked, this, &P402IpWidget::enableRampClicked);
-    modeControlWordGroupBox->setLayout(modeControlWordLayout);
+    groupBox->setLayout(layout);
 
+    return groupBox;
+}
+
+QHBoxLayout *P402IpWidget::buttonWidgets()
+{
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402IpWidget::dataLogger);
 
@@ -514,19 +572,14 @@ void P402IpWidget::createWidgets()
     ipModeLabel->setPixmap(ipModePixmap);
     QPushButton *imgPushButton = new QPushButton(tr("Diagram IP mode"));
     connect(imgPushButton, SIGNAL(clicked()), ipModeLabel, SLOT(show()));
-    QHBoxLayout *ipButtonLayout = new QHBoxLayout();
-    ipButtonLayout->setSpacing(5);
-    ipButtonLayout->addWidget(dataLoggerPushButton);
-    ipButtonLayout->addWidget(mappingPdoPushButton);
-    ipButtonLayout->addWidget(imgPushButton);
 
-    layout->addWidget(ipGroupBox);
-    layout->addWidget(generatorSinusoidalGroupBox);
-    layout->addWidget(modeControlWordGroupBox);
-    layout->addItem(ipButtonLayout);
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->setSpacing(5);
+    layout->addWidget(dataLoggerPushButton);
+    layout->addWidget(mappingPdoPushButton);
+    layout->addWidget(imgPushButton);
 
-    widget->setLayout(layout);
-    setWidget(widget);
+    return layout;
 }
 
 void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

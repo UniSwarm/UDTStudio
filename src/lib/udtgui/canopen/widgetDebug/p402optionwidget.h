@@ -1,4 +1,4 @@
-/**
+﻿/**
  ** This file is part of the UDTStudio project.
  ** Copyright 2019-2021 UniSwarm
  **
@@ -24,11 +24,11 @@
 #include "nodeodsubscriber.h"
 
 #include <QButtonGroup>
-#include <QScrollArea>
+#include <QGroupBox>
 
 class Node;
 
-class P402OptionWidget : public QScrollArea, public NodeOdSubscriber
+class P402OptionWidget : public QWidget, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
@@ -70,7 +70,14 @@ private:
 
     void refreshData(NodeObjectId object);
 
+    // Creation widgets
     void createWidgets();
+    QGroupBox *abortConnectionWidgets();
+    QGroupBox *quickStopWidgets();
+    QGroupBox *shutdownWidgets();
+    QGroupBox *disableWidgets();
+    QGroupBox *haltWidgets();
+    QGroupBox *faultReactionWidgets();
 
     // NodeOdSubscriber interface
 protected:

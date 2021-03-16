@@ -29,14 +29,15 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSpinBox>
-#include <QScrollArea>
+#include <QFormLayout>
+#include <QGroupBox>
 
 class NodeProfile402;
 class ModePp;
 class IndexSpinBox;
 class IndexLabel;
 
-class P402PpWidget : public QScrollArea, public NodeOdSubscriber
+class P402PpWidget : public QWidget, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
@@ -132,7 +133,17 @@ private:
     void dataLogger();
     void pdoMapping();
 
+    // Creation widgets
+    QFormLayout *_modeLayout;
     void createWidgets();
+    void targetWidgets();
+    void informationWidgets();
+    void limitWidgets();
+    void velocityWidgets();
+    void accelDeccelWidgets();
+    void homePolarityWidgets();
+    QGroupBox *controlWordWidgets();
+    QHBoxLayout *buttonWidgets();
 
     // NodeOdSubscriber interface
 protected:

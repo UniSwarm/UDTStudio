@@ -24,12 +24,11 @@
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QRadioButton>
+#include <QScrollArea>
 
 P402OptionWidget::P402OptionWidget(QWidget *parent)
-    : QScrollArea(parent)
+    : QWidget(parent)
 {
-    setWidgetResizable(true);
-
     _node = nullptr;
 }
 
@@ -207,136 +206,165 @@ void P402OptionWidget::refreshData(NodeObjectId object)
 
 void P402OptionWidget::createWidgets()
 {
-    QWidget *widget = new QWidget();
-    QString name;
-    // SECOND COLUMM
-    QLayout *layout = new QVBoxLayout();
+    // Create interface
+    QWidget *widget = new QWidget(this);
+    QVBoxLayout *layout = new QVBoxLayout(widget);
     layout->setMargin(0);
 
-    // Group Box Abort connection option
+    layout->addWidget(abortConnectionWidgets());
+    layout->addWidget(quickStopWidgets());
+    layout->addWidget(shutdownWidgets());
+    layout->addWidget(disableWidgets());
+    layout->addWidget(haltWidgets());
+    layout->addWidget(faultReactionWidgets());
+
+    QScrollArea *scrollArea = new QScrollArea;
+    scrollArea->setWidget(widget);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    QVBoxLayout *vBoxLayout = new QVBoxLayout();
+    vBoxLayout->addWidget(scrollArea);
+    vBoxLayout->setMargin(0);
+    setLayout(vBoxLayout);
+}
+
+QGroupBox *P402OptionWidget::abortConnectionWidgets()
+{
+    QString name;
     name = tr("Abort connection option ") + QString("(0x%1) :").arg(QString::number(_abortConnectionObjectId.index(), 16).toUpper());
-    QGroupBox *abortConnectionOptionGroupBox = new QGroupBox(name);
-    QFormLayout *abortConnectionOptionLayout = new QFormLayout();
+    QGroupBox *groupBox = new QGroupBox(name);
+    QFormLayout *layout = new QFormLayout();
     _abortConnectionOptionGroup = new QButtonGroup(this);
     _abortConnectionOptionGroup->setExclusive(true);
     QRadioButton *_0AbortConnectionOptionCheckBox = new QRadioButton(tr("0 No action"));
-    abortConnectionOptionLayout->addRow(_0AbortConnectionOptionCheckBox);
+    layout->addRow(_0AbortConnectionOptionCheckBox);
     _abortConnectionOptionGroup->addButton(_0AbortConnectionOptionCheckBox, 0);
     QRadioButton *_1AbortConnectionOptionCheckBox = new QRadioButton(tr("1 Fault signal"));
-    abortConnectionOptionLayout->addRow(_1AbortConnectionOptionCheckBox);
+    layout->addRow(_1AbortConnectionOptionCheckBox);
     _abortConnectionOptionGroup->addButton(_1AbortConnectionOptionCheckBox, 1);
     QRadioButton *_2AbortConnectionOptionCheckBox = new QRadioButton(tr("2 Disable voltage command"));
-    abortConnectionOptionLayout->addRow(_2AbortConnectionOptionCheckBox);
+    layout->addRow(_2AbortConnectionOptionCheckBox);
     _abortConnectionOptionGroup->addButton(_2AbortConnectionOptionCheckBox, 2);
     QRadioButton *_3AbortConnectionOptionCheckBox = new QRadioButton(tr("3 Quick stop command"));
-    abortConnectionOptionLayout->addRow(_3AbortConnectionOptionCheckBox);
+    layout->addRow(_3AbortConnectionOptionCheckBox);
     _abortConnectionOptionGroup->addButton(_3AbortConnectionOptionCheckBox, 3);
-    abortConnectionOptionGroupBox->setLayout(abortConnectionOptionLayout);
+    groupBox->setLayout(layout);
     connect(_abortConnectionOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { abortConnectionOptionClicked(id); });
-    // END Group Box Abort connection option
 
-    // Group Box Quick stop option
+    return groupBox;
+}
+
+ QGroupBox *P402OptionWidget::quickStopWidgets()
+{
+    QString name;
     name = tr("Quick stop option ") + QString("(0x%1) :").arg(QString::number(_quickStopObjectId.index(), 16).toUpper());
-    QGroupBox *quickStopOptionGroupBox = new QGroupBox(name);
-    QFormLayout *quickStopOptionLayout = new QFormLayout();
+    QGroupBox *groupBox = new QGroupBox(name);
+    QFormLayout *layout = new QFormLayout();
     _quickStopOptionGroup = new QButtonGroup(this);
     _quickStopOptionGroup->setExclusive(true);
     QRadioButton *_0QuickStopOptionCheckBox = new QRadioButton(tr("0 Disable drive function"));
-    quickStopOptionLayout->addRow(_0QuickStopOptionCheckBox);
+    layout->addRow(_0QuickStopOptionCheckBox);
     _quickStopOptionGroup->addButton(_0QuickStopOptionCheckBox, 0);
     QRadioButton *_1QuickStopOptionCheckBox = new QRadioButton(tr("1 Slow down on slow down ramp and transit into switch on disabled"));
-    quickStopOptionLayout->addRow(_1QuickStopOptionCheckBox);
+    layout->addRow(_1QuickStopOptionCheckBox);
     _quickStopOptionGroup->addButton(_1QuickStopOptionCheckBox, 1);
     QRadioButton *_2QuickStopOptionCheckBox = new QRadioButton(tr("2 Slow down on quick stop ramp and transit into switch on disabled"));
-    quickStopOptionLayout->addRow(_2QuickStopOptionCheckBox);
+    layout->addRow(_2QuickStopOptionCheckBox);
     _quickStopOptionGroup->addButton(_2QuickStopOptionCheckBox, 2);
     QRadioButton *_5QuickStopOptionCheckBox = new QRadioButton(tr("5 Slow down on slow down ramp and stay in quick stop active"));
-    quickStopOptionLayout->addRow(_5QuickStopOptionCheckBox);
+    layout->addRow(_5QuickStopOptionCheckBox);
     _quickStopOptionGroup->addButton(_5QuickStopOptionCheckBox, 5);
     QRadioButton *_6QuickStopOptionCheckBox = new QRadioButton(tr("6 Slow down on quick stop ramp and stay in quick stop active"));
-    quickStopOptionLayout->addRow(_6QuickStopOptionCheckBox);
+    layout->addRow(_6QuickStopOptionCheckBox);
     _quickStopOptionGroup->addButton(_6QuickStopOptionCheckBox, 6);
-    quickStopOptionGroupBox->setLayout(quickStopOptionLayout);
+    groupBox->setLayout(layout);
     connect(_quickStopOptionGroup, QOverload<int>::of(&QButtonGroup::buttonPressed), [=](int id) { quickStopOptionClicked(id); });
-    // END Group Box Quick stop option
 
-    // Group Box Shutdown option code
+    return groupBox;
+}
+
+QGroupBox *P402OptionWidget::shutdownWidgets()
+{
+    QString name;
     name = tr("Shutdown option code ") + QString("(0x%1) :").arg(QString::number(_shutdownObjectId.index(), 16).toUpper());
-    QGroupBox *shutdownOptionGroupBox = new QGroupBox(name);
-    QFormLayout *shutdownOptionLayout = new QFormLayout();
+    QGroupBox *groupBox = new QGroupBox(name);
+    QFormLayout *layout = new QFormLayout();
     _shutdownOptionGroup = new QButtonGroup(this);
     _shutdownOptionGroup->setExclusive(true);
     QRadioButton *_0ShutdownOptionCheckBox = new QRadioButton(tr("0 Disable drive function (switch-off the drive power stage)"));
-    shutdownOptionLayout->addRow(_0ShutdownOptionCheckBox);
+    layout->addRow(_0ShutdownOptionCheckBox);
     _shutdownOptionGroup->addButton(_0ShutdownOptionCheckBox, 0);
     QRadioButton *_1ShutdownOptionCheckBox = new QRadioButton(tr("1 Slow down with slow down ramp; disable of the drive function"));
-    shutdownOptionLayout->addRow(_1ShutdownOptionCheckBox);
+    layout->addRow(_1ShutdownOptionCheckBox);
     _shutdownOptionGroup->addButton(_1ShutdownOptionCheckBox, 1);
-    shutdownOptionGroupBox->setLayout(shutdownOptionLayout);
+    groupBox->setLayout(layout);
     connect(_shutdownOptionGroup, QOverload<int>::of(&QButtonGroup::buttonPressed), [=](int id) { shutdownOptionClicked(id); });
-    // END Group Box Shutdown option code
 
-    // Group Box Disable operation option code
+    return groupBox;
+}
+
+ QGroupBox *P402OptionWidget::disableWidgets()
+{
+    QString name;
     name = tr("Disable operation option code ") + QString("(0x%1) :").arg(QString::number(_disableObjectId.index(), 16).toUpper());
-    QGroupBox *disableOptionGroupBox = new QGroupBox(name);
-    QFormLayout *disableOptionLayout = new QFormLayout();
+    QGroupBox *groupBox = new QGroupBox(name);
+    QFormLayout *layout = new QFormLayout();
     _disableOptionGroup = new QButtonGroup(this);
     _disableOptionGroup->setExclusive(true);
     QRadioButton *_0DisableOptionCheckBox = new QRadioButton(tr("0 Disable drive function (switch-off the drive power stage)"));
-    disableOptionLayout->addRow(_0DisableOptionCheckBox);
+    layout->addRow(_0DisableOptionCheckBox);
     _disableOptionGroup->addButton(_0DisableOptionCheckBox, 0);
     QRadioButton *_1DisableOptionCheckBox = new QRadioButton(tr("1 Slow down with slow down ramp; disable of the drive function"));
-    disableOptionLayout->addRow(_1DisableOptionCheckBox);
+    layout->addRow(_1DisableOptionCheckBox);
     _disableOptionGroup->addButton(_1DisableOptionCheckBox, 1);
-    disableOptionGroupBox->setLayout(disableOptionLayout);
+    groupBox->setLayout(layout);
     connect(_disableOptionGroup, QOverload<int>::of(&QButtonGroup::buttonPressed), [=](int id) { disableOptionClicked(id); });
-    // END Group Box Disable operation option code
 
-    // Group Box Halt option
+    return groupBox;
+}
+
+QGroupBox *P402OptionWidget::haltWidgets()
+{
+    QString name;
     name = tr("Halt option ") + QString("(0x%1) :").arg(QString::number(_haltObjectId.index(), 16).toUpper());
-    QGroupBox *haltOptionGroupBox = new QGroupBox(name);
-    QFormLayout *haltOptionLayout = new QFormLayout();
+    QGroupBox *groupBox = new QGroupBox(name);
+    QFormLayout *layout = new QFormLayout();
     _haltOptionGroup = new QButtonGroup(this);
     _haltOptionGroup->setExclusive(true);
     QRadioButton *_slowDownRampCheckBox = new QRadioButton(tr("1 Slow down on slow down ramp and stay in operation enabled"));
-    haltOptionLayout->addRow(_slowDownRampCheckBox);
+    layout->addRow(_slowDownRampCheckBox);
     _haltOptionGroup->addButton(_slowDownRampCheckBox, 1);
     QRadioButton *_quickStopRampCheckBox = new QRadioButton(tr("2 Slow down on quick stop ramp and stay in operation enabled"));
-    haltOptionLayout->addRow(_quickStopRampCheckBox);
+    layout->addRow(_quickStopRampCheckBox);
     _haltOptionGroup->addButton(_quickStopRampCheckBox, 2);
-    haltOptionGroupBox->setLayout(haltOptionLayout);
+    groupBox->setLayout(layout);
     connect(_haltOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { haltOptionClicked(id); });
-    // END Group Box Halt option
 
-    // Group Box Fault reaction option
+    return groupBox;
+}
+
+QGroupBox *P402OptionWidget::faultReactionWidgets()
+{
+    QString name;
     name = tr("Fault reaction option ") + QString("(0x%1) :").arg(QString::number(_faultReactionObjectId.index(), 16).toUpper());
-    QGroupBox *faultReactionOptionGroupBox = new QGroupBox(name);
-    QFormLayout *faultReactionOptionLayout = new QFormLayout();
+    QGroupBox *groupBox = new QGroupBox(name);
+    QFormLayout *layout = new QFormLayout();
     _faultReactionOptionGroup = new QButtonGroup(this);
     _faultReactionOptionGroup->setExclusive(true);
     QRadioButton *_0FaultReactionOptionCheckBox = new QRadioButton(tr("0 Disable drive function, motor is free to rotate"));
-    faultReactionOptionLayout->addRow(_0FaultReactionOptionCheckBox);
+    layout->addRow(_0FaultReactionOptionCheckBox);
     _faultReactionOptionGroup->addButton(_0FaultReactionOptionCheckBox, 0);
     QRadioButton *_1FaultReactionOptionCheckBox = new QRadioButton(tr("1 Slow down on slow down ramp"));
-    faultReactionOptionLayout->addRow(_1FaultReactionOptionCheckBox);
+    layout->addRow(_1FaultReactionOptionCheckBox);
     _faultReactionOptionGroup->addButton(_1FaultReactionOptionCheckBox, 1);
     QRadioButton *_2FaultReactionOptionCheckBox = new QRadioButton(tr("2 Slow down on quick stop ramp"));
-    faultReactionOptionLayout->addRow(_2FaultReactionOptionCheckBox);
+    layout->addRow(_2FaultReactionOptionCheckBox);
     _faultReactionOptionGroup->addButton(_2FaultReactionOptionCheckBox, 2);
-    faultReactionOptionGroupBox->setLayout(faultReactionOptionLayout);
+    groupBox->setLayout(layout);
     connect(_faultReactionOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { faultReactionOptionClicked(id); });
-    // END Group Box Quick stop option
 
-    layout->addWidget(abortConnectionOptionGroupBox);
-    layout->addWidget(quickStopOptionGroupBox);
-    layout->addWidget(shutdownOptionGroupBox);
-    layout->addWidget(disableOptionGroupBox);
-    layout->addWidget(haltOptionGroupBox);
-    layout->addWidget(faultReactionOptionGroupBox);
-    // END SECOND COLUMM
-
-    widget->setLayout(layout);
-    setWidget(widget);
+    return groupBox;
 }
 
 void P402OptionWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

@@ -27,8 +27,6 @@
 #include "profile/p402/nodeprofile402.h"
 #include "profile/p402/modevl.h"
 
-#include <QFormLayout>
-#include <QGroupBox>
 #include <QPushButton>
 
 P402VlWidget::P402VlWidget(QWidget *parent)
@@ -349,6 +347,7 @@ void P402VlWidget::createWidgets()
     QScrollArea *scrollArea = new QScrollArea;
     scrollArea->setWidget(widget);
     scrollArea->setWidgetResizable(true);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->addWidget(scrollArea);
@@ -421,6 +420,7 @@ void P402VlWidget::limitWidgets()
     label = new QLabel(tr("Min/Max amo&unt :"));
     label->setToolTip("Min, Max");
     label->setBuddy(_minVelocityMinMaxAmountSpinBox);
+
     _modeLayout->addRow(label, minMaxAmountlayout);
 }
 
@@ -522,23 +522,23 @@ void P402VlWidget::factorWidgets()
 QGroupBox *P402VlWidget::controlWordWidgets()
 {
     // Group Box CONTROL WORD
-    QGroupBox *modeControlWordGroupBox = new QGroupBox(tr("Control Word :"));
-    QFormLayout *modeControlWordLayout = new QFormLayout();
+    QGroupBox *groupBox = new QGroupBox(tr("Control Word :"));
+    QFormLayout *layout = new QFormLayout();
 
     _enableRampCheckBox = new QCheckBox();
-    modeControlWordLayout->addRow(tr("Enable Ramp (bit 4) :"), _enableRampCheckBox);
+    layout->addRow(tr("Enable Ramp (bit 4) :"), _enableRampCheckBox);
     connect(_enableRampCheckBox, &QCheckBox::clicked, this, &P402VlWidget::enableRampClicked);
 
     _unlockRampCheckBox = new QCheckBox();
-    modeControlWordLayout->addRow(tr("Unlock Ramp (bit 5) :"), _unlockRampCheckBox);
+    layout->addRow(tr("Unlock Ramp (bit 5) :"), _unlockRampCheckBox);
     connect(_unlockRampCheckBox, &QCheckBox::clicked, this, &P402VlWidget::unlockRampClicked);
 
     _referenceRampCheckBox = new QCheckBox();
-    modeControlWordLayout->addRow(tr("Not set ramp to zero (bit 6) :"), _referenceRampCheckBox);
+    layout->addRow(tr("Not set ramp to zero (bit 6) :"), _referenceRampCheckBox);
     connect(_referenceRampCheckBox, &QCheckBox::clicked, this, &P402VlWidget::referenceRampClicked);
-    modeControlWordGroupBox->setLayout(modeControlWordLayout);
+    groupBox->setLayout(layout);
 
-    return modeControlWordGroupBox;
+    return groupBox;
 }
 
 QHBoxLayout *P402VlWidget::buttonWidgets()
