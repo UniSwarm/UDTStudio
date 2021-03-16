@@ -105,6 +105,25 @@ void MotorWidget::readAllObject()
     _bridgePwmLabel->readObject();
 }
 
+void MotorWidget::createWidgets()
+{
+    QWidget *motionSensorWidget = new QWidget(this);
+    QVBoxLayout *actionLayout = new QVBoxLayout(motionSensorWidget);
+
+    actionLayout->addWidget(motorConfigWidgets());
+    actionLayout->addWidget(motorStatusWidgets());
+
+    QScrollArea *motionSensorScrollArea = new QScrollArea;
+    motionSensorScrollArea->setWidget(motionSensorWidget);
+    motionSensorScrollArea->setWidgetResizable(true);
+
+    QVBoxLayout *vBoxLayout = new QVBoxLayout();
+    vBoxLayout->addWidget(toolBarWidgets());
+    vBoxLayout->addWidget(motionSensorScrollArea);
+    vBoxLayout->setMargin(0);
+    setLayout(vBoxLayout);
+}
+
 QToolBar *MotorWidget::toolBarWidgets()
 {
     // toolbar
@@ -167,27 +186,4 @@ QGroupBox *MotorWidget::motorStatusWidgets()
 
     statusGroupBox->setLayout(statusLayout);
     return statusGroupBox;
-}
-
-void MotorWidget::createWidgets()
-{
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
-
-    QWidget *motionSensorWidget = new QWidget(this);
-    QVBoxLayout *actionLayout = new QVBoxLayout(motionSensorWidget);
-
-    actionLayout->addWidget(motorConfigWidgets());
-    actionLayout->addWidget(motorStatusWidgets());
-
-    QScrollArea *motionSensorScrollArea = new QScrollArea;
-    motionSensorScrollArea->setFrameShape(QFrame::NoFrame);
-    motionSensorScrollArea->setWidget(motionSensorWidget);
-    motionSensorScrollArea->setWidgetResizable(true);
-
-    QVBoxLayout *vBoxLayout = new QVBoxLayout();
-    vBoxLayout->addWidget(toolBarWidgets());
-    vBoxLayout->addWidget(motionSensorScrollArea);
-    vBoxLayout->setMargin(2);
-    setLayout(vBoxLayout);
 }

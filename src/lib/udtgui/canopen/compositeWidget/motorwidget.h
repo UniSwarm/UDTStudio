@@ -29,8 +29,6 @@
 #include <QWidget>
 
 class Node;
-class DataLogger;
-class DataLoggerChartsWidget;
 class IndexSpinBox;
 class IndexLabel;
 class IndexComboBox;
@@ -50,13 +48,14 @@ public slots:
 protected:
     Node *_node;
 
+    // Motor Config
     IndexComboBox *_motorTypeComboBox;
     IndexSpinBox *_peakCurrent;
     IndexSpinBox *_polePair;
     IndexSpinBox *_maxVelocity;
     IndexSpinBox *_velocityConstant;
     IndexSpinBox *_currentConstant;
-
+    // Motor Status
     IndexLabel *_coderLabel;
     IndexLabel *_timeCoderLabel;
     IndexLabel *_phaseLabel;
@@ -65,10 +64,11 @@ protected:
     void statusNodeChanged(Node::Status status);
     void readAllObject();
 
+    // Creation widgets
+    void createWidgets();
     QToolBar *toolBarWidgets();
     QGroupBox *motorConfigWidgets();
     QGroupBox *motorStatusWidgets();
-    void createWidgets();
 
 };
 
