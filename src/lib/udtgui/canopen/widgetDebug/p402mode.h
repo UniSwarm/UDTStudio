@@ -36,15 +36,13 @@ public:
     Node *node() const;
     uint8_t axis() const;
 
-    virtual void updateData();
-    virtual void readAllObject() = 0;
+    virtual void readRealTimeObjects();
+    virtual void readAllObjects() = 0;
     virtual void reset();
     virtual void stop();
 
 public slots:
     virtual void setNode(Node *value, uint8_t axis = 0) = 0;
-    //virtual void updateData() = 0;
-
 
 protected:
     Node *_node;

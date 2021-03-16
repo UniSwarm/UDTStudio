@@ -16,8 +16,8 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef WIDGETDEBUG_H
-#define WIDGETDEBUG_H
+#ifndef P402WIDGET_H
+#define P402WIDGET_H
 
 #include "udtgui_global.h"
 
@@ -43,12 +43,12 @@
 
 class IndexLabel;
 
-class UDTGUI_EXPORT WidgetDebug : public QWidget
+class UDTGUI_EXPORT P402Widget : public QWidget
 {
     Q_OBJECT
 public:
-    WidgetDebug(Node *node = nullptr, uint8_t axis = 0, QWidget *parent = nullptr);
-    ~WidgetDebug() override;
+    P402Widget(Node *node = nullptr, uint8_t axis = 0, QWidget *parent = nullptr);
+    ~P402Widget() override;
 
     Node *node() const;
 
@@ -141,4 +141,4 @@ private:
     QGroupBox *statusWordWidgets();
 };
 
-#endif // WIDGETDEBUG_H
+#endif // P402Widget_H

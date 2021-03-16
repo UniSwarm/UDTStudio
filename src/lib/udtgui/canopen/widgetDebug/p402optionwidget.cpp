@@ -37,7 +37,7 @@ P402OptionWidget::~P402OptionWidget()
     unRegisterFullOd();
 }
 
-void P402OptionWidget::readAllObject()
+void P402OptionWidget::readAllObjects()
 {
     if (_node)
     {

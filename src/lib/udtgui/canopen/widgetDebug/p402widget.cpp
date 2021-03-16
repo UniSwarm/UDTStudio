@@ -16,7 +16,7 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "widgetdebug.h"
+#include "p402widget.h"
 
 #include "indexdb402.h"
 #include "services/services.h"
@@ -32,7 +32,7 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 
-WidgetDebug::WidgetDebug(Node *node, uint8_t axis, QWidget *parent)
+P402Widget::P402Widget(Node *node, uint8_t axis, QWidget *parent)
     : QWidget(parent)
     , _node(node)
     , _axis(axis)
@@ -52,21 +52,21 @@ WidgetDebug::WidgetDebug(Node *node, uint8_t axis, QWidget *parent)
     setNode(node, axis);
 }
 
-WidgetDebug::~WidgetDebug()
+P402Widget::~P402Widget()
 {
 }
 
-Node *WidgetDebug::node() const
+Node *P402Widget::node() const
 {
     return _node;
 }
 
-QString WidgetDebug::title() const
+QString P402Widget::title() const
 {
     return QString("Motion Control");
 }
 
-void WidgetDebug::setNode(Node *node, uint8_t axis)
+void P402Widget::setNode(Node *node, uint8_t axis)
 {
     if (!node)
     {
@@ -97,12 +97,12 @@ void WidgetDebug::setNode(Node *node, uint8_t axis)
         updateModeComboBox();
 
         connect(_modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int id) { modeIndexChanged(id); });
-        connect(_nodeProfile402, &NodeProfile402::modeChanged, this, &WidgetDebug::modeChanged);
-        connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &WidgetDebug::stateChanged);
-        connect(_nodeProfile402, &NodeProfile402::isHalted, this, &WidgetDebug::isHalted);
-        connect(_nodeProfile402, &NodeProfile402::eventHappened, this, &WidgetDebug::eventHappened);
+        connect(_nodeProfile402, &NodeProfile402::modeChanged, this, &P402Widget::modeChanged);
+        connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &P402Widget::stateChanged);
+        connect(_nodeProfile402, &NodeProfile402::isHalted, this, &P402Widget::isHalted);
+        connect(_nodeProfile402, &NodeProfile402::eventHappened, this, &P402Widget::eventHappened);
 
-        connect(_node, &Node::statusChanged, this, &WidgetDebug::statusNodeChanged);
+        connect(_node, &Node::statusChanged, this, &P402Widget::statusNodeChanged);
 
         _modes[NodeProfile402::NoMode]->setNode(_node, axis);
         _modes[NodeProfile402::VL]->setNode(_node, axis);
@@ -121,7 +121,7 @@ void WidgetDebug::setNode(Node *node, uint8_t axis)
     }
 }
 
-void WidgetDebug::statusNodeChanged()
+void P402Widget::statusNodeChanged()
 {
     if (_node)
     {
@@ -140,7 +140,7 @@ void WidgetDebug::statusNodeChanged()
     }
 }
 
-void WidgetDebug::modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew)
+void P402Widget::modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew)
 {
     if (_axis != axis)
     {
@@ -171,7 +171,7 @@ void WidgetDebug::modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNe
     _modeLabel->clear();
 }
 
-void WidgetDebug::stateChanged()
+void P402Widget::stateChanged()
 {
     NodeProfile402::State402 state = _nodeProfile402->currentState();
 
@@ -270,7 +270,7 @@ void WidgetDebug::stateChanged()
     update();
 }
 
-void WidgetDebug::modeIndexChanged(int id)
+void P402Widget::modeIndexChanged(int id)
 {
     if (!_node)
     {
@@ -286,13 +286,13 @@ void WidgetDebug::modeIndexChanged(int id)
     _nodeProfile402->setMode(_listModeComboBox.at(id));
 }
 
-void WidgetDebug::gotoStateOEClicked()
+void P402Widget::gotoStateOEClicked()
 {
     toggleStartLogger(true);
     _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
 }
 
-void WidgetDebug::toggleStartLogger(bool start)
+void P402Widget::toggleStartLogger(bool start)
 {
     if (!_node)
     {
@@ -334,7 +334,7 @@ void WidgetDebug::toggleStartLogger(bool start)
     }
 }
 
-void WidgetDebug::setLogTimer(int ms)
+void P402Widget::setLogTimer(int ms)
 {
     if (_startStopAction->isChecked())
     {
@@ -342,17 +342,17 @@ void WidgetDebug::setLogTimer(int ms)
     }
 }
 
-void WidgetDebug::updateData()
+void P402Widget::updateData()
 {
     if (_node)
     {
         _node->readObject(_statusWordObjectId);
         P402Mode *mode = dynamic_cast<P402Mode*>(_stackedWidget->currentWidget());
-        mode->updateData();
+        mode->readRealTimeObjects();
     }
 }
 
-void WidgetDebug::readAllObject()
+void P402Widget::readAllObject()
 {
     if (_node)
     {
@@ -360,18 +360,18 @@ void WidgetDebug::readAllObject()
         _node->readObject(_statusWordObjectId);
 
         P402Mode *mode = dynamic_cast<P402Mode*>(_stackedWidget->currentWidget());
-        mode->readAllObject();
+        mode->readAllObjects();
     }
 }
 
 
 
-void WidgetDebug::isHalted(bool state)
+void P402Widget::isHalted(bool state)
 {
     _haltPushButton->setChecked(state);
 }
 
-void WidgetDebug::eventHappened(quint8 event)
+void P402Widget::eventHappened(quint8 event)
 {
     _informationLabel->setText(tr("False"));
     _warningLabel->setText(tr("False"));
@@ -440,7 +440,7 @@ void WidgetDebug::eventHappened(quint8 event)
     _warningLabel->setText(text);
 }
 
-void WidgetDebug::updateModeComboBox()
+void P402Widget::updateModeComboBox()
 {
     QList<NodeProfile402::OperationMode> modeList = _nodeProfile402->modesSupported();
     _modeComboBox->clear();
@@ -452,7 +452,7 @@ void WidgetDebug::updateModeComboBox()
     }
 }
 
-void WidgetDebug::displayOption402()
+void P402Widget::displayOption402()
 {
     if (_stackedWidget->currentWidget() == _modes[NodeProfile402::NoMode])
     {
@@ -460,12 +460,12 @@ void WidgetDebug::displayOption402()
     }
     else
     {
-        _modes[NodeProfile402::NoMode]->readAllObject();
+        _modes[NodeProfile402::NoMode]->readAllObjects();
         _stackedWidget->setCurrentWidget(_modes[NodeProfile402::NoMode]);
     }
 }
 
-void WidgetDebug::stateMachineClicked(int id)
+void P402Widget::stateMachineClicked(int id)
 {
     if (!_node)
     {
@@ -474,12 +474,12 @@ void WidgetDebug::stateMachineClicked(int id)
     _nodeProfile402->goToState(static_cast<NodeProfile402::State402>(id));
 }
 
-void WidgetDebug::haltClicked()
+void P402Widget::haltClicked()
 {
     _nodeProfile402->toggleHalt();
 }
 
-void WidgetDebug::setCheckableStateMachine(int id)
+void P402Widget::setCheckableStateMachine(int id)
 {
     for (int i = 1; i <= 8; i++)
     {
@@ -489,7 +489,7 @@ void WidgetDebug::setCheckableStateMachine(int id)
     _stateMachineGroup->button(id)->setChecked(true);
 }
 
-void WidgetDebug::createWidgets()
+void P402Widget::createWidgets()
 {
     // Widget P402
     _modes.insert(NodeProfile402::VL, new P402VlWidget());
@@ -539,7 +539,7 @@ void WidgetDebug::createWidgets()
     setLayout(vBoxLayout);
 }
 
-QToolBar *WidgetDebug::toolBarWidgets()
+QToolBar *P402Widget::toolBarWidgets()
 {
     QToolBar *toolBar = new QToolBar(tr("Axis commands"));
     toolBar->setIconSize(QSize(20, 20));
@@ -548,7 +548,7 @@ QToolBar *WidgetDebug::toolBarWidgets()
     _startStopAction->setCheckable(true);
     _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
     _startStopAction->setStatusTip(tr("Start or stop the data logger"));
-    connect(_startStopAction, &QAction::triggered, this, &WidgetDebug::toggleStartLogger);
+    connect(_startStopAction, &QAction::triggered, this, &P402Widget::toggleStartLogger);
 
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
@@ -556,20 +556,20 @@ QToolBar *WidgetDebug::toolBarWidgets()
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
     connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
-    connect(&_updateDataTimer, &QTimer::timeout, this, &WidgetDebug::updateData);
+    connect(&_updateDataTimer, &QTimer::timeout, this, &P402Widget::updateData);
 
     _option402Action = new QAction();
     _option402Action->setCheckable(true);
     _option402Action->setIcon(QIcon(":/icons/img/icons8-settings.png"));
     _option402Action->setToolTip(tr("Option code"));
-    connect(_option402Action, &QAction::triggered, this, &WidgetDebug::displayOption402);
+    connect(_option402Action, &QAction::triggered, this, &P402Widget::displayOption402);
 
     // read all action
     QAction * readAllObjectAction = toolBar->addAction(tr("Read all objects"));
     readAllObjectAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
     readAllObjectAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllObjectAction->setStatusTip(tr("Read all the objects of the current window"));
-    connect(readAllObjectAction, &QAction::triggered, this, &WidgetDebug::readAllObject);
+    connect(readAllObjectAction, &QAction::triggered, this, &P402Widget::readAllObject);
 
     toolBar->addWidget(_logTimerSpinBox);
     toolBar->addSeparator();
@@ -579,7 +579,7 @@ QToolBar *WidgetDebug::toolBarWidgets()
     return toolBar;
 }
 
-QGroupBox *WidgetDebug::modeWidgets()
+QGroupBox *P402Widget::modeWidgets()
 {
     QString name;
     QGroupBox *groupBox = new QGroupBox(tr("Mode"));
@@ -597,7 +597,7 @@ QGroupBox *WidgetDebug::modeWidgets()
     return groupBox;
 }
 
-QGroupBox *WidgetDebug::stateMachineWidgets()
+QGroupBox *P402Widget::stateMachineWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("State Machine"));
     groupBox->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
@@ -640,7 +640,7 @@ QGroupBox *WidgetDebug::stateMachineWidgets()
     return groupBox;
 }
 
-QGroupBox *WidgetDebug::controlWordWidgets()
+QGroupBox *P402Widget::controlWordWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Control Word ") + QString("(0x%1)").arg(QString::number(_controlWordObjectId.index(), 16)));
     QFormLayout *layout = new QFormLayout();
@@ -650,7 +650,7 @@ QGroupBox *WidgetDebug::controlWordWidgets()
     _haltPushButton->setEnabled(false);
     layout->addRow(_haltPushButton);
     groupBox->setLayout(layout);
-    connect(_haltPushButton, &QPushButton::clicked, this, &WidgetDebug::haltClicked);
+    connect(_haltPushButton, &QPushButton::clicked, this, &P402Widget::haltClicked);
 
     _controlWordLabel = new IndexLabel();
     _controlWordLabel->setDisplayHint(AbstractIndexWidget::DisplayHexa);
@@ -658,13 +658,13 @@ QGroupBox *WidgetDebug::controlWordWidgets()
 
     QPushButton *_gotoOEPushButton = new QPushButton(tr("Operation enabled quickly"));
     layout->addRow(_gotoOEPushButton);
-    connect(_gotoOEPushButton, &QPushButton::clicked, this, &WidgetDebug::gotoStateOEClicked);
+    connect(_gotoOEPushButton, &QPushButton::clicked, this, &P402Widget::gotoStateOEClicked);
 
     groupBox->setLayout(layout);
     return groupBox;
 }
 
-QGroupBox *WidgetDebug::statusWordWidgets()
+QGroupBox *P402Widget::statusWordWidgets()
 {
     QString name;
     name = tr("Status Word ") + QString("(0x%1)").arg(QString::number(_statusWordObjectId.index(), 16));

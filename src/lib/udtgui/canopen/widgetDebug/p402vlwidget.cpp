@@ -41,7 +41,7 @@ P402VlWidget::~P402VlWidget()
     unRegisterFullOd();
 }
 
-void P402VlWidget::updateData()
+void P402VlWidget::readRealTimeObjects()
 {
     if (_node)
     {
@@ -50,7 +50,7 @@ void P402VlWidget::updateData()
     }
 }
 
-void P402VlWidget::readAllObject()
+void P402VlWidget::readAllObjects()
 {
     if (_node)
     {

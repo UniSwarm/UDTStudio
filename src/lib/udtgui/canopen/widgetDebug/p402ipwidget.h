@@ -124,18 +124,18 @@ private:
     QGroupBox *controlWordWidgets();
     QHBoxLayout *buttonWidgets();
 
-    // NodeOdSubscriber interface
-protected:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
-
     // P402Mode interface
 public:
-    void updateData() override;
-    void readAllObject() override;
+    void readRealTimeObjects() override;
+    void readAllObjects() override;
     void stop() override;
 
 public slots:
     void setNode(Node *value, uint8_t axis) override;
+
+    // NodeOdSubscriber interface
+protected:
+    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags);
 };
 
 #endif // P402IP_H

@@ -140,8 +140,8 @@ protected:
 
     // P402Mode interface
 public:
-    void updateData() override;
-    void readAllObject() override;
+    void readRealTimeObjects() override;
+    void readAllObjects() override;
 
 public slots:
     void setNode(Node *value, uint8_t axis) override;

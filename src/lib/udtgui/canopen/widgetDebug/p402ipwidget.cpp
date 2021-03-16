@@ -44,7 +44,7 @@ P402IpWidget::~P402IpWidget()
     unRegisterFullOd();
 }
 
-void P402IpWidget::updateData()
+void P402IpWidget::readRealTimeObjects()
 {
     if (_node)
     {
@@ -53,7 +53,7 @@ void P402IpWidget::updateData()
     }
 }
 
-void P402IpWidget::readAllObject()
+void P402IpWidget::readAllObjects()
 {
     if (_node)
     {

@@ -113,8 +113,8 @@ protected:
 
     // P402Mode interface
 public:
-    void updateData() override;
-    void readAllObject() override;
+    void readRealTimeObjects() override;
+    void readAllObjects() override;
     void reset() override;
 
 public slots:

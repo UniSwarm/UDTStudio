@@ -30,7 +30,6 @@
 #include <QToolBar>
 
 #include "node.h"
-#include "widgetDebug/widgetdebug.h"
 
 class UDTGUI_EXPORT NodeManagerWidget : public QWidget, public NodeOdSubscriber
 {

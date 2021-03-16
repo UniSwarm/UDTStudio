@@ -22,7 +22,7 @@
 #include "canopen/compositeWidget/pidwidget.h"
 #include <QLayout>
 
-#include "canopen/widgetDebug/widgetdebug.h"
+#include "canopen/widgetDebug/p402widget.h"
 #include <canopen/compositeWidget/motorwidget.h>
 
 NodeScreenUmcMotor::NodeScreenUmcMotor(QWidget *parent)
@@ -60,7 +60,7 @@ void NodeScreenUmcMotor::createWidgets()
     _motionSensorPositionWidget = new MotionSensorWidget();
     _motionSensorTorqueWidget = new MotionSensorWidget();
 
-    _widgetDebug = new WidgetDebug();
+    _P402Widget = new P402Widget();
 
     setLayout(layout);
 }
@@ -88,8 +88,8 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)
 
     _axis = axis;
 
-    _widgetDebug->setNode(node, axis);
-    _tabWidget->addTab(_widgetDebug, " " + _widgetDebug->title() + " ");
+    _P402Widget->setNode(node, axis);
+    _tabWidget->addTab(_P402Widget, " " + _P402Widget->title() + " ");
 
     _motorConfigWidget->setNode(node);
     _tabWidget->addTab(_motorConfigWidget, " " + _motorConfigWidget->title() + " ");

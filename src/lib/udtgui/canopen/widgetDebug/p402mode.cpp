@@ -16,7 +16,7 @@ uint8_t P402Mode::axis() const
     return _axis;
 }
 
-void P402Mode::updateData()
+void P402Mode::readRealTimeObjects()
 {
 
 }

@@ -27,7 +27,7 @@
 
 class PidWidget;
 class NodeProfile402;
-class WidgetDebug;
+class P402Widget;
 class MotionSensorWidget;
 class MotorWidget;
 
@@ -51,7 +51,7 @@ protected:
     MotionSensorWidget *_motionSensorPositionWidget;
     MotionSensorWidget *_motionSensorTorqueWidget;
 
-    WidgetDebug *_widgetDebug;
+    P402Widget *_P402Widget;
 
     QTabWidget *_tabWidget;
 
