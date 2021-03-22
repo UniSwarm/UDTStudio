@@ -27,7 +27,6 @@
 NodePDOMappingWidget::NodePDOMappingWidget(QWidget *parent)
     : QScrollArea(parent)
 {
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     setWidgetResizable(true);
     createWidgets();
 }

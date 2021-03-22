@@ -646,8 +646,6 @@ void PidWidget::createWidgets()
 
     QScrollArea *pidScrollArea = new QScrollArea;
     pidScrollArea->setWidget(pidWidget);
-    pidScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    pidScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     pidScrollArea->setWidgetResizable(true);
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);

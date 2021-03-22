@@ -455,8 +455,6 @@ void MotionSensorWidget::createWidgets()
 
     QScrollArea *motionSensorScrollArea = new QScrollArea;
     motionSensorScrollArea->setWidget(motionSensorWidget);
-    motionSensorScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    motionSensorScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     motionSensorScrollArea->setWidgetResizable(true);
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
