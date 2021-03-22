@@ -145,6 +145,9 @@ QGroupBox *MotorWidget::motorConfigWidgets()
     QFormLayout *configLayout = new QFormLayout();
 
     _motorTypeComboBox = new IndexComboBox();
+    _motorTypeComboBox->addItem("DC motor", QVariant(static_cast<uint16_t>(0x0101)));
+    _motorTypeComboBox->addItem("BLDC trapezoidal", QVariant(static_cast<uint16_t>(0x0201)));
+    _motorTypeComboBox->addItem("BLDC sinusoidal", QVariant(static_cast<uint16_t>(0x0202)));
     configLayout->addRow(tr("&Motor type :"), _motorTypeComboBox);
 
     _peakCurrent = new IndexSpinBox();
