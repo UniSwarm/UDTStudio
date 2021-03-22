@@ -45,22 +45,28 @@ QString MotorWidget::title() const
     return tr("Motor config");
 }
 
-void MotorWidget::setNode(Node *node)
+void MotorWidget::setNode(Node *node, uint8_t axis)
 {
-     _node = node;
+    _node = node;
     if (!_node)
     {
         return;
     }
 
+    if (axis > 8)
+    {
+        return;
+    }
+    _axis = axis;
+
     connect(_node, &Node::statusChanged, this, &MotorWidget::statusNodeChanged);
 
-    _motorTypeComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_TYPE));
-    _peakCurrent->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_PEAK_CURRENT));
-    _polePair->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_POLE_PAIR));
-    _maxVelocity->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_MAX_VELOCITY));
-    _velocityConstant->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_VELOCITY_CONSTANT));
-    _currentConstant->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_CURRENT_CONSTANT));
+    _motorTypeComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_TYPE, _axis));
+    _peakCurrent->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_PEAK_CURRENT, _axis));
+    _polePair->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_POLE_PAIR, _axis));
+    _maxVelocity->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_MAX_VELOCITY, _axis));
+    _velocityConstant->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_VELOCITY_CONSTANT, _axis));
+    _currentConstant->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_CURRENT_CONSTANT, _axis));
     _motorTypeComboBox->setNode(node);
     _peakCurrent->setNode(node);
     _polePair->setNode(node);
@@ -68,10 +74,10 @@ void MotorWidget::setNode(Node *node)
     _velocityConstant->setNode(node);
     _currentConstant->setNode(node);
 
-    _coderLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_CODER));
-    _timeCoderLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_TIME_CODER));
-    _phaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_PHASE));
-    _bridgePwmLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_BRIDGE_PWM));
+    _coderLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_CODER, _axis));
+    _timeCoderLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_TIME_CODER, _axis));
+    _phaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_PHASE, _axis));
+    _bridgePwmLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_BRIDGE_PWM, _axis));
     _coderLabel->setNode(node);
     _timeCoderLabel->setNode(node);
     _phaseLabel->setNode(node);
@@ -145,9 +151,6 @@ QGroupBox *MotorWidget::motorConfigWidgets()
     QFormLayout *configLayout = new QFormLayout();
 
     _motorTypeComboBox = new IndexComboBox();
-    _motorTypeComboBox->addItem("DC motor", QVariant(static_cast<uint16_t>(0x0101)));
-    _motorTypeComboBox->addItem("BLDC trapezoidal", QVariant(static_cast<uint16_t>(0x0201)));
-    _motorTypeComboBox->addItem("BLDC sinusoidal", QVariant(static_cast<uint16_t>(0x0202)));
     configLayout->addRow(tr("&Motor type :"), _motorTypeComboBox);
 
     _peakCurrent = new IndexSpinBox();

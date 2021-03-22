@@ -43,10 +43,11 @@ public:
     QString title() const;
 
 public slots:
-    void setNode(Node *node);
+    void setNode(Node *node, uint8_t axis = 0);
 
 protected:
     Node *_node;
+    uint8_t _axis;
 
     // Motor Config
     IndexComboBox *_motorTypeComboBox;

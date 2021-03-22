@@ -91,7 +91,7 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)
     _P402Widget->setNode(node, axis);
     _tabWidget->addTab(_P402Widget, " " + _P402Widget->title() + " ");
 
-    _motorConfigWidget->setNode(node);
+    _motorConfigWidget->setNode(node, axis);
     _tabWidget->addTab(_motorConfigWidget, " " + _motorConfigWidget->title() + " ");
 
     _motionSensorTorqueWidget->setMode(MotionSensorWidget::MODE_SENSOR_TORQUE);
