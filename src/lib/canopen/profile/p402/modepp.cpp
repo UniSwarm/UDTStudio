@@ -42,7 +42,7 @@ ModePp::ModePp(NodeProfile402 *nodeProfile402)
     registerObjId(_controlWordObjectId);
 
     // TODO : redesign the process for default value witg setCwDefaultflag()
-    _cmdControlWordFlag = CW_PP_NewSetPoint;
+    _cmdControlWordFlag = 0;
 }
 
 void ModePp::newSetPoint(bool ok)
@@ -138,10 +138,6 @@ quint16 ModePp::getSpecificCwFlag()
 
 void ModePp::setCwDefaultflag()
 {
-    _cmdControlWordFlag = CW_PP_NewSetPoint;
-    quint16 cw = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
-    cw = (cw & ~CW_Mask) | _cmdControlWordFlag;
-    _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
 void ModePp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
