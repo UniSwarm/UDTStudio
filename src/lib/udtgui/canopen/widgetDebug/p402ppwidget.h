@@ -56,7 +56,6 @@ private:
     int _iteratorForSendDataRecord;
     QStringList _listDataRecord;
 
-    QCheckBox *_newSetPointCheckBox;
     QCheckBox *_changeSetImmediatelyPointCheckBox;
     QCheckBox *_absRelCheckBox;
     QCheckBox *_changeOnSetPointCheckBox;
@@ -104,9 +103,6 @@ private:
     void goOneLineEditFinished();
     void twoOneLineEditFinished();
     void sendDataRecord();
-
-    void newSetPointClicked(bool ok);
-    void newSetPointEvent(bool ok);
 
     void changeSetImmediatelyPointCheckBoxRampClicked(bool ok);
     void changeSetImmediatelyPointEvent(bool ok);

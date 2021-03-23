@@ -152,7 +152,7 @@ void ModePp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         quint16 controlWord = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
         _cmdControlWordFlag = controlWord & CW_Mask;
 
-        emit changeSetImmediatelyEvent((_cmdControlWordFlag & CW_PP_NewSetPoint) >> 4);
+        emit changeNewSetPoint((_cmdControlWordFlag & CW_PP_NewSetPoint) >> 4);
         emit changeSetImmediatelyEvent((_cmdControlWordFlag & CW_PP_ChangeSetImmediately) >> 5);
         emit absRelEvent((_cmdControlWordFlag & CW_PP_AbsRel) >> 6);
         emit changeOnSetPointEvent((_cmdControlWordFlag & CW_PP_ChangeOnSetPoint) >> 9);

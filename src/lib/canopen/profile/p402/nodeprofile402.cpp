@@ -130,11 +130,6 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
 
 void NodeProfile402::init()
 {
-    // TODO : redesign the process for default value
-    _modes[IP]->setCwDefaultflag();
-    _modes[PP]->setCwDefaultflag();
-    _modes[TQ]->setCwDefaultflag();
-    _modes[VL]->setCwDefaultflag();
     _node->readObject(_modesOfOperationDisplayObjectId);
     _node->readObject(_controlWordObjectId);
 }

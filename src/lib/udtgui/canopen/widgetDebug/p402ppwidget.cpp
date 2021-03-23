@@ -105,7 +105,6 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
             _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
             _modePp = dynamic_cast<ModePp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::PP));
 
-            newSetPointEvent(_modePp->isNewSetPoint());
             changeSetImmediatelyPointEvent(_modePp->isChangeSetImmediately());
             absRelEvent(_modePp->isAbsRel());
             changeOnSetPointEvent(_modePp->isChangeOnSetPoint());
@@ -158,12 +157,16 @@ void P402PpWidget::targetPositionLineEditFinished()
 
 void P402PpWidget::goOneLineEditFinished()
 {
+    _modePp->newSetPoint(false);
     _nodeProfile402->setTarget(_goOneLineEdit->text().toInt());
+    _modePp->newSetPoint(true);
 }
 
 void P402PpWidget::twoOneLineEditFinished()
 {
+    _modePp->newSetPoint(false);
     _nodeProfile402->setTarget(_goTwoLineEdit->text().toInt());
+    _modePp->newSetPoint(true);
 }
 
 void P402PpWidget::sendDataRecord()
@@ -179,23 +182,6 @@ void P402PpWidget::sendDataRecord()
         _targetPositionLineEdit->clear();
         _listDataRecord.clear();
     }
-}
-
-void P402PpWidget::newSetPointClicked(bool ok)
-{
-    // 0 Disable interpolation
-    // 1 Enable interpolation
-    if (_nodeProfile402)
-    {
-        _modePp->newSetPoint(ok);
-    }
-    updateInformationLabel();
-}
-
-void P402PpWidget::newSetPointEvent(bool ok)
-{
-    _newSetPointCheckBox->setChecked(ok);
-    updateInformationLabel();
 }
 
 void P402PpWidget::changeSetImmediatelyPointCheckBoxRampClicked(bool ok)
@@ -242,12 +228,12 @@ void P402PpWidget::changeOnSetPointEvent(bool ok)
 
 void P402PpWidget::updateInformationLabel()
 {
-    QString text;
-    if (!_newSetPointCheckBox->isChecked())
-    {
-        text = "New set-point disabled";
-    }
-    _infoLabel->setText(text);
+//    QString text;
+//    if (!_changeSetImmediatelyPointCheckBox->isChecked())
+//    {
+//        text = "Change set Immediately disabled";
+//    }
+//    _infoLabel->setText(text);
 }
 void P402PpWidget::dataLogger()
 {
@@ -483,11 +469,6 @@ QGroupBox *P402PpWidget::controlWordWidgets()
     // Group Box Control Word
     QGroupBox *groupBox = new QGroupBox(tr("Control Word (0x6040) bit 4"));
     QFormLayout *layout = new QFormLayout();
-
-    _newSetPointCheckBox = new QCheckBox();
-    layout->addRow(tr("New set-point (bit 4) :"), _newSetPointCheckBox);
-    connect(_newSetPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::newSetPointClicked);
-    groupBox->setLayout(layout);
 
     _changeSetImmediatelyPointCheckBox = new QCheckBox();
     layout->addRow(tr("Change set immediately (bit 5) :"), _changeSetImmediatelyPointCheckBox);

@@ -45,6 +45,7 @@ public:
     bool isChangeOnSetPoint(void); // bit 9 of controlWord
 
 signals:
+    void changeNewSetPoint(bool ok);
     void changeSetImmediatelyEvent(bool ok);
     void absRelEvent(bool ok);
     void changeOnSetPointEvent(bool ok);
