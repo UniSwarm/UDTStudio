@@ -105,6 +105,10 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
             _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
             _modePp = dynamic_cast<ModePp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::PP));
 
+            connect(_modePp, &ModePp::changeSetImmediatelyEvent, this, &P402PpWidget::changeSetImmediatelyPointEvent);
+            connect(_modePp, &ModePp::absRelEvent, this, &P402PpWidget::absRelEvent);
+            connect(_modePp, &ModePp::changeOnSetPointEvent, this, &P402PpWidget::changeOnSetPointEvent);
+
             changeSetImmediatelyPointEvent(_modePp->isChangeSetImmediately());
             absRelEvent(_modePp->isAbsRel());
             changeOnSetPointEvent(_modePp->isChangeOnSetPoint());
