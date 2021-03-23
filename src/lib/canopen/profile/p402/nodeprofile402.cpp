@@ -531,13 +531,14 @@ void NodeProfile402::decodeEventStatusWord(quint16 statusWord)
 
 void NodeProfile402::decodeStateMachineStatusWord(quint16 statusWord)
 {
+    State402 stateMachine = STATE_NotReadyToSwitchOn;
     if ((statusWord & SW_StateMask1) == SW_StateNotReadyToSwitchOn)
     {
-        _stateMachineCurrent = STATE_NotReadyToSwitchOn;
+        stateMachine = STATE_NotReadyToSwitchOn;
     }
     if ((statusWord & SW_StateMask1) == SW_StateSwitchOnDisabled)
     {
-        _stateMachineCurrent = STATE_SwitchOnDisabled;
+        stateMachine = STATE_SwitchOnDisabled;
         if ((_controlWord & CW_Mask) == CW_FaultReset)
         {
             _controlWord = (_controlWord & ~CW_FaultReset);
@@ -546,27 +547,33 @@ void NodeProfile402::decodeStateMachineStatusWord(quint16 statusWord)
     }
     if ((statusWord & SW_StateMask2) == SW_StateReadyToSwitchOn)
     {
-        _stateMachineCurrent = STATE_ReadyToSwitchOn;
+        stateMachine = STATE_ReadyToSwitchOn;
     }
     if ((statusWord & SW_StateMask2) == SW_StateSwitchedOn)
     {
-        _stateMachineCurrent = STATE_SwitchedOn;
+        stateMachine = STATE_SwitchedOn;
     }
     if ((statusWord & SW_StateMask2) == SW_StateOperationEnabled)
     {
-        _stateMachineCurrent = STATE_OperationEnabled;
+        stateMachine = STATE_OperationEnabled;
     }
     if ((statusWord & SW_StateMask2) == SW_StateQuickStopActive)
     {
-        _stateMachineCurrent = STATE_QuickStopActive;
+        stateMachine = STATE_QuickStopActive;
     }
     if ((statusWord & SW_StateMask1) == SW_StateFaultReactionActive)
     {
-        _stateMachineCurrent = STATE_FaultReactionActive;
+        stateMachine = STATE_FaultReactionActive;
     }
     if ((statusWord & SW_StateMask1) == SW_StateFault)
     {
-        _stateMachineCurrent = STATE_Fault;
+        stateMachine = STATE_Fault;
+    }
+
+    if (stateMachine != _stateMachineCurrent)
+    {
+        _stateMachineCurrent = stateMachine;
+        emit stateChanged();
     }
 
     if ((_stateState == STATE_CHANGE) && (_stateMachineRequested != _stateMachineCurrent))
@@ -575,7 +582,6 @@ void NodeProfile402::decodeStateMachineStatusWord(quint16 statusWord)
         return;
     }
     _stateState = NONE_STATE;
-    emit stateChanged();
 }
 
 void NodeProfile402::decodeSupportedDriveModes(quint32 supportedDriveModes)
