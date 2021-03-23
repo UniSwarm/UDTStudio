@@ -83,9 +83,6 @@ quint16 ModeIp::getSpecificCwFlag()
 void ModeIp::setCwDefaultflag()
 {
     _cmdControlWordFlag = CW_IP_EnableRamp;
-    quint16 cw = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
-    cw = (cw & ~CW_IP_EnableRamp) | _cmdControlWordFlag;
-    _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
 void ModeIp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

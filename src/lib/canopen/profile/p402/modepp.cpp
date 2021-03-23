@@ -138,6 +138,7 @@ quint16 ModePp::getSpecificCwFlag()
 
 void ModePp::setCwDefaultflag()
 {
+      _cmdControlWordFlag = 0;
 }
 
 void ModePp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

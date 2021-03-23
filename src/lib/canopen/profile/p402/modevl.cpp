@@ -117,9 +117,6 @@ quint16 ModeVl::getSpecificCwFlag ()
 void ModeVl::setCwDefaultflag()
 {
     _cmdControlWordFlag = CW_VL_EnableRamp | CW_VL_UnlockRamp | CW_VL_ReferenceRamp;
-    quint16 cw = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
-    cw = (cw & ~CW_Mask) | _cmdControlWordFlag;
-    _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
 void ModeVl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

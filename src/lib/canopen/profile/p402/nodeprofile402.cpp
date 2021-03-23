@@ -130,8 +130,8 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
 
 void NodeProfile402::init()
 {
-    _node->readObject(_modesOfOperationDisplayObjectId);
     _node->readObject(_controlWordObjectId);
+    _node->readObject(_modesOfOperationDisplayObjectId);
 }
 
 NodeProfile402::OperationMode NodeProfile402::actualMode()
@@ -391,12 +391,15 @@ void NodeProfile402::changeStateMachine(const State402 state)
         return;
     }
 
-    // Reset specific flag of mode
-    _controlWord = (_controlWord & ~CW_OperationModeSpecific);
-    // Apply specific flag of mode
-    if (_modeCurrent != OperationMode::NoMode)
+    if (_stateMachineCurrent != STATE_NotReadyToSwitchOn) // for not send cw = 0 during init
     {
-        _controlWord |= _modes[_modeCurrent]->getSpecificCwFlag();
+        // Reset specific flag of mode
+        _controlWord = (_controlWord & ~CW_OperationModeSpecific);
+        // Apply specific flag of mode
+        if (_modeCurrent != OperationMode::NoMode)
+        {
+            _controlWord |= _modes[_modeCurrent]->getSpecificCwFlag();
+        }
     }
 
     switch (_stateMachineCurrent)
@@ -582,6 +585,7 @@ void NodeProfile402::decodeStateMachineStatusWord(quint16 statusWord)
         return;
     }
     _stateState = NONE_STATE;
+    //emit stateChanged();
 }
 
 void NodeProfile402::decodeSupportedDriveModes(quint32 supportedDriveModes)
