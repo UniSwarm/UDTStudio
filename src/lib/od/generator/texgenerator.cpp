@@ -103,7 +103,7 @@ bool TexGenerator::generate(DeviceDescription *deviceDescription, const QString 
     TexComFile.close();
 
     out.setDevice(&TexManuFile);
-    writeListIndex(manufacturers, &out);
+    writeListIndexManu(manufacturers, &out);
     TexManuFile.close();
 
     out.setDevice(&TexStandardFile);
@@ -134,6 +134,69 @@ void TexGenerator::writeListIndex(const QList<Index *> indexes, QTextStream *out
         case Index::Object::ARRAY:
             writeArray(index, out);
             break;
+        }
+    }
+}
+
+void TexGenerator::writeListIndexManu(const QList<Index *> indexes, QTextStream *out)
+{
+    for (Index *index : indexes)
+    {
+        uint16_t numIndex = index->index();
+        if (numIndex >= 0x4000 && numIndex < 0x4080)
+        {
+            writeIndex(index, out);
+
+        }
+    }
+    for (Index *index : indexes)
+    {
+        uint16_t numIndex = index->index();
+        if (numIndex >= 0x4000 && numIndex < 0x4040)
+        {
+            QString nameObject = index->name();
+            index->setName(nameObject + "X");
+            switch (index->objectType())
+            {
+            case Index::Object::VAR:
+                writeIndex(index, out);
+                break;
+
+            case Index::Object::RECORD:
+                writeRecord(index, out);
+                break;
+
+            case Index::Object::ARRAY:
+                writeArray(index, out);
+                break;
+            }
+        }
+        else if (numIndex >= 0x4040 && numIndex < 0x4080)
+        {
+            QString nameObject = index->name();
+            index->setName(nameObject + "X");
+            writeIndex(index, out);
+        }
+    }
+    for (Index *index : indexes)
+    {
+        uint16_t numIndex = index->index();
+        if (numIndex >= 0x4080 && numIndex < 0x4200)
+        {
+            switch (index->objectType())
+            {
+            case Index::Object::VAR:
+                writeIndex(index, out);
+                break;
+
+            case Index::Object::RECORD:
+                writeRecord(index, out);
+                break;
+
+            case Index::Object::ARRAY:
+                writeArray(index, out);
+                break;
+            }
         }
     }
 }

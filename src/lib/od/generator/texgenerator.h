@@ -44,6 +44,7 @@ private:
     static QString pdoToString(uint8_t accessType);
 
     void writeListIndex(const QList<Index *> indexes, QTextStream *out);
+    void writeListIndexManu(const QList<Index *> indexes, QTextStream *out);
     void writeIndex(Index *index, QTextStream *out);
     void writeRecord(Index *index, QTextStream *out);
     void writeArray(Index *index, QTextStream *out);
