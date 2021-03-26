@@ -372,6 +372,10 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out)
         indexSubCommand.prepend(nameObject);
         indexSubCommand.prepend("\\index");
 
+        QString paraCommand = nameSubObject;
+        paraCommand.prepend(nameObject);
+        paraCommand.prepend("\\para");
+
         QString dispIndexSubSubCommand = nameSubObject;
         dispIndexSubSubCommand.prepend(nameObject);
         dispIndexSubSubCommand.prepend("\\dispIndexSub");
@@ -397,6 +401,14 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out)
         // indexCommand >> \newcommand{\indexvlDecelerationvlDecelerationdeltaspeed}{\indexvlDeceleration}%
         *out << "\\newcommand{" << indexSubCommand << "}";
         *out << "{" << indexCommand << "}%";
+        *out << "\n";
+
+        // paraCommand >> \newcommand{\paravlMinMaxvlMin}{\paraIndexSubName{\indexvlMinMax}{\subIndexvlMinMaxvlMin}{\namevlMinMaxvlMin}}%
+        *out << "\\newcommand{" << paraCommand << "}";
+        *out << "{\\paraIndexSubName";
+        *out << "{" << indexCommand << "}";
+        *out << "{" << subIndexSubCommand << "}";
+        *out << "{" << nameSubCommand << "}}%";
         *out << "\n";
 
         // dispIndexSubCommand >> \newcommand{\dispIndexSubvlDecelerationvlDecelerationdeltaspeed}{\displayIndexSub{\indexvlDeceleration}
