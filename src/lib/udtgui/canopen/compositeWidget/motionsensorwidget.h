@@ -78,7 +78,7 @@ protected:
     QAction *_startStopAction;
 
     QGroupBox *_sensorConfigGroupBox;
-    IndexComboBox *_sensorSelectSpinBox;
+    IndexComboBox *_sensorSelectComboBox;
     IndexSpinBox *_thresholdMinSpinBox;
     IndexSpinBox *_thresholdMaxSpinBox;
     IndexComboBox *_thresholdModeComboBox;

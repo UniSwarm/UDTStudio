@@ -87,7 +87,7 @@ void MotionSensorWidget::setNode(Node *node, uint8_t axis)
     }
     setIMode();
 
-    _sensorSelectSpinBox->setNode(node);
+    _sensorSelectComboBox->setNode(node);
     _thresholdMinSpinBox->setNode(node);
     _thresholdMaxSpinBox->setNode(node);
     _thresholdModeComboBox->setNode(node);
@@ -249,7 +249,7 @@ void MotionSensorWidget::setIMode()
         break;
     }
 
-    _sensorSelectSpinBox->setObjId(_sensorSelectSpinBox_ObjId);
+    _sensorSelectComboBox->setObjId(_sensorSelectSpinBox_ObjId);
     _thresholdMinSpinBox->setObjId(_thresholdMinSpinBox_ObjId);
     _thresholdMaxSpinBox->setObjId(_thresholdMaxSpinBox_ObjId);
     _thresholdModeComboBox->setObjId(_thresholdModeSpinBox_ObjId);
@@ -330,9 +330,25 @@ void MotionSensorWidget::createWidgets()
     _sensorConfigGroupBox = new QGroupBox(tr("Sensor config"));
     QFormLayout *configLayout = new QFormLayout();
 
-    _sensorSelectSpinBox = new IndexComboBox();
-    _sensorSelectSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
-    configLayout->addRow(tr("&Sensor select :"), _sensorSelectSpinBox);
+    _sensorSelectComboBox = new IndexComboBox();
+    _sensorSelectComboBox->addItem("OFF", QVariant(static_cast<uint16_t>(0x0000)));
+
+    _sensorSelectComboBox->addItem("TORQUE_FROM_MOTOR", QVariant(static_cast<uint16_t>(0x1100)));
+    _sensorSelectComboBox->addItem("VELOCITY_FROM_MOTOR", QVariant(static_cast<uint16_t>(0x1200)));
+    _sensorSelectComboBox->addItem("POSITION_FROM_MOTOR", QVariant(static_cast<uint16_t>(0x1300)));
+
+    _sensorSelectComboBox->addItem("POSITION_FROM_VELOCITY", QVariant(static_cast<uint16_t>(0x2200)));
+    _sensorSelectComboBox->addItem("VELOCITY_FROM_POSITION", QVariant(static_cast<uint16_t>(0x2300)));
+
+    _sensorSelectComboBox->addItem("QEI_CH1", QVariant(static_cast<uint16_t>(0x3101)));
+    _sensorSelectComboBox->addItem("QEI_CH2", QVariant(static_cast<uint16_t>(0x3102)));
+
+    _sensorSelectComboBox->addItem("SSI_CH1", QVariant(static_cast<uint16_t>(0x3201)));
+    _sensorSelectComboBox->addItem("SSI_CH2", QVariant(static_cast<uint16_t>(0x3202)));
+
+    _sensorSelectComboBox->addItem("ANALOG_CH1", QVariant(static_cast<uint16_t>(0x4001)));
+    _sensorSelectComboBox->addItem("ANALOG_CH2", QVariant(static_cast<uint16_t>(0x4002)));
+    configLayout->addRow(tr("&Sensor select :"), _sensorSelectComboBox);
 
     _preOffsetSpinBox = new IndexSpinBox();
     _preOffsetSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
@@ -412,8 +428,10 @@ void MotionSensorWidget::createWidgets()
     QFormLayout *filterLayout = new QFormLayout();
 
     _filterSelect = new IndexComboBox();
-    _filterSelect->addItem("No filter", QVariant(0));
-    _filterSelect->addItem("Averaging", QVariant(1));
+    _filterSelect->addItem("OFF", QVariant(static_cast<uint16_t>(0x0000)));
+    _filterSelect->addItem("LPF", QVariant(static_cast<uint16_t>(0x1000)));
+    _filterSelect->addItem("AVEGAGING", QVariant(static_cast<uint16_t>(0x2000)));
+    _filterSelect->addItem("INTEGRATOR", QVariant(static_cast<uint16_t>(0x8000)));
     filterLayout->addRow(tr("Filter select:"), _filterSelect);
 
     _param0 = new IndexSpinBox();
@@ -502,7 +520,7 @@ void MotionSensorWidget::stateChanged()
 
 void MotionSensorWidget::readAllObject()
 {
-    _sensorSelectSpinBox->readObject();
+    _sensorSelectComboBox->readObject();
     _thresholdMinSpinBox->readObject();
     _thresholdMaxSpinBox->readObject();
     _thresholdModeComboBox->readObject();
