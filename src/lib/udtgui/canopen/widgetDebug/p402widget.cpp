@@ -586,8 +586,7 @@ QGroupBox *P402Widget::modeWidgets()
     QFormLayout *layout = new QFormLayout();
 
     _modeComboBox = new QComboBox();
-    name = tr("Modes of operation ") + QString("(0x%1) :").arg(QString::number(IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, _axis).index(), 16));
-    layout->addRow(new QLabel(name));
+    layout->addRow(new QLabel(tr("Modes of operation (0x6n60) :")));
     layout->addRow(_modeComboBox);
 
     _modeLabel = new QLabel();
@@ -642,7 +641,7 @@ QGroupBox *P402Widget::stateMachineWidgets()
 
 QGroupBox *P402Widget::controlWordWidgets()
 {
-    QGroupBox *groupBox = new QGroupBox(tr("Control Word ") + QString("(0x%1)").arg(QString::number(_controlWordObjectId.index(), 16)));
+    QGroupBox *groupBox = new QGroupBox(tr("Control Word (0x6n40)"));
     QFormLayout *layout = new QFormLayout();
 
     _haltPushButton = new QPushButton(tr("Halt"));
@@ -666,9 +665,7 @@ QGroupBox *P402Widget::controlWordWidgets()
 
 QGroupBox *P402Widget::statusWordWidgets()
 {
-    QString name;
-    name = tr("Status Word ") + QString("(0x%1)").arg(QString::number(_statusWordObjectId.index(), 16));
-    QGroupBox *groupBox = new QGroupBox(name);
+    QGroupBox *groupBox = new QGroupBox(tr("Status Word (0x6n41)"));
     QFormLayout *layout = new QFormLayout();
 
     _statusWordLabel = new IndexLabel();

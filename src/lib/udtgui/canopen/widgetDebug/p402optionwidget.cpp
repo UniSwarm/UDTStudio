@@ -169,9 +169,7 @@ void P402OptionWidget::createWidgets()
 
 QGroupBox *P402OptionWidget::abortConnectionWidgets()
 {
-    QString name;
-    name = tr("Abort connection option ") + QString("(0x%1) :").arg(QString::number(_abortConnectionObjectId.index(), 16).toUpper());
-    QGroupBox *groupBox = new QGroupBox(name);
+    QGroupBox *groupBox = new QGroupBox(tr("Abort connection option (0x6n07)"));
     QFormLayout *layout = new QFormLayout();
     _abortConnectionOptionGroup = new QButtonGroup(this);
     _abortConnectionOptionGroup->setExclusive(true);
@@ -195,9 +193,7 @@ QGroupBox *P402OptionWidget::abortConnectionWidgets()
 
  QGroupBox *P402OptionWidget::quickStopWidgets()
 {
-    QString name;
-    name = tr("Quick stop option ") + QString("(0x%1) :").arg(QString::number(_quickStopObjectId.index(), 16).toUpper());
-    QGroupBox *groupBox = new QGroupBox(name);
+    QGroupBox *groupBox = new QGroupBox(tr("Quick stop option (0x6n5A)"));
     QFormLayout *layout = new QFormLayout();
     _quickStopOptionGroup = new QButtonGroup(this);
     _quickStopOptionGroup->setExclusive(true);
@@ -224,9 +220,7 @@ QGroupBox *P402OptionWidget::abortConnectionWidgets()
 
 QGroupBox *P402OptionWidget::shutdownWidgets()
 {
-    QString name;
-    name = tr("Shutdown option code ") + QString("(0x%1) :").arg(QString::number(_shutdownObjectId.index(), 16).toUpper());
-    QGroupBox *groupBox = new QGroupBox(name);
+    QGroupBox *groupBox = new QGroupBox(tr("Shutdown option code (0x6n5B)"));
     QFormLayout *layout = new QFormLayout();
     _shutdownOptionGroup = new QButtonGroup(this);
     _shutdownOptionGroup->setExclusive(true);
@@ -244,9 +238,7 @@ QGroupBox *P402OptionWidget::shutdownWidgets()
 
  QGroupBox *P402OptionWidget::disableWidgets()
 {
-    QString name;
-    name = tr("Disable operation option code ") + QString("(0x%1) :").arg(QString::number(_disableObjectId.index(), 16).toUpper());
-    QGroupBox *groupBox = new QGroupBox(name);
+    QGroupBox *groupBox = new QGroupBox(tr("Disable operation option code (0x6n5C)"));
     QFormLayout *layout = new QFormLayout();
     _disableOptionGroup = new QButtonGroup(this);
     _disableOptionGroup->setExclusive(true);
@@ -264,9 +256,7 @@ QGroupBox *P402OptionWidget::shutdownWidgets()
 
 QGroupBox *P402OptionWidget::haltWidgets()
 {
-    QString name;
-    name = tr("Halt option ") + QString("(0x%1) :").arg(QString::number(_haltObjectId.index(), 16).toUpper());
-    QGroupBox *groupBox = new QGroupBox(name);
+    QGroupBox *groupBox = new QGroupBox(tr("Halt option (0x6n5D)"));
     QFormLayout *layout = new QFormLayout();
     _haltOptionGroup = new QButtonGroup(this);
     _haltOptionGroup->setExclusive(true);
@@ -284,9 +274,7 @@ QGroupBox *P402OptionWidget::haltWidgets()
 
 QGroupBox *P402OptionWidget::faultReactionWidgets()
 {
-    QString name;
-    name = tr("Fault reaction option ") + QString("(0x%1) :").arg(QString::number(_faultReactionObjectId.index(), 16).toUpper());
-    QGroupBox *groupBox = new QGroupBox(name);
+    QGroupBox *groupBox = new QGroupBox(tr("Fault reaction option (0x6n5E)"));
     QFormLayout *layout = new QFormLayout();
     _faultReactionOptionGroup = new QButtonGroup(this);
     _faultReactionOptionGroup->setExclusive(true);

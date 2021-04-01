@@ -444,13 +444,8 @@ void P402PpWidget::accelDeccelWidgets()
     _modeLayout->addRow(tr("Profile deceleration :"), decelerationlayout);
 
     // Add Quick stop deceleration (0x6085)
-    //    QLayout *ipQuickStopDecelerationlayout = new QVBoxLayout();
-    //    QLabel *ipQuickStopDecelerationLabel = new QLabel(tr("Quick stop deceleration :"));
     _quickStopDecelerationSpinBox = new IndexSpinBox();
-    //     _quickStopDecelerationSpinBox->setToolTip("");
-    //    ipQuickStopDecelerationlayout->addWidget(ipQuickStopDecelerationLabel);
-    //    ipQuickStopDecelerationlayout->addWidget( _quickStopDecelerationSpinBox);
-    //    _modeLayout->addRow(ipQuickStopDecelerationlayout);
+    _modeLayout->addRow(tr("Quick stop deceleration :"), _quickStopDecelerationSpinBox);
 }
 
 void P402PpWidget::homePolarityWidgets()
@@ -471,7 +466,7 @@ void P402PpWidget::homePolarityWidgets()
 QGroupBox *P402PpWidget::controlWordWidgets()
 {
     // Group Box Control Word
-    QGroupBox *groupBox = new QGroupBox(tr("Control Word (0x6040) bit 4"));
+    QGroupBox *groupBox = new QGroupBox(tr("Control Word"));
     QFormLayout *layout = new QFormLayout();
 
     _changeSetImmediatelyPointCheckBox = new QCheckBox();
@@ -480,11 +475,11 @@ QGroupBox *P402PpWidget::controlWordWidgets()
     groupBox->setLayout(layout);
 
     _absRelCheckBox = new QCheckBox();
-    //    modeControlWordLayout->addRow(tr("Change on set-point (bit 9) :"), _absRelCheckBox);
-    //    connect(_absRelCheckBox, &QCheckBox::clicked, this, &P402PpWidget::absRelCheckBoxRampClicked);
+    layout->addRow(tr("Abs/Rel (bit 6) :"), _absRelCheckBox);
+    connect(_absRelCheckBox, &QCheckBox::clicked, this, &P402PpWidget::absRelCheckBoxRampClicked);
 
     _changeOnSetPointCheckBox = new QCheckBox();
-    //    modeControlWordLayout->addRow(tr("Abs/Rel (bit 6) :"), _changeOnSetPointCheckBox);
+    //    modeControlWordLayout->addRow(tr("Change on set-point (bit 9) :"), _changeOnSetPointCheckBox);
     //    connect(_changeOnSetPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::changeOnSetPointCheckBoxRampClicked);
     //    modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
