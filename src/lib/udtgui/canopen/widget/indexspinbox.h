@@ -42,7 +42,7 @@ protected:
 
 protected:
     void setValue(const QVariant &value);
-    QVariant value() const;
+    QVariant textEditValue() const;
 
     // QWidget interface
 protected:

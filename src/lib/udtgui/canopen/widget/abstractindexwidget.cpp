@@ -47,6 +47,7 @@ void AbstractIndexWidget::setNode(Node *node)
             _lastValue = nodeInterrest()->nodeOd()->value(_objId);
             setDisplayValue(_lastValue, DisplayAttribute::Normal);
         }
+        updateObjId();
     }
     else
     {
@@ -122,7 +123,7 @@ QString AbstractIndexWidget::pstringValue(const QVariant &value, const AbstractI
     switch (hint)
     {
     case AbstractIndexWidget::DisplayDirectValue:
-        if (value.userType() != QMetaType::QString)
+        if (value.userType() != QMetaType::QString && value.userType() != QMetaType::QByteArray)
         {
             str = QString::number(value.toInt());
         }
@@ -207,6 +208,7 @@ void AbstractIndexWidget::setObjId(const NodeObjectId &objId)
     if (node)
     {
         setNode(node);
+        return;
     }
     updateObjId();
 }

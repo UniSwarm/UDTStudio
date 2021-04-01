@@ -58,7 +58,7 @@ void IndexSpinBox::keyPressEvent(QKeyEvent *event)
     {
     case Qt::Key_Return:
     case Qt::Key_Enter:
-        requestWriteValue(value());
+        requestWriteValue(textEditValue());
         break;
 
     case Qt::Key_F5:
@@ -82,7 +82,7 @@ void IndexSpinBox::setValue(const QVariant &value)
     lineEdit()->setText(pstringValue(value, _hint));
 }
 
-QVariant IndexSpinBox::value() const
+QVariant IndexSpinBox::textEditValue() const
 {
     bool ok = false;
     QVariant value;
@@ -115,16 +115,16 @@ void IndexSpinBox::stepBy(int steps)
     {
     case AbstractIndexWidget::DisplayDirectValue:
     case AbstractIndexWidget::DisplayHexa:
-        setValue(value().toInt() + steps);
+        setValue(textEditValue().toInt() + steps);
         break;
 
     case AbstractIndexWidget::DisplayQ15_16:
     case AbstractIndexWidget::DisplayQ1_15:
-        setValue(value().toDouble() + steps);
+        setValue(textEditValue().toDouble() + steps);
         break;
 
     case AbstractIndexWidget::DisplayFloat:
-        setValue(value().toDouble() + steps);
+        setValue(textEditValue().toDouble() + steps);
         break;
     }
 }
