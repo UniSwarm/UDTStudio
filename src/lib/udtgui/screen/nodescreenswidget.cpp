@@ -19,6 +19,7 @@
 #include "nodescreenswidget.h"
 
 #include "indexdb.h"
+#include "nodescreenhome.h"
 #include "nodescreenod.h"
 #include "nodescreenpdo.h"
 #include "nodescreensynchro.h"
@@ -78,6 +79,10 @@ void NodeScreensWidget::addNode(Node *node)
     nodeScreens.node = node;
 
     NodeScreen *screen;
+
+    screen = new NodeScreenHome();
+    screen->setNode(node);
+    nodeScreens.screens.append(screen);
 
     screen = new NodeScreenOD();
     screen->setNode(node);

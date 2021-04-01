@@ -16,34 +16,37 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "nodescreenod.h"
+#ifndef NODESCREENHOME_H
+#define NODESCREENHOME_H
 
-#include <QHBoxLayout>
+#include "udtgui_global.h"
 
-NodeScreenOD::NodeScreenOD()
+#include "nodescreen.h"
+
+#include <canopen/nodeod/nodeodwidget.h>
+
+class AbstractIndexWidget;
+class QLabel;
+class IndexLabel;
+
+class UDTGUI_EXPORT NodeScreenHome : public NodeScreen
 {
-    createWidgets();
-}
+    Q_OBJECT
+public:
+    NodeScreenHome();
 
-void NodeScreenOD::createWidgets()
-{
-    QLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
-    layout->setContentsMargins(0, 0, 0, 0);
+protected:
+    void createWidgets();
+    QWidget *createSumaryWidget();
+    QLabel *_iconLabel;
+    QLabel *_profileLabel;
 
-    _nodeOdWidget = new NodeOdWidget();
-    layout->addWidget(_nodeOdWidget);
+    QList<AbstractIndexWidget *> _indexWidgets;
 
-    setLayout(layout);
-}
+    // NodeScreen interface
+public:
+    QString title() const override;
+    void setNodeInternal(Node *node, uint8_t axis = 0) override;
+};
 
-QString NodeScreenOD::title() const
-{
-    return QString(tr("OD"));
-}
-
-void NodeScreenOD::setNodeInternal(Node *node, uint8_t axis)
-{
-    Q_UNUSED(axis)
-    _nodeOdWidget->setNode(node);
-}
+#endif // NODESCREENHOME_H
