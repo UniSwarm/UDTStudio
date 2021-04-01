@@ -21,6 +21,8 @@
 #include "nodeoditemmodel.h"
 #include "nodesubindex.h"
 
+#include <QCollator>
+
 NodeOdFilterProxyModel::NodeOdFilterProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
@@ -119,13 +121,8 @@ bool NodeOdFilterProxyModel::lessThan(const QModelIndex &source_left, const QMod
         return false;
     }
 
-    // limit filter to index only and not subindex
-    NodeSubIndex *nodeSubIndexLeft = smodel->nodeSubIndex(source_left);
-    NodeSubIndex *nodeSubIndexRight = smodel->nodeSubIndex(source_right);
-    if (nodeSubIndexLeft && nodeSubIndexRight)
-    {
-        return nodeSubIndexLeft->subIndex() < nodeSubIndexRight->subIndex();
-    }
-
-    return QSortFilterProxyModel::lessThan(source_left, source_right);
+    QCollator collator;
+    QVariant l = (source_left.model() ? source_left.model()->data(source_left, sortRole()) : QVariant());
+    QVariant r = (source_right.model() ? source_right.model()->data(source_right, sortRole()) : QVariant());
+    return collator.compare(l.toString(), r.toString()) < 0;
 }

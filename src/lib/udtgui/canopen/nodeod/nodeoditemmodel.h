@@ -24,10 +24,11 @@
 #include "nodeodsubscriber.h"
 #include <QAbstractItemModel>
 
+#include "nodeoditem.h"
+
 class Node;
 class NodeIndex;
 class NodeSubIndex;
-class NodeOdItem;
 
 class UDTGUI_EXPORT NodeOdItemModel : public QAbstractItemModel, public NodeOdSubscriber
 {
@@ -37,6 +38,7 @@ public:
     ~NodeOdItemModel();
 
     Node *node() const;
+    NodeOdItem::Type typeIndex(const QModelIndex &index) const;
     NodeIndex *nodeIndex(const QModelIndex &index) const;
     NodeSubIndex *nodeSubIndex(const QModelIndex &index) const;
 

@@ -22,7 +22,6 @@
 #include <QMimeData>
 
 #include "node.h"
-#include "nodeoditem.h"
 
 NodeOdItemModel::NodeOdItemModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -41,6 +40,21 @@ NodeOdItemModel::~NodeOdItemModel()
 Node *NodeOdItemModel::node() const
 {
     return _node;
+}
+
+NodeOdItem::Type NodeOdItemModel::typeIndex(const QModelIndex &index) const
+{
+    if (!_root)
+    {
+        return NodeOdItem::TOD;
+    }
+    if (!index.isValid())
+    {
+        return NodeOdItem::TOD;
+    }
+
+    NodeOdItem *item = static_cast<NodeOdItem *>(index.internalPointer());
+    return item->type();
 }
 
 NodeIndex *NodeOdItemModel::nodeIndex(const QModelIndex &index) const
