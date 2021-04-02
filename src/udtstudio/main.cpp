@@ -27,25 +27,23 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("UniSwarm");
     app.setApplicationName("UDTStudio");
 
+    MainWindow w;
     // apply dark style
     QFile f(":qdarkstyle/style.qss");
     if (f.exists())
     {
         f.open(QFile::ReadOnly | QFile::Text);
         QTextStream ts(&f);
-        qApp->setStyleSheet(ts.readAll());
+        app.setStyleSheet(ts.readAll());
+        w.setStyleSheet("\
+            QScrollArea {border: none;} \
+            QComboBox::item:checked {height: 24px;} \
+            QMenu::icon {margin: 1px;} \
+            QMenu::icon:checked {margin: 0; background: #505F69; border: 1px inset #505F69; position: absolute; top: 1px; right: 1px; bottom: 1px; left: 1px;} \
+            QMenu::item {padding: 4px 24px 4px 8px;} \
+            QComboBox {padding-right: 4px; \
+        ");
     }
-
-    MainWindow w;
-    w.setStyleSheet(" \
-        QComboBox::item:checked { \
-            height: 12px; \
-            border: 1px solid #32414B; \
-                margin-top: 0px; \
-                margin-bottom: 0px; \
-            padding: 4px; \
-                padding-left: 0px; \
-        }");
     w.show();
 
     return app.exec();
