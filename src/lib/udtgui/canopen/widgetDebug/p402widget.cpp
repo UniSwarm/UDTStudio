@@ -510,7 +510,8 @@ void P402Widget::createWidgets()
     // Create interface
     QWidget *controlWidget = new QWidget();
     QLayout *controlLayout = new QVBoxLayout(controlWidget);
-    controlLayout->setMargin(0);
+    controlLayout->setContentsMargins(0, 0, 4, 0);
+    controlLayout->setSpacing(0);
 
     _modeGroupBox = modeWidgets();
     controlLayout->addWidget(_modeGroupBox);
@@ -528,12 +529,18 @@ void P402Widget::createWidgets()
     scrollArea->setMinimumWidth(370);
 
     QHBoxLayout *hBoxLayout = new QHBoxLayout();
-    hBoxLayout->setMargin(0);
+    hBoxLayout->setContentsMargins(0, 0, 0, 0);
+    hBoxLayout->setSpacing(0);
     hBoxLayout->addWidget(scrollArea);
+    QFrame *frame = new QFrame();
+    frame->setFrameStyle(QFrame::VLine);
+    frame->setFrameShadow(QFrame::Sunken);
+    hBoxLayout->addWidget(frame);
     hBoxLayout->addWidget(_stackedWidget);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
-    vBoxLayout->setMargin(2);
+    vBoxLayout->setContentsMargins(2, 2, 2 ,2);
+    vBoxLayout->setSpacing(2);
     vBoxLayout->addWidget(toolBarWidgets());
     vBoxLayout->addLayout(hBoxLayout);
     setLayout(vBoxLayout);
@@ -581,7 +588,6 @@ QToolBar *P402Widget::toolBarWidgets()
 
 QGroupBox *P402Widget::modeWidgets()
 {
-    QString name;
     QGroupBox *groupBox = new QGroupBox(tr("Mode"));
     QFormLayout *layout = new QFormLayout();
 

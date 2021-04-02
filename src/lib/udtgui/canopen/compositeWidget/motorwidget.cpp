@@ -115,6 +115,8 @@ void MotorWidget::createWidgets()
 {
     QWidget *motionSensorWidget = new QWidget(this);
     QVBoxLayout *actionLayout = new QVBoxLayout(motionSensorWidget);
+    actionLayout->setContentsMargins(0, 0, 4, 0);
+    actionLayout->setSpacing(0);
 
     actionLayout->addWidget(motorConfigWidgets());
     actionLayout->addWidget(motorStatusWidgets());
@@ -124,9 +126,10 @@ void MotorWidget::createWidgets()
     motionSensorScrollArea->setWidgetResizable(true);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
+    vBoxLayout->setContentsMargins(2, 2, 2 ,2);
+    vBoxLayout->setSpacing(0);
     vBoxLayout->addWidget(toolBarWidgets());
     vBoxLayout->addWidget(motionSensorScrollArea);
-    vBoxLayout->setMargin(0);
     setLayout(vBoxLayout);
 }
 
@@ -151,6 +154,10 @@ QGroupBox *MotorWidget::motorConfigWidgets()
     QFormLayout *configLayout = new QFormLayout();
 
     _motorTypeComboBox = new IndexComboBox();
+    _motorTypeComboBox->addItem(tr("NO motor"), QVariant(static_cast<uint16_t>(0)));
+    _motorTypeComboBox->addItem(tr("DC motor"), QVariant(static_cast<uint16_t>(0x0101)));
+    _motorTypeComboBox->addItem(tr("BLDC trapezoidal"), QVariant(static_cast<uint16_t>(0x0201)));
+    _motorTypeComboBox->addItem(tr("BLDC sinusoidal"), QVariant(static_cast<uint16_t>(0x0202)));
     configLayout->addRow(tr("&Motor type :"), _motorTypeComboBox);
 
     _peakCurrent = new IndexSpinBox();

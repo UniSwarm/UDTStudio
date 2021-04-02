@@ -485,9 +485,6 @@ void PidWidget::createWidgets()
     _dataLogger = new DataLogger();
     _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
 
-    QVBoxLayout *glayout = new QVBoxLayout();
-    glayout->setMargin(0);
-
     // toolbar
     _toolBar = new QToolBar(tr("Data logger commands"));
     _toolBar->setIconSize(QSize(20, 20));
@@ -507,14 +504,14 @@ void PidWidget::createWidgets()
     _toolBar->addWidget(_logTimerSpinBox);
     connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
 
+    _toolBar->addSeparator();
+
     // clear
     QAction *action;
     action = _toolBar->addAction(tr("Clear"));
     action->setIcon(QIcon(":/icons/img/icons8-broom.png"));
     action->setStatusTip(tr("Clear all data"));
     connect(action, &QAction::triggered, _dataLogger, &DataLogger::clear);
-
-    _toolBar->addSeparator();
 
     // read all action
     QAction * readAllAction = _toolBar->addAction(tr("Read all objects"));
@@ -525,6 +522,8 @@ void PidWidget::createWidgets()
 
     QWidget *pidWidget = new QWidget(this);
     QVBoxLayout *actionLayout = new QVBoxLayout(pidWidget);
+    actionLayout->setContentsMargins(0, 0, 4, 0);
+    actionLayout->setSpacing(0);
 
     _pidGroupBox = new QGroupBox(tr("PID"));
     QFormLayout *pidLayout = new QFormLayout();
@@ -564,6 +563,7 @@ void PidWidget::createWidgets()
     pidLayout->addRow(tr("&Frequency divider :"), _freqDividerSpinBox);
 
     _pidGroupBox->setLayout(pidLayout);
+    actionLayout->addWidget(_pidGroupBox);
 
     // Status
     QGroupBox *statusGroupBox = new QGroupBox(tr("PID status"));
@@ -589,6 +589,7 @@ void PidWidget::createWidgets()
     statusLayout->addRow(tr("&Output :"), _outputLabel);
 
     statusGroupBox->setLayout(statusLayout);
+    actionLayout->addWidget(statusGroupBox);
 
     // Target
     QGroupBox *targetGroupBox = new QGroupBox(tr("PID test"));
@@ -604,7 +605,7 @@ void PidWidget::createWidgets()
     _windowFirstTargetSpinBox->setSuffix(" ms");
     firstTargetLayout->addWidget(_firstTargetSpinBox);
     firstTargetLayout->addWidget(_windowFirstTargetSpinBox);
-    targetLayout->addRow(tr("Fisrt Target :"), firstTargetLayout);
+    targetLayout->addRow(tr("First Target :"), firstTargetLayout);
 
     QHBoxLayout *secondTargetLayout = new QHBoxLayout();
     _secondTargetSpinBox = new QSpinBox();
@@ -639,9 +640,6 @@ void PidWidget::createWidgets()
 
     targetLayout->addRow(buttonLayout);
     targetGroupBox->setLayout(targetLayout);
-
-    actionLayout->addWidget(_pidGroupBox);
-    actionLayout->addWidget(statusGroupBox);
     actionLayout->addWidget(targetGroupBox);
 
     QScrollArea *pidScrollArea = new QScrollArea;
@@ -649,15 +647,16 @@ void PidWidget::createWidgets()
     pidScrollArea->setWidgetResizable(true);
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
-    glayout->addWidget(splitter);
+    splitter->setStyleSheet("QSplitter {background: #19232D;}");
     splitter->addWidget(pidScrollArea);
     splitter->addWidget(_dataLoggerChartsWidget);
     splitter->setSizes(QList<int>() << 100 << 300);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
+    vBoxLayout->setContentsMargins(2, 2, 2 ,2);
+    vBoxLayout->setSpacing(0);
     vBoxLayout->addWidget(_toolBar);
     vBoxLayout->addWidget(splitter);
-    vBoxLayout->setMargin(2);
     setLayout(vBoxLayout);
 }
 

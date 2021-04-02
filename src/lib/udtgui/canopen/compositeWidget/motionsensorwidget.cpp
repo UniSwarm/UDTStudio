@@ -287,7 +287,8 @@ void MotionSensorWidget::createWidgets()
     _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0 ,0);
+    layout->setSpacing(0);
 
     // toolbar
     _toolBar = new QToolBar(tr("Data logger commands"));
@@ -308,14 +309,14 @@ void MotionSensorWidget::createWidgets()
     _toolBar->addWidget(_logTimerSpinBox);
     connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
 
+    _toolBar->addSeparator();
+
     // clear
     QAction *action;
     action = _toolBar->addAction(tr("Clear"));
     action->setIcon(QIcon(":/icons/img/icons8-broom.png"));
     action->setStatusTip(tr("Clear all data"));
     connect(action, &QAction::triggered, _dataLogger, &DataLogger::clear);
-
-    _toolBar->addSeparator();
 
     // read all action
     QAction * readAllAction = _toolBar->addAction(tr("Read all objects"));
@@ -326,6 +327,20 @@ void MotionSensorWidget::createWidgets()
 
     QWidget *motionSensorWidget = new QWidget(this);
     QVBoxLayout *actionLayout = new QVBoxLayout(motionSensorWidget);
+    actionLayout->setContentsMargins(0, 0, 4, 0);
+    actionLayout->setSpacing(0);
+
+    QGroupBox *informationGroupBox = new QGroupBox(tr("Information"));
+    _informationLabel = new QLabel(tr("Not available in \"Operation Enabled\""));
+    _enableButton = new QPushButton(tr("Unlock, Go to \"Switched On\""));
+    connect(_enableButton, &QPushButton::clicked, this, &MotionSensorWidget::goEnableButton);
+
+    QVBoxLayout *informationLayout = new QVBoxLayout();
+    informationLayout->addWidget(_informationLabel);
+    informationLayout->addWidget(_enableButton);
+    informationGroupBox->setLayout(informationLayout);
+
+    actionLayout->addWidget(informationGroupBox);
 
     _sensorConfigGroupBox = new QGroupBox(tr("Sensor config"));
     QFormLayout *configLayout = new QFormLayout();
@@ -407,22 +422,7 @@ void MotionSensorWidget::createWidgets()
     configLayout->addRow(tr("&Config bit :"), _configBitSpinBox);
 
     _sensorConfigGroupBox->setLayout(configLayout);
-
-    QGroupBox *statusGroupBox = new QGroupBox(tr("Sensor status"));
-    QFormLayout *statusLayout = new QFormLayout();
-
-    _rawDataValueLabel = new IndexLabel();
-    _rawDataValueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    statusLayout->addRow(tr("Ra&w Data :"), _rawDataValueLabel);
-
-    _flagLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Flag :"), _flagLabel);
-
-    _valueLabel = new IndexLabel();
-    _valueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    statusLayout->addRow(tr("&Value :"), _valueLabel);
-
-    statusGroupBox->setLayout(statusLayout);
+    actionLayout->addWidget(_sensorConfigGroupBox);
 
     _filterGroupBox = new QGroupBox(tr("Sensor filter"));
     QFormLayout *filterLayout = new QFormLayout();
@@ -451,24 +451,23 @@ void MotionSensorWidget::createWidgets()
     filterLayout->addRow(tr("Param_&3:"), _param3);
 
     _filterGroupBox->setLayout(filterLayout);
-
-    QGroupBox *informationGroupBox = new QGroupBox(tr("Information"));
-    _informationLabel = new QLabel(tr("Not available in \"Operation Enabled\""));
-    _enableButton = new QPushButton(tr("Unlock, Go to \"Switched On\""));
-    connect(_enableButton, &QPushButton::clicked, this, &MotionSensorWidget::goEnableButton);
-
-    QVBoxLayout *informationLayout = new QVBoxLayout();
-    informationLayout->addWidget(_informationLabel);
-    informationLayout->addWidget(_enableButton);
-    informationGroupBox->setLayout(informationLayout);
-
-    QGroupBox *targetGroupBox = new QGroupBox(tr("Target"));
-    QFormLayout *targetLayout = new QFormLayout();
-    targetGroupBox->setLayout(targetLayout);
-
-    actionLayout->addWidget(informationGroupBox);
-    actionLayout->addWidget(_sensorConfigGroupBox);
     actionLayout->addWidget(_filterGroupBox);
+
+    QGroupBox *statusGroupBox = new QGroupBox(tr("Sensor status"));
+    QFormLayout *statusLayout = new QFormLayout();
+
+    _rawDataValueLabel = new IndexLabel();
+    _rawDataValueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    statusLayout->addRow(tr("Ra&w Data :"), _rawDataValueLabel);
+
+    _flagLabel = new IndexLabel();
+    statusLayout->addRow(tr("&Flag :"), _flagLabel);
+
+    _valueLabel = new IndexLabel();
+    _valueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    statusLayout->addRow(tr("&Value :"), _valueLabel);
+
+    statusGroupBox->setLayout(statusLayout);
     actionLayout->addWidget(statusGroupBox);
 
     QScrollArea *motionSensorScrollArea = new QScrollArea;
@@ -476,15 +475,17 @@ void MotionSensorWidget::createWidgets()
     motionSensorScrollArea->setWidgetResizable(true);
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
+    splitter->setStyleSheet("QSplitter {background: #19232D;}");
     layout->addWidget(splitter);
     splitter->addWidget(motionSensorScrollArea);
     splitter->addWidget(_dataLoggerChartsWidget);
     splitter->setSizes(QList<int>() << 100 << 300);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
+    vBoxLayout->setContentsMargins(2, 2, 2 ,2);
+    vBoxLayout->setSpacing(0);
     vBoxLayout->addWidget(_toolBar);
     vBoxLayout->addWidget(splitter);
-    vBoxLayout->setMargin(2);
     setLayout(vBoxLayout);
 }
 
