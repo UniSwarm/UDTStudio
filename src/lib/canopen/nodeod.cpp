@@ -120,6 +120,16 @@ bool NodeOd::subIndexExist(const quint16 index, const quint8 subIndex) const
     return true;
 }
 
+int NodeOd::subIndexCount() const
+{
+    int count = 0;
+    for (NodeIndex *index : _nodeIndexes)
+    {
+        count += index->subIndexesCount();
+    }
+    return count;
+}
+
 void NodeOd::setErrorObject(const quint16 index, const quint8 subIndex, const quint32 error)
 {
     NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);

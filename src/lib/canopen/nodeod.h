@@ -53,6 +53,7 @@ public:
     // subindex
     NodeSubIndex *subIndex(const quint16 index, const quint8 subIndex) const;
     bool subIndexExist(const quint16 index, const quint8 subIndex) const;
+    int subIndexCount() const;
 
     // error
     void setErrorObject(const quint16 index, const quint8 subIndex, const quint32 error);
