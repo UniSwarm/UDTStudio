@@ -38,8 +38,13 @@ public:
 protected:
     void createWidgets();
     QWidget *createSumaryWidget();
-    QLabel *_iconLabel;
-    QLabel *_profileLabel;
+    QLabel *_summaryIconLabel;
+    QLabel *_summaryProfileLabel;
+
+    QWidget *createOdWidget();
+    QLabel *_odEdsFileLabel;
+    QLabel *_odCountLabel;
+    QLabel *_odSubIndexCountLabel;
 
     QList<AbstractIndexWidget *> _indexWidgets;
 

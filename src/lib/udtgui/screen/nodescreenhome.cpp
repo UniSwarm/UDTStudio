@@ -22,8 +22,10 @@
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QPixmap>
+#include <QPushButton>
 
-#include <canopen/widget/indexlabel.h>
+#include "canopen/widget/indexlabel.h"
+#include "screen/nodescreenswidget.h"
 
 NodeScreenHome::NodeScreenHome()
 {
@@ -32,11 +34,12 @@ NodeScreenHome::NodeScreenHome()
 
 void NodeScreenHome::createWidgets()
 {
-    QLayout *layout = new QHBoxLayout();
+    QLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(2, 2, 2 ,2);
     layout->setSpacing(2);
 
     layout->addWidget(createSumaryWidget());
+    layout->addWidget(createOdWidget());
 
     setLayout(layout);
 }
@@ -46,10 +49,10 @@ QWidget *NodeScreenHome::createSumaryWidget()
     QGroupBox *groupBox = new QGroupBox(tr("Summary"));
     QHBoxLayout *hlayout = new QHBoxLayout();
 
-    _iconLabel = new QLabel();
-    _iconLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-    _iconLabel->setAlignment(Qt::AlignTop | Qt::AlignRight);
-    hlayout->addWidget(_iconLabel);
+    _summaryIconLabel = new QLabel();
+    _summaryIconLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+    _summaryIconLabel->setAlignment(Qt::AlignTop | Qt::AlignRight);
+    hlayout->addWidget(_summaryIconLabel);
 
     QFormLayout *sumaryLayout = new QFormLayout();
 
@@ -58,18 +61,57 @@ QWidget *NodeScreenHome::createSumaryWidget()
     sumaryLayout->addRow(tr("&Device name :"), indexLabel);
     _indexWidgets.append(indexLabel);
 
-    _profileLabel = new QLabel();
-    sumaryLayout->addRow(tr("&Profile :"), _profileLabel);
+    _summaryProfileLabel = new QLabel();
+    sumaryLayout->addRow(tr("&Profile :"), _summaryProfileLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x1009, 0));
     sumaryLayout->addRow(tr("&Hardware version :"), indexLabel);
+    _indexWidgets.append(indexLabel);
+
+    indexLabel = new IndexLabel(NodeObjectId(0x2001, 0));
+    sumaryLayout->addRow(tr("Manufacture &date :"), indexLabel);
     _indexWidgets.append(indexLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x100A, 0));
     sumaryLayout->addRow(tr("&Software version :"), indexLabel);
     _indexWidgets.append(indexLabel);
 
+    indexLabel = new IndexLabel(NodeObjectId(0x2003, 0));
+    sumaryLayout->addRow(tr("Software &build :"), indexLabel);
+    _indexWidgets.append(indexLabel);
+
     hlayout->addItem(sumaryLayout);
+    groupBox->setLayout(hlayout);
+    return groupBox;
+}
+
+QWidget *NodeScreenHome::createOdWidget()
+{
+    QGroupBox *groupBox = new QGroupBox(tr("Object dictionary"));
+    QHBoxLayout *hlayout = new QHBoxLayout();
+
+    QFormLayout *odLayout = new QFormLayout();
+    _odEdsFileLabel = new QLabel();
+    _odEdsFileLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+    _odEdsFileLabel->setCursor(Qt::IBeamCursor);
+    odLayout->addRow(tr("&Eds file :"), _odEdsFileLabel);
+
+    _odCountLabel = new QLabel();
+    odLayout->addRow(tr("Index &count :"), _odCountLabel);
+
+    _odSubIndexCountLabel = new QLabel();
+    odLayout->addRow(tr("&Sub index count :"), _odSubIndexCountLabel);
+
+    hlayout->addItem(odLayout);
+
+    QVBoxLayout *buttonlayout = new QVBoxLayout();
+    QPushButton *goODButton = new QPushButton(tr("Go to OD tab"));
+    goODButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+    connect(goODButton, &QPushButton::released, [=]() {screenWidget()->setActiveTab("od");});
+    buttonlayout->addWidget(goODButton);
+    buttonlayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
+    hlayout->addItem(buttonlayout);
+
     groupBox->setLayout(hlayout);
     return groupBox;
 }
@@ -89,24 +131,31 @@ void NodeScreenHome::setNodeInternal(Node *node, uint8_t axis)
 
     if (node)
     {
-        _profileLabel->setText(QString("DS%1").arg(node->profileNumber()));
+        _summaryProfileLabel->setText(QString("DS%1").arg(node->profileNumber()));
         if (node->manufacturerId() == 0x04A2) // UniSwarm
         {
             switch (node->profileNumber())
             {
             case 401:
-                _iconLabel->setPixmap(QPixmap(":/uBoards/uio.png"));
+                _summaryIconLabel->setPixmap(QPixmap(":/uBoards/uio.png"));
                 break;
 
             case 402:
-                _iconLabel->setPixmap(QPixmap(":/uBoards/umc.png"));
+                _summaryIconLabel->setPixmap(QPixmap(":/uBoards/umc.png"));
                 break;
             }
         }
+        _odEdsFileLabel->setText(node->edsFileName());
+        _odCountLabel->setNum(node->nodeOd()->indexCount());
+        _odSubIndexCountLabel->setNum(node->nodeOd()->subIndexCount());
     }
     else
     {
-        _profileLabel->clear();
-        _iconLabel->clear();
+        _summaryProfileLabel->clear();
+        _summaryIconLabel->clear();
+
+        _odEdsFileLabel->clear();
+        _odCountLabel->clear();
+        _odSubIndexCountLabel->clear();
     }
 }
