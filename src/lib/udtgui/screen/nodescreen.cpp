@@ -32,6 +32,16 @@ void NodeScreen::setNode(Node *node, uint8_t axis)
     setNodeInternal(node, axis);
 }
 
+NodeScreensWidget *NodeScreen::screenWidget() const
+{
+    return _screenWidget;
+}
+
+void NodeScreen::setScreenWidget(NodeScreensWidget *screenWidget)
+{
+    _screenWidget = screenWidget;
+}
+
 Node *NodeScreen::node() const
 {
     return _node;

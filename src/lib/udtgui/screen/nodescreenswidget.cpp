@@ -66,6 +66,24 @@ void NodeScreensWidget::setActiveNode(Node *node)
     }
 }
 
+void NodeScreensWidget::setActiveTab(int id)
+{
+    _tabWidget->setCurrentIndex(id);
+}
+
+void NodeScreensWidget::setActiveTab(const QString &name)
+{
+    for (int tabIndex = 0; tabIndex < _tabWidget->count(); tabIndex++)
+    {
+        const QString &tabName = _tabWidget->tabText(tabIndex).trimmed();
+        if (tabName.compare(name, Qt::CaseInsensitive) == 0)
+        {
+            _tabWidget->setCurrentIndex(tabIndex);
+            return;
+        }
+    }
+}
+
 void NodeScreensWidget::addNode(Node *node)
 {
     QMap<Node *, NodeScreens>::const_iterator nodeIt = _nodesMap.find(node);
@@ -82,14 +100,17 @@ void NodeScreensWidget::addNode(Node *node)
 
     screen = new NodeScreenHome();
     screen->setNode(node);
+    screen->setScreenWidget(this);
     nodeScreens.screens.append(screen);
 
     screen = new NodeScreenOD();
     screen->setNode(node);
+    screen->setScreenWidget(this);
     nodeScreens.screens.append(screen);
 
     screen = new NodeScreenPDO();
     screen->setNode(node);
+    screen->setScreenWidget(this);
     nodeScreens.screens.append(screen);
 
     // add specific screens node
@@ -99,12 +120,14 @@ void NodeScreensWidget::addNode(Node *node)
         {
             screen = new NodeScreenUmcMotor();
             screen->setNode(node, i);
+            screen->setScreenWidget(this);
             nodeScreens.screens.append(screen);
         }
         if (node->countProfile() != 0)
         {
             screen = new NodeScreenSynchro();
             screen->setNode(node, 12);
+            screen->setScreenWidget(this);
             nodeScreens.screens.append(screen);
         }
     }
@@ -116,7 +139,6 @@ void NodeScreensWidget::addNode(Node *node)
 void NodeScreensWidget::createWidgets()
 {
     QLayout *layout = new QHBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
     layout->setContentsMargins(0, 0, 0, 0);
 
     _tabWidget = new QTabWidget();

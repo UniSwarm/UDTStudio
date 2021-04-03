@@ -37,6 +37,8 @@ public:
 
 public slots:
     void setActiveNode(Node *node);
+    void setActiveTab(int id);
+    void setActiveTab(const QString &name);
 
 protected:
     Node *_activeNode;

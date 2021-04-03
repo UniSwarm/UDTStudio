@@ -25,6 +25,8 @@
 
 #include <node.h>
 
+class NodeScreensWidget;
+
 class UDTGUI_EXPORT NodeScreen : public QWidget
 {
     Q_OBJECT
@@ -35,12 +37,17 @@ public:
     virtual QString title() const = 0;
     virtual QIcon icon() const;
 
+    NodeScreensWidget *screenWidget() const;
+    void setScreenWidget(NodeScreensWidget *screenWidget);
+
 public slots:
     void setNode(Node *node, uint8_t axis = 0);
 
 protected:
     Node *_node;
     virtual void setNodeInternal(Node *node, uint8_t axis = 0) = 0;
+
+    NodeScreensWidget *_screenWidget;
 };
 
 #endif // NODESCREEN_H
