@@ -223,7 +223,7 @@ void P402TqWidget::createWidgets()
     // Create interface
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     layout->addWidget(modeGroupBox);;
 
@@ -235,7 +235,7 @@ void P402TqWidget::createWidgets()
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->addWidget(scrollArea);
     vBoxLayout->addLayout(buttonWidgets());
-    vBoxLayout->setMargin(0);
+    vBoxLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(vBoxLayout);
 }
 
@@ -331,6 +331,7 @@ QHBoxLayout *P402TqWidget::buttonWidgets()
     connect(imgPushButton, SIGNAL(clicked()), tqModeLabel, SLOT(show()));
 
     QHBoxLayout *layout = new QHBoxLayout();
+    layout->setContentsMargins(2, 0, 2, 0);
     layout->setSpacing(5);
     layout->addWidget(dataLoggerPushButton);
     layout->addWidget(mappingPdoPushButton);

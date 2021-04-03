@@ -500,6 +500,7 @@ void P402Widget::createWidgets()
 
     // Stacked Widget
     _stackedWidget = new QStackedWidget;
+    _stackedWidget->setStyleSheet("QStackedWidget {padding: 0 0 0 3px;}");
     _stackedWidget->addWidget(_modes[NodeProfile402::NoMode]);
     _stackedWidget->addWidget(_modes[NodeProfile402::VL]);
     _stackedWidget->addWidget(_modes[NodeProfile402::IP]);
@@ -526,7 +527,7 @@ void P402Widget::createWidgets()
     scrollArea->setWidget(controlWidget);
     scrollArea->setWidgetResizable(true);
     scrollArea->setMaximumWidth(370);
-    scrollArea->setMinimumWidth(370);
+    scrollArea->setMinimumWidth(300);
 
     QHBoxLayout *hBoxLayout = new QHBoxLayout();
     hBoxLayout->setContentsMargins(0, 0, 0, 0);

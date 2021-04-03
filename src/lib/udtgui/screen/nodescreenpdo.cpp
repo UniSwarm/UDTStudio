@@ -32,7 +32,7 @@ void NodeScreenPDO::createWidgets()
 {
     QLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     QSplitter *splitter = new QSplitter();
     splitter->setStyleSheet("QSplitter {background: #19232D;}");
     layout->addWidget(splitter);

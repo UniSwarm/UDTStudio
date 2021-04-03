@@ -82,7 +82,7 @@ PDO *PDOMappingWidget::pdo() const
 void PDOMappingWidget::createWidget()
 {
     QLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setContentsMargins(0, 0, 0, 0);
 
     QLayout *layoutHeader = new QVBoxLayout();

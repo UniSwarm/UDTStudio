@@ -34,7 +34,7 @@ NodeScreenUmcMotor::NodeScreenUmcMotor(QWidget *parent)
 void NodeScreenUmcMotor::createWidgets()
 {
     QLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setContentsMargins(0, 0, 0, 0);
     _tabWidget = new QTabWidget();
     //_tabWidget->setTabShape(QTabWidget::Triangular);

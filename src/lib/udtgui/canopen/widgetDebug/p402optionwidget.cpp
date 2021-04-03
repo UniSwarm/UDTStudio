@@ -147,7 +147,7 @@ void P402OptionWidget::createWidgets()
     // Create interface
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     layout->addWidget(abortConnectionWidgets());
     layout->addWidget(quickStopWidgets());
@@ -163,7 +163,7 @@ void P402OptionWidget::createWidgets()
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->addWidget(scrollArea);
-    vBoxLayout->setMargin(0);
+    vBoxLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(vBoxLayout);
 }
 

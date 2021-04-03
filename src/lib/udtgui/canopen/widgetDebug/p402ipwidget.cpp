@@ -346,7 +346,7 @@ void P402IpWidget::createWidgets()
     // Create interface
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     layout->addWidget(modeGroupBox);
     layout->addWidget(sinusoidalMotionProfileWidgets());
@@ -360,7 +360,7 @@ void P402IpWidget::createWidgets()
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->addWidget(scrollArea);
     vBoxLayout->addLayout(buttonWidgets());
-    vBoxLayout->setMargin(0);
+    vBoxLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(vBoxLayout);
 }
 
@@ -544,6 +544,7 @@ QHBoxLayout *P402IpWidget::buttonWidgets()
     connect(imgPushButton, SIGNAL(clicked()), ipModeLabel, SLOT(show()));
 
     QHBoxLayout *layout = new QHBoxLayout();
+    layout->setContentsMargins(2, 0, 2, 0);
     layout->setSpacing(5);
     layout->addWidget(dataLoggerPushButton);
     layout->addWidget(mappingPdoPushButton);

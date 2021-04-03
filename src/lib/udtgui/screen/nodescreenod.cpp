@@ -28,7 +28,7 @@ NodeScreenOD::NodeScreenOD()
 void NodeScreenOD::createWidgets()
 {
     QLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setContentsMargins(0, 0, 0, 0);
 
     _nodeOdWidget = new NodeOdWidget();

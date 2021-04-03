@@ -33,8 +33,8 @@ NodeScreenHome::NodeScreenHome()
 void NodeScreenHome::createWidgets()
 {
     QLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(2, 2, 2 ,2);
+    layout->setSpacing(2);
 
     layout->addWidget(createSumaryWidget());
 
