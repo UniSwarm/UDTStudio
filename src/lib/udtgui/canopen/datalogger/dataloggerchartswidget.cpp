@@ -24,6 +24,7 @@
 #include <QOpenGLWidget>
 #include <QScatterSeries>
 #include <QValueAxis>
+#include <QGraphicsLayout>
 #include <qmath.h>
 
 using namespace QtCharts;
@@ -33,13 +34,17 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
 {
     _dataLogger = nullptr;
 
+    setStyleSheet("QAbstractScrollArea {padding: 0px;}");
+
     _chart = new QtCharts::QChart();
     _chart->legend()->hide();
     //_chart->setTitle("Logger");
     _chart->legend()->setVisible(true);
     _chart->legend()->setAlignment(Qt::AlignBottom);
-    //_chart->setTheme(QtCharts::QChart::ChartThemeBlueCerulean);
+    _chart->setTheme(QtCharts::QChart::ChartThemeBlueCerulean);
     setRenderHint(QPainter::Antialiasing);
+    _chart->layout()->setContentsMargins(0, 0, 0, 0);
+    _chart->setBackgroundBrush(QColor("#19232D"));
     setChart(_chart);
 
     _axisX = new QtCharts::QDateTimeAxis();

@@ -45,16 +45,21 @@ DataLogger *DataLoggerWidget::dataLogger() const
 void DataLoggerWidget::createWidgets()
 {
     QLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(2, 2, 2, 2);
 
     QSplitter *splitter = new QSplitter();
+    splitter->setStyleSheet("QSplitter {background: #19232D;}");
 
     _dataLoggerManagerWidget = new DataLoggerManagerWidget(_dataLogger);
     splitter->addWidget(_dataLoggerManagerWidget);
 
+    QWidget *widgetLogger = new QWidget();
+    QVBoxLayout *layoutLogger = new QVBoxLayout();
+    layoutLogger->setContentsMargins(5, 4, 0, 3);
     _chartView = new DataLoggerChartsWidget(_dataLogger);
-    splitter->addWidget(_chartView);
+    layoutLogger->addWidget(_chartView);
+    widgetLogger->setLayout(layoutLogger);
+    splitter->addWidget(widgetLogger);
 
     _dataLoggerManagerWidget->setChartWidget(_chartView);
 

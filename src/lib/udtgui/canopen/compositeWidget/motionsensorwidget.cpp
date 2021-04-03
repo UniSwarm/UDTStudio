@@ -286,10 +286,6 @@ void MotionSensorWidget::createWidgets()
     _dataLogger = new DataLogger();
     _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0 ,0);
-    layout->setSpacing(0);
-
     // toolbar
     _toolBar = new QToolBar(tr("Data logger commands"));
     _toolBar->setIconSize(QSize(20, 20));
@@ -476,9 +472,15 @@ void MotionSensorWidget::createWidgets()
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
     splitter->setStyleSheet("QSplitter {background: #19232D;}");
-    layout->addWidget(splitter);
     splitter->addWidget(motionSensorScrollArea);
-    splitter->addWidget(_dataLoggerChartsWidget);
+
+    QWidget *widgetLogger = new QWidget();
+    QVBoxLayout *layoutLogger = new QVBoxLayout();
+    layoutLogger->setContentsMargins(5, 4, 0, 3);
+    _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
+    layoutLogger->addWidget(_dataLoggerChartsWidget);
+    widgetLogger->setLayout(layoutLogger);
+    splitter->addWidget(widgetLogger);
     splitter->setSizes(QList<int>() << 100 << 300);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();

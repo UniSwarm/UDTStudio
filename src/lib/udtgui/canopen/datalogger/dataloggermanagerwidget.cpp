@@ -81,8 +81,8 @@ void DataLoggerManagerWidget::createWidgets()
 {
     QAction *action;
     QLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(2, 2, 2, 2);
+    layout->setSpacing(5);
 
     // toolbar nmt
     _toolBar = new QToolBar(tr("Data logger commands"));
@@ -116,7 +116,7 @@ void DataLoggerManagerWidget::createWidgets()
     _openGLAction->setCheckable(true);
     _openGLAction->setChecked(false);
     _openGLAction->setIcon(QIcon(":/icons/img/icons8-speed.png"));
-    _openGLAction->setStatusTip(tr("Set render to open GL for fast rendering"));
+    _openGLAction->setStatusTip(tr("Sets render to open GL for fast rendering"));
     connect(_openGLAction, &QAction::triggered, this, &DataLoggerManagerWidget::setUseOpenGL);
 
     // linechart

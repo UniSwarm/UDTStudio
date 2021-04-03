@@ -649,7 +649,14 @@ void PidWidget::createWidgets()
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
     splitter->setStyleSheet("QSplitter {background: #19232D;}");
     splitter->addWidget(pidScrollArea);
-    splitter->addWidget(_dataLoggerChartsWidget);
+
+    QWidget *widgetLogger = new QWidget();
+    QVBoxLayout *layoutLogger = new QVBoxLayout();
+    layoutLogger->setContentsMargins(5, 4, 0, 3);
+    _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
+    layoutLogger->addWidget(_dataLoggerChartsWidget);
+    widgetLogger->setLayout(layoutLogger);
+    splitter->addWidget(widgetLogger);
     splitter->setSizes(QList<int>() << 100 << 300);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
