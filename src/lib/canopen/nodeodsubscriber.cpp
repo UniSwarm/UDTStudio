@@ -63,7 +63,7 @@ void NodeOdSubscriber::setNodeInterrest(Node *nodeInterrest)
     // register new nodeInterrest
     if (_nodeInterrest)
     {
-        for (const NodeObjectId &objId : _objIdList)
+        for (const NodeObjectId &objId : qAsConst(_objIdList))
         {
             if (objId.isNodeIndependant())
             {

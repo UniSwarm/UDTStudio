@@ -191,7 +191,7 @@ QVariant NodeOd::value(const quint16 index, const quint8 subIndex) const
 
 void NodeOd::resetValue()
 {
-    for (NodeIndex *index : _nodeIndexes)
+    for (NodeIndex *index : qAsConst(_nodeIndexes))
     {
         for (NodeSubIndex *subIndex : index->subIndexes())
         {

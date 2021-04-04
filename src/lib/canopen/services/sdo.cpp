@@ -189,7 +189,7 @@ SDO::Status SDO::status() const
 bool SDO::uploadData(quint16 index, quint8 subindex, QMetaType::Type dataType)
 {
     bool existing = false;
-    for (RequestSdo *req : _requestQueue)
+    for (RequestSdo *req : qAsConst(_requestQueue))
     {
         if (req->index == index && req->subIndex == subindex)
         {
@@ -729,7 +729,6 @@ bool SDO::sdoBlockDownload(const QCanBusFrame &frame)
 {
     quint16 index = 0;
     quint8 subindex = 0;
-    QByteArray buffer;
 
     quint8 ss = static_cast<quint8>(frame.payload().at(0) & SS::SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_MASK);
 

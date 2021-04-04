@@ -307,7 +307,7 @@ void DeviceIniWriter::writeStringMap(const QMap<QString, QString> &map) const
 
     std::sort(keys.begin(), keys.end(), [&collator](const QString &file1, const QString &file2) { return collator.compare(file1, file2) < 0; });
 
-    for (const QString &key : keys)
+    for (const QString &key : qAsConst(keys))
     {
         *_file << key << "=" << map.value(key) << "\r\n";
     }

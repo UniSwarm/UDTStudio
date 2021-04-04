@@ -122,9 +122,10 @@ void CanOpenBus::addNode(Node *node)
     _nodesMap.insert(node->nodeId(), node);
 
     node->setBus(this);
-    for (Service *service : node->services())
+    QListIterator<Service *> service(node->services());
+    while (service.hasNext())
     {
-        _serviceDispatcher->addService(service);
+        _serviceDispatcher->addService(service.next());
     }
     emit nodeAdded();
 }

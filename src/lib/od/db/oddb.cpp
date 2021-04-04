@@ -105,7 +105,7 @@ QString OdDb::file(quint32 deviceType, quint32 vendorID, quint32 productCode, qu
 void OdDb::refreshFile()
 {
     _mapFile.clear();
-    for (const QString &directory : _directoryList)
+    for (const QString &directory : qAsConst(_directoryList))
     {
         searchFile(directory);
     }

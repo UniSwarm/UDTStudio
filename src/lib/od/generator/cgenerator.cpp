@@ -824,7 +824,7 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
 
     case Index::Object::RECORD:
         subIndexes = index->subIndexes();
-        for (SubIndex *subIndex : subIndexes)
+        for (SubIndex *subIndex : qAsConst(subIndexes))
         {
             if (!subIndex->value().isValid())
             {

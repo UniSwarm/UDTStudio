@@ -77,7 +77,7 @@ bool PDO::hasMappedObject() const
 
 bool PDO::isMappedObject(const NodeObjectId &object) const
 {
-    for (NodeObjectId objectIterator : _objectCurrentMapped)
+    for (const NodeObjectId &objectIterator : qAsConst(_objectCurrentMapped))
     {
         if ((objectIterator.index() == object.index()) && (objectIterator.subIndex() == object.subIndex()))
         {
@@ -214,7 +214,7 @@ void PDO::readMapping()
 void PDO::writeMapping(const QList<NodeObjectId> &objectList)
 {
     quint8 size = 0;
-    for (NodeObjectId objectId : objectList)
+    for (const NodeObjectId &objectId : qAsConst(objectList))
     {
         size += objectId.bitSize();
         if (size > 64)

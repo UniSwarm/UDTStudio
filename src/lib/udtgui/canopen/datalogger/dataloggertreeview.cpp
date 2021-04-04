@@ -96,7 +96,7 @@ void DataLoggerTreeView::removeCurrent()
     }
 
     QList<QPersistentModelIndex> pindex;
-    for (QModelIndex selected : selection)
+    for (QModelIndex selected : qAsConst(selection))
     {
         const QModelIndex &indexComponent = _sortProxy->mapToSource(selected);
         if (!indexComponent.isValid())
@@ -111,7 +111,7 @@ void DataLoggerTreeView::removeCurrent()
         return;
     }
     selectionModel()->clearSelection();
-    for (QPersistentModelIndex index : pindex)
+    for (const QPersistentModelIndex &index : pindex)
     {
         _loggerModel->dataLogger()->removeData(_loggerModel->objId(index));
     }

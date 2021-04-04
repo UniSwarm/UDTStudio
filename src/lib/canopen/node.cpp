@@ -222,7 +222,7 @@ void Node::sendResetNode()
 void Node::setBus(CanOpenBus *bus)
 {
     _bus = bus;
-    for (Service *service : _services)
+    for (Service *service : qAsConst(_services))
     {
         service->setBus(bus);
     }
@@ -232,12 +232,12 @@ void Node::reset()
 {
     _nodeOd->resetValue();
 
-    for (Service *service : _services)
+    for (Service *service : qAsConst(_services))
     {
         service->reset();
     }
 
-    for (NodeProfile *nodeProfile : _nodeProfiles)
+    for (NodeProfile *nodeProfile : qAsConst(_nodeProfiles))
     {
         nodeProfile->reset();
     }
@@ -343,7 +343,7 @@ void Node::writeObject(const quint16 index, const quint8 subindex, const QVarian
     NodeObjectId object(busId(), nodeId(), index, subindex);
     if (isMappedObjectInRpdo(NodeObjectId(index, subindex)) && status() == STARTED && (_bus->sync()->status() == Sync::STARTED))
     {
-        for (RPDO *rpdo : _rpdos)
+        for (RPDO *rpdo : qAsConst(_rpdos))
         {
             if (rpdo->isMappedObject(object))
             {

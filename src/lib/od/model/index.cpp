@@ -167,7 +167,7 @@ bool Index::subIndexExist(uint8_t subIndex)
  */
 bool Index::subIndexExist(QString nameSubIndex)
 {
-    for (SubIndex *subIndex : _subIndexes)
+    for (SubIndex *subIndex : qAsConst(_subIndexes))
     {
         if (subIndex->name() == nameSubIndex)
         {

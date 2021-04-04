@@ -190,7 +190,7 @@ bool DataLoggerChartsWidget::viewCross() const
 void DataLoggerChartsWidget::setViewCross(bool viewCross)
 {
     _viewCross = viewCross;
-    for (QXYSeries *serie : _series)
+    for (QXYSeries *serie : qAsConst(_series))
     {
         serie->setPointsVisible(viewCross);
     }
@@ -204,12 +204,12 @@ bool DataLoggerChartsWidget::useOpenGL() const
 void DataLoggerChartsWidget::setUseOpenGL(bool useOpenGL)
 {
     _useOpenGL = useOpenGL;
-    for (QXYSeries *serie : _series)
+    for (QXYSeries *serie : qAsConst(_series))
     {
         serie->setUseOpenGL(useOpenGL);
     }
     QList<QOpenGLWidget *> glWidgets = findChildren<QOpenGLWidget *>();
-    for (QOpenGLWidget *glWidget : glWidgets)
+    for (QOpenGLWidget *glWidget : qAsConst(glWidgets))
     {
         glWidget->update();
     }

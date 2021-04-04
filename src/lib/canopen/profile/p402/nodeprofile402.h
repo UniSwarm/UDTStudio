@@ -106,7 +106,7 @@ public:
     bool polarityVelocity();
 
 signals:
-    void modeChanged(uint8_t axis, OperationMode modeNew);
+    void modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew);
     void stateChanged();
     void isHalted(bool state);
     void eventHappened(quint8 Event402);

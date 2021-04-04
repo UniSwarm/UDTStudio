@@ -57,7 +57,7 @@ void NodeScreensWidget::setActiveNode(Node *node)
 
         // add all screens from nodeScreens to QTabWidget and set node
         NodeScreens nodeScreens = _nodesMap.value(_activeNode);
-        for (NodeScreen *screen : nodeScreens.screens)
+        for (NodeScreen *screen : qAsConst(nodeScreens.screens))
         {
             _tabWidget->addTab(screen, screen->icon(), " " + screen->title() + " ");
         }

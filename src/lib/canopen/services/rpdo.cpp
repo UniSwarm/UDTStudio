@@ -122,7 +122,7 @@ void RPDO::receiveSync()
     }
 
     // Update data of object in NodeOd after a sync
-    for (NodeObjectId objectIterator : _objectCurrentMapped)
+    for (const NodeObjectId &objectIterator : qAsConst(_objectCurrentMapped))
     {
         if (_dataObjectCurrentMapped.contains(objectIterator.key()) && _node->nodeOd()->indexExist(objectIterator.index()) &&
             _node->nodeOd()->subIndexExist(objectIterator.index(), objectIterator.subIndex()))
@@ -145,7 +145,7 @@ void RPDO::write(const NodeObjectId &object, const QVariant &data)
         return;
     }
 
-    for (NodeObjectId objectIterator : _objectCurrentMapped)
+    for (const NodeObjectId &objectIterator : qAsConst(_objectCurrentMapped))
     {
         if (objectIterator.index() == object.index() && objectIterator.subIndex() == object.subIndex())
         {
@@ -180,7 +180,7 @@ void RPDO::prepareAndSendData()
     QDataStream request(&_rpdoDataToSendReqPayload, QIODevice::WriteOnly);
     request.setByteOrder(QDataStream::LittleEndian);
 
-    for (NodeObjectId objectIterator : _objectCurrentMapped)
+    for (const NodeObjectId &objectIterator : qAsConst(_objectCurrentMapped))
     {
         quint8 size = static_cast<quint8>(QMetaType::sizeOf(objectIterator.dataType()));
         if (size > 8)

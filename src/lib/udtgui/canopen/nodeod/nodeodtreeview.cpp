@@ -163,7 +163,7 @@ void NodeOdTreeView::copy()
 {
     QString copyText;
     QModelIndexList selectedRows = selectionModel()->selectedRows();
-    for (QModelIndex row : selectedRows)
+    for (QModelIndex row : qAsConst(selectedRows))
     {
         const QModelIndex &curentIndex = _odModelSorter->mapToSource(row);
         NodeSubIndex *nodeSubIndex = _odModel->nodeSubIndex(curentIndex);

@@ -211,7 +211,7 @@ QString NodeProfile402::modeStr(NodeProfile402::OperationMode mode)
 
 bool NodeProfile402::isModeSupported(OperationMode mode)
 {
-    for (const OperationMode &modesupported : _modesSupported)
+    for (const OperationMode &modesupported : qAsConst(_modesSupported))
     {
         if (modesupported == mode)
         {
