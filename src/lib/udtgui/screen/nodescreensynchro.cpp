@@ -18,8 +18,10 @@
 
 #include "nodescreensynchro.h"
 
+#include "canopen/widget/indexcombobox.h"
 #include "canopen/widget/indexlabel.h"
 #include "canopen/widget/indexspinbox.h"
+
 #include "indexdb402.h"
 #include "node.h"
 
@@ -40,9 +42,10 @@ void NodeScreenSynchro::createWidgets()
     QGroupBox *synchroConfigGroupBox = new QGroupBox(tr("Synchro config"));
     QFormLayout *synchroLayout = new QFormLayout();
 
-    _modeSynchroSpinBox = new IndexSpinBox();
-    _modeSynchroSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
-    synchroLayout->addRow(tr("&Mode_Synchro :"), _modeSynchroSpinBox);
+    _modeSynchroComboBox = new IndexComboBox();
+    _modeSynchroComboBox->addItem("OFF", QVariant(static_cast<uint16_t>(0x0000)));
+    _modeSynchroComboBox->addItem("Position", QVariant(static_cast<uint16_t>(0x0001)));
+    synchroLayout->addRow(tr("&Mode_Synchro :"), _modeSynchroComboBox);
 
     _maxDiffSpinBox = new IndexSpinBox();
     _maxDiffSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
@@ -100,7 +103,27 @@ void NodeScreenSynchro::setNodeInternal(Node *node, uint8_t axis)
 
     _axis = axis;
 
-    _modeSynchroSpinBox->setNode(node);
+    NodeObjectId modeSynchroSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_CONFIG_MODE_SYNCHRO);
+    NodeObjectId maxDiffSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_CONFIG_MAX_DIFF);
+    NodeObjectId coeffSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_CONFIG_COEFF);
+    NodeObjectId windowSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_CONFIG_WINDOW);
+    NodeObjectId offsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_CONFIG_OFFSET);
+
+    NodeObjectId flagLabel_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_STATUS_FLAG);
+    NodeObjectId erorLabel_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_STATUS_ERROR);
+    NodeObjectId correctorLabel_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_STATUS_CORRECTOR);
+
+    _modeSynchroComboBox->setObjId(modeSynchroSpinBox_ObjId);
+    _maxDiffSpinBox->setObjId(maxDiffSpinBox_ObjId);
+    _coeffSpinBox->setObjId(coeffSpinBox_ObjId);
+    _windowSpinBox->setObjId(windowSpinBox_ObjId);
+    _offsetSpinBox->setObjId(offsetSpinBox_ObjId);
+
+    _flagLabel->setObjId(flagLabel_ObjId);
+    _erorLabel->setObjId(erorLabel_ObjId);
+    _correctorLabel->setObjId(correctorLabel_ObjId);
+
+    _modeSynchroComboBox->setNode(node);
     _maxDiffSpinBox->setNode(node);
     _coeffSpinBox->setNode(node);
     _windowSpinBox->setNode(node);
@@ -109,24 +132,4 @@ void NodeScreenSynchro::setNodeInternal(Node *node, uint8_t axis)
     _flagLabel->setNode(node);
     _erorLabel->setNode(node);
     _correctorLabel->setNode(node);
-
-    NodeObjectId _modeSynchroSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_CONFIG_MODE_SYNCHRO);
-    NodeObjectId _maxDiffSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_CONFIG_MAX_DIFF);
-    NodeObjectId _coeffSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_CONFIG_COEFF);
-    NodeObjectId _windowSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_CONFIG_WINDOW);
-    NodeObjectId _offsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_CONFIG_OFFSET);
-
-    NodeObjectId _flagLabel_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_STATUS_FLAG);
-    NodeObjectId _erorLabel_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_STATUS_ERROR);
-    NodeObjectId _correctorLabel_ObjId = IndexDb402::getObjectId(IndexDb402::S12_SYNCHRO_STATUS_CORRECTOR);
-
-    _modeSynchroSpinBox->setObjId(_modeSynchroSpinBox_ObjId);
-    _maxDiffSpinBox->setObjId(_maxDiffSpinBox_ObjId);
-    _coeffSpinBox->setObjId(_coeffSpinBox_ObjId);
-    _windowSpinBox->setObjId(_windowSpinBox_ObjId);
-    _offsetSpinBox->setObjId(_offsetSpinBox_ObjId);
-
-    _flagLabel->setObjId(_flagLabel_ObjId);
-    _erorLabel->setObjId(_erorLabel_ObjId);
-    _correctorLabel->setObjId(_correctorLabel_ObjId);
 }

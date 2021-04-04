@@ -23,6 +23,7 @@
 
 #include "nodescreen.h"
 
+class IndexComboBox;
 class IndexSpinBox;
 class IndexLabel;
 
@@ -36,7 +37,7 @@ protected:
     uint8_t _axis;
     void createWidgets();
 
-    IndexSpinBox *_modeSynchroSpinBox;
+    IndexComboBox *_modeSynchroComboBox;
     IndexSpinBox *_maxDiffSpinBox;
     IndexSpinBox *_coeffSpinBox;
     IndexSpinBox *_windowSpinBox;
