@@ -39,6 +39,7 @@ void NodeScreenHome::createWidgets()
     layout->setSpacing(2);
 
     layout->addWidget(createSumaryWidget());
+    layout->addWidget(createStatusWidget());
     layout->addWidget(createOdWidget());
 
     setLayout(layout);
@@ -85,6 +86,30 @@ QWidget *NodeScreenHome::createSumaryWidget()
     return groupBox;
 }
 
+QWidget *NodeScreenHome::createStatusWidget()
+{
+    IndexLabel *indexLabel;
+    QGroupBox *groupBox = new QGroupBox(tr("Status"));
+    QFormLayout *sumaryLayout = new QFormLayout();
+
+    indexLabel = new IndexLabel(NodeObjectId(0x2000, 1));
+    indexLabel->setDisplayHint(AbstractIndexWidget::DisplayFloat);
+    indexLabel->setScale(1.0 / 100.0);
+    indexLabel->setUnit(" V");
+    sumaryLayout->addRow(tr("Board voltage :"), indexLabel);
+    _indexWidgets.append(indexLabel);
+
+    indexLabel = new IndexLabel(NodeObjectId(0x2020, 1));
+    indexLabel->setDisplayHint(AbstractIndexWidget::DisplayFloat);
+    indexLabel->setScale(1.0 / 100.0);
+    indexLabel->setUnit(" °C");
+    sumaryLayout->addRow(tr("CPU temperature :"), indexLabel);
+    _indexWidgets.append(indexLabel);
+
+    groupBox->setLayout(sumaryLayout);
+    return groupBox;
+}
+
 QWidget *NodeScreenHome::createOdWidget()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Object dictionary"));
@@ -124,7 +149,7 @@ QString NodeScreenHome::title() const
 void NodeScreenHome::setNodeInternal(Node *node, uint8_t axis)
 {
     Q_UNUSED(axis)
-    for (AbstractIndexWidget *indexWidget: _indexWidgets)
+    for (AbstractIndexWidget *indexWidget: qAsConst(_indexWidgets))
     {
         indexWidget->setNode(node);
     }
