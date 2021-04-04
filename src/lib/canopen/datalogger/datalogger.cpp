@@ -91,7 +91,7 @@ void DataLogger::removeData(const NodeObjectId &objId)
 
 void DataLogger::removeAllData()
 {
-    for (DLData *dlData : _dataList)
+    for (DLData *dlData : qAsConst(_dataList))
     {
         removeData(dlData->objectId());
     }
@@ -181,6 +181,20 @@ QDateTime DataLogger::lastDateTime() const
     return last;
 }
 
+void DataLogger::addDataValue(DLData *dlData, const QVariant &value, const QDateTime &dateTime)
+{
+    double valueDouble = value.toDouble();
+
+    if (dlData->isQ1516())
+    {
+        valueDouble /= 65536.0;
+    }
+
+    dlData->appendData(valueDouble, dateTime);
+
+    emit dataChanged(_dataList.indexOf(dlData));
+}
+
 void DataLogger::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (!_timer.isActive())
@@ -196,16 +210,7 @@ void DataLogger::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 
     const QVariant &value = dlData->node()->nodeOd()->value(dlData->objectId());
     const QDateTime &dateTime = dlData->node()->nodeOd()->lastModification(dlData->objectId());
-    double valueDouble = value.toDouble();
-
-    if (dlData->isQ1516())
-    {
-        valueDouble /= 65536.0;
-    }
-
-    dlData->appendData(valueDouble, dateTime);
-
-    emit dataChanged(_dataList.indexOf(dlData));
+    addDataValue(dlData, value, dateTime);
 }
 
 void DataLogger::start(int ms)
@@ -231,8 +236,11 @@ void DataLogger::clear()
 
 void DataLogger::readData()
 {
-    for (DLData *dlData : _dataList)
+    for (DLData *dlData : qAsConst(_dataList))
     {
-        dlData->node()->readObject(dlData->objectId());
+        if (dlData->node())
+        {
+            dlData->node()->readObject(dlData->objectId());
+        }
     }
 }

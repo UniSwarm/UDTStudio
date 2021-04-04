@@ -46,6 +46,8 @@ public:
     QDateTime firstDateTime() const;
     QDateTime lastDateTime() const;
 
+    void addDataValue(DLData *dlData, const QVariant &value, const QDateTime &dateTime);
+
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
