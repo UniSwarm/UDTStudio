@@ -108,6 +108,13 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
             default:
                 return QVariant();
             }
+
+        case Qt::TextAlignmentRole:
+            if (index.column() == NodeId)
+            {
+                return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+            }
+            return QVariant();
         }
     }
 
@@ -142,6 +149,13 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
                         return QVariant(QIcon(":/uBoards/umc.png"));
                     }
                 }
+            }
+            return QVariant();
+
+        case Qt::TextAlignmentRole:
+            if (index.column() == NodeId)
+            {
+                return QVariant(Qt::AlignRight | Qt::AlignVCenter);
             }
             return QVariant();
         }
