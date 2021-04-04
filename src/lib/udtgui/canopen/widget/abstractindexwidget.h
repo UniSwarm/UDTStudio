@@ -51,7 +51,18 @@ public:
 
     // min max
     // tooltip
-    // setunit
+
+    uint64_t bitMask() const;
+    void setBitMask(const uint64_t &bitMask);
+
+    double offset() const;
+    void setOffset(double offset);
+
+    double scale() const;
+    void setScale(double scale);
+
+    QString unit() const;
+    void setUnit(const QString &unit);
 
 public slots:
     void readObject();
@@ -76,8 +87,8 @@ protected:
     virtual void updateHint();
     virtual void updateObjId();
 
-    static QVariant pValue(const QVariant &value, const DisplayHint hint = DisplayHint::DisplayDirectValue);
-    static QString pstringValue(const QVariant &value, const DisplayHint hint = DisplayHint::DisplayDirectValue);
+    QVariant pValue(const QVariant &value, const DisplayHint hint = DisplayHint::DisplayDirectValue) const;
+    QString pstringValue(const QVariant &value, const DisplayHint hint = DisplayHint::DisplayDirectValue) const;
 
 protected:
     NodeObjectId _objId;
@@ -86,6 +97,10 @@ protected:
     bool _requestRead;
 
     DisplayHint _hint;
+    uint64_t _bitMask;
+    double _offset;
+    double _scale;
+    QString _unit;
 
     // NodeOdSubscriber interface
 protected:
