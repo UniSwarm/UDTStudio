@@ -69,14 +69,18 @@ protected:
     Node *_node;
     uint8_t _axis;
     ModeSensor _mode;
+    NodeProfile402 *_nodeProfile402;
 
     DataLogger *_dataLogger;
     DataLoggerChartsWidget *_dataLoggerChartsWidget;
 
-    QToolBar *_toolBar;
+    //Toolbar
     QSpinBox *_logTimerSpinBox;
     QAction *_startStopAction;
-
+    //Information
+    QLabel *_informationLabel;
+    QPushButton *_enableButton;
+    //Sensor Config
     QGroupBox *_sensorConfigGroupBox;
     IndexComboBox *_sensorSelectComboBox;
     IndexSpinBox *_thresholdMinSpinBox;
@@ -89,22 +93,17 @@ protected:
     IndexSpinBox *_errorMaxSpinBox;
     IndexSpinBox *_frequencyDividerSpinBox;
     IndexSpinBox *_configBitSpinBox;
-
+    //Status Config
     IndexLabel *_rawDataValueLabel;
     IndexLabel *_flagLabel;
     IndexLabel *_valueLabel;
-
+    //Filter
     QGroupBox *_filterGroupBox;
     IndexComboBox *_filterSelect;
     IndexSpinBox *_param0;
     IndexSpinBox *_param1;
     IndexSpinBox *_param2;
     IndexSpinBox *_param3;
-
-    QLabel *_informationLabel;
-    QPushButton *_enableButton;
-
-    NodeProfile402 *_nodeProfile402;
 
     enum State
     {
@@ -118,10 +117,17 @@ protected:
     State _state;
 
     void setIMode();
-    void createWidgets();
     void statusNodeChanged(Node::Status status);
     void stateChanged();
     void readAllObject();
+
+    // Creation widgets
+    void createWidgets();
+    QToolBar *toolBarWidgets();
+    QGroupBox *informationWidgets();
+    void createSensorConfigurationWidgets();
+    void createSensorFilterWidgets();
+    QGroupBox *sensorStatusWidgets();
 
     void goEnableButton();
 };
