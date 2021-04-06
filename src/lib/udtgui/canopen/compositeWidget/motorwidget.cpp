@@ -60,6 +60,11 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _axis = axis;
 
     connect(_node, &Node::statusChanged, this, &MotorWidget::statusNodeChanged);
+    if (!_node->profiles().isEmpty())
+    {
+        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+        connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &MotorWidget::stateChanged);
+    }
 
     _motorTypeComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_TYPE, _axis));
     _peakCurrent->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_PEAK_CURRENT, _axis));
@@ -96,6 +101,20 @@ void MotorWidget::statusNodeChanged(Node::Status status)
     }
 }
 
+void MotorWidget::stateChanged()
+{
+    if (_nodeProfile402->currentState() == NodeProfile402::STATE_OperationEnabled)
+    {
+        _motorConfigGroupBox->setEnabled(false);
+        _informationLabel->show();
+    }
+    else
+    {
+        _motorConfigGroupBox->setEnabled(true);
+        _informationLabel->hide();
+    }
+}
+
 void MotorWidget::readAllObject()
 {
     _motorTypeComboBox->readObject();
@@ -118,7 +137,9 @@ void MotorWidget::createWidgets()
     actionLayout->setContentsMargins(0, 0, 4, 0);
     actionLayout->setSpacing(0);
 
-    actionLayout->addWidget(motorConfigWidgets());
+    actionLayout->addWidget(informationWidgets());
+    _motorConfigGroupBox = motorConfigWidgets();
+    actionLayout->addWidget(_motorConfigGroupBox);
     actionLayout->addWidget(motorStatusWidgets());
 
     QScrollArea *motionSensorScrollArea = new QScrollArea;
@@ -146,6 +167,21 @@ QToolBar *MotorWidget::toolBarWidgets()
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));
     connect(readAllAction, &QAction::triggered, this, &MotorWidget::readAllObject);
     return toolBar;
+}
+
+QGroupBox *MotorWidget::informationWidgets()
+{
+    QGroupBox *informationGroupBox = new QGroupBox(tr("Information"));
+    _informationLabel = new QLabel(tr("Not available in \"Operation Enabled\""));
+    _enableButton = new QPushButton(tr("Unlock, Go to \"Switched On\""));
+    connect(_enableButton, &QPushButton::clicked, this, &MotorWidget::goEnableButton);
+
+    QVBoxLayout *informationLayout = new QVBoxLayout();
+    informationLayout->addWidget(_informationLabel);
+    informationLayout->addWidget(_enableButton);
+    informationGroupBox->setLayout(informationLayout);
+
+    return informationGroupBox;
 }
 
 QGroupBox *MotorWidget::motorConfigWidgets()
@@ -199,4 +235,9 @@ QGroupBox *MotorWidget::motorStatusWidgets()
 
     statusGroupBox->setLayout(statusLayout);
     return statusGroupBox;
+}
+
+void MotorWidget::goEnableButton()
+{
+    _nodeProfile402->goToState(NodeProfile402::STATE_SwitchedOn);
 }

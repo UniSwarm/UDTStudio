@@ -22,8 +22,11 @@
 #include "../../udtgui_global.h"
 
 #include "node.h"
+#include "profile/p402/nodeprofile402.h"
 
 #include <QGroupBox>
+#include <QLabel>
+#include <QPushButton>
 #include <QSpinBox>
 #include <QToolBar>
 #include <QWidget>
@@ -48,8 +51,13 @@ public slots:
 protected:
     Node *_node;
     uint8_t _axis;
+    NodeProfile402 *_nodeProfile402;
 
+    //Information
+    QLabel *_informationLabel;
+    QPushButton *_enableButton;
     // Motor Config
+    QGroupBox *_motorConfigGroupBox;
     IndexComboBox *_motorTypeComboBox;
     IndexSpinBox *_peakCurrent;
     IndexSpinBox *_polePair;
@@ -63,14 +71,17 @@ protected:
     IndexLabel *_bridgePwmLabel;
 
     void statusNodeChanged(Node::Status status);
+    void stateChanged();
     void readAllObject();
 
     // Creation widgets
     void createWidgets();
     QToolBar *toolBarWidgets();
+    QGroupBox *informationWidgets();
     QGroupBox *motorConfigWidgets();
     QGroupBox *motorStatusWidgets();
 
+    void goEnableButton();
 };
 
 #endif // MOTORCONFIG_H
