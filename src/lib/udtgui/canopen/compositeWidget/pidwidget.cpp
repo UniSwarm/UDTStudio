@@ -90,7 +90,6 @@ void PidWidget::setNode(Node *node, uint8_t axis)
     _dSpinBox->setNode(node);
     _pSpinBox->setNode(node);
     _iSpinBox->setNode(node);
-    _actualValueLabel->setNode(node);
     _inputLabel->setNode(node);
     _errorLabel->setNode(node);
     _integratorLabel->setNode(node);
@@ -145,7 +144,6 @@ void PidWidget::setIMode()
     NodeObjectId pidErrorStatus_ObjId;
     NodeObjectId pidIntegratorStatus_ObjId;
     NodeObjectId pidOutputStatus_ObjId;
-    NodeObjectId actualValue_ObjId;
 
     if (!_nodeProfile402)
     {
@@ -159,7 +157,7 @@ void PidWidget::setIMode()
 
     case MODE_PID_VELOCITY:
         _pidGroupBox->setTitle(tr("PID Velocity configuration"));
-        actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis);
+        _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_P, _axis);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_I, _axis);
         pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_D, _axis);
@@ -176,7 +174,7 @@ void PidWidget::setIMode()
 
     case MODE_PID_TORQUE:
         _pidGroupBox->setTitle(tr("PID Torque configuration"));
-        actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE, _axis);
+        _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE, _axis);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_P, _axis);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_I, _axis);
         pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_D, _axis);
@@ -194,7 +192,7 @@ void PidWidget::setIMode()
 
     case MODE_PID_POSITION:
         _pidGroupBox->setTitle(tr("PID Position configuration"));
-        actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, _axis);
+        _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, _axis);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_P, _axis);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_I, _axis);
         pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_D, _axis);
@@ -213,8 +211,6 @@ void PidWidget::setIMode()
     _pSpinBox->setObjId(pidP_ObjId);
     _iSpinBox->setObjId(pidI_ObjId);
     _dSpinBox->setObjId(pidD_ObjId);
-
-    _actualValueLabel->setObjId(actualValue_ObjId);
 
     _inputLabel->setObjId(pidInputStatus_ObjId);
     _errorLabel->setObjId(pidErrorStatus_ObjId);
@@ -326,7 +322,7 @@ void PidWidget::mode402Changed(uint8_t axis, NodeProfile402::OperationMode modeN
     case NodeProfile402::CSP:
     {
         _modePid = ModePid::MODE_PID_POSITION;
-        int actualPosition = _node->nodeOd()->value(_actualValueLabel->objId()).toInt();
+        int actualPosition = _node->nodeOd()->value(_actualValue_ObjId).toInt();
         _nodeProfile402->setTarget((_firstTargetSpinBox->value() - actualPosition) + actualPosition);
         _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
         break;
@@ -401,7 +397,7 @@ void PidWidget::stopFirstMeasurement()
 
     case MODE_PID_POSITION:
     {
-        int actualPosition = _node->nodeOd()->value(_actualValueLabel->objId()).toInt();
+        int actualPosition = _node->nodeOd()->value(_actualValue_ObjId).toInt();
         _nodeProfile402->setTarget((_secondTargetSpinBox->value() - actualPosition) + actualPosition);
         _timer.start(_windowSecondTargetSpinBox->value());
         break;
@@ -460,7 +456,7 @@ void PidWidget::stopDataLogger()
 
 void PidWidget::readStatus()
 {
-    _actualValueLabel->readObject();
+    _node->readObject(_actualValue_ObjId);
     _inputLabel->readObject();
     _errorLabel->readObject();
     _integratorLabel->readObject();
@@ -567,9 +563,6 @@ void PidWidget::createWidgets()
     // Status
     QGroupBox *statusGroupBox = new QGroupBox(tr("PID status"));
     QFormLayout *statusLayout = new QFormLayout();
-
-    _actualValueLabel = new IndexLabel();
-    //statusLayout->addRow(tr("&Actual Value :"), _actualValueLabel);
 
     _inputLabel = new IndexLabel();
     _inputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);

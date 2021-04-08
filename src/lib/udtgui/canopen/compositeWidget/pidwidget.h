@@ -89,7 +89,7 @@ protected:
     IndexSpinBox *_thresholdSpinBox;
     IndexSpinBox *_freqDividerSpinBox;
 
-    IndexLabel *_actualValueLabel;
+    NodeObjectId _actualValue_ObjId;
 
     IndexLabel *_inputLabel;
     IndexLabel *_errorLabel;
