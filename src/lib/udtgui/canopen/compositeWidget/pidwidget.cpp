@@ -113,11 +113,13 @@ void PidWidget::toggleStartLogger(bool start)
     {
         _startStopAction->setIcon(QIcon(":/icons/img/icons8-stop.png"));
         _dataLogger->start(_logTimerSpinBox->value());
+        _readStatusTimer.start();
     }
     else
     {
         _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
         _dataLogger->stop();
+        _readStatusTimer.stop();
     }
 }
 
@@ -458,9 +460,6 @@ void PidWidget::stopDataLogger()
 
 void PidWidget::readStatus()
 {
-    _pSpinBox->readObject();
-    _iSpinBox->readObject();
-    _dSpinBox->readObject();
     _actualValueLabel->readObject();
     _inputLabel->readObject();
     _errorLabel->readObject();
