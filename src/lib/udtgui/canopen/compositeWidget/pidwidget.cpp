@@ -569,7 +569,7 @@ void PidWidget::createWidgets()
     QFormLayout *statusLayout = new QFormLayout();
 
     _actualValueLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Actual Value :"), _actualValueLabel);
+    //statusLayout->addRow(tr("&Actual Value :"), _actualValueLabel);
 
     _inputLabel = new IndexLabel();
     _inputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
