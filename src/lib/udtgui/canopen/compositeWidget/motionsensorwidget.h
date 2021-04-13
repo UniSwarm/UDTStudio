@@ -74,37 +74,6 @@ protected:
     DataLogger *_dataLogger;
     DataLoggerChartsWidget *_dataLoggerChartsWidget;
 
-    //Toolbar
-    QSpinBox *_logTimerSpinBox;
-    QAction *_startStopAction;
-    //Information
-    QLabel *_informationLabel;
-    QPushButton *_enableButton;
-    //Sensor Config
-    QGroupBox *_sensorConfigGroupBox;
-    IndexComboBox *_sensorSelectComboBox;
-    IndexSpinBox *_thresholdMinSpinBox;
-    IndexSpinBox *_thresholdMaxSpinBox;
-    IndexComboBox *_thresholdModeComboBox;
-    IndexSpinBox *_preOffsetSpinBox;
-    IndexSpinBox *_scaleSpinBox;
-    IndexSpinBox *_postOffsetSpinBox;
-    IndexSpinBox *_errorMinSpinBox;
-    IndexSpinBox *_errorMaxSpinBox;
-    IndexSpinBox *_frequencyDividerSpinBox;
-    IndexSpinBox *_configBitSpinBox;
-    //Status Config
-    IndexLabel *_rawDataValueLabel;
-    IndexLabel *_flagLabel;
-    IndexLabel *_valueLabel;
-    //Filter
-    QGroupBox *_filterGroupBox;
-    IndexComboBox *_filterSelect;
-    IndexSpinBox *_param0;
-    IndexSpinBox *_param1;
-    IndexSpinBox *_param2;
-    IndexSpinBox *_param3;
-
     enum State
     {
         NONE,
@@ -113,7 +82,6 @@ protected:
         LAUCH_SECOND_TARGET,
         STOP_DATALOGGER,
     };
-
     State _state;
 
     void setIMode();
@@ -123,11 +91,48 @@ protected:
 
     // Creation widgets
     void createWidgets();
-    QToolBar *toolBarWidgets();
-    QGroupBox *informationWidgets();
-    void createSensorConfigurationWidgets();
-    void createSensorFilterWidgets();
-    QGroupBox *sensorStatusWidgets();
+    QToolBar *createToolBarWidgets();
+    QSpinBox *_logTimerSpinBox;
+    QAction *_startStopAction;
+
+    QGroupBox *createInformationWidgets();
+    QLabel *_informationLabel;
+    QPushButton *_enableButton;
+
+    QGroupBox *createSensorConfigurationWidgets();
+    QGroupBox *_sensorConfigGroupBox;
+    IndexComboBox *_sensorSelectComboBox;
+    IndexSpinBox *_frequencyDividerSpinBox;
+    IndexSpinBox *_configBitSpinBox;
+    IndexSpinBox *_sensorParam0SpinBox;
+    IndexSpinBox *_sensorParam1SpinBox;
+    IndexSpinBox *_sensorParam2SpinBox;
+    IndexSpinBox *_sensorParam3SpinBox;
+
+    QGroupBox *createSensorFilterWidgets();
+    QGroupBox *_filterGroupBox;
+    IndexComboBox *_filterSelect;
+    IndexSpinBox *_filterParam0SpinBox;
+    IndexSpinBox *_filterParam1SpinBox;
+    IndexSpinBox *_filterParam2SpinBox;
+    IndexSpinBox *_filterParam3SpinBox;
+
+    QGroupBox *createSensorConditioningWidgets();
+    QGroupBox *_conditioningGroupBox;
+    IndexSpinBox *_thresholdMinSpinBox;
+    IndexSpinBox *_thresholdMaxSpinBox;
+    IndexComboBox *_thresholdModeComboBox;
+    IndexSpinBox *_preOffsetSpinBox;
+    IndexSpinBox *_scaleSpinBox;
+    IndexSpinBox *_postOffsetSpinBox;
+    IndexSpinBox *_errorMinSpinBox;
+    IndexSpinBox *_errorMaxSpinBox;
+
+    QGroupBox *createSensorStatusWidgets();
+    QGroupBox *_statusGroupBox;
+    IndexLabel *_rawDataValueLabel;
+    IndexLabel *_flagLabel;
+    IndexLabel *_valueLabel;
 
     void goEnableButton();
 };
