@@ -260,6 +260,15 @@ void NodeSubIndex::clearValue()
 }
 
 /**
+ * @brief NodeSubIndex::defaultValue
+ * @return default value
+ */
+const QVariant &NodeSubIndex::defaultValue() const
+{
+    return _defaultValue;
+}
+
+/**
  * @brief set Default Value
  * @param value new DefaultValue
  */

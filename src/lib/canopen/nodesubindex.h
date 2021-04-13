@@ -71,6 +71,8 @@ public:
     const QVariant &value() const;
     void setValue(const QVariant &value);
     void clearValue();
+
+    const QVariant &defaultValue() const;
     void setDefaultValue(const QVariant &value);
     void resetValue();
 
