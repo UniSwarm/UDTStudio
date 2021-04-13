@@ -101,7 +101,7 @@ QWidget *NodeScreenHome::createStatusWidget()
 
     indexLabel = new IndexLabel(NodeObjectId(0x2020, 1));
     indexLabel->setDisplayHint(AbstractIndexWidget::DisplayFloat);
-    indexLabel->setScale(1.0 / 100.0);
+    indexLabel->setScale(1.0 / 10.0);
     indexLabel->setUnit(" °C");
     sumaryLayout->addRow(tr("CPU temperature :"), indexLabel);
     _indexWidgets.append(indexLabel);

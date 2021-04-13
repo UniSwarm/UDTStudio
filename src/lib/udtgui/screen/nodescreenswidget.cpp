@@ -25,6 +25,7 @@
 #include "nodescreensynchro.h"
 #include "nodescreenumcmotor.h"
 
+#include <QApplication>
 #include <QHBoxLayout>
 
 NodeScreensWidget::NodeScreensWidget(QWidget *parent)
@@ -86,7 +87,7 @@ void NodeScreensWidget::setActiveTab(const QString &name)
 
 void NodeScreensWidget::addNode(Node *node)
 {
-    QMap<Node *, NodeScreens>::const_iterator nodeIt = _nodesMap.find(node);
+    QMap<Node *, NodeScreens>::const_iterator nodeIt = _nodesMap.constFind(node);
     if (nodeIt != _nodesMap.constEnd())
     {
         return;
@@ -103,11 +104,13 @@ void NodeScreensWidget::addNode(Node *node)
     screen->setScreenWidget(this);
     nodeScreens.screens.append(screen);
 
+    QApplication::processEvents();
     screen = new NodeScreenOD();
     screen->setNode(node);
     screen->setScreenWidget(this);
     nodeScreens.screens.append(screen);
 
+    QApplication::processEvents();
     screen = new NodeScreenPDO();
     screen->setNode(node);
     screen->setScreenWidget(this);
@@ -118,13 +121,15 @@ void NodeScreensWidget::addNode(Node *node)
     {
         for (uint8_t i = 0; i < node->countProfile(); i++)
         {
+            QApplication::processEvents();
             screen = new NodeScreenUmcMotor();
             screen->setNode(node, i);
             screen->setScreenWidget(this);
             nodeScreens.screens.append(screen);
         }
-        if (node->countProfile() != 0)
+        if (node->countProfile() > 1)
         {
+            QApplication::processEvents();
             screen = new NodeScreenSynchro();
             screen->setNode(node, 12);
             screen->setScreenWidget(this);

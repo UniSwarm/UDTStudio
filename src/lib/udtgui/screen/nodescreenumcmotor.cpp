@@ -35,9 +35,8 @@ void NodeScreenUmcMotor::createWidgets()
 {
     QLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->setContentsMargins(0, 0, 0, 0);
+
     _tabWidget = new QTabWidget();
-    //_tabWidget->setTabShape(QTabWidget::Triangular);
     _tabWidget->setStyleSheet("\
       QTabWidget > QTabBar::tab:top {\
           color: palette(foreground);\
@@ -47,7 +46,6 @@ void NodeScreenUmcMotor::createWidgets()
           color: palette(foreground);\
       }\
     ");
-
     layout->addWidget(_tabWidget);
 
     _motorConfigWidget = new MotorWidget() ;
