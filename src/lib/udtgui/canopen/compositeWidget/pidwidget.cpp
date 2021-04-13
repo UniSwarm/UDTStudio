@@ -45,7 +45,7 @@ PidWidget::PidWidget(QWidget *parent)
 
 Node *PidWidget::node() const
 {
-    return _node;
+    return _nodeProfile402->node();
 }
 
 QString PidWidget::title() const
@@ -54,37 +54,40 @@ QString PidWidget::title() const
     {
     case PidWidget::MODE_PID_NONE:
         return tr("None");
-    case MODE_PID_POSITION:
-        return tr("Position PID");
-    case MODE_PID_VELOCITY:
-        return tr("Velocity PID");
-    case MODE_PID_TORQUE:
+
+    case PidWidget::MODE_PID_TORQUE:
         return tr("Torque PID");
+
+    case PidWidget::MODE_PID_VELOCITY:
+        return tr("Velocity PID");
+
+    case PidWidget::MODE_PID_POSITION:
+        return tr("Position PID");
     }
     return QString();
 }
 
 void PidWidget::setNode(Node *node, uint8_t axis)
 {
-    _node = node;
-    if (!_node)
+    if (!node)
     {
         return;
     }
-
     if (axis > 8)
     {
         return;
     }
-    _axis = axis;
-
     _dataLogger->removeAllData();
 
-    connect(_node, &Node::statusChanged, this, &PidWidget::statusNodeChanged);
-    if (!_node->profiles().isEmpty())
+    if (node->profiles().isEmpty())
     {
-        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+        return;
     }
+
+    _axis = axis;
+    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
+
+    connect(node, &Node::statusChanged, this, &PidWidget::statusNodeChanged);
     setIMode();
 
     _dSpinBox->setNode(node);
@@ -155,25 +158,8 @@ void PidWidget::setIMode()
     case MODE_PID_NONE:
         break;
 
-    case MODE_PID_VELOCITY:
-        _pidGroupBox->setTitle(tr("PID Velocity configuration"));
-        _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis);
-        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_P, _axis);
-        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_I, _axis);
-        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_D, _axis);
-        pidMin_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_MIN, _axis);
-        pidMax_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_MAX, _axis);
-        pidThreshold_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_THRESHOLD, _axis);
-        pidFreqDivider_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_FREQDIVIDER, _axis);
-        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_INPUT, _axis);
-        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_ERROR, _axis);
-        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_INTEGRATOR, _axis);
-        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_OUTPUT, _axis);
-        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND, _axis);
-        break;
-
     case MODE_PID_TORQUE:
-        _pidGroupBox->setTitle(tr("PID Torque configuration"));
+        _pidGroupBox->setTitle(tr("Torque PID configuration"));
         _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE, _axis);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_P, _axis);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_I, _axis);
@@ -182,16 +168,40 @@ void PidWidget::setIMode()
         pidMax_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_MAX, _axis);
         pidThreshold_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_THRESHOLD, _axis);
         pidFreqDivider_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_FREQDIVIDER, _axis);
+
+        _pidStatusGroupBox->setTitle(tr("Torque PID status"));
         pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_INPUT, _axis);
         pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_ERROR, _axis);
         pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_INTEGRATOR, _axis);
         pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_OUTPUT, _axis);
         target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_DEMAND, _axis);
-        _node->readObject(target_ObjId);
+
+        _pidTestGroupBox->setTitle(tr("Torque PID test"));
+        break;
+
+    case MODE_PID_VELOCITY:
+        _pidGroupBox->setTitle(tr("Velocity PID configuration"));
+        _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis);
+        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_P, _axis);
+        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_I, _axis);
+        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_D, _axis);
+        pidMin_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_MIN, _axis);
+        pidMax_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_MAX, _axis);
+        pidThreshold_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_THRESHOLD, _axis);
+        pidFreqDivider_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_FREQDIVIDER, _axis);
+
+        _pidStatusGroupBox->setTitle(tr("Velocity PID status"));
+        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_INPUT, _axis);
+        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_ERROR, _axis);
+        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_INTEGRATOR, _axis);
+        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_OUTPUT, _axis);
+        target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND, _axis);
+
+        _pidTestGroupBox->setTitle(tr("Velocity PID test"));
         break;
 
     case MODE_PID_POSITION:
-        _pidGroupBox->setTitle(tr("PID Position configuration"));
+        _pidGroupBox->setTitle(tr("Position PID configuration"));
         _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, _axis);
         pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_P, _axis);
         pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_I, _axis);
@@ -200,33 +210,37 @@ void PidWidget::setIMode()
         pidMax_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_MAX, _axis);
         pidThreshold_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_THRESHOLD, _axis);
         pidFreqDivider_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_FREQDIVIDER, _axis);
+
+        _pidStatusGroupBox->setTitle(tr("Position PID status"));
         pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_INPUT, _axis);
         pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_ERROR, _axis);
         pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_INTEGRATOR, _axis);
         pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_OUTPUT, _axis);
         target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, _axis);
+
+        _pidTestGroupBox->setTitle(tr("Position PID test"));
         break;
     }
 
     _pSpinBox->setObjId(pidP_ObjId);
     _iSpinBox->setObjId(pidI_ObjId);
     _dSpinBox->setObjId(pidD_ObjId);
+    _minSpinBox->setObjId(pidMin_ObjId);
+    _maxSpinBox->setObjId(pidMax_ObjId);
+    _thresholdSpinBox->setObjId(pidThreshold_ObjId);
+    _freqDividerSpinBox->setObjId(pidFreqDivider_ObjId);
 
     _inputLabel->setObjId(pidInputStatus_ObjId);
     _errorLabel->setObjId(pidErrorStatus_ObjId);
     _integratorLabel->setObjId(pidIntegratorStatus_ObjId);
     _outputLabel->setObjId(pidOutputStatus_ObjId);
 
-    _minSpinBox->setObjId(pidMin_ObjId);
-    _maxSpinBox->setObjId(pidMax_ObjId);
-    _thresholdSpinBox->setObjId(pidThreshold_ObjId);
-    _freqDividerSpinBox->setObjId(pidFreqDivider_ObjId);
-
-    pidInputStatus_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    pidErrorStatus_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    pidIntegratorStatus_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    pidOutputStatus_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    target_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    // Datalogger
+    pidInputStatus_ObjId.setBusIdNodeId(node()->busId(), node()->nodeId());
+    pidErrorStatus_ObjId.setBusIdNodeId(node()->busId(), node()->nodeId());
+    pidIntegratorStatus_ObjId.setBusIdNodeId(node()->busId(), node()->nodeId());
+    pidOutputStatus_ObjId.setBusIdNodeId(node()->busId(), node()->nodeId());
+    target_ObjId.setBusIdNodeId(node()->busId(), node()->nodeId());
     _dataLogger->removeData(pidInputStatus_ObjId);
     _dataLogger->removeData(pidErrorStatus_ObjId);
     _dataLogger->removeData(target_ObjId);
@@ -256,15 +270,14 @@ void PidWidget::changeMode402()
     case MODE_PID_NONE:
         break;
 
-    case MODE_PID_POSITION:
-        _nodeProfile402->setDefaultModeValue();
-        if (_nodeProfile402->actualMode() != NodeProfile402::IP)
+    case MODE_PID_TORQUE:
+        if (_nodeProfile402->actualMode() != NodeProfile402::TQ)
         {
-            _nodeProfile402->setMode(NodeProfile402::IP);
+            _nodeProfile402->setMode(NodeProfile402::TQ);
         }
         else
         {
-            mode402Changed(_axis, NodeProfile402::IP);
+            mode402Changed(_axis, NodeProfile402::TQ);
         }
         break;
 
@@ -280,14 +293,15 @@ void PidWidget::changeMode402()
         }
         break;
 
-    case MODE_PID_TORQUE:
-        if (_nodeProfile402->actualMode() != NodeProfile402::TQ)
+    case MODE_PID_POSITION:
+        _nodeProfile402->setDefaultModeValue();
+        if (_nodeProfile402->actualMode() != NodeProfile402::IP)
         {
-            _nodeProfile402->setMode(NodeProfile402::TQ);
+            _nodeProfile402->setMode(NodeProfile402::IP);
         }
         else
         {
-            mode402Changed(_axis, NodeProfile402::TQ);
+            mode402Changed(_axis, NodeProfile402::IP);
         }
         break;
     }
@@ -317,16 +331,13 @@ void PidWidget::mode402Changed(uint8_t axis, NodeProfile402::OperationMode modeN
         _modePid = ModePid::MODE_PID_NONE;
         break;
 
-    case NodeProfile402::PP:
-    case NodeProfile402::IP:
-    case NodeProfile402::CSP:
-    {
-        _modePid = ModePid::MODE_PID_POSITION;
-        int actualPosition = _node->nodeOd()->value(_actualValue_ObjId).toInt();
-        _nodeProfile402->setTarget((_firstTargetSpinBox->value() - actualPosition) + actualPosition);
+    case NodeProfile402::CST:
+    case NodeProfile402::CSTCA:
+    case NodeProfile402::TQ:
+        _modePid = ModePid::MODE_PID_TORQUE;
+        _nodeProfile402->setTarget(_firstTargetSpinBox->value());
         _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
         break;
-    }
 
     case NodeProfile402::CSV:
     case NodeProfile402::VL:
@@ -336,13 +347,16 @@ void PidWidget::mode402Changed(uint8_t axis, NodeProfile402::OperationMode modeN
         _nodeProfile402->setTarget(_firstTargetSpinBox->value());
         break;
 
-    case NodeProfile402::CST:
-    case NodeProfile402::CSTCA:
-    case NodeProfile402::TQ:
-        _modePid = ModePid::MODE_PID_TORQUE;
-        _nodeProfile402->setTarget(_firstTargetSpinBox->value());
+    case NodeProfile402::PP:
+    case NodeProfile402::IP:
+    case NodeProfile402::CSP:
+    {
+        _modePid = ModePid::MODE_PID_POSITION;
+        int actualPosition = node()->nodeOd()->value(_actualValue_ObjId).toInt();
+        _nodeProfile402->setTarget((_firstTargetSpinBox->value() - actualPosition) + actualPosition);
         _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
         break;
+    }
     }
     _timer.start(_windowFirstTargetSpinBox->value());
 }
@@ -395,22 +409,23 @@ void PidWidget::stopFirstMeasurement()
     case MODE_PID_NONE:
         break;
 
-    case MODE_PID_POSITION:
-    {
-        int actualPosition = _node->nodeOd()->value(_actualValue_ObjId).toInt();
-        _nodeProfile402->setTarget((_secondTargetSpinBox->value() - actualPosition) + actualPosition);
+    case MODE_PID_TORQUE:
+        _nodeProfile402->setTarget(_secondTargetSpinBox->value());
         _timer.start(_windowSecondTargetSpinBox->value());
         break;
-    }
+
     case MODE_PID_VELOCITY:
         _nodeProfile402->setTarget(_secondTargetSpinBox->value());
         _timer.start(_windowSecondTargetSpinBox->value());
         break;
 
-    case MODE_PID_TORQUE:
-        _nodeProfile402->setTarget(_secondTargetSpinBox->value());
+    case MODE_PID_POSITION:
+    {
+        int actualPosition = node()->nodeOd()->value(_actualValue_ObjId).toInt();
+        _nodeProfile402->setTarget((_secondTargetSpinBox->value() - actualPosition) + actualPosition);
         _timer.start(_windowSecondTargetSpinBox->value());
         break;
+    }
     }
 }
 
@@ -425,15 +440,15 @@ void PidWidget::stopSecondMeasurement()
     case MODE_PID_NONE:
         break;
 
-    case MODE_PID_POSITION:
+    case MODE_PID_TORQUE:
+        _nodeProfile402->setTarget(0);
         break;
 
     case MODE_PID_VELOCITY:
         _nodeProfile402->setTarget(0);
         break;
 
-    case MODE_PID_TORQUE:
-        _nodeProfile402->setTarget(0);
+    case MODE_PID_POSITION:
         break;
     }
 }
@@ -456,7 +471,7 @@ void PidWidget::stopDataLogger()
 
 void PidWidget::readStatus()
 {
-    _node->readObject(_actualValue_ObjId);
+    node()->readObject(_actualValue_ObjId);
     _inputLabel->readObject();
     _errorLabel->readObject();
     _integratorLabel->readObject();
@@ -520,119 +535,14 @@ void PidWidget::createWidgets()
     actionLayout->setContentsMargins(0, 0, 4, 0);
     actionLayout->setSpacing(0);
 
-    _pidGroupBox = new QGroupBox(tr("PID"));
-    QFormLayout *pidLayout = new QFormLayout();
-
-    _pSpinBox = new IndexSpinBox();
-    _pSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("&P :"), _pSpinBox);
-
-    _iSpinBox = new IndexSpinBox();
-    _iSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("&I :"), _iSpinBox);
-
-    _dSpinBox = new IndexSpinBox();
-    _dSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("&D :"), _dSpinBox);
-
-    QLayout *minMaxlayout = new QHBoxLayout();
-    minMaxlayout->setSpacing(0);
-    _minSpinBox = new IndexSpinBox();
-    _minSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    minMaxlayout->addWidget(_minSpinBox);
-    QLabel *errorRangeSepLabel = new QLabel(tr("-"));
-    errorRangeSepLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    minMaxlayout->addWidget(errorRangeSepLabel);
-    _maxSpinBox = new IndexSpinBox();
-    _maxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    minMaxlayout->addWidget(_maxSpinBox);
-    QLabel *errorRangeLabel = new QLabel(tr("&Min max :"));
-    errorRangeLabel->setBuddy(errorRangeLabel);
-    pidLayout->addRow(errorRangeLabel, minMaxlayout);
-
-    _thresholdSpinBox = new IndexSpinBox();
-    _thresholdSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    pidLayout->addRow(tr("&Threshold :"), _thresholdSpinBox);
-
-    _freqDividerSpinBox = new IndexSpinBox();
-    pidLayout->addRow(tr("&Frequency divider :"), _freqDividerSpinBox);
-
-    _pidGroupBox->setLayout(pidLayout);
+    _pidGroupBox = createPIDConfigWidgets();
     actionLayout->addWidget(_pidGroupBox);
 
-    // Status
-    QGroupBox *statusGroupBox = new QGroupBox(tr("PID status"));
-    QFormLayout *statusLayout = new QFormLayout();
+    _pidStatusGroupBox = createPIDStatusWidgets();
+    actionLayout->addWidget(_pidStatusGroupBox);
 
-    _inputLabel = new IndexLabel();
-    _inputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    statusLayout->addRow(tr("&Input :"), _inputLabel);
-
-    _errorLabel = new IndexLabel();
-    _errorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    statusLayout->addRow(tr("&Error :"), _errorLabel);
-
-    _integratorLabel = new IndexLabel();
-    _integratorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    statusLayout->addRow(tr("&Integrator :"), _integratorLabel);
-
-    _outputLabel = new IndexLabel();
-    _outputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    statusLayout->addRow(tr("&Output :"), _outputLabel);
-
-    statusGroupBox->setLayout(statusLayout);
-    actionLayout->addWidget(statusGroupBox);
-
-    // Target
-    QGroupBox *targetGroupBox = new QGroupBox(tr("PID test"));
-    QFormLayout *targetLayout = new QFormLayout();
-
-    QHBoxLayout *firstTargetLayout = new QHBoxLayout();
-    _firstTargetSpinBox = new QSpinBox();
-    _firstTargetSpinBox->setValue(200);
-    _firstTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    _windowFirstTargetSpinBox = new QSpinBox();
-    _windowFirstTargetSpinBox->setRange(10, 5000);
-    _windowFirstTargetSpinBox->setValue(3000);
-    _windowFirstTargetSpinBox->setSuffix(" ms");
-    firstTargetLayout->addWidget(_firstTargetSpinBox);
-    firstTargetLayout->addWidget(_windowFirstTargetSpinBox);
-    targetLayout->addRow(tr("First Target :"), firstTargetLayout);
-
-    QHBoxLayout *secondTargetLayout = new QHBoxLayout();
-    _secondTargetSpinBox = new QSpinBox();
-    _secondTargetSpinBox->setValue(100);
-    _secondTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    _windowSecondTargetSpinBox = new QSpinBox();
-    _windowSecondTargetSpinBox->setRange(10, 5000);
-    _windowSecondTargetSpinBox->setValue(3000);
-    _windowSecondTargetSpinBox->setSuffix(" ms");
-    secondTargetLayout->addWidget(_secondTargetSpinBox);
-    secondTargetLayout->addWidget(_windowSecondTargetSpinBox);
-    targetLayout->addRow(tr("Second Target :"), secondTargetLayout);
-
-    _stopDataLoggerSpinBox = new QSpinBox();
-    _stopDataLoggerSpinBox->setRange(10, 5000);
-    _stopDataLoggerSpinBox->setValue(100);
-    _stopDataLoggerSpinBox->setSuffix(" ms");
-    targetLayout->addRow(tr("&End time :"), _stopDataLoggerSpinBox);
-
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
-    _savePushButton = new QPushButton(tr("&Screenshot logger"));
-    targetLayout->addRow(_savePushButton);
-    connect(_savePushButton, &QPushButton::clicked, this, &PidWidget::screenshotSave);
-
-    _stopTargetPushButton = new QPushButton(tr("Stop"));
-    buttonLayout->addWidget(_stopTargetPushButton);
-    connect(_stopTargetPushButton, &QPushButton::clicked, this, &PidWidget::stopMeasurement);
-
-    _startTargetPushButton = new QPushButton(tr("Start"));
-    buttonLayout->addWidget(_startTargetPushButton);
-    connect(_startTargetPushButton, &QPushButton::clicked, this, &PidWidget::manageMeasurement);
-
-    targetLayout->addRow(buttonLayout);
-    targetGroupBox->setLayout(targetLayout);
-    actionLayout->addWidget(targetGroupBox);
+    _pidTestGroupBox = createPIDTestWidgets();
+    actionLayout->addWidget(_pidTestGroupBox);
 
     QScrollArea *pidScrollArea = new QScrollArea;
     pidScrollArea->setWidget(pidWidget);
@@ -659,14 +569,135 @@ void PidWidget::createWidgets()
     setLayout(vBoxLayout);
 }
 
+QGroupBox *PidWidget::createPIDConfigWidgets()
+{
+    QGroupBox *groupBox = new QGroupBox(tr("PID"));
+    QFormLayout *formLayout = new QFormLayout();
+
+    _pSpinBox = new IndexSpinBox();
+    _pSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    formLayout->addRow(tr("&P :"), _pSpinBox);
+
+    _iSpinBox = new IndexSpinBox();
+    _iSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    formLayout->addRow(tr("&I :"), _iSpinBox);
+
+    _dSpinBox = new IndexSpinBox();
+    _dSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    formLayout->addRow(tr("&D :"), _dSpinBox);
+
+    QLayout *minMaxlayout = new QHBoxLayout();
+    minMaxlayout->setSpacing(0);
+    _minSpinBox = new IndexSpinBox();
+    _minSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    minMaxlayout->addWidget(_minSpinBox);
+    QLabel *errorRangeSepLabel = new QLabel(tr("-"));
+    errorRangeSepLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    minMaxlayout->addWidget(errorRangeSepLabel);
+    _maxSpinBox = new IndexSpinBox();
+    _maxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    minMaxlayout->addWidget(_maxSpinBox);
+    QLabel *errorRangeLabel = new QLabel(tr("&Min max :"));
+    errorRangeLabel->setBuddy(errorRangeLabel);
+    formLayout->addRow(errorRangeLabel, minMaxlayout);
+
+    _thresholdSpinBox = new IndexSpinBox();
+    _thresholdSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    formLayout->addRow(tr("&Threshold :"), _thresholdSpinBox);
+
+    _freqDividerSpinBox = new IndexSpinBox();
+    formLayout->addRow(tr("&Frequency divider :"), _freqDividerSpinBox);
+
+    groupBox->setLayout(formLayout);
+    return groupBox;
+}
+
+QGroupBox *PidWidget::createPIDStatusWidgets()
+{
+    QGroupBox *groupBox = new QGroupBox(tr("PID status"));
+    QFormLayout *formLayout = new QFormLayout();
+
+    _inputLabel = new IndexLabel();
+    _inputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    formLayout->addRow(tr("&Input :"), _inputLabel);
+
+    _errorLabel = new IndexLabel();
+    _errorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    formLayout->addRow(tr("&Error :"), _errorLabel);
+
+    _integratorLabel = new IndexLabel();
+    _integratorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    formLayout->addRow(tr("&Integrator :"), _integratorLabel);
+
+    _outputLabel = new IndexLabel();
+    _outputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    formLayout->addRow(tr("&Output :"), _outputLabel);
+
+    groupBox->setLayout(formLayout);
+    return groupBox;
+}
+
+QGroupBox *PidWidget::createPIDTestWidgets()
+{
+    QGroupBox *groupBox = new QGroupBox(tr("PID test"));
+    QFormLayout *formLayout = new QFormLayout();
+
+    QHBoxLayout *firstTargetLayout = new QHBoxLayout();
+    _firstTargetSpinBox = new QSpinBox();
+    _firstTargetSpinBox->setValue(200);
+    _firstTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
+    _windowFirstTargetSpinBox = new QSpinBox();
+    _windowFirstTargetSpinBox->setRange(10, 5000);
+    _windowFirstTargetSpinBox->setValue(3000);
+    _windowFirstTargetSpinBox->setSuffix(" ms");
+    firstTargetLayout->addWidget(_firstTargetSpinBox);
+    firstTargetLayout->addWidget(_windowFirstTargetSpinBox);
+    formLayout->addRow(tr("First Target :"), firstTargetLayout);
+
+    QHBoxLayout *secondTargetLayout = new QHBoxLayout();
+    _secondTargetSpinBox = new QSpinBox();
+    _secondTargetSpinBox->setValue(100);
+    _secondTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
+    _windowSecondTargetSpinBox = new QSpinBox();
+    _windowSecondTargetSpinBox->setRange(10, 5000);
+    _windowSecondTargetSpinBox->setValue(3000);
+    _windowSecondTargetSpinBox->setSuffix(" ms");
+    secondTargetLayout->addWidget(_secondTargetSpinBox);
+    secondTargetLayout->addWidget(_windowSecondTargetSpinBox);
+    formLayout->addRow(tr("Second Target :"), secondTargetLayout);
+
+    _stopDataLoggerSpinBox = new QSpinBox();
+    _stopDataLoggerSpinBox->setRange(10, 5000);
+    _stopDataLoggerSpinBox->setValue(100);
+    _stopDataLoggerSpinBox->setSuffix(" ms");
+    formLayout->addRow(tr("&End time :"), _stopDataLoggerSpinBox);
+
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    _savePushButton = new QPushButton(tr("&Screenshot logger"));
+    formLayout->addRow(_savePushButton);
+    connect(_savePushButton, &QPushButton::clicked, this, &PidWidget::screenshotSave);
+
+    _stopTargetPushButton = new QPushButton(tr("Stop"));
+    buttonLayout->addWidget(_stopTargetPushButton);
+    connect(_stopTargetPushButton, &QPushButton::clicked, this, &PidWidget::stopMeasurement);
+
+    _startTargetPushButton = new QPushButton(tr("Start"));
+    buttonLayout->addWidget(_startTargetPushButton);
+    connect(_startTargetPushButton, &QPushButton::clicked, this, &PidWidget::manageMeasurement);
+
+    formLayout->addRow(buttonLayout);
+    groupBox->setLayout(formLayout);
+    return groupBox;
+}
+
 void PidWidget::statusNodeChanged(Node::Status status)
 {
     if (status != Node::STOPPED)
     {
-        this->setEnabled(true);
+        setEnabled(true);
     }
     else
     {
-        this->setEnabled(false);
+        setEnabled(false);
     }
 }

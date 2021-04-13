@@ -64,22 +64,26 @@ protected slots:
     void setLogTimer(int ms);
 
 protected:
-    Node *_node;
     uint8_t _axis;
+    NodeProfile402 *_nodeProfile402;
     ModePid _modePid;
 
-    QTabWidget *_tabWidget;
-
+    QTimer _timer;
+    QTimer _readStatusTimer;
     DataLogger *_dataLogger;
-    DataLoggerChartsWidget *_dataLoggerChartsWidget;
 
+    NodeObjectId _actualValue_ObjId;
+
+    void createWidgets();
+    QToolBar *createToolBarWidgets();
     QToolBar *_toolBar;
     QSpinBox *_logTimerSpinBox;
     QAction *_startStopAction;
 
-    QTimer _timer;
-    QTimer _readStatusTimer;
+    DataLoggerChartsWidget *_dataLoggerChartsWidget;
 
+
+    QGroupBox *createPIDConfigWidgets();
     QGroupBox *_pidGroupBox;
     IndexSpinBox *_pSpinBox;
     IndexSpinBox *_iSpinBox;
@@ -89,24 +93,23 @@ protected:
     IndexSpinBox *_thresholdSpinBox;
     IndexSpinBox *_freqDividerSpinBox;
 
-    NodeObjectId _actualValue_ObjId;
-
+    QGroupBox *createPIDStatusWidgets();
+    QGroupBox *_pidStatusGroupBox;
     IndexLabel *_inputLabel;
     IndexLabel *_errorLabel;
     IndexLabel *_integratorLabel;
     IndexLabel *_outputLabel;
 
+    QGroupBox *createPIDTestWidgets();
+    QGroupBox *_pidTestGroupBox;
     QSpinBox *_firstTargetSpinBox;
     QSpinBox *_secondTargetSpinBox;
     QSpinBox *_windowFirstTargetSpinBox;
     QSpinBox *_windowSecondTargetSpinBox;
     QSpinBox *_stopDataLoggerSpinBox;
-
     QPushButton *_stopTargetPushButton;
     QPushButton *_startTargetPushButton;
     QPushButton *_savePushButton;
-
-    NodeProfile402 *_nodeProfile402;
 
     enum State
     {
@@ -116,7 +119,6 @@ protected:
         LAUCH_SECOND_TARGET,
         STOP_DATALOGGER,
     };
-
     State _state;
 
     void setIMode();
@@ -130,7 +132,6 @@ protected:
     void stopDataLogger();
     void readStatus();
     void readAllObject();
-    void createWidgets();
     void statusNodeChanged(Node::Status status);
 };
 
