@@ -88,6 +88,13 @@ void MotionSensorWidget::setNode(Node *node, uint8_t axis)
     setIMode();
 
     _sensorSelectComboBox->setNode(node);
+    _frequencyDividerSpinBox->setNode(node);
+    _configBitSpinBox->setNode(node);
+    _sensorParam0SpinBox->setNode(node);
+    _sensorParam1SpinBox->setNode(node);
+    _sensorParam2SpinBox->setNode(node);
+    _sensorParam3SpinBox->setNode(node);
+
     _thresholdMinSpinBox->setNode(node);
     _thresholdMaxSpinBox->setNode(node);
     _thresholdModeComboBox->setNode(node);
@@ -96,8 +103,6 @@ void MotionSensorWidget::setNode(Node *node, uint8_t axis)
     _postOffsetSpinBox->setNode(node);
     _errorMinSpinBox->setNode(node);
     _errorMaxSpinBox->setNode(node);
-    _frequencyDividerSpinBox->setNode(node);
-    _configBitSpinBox->setNode(node);
 
     _rawDataValueLabel->setNode(node);
     _flagLabel->setNode(node);
