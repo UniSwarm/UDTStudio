@@ -37,6 +37,13 @@ bool ConfigurationApply::apply(DeviceModel *deviceDescription, const QString &fi
     }
 
     QSettings settings(fileIniPath, QSettings::IniFormat);
+    QStringList groups = settings.childGroups();
+    if (!groups.contains("Default"))
+    {
+        dbg() << "File Configuration : corrupted file (miss default group) " << fileIniPath;
+        return false;
+    }
+
     settings.beginGroup("Default");
 
     const QStringList childKeys = settings.childKeys();
