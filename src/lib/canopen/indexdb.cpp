@@ -228,20 +228,20 @@ bool IndexDb::isQ1516(const NodeObjectId &objId, quint16 profileNumber)
                 return true;
             }
         }
-        if ((objId.index() & (quint16)0xF1FF) == 0x4023 ||
-            (objId.index() & (quint16)0xF1FF) == 0x4043 ||
-            (objId.index() & (quint16)0xF1FF) == 0x4063)
-        {
-            if (objId.subIndex() >= 2 && objId.subIndex() <= 8)
-            {
-                return true;
-            }
-        }
         if ((objId.index() & (quint16)0xF1FF) == 0x4024 ||
             (objId.index() & (quint16)0xF1FF) == 0x4044 ||
             (objId.index() & (quint16)0xF1FF) == 0x4064)
         {
             if (objId.subIndex() >= 2 && objId.subIndex() <= 5)
+            {
+                return true;
+            }
+        }
+        if ((objId.index() & (quint16)0xF1FF) == 0x4025 ||
+            (objId.index() & (quint16)0xF1FF) == 0x4045 ||
+            (objId.index() & (quint16)0xF1FF) == 0x4065)
+        {
+            if (objId.subIndex() >= 1 && objId.subIndex() <= 7)
             {
                 return true;
             }
