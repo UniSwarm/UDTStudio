@@ -495,41 +495,6 @@ void PidWidget::createWidgets()
     _dataLogger = new DataLogger();
     _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
 
-    // toolbar
-    _toolBar = new QToolBar(tr("Data logger commands"));
-    _toolBar->setIconSize(QSize(20, 20));
-
-    // start stop
-    _startStopAction = _toolBar->addAction(tr("Start / stop"));
-    _startStopAction->setCheckable(true);
-    _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
-    _startStopAction->setStatusTip(tr("Start or stop the data logger"));
-    connect(_startStopAction, &QAction::triggered, this, &PidWidget::toggleStartLogger);
-
-    _logTimerSpinBox = new QSpinBox();
-    _logTimerSpinBox->setRange(10, 5000);
-    _logTimerSpinBox->setValue(100);
-    _logTimerSpinBox->setSuffix(" ms");
-    _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
-    _toolBar->addWidget(_logTimerSpinBox);
-    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
-
-    _toolBar->addSeparator();
-
-    // clear
-    QAction *action;
-    action = _toolBar->addAction(tr("Clear"));
-    action->setIcon(QIcon(":/icons/img/icons8-broom.png"));
-    action->setStatusTip(tr("Clear all data"));
-    connect(action, &QAction::triggered, _dataLogger, &DataLogger::clear);
-
-    // read all action
-    QAction * readAllAction = _toolBar->addAction(tr("Read all objects"));
-    readAllAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
-    readAllAction->setShortcut(QKeySequence("Ctrl+R"));
-    readAllAction->setStatusTip(tr("Read all the objects of the current window"));
-    connect(readAllAction, &QAction::triggered, this, &PidWidget::readAllObject);
-
     QWidget *pidWidget = new QWidget(this);
     QVBoxLayout *actionLayout = new QVBoxLayout(pidWidget);
     actionLayout->setContentsMargins(0, 0, 4, 0);
@@ -564,9 +529,49 @@ void PidWidget::createWidgets()
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->setContentsMargins(2, 2, 2 ,2);
     vBoxLayout->setSpacing(0);
-    vBoxLayout->addWidget(_toolBar);
+    vBoxLayout->addWidget(createToolBarWidgets());
     vBoxLayout->addWidget(splitter);
     setLayout(vBoxLayout);
+}
+
+QToolBar *PidWidget::createToolBarWidgets()
+{
+    // toolbar
+    QToolBar *toolBar = new QToolBar(tr("Data logger commands"));
+    toolBar->setIconSize(QSize(20, 20));
+
+    // start stop
+    _startStopAction = toolBar->addAction(tr("Start / stop"));
+    _startStopAction->setCheckable(true);
+    _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
+    _startStopAction->setStatusTip(tr("Start or stop the data logger"));
+    connect(_startStopAction, &QAction::triggered, this, &PidWidget::toggleStartLogger);
+
+    _logTimerSpinBox = new QSpinBox();
+    _logTimerSpinBox->setRange(10, 5000);
+    _logTimerSpinBox->setValue(100);
+    _logTimerSpinBox->setSuffix(" ms");
+    _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
+    toolBar->addWidget(_logTimerSpinBox);
+    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
+
+    // clear
+    QAction *action;
+    action = toolBar->addAction(tr("Clear"));
+    action->setIcon(QIcon(":/icons/img/icons8-broom.png"));
+    action->setStatusTip(tr("Clear all data"));
+    connect(action, &QAction::triggered, _dataLogger, &DataLogger::clear);
+
+    toolBar->addSeparator();
+
+    // read all action
+    QAction * readAllAction = toolBar->addAction(tr("Read all objects"));
+    readAllAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    readAllAction->setShortcut(QKeySequence("Ctrl+R"));
+    readAllAction->setStatusTip(tr("Read all the objects of the current window"));
+    connect(readAllAction, &QAction::triggered, this, &PidWidget::readAllObject);
+
+    return toolBar;
 }
 
 QGroupBox *PidWidget::createPIDConfigWidgets()
