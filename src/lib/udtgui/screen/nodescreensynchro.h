@@ -23,9 +23,15 @@
 
 #include "nodescreen.h"
 
+#include <QGroupBox>
+#include <QSpinBox>
+#include <QToolBar>
+
 class IndexComboBox;
 class IndexSpinBox;
 class IndexLabel;
+class DataLogger;
+class DataLoggerChartsWidget;
 
 class UDTGUI_EXPORT NodeScreenSynchro : public NodeScreen
 {
@@ -33,16 +39,33 @@ class UDTGUI_EXPORT NodeScreenSynchro : public NodeScreen
 public:
     NodeScreenSynchro(QWidget *parent = nullptr);
 
+protected slots:
+    void toggleStartLogger(bool start);
+    void setLogTimer(int ms);
+
 protected:
     uint8_t _axis;
-    void createWidgets();
 
+    DataLogger *_dataLogger;
+    DataLoggerChartsWidget *_dataLoggerChartsWidget;
+
+    void readAllObject();
+
+    void createWidgets();
+    QToolBar *createToolBarWidgets();
+    QSpinBox *_logTimerSpinBox;
+    QAction *_startStopAction;
+
+    QGroupBox *createSynchroConfigurationWidgets();
+    QGroupBox *_synchroConfigGroupBox;
     IndexComboBox *_modeSynchroComboBox;
     IndexSpinBox *_maxDiffSpinBox;
     IndexSpinBox *_coeffSpinBox;
     IndexSpinBox *_windowSpinBox;
     IndexSpinBox *_offsetSpinBox;
 
+    QGroupBox *createSynchroStatusWidgets();
+    QGroupBox *_synchroStatusGroupBox;
     IndexLabel *_flagLabel;
     IndexLabel *_erorLabel;
     IndexLabel *_correctorLabel;
