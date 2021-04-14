@@ -185,9 +185,11 @@ QGroupBox *NodeScreenSynchro::createSynchroStatusWidgets()
     layout->addRow(tr("&Flag :"), _flagLabel);
 
     _erorLabel = new IndexLabel();
+    _erorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     layout->addRow(tr("&Error :"), _erorLabel);
 
     _correctorLabel = new IndexLabel();
+    _correctorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     layout->addRow(tr("&Corrector :"), _correctorLabel);
 
     groupBox->setLayout(layout);
