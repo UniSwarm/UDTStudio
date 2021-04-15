@@ -137,10 +137,10 @@ void NodeDiscover::exploreBusNext()
 
 void NodeDiscover::exploreNodeNext()
 {
-    QList<NodeObjectId> _objectsId{{0x1000, 0x0}, {0x1018, 0x1}, {0x1018, 0x2}, {0x1018, 0x3}};
+    QList<NodeObjectId> objectsId{{0x1000, 0x0}, {0x1018, 0x1}, {0x1018, 0x2}, {0x1018, 0x3}};
 
     Node *node = bus()->node(_exploreNodeCurrentId);
-    if (_exploreNodeState >= _objectsId.size() && (node->nodeOd()->value(_objectsId[_exploreNodeState - 1]).isValid() || node->nodeOd()->errorObject(_objectsId[_exploreNodeState - 1]) != 0))
+    if (_exploreNodeState >= objectsId.size() && (node->nodeOd()->value(objectsId[_exploreNodeState - 1]).isValid() || node->nodeOd()->errorObject(objectsId[_exploreNodeState - 1]) != 0))
     {
         // explore node finished
         Node *node = bus()->node(_exploreNodeCurrentId);
@@ -168,10 +168,15 @@ void NodeDiscover::exploreNodeNext()
     }
     else
     {
-        if ((_exploreNodeState == 0) ||
-            (_exploreNodeState >= 1 && (node->nodeOd()->value(_objectsId[_exploreNodeState - 1]).isValid() || node->nodeOd()->errorObject(_objectsId[_exploreNodeState - 1]) != 0)))
+        if ((_exploreNodeState >= 1 && (!node->nodeOd()->value(objectsId[_exploreNodeState - 1]).isValid() || node->nodeOd()->errorObject(objectsId[_exploreNodeState - 1]) != 0)))
         {
-            node->readObject(_objectsId[_exploreNodeState]);
+            _nodeIdToExplore.enqueue(_exploreNodeCurrentId);
+            _exploreNodeCurrentId = _nodeIdToExplore.dequeue();
+            _exploreNodeState = 0;
+        }
+        else
+        {
+            node->readObject(objectsId[_exploreNodeState]);
             _exploreNodeState++;
         }
     }
