@@ -290,7 +290,7 @@ void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest 
             {
                 return;
             }
-            setDisplayValue(pValue(_pendingValue), DisplayAttribute::Error);
+            setDisplayValue(pValue(_lastValue), DisplayAttribute::Error);
             _requestRead = false;
             return;
         }
