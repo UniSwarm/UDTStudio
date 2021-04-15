@@ -92,6 +92,8 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
 
     if (_node)
     {
+        setNodeInterrest(node);
+
         _velocityDemandObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND, _axis);
         _velocityActualObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis);
         _velocityTargetObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, _axis);
@@ -104,13 +106,15 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
         _velocityActualObjectId.setDataType(QMetaType::Type::Short);
 
         registerObjId(_velocityTargetObjectId);
-        setNodeInterrest(node);
 
         _velocityDemandLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND, _axis));
         _velocityActualLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis));
 
         _minVelocityMinMaxAmountSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_MIN, axis));
-        _maxVelocityMinMaxAmountSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_MAX, axis));
+        _maxVelocityMinMaxAmountObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_MAX, axis);
+        _maxVelocityMinMaxAmountObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _maxVelocityMinMaxAmountSpinBox->setObjId(_maxVelocityMinMaxAmountObjectId);
+        registerObjId(_maxVelocityMinMaxAmountObjectId);
         _accelerationDeltaSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_ACCELERATION_DELTA_SPEED, axis));
         _accelerationDeltaTimeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_ACCELERATION_DELTA_TIME, axis));
         _decelerationDeltaSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_VL_DECELERATION_DELTA_SPEED, axis));
@@ -155,8 +159,6 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
             unlockRampEvent(_modeVl->isUnlockRamp());
             referenceRamp(_modeVl->isReferenceRamp());
         }
-
-        connect(_maxVelocityMinMaxAmountSpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::maxVelocityMinMaxAmountSpinboxFinished);
     }
 }
 
@@ -172,7 +174,7 @@ void P402VlWidget::targetVelocitySliderChanged()
     _node->writeObject(_velocityTargetObjectId, QVariant(value));
 }
 
-void P402VlWidget::maxVelocityMinMaxAmountSpinboxFinished()
+void P402VlWidget::updateMaxVelocityMinMaxAmount()
 {
     int max = _node->nodeOd()->value(_maxVelocityMinMaxAmountSpinBox->objId()).toInt();
     _targetVelocitySlider->setRange(-max, max);
@@ -545,11 +547,6 @@ void P402VlWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         return;
     }
 
-    if ((!_node) || (_node->status() != Node::STARTED))
-    {
-        return;
-    }
-
     if (objId == _velocityTargetObjectId)
     {
         int value = _node->nodeOd()->value(objId).toInt();
@@ -565,5 +562,9 @@ void P402VlWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
             _targetVelocitySlider->setValue(value);
             _targetVelocitySlider->blockSignals(false);
         }
+    }
+    else if (objId == _maxVelocityMinMaxAmountObjectId)
+    {
+        updateMaxVelocityMinMaxAmount();
     }
 }

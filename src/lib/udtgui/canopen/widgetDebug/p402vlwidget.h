@@ -51,6 +51,7 @@ private:
     NodeObjectId _velocityTargetObjectId;
     NodeObjectId _velocityDemandObjectId;
     NodeObjectId _velocityActualObjectId;
+    NodeObjectId _maxVelocityMinMaxAmountObjectId;
 
     QSpinBox *_targetVelocitySpinBox;
     QSlider *_targetVelocitySlider;
@@ -80,7 +81,7 @@ private:
 
     void targetVelocitySpinboxFinished();
     void targetVelocitySliderChanged();
-    void maxVelocityMinMaxAmountSpinboxFinished();
+    void updateMaxVelocityMinMaxAmount();
     void setZeroButton();
 
     void enableRampClicked(bool ok);
