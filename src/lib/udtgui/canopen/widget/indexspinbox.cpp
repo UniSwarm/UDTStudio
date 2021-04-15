@@ -95,7 +95,7 @@ QVariant IndexSpinBox::textEditValue() const
 
     case AbstractIndexWidget::DisplayQ15_16:
     case AbstractIndexWidget::DisplayQ1_15:
-        value = QVariant(static_cast<uint>(text().toDouble(&ok) * 65536.0));
+        value = QVariant(static_cast<int32_t>(text().toDouble(&ok) * 65536.0));
         break;
 
     case AbstractIndexWidget::DisplayFloat:
@@ -120,7 +120,7 @@ void IndexSpinBox::stepBy(int steps)
 
     case AbstractIndexWidget::DisplayQ15_16:
     case AbstractIndexWidget::DisplayQ1_15:
-        setValue(textEditValue().toDouble() + steps);
+        setValue(textEditValue().toDouble() + steps * 65536.0);
         break;
 
     case AbstractIndexWidget::DisplayFloat:
