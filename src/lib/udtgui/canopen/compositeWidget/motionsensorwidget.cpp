@@ -184,102 +184,102 @@ void MotionSensorWidget::setIMode()
 
     case MODE_SENSOR_TORQUE:
         _sensorConfigGroupBox->setTitle(tr("Torque sensor configuration"));
-        sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_SELECT, _axis);
-        frequencyDividerSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_FREQUENCY_DIVIDER, _axis);
-        configBitSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_CONFIG_BIT, _axis);
-        sensorParam0_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_PARAM_0, _axis);
-        sensorParam1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_PARAM_1, _axis);
-        sensorParam2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_PARAM_2, _axis);
-        sensorParam3_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_PARAM_3, _axis);
+        sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_SELECT, _axis, IndexDb402::MODE402_TORQUE);
+        frequencyDividerSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FREQUENCY_DIVIDER, _axis, IndexDb402::MODE402_TORQUE);
+        configBitSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_CONFIG_BIT, _axis, IndexDb402::MODE402_TORQUE);
+        sensorParam0_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_0, _axis, IndexDb402::MODE402_TORQUE);
+        sensorParam1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_1, _axis, IndexDb402::MODE402_TORQUE);
+        sensorParam2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_2, _axis, IndexDb402::MODE402_TORQUE);
+        sensorParam3_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_3, _axis, IndexDb402::MODE402_TORQUE);
 
         _filterGroupBox->setTitle(tr("Torque filter"));
-        filterSelect_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_FILTER_SELECT, _axis);
-        filterParam0_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_FILTER_PARAM_0, _axis);
-        filterParam1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_FILTER_PARAM_1, _axis);
-        filterParam2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_FILTER_PARAM_2, _axis);
-        filterParam3_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_FILTER_PARAM_3, _axis);
+        filterSelect_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_SELECT, _axis, IndexDb402::MODE402_TORQUE);
+        filterParam0_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_0, _axis, IndexDb402::MODE402_TORQUE);
+        filterParam1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_1, _axis, IndexDb402::MODE402_TORQUE);
+        filterParam2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_2, _axis, IndexDb402::MODE402_TORQUE);
+        filterParam3_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_3, _axis, IndexDb402::MODE402_TORQUE);
 
         _conditioningGroupBox->setTitle(tr("Torque conditioning"));
-        thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_THRESHOLD_MIN, _axis);
-        thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_THRESHOLD_MAX, _axis);
-        thresholdModeSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_THRESHOLD_MODE, _axis);
-        preOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_PRE_OFFSET, _axis);
-        scaleSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_SCALE, _axis);
-        postOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_POST_OFFSET, _axis);
-        errorMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_ERROR_MIN, _axis);
-        errorMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_ERROR_MAX, _axis);
+        thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_THRESHOLD_MIN, _axis, IndexDb402::MODE402_TORQUE);
+        thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_THRESHOLD_MAX, _axis, IndexDb402::MODE402_TORQUE);
+        thresholdModeSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_THRESHOLD_MODE, _axis, IndexDb402::MODE402_TORQUE);
+        preOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PRE_OFFSET, _axis, IndexDb402::MODE402_TORQUE);
+        scaleSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_SCALE, _axis, IndexDb402::MODE402_TORQUE);
+        postOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_POST_OFFSET, _axis, IndexDb402::MODE402_TORQUE);
+        errorMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_ERROR_MIN, _axis, IndexDb402::MODE402_TORQUE);
+        errorMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_ERROR_MAX, _axis, IndexDb402::MODE402_TORQUE);
 
         _statusGroupBox->setTitle(tr("Torque sensor status"));
-        rawDataValueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_STATUS_RAWDATA, _axis);
-        flagLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_STATUS_FLAG, _axis);
-        valueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_SENSOR_STATUS_VALUE, _axis);
+        rawDataValueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_STATUS_RAWDATA, _axis, IndexDb402::MODE402_TORQUE);
+        flagLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_STATUS_FLAG, _axis, IndexDb402::MODE402_TORQUE);
+        valueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_STATUS_VALUE, _axis, IndexDb402::MODE402_TORQUE);
         break;
 
     case MODE_SENSOR_VELOCITY:
         _sensorConfigGroupBox->setTitle(tr("Velocity sensor configuration"));
-        sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_SELECT, _axis);
-        frequencyDividerSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_FREQUENCY_DIVIDER, _axis);
-        configBitSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_CONFIG_BIT, _axis);
-        sensorParam0_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_PARAM_0, _axis);
-        sensorParam1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_PARAM_1, _axis);
-        sensorParam2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_PARAM_2, _axis);
-        sensorParam3_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_PARAM_3, _axis);
+        sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_SELECT, _axis, IndexDb402::MODE402_VELOCITY);
+        frequencyDividerSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FREQUENCY_DIVIDER, _axis, IndexDb402::MODE402_VELOCITY);
+        configBitSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_CONFIG_BIT, _axis, IndexDb402::MODE402_VELOCITY);
+        sensorParam0_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_0, _axis, IndexDb402::MODE402_VELOCITY);
+        sensorParam1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_1, _axis, IndexDb402::MODE402_VELOCITY);
+        sensorParam2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_2, _axis, IndexDb402::MODE402_VELOCITY);
+        sensorParam3_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_3, _axis, IndexDb402::MODE402_VELOCITY);
 
         _filterGroupBox->setTitle(tr("Velocity filter"));
-        filterSelect_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_FILTER_SELECT, _axis);
-        filterParam0_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_FILTER_PARAM_0, _axis);
-        filterParam1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_FILTER_PARAM_1, _axis);
-        filterParam2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_FILTER_PARAM_2, _axis);
-        filterParam3_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_FILTER_PARAM_3, _axis);
+        filterSelect_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_SELECT, _axis, IndexDb402::MODE402_VELOCITY);
+        filterParam0_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_0, _axis, IndexDb402::MODE402_VELOCITY);
+        filterParam1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_1, _axis, IndexDb402::MODE402_VELOCITY);
+        filterParam2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_2, _axis, IndexDb402::MODE402_VELOCITY);
+        filterParam3_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_3, _axis, IndexDb402::MODE402_VELOCITY);
 
         _conditioningGroupBox->setTitle(tr("Velocity conditioning"));
-        thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_THRESHOLD_MIN, _axis);
-        thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_THRESHOLD_MAX, _axis);
-        thresholdModeSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_THRESHOLD_MODE, _axis);
-        preOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_PRE_OFFSET, _axis);
-        scaleSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_SCALE, _axis);
-        postOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_POST_OFFSET, _axis);
-        errorMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_ERROR_MIN, _axis);
-        errorMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_ERROR_MAX, _axis);
+        thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_THRESHOLD_MIN, _axis, IndexDb402::MODE402_VELOCITY);
+        thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_THRESHOLD_MAX, _axis, IndexDb402::MODE402_VELOCITY);
+        thresholdModeSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_THRESHOLD_MODE, _axis, IndexDb402::MODE402_VELOCITY);
+        preOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PRE_OFFSET, _axis, IndexDb402::MODE402_VELOCITY);
+        scaleSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_SCALE, _axis, IndexDb402::MODE402_VELOCITY);
+        postOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_POST_OFFSET, _axis, IndexDb402::MODE402_VELOCITY);
+        errorMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_ERROR_MIN, _axis, IndexDb402::MODE402_VELOCITY);
+        errorMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_ERROR_MAX, _axis, IndexDb402::MODE402_VELOCITY);
 
         _statusGroupBox->setTitle(tr("Velocity sensor status"));
-        rawDataValueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_STATUS_RAWDATA, _axis);
-        flagLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_STATUS_FLAG, _axis);
-        valueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_SENSOR_STATUS_VALUE, _axis);
+        rawDataValueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_STATUS_RAWDATA, _axis, IndexDb402::MODE402_VELOCITY);
+        flagLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_STATUS_FLAG, _axis, IndexDb402::MODE402_VELOCITY);
+        valueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_STATUS_VALUE, _axis, IndexDb402::MODE402_VELOCITY);
 
         break;
 
     case MODE_SENSOR_POSITION:
         _sensorConfigGroupBox->setTitle(tr("Position sensor configuration"));
-        sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_SELECT, _axis);
-        frequencyDividerSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_FREQUENCY_DIVIDER, _axis);
-        configBitSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_CONFIG_BIT, _axis);
-        sensorParam0_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_PARAM_0, _axis);
-        sensorParam1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_PARAM_1, _axis);
-        sensorParam2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_PARAM_2, _axis);
-        sensorParam3_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_PARAM_3, _axis);
+        sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_SELECT, _axis, IndexDb402::MODE402_POSITION);
+        frequencyDividerSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FREQUENCY_DIVIDER, _axis, IndexDb402::MODE402_POSITION);
+        configBitSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_CONFIG_BIT, _axis, IndexDb402::MODE402_POSITION);
+        sensorParam0_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_0, _axis, IndexDb402::MODE402_POSITION);
+        sensorParam1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_1, _axis, IndexDb402::MODE402_POSITION);
+        sensorParam2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_2, _axis, IndexDb402::MODE402_POSITION);
+        sensorParam3_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_3, _axis, IndexDb402::MODE402_POSITION);
 
         _filterGroupBox->setTitle(tr("Position filter"));
-        filterSelect_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_FILTER_SELECT, _axis);
-        filterParam0_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_FILTER_PARAM_0, _axis);
-        filterParam1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_FILTER_PARAM_1, _axis);
-        filterParam2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_FILTER_PARAM_2, _axis);
-        filterParam3_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_FILTER_PARAM_3, _axis);
+        filterSelect_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_SELECT, _axis, IndexDb402::MODE402_POSITION);
+        filterParam0_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_0, _axis, IndexDb402::MODE402_POSITION);
+        filterParam1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_1, _axis, IndexDb402::MODE402_POSITION);
+        filterParam2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_2, _axis, IndexDb402::MODE402_POSITION);
+        filterParam3_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_3, _axis, IndexDb402::MODE402_POSITION);
 
         _conditioningGroupBox->setTitle(tr("Position conditioning"));
-        thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_THRESHOLD_MIN, _axis);
-        thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_THRESHOLD_MAX, _axis);
-        thresholdModeSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_THRESHOLD_MODE, _axis);
-        preOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_PRE_OFFSET, _axis);
-        scaleSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_SCALE, _axis);
-        postOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_POST_OFFSET, _axis);
-        errorMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_ERROR_MIN, _axis);
-        errorMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_ERROR_MAX, _axis);
+        thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_THRESHOLD_MIN, _axis, IndexDb402::MODE402_POSITION);
+        thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_THRESHOLD_MAX, _axis, IndexDb402::MODE402_POSITION);
+        thresholdModeSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_THRESHOLD_MODE, _axis, IndexDb402::MODE402_POSITION);
+        preOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PRE_OFFSET, _axis, IndexDb402::MODE402_POSITION);
+        scaleSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_SCALE, _axis, IndexDb402::MODE402_POSITION);
+        postOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_POST_OFFSET, _axis, IndexDb402::MODE402_POSITION);
+        errorMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_ERROR_MIN, _axis, IndexDb402::MODE402_POSITION);
+        errorMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_ERROR_MAX, _axis, IndexDb402::MODE402_POSITION);
 
         _statusGroupBox->setTitle(tr("Position sensor status"));
-        rawDataValueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_STATUS_RAWDATA, _axis);
-        flagLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_STATUS_FLAG, _axis);
-        valueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_SENSOR_STATUS_VALUE, _axis);
+        rawDataValueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_STATUS_RAWDATA, _axis, IndexDb402::MODE402_POSITION);
+        flagLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_STATUS_FLAG, _axis, IndexDb402::MODE402_POSITION);
+        valueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_STATUS_VALUE, _axis, IndexDb402::MODE402_POSITION);
         break;
     }
 

@@ -161,19 +161,19 @@ void PidWidget::setIMode()
     case MODE_PID_TORQUE:
         _pidGroupBox->setTitle(tr("Torque PID configuration"));
         _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE, _axis);
-        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_P, _axis);
-        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_I, _axis);
-        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_D, _axis);
-        pidMin_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_MIN, _axis);
-        pidMax_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_MAX, _axis);
-        pidThreshold_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_THRESHOLD, _axis);
-        pidFreqDivider_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_FREQDIVIDER, _axis);
+        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_P, _axis, IndexDb402::MODE402_TORQUE);
+        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_I, _axis, IndexDb402::MODE402_TORQUE);
+        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_D, _axis, IndexDb402::MODE402_TORQUE);
+        pidMin_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_MIN, _axis, IndexDb402::MODE402_TORQUE);
+        pidMax_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_MAX, _axis, IndexDb402::MODE402_TORQUE);
+        pidThreshold_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_THRESHOLD, _axis, IndexDb402::MODE402_TORQUE);
+        pidFreqDivider_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_FREQDIVIDER, _axis, IndexDb402::MODE402_TORQUE);
 
         _pidStatusGroupBox->setTitle(tr("Torque PID status"));
-        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_INPUT, _axis);
-        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_ERROR, _axis);
-        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_INTEGRATOR, _axis);
-        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_TORQUE_PID_OUTPUT, _axis);
+        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_INPUT, _axis, IndexDb402::MODE402_TORQUE);
+        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_ERROR, _axis, IndexDb402::MODE402_TORQUE);
+        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_INTEGRATOR, _axis, IndexDb402::MODE402_TORQUE);
+        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_OUTPUT, _axis, IndexDb402::MODE402_TORQUE);
         target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_DEMAND, _axis);
 
         _pidTestGroupBox->setTitle(tr("Torque PID test"));
@@ -182,19 +182,19 @@ void PidWidget::setIMode()
     case MODE_PID_VELOCITY:
         _pidGroupBox->setTitle(tr("Velocity PID configuration"));
         _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis);
-        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_P, _axis);
-        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_I, _axis);
-        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_D, _axis);
-        pidMin_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_MIN, _axis);
-        pidMax_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_MAX, _axis);
-        pidThreshold_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_THRESHOLD, _axis);
-        pidFreqDivider_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_FREQDIVIDER, _axis);
+        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_P, _axis, IndexDb402::MODE402_VELOCITY);
+        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_I, _axis, IndexDb402::MODE402_VELOCITY);
+        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_D, _axis, IndexDb402::MODE402_VELOCITY);
+        pidMin_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_MIN, _axis, IndexDb402::MODE402_VELOCITY);
+        pidMax_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_MAX, _axis, IndexDb402::MODE402_VELOCITY);
+        pidThreshold_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_THRESHOLD, _axis, IndexDb402::MODE402_VELOCITY);
+        pidFreqDivider_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_FREQDIVIDER, _axis, IndexDb402::MODE402_VELOCITY);
 
         _pidStatusGroupBox->setTitle(tr("Velocity PID status"));
-        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_INPUT, _axis);
-        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_ERROR, _axis);
-        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_INTEGRATOR, _axis);
-        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_VELOCITY_PID_OUTPUT, _axis);
+        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_INPUT, _axis, IndexDb402::MODE402_VELOCITY);
+        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_ERROR, _axis, IndexDb402::MODE402_VELOCITY);
+        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_INTEGRATOR, _axis, IndexDb402::MODE402_VELOCITY);
+        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_OUTPUT, _axis, IndexDb402::MODE402_VELOCITY);
         target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND, _axis);
 
         _pidTestGroupBox->setTitle(tr("Velocity PID test"));
@@ -203,19 +203,19 @@ void PidWidget::setIMode()
     case MODE_PID_POSITION:
         _pidGroupBox->setTitle(tr("Position PID configuration"));
         _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, _axis);
-        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_P, _axis);
-        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_I, _axis);
-        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_D, _axis);
-        pidMin_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_MIN, _axis);
-        pidMax_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_MAX, _axis);
-        pidThreshold_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_THRESHOLD, _axis);
-        pidFreqDivider_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_FREQDIVIDER, _axis);
+        pidP_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_P, _axis, IndexDb402::MODE402_POSITION);
+        pidI_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_I, _axis, IndexDb402::MODE402_POSITION);
+        pidD_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_D, _axis, IndexDb402::MODE402_POSITION);
+        pidMin_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_MIN, _axis, IndexDb402::MODE402_POSITION);
+        pidMax_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_MAX, _axis, IndexDb402::MODE402_POSITION);
+        pidThreshold_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_THRESHOLD, _axis, IndexDb402::MODE402_POSITION);
+        pidFreqDivider_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_FREQDIVIDER, _axis, IndexDb402::MODE402_POSITION);
 
         _pidStatusGroupBox->setTitle(tr("Position PID status"));
-        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_INPUT, _axis);
-        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_ERROR, _axis);
-        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_INTEGRATOR, _axis);
-        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_MS_POSITION_PID_OUTPUT, _axis);
+        pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_INPUT, _axis, IndexDb402::MODE402_POSITION);
+        pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_ERROR, _axis, IndexDb402::MODE402_POSITION);
+        pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_INTEGRATOR, _axis, IndexDb402::MODE402_POSITION);
+        pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_OUTPUT, _axis, IndexDb402::MODE402_POSITION);
         target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, _axis);
 
         _pidTestGroupBox->setTitle(tr("Position PID test"));
