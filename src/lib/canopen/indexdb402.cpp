@@ -24,7 +24,7 @@ NodeObjectId IndexDb402::getObjectId(IndexDb402::OdObject object, uint axis, uin
 {
     quint16 axisDecal = 0;
 
-    if (object <= OD_MS_CONF_BRAKE_PEAK)
+    if (object <= OD_MS_DUTY_CYCLE_MODE_SLOPE)
     {
         return getObjectIdMs(object, axis, opt2);
     }
@@ -473,6 +473,16 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4082 + axisModeDecal)), 0x1};
     case OD_MS_CONF_BRAKE_PEAK:
         return {static_cast<quint16>((0x4082 + axisModeDecal)), 0x2};
+
+    // DUTY CYCLE MODE
+    case OD_MS_DUTY_CYCLE_MODE_TARGET:
+        return {static_cast<quint16>((0x41FA + axisModeDecal)), 0x0};
+    case OD_MS_DUTY_CYCLE_MODE_DEMAND:
+        return {static_cast<quint16>((0x41FB + axisModeDecal)), 0x0};
+    case OD_MS_DUTY_CYCLE_MODE_MAX:
+        return {static_cast<quint16>((0x41FC + axisModeDecal)), 0x0};
+    case OD_MS_DUTY_CYCLE_MODE_SLOPE:
+        return {static_cast<quint16>((0x41FD + axisModeDecal)), 0x0};
     default:
         return NodeObjectId();
     }

@@ -25,6 +25,7 @@
 #include "modepp.h"
 #include "modetq.h"
 #include "modevl.h"
+#include "modedty.h"
 
 #define TIMER_READ_MODE_OPERATION_DISPLAY 100u
 
@@ -66,6 +67,21 @@ enum StatusWord : quint16
 
     SW_OperationModeSpecific = 0x3000,
     SW_ManufacturerSpecific = 0xC000
+};
+
+enum SupportedDriveModes : quint32
+{
+    SDM_PP = 0x1,
+    SDM_VL = 0x2,
+    SDM_PV = 0x4,
+    SDM_TQ = 0x8,
+    SDM_HM = 0x20,
+    SDM_IP = 0x40,
+    SDM_CSP = 0x80,
+    SDM_CSV = 0x100,
+    SDM_CST = 0x200,
+    SDM_CSTCA = 0x400,
+    SDM_DTY = 0x10000
 };
 
 enum FgPolarity
@@ -117,6 +133,7 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     _modes.insert(TQ, new ModeTq(this));
     _modes.insert(VL, new ModeVl(this));
     _modes.insert(PP, new ModePp(this));
+    _modes.insert(DTY, new ModeDty(this));
 
     _stateMachineRequested = State402::STATE_NotReadyToSwitchOn;
     _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
@@ -136,12 +153,13 @@ void NodeProfile402::init()
 
 NodeProfile402::OperationMode NodeProfile402::actualMode()
 {
-    if ((_modeCurrent == NoMode) || (_modeCurrent == PP) || (_modeCurrent == VL) || (_modeCurrent == PV) || (_modeCurrent == TQ) || (_modeCurrent == HM) || (_modeCurrent == IP) ||
-        (_modeCurrent == CSP) || (_modeCurrent == CSV) || (_modeCurrent == CST) || (_modeCurrent == CSTCA))
+    if ((_modeCurrent == NoMode) || (_modeCurrent == PP) || (_modeCurrent == VL) || (_modeCurrent == PV)
+        || (_modeCurrent == TQ) || (_modeCurrent == HM) || (_modeCurrent == IP) || (_modeCurrent == CSP)
+        || (_modeCurrent == CSV) || (_modeCurrent == CST) || (_modeCurrent == CSTCA) || (_modeCurrent == DTY))
     {
         return static_cast<OperationMode>(_modeCurrent);
     }
-    else if (_modeCurrent < 0)
+    else if (_modeCurrent < -1)
     {
         return OperationMode::MS;
     }
@@ -158,7 +176,8 @@ bool NodeProfile402::setMode(OperationMode mode)
         return true;
     }
 
-    if ((mode == NoMode) || (mode == PP) || (mode == VL) || (mode == PV) || (mode == TQ) || (mode == HM) || (mode == IP) || (mode == CSP) || (mode == CSV) || (mode == CST) || (mode == CSTCA))
+    if ((mode == DTY) ||(mode == NoMode) || (mode == PP) || (mode == VL) || (mode == PV) || (mode == TQ)
+        || (mode == HM) || (mode == IP) || (mode == CSP) || (mode == CSV) || (mode == CST) || (mode == CSTCA))
     {
         _node->writeObject(_modesOfOperationObjectId, QVariant(mode));
         _modeState = MODE_CHANGE;
@@ -175,30 +194,44 @@ QString NodeProfile402::modeStr(NodeProfile402::OperationMode mode)
 {
     switch (mode)
     {
+    case OperationMode::DTY:
+        return tr("Duty cycle (DTY)");
+
     case OperationMode::NoMode:
         return tr("No mode");
+
     case OperationMode::PP:
         return tr("Profile position (PP)");
+
     case OperationMode::VL:
         return tr("Velocity (VL)");
+
     case OperationMode::PV:
         return tr("Profile velocity (PV)");
+
     case OperationMode::TQ:
         return tr("Torque profile(TQ)");
+
     case OperationMode::HM:
         return tr("Homing (HM)");
+
     case OperationMode::IP:
         return tr("Interpolated position (IP)");
+
     case OperationMode::CSP:
         return tr("Cyclic sync position (CSP)");
+
     case OperationMode::CSV:
         return tr("Cyclic sync velocity (CSV)");
+
     case OperationMode::CST:
         return tr("Cyclic sync torque (CST)");
+
     case OperationMode::CSTCA:
         return tr("Cyclic sync torque mode with commutation angle (CTCA)");
+
     default:
-        if (_modeCurrent < 0)
+        if (_modeCurrent < -1)
         {
             return tr("Manufacturer-specific");
         }
@@ -248,18 +281,25 @@ QString NodeProfile402::stateStr(State402 state) const
     {
     case State402::STATE_NotReadyToSwitchOn:
         return tr("1_Not ready to switch on");
+
     case State402::STATE_SwitchOnDisabled:
         return tr("2_Switch on disabled");
+
     case State402::STATE_ReadyToSwitchOn:
         return tr("3_Ready to switch on");
+
     case State402::STATE_SwitchedOn:
         return tr("4_Switched on");
+
     case State402::STATE_OperationEnabled:
         return tr("5_Operation enabled");
+
     case State402::STATE_QuickStopActive:
         return tr("6_Quick stop active");
+
     case State402::STATE_FaultReactionActive:
         return tr("7_Fault reaction active");
+
     case State402::STATE_Fault:
         return tr("8_Fault");
     }
@@ -299,18 +339,25 @@ QString NodeProfile402::event402Str(quint8 event402)
     {
     case Event402::None:
         return tr("None");
+
     case Event402::InternalLimitActive:
         return tr("Internal Limit Active");
+
     case Event402::Warning:
         return tr("Warning");
+
     case Event402::FollowingError:
         return tr("Following Error");
+
     case Event402::VoltageEnabled:
         return tr("Voltage Enabled");
+
     case Event402::Remote:
         return tr("Remote");
+
     case Event402::TargetReached:
         return tr("Target Reached");
+
     case Event402::ModeSpecific:
         if (_modeCurrent == OperationMode::PP)
         {
@@ -324,6 +371,7 @@ QString NodeProfile402::event402Str(quint8 event402)
         {
             return QString();
         }
+
     default:
         return QString();
     }
@@ -596,48 +644,52 @@ void NodeProfile402::decodeSupportedDriveModes(quint32 supportedDriveModes)
         _modesSupported.append(OperationMode::NoMode);
         return;
     }
-    for (quint32 i = 0; i <= 10; i++)
+    for (quint32 i = 0; i <= 31; i++)
     {
         switch ((supportedDriveModes & (1 << i)))
         {
-        case 0x1:
+        case SDM_PP:
             _modesSupported.append(OperationMode::PP);
             break;
 
-        case 0x2:
+        case SDM_VL:
             _modesSupported.append(OperationMode::VL);
             break;
 
-        case 0x4:
+        case SDM_PV:
             _modesSupported.append(OperationMode::PV);
             break;
 
-        case 0x8:
+        case SDM_TQ:
             _modesSupported.append(OperationMode::TQ);
             break;
 
-        case 0x20:
+        case SDM_HM:
             _modesSupported.append(OperationMode::HM);
             break;
 
-        case 0x40:
+        case SDM_IP:
             _modesSupported.append(OperationMode::IP);
             break;
 
-        case 0x80:
+        case SDM_CSP:
             _modesSupported.append(OperationMode::CSP);
             break;
 
-        case 0x100:
+        case SDM_CSV:
             _modesSupported.append(OperationMode::CSV);
             break;
 
-        case 0x200:
+        case SDM_CST:
             _modesSupported.append(OperationMode::CST);
             break;
 
-        case 0x400:
+        case SDM_CSTCA:
             _modesSupported.append(OperationMode::CSTCA);
+            break;
+
+        case SDM_DTY:
+            _modesSupported.append(OperationMode::DTY);
             break;
         }
     }

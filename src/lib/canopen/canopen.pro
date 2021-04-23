@@ -42,7 +42,8 @@ SOURCES += \
     $$PWD/indexdb.cpp \
     $$PWD/indexdb401.cpp \
     $$PWD/indexdb402.cpp \
-    $$PWD/profile/nodeprofilefactory.cpp
+    $$PWD/profile/nodeprofilefactory.cpp \
+    $$PWD/profile/p402/modedty.cpp
 
 HEADERS += \
     $$PWD/canopen_global.h \
@@ -79,7 +80,8 @@ HEADERS += \
     $$PWD/indexdb.h \
     $$PWD/indexdb401.h \
     $$PWD/indexdb402.h \
-    $$PWD/profile/nodeprofilefactory.h
+    $$PWD/profile/nodeprofilefactory.h \
+    $$PWD/profile/p402/modedty.h
 
 INCLUDEPATH += $$PWD/../od/
 

@@ -22,6 +22,13 @@
 #include "services/services.h"
 #include "canopen/widget/indexlabel.h"
 
+#include "p402ipwidget.h"
+#include "p402optionwidget.h"
+#include "p402ppwidget.h"
+#include "p402tqwidget.h"
+#include "p402vlwidget.h"
+#include "p402dtywidget.h"
+
 #include <QApplication>
 #include <QButtonGroup>
 #include <QDebug>
@@ -109,6 +116,7 @@ void P402Widget::setNode(Node *node, uint8_t axis)
         _modes[NodeProfile402::TQ]->setNode(_node, axis);
         _modes[NodeProfile402::IP]->setNode(_node, axis);
         _modes[NodeProfile402::PP]->setNode(_node, axis);
+        _modes[NodeProfile402::DTY]->setNode(_node, axis);
 
         statusNodeChanged();
         modeChanged(_axis, _nodeProfile402->actualMode());
@@ -150,7 +158,8 @@ void P402Widget::modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew
     if ((modeNew == NodeProfile402::IP)
         || (modeNew == NodeProfile402::VL)
         || (modeNew == NodeProfile402::TQ)
-        || (modeNew == NodeProfile402::PP))
+        || (modeNew == NodeProfile402::PP)
+        || (modeNew == NodeProfile402::DTY))
     {
         P402Mode *mode = dynamic_cast<P402Mode*>(_stackedWidget->currentWidget());
         // resset : Patch because the widget Tarqet torque and velocity are not an IndexSpinbox so not read automaticaly
@@ -496,6 +505,7 @@ void P402Widget::createWidgets()
     _modes.insert(NodeProfile402::IP, new P402IpWidget());
     _modes.insert(NodeProfile402::TQ, new P402TqWidget());
     _modes.insert(NodeProfile402::PP, new P402PpWidget());
+    _modes.insert(NodeProfile402::DTY, new P402DtyWidget());
     _modes.insert(NodeProfile402::NoMode, new P402OptionWidget());
 
     // Stacked Widget
@@ -506,6 +516,7 @@ void P402Widget::createWidgets()
     _stackedWidget->addWidget(_modes[NodeProfile402::IP]);
     _stackedWidget->addWidget(_modes[NodeProfile402::TQ]);
     _stackedWidget->addWidget(_modes[NodeProfile402::PP]);
+    _stackedWidget->addWidget(_modes[NodeProfile402::DTY]);
     _stackedWidget->setMinimumWidth(550);
 
     // Create interface
