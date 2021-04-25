@@ -37,9 +37,10 @@ HEADERS += \
     $$PWD/canopen/pdo/pdomappingview.h \
     $$PWD/canopen/pdo/pdomappingwidget.h \
     $$PWD/canopen/widget/abstractindexwidget.h \
-    $$PWD/canopen/widget/indexspinbox.h \
-    $$PWD/canopen/widget/indexlabel.h \
+    $$PWD/canopen/widget/indexcheckbox.h \
     $$PWD/canopen/widget/indexcombobox.h \
+    $$PWD/canopen/widget/indexlabel.h \
+    $$PWD/canopen/widget/indexspinbox.h \
     $$PWD/canopen/widgetDebug/p402widget.h \
     $$PWD/canopen/widgetDebug/p402mode.h \
     $$PWD/canopen/widgetDebug/p402optionwidget.h \
@@ -88,9 +89,10 @@ SOURCES += \
     $$PWD/canopen/pdo/pdomappingview.cpp \
     $$PWD/canopen/pdo/pdomappingwidget.cpp \
     $$PWD/canopen/widget/abstractindexwidget.cpp \
-    $$PWD/canopen/widget/indexspinbox.cpp \
-    $$PWD/canopen/widget/indexlabel.cpp \
+    $$PWD/canopen/widget/indexcheckbox.cpp \
     $$PWD/canopen/widget/indexcombobox.cpp \
+    $$PWD/canopen/widget/indexlabel.cpp \
+    $$PWD/canopen/widget/indexspinbox.cpp \
     $$PWD/canopen/widgetDebug/p402widget.cpp \
     $$PWD/canopen/widgetDebug/p402mode.cpp \
     $$PWD/canopen/widgetDebug/p402optionwidget.cpp \
