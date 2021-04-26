@@ -65,5 +65,5 @@ void IndexCheckBox::nextCheckState()
     {
         newValue = oldValue & ~_bitMask;
     }
-    requestWriteValue(newValue);
+    requestWriteValue(QVariant(static_cast<qlonglong>(newValue)));
 }
