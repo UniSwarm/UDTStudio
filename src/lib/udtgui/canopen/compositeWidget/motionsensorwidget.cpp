@@ -19,6 +19,7 @@
 #include "motionsensorwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
+#include "canopen/widget/indexcheckbox.h"
 #include "canopen/widget/indexcombobox.h"
 #include "canopen/widget/indexlabel.h"
 #include "canopen/widget/indexspinbox.h"
@@ -89,7 +90,7 @@ void MotionSensorWidget::setNode(Node *node, uint8_t axis)
 
     _sensorSelectComboBox->setNode(node);
     _frequencyDividerSpinBox->setNode(node);
-    _configBitSpinBox->setNode(node);
+    _configBitCheckBox->setNode(node);
     _sensorParam0SpinBox->setNode(node);
     _sensorParam1SpinBox->setNode(node);
     _sensorParam2SpinBox->setNode(node);
@@ -208,62 +209,36 @@ void MotionSensorWidget::setIMode()
         odMode402 = IndexDb402::MODE402_POSITION;
         break;
     }
-    _sensorConfigGroupBox->setTitle(tr("Torque sensor configuration"));
-    sensorSelectSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_SELECT, _axis, odMode402);
-    frequencyDividerSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FREQUENCY_DIVIDER, _axis, odMode402);
-    configBitSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_CONFIG_BIT, _axis, odMode402);
-    sensorParam0_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_0, _axis, odMode402);
-    sensorParam1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_1, _axis, odMode402);
-    sensorParam2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_2, _axis, odMode402);
-    sensorParam3_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_3, _axis, odMode402);
 
-    _filterGroupBox->setTitle(tr("Torque filter"));
-    filterSelect_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_SELECT, _axis, odMode402);
-    filterParam0_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_0, _axis, odMode402);
-    filterParam1_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_1, _axis, odMode402);
-    filterParam2_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_2, _axis, odMode402);
-    filterParam3_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_3, _axis, odMode402);
+    // Config
+    _sensorSelectComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_SELECT, _axis, odMode402));
+    _frequencyDividerSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FREQUENCY_DIVIDER, _axis, odMode402));
+    _configBitCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_CONFIG_BIT, _axis, odMode402));
+    _sensorParam0SpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_0, _axis, odMode402));
+    _sensorParam1SpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_1, _axis, odMode402));
+    _sensorParam2SpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_2, _axis, odMode402));
+    _sensorParam3SpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_3, _axis, odMode402));
 
-    _conditioningGroupBox->setTitle(tr("Torque conditioning"));
-    thresholdMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_THRESHOLD_MIN, _axis, odMode402);
-    thresholdMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_THRESHOLD_MAX, _axis, odMode402);
-    thresholdModeSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_THRESHOLD_MODE, _axis, odMode402);
-    preOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PRE_OFFSET, _axis, odMode402);
-    scaleSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_SCALE, _axis, odMode402);
-    postOffsetSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_POST_OFFSET, _axis, odMode402);
-    errorMinSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_ERROR_MIN, _axis, odMode402);
-    errorMaxSpinBox_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_ERROR_MAX, _axis, odMode402);
+    // Filter
+    _filterSelect->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_SELECT, _axis, odMode402));
+    _filterParam0SpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_0, _axis, odMode402));
+    _filterParam1SpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_1, _axis, odMode402));
+    _filterParam2SpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_2, _axis, odMode402));
+    _filterParam3SpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_3, _axis, odMode402));
 
-    _statusGroupBox->setTitle(tr("Torque sensor status"));
+    // Conditioning
+    _thresholdMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_THRESHOLD_MIN, _axis, odMode402));
+    _thresholdMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_THRESHOLD_MAX, _axis, odMode402));
+    _thresholdModeComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_THRESHOLD_MODE, _axis, odMode402));
+    _preOffsetSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PRE_OFFSET, _axis, odMode402));
+    _scaleSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_SCALE, _axis, odMode402));
+    _postOffsetSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_POST_OFFSET, _axis, odMode402));
+    _errorMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_ERROR_MIN, _axis, odMode402));
+    _errorMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_ERROR_MAX, _axis, odMode402));
+
     rawDataValueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_STATUS_RAWDATA, _axis, odMode402);
     flagLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_STATUS_FLAG, _axis, odMode402);
     valueLabel_ObjId = IndexDb402::getObjectId(IndexDb402::OD_SENSOR_STATUS_VALUE, _axis, odMode402);
-
-    // Config
-    _sensorSelectComboBox->setObjId(sensorSelectSpinBox_ObjId);
-    _frequencyDividerSpinBox->setObjId(frequencyDividerSpinBox_ObjId);
-    _configBitSpinBox->setObjId(configBitSpinBox_ObjId);
-    _sensorParam0SpinBox->setObjId(sensorParam0_ObjId);
-    _sensorParam1SpinBox->setObjId(sensorParam1_ObjId);
-    _sensorParam2SpinBox->setObjId(sensorParam2_ObjId);
-    _sensorParam3SpinBox->setObjId(sensorParam3_ObjId);
-
-    // Filter
-    _filterSelect->setObjId(filterSelect_ObjId);
-    _filterParam0SpinBox->setObjId(filterParam0_ObjId);
-    _filterParam1SpinBox->setObjId(filterParam1_ObjId);
-    _filterParam2SpinBox->setObjId(filterParam2_ObjId);
-    _filterParam3SpinBox->setObjId(filterParam3_ObjId);
-
-    // Conditioning
-    _thresholdMinSpinBox->setObjId(thresholdMinSpinBox_ObjId);
-    _thresholdMaxSpinBox->setObjId(thresholdMaxSpinBox_ObjId);
-    _thresholdModeComboBox->setObjId(thresholdModeSpinBox_ObjId);
-    _preOffsetSpinBox->setObjId(preOffsetSpinBox_ObjId);
-    _scaleSpinBox->setObjId(scaleSpinBox_ObjId);
-    _postOffsetSpinBox->setObjId(postOffsetSpinBox_ObjId);
-    _errorMinSpinBox->setObjId(errorMinSpinBox_ObjId);
-    _errorMaxSpinBox->setObjId(errorMaxSpinBox_ObjId);
 
     // Status
     _rawDataValueLabel->setObjId(rawDataValueLabel_ObjId);
@@ -274,8 +249,7 @@ void MotionSensorWidget::setIMode()
     valueLabel_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
 
     // Datalogger
-    _dataLogger->removeData(rawDataValueLabel_ObjId);
-    _dataLogger->removeData(valueLabel_ObjId);
+    _dataLogger->removeAllData();
     _dataLogger->addData(rawDataValueLabel_ObjId);
     _dataLogger->addData(valueLabel_ObjId);
 }
@@ -405,9 +379,9 @@ QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
     _frequencyDividerSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     formLayout->addRow(tr("&Frequency divider :"), _frequencyDividerSpinBox);
 
-    _configBitSpinBox = new IndexSpinBox();
-    _configBitSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
-    formLayout->addRow(tr("&Config bit :"), _configBitSpinBox);
+    _configBitCheckBox = new IndexCheckBox();
+    _configBitCheckBox->setBitMask(32);
+    formLayout->addRow(tr("Q15.16 :"), _configBitCheckBox);
 
     _sensorParam0SpinBox = new IndexSpinBox();
     formLayout->addRow(tr("Param 0:"), _sensorParam0SpinBox);
@@ -572,7 +546,7 @@ void MotionSensorWidget::readAllObject()
 {
     _sensorSelectComboBox->readObject();
     _frequencyDividerSpinBox->readObject();
-    _configBitSpinBox->readObject();
+    _configBitCheckBox->readObject();
     _sensorParam0SpinBox->readObject();
     _sensorParam1SpinBox->readObject();
     _sensorParam2SpinBox->readObject();
