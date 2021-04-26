@@ -256,8 +256,7 @@ void MotionSensorWidget::setIMode()
 
 void MotionSensorWidget::createWidgets()
 {
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
+    _dataLogger = new DataLogger();
 
     QWidget *motionSensorWidget = new QWidget(this);
     QVBoxLayout *actionLayout = new QVBoxLayout(motionSensorWidget);
@@ -279,18 +278,23 @@ void MotionSensorWidget::createWidgets()
     motionSensorScrollArea->setWidgetResizable(true);
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
-    layout->addWidget(splitter);
+    splitter->setStyleSheet("QSplitter {background: #19232D;}");
     splitter->addWidget(motionSensorScrollArea);
 
-    _dataLogger = new DataLogger();
+    QWidget *widgetLogger = new QWidget();
+    QVBoxLayout *layoutLogger = new QVBoxLayout();
+    layoutLogger->setContentsMargins(5, 4, 0, 3);
     _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
-    splitter->addWidget(_dataLoggerChartsWidget);
+    layoutLogger->addWidget(_dataLoggerChartsWidget);
+    widgetLogger->setLayout(layoutLogger);
+    splitter->addWidget(widgetLogger);
     splitter->setSizes(QList<int>() << 100 << 300);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
+    vBoxLayout->setContentsMargins(2, 2, 2 ,2);
+    vBoxLayout->setSpacing(0);
     vBoxLayout->addWidget(createToolBarWidgets());
     vBoxLayout->addWidget(splitter);
-    vBoxLayout->setMargin(2);
     setLayout(vBoxLayout);
 }
 
@@ -325,7 +329,7 @@ QToolBar *MotionSensorWidget::createToolBarWidgets()
     toolBar->addSeparator();
 
     // read all action
-    QAction * readAllAction = toolBar->addAction(tr("Read all objects"));
+    QAction *readAllAction = toolBar->addAction(tr("Read all objects"));
     readAllAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
     readAllAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));

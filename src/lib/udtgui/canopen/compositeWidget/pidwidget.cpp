@@ -328,6 +328,7 @@ void PidWidget::mode402Changed(uint8_t axis, NodeProfile402::OperationMode modeN
     case NodeProfile402::Reserved:
     case NodeProfile402::MS:
     case NodeProfile402::NoMode:
+    case NodeProfile402::DTY:
         _modePid = ModePid::MODE_PID_NONE;
         break;
 
@@ -493,7 +494,6 @@ void PidWidget::readAllObject()
 void PidWidget::createWidgets()
 {
     _dataLogger = new DataLogger();
-    _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
 
     QWidget *pidWidget = new QWidget(this);
     QVBoxLayout *actionLayout = new QVBoxLayout(pidWidget);
