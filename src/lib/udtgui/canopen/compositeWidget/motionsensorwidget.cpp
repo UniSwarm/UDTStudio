@@ -146,29 +146,6 @@ void MotionSensorWidget::setLogTimer(int ms)
 
 void MotionSensorWidget::setIMode()
 {
-    NodeObjectId sensorSelectSpinBox_ObjId;
-    NodeObjectId frequencyDividerSpinBox_ObjId;
-    NodeObjectId configBitSpinBox_ObjId;
-    NodeObjectId sensorParam0_ObjId;
-    NodeObjectId sensorParam1_ObjId;
-    NodeObjectId sensorParam2_ObjId;
-    NodeObjectId sensorParam3_ObjId;
-
-    NodeObjectId filterSelect_ObjId;
-    NodeObjectId filterParam0_ObjId;
-    NodeObjectId filterParam1_ObjId;
-    NodeObjectId filterParam2_ObjId;
-    NodeObjectId filterParam3_ObjId;
-
-    NodeObjectId preOffsetSpinBox_ObjId;
-    NodeObjectId scaleSpinBox_ObjId;
-    NodeObjectId postOffsetSpinBox_ObjId;
-    NodeObjectId errorMinSpinBox_ObjId;
-    NodeObjectId errorMaxSpinBox_ObjId;
-    NodeObjectId thresholdModeSpinBox_ObjId;
-    NodeObjectId thresholdMinSpinBox_ObjId;
-    NodeObjectId thresholdMaxSpinBox_ObjId;
-
     NodeObjectId rawDataValueLabel_ObjId;
     NodeObjectId flagLabel_ObjId;
     NodeObjectId valueLabel_ObjId;
