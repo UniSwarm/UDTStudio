@@ -35,6 +35,7 @@ class Node;
 class IndexSpinBox;
 class IndexLabel;
 class IndexComboBox;
+class IndexCheckBox;
 
 class UDTGUI_EXPORT MotorWidget : public QWidget
 {
@@ -63,7 +64,9 @@ protected:
     IndexSpinBox *_polePair;
     IndexSpinBox *_maxVelocity;
     IndexSpinBox *_velocityConstant;
-    IndexSpinBox *_currentConstant;
+    IndexSpinBox *_currentConstant;    
+    IndexCheckBox *_break;
+
     // Motor Status
     IndexLabel *_coderLabel;
     IndexLabel *_timeCoderLabel;

@@ -21,6 +21,7 @@
 #include "canopen/widget/indexcombobox.h"
 #include "canopen/widget/indexlabel.h"
 #include "canopen/widget/indexspinbox.h"
+#include "canopen/widget/indexcheckbox.h"
 
 #include "indexdb402.h"
 
@@ -72,12 +73,14 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _maxVelocity->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_MAX_VELOCITY, _axis));
     _velocityConstant->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_VELOCITY_CONSTANT, _axis));
     _currentConstant->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_CURRENT_CONSTANT, _axis));
+    _break->setObjId(IndexDb402::getObjectId(IndexDb402::OD_DIGITAL_OUTPUTS_PHYSICAL_OUTPUTS, _axis));
     _motorTypeComboBox->setNode(node);
     _peakCurrent->setNode(node);
     _polePair->setNode(node);
     _maxVelocity->setNode(node);
     _velocityConstant->setNode(node);
     _currentConstant->setNode(node);
+    _break->setNode(node);
 
     _coderLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_CODER, _axis));
     _timeCoderLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_TIME_CODER, _axis));
@@ -123,6 +126,7 @@ void MotorWidget::readAllObject()
     _maxVelocity->readObject();
     _velocityConstant->readObject();
     _currentConstant->readObject();
+    _break->readObject();
 
     _coderLabel->readObject();
     _timeCoderLabel->readObject();
@@ -210,6 +214,10 @@ QGroupBox *MotorWidget::motorConfigWidgets()
 
     _currentConstant = new IndexSpinBox();
     configLayout->addRow(tr("C&urrent constant :"), _currentConstant);
+
+    _break = new IndexCheckBox();
+    _break->setBitMask(1);
+    configLayout->addRow(tr("Break :"), _break);
 
     _motorConfigGroupBox->setLayout(configLayout);
 
