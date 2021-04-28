@@ -74,6 +74,7 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _velocityConstant->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_VELOCITY_CONSTANT, _axis));
     _currentConstant->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_CURRENT_CONSTANT, _axis));
     _break->setObjId(IndexDb402::getObjectId(IndexDb402::OD_DIGITAL_OUTPUTS_PHYSICAL_OUTPUTS, _axis));
+    _reversePolarity->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_CONFIG_BIT, _axis));
     _motorTypeComboBox->setNode(node);
     _peakCurrent->setNode(node);
     _polePair->setNode(node);
@@ -81,6 +82,7 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _velocityConstant->setNode(node);
     _currentConstant->setNode(node);
     _break->setNode(node);
+    _reversePolarity->setNode(node);
 
     _coderLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_CODER, _axis));
     _timeCoderLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_TIME_CODER, _axis));
@@ -126,7 +128,8 @@ void MotorWidget::readAllObject()
     _maxVelocity->readObject();
     _velocityConstant->readObject();
     _currentConstant->readObject();
-    _break->readObject();
+    _break->readObject();    
+    _reversePolarity->readObject();
 
     _coderLabel->readObject();
     _timeCoderLabel->readObject();
@@ -217,7 +220,11 @@ QGroupBox *MotorWidget::motorConfigWidgets()
 
     _break = new IndexCheckBox();
     _break->setBitMask(1);
-    configLayout->addRow(tr("Break :"), _break);
+    configLayout->addRow(tr("&Break :"), _break);
+
+    _reversePolarity = new IndexCheckBox();
+    _reversePolarity->setBitMask(1);
+    configLayout->addRow(tr("&Reverse polarity :"), _reversePolarity);
 
     _motorConfigGroupBox->setLayout(configLayout);
 

@@ -383,6 +383,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4007 + axisModeDecal)), 0x5};
     case OD_MS_MOTOR_CONF_CURRENT_CONSTANT:
         return {static_cast<quint16>((0x4007 + axisModeDecal)), 0x6};
+    case OD_MS_MOTOR_CONF_CONFIG_BIT:
+        return {static_cast<quint16>((0x4007 + axisModeDecal)), 0x7};
 
     // RANGE CONTROL LOOP TORQUE
     // a1_Torque_status_PID
@@ -409,6 +411,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4021 + axisModeDecal)), 0x6};
     case OD_PID_FREQDIVIDER:
         return {static_cast<quint16>((0x4021 + axisModeDecal)), 0x7};
+    case OD_PID_CONFIGBIT:
+        return {static_cast<quint16>((0x4021 + axisModeDecal)), 0x8};
     // a1_Torque_sensor_status
     case OD_SENSOR_STATUS_RAWDATA:
         return {static_cast<quint16>((0x4022 + axisModeDecal)), 0x1};

@@ -37,6 +37,7 @@ class DataLogger;
 class DataLoggerChartsWidget;
 class IndexSpinBox;
 class IndexLabel;
+class IndexCheckBox;
 
 class UDTGUI_EXPORT PidWidget : public QWidget
 {
@@ -82,7 +83,6 @@ protected:
 
     DataLoggerChartsWidget *_dataLoggerChartsWidget;
 
-
     QGroupBox *createPIDConfigWidgets();
     QGroupBox *_pidGroupBox;
     IndexSpinBox *_pSpinBox;
@@ -92,6 +92,7 @@ protected:
     IndexSpinBox *_maxSpinBox;
     IndexSpinBox *_thresholdSpinBox;
     IndexSpinBox *_freqDividerSpinBox;
+    IndexCheckBox *_antiReverse;
 
     QGroupBox *createPIDStatusWidgets();
     QGroupBox *_pidStatusGroupBox;

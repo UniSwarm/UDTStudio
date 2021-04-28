@@ -64,8 +64,9 @@ protected:
     IndexSpinBox *_polePair;
     IndexSpinBox *_maxVelocity;
     IndexSpinBox *_velocityConstant;
-    IndexSpinBox *_currentConstant;    
+    IndexSpinBox *_currentConstant;
     IndexCheckBox *_break;
+    IndexCheckBox *_reversePolarity;
 
     // Motor Status
     IndexLabel *_coderLabel;
