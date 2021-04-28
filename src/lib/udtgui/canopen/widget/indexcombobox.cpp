@@ -48,7 +48,9 @@ void IndexComboBox::setDisplayValue(const QVariant &value, AbstractIndexWidget::
     }
     else
     {
+        blockSignals(true);
         setCurrentIndex(index);
+        blockSignals(false);
     }
 }
 
