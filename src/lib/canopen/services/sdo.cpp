@@ -149,10 +149,10 @@ void SDO::processingFrameFromServer(const QCanBusFrame &frame)
 
     case SCS::SDO_SCS_CLIENT_ABORT:
     {
-        qDebug() << "ABORT received : Index :" << QString::number(indexFromFrame(frame), 16).toUpper() << ", SubIndex :" << QString::number(subIndexFromFrame(frame), 16).toUpper()
-                 << ", abort :" << QString::number(arrangeDataUpload(frame.payload().mid(4, 4), QMetaType::Type::UInt).toUInt(), 16).toUpper();
-
         quint32 error = arrangeDataUpload(frame.payload().mid(4, 4), QMetaType::Type::UInt).toUInt();
+        qDebug() << "ABORT received : Index :" << QString::number(indexFromFrame(frame), 16).toUpper() << ", SubIndex :" << QString::number(subIndexFromFrame(frame), 16).toUpper()
+                 << ", abort :" << QString::number(error, 16).toUpper() << sdoAbort(error);
+
         setErrorToObject(static_cast<SDOAbortCodes>(error));
         break;
     }
@@ -177,6 +177,77 @@ bool SDO::hasRequestPending()
 SDO::Status SDO::status() const
 {
     return _state;
+}
+
+QString SDO::sdoAbort(quint32 error)
+{
+    switch (error)
+    {
+    case SDO::CO_SDO_ABORT_CODE_BIT_NOT_ALTERNATED:
+        return QString("Toggle bit not alternated");
+    case SDO::CO_SDO_ABORT_CODE_TIMED_OUT:
+        return QString("SDO protocol timed out");
+    case SDO::CO_SDO_ABORT_CODE_CMD_NOT_VALID:
+        return QString("Client/server command specifier not valid or unknown");
+    case SDO::CO_SDO_ABORT_CODE_INVALID_BLOCK_SIZE:
+        return QString("Invalid block size (block mode only)");
+    case SDO::CO_SDO_ABORT_CODE_INVALID_SEQ_NUMBER:
+        return QString("Invalid sequence number (block mode only)");
+    case SDO::CO_SDO_ABORT_CODE_CRC_ERROR:
+        return QString("CRC error (block mode only)");
+    case SDO::CO_SDO_ABORT_CODE_OUT_OF_MEMORY:
+        return QString("Out of memory");
+    case SDO::CO_SDO_ABORT_CODE_UNSUPPORTED_ACCESS:
+        return QString("Unsupported access to an object");
+    case SDO::CO_SDO_ABORT_CODE_WRITE_ONLY:
+        return QString("Attempt to read a write only object");
+    case SDO::CO_SDO_ABORT_CODE_READ_ONLY:
+        return QString("Attempt to write a read only object");
+    case SDO::CO_SDO_ABORT_CODE_NO_OBJECT:
+        return QString("Object does not exist in the object dictionary");
+    case SDO::CO_SDO_ABORT_CODE_NO_SUBINDEX:
+        return QString("Sub-index does not exist");
+    case SDO::CO_SDO_ABORT_CODE_CANNOT_MAP_PDO:
+        return QString("Object cannot be mapped to the PDO");
+    case SDO::CO_SDO_ABORT_CODE_EXCEED_PDO_LENGTH:
+        return QString("The number and length of the objects to be mapped would exceed PDO length");
+    case SDO::CO_SDO_ABORT_CODE_PARAM_IMCOMPATIBILITY:
+        return QString("General parameter incompatibility reason");
+    case SDO::CO_SDO_ABORT_CODE_ITRN_IMCOMPATIBILITY:
+        return QString("General internal incompatibility in the device");
+    case SDO::CO_SDO_ABORT_CODE_FAILED_HARDWARE_ERR:
+        return QString("Access failed due to an hardware error");
+    case SDO::CO_SDO_ABORT_CODE_LENGTH_DOESNT_MATCH:
+        return QString("Data type does not match, length of service parameter does not match");
+    case SDO::CO_SDO_ABORT_CODE_LENGTH_TOO_HIGH:
+        return QString("Data type does not match, length of service parameter too high");
+    case SDO::CO_SDO_ABORT_CODE_LENGTH_TOO_LOW:
+        return QString("Data type does not match, length of service parameter too low");
+    case SDO::CO_SDO_ABORT_CODE_INVALID_VALUE:
+        return QString("Invalid value for parameter (download only)");
+    case SDO::CO_SDO_ABORT_CODE_VALUE_TOO_HIGH:
+        return QString("Value of parameter written too high (download only)");
+    case SDO::CO_SDO_ABORT_CODE_VALUE_TOO_LOW:
+        return QString("Value of parameter written too low (download only)");
+    case SDO::CO_SDO_ABORT_CODE_MAX_VALUE_LESS_MIN:
+        return QString("Maximum value is less than minimum value");
+    case SDO::CO_SDO_ABORT_CODE_RESRC_NOT_AVAILABLE:
+        return QString("esource not available: SDO connection");
+    case SDO::CO_SDO_ABORT_CODE_GENERAL_ERROR:
+        return QString("General error");
+    case SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_1:
+        return QString("Data cannot be transferred or stored to the application");
+    case SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_2:
+        return QString("Data cannot be transferred or stored to the application because of local control");
+    case SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_3:
+        return QString("Data cannot be transferred or stored to the application because of the present device state");
+    case SDO::CO_SDO_ABORT_CODE_NO_OBJECT_DICO:
+        return QString("Object dictionary dynamic generation fails or no object dictionary is present");
+    case SDO::CO_SDO_ABORT_CODE_NO_DATA_AVAILABLE:
+        return QString("No data available");
+    default:
+        return QString("Unknown error code");
+    }
 }
 
 /**

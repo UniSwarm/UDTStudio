@@ -119,6 +119,8 @@ public:
         CO_SDO_ABORT_CODE_NO_DATA_AVAILABLE = 0x08000024 // No data available
     };
 
+    QString sdoAbort(quint32 error);
+
 signals:
     void sdoFree();
     void dataObjetAvailable(NodeIndex *nodeIndex);
