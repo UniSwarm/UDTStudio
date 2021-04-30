@@ -300,6 +300,7 @@ void P402IpWidget::dataLogger()
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
     dataLogger->addData(_positionDemandValueObjectId);
+    dataLogger->addData(_positionActualValueObjectId);
     _dataLoggerWidget->show();
 }
 
@@ -516,7 +517,7 @@ QGroupBox *P402IpWidget::sinusoidalMotionProfileWidgets()
 QGroupBox *P402IpWidget::controlWordWidgets()
 {
     // Group Box Control Word
-    QGroupBox *groupBox = new QGroupBox(tr("Control Word (0x6040) bit 4"));
+    QGroupBox *groupBox = new QGroupBox(tr("Control Word"));
     QFormLayout *layout = new QFormLayout();
 
     _enableRampCheckBox = new QCheckBox();
