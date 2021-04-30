@@ -51,11 +51,31 @@ private:
     NodeObjectId _targetObjectId;
     quint16 _cmdControlWordFlag;
 
+
+    NodeObjectId _velocityDemandObjectId;
+    NodeObjectId _velocityActualObjectId;
+
+    NodeObjectId _minVelocityMinMaxAmountObjectId;
+    NodeObjectId _maxVelocityMinMaxAmountObjectId;
+    NodeObjectId _accelerationDeltaSpeedObjectId;
+    NodeObjectId _accelerationDeltaTimeObjectId;
+    NodeObjectId _decelerationDeltaSpeedObjectId;
+    NodeObjectId _decelerationDeltaTimeObjectId;
+    NodeObjectId _quickStopDeltaSpeedObjectId;
+    NodeObjectId _quickStopDeltaTimeObjectId;
+    NodeObjectId _setPointFactorNumeratorObjectId;
+    NodeObjectId _setPointFactorDenominatorObjectId;
+    NodeObjectId _dimensionFactorNumeratorObjectId;
+    NodeObjectId _dimensionFactorDenominatorObjectId;
+
     // Mode interface
 public:
     void setTarget(qint32 target) override;
     quint16 getSpecificCwFlag() override;
     void setCwDefaultflag() override;
+    void readRealTimeObjects() override;
+    void readAllObjects() override;
+    void reset() override;
 
     // NodeOdSubscriber interface
 public:

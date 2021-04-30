@@ -37,6 +37,7 @@ class NodeProfile402;
 class ModeIp;
 class IndexSpinBox;
 class IndexLabel;
+class IndexCheckBox;
 
 class P402IpWidget : public P402Mode
 {
@@ -80,7 +81,7 @@ private:
     IndexSpinBox *_maxMotorSpeedSpinBox;
 
     IndexSpinBox *_homeOffsetSpinBox;
-    QSpinBox *_polaritySpinBox;
+    IndexCheckBox *_polarityCheckBox;
 
     QCheckBox *_enableRampCheckBox;
 

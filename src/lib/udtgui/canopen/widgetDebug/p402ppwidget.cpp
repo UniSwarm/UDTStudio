@@ -20,6 +20,7 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/widget/indexspinbox.h"
+#include "canopen/widget/indexcheckbox.h"
 #include "services/services.h"
 
 #include "indexdb402.h"
@@ -122,6 +123,7 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
         _softwarePositionLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MIN, axis));
         _softwarePositionLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MAX, axis));
         _homeOffsetSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_HM_HOME_OFFSET, axis));
+        _polarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY, axis));
         _profileVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_VELOCITY, axis));
         _endVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_END_VELOCITY, axis));
         _maxProfileVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_PROFILE_VELOCITY, axis));
@@ -140,6 +142,7 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
         _softwarePositionLimitMinSpinBox->setNode(node);
         _softwarePositionLimitMaxSpinBox->setNode(node);
         _homeOffsetSpinBox->setNode(node);
+        _polarityCheckBox->setNode(node);
         _profileVelocitySpinBox->setNode(node);
         _endVelocitySpinBox->setNode(node);
         _maxProfileVelocitySpinBox->setNode(node);
@@ -455,12 +458,9 @@ void P402PpWidget::homePolarityWidgets()
     _modeLayout->addRow(tr("Home offset :"), _homeOffsetSpinBox);
 
     // Polarity (0x607E)
-    _polaritySpinBox = new QSpinBox();
-    _polaritySpinBox->setToolTip("0 = x1, 1 = x(-1)");
-    _polaritySpinBox->setRange(0, 1);
-    _modeLayout->addRow(tr("Polarity :"), _polaritySpinBox);
-
-    connect(_polaritySpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { _nodeProfile402->setPolarityPosition(i); });
+    _polarityCheckBox = new IndexCheckBox();
+    _polarityCheckBox->setBitMask(NodeProfile402::FgPolarity::MASK_POLARITY_POSITION);
+    _modeLayout->addRow(tr("Polarity :"), _polarityCheckBox);
 }
 
 QGroupBox *P402PpWidget::controlWordWidgets()

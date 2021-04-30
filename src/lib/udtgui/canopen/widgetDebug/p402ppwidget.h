@@ -37,6 +37,7 @@ class NodeProfile402;
 class ModePp;
 class IndexSpinBox;
 class IndexLabel;
+class IndexCheckBox;
 
 class P402PpWidget : public P402Mode
 {
@@ -58,7 +59,7 @@ private:
 
     QCheckBox *_changeSetImmediatelyPointCheckBox;
     QCheckBox *_absRelCheckBox;
-    QCheckBox *_changeOnSetPointCheckBox;
+    //QCheckBox *_changeOnSetPointCheckBox;
 
     QLineEdit *_targetPositionLineEdit;
     QLineEdit *_goOneLineEdit;
@@ -78,8 +79,8 @@ private:
     IndexSpinBox *_positionRangelLimitMaxSpinBox;
     IndexSpinBox *_softwarePositionLimitMinSpinBox;
     IndexSpinBox *_softwarePositionLimitMaxSpinBox;
-    IndexSpinBox *_homeOffsetSpinBox;
-    QSpinBox *_polaritySpinBox;
+    IndexSpinBox *_homeOffsetSpinBox;    
+    IndexCheckBox *_polarityCheckBox;
     IndexSpinBox *_profileVelocitySpinBox;
     IndexSpinBox *_endVelocitySpinBox;
     IndexSpinBox *_maxProfileVelocitySpinBox;

@@ -84,12 +84,6 @@ enum SupportedDriveModes : quint32
     SDM_DTY = 0x10000
 };
 
-enum FgPolarity
-{
-    MASK_POLARITY_VELOCITY = 0x40,
-    MASK_POLARITY_POSITION = 0x80
-};
-
 NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     : NodeProfile(node)
 {

@@ -21,6 +21,8 @@
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/widget/indexspinbox.h"
 #include "canopen/widget/indexlabel.h"
+#include "canopen/widget/indexcheckbox.h"
+
 #include "services/services.h"
 #include "canopenbus.h"
 
@@ -31,6 +33,8 @@
 #include <QString>
 #include <QStringList>
 #include <QtMath>
+
+#include <canopen/widget/indexcheckbox.h>
 
 P402IpWidget::P402IpWidget(QWidget *parent)
     : P402Mode(parent)
@@ -117,6 +121,7 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
         _softwarePositionLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MIN, axis));
         _softwarePositionLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MAX, axis));
         _homeOffsetSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_HM_HOME_OFFSET, axis));
+        _polarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY, axis));
         _maxProfileVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_PROFILE_VELOCITY, axis));
         _maxMotorSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_MOTOR_SPEED, axis));
 
@@ -130,6 +135,7 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
         _softwarePositionLimitMinSpinBox->setNode(node);
         _softwarePositionLimitMaxSpinBox->setNode(node);
         _homeOffsetSpinBox->setNode(node);
+        _polarityCheckBox->setNode(node);
         _maxProfileVelocitySpinBox->setNode(node);
         _maxMotorSpeedSpinBox->setNode(node);
 
@@ -469,12 +475,9 @@ void P402IpWidget::homePolarityWidgets()
     _modeLayout->addRow(tr("Home offset :"), _homeOffsetSpinBox);
 
     // Polarity (0x607E)
-    _polaritySpinBox = new QSpinBox();
-    _polaritySpinBox->setToolTip("0 = x1, 1 = x(-1)");
-    _polaritySpinBox->setRange(0, 1);
-    _modeLayout->addRow(tr("Polarity :"), _polaritySpinBox);
-
-    connect(_polaritySpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { _nodeProfile402->setPolarityPosition(i); });
+    _polarityCheckBox = new IndexCheckBox();
+    _polarityCheckBox->setBitMask(NodeProfile402::FgPolarity::MASK_POLARITY_POSITION);
+    _modeLayout->addRow(tr("Polarity :"), _polarityCheckBox);
 }
 
 QGroupBox *P402IpWidget::sinusoidalMotionProfileWidgets()

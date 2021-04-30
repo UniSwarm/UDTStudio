@@ -103,6 +103,11 @@ public:
 
     void setPolarityPosition(bool polarity);
     void setPolarityVelocity(bool polarity);
+    enum FgPolarity
+    {
+        MASK_POLARITY_VELOCITY = 0x40,
+        MASK_POLARITY_POSITION = 0x80
+    };
     bool polarityPosition();
     bool polarityVelocity();
 
