@@ -116,12 +116,26 @@ signals:
 
 private:
 
+    enum State
+    {
+        NODEPROFILE_STOPED,
+        NODEPROFILE_STARTED
+    };
+    State _nodeProfileState;
+    QTimer _nodeProfleTimer;
+
     enum StateState
     {
         NONE_STATE = 0,
         STATE_CHANGE =1,
     };
     StateState _stateState;
+    void updateData();
+    void readAllObject();
+
+    bool _sendRequest;
+    void readObject(const NodeObjectId &id);
+    void writeObject(const NodeObjectId &id, const QVariant &data);
 
     NodeObjectId _modesOfOperationObjectId;
     NodeObjectId _modesOfOperationDisplayObjectId;
@@ -161,13 +175,16 @@ private:
 public slots:
     void readModeOfOperationDisplay(void);
 
+    // NodeOdSubscriber interface
 public:
+    void start(int msec) override;
+    void stop() override;
     bool status() const override;
+    void readAllObjects() const override;
     quint16 profileNumber() const override;
     QString profileNumberStr() const override;
     virtual void reset() override;
 
-    // NodeOdSubscriber interface
 public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };

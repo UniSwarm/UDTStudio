@@ -36,6 +36,10 @@ public:
     virtual quint16 getSpecificCwFlag() = 0;
     virtual void setCwDefaultflag() = 0;
 
+    virtual void readRealTimeObjects();
+    virtual void readAllObjects() = 0;
+    virtual void reset();
+
 protected:
     NodeProfile402 *_nodeProfile402;
 

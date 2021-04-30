@@ -65,8 +65,6 @@ private:
 
     QMap<NodeProfile402::OperationMode, P402Mode*> _modes;
 
-    QTimer _updateDataTimer;
-
     enum State
     {
         STATE_NotReadyToSwitchOn = 1,
@@ -115,7 +113,6 @@ private:
     void stateChanged();
     void modeIndexChanged(int id);
 
-    void updateData();
     void readAllObject();
 
     void isHalted(bool state);

@@ -35,6 +35,52 @@ ModeIp::ModeIp(NodeProfile402 *nodeProfile402)
     _bufferClearObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_BUFFER_CLEAR, _nodeProfile402->axisId());
     _bufferClearObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 
+    _positionDemandValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, _nodeProfile402->axisId());
+    _positionActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, _nodeProfile402->axisId());
+
+    _timePeriodUnitObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_PERIOD_TIME_UNITS, _nodeProfile402->axisId());
+    _timePeriodIndexObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_PERIOD_TIME_INDEX, _nodeProfile402->axisId());
+
+    _positionRangelLimitMinObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MIN, _nodeProfile402->axisId());
+    _positionRangelLimitMaxObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MAX, _nodeProfile402->axisId());
+    _softwarePositionLimitMinObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MIN, _nodeProfile402->axisId());
+    _softwarePositionLimitMaxObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MAX, _nodeProfile402->axisId());
+
+    _maxProfileVelocityObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_PROFILE_VELOCITY, _nodeProfile402->axisId());
+    _maxMotorSpeedObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_MOTOR_SPEED, _nodeProfile402->axisId());
+
+    _homeOffsetObjectId = IndexDb402::getObjectId(IndexDb402::OD_HM_HOME_OFFSET, _nodeProfile402->axisId());
+
+
+
+    //_polarityObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_PERIOD_TIME_UNITS, _nodeProfile402->axisId());
+
+    _positionDemandValueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _positionActualValueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+
+    _timePeriodUnitObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _timePeriodIndexObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+
+    _positionRangelLimitMinObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _positionRangelLimitMaxObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _softwarePositionLimitMinObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _softwarePositionLimitMaxObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+
+    _maxProfileVelocityObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _maxMotorSpeedObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+
+    _homeOffsetObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _polarityObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+
+
+
+
+
+
+
+
+
+
     _mode = NodeProfile402::OperationMode::IP;
 
     setNodeInterrest(_nodeProfile402->node());
@@ -83,6 +129,29 @@ quint16 ModeIp::getSpecificCwFlag()
 void ModeIp::setCwDefaultflag()
 {
     _cmdControlWordFlag = CW_IP_EnableRamp;
+}
+
+void ModeIp::readRealTimeObjects()
+{
+    _nodeProfile402->node()->readObject(_positionDemandValueObjectId);
+    _nodeProfile402->node()->readObject(_positionActualValueObjectId);
+}
+
+void ModeIp::readAllObjects()
+{
+    _nodeProfile402->node()->readObject(_positionDemandValueObjectId);
+    _nodeProfile402->node()->readObject(_positionActualValueObjectId);
+    _nodeProfile402->node()->readObject(_positionRangelLimitMinObjectId);
+    _nodeProfile402->node()->readObject(_positionRangelLimitMaxObjectId);
+    _nodeProfile402->node()->readObject(_softwarePositionLimitMinObjectId);
+    _nodeProfile402->node()->readObject(_softwarePositionLimitMaxObjectId);
+    _nodeProfile402->node()->readObject( _maxProfileVelocityObjectId);
+    _nodeProfile402->node()->readObject(_maxMotorSpeedObjectId);
+}
+
+void ModeIp::reset()
+{
+    _nodeProfile402->node()->readObject(_targetObjectId);
 }
 
 void ModeIp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

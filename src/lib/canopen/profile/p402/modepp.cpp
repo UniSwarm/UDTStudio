@@ -36,6 +36,45 @@ ModePp::ModePp(NodeProfile402 *nodeProfile402)
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_PP_POSITION_TARGET, _nodeProfile402->axisId());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 
+    _positionDemandValueLabel = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, _nodeProfile402->axisId());
+    _positionActualValueLabel = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, _nodeProfile402->axisId());
+
+    _positionRangelLimitMinSpinBox = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MIN, _nodeProfile402->axisId());
+    _positionRangelLimitMaxSpinBox = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MAX, _nodeProfile402->axisId());
+    _softwarePositionLimitMinSpinBox = IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MIN, _nodeProfile402->axisId());
+    _softwarePositionLimitMaxSpinBox = IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MAX, _nodeProfile402->axisId());
+    _homeOffsetSpinBox = IndexDb402::getObjectId(IndexDb402::OD_HM_HOME_OFFSET, _nodeProfile402->axisId());
+    _polaritySpinBox = IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_VELOCITY, _nodeProfile402->axisId());
+    _profileVelocitySpinBox = IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_VELOCITY, _nodeProfile402->axisId());
+    _endVelocitySpinBox = IndexDb402::getObjectId(IndexDb402::OD_PC_END_VELOCITY, _nodeProfile402->axisId());
+    _maxProfileVelocitySpinBox = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_PROFILE_VELOCITY, _nodeProfile402->axisId());
+    _maxMotorSpeedSpinBox = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_MOTOR_SPEED, _nodeProfile402->axisId());
+    _profileAccelerationSpinBox = IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_ACCELERATION, _nodeProfile402->axisId());
+    _maxAccelerationSpinBox = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_ACCELERATION, _nodeProfile402->axisId());
+    _profileDecelerationSpinBox = IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_DECELERATION, _nodeProfile402->axisId());
+    _maxDecelerationSpinBox = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_DECELERATION, _nodeProfile402->axisId());
+    _quickStopDecelerationSpinBox = IndexDb402::getObjectId(IndexDb402::OD_PC_QUICK_STOP_DECELERATION, _nodeProfile402->axisId());
+
+    _positionDemandValueLabel.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _positionActualValueLabel.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+
+    _positionRangelLimitMinSpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _positionRangelLimitMaxSpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _softwarePositionLimitMinSpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _softwarePositionLimitMaxSpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _homeOffsetSpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _polaritySpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _profileVelocitySpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _endVelocitySpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _maxProfileVelocitySpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _maxMotorSpeedSpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _profileAccelerationSpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _maxAccelerationSpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _profileDecelerationSpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _maxDecelerationSpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _quickStopDecelerationSpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+
+
     _mode = NodeProfile402::OperationMode::PP;
 
     setNodeInterrest(_nodeProfile402->node());
@@ -138,8 +177,32 @@ quint16 ModePp::getSpecificCwFlag()
 
 void ModePp::setCwDefaultflag()
 {
-      _cmdControlWordFlag = 0;
+    _cmdControlWordFlag = 0;
 }
+
+void ModePp::readRealTimeObjects()
+{
+    _nodeProfile402->node()->readObject(_positionDemandValueLabel);
+    _nodeProfile402->node()->readObject( _positionActualValueLabel);
+}
+
+void ModePp::readAllObjects()
+{
+    _nodeProfile402->node()->readObject(_positionDemandValueLabel);
+    _nodeProfile402->node()->readObject(_positionActualValueLabel);
+    _nodeProfile402->node()->readObject(_positionRangelLimitMinSpinBox);
+    _nodeProfile402->node()->readObject(_positionRangelLimitMaxSpinBox);
+    _nodeProfile402->node()->readObject(_softwarePositionLimitMinSpinBox);
+    _nodeProfile402->node()->readObject(_softwarePositionLimitMaxSpinBox);
+    _nodeProfile402->node()->readObject(_profileVelocitySpinBox);
+    _nodeProfile402->node()->readObject(_maxProfileVelocitySpinBox);
+    _nodeProfile402->node()->readObject(_maxMotorSpeedSpinBox);
+    _nodeProfile402->node()->readObject(_profileAccelerationSpinBox);
+    _nodeProfile402->node()->readObject(_maxAccelerationSpinBox);
+    _nodeProfile402->node()->readObject(_profileDecelerationSpinBox);
+    _nodeProfile402->node()->readObject(_maxDecelerationSpinBox);
+}
+
 
 void ModePp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {

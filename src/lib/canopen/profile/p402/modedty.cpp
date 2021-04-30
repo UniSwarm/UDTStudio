@@ -27,6 +27,14 @@ ModeDty::ModeDty(NodeProfile402 *nodeProfile402)
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_TARGET, _nodeProfile402->axisId());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 
+    _demandLabel = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_DEMAND, _nodeProfile402->axisId());
+    _slopeSpinBox = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_SLOPE, _nodeProfile402->axisId());
+    _maxSpinBox = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_MAX, _nodeProfile402->axisId());
+
+    _demandLabel.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _slopeSpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _maxSpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+
     _mode = NodeProfile402::OperationMode::TQ;
 }
 
@@ -43,6 +51,23 @@ quint16 ModeDty::getSpecificCwFlag()
 void ModeDty::setCwDefaultflag()
 {
     _cmdControlWordFlag = 0;
+}
+
+void ModeDty::readRealTimeObjects()
+{
+    _nodeProfile402->node()->readObject(_demandLabel);
+}
+
+void ModeDty::readAllObjects()
+{
+    _nodeProfile402->node()->readObject(_demandLabel);
+    _nodeProfile402->node()->readObject(_slopeSpinBox);
+    _nodeProfile402->node()->readObject(_maxSpinBox);
+}
+
+void ModeDty::reset()
+{
+    _nodeProfile402->node()->readObject(_targetObjectId);
 }
 
 void ModeDty::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

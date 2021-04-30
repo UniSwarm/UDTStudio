@@ -35,6 +35,38 @@ ModeVl::ModeVl(NodeProfile402 *nodeProfile402)
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, _nodeProfile402->axisId());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 
+    _velocityDemandObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND, _nodeProfile402->axisId());
+    _velocityActualObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _nodeProfile402->axisId());
+
+    _minVelocityMinMaxAmountObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_MIN, _nodeProfile402->axisId());
+    _maxVelocityMinMaxAmountObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_MAX, _nodeProfile402->axisId());
+    _accelerationDeltaSpeedObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_ACCELERATION_DELTA_SPEED, _nodeProfile402->axisId());
+    _accelerationDeltaTimeObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_ACCELERATION_DELTA_TIME, _nodeProfile402->axisId());
+    _decelerationDeltaSpeedObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_DECELERATION_DELTA_SPEED, _nodeProfile402->axisId());
+    _decelerationDeltaTimeObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_DECELERATION_DELTA_TIME, _nodeProfile402->axisId());
+    _quickStopDeltaSpeedObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_QUICK_STOP_DELTA_SPEED, _nodeProfile402->axisId());
+    _quickStopDeltaTimeObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_QUICK_STOP_DELTA_TIME, _nodeProfile402->axisId());
+    _setPointFactorNumeratorObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_SET_POINT_FACTOR_NUMERATOR, _nodeProfile402->axisId());
+    _setPointFactorDenominatorObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_SET_POINT_FACTOR_DENOMINATOR, _nodeProfile402->axisId());
+    _dimensionFactorNumeratorObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_NUMERATOR, _nodeProfile402->axisId());
+    _dimensionFactorDenominatorObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_DENOMINATOR, _nodeProfile402->axisId());
+
+    _velocityDemandObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _velocityActualObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+
+    _minVelocityMinMaxAmountObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _maxVelocityMinMaxAmountObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _accelerationDeltaSpeedObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _accelerationDeltaTimeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _decelerationDeltaSpeedObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _decelerationDeltaTimeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _quickStopDeltaSpeedObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _quickStopDeltaTimeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _setPointFactorNumeratorObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _setPointFactorDenominatorObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _dimensionFactorNumeratorObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _dimensionFactorDenominatorObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+
     _mode = NodeProfile402::OperationMode::VL;
 
     setNodeInterrest(_nodeProfile402->node());
@@ -117,6 +149,35 @@ quint16 ModeVl::getSpecificCwFlag ()
 void ModeVl::setCwDefaultflag()
 {
     _cmdControlWordFlag = CW_VL_EnableRamp | CW_VL_UnlockRamp | CW_VL_ReferenceRamp;
+}
+
+void ModeVl::readRealTimeObjects()
+{
+    _nodeProfile402->node()->readObject(_velocityDemandObjectId);
+    _nodeProfile402->node()->readObject(_velocityActualObjectId);
+}
+
+void ModeVl::readAllObjects()
+{
+    _nodeProfile402->node()->readObject(_velocityDemandObjectId);
+    _nodeProfile402->node()->readObject(_velocityActualObjectId);
+    _nodeProfile402->node()->readObject(_minVelocityMinMaxAmountObjectId);
+    _nodeProfile402->node()->readObject(_maxVelocityMinMaxAmountObjectId);
+    _nodeProfile402->node()->readObject(_accelerationDeltaSpeedObjectId);
+    _nodeProfile402->node()->readObject(_accelerationDeltaTimeObjectId);
+    _nodeProfile402->node()->readObject(_decelerationDeltaSpeedObjectId);
+    _nodeProfile402->node()->readObject(_decelerationDeltaTimeObjectId);
+    _nodeProfile402->node()->readObject(_quickStopDeltaSpeedObjectId);
+    _nodeProfile402->node()->readObject(_quickStopDeltaTimeObjectId);
+    _nodeProfile402->node()->readObject(_setPointFactorNumeratorObjectId);
+    _nodeProfile402->node()->readObject(_setPointFactorDenominatorObjectId);
+    _nodeProfile402->node()->readObject(_dimensionFactorNumeratorObjectId);
+    _nodeProfile402->node()->readObject(_dimensionFactorDenominatorObjectId);
+}
+
+void ModeVl::reset()
+{
+    _nodeProfile402->node()->readObject(_targetObjectId);
 }
 
 void ModeVl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

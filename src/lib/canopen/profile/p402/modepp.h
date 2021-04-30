@@ -55,11 +55,32 @@ private:
     NodeObjectId _targetObjectId;
     quint16 _cmdControlWordFlag;
 
+    NodeObjectId _positionDemandValueLabel;
+    NodeObjectId _positionActualValueLabel;
+
+    NodeObjectId _positionRangelLimitMinSpinBox;
+    NodeObjectId _positionRangelLimitMaxSpinBox;
+    NodeObjectId _softwarePositionLimitMinSpinBox;
+    NodeObjectId _softwarePositionLimitMaxSpinBox;
+    NodeObjectId _homeOffsetSpinBox;
+    NodeObjectId _polaritySpinBox;
+    NodeObjectId _profileVelocitySpinBox;
+    NodeObjectId _endVelocitySpinBox;
+    NodeObjectId _maxProfileVelocitySpinBox;
+    NodeObjectId _maxMotorSpeedSpinBox;
+    NodeObjectId _profileAccelerationSpinBox;
+    NodeObjectId _maxAccelerationSpinBox;
+    NodeObjectId _profileDecelerationSpinBox;
+    NodeObjectId _maxDecelerationSpinBox;
+    NodeObjectId _quickStopDecelerationSpinBox;
+
     // Mode interface
 public:
     void setTarget(qint32 target) override;
     quint16 getSpecificCwFlag() override;
     void setCwDefaultflag() override;
+    void readRealTimeObjects() override;
+    void readAllObjects() override;
 
     // NodeOdSubscriber interface
 public:

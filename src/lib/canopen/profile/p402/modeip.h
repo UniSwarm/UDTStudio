@@ -50,11 +50,31 @@ private:
 
     quint16 _cmdControlWordFlag;
 
+    NodeObjectId _positionDemandValueObjectId;
+    NodeObjectId _positionActualValueObjectId;
+
+    NodeObjectId _timePeriodUnitObjectId;
+    NodeObjectId _timePeriodIndexObjectId;
+
+    NodeObjectId _positionRangelLimitMinObjectId;
+    NodeObjectId _positionRangelLimitMaxObjectId;
+    NodeObjectId _softwarePositionLimitMinObjectId;
+    NodeObjectId _softwarePositionLimitMaxObjectId;
+
+    NodeObjectId _maxProfileVelocityObjectId;
+    NodeObjectId _maxMotorSpeedObjectId;
+
+    NodeObjectId _homeOffsetObjectId;
+    NodeObjectId _polarityObjectId;
+
     // Mode interface
 public:
     void setTarget(qint32 target) override;
     quint16 getSpecificCwFlag() override;
     void setCwDefaultflag() override;
+    void readRealTimeObjects() override;
+    void readAllObjects() override;
+    void reset() override;
 
     // NodeOdSubscriber interface
 public:

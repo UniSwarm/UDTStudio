@@ -162,9 +162,9 @@ void P402Widget::modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew
         || (modeNew == NodeProfile402::DTY))
     {
         P402Mode *mode = dynamic_cast<P402Mode*>(_stackedWidget->currentWidget());
-        // resset : Patch because the widget Tarqet torque and velocity are not an IndexSpinbox so not read automaticaly
+        // reset : Patch because the widget Tarqet torque and velocity are not an IndexSpinbox so not read automaticaly
         mode->reset();
-        mode->stop();
+
         _option402Action->setChecked(false);
         _stackedWidget->setCurrentWidget(_modes[modeNew]);
     }
@@ -316,7 +316,8 @@ void P402Widget::toggleStartLogger(bool start)
         {
             _node->sendStart();
         }
-        _updateDataTimer.start(_logTimerSpinBox->value());
+
+        _nodeProfile402->start(_logTimerSpinBox->value());
 
         _stackedWidget->setEnabled(true);
         _modeGroupBox->setEnabled(true);
@@ -327,7 +328,7 @@ void P402Widget::toggleStartLogger(bool start)
     {
         _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
 
-        _updateDataTimer.stop();
+        _nodeProfile402->stop();
 
         _stackedWidget->setEnabled(false);
         _modeGroupBox->setEnabled(true);
@@ -347,17 +348,7 @@ void P402Widget::setLogTimer(int ms)
 {
     if (_startStopAction->isChecked())
     {
-        _updateDataTimer.start(ms);
-    }
-}
-
-void P402Widget::updateData()
-{
-    if (_node)
-    {
-        _node->readObject(_statusWordObjectId);
-        P402Mode *mode = dynamic_cast<P402Mode*>(_stackedWidget->currentWidget());
-        mode->readRealTimeObjects();
+        _nodeProfile402->start(ms);
     }
 }
 
@@ -365,15 +356,11 @@ void P402Widget::readAllObject()
 {
     if (_node)
     {
+        _nodeProfile402->readAllObjects();
         _nodeProfile402->readModeOfOperationDisplay();
         _node->readObject(_statusWordObjectId);
-
-        P402Mode *mode = dynamic_cast<P402Mode*>(_stackedWidget->currentWidget());
-        mode->readAllObjects();
     }
 }
-
-
 
 void P402Widget::isHalted(bool state)
 {
@@ -575,7 +562,6 @@ QToolBar *P402Widget::toolBarWidgets()
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
     connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
-    connect(&_updateDataTimer, &QTimer::timeout, this, &P402Widget::updateData);
 
     _option402Action = new QAction();
     _option402Action->setCheckable(true);

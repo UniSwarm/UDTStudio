@@ -40,11 +40,26 @@ private:
     NodeObjectId _targetObjectId;
     quint16 _cmdControlWordFlag;
 
+    NodeObjectId _torqueDemandLabel;
+    NodeObjectId _torqueActualValueLabel;
+    NodeObjectId _currentActualValueLabel;
+
+    NodeObjectId _targetSlopeSpinBox;
+    NodeObjectId _torqueProfileTypeSpinBox;
+    NodeObjectId _maxTorqueSpinBox;
+    NodeObjectId _maxCurrentSpinBox;
+    NodeObjectId _motorRatedTorqueSpinBox;
+    NodeObjectId _motorRatedCurrentSpinBox;
+    NodeObjectId _dcLinkVoltageLabel;
+
     // Mode interface
 public:
     void setTarget(qint32 target) override;
     quint16 getSpecificCwFlag() override;
     void setCwDefaultflag() override;
+    void readRealTimeObjects() override;
+    void readAllObjects() override;
+    void reset() override;
 
     // NodeOdSubscriber interface
 public:

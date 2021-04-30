@@ -40,11 +40,19 @@ private:
     NodeObjectId _targetObjectId;
     quint16 _cmdControlWordFlag;
 
+    NodeObjectId _demandLabel;
+
+    NodeObjectId _slopeSpinBox;
+    NodeObjectId _maxSpinBox;
+
     // Mode interface
 public:
     void setTarget(qint32 target) override;
     quint16 getSpecificCwFlag() override;
     void setCwDefaultflag() override;
+    void readRealTimeObjects() override;
+    void readAllObjects() override;
+    void reset() override;
 
     // NodeOdSubscriber interface
 public:
