@@ -230,7 +230,7 @@ void P402PpWidget::changeOnSetPointCheckBoxRampClicked(bool ok)
 
 void P402PpWidget::changeOnSetPointEvent(bool ok)
 {
-    _changeOnSetPointCheckBox->setChecked(ok);
+    //_changeOnSetPointCheckBox->setChecked(ok);
 }
 
 void P402PpWidget::updateInformationLabel()
@@ -478,7 +478,7 @@ QGroupBox *P402PpWidget::controlWordWidgets()
     layout->addRow(tr("Abs/Rel (bit 6) :"), _absRelCheckBox);
     connect(_absRelCheckBox, &QCheckBox::clicked, this, &P402PpWidget::absRelCheckBoxRampClicked);
 
-    _changeOnSetPointCheckBox = new QCheckBox();
+    //_changeOnSetPointCheckBox = new QCheckBox();
     //    modeControlWordLayout->addRow(tr("Change on set-point (bit 9) :"), _changeOnSetPointCheckBox);
     //    connect(_changeOnSetPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::changeOnSetPointCheckBoxRampClicked);
     //    modeControlWordGroupBox->setLayout(modeControlWordLayout);
