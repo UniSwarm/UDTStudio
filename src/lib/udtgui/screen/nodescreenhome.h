@@ -28,6 +28,7 @@
 class AbstractIndexWidget;
 class QLabel;
 class IndexLabel;
+class IndexComboBox;
 
 class UDTGUI_EXPORT NodeScreenHome : public NodeScreen
 {
@@ -47,6 +48,12 @@ protected:
     QLabel *_odEdsFileLabel;
     QLabel *_odCountLabel;
     QLabel *_odSubIndexCountLabel;
+
+    QWidget *createStoreWidget();
+    QComboBox *_storeComboBox;
+    QComboBox *_restoreComboBox;
+    void storeClicked();
+    void restoreClicked();
 
     QList<AbstractIndexWidget *> _indexWidgets;
 
