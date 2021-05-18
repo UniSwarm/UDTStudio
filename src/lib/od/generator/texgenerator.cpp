@@ -76,8 +76,8 @@ bool TexGenerator::generate(DeviceDescription *deviceDescription, const QString 
         return false;
     }
 
-    QList<Index *> mandatories;
-    QList<Index *> optionals;
+    QList<Index *> communication;
+    QList<Index *> standardized;
     QList<Index *> manufacturers;
 
     for (Index *index : deviceDescription->indexes().values())
@@ -86,28 +86,37 @@ bool TexGenerator::generate(DeviceDescription *deviceDescription, const QString 
 
         if (numIndex >= 0x1000 && numIndex < 0x2000)
         {
-            mandatories.append(index);
+            communication.append(index);
         }
         else if (numIndex >= 0x2000 && numIndex < 0x6000)
         {
             manufacturers.append(index);
         }
-        else
+        else if (numIndex >= 0x6000 && numIndex < 0x6800)
         {
-            optionals.append(index);
+            standardized.append(index);
         }
     }
 
     QTextStream out(&TexComFile);
-    writeListIndex(mandatories, &out);
+    writeListIndexComm(communication, &out);
     TexComFile.close();
 
     out.setDevice(&TexManuFile);
-    writeListIndexManu(manufacturers, &out);
+
+    if (deviceDescription->index(0x1000)->subIndex(0)->value().toUInt() == 402)
+    {
+        writeListIndexManufacturer402(manufacturers, &out);
+    }
+    else
+    {
+        writeListIndex(manufacturers, &out);
+    }
+
     TexManuFile.close();
 
     out.setDevice(&TexStandardFile);
-    writeListIndex(optionals, &out);
+    writeListIndex(standardized, &out);
     TexStandardFile.close();
 
     return true;
@@ -124,29 +133,116 @@ void TexGenerator::writeListIndex(const QList<Index *> indexes, QTextStream *out
         switch (index->objectType())
         {
         case Index::Object::VAR:
-            writeIndex(index, out);
+            writeIndex(index, out, false);
             break;
 
         case Index::Object::RECORD:
-            writeRecord(index, out);
+            writeRecord(index, out, false);
             break;
 
         case Index::Object::ARRAY:
-            writeArray(index, out);
+            writeArray(index, out, false);
             break;
         }
     }
 }
 
-void TexGenerator::writeListIndexManu(const QList<Index *> indexes, QTextStream *out)
+void TexGenerator::writeListIndexComm(const QList<Index *> indexes, QTextStream *out)
 {
+    for (Index *index : indexes)
+    {
+        uint16_t numIndex = index->index();
+        if (numIndex >= 0x1000 && numIndex < 0x1400)
+        {
+            switch (index->objectType())
+            {
+            case Index::Object::VAR:
+                writeIndex(index, out, false);
+                break;
+
+            case Index::Object::RECORD:
+                writeRecord(index, out, false);
+                break;
+
+            case Index::Object::ARRAY:
+                writeArray(index, out, false);
+                break;
+            }
+        }
+    }
+
+    // Write only Object master without subindex
+    for (Index *index : indexes)
+    {
+        uint16_t numIndex = index->index();
+        if (numIndex >= 0x1400 && numIndex < 0x1A04)
+        {
+            writeIndex(index, out, false);
+        }
+    }
+
+    // Write generic Object with X
+    for (Index *index : indexes)
+    {
+        uint16_t numIndex = index->index();
+         if (numIndex >= 0x1400 && numIndex < 0x1A04)
+         {
+             if (numIndex == 0x1400 || numIndex == 0x1600 || numIndex == 0x1800 || numIndex == 0x1A00)
+             {
+                 switch (index->objectType())
+                 {
+                 case Index::Object::VAR:
+                     writeIndex(index, out, true);
+                     break;
+
+                 case Index::Object::RECORD:
+                     writeRecord(index, out, true);
+                     break;
+
+                 case Index::Object::ARRAY:
+                     writeArray(index, out, true);
+                     break;
+                 }
+             }
+             else
+             {
+                 writeIndex(index, out, true);
+             }
+         }
+    }
+}
+
+void TexGenerator::writeListIndexManufacturer402(const QList<Index *> indexes, QTextStream *out)
+{
+    for (Index *index : indexes)
+    {
+        uint16_t numIndex = index->index();
+        if (numIndex >= 0x2000 && numIndex < 0x3000)
+        {
+            switch (index->objectType())
+            {
+            case Index::Object::VAR:
+                writeIndex(index, out, false);
+                break;
+
+            case Index::Object::RECORD:
+                writeRecord(index, out, false);
+                break;
+
+            case Index::Object::ARRAY:
+                writeArray(index, out, false);
+                break;
+            }
+        }
+    }
+
+    // Write only Object master without subindex
     for (Index *index : indexes)
     {
         uint16_t numIndex = index->index();
         if (numIndex >= 0x4000 && numIndex < 0x4080)
         {
-            writeIndex(index, out);
-
+            writeIndex(index, out, false);
         }
     }
     for (Index *index : indexes)
@@ -154,28 +250,24 @@ void TexGenerator::writeListIndexManu(const QList<Index *> indexes, QTextStream 
         uint16_t numIndex = index->index();
         if (numIndex >= 0x4000 && numIndex < 0x4040)
         {
-            QString nameObject = index->name();
-            index->setName(nameObject + "X");
             switch (index->objectType())
             {
             case Index::Object::VAR:
-                writeIndex(index, out);
+                writeIndex(index, out, true);
                 break;
 
             case Index::Object::RECORD:
-                writeRecord(index, out);
+                writeRecord(index, out, true);
                 break;
 
             case Index::Object::ARRAY:
-                writeArray(index, out);
+                writeArray(index, out, true);
                 break;
             }
         }
         else if (numIndex >= 0x4040 && numIndex < 0x4080)
         {
-            QString nameObject = index->name();
-            index->setName(nameObject + "X");
-            writeIndex(index, out);
+            writeIndex(index, out, true);
         }
     }
     for (Index *index : indexes)
@@ -186,15 +278,15 @@ void TexGenerator::writeListIndexManu(const QList<Index *> indexes, QTextStream 
             switch (index->objectType())
             {
             case Index::Object::VAR:
-                writeIndex(index, out);
+                writeIndex(index, out, false);
                 break;
 
             case Index::Object::RECORD:
-                writeRecord(index, out);
+                writeRecord(index, out, false);
                 break;
 
             case Index::Object::ARRAY:
-                writeArray(index, out);
+                writeArray(index, out, false);
                 break;
             }
         }
@@ -205,7 +297,7 @@ void TexGenerator::writeListIndexManu(const QList<Index *> indexes, QTextStream 
  * @brief writes an index and these parameters
  * @param index model
  */
-void TexGenerator::writeIndex(Index *index, QTextStream *out)
+void TexGenerator::writeIndex(Index *index, QTextStream *out, bool generic)
 {
     SubIndex *subIndex;
     subIndex = index->subIndex(0);
@@ -218,11 +310,35 @@ void TexGenerator::writeIndex(Index *index, QTextStream *out)
     int base = 16;
 
     QString nameObject = index->name();
-    *out << "% " << QString::number(index->index(), base).toUpper() << " " << nameObject;
+    QString nameFull = index->name();
+
+    if (generic)
+    {
+        if (index->index() >= 0x1400 && index->index() < 0x1A04)
+        {
+            nameObject.append("X");
+            nameFull.replace(QRegExp("[0-9]"), "X");
+            *out << "% " << QString::number(index->index(), base).toUpper().replace(3, 1, "n") << " " << nameFull;
+        }
+        else
+        {
+            nameObject.append("X");
+            nameFull.replace("a1", "a@");
+            *out << "% " << QString::number(index->index(), base).toUpper().replace(1, 1, "n") << " " << nameFull << "X";
+        }
+    }
+    else
+    {
+        *out << "% " << QString::number(index->index(), base).toUpper() << " " << nameObject;
+    }
     *out << "\n";
+
+    nameFull.replace("_", "\\_");
+
     nameObject.remove(QRegExp("^[a][0-9]"));
     nameObject.remove("_");
     nameObject.remove(" ");
+    nameObject.remove("-");
     nameObject.replace("0", "A");
     nameObject.replace("1", "B");
     nameObject.replace("2", "C");
@@ -234,8 +350,14 @@ void TexGenerator::writeIndex(Index *index, QTextStream *out)
     nameObject.replace("8", "I");
     nameObject.replace("9", "J");
 
-    QString nameFull = index->name();
-    nameFull.replace("_", "$\\_$");
+//    QString nameFull = index->name();
+//    nameFull.replace("_", "\\_");
+//    if (generic)
+//    {
+//        nameObject.append("X");
+//        nameFull.replace("a1", "a@");
+//    }
+
     QString nameCommand = nameObject;
     nameCommand.prepend("\\name");
     QString indexCommand = nameObject;
@@ -251,14 +373,29 @@ void TexGenerator::writeIndex(Index *index, QTextStream *out)
     QString dispTabCommand = nameObject;
     dispTabCommand.prepend("\\dispTab");
 
-    // nameCommand >> \newcommand{\nameControlword}{a1$\_$Controlword}%
+    // nameCommand >> \newcommand{\nameControlword}{a1$\\_$Controlword}%
     *out << "\\newcommand{" << nameCommand << "}";
     *out << "{" << nameFull << "}%";
     *out << "\n";
 
     // indexCommand >> \newcommand{\indexControlword}{6040}%
     *out << "\\newcommand{" << indexCommand << "}";
-    *out << "{" << QString::number(index->index(), base).toUpper() << "}%";
+    if (generic)
+    {
+        if (index->index() >= 0x1400 && index->index() < 0x1A04)
+        {
+            *out << "{" << QString::number(index->index(), base).toUpper().replace(3, 1, "n") << "}%";
+        }
+        else
+        {
+            *out << "{" << QString::number(index->index(), base).toUpper().replace(1, 1, "n") << "}%";
+        }
+    }
+    else
+    {
+        *out << "{" << QString::number(index->index(), base).toUpper() << "}%";
+    }
+
     *out << "\n";
 
     // subIndexCommand >> \newcommand{\subIndexControlword}{0}%
@@ -325,16 +462,39 @@ void TexGenerator::writeIndex(Index *index, QTextStream *out)
  * @brief writes a record index
  * @param index model
  */
-void TexGenerator::writeRecord(Index *index, QTextStream *out)
+void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
 {
     int base = 16;
 
     QString nameObject = index->name();
-    *out << "% " << QString::number(index->index(), base).toUpper() << " " << nameObject;
+    QString nameFull = index->name();
+
+    if (generic)
+    {
+        if (index->index() >= 0x1400 && index->index() < 0x1A04)
+        {
+            nameObject.append("X");
+            nameFull.replace(QRegExp("[0-9]"), "X");
+            *out << "% " << QString::number(index->index(), base).toUpper().replace(3, 1, "n") << " " << nameFull;
+        }
+        else
+        {
+            nameObject.append("X");
+            nameFull.replace("a1", "a@");
+            *out << "% " << QString::number(index->index(), base).toUpper().replace(1, 1, "n") << " " << nameFull << "X";
+        }
+    }
+    else
+    {
+        *out << "% " << QString::number(index->index(), base).toUpper() << " " << nameObject;
+    }
     *out << "\n";
+
+    nameFull.replace("_", "\\_");
     nameObject.remove(QRegExp("^[a][0-9]"));
     nameObject.remove("_");
     nameObject.remove(" ");
+    nameObject.remove("-");
     nameObject.replace("0", "A");
     nameObject.replace("1", "B");
     nameObject.replace("2", "C");
@@ -346,8 +506,14 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out)
     nameObject.replace("8", "I");
     nameObject.replace("9", "J");
 
-    QString nameFull = index->name();
-    nameFull.replace("_", "$\\_$");
+//    QString nameFull = index->name();
+//    nameFull.replace("_", "\\_");
+//    if (generic)
+//    {
+//        nameObject.append("X");
+//        nameFull.replace("a1", "a@");
+//    }
+
     QString nameCommand = nameObject;
     nameCommand.prepend("\\name");
     QString indexCommand = nameObject;
@@ -361,14 +527,28 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out)
     QString dispIndexNameCommand = nameObject;
     dispIndexNameCommand.prepend("\\dispIndexName");
 
-    // nameCommand >> \newcommand{\nameStatusword}{a1$\_$Statusword}%
+    // nameCommand >> \newcommand{\nameStatusword}{a1$\\_$Statusword}%
     *out << "\\newcommand{" << nameCommand << "}";
     *out << "{" << nameFull << "}%";
     *out << "\n";
 
     // indexCommand >> \newcommand{\indexStatusword}{6041}%
     *out << "\\newcommand{" << indexCommand << "}";
-    *out << "{" << QString::number(index->index(), base).toUpper() << "}%";
+    if (generic)
+    {
+        if (index->index() >= 0x1400 && index->index() < 0x1A04)
+        {
+            *out << "{" << QString::number(index->index(), base).toUpper().replace(3, 1, "n") << "}%";
+        }
+        else
+        {
+            *out << "{" << QString::number(index->index(), base).toUpper().replace(1, 1, "n") << "}%";
+        }
+    }
+    else
+    {
+        *out << "{" << QString::number(index->index(), base).toUpper() << "}%";
+    }
     *out << "\n";
 
     // subIndexCommand >> \newcommand{\subIndexStatusword}{0}%
@@ -405,10 +585,26 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out)
         }
 
         QString nameSubObject = subIndex->name();
-        *out << "% " << QString::number(index->index(), base).toUpper() << "." << QString::number(subIndex->subIndex(), base).toUpper() << " " << nameSubObject;
+        if (generic)
+        {
+            if (index->index() >= 0x1400 && index->index() < 0x1A04)
+            {
+                *out << "% " << QString::number(index->index(), base).toUpper().replace(3, 1, "n") << "." << QString::number(subIndex->subIndex(), base).toUpper() << " " << nameSubObject;
+            }
+            else
+            {
+                *out << "% " << QString::number(index->index(), base).toUpper().replace(1, 1, "n") << "." << QString::number(subIndex->subIndex(), base).toUpper() << " " << nameSubObject;
+            }
+        }
+        else
+        {
+            *out << "% " << QString::number(index->index(), base).toUpper() << "." << QString::number(subIndex->subIndex(), base).toUpper() << " " << nameSubObject;
+        }
+
         *out << "\n";
         nameSubObject.remove("_");
         nameSubObject.remove(" ");
+        nameSubObject.remove("-");
         nameSubObject.replace("0", "A");
         nameSubObject.replace("1", "B");
         nameSubObject.replace("2", "C");
@@ -421,7 +617,7 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out)
         nameSubObject.replace("9", "J");
 
         QString nameFull = subIndex->name();
-        nameFull.replace("_", "$\\_$");
+        nameFull.replace("_", "\\_");
 
         QString subIndexSubCommand = nameSubObject;
         subIndexSubCommand.prepend(nameObject);
@@ -456,7 +652,7 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out)
         *out << "{" << QString::number(subIndex->subIndex(), base).toUpper() << "}%";
         *out << "\n";
 
-        // nameCommand >> \newcommand{\namevlDecelerationvlDecelerationdeltaspeed}{vl$\_$Deceleration$\_$delta$\_$speed}%
+        // nameCommand >> \newcommand{\namevlDecelerationvlDecelerationdeltaspeed}{vl$\\_$Deceleration$\\_$delta$\\_$speed}%
         *out << "\\newcommand{" << nameSubCommand << "}";
         *out << "{" << nameFull << "}%";
         *out << "\n";
@@ -531,9 +727,9 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out)
  * @brief writes an array index
  * @param index model
  */
-void TexGenerator::writeArray(Index *index, QTextStream *out)
+void TexGenerator::writeArray(Index *index, QTextStream *out, bool generic)
 {
-    writeRecord(index, out);
+    writeRecord(index, out, generic);
 }
 
 /**
