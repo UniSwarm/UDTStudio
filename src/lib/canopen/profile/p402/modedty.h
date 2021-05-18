@@ -40,10 +40,9 @@ private:
     NodeObjectId _targetObjectId;
     quint16 _cmdControlWordFlag;
 
-    NodeObjectId _demandLabel;
-
-    NodeObjectId _slopeSpinBox;
-    NodeObjectId _maxSpinBox;
+    NodeObjectId _demandObjectId;
+    NodeObjectId _slopeObjectId;
+    NodeObjectId _maxObjectId;
 
     // Mode interface
 public:

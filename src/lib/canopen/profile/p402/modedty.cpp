@@ -27,13 +27,13 @@ ModeDty::ModeDty(NodeProfile402 *nodeProfile402)
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_TARGET, _nodeProfile402->axisId());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 
-    _demandLabel = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_DEMAND, _nodeProfile402->axisId());
-    _slopeSpinBox = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_SLOPE, _nodeProfile402->axisId());
-    _maxSpinBox = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_MAX, _nodeProfile402->axisId());
+    _demandObjectId = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_DEMAND, _nodeProfile402->axisId());
+    _slopeObjectId = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_SLOPE, _nodeProfile402->axisId());
+    _maxObjectId = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_MAX, _nodeProfile402->axisId());
 
-    _demandLabel.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _slopeSpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _maxSpinBox.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _demandObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _slopeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _maxObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
 
     _mode = NodeProfile402::OperationMode::TQ;
 }
@@ -55,14 +55,14 @@ void ModeDty::setCwDefaultflag()
 
 void ModeDty::readRealTimeObjects()
 {
-    _nodeProfile402->node()->readObject(_demandLabel);
+    _nodeProfile402->node()->readObject(_demandObjectId);
 }
 
 void ModeDty::readAllObjects()
 {
-    _nodeProfile402->node()->readObject(_demandLabel);
-    _nodeProfile402->node()->readObject(_slopeSpinBox);
-    _nodeProfile402->node()->readObject(_maxSpinBox);
+    _nodeProfile402->node()->readObject(_demandObjectId);
+    _nodeProfile402->node()->readObject(_slopeObjectId);
+    _nodeProfile402->node()->readObject(_maxObjectId);
 }
 
 void ModeDty::reset()

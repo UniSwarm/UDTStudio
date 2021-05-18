@@ -42,7 +42,6 @@ public:
 
 protected:
     NodeProfile402 *_nodeProfile402;
-
     NodeObjectId _controlWordObjectId;
 };
 

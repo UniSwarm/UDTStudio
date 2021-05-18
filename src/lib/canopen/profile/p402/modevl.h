@@ -48,9 +48,9 @@ signals:
 
 private:
     quint8 _mode;
-    NodeObjectId _targetObjectId;
     quint16 _cmdControlWordFlag;
 
+    NodeObjectId _targetObjectId;
 
     NodeObjectId _velocityDemandObjectId;
     NodeObjectId _velocityActualObjectId;

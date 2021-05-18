@@ -93,6 +93,17 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     }
 
     _axisId = axis;
+    _modeCurrent = NoMode;
+    _modeRequested = NoMode;
+    _modeState = NONE_MODE;
+
+    _stateState = NONE_STATE;
+    _stateMachineRequested = State402::STATE_NotReadyToSwitchOn;
+    _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
+
+    _nodeProfileState = State::NODEPROFILE_STOPED;
+    _sendRequest = false;
+    connect(&_nodeProfleTimer, &QTimer::timeout, this, &NodeProfile402::updateData);
 
     _modesOfOperationObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, axis);
     _modesOfOperationDisplayObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION_DISPLAY, axis);
@@ -128,16 +139,6 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     _modes.insert(VL, new ModeVl(this));
     _modes.insert(PP, new ModePp(this));
     _modes.insert(DTY, new ModeDty(this));
-
-    _stateMachineRequested = State402::STATE_NotReadyToSwitchOn;
-    _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
-    _modeCurrent = NoMode;
-    _modeRequested = NoMode;
-    _modeState = NONE_MODE;
-    _stateState = NONE_STATE;
-    _nodeProfileState = State::NODEPROFILE_STOPED;
-    _sendRequest = false;
-    connect(&_nodeProfleTimer, &QTimer::timeout, this, &NodeProfile402::updateData);
 
     _controlWord = 0;
 }
@@ -678,7 +679,6 @@ void NodeProfile402::decodeStateMachineStatusWord(quint16 statusWord)
         return;
     }
     _stateState = NONE_STATE;
-    //emit stateChanged();
 }
 
 void NodeProfile402::decodeSupportedDriveModes(quint32 supportedDriveModes)

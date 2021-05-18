@@ -52,27 +52,28 @@ signals:
 
 private:
     quint8 _mode;
-    NodeObjectId _targetObjectId;
     quint16 _cmdControlWordFlag;
 
-    NodeObjectId _positionDemandValueLabel;
-    NodeObjectId _positionActualValueLabel;
+    NodeObjectId _targetObjectId;
 
-    NodeObjectId _positionRangelLimitMinSpinBox;
-    NodeObjectId _positionRangelLimitMaxSpinBox;
-    NodeObjectId _softwarePositionLimitMinSpinBox;
-    NodeObjectId _softwarePositionLimitMaxSpinBox;
-    NodeObjectId _homeOffsetSpinBox;
-    NodeObjectId _polaritySpinBox;
-    NodeObjectId _profileVelocitySpinBox;
-    NodeObjectId _endVelocitySpinBox;
-    NodeObjectId _maxProfileVelocitySpinBox;
-    NodeObjectId _maxMotorSpeedSpinBox;
-    NodeObjectId _profileAccelerationSpinBox;
-    NodeObjectId _maxAccelerationSpinBox;
-    NodeObjectId _profileDecelerationSpinBox;
-    NodeObjectId _maxDecelerationSpinBox;
-    NodeObjectId _quickStopDecelerationSpinBox;
+    NodeObjectId _positionDemandValueObjectId;
+    NodeObjectId _positionActualValueObjectId;
+
+    NodeObjectId _positionRangelLimitMinObjectId;
+    NodeObjectId _positionRangelLimitMaxObjectId;
+    NodeObjectId _softwarePositionLimitMinObjectId;
+    NodeObjectId _softwarePositionLimitMaxObjectId;
+    NodeObjectId _homeOffsetObjectId;
+    NodeObjectId _polarityObjectId;
+    NodeObjectId _profileVelocityObjectId;
+    NodeObjectId _endVelocityObjectId;
+    NodeObjectId _maxProfileVelocityObjectId;
+    NodeObjectId _maxMotorSpeedObjectId;
+    NodeObjectId _profileAccelerationObjectId;
+    NodeObjectId _maxAccelerationObjectId;
+    NodeObjectId _profileDecelerationObjectId;
+    NodeObjectId _maxDecelerationObjectId;
+    NodeObjectId _quickStopDecelerationObjectId;
 
     // Mode interface
 public:

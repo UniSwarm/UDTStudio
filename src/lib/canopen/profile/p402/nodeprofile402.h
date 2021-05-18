@@ -135,6 +135,7 @@ private:
         STATE_CHANGE =1,
     };
     StateState _stateState;
+
     void updateData();
     void readAllObject();
 
@@ -159,16 +160,14 @@ private:
     OperationMode _modeCurrent;
     OperationMode _modeRequested;
     QList<OperationMode> _modesSupported;
+    QMap<OperationMode, Mode*> _modes;
+    QTimer _modeTimer;
 
     quint16 _controlWord;
     State402 _stateMachineCurrent;
     State402 _stateMachineRequested;
 
     uint8_t _statusWordEvent;
-
-    QMap<OperationMode, Mode*> _modes;
-
-    QTimer _modeTimer;
 
     void statusNodeChanged(Node::Status status);
     void changeStateMachine(const State402 state);

@@ -35,20 +35,18 @@ public:
     void setEnableRamp(bool ok);
     bool isEnableRamp(void);
 
-
 public slots:
     void bufferClear();
-
 
 signals:
     void enableRampEvent(bool ok);
 
 private:
     quint8 _mode;
+    quint16 _cmdControlWordFlag;
+
     NodeObjectId _targetObjectId;
     NodeObjectId _bufferClearObjectId;
-
-    quint16 _cmdControlWordFlag;
 
     NodeObjectId _positionDemandValueObjectId;
     NodeObjectId _positionActualValueObjectId;

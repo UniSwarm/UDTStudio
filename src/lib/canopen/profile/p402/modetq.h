@@ -37,20 +37,21 @@ signals:
 
 private:
     quint8 _mode;
-    NodeObjectId _targetObjectId;
     quint16 _cmdControlWordFlag;
 
-    NodeObjectId _torqueDemandLabel;
-    NodeObjectId _torqueActualValueLabel;
-    NodeObjectId _currentActualValueLabel;
+    NodeObjectId _targetObjectId;
 
-    NodeObjectId _targetSlopeSpinBox;
-    NodeObjectId _torqueProfileTypeSpinBox;
-    NodeObjectId _maxTorqueSpinBox;
-    NodeObjectId _maxCurrentSpinBox;
-    NodeObjectId _motorRatedTorqueSpinBox;
-    NodeObjectId _motorRatedCurrentSpinBox;
-    NodeObjectId _dcLinkVoltageLabel;
+    NodeObjectId _torqueDemandObjectId;
+    NodeObjectId _torqueActualValueObjectId;
+    //NodeObjectId _currentActualValueObjectId;
+
+    NodeObjectId _targetSlopeObjectId;
+    //NodeObjectId _torqueProfileTypeObjectId;
+    NodeObjectId _maxTorqueObjectId;
+    //NodeObjectId _maxCurrentObjectId;
+    //NodeObjectId _motorRatedTorqueObjectId;
+    //NodeObjectId _motorRatedCurrentObjectId;
+    //NodeObjectId _dcLinkVoltageObjectId;
 
     // Mode interface
 public:

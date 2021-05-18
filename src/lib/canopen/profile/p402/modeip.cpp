@@ -51,10 +51,6 @@ ModeIp::ModeIp(NodeProfile402 *nodeProfile402)
 
     _homeOffsetObjectId = IndexDb402::getObjectId(IndexDb402::OD_HM_HOME_OFFSET, _nodeProfile402->axisId());
 
-
-
-    //_polarityObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_PERIOD_TIME_UNITS, _nodeProfile402->axisId());
-
     _positionDemandValueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
     _positionActualValueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
 
@@ -70,16 +66,6 @@ ModeIp::ModeIp(NodeProfile402 *nodeProfile402)
     _maxMotorSpeedObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
 
     _homeOffsetObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _polarityObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-
-
-
-
-
-
-
-
-
 
     _mode = NodeProfile402::OperationMode::IP;
 
