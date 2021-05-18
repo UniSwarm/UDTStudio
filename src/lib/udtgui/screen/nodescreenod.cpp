@@ -18,7 +18,11 @@
 
 #include "nodescreenod.h"
 
+#include <QFormLayout>
+#include <QGroupBox>
 #include <QHBoxLayout>
+#include <QInputDialog>
+#include <QPushButton>
 
 NodeScreenOD::NodeScreenOD()
 {
@@ -27,15 +31,84 @@ NodeScreenOD::NodeScreenOD()
 
 void NodeScreenOD::createWidgets()
 {
-    QLayout *layout = new QHBoxLayout();
+    QVBoxLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setContentsMargins(0, 0, 0, 0);
 
     _nodeOdWidget = new NodeOdWidget();
     layout->addWidget(_nodeOdWidget);
+    layout->addWidget(createStoreWidget());
 
     setLayout(layout);
 }
+
+QWidget *NodeScreenOD::createStoreWidget()
+{
+    QGroupBox *groupBox = new QGroupBox(tr("Store/Restore"));
+    QFormLayout *layout = new QFormLayout();
+
+    QHBoxLayout *storeLayout = new QHBoxLayout();
+    _storeComboBox = new QComboBox();
+    _storeComboBox->insertItem(1, "Save all Parameters");
+    _storeComboBox->insertItem(2, "Save Communication Parameters");
+    _storeComboBox->insertItem(3, "Save Application Parameters");
+    _storeComboBox->insertItem(4, "Save Manufacturer Parameters");
+    storeLayout->addWidget(_storeComboBox);
+
+    QPushButton *storeButon = new QPushButton("Store");
+    connect(storeButon, &QPushButton::clicked, this, &NodeScreenOD::storeClicked);
+    storeLayout->addWidget(storeButon);
+
+    layout->addRow("Store :", storeLayout);
+
+    QHBoxLayout *restoreLayout = new QHBoxLayout();
+    _restoreComboBox = new QComboBox();
+    _restoreComboBox->insertItem(1, "Restore all Factory Parameters");
+    _restoreComboBox->insertItem(2, "Restore Factory Communication Parameters");
+    _restoreComboBox->insertItem(3, "Restore Factory Application Parameters");
+    _restoreComboBox->insertItem(4, "Restore Factory Manufacturer Parameters");
+    _restoreComboBox->insertItem(5, "Restore all saved Parameters");
+    _restoreComboBox->insertItem(6, "Restore saved Communication Parameters");
+    _restoreComboBox->insertItem(7, "Restore saved Application Parameters");
+    _restoreComboBox->insertItem(8, "Restore saved Manufacturer Parameters");
+    restoreLayout->addWidget(_restoreComboBox);
+
+    QPushButton *restoreButon = new QPushButton("Restore");
+    connect(restoreButon, &QPushButton::clicked, this, &NodeScreenOD::restoreClicked);
+    restoreLayout->addWidget(restoreButon);
+
+    layout->addRow("Restore :", restoreLayout);
+
+    groupBox->setLayout(layout);
+    return groupBox;
+}
+
+void NodeScreenOD::storeClicked()
+{
+    quint32 save = 0x65766173;
+
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("Store"), tr("Signature:"), QLineEdit::Normal, "0x" + QString::number(save, 16).toUpper(), &ok);
+    if (ok && !text.isEmpty())
+    {
+        quint8 id = static_cast<uint8_t>(_storeComboBox->currentIndex()) + 1;
+        _node->writeObject(NodeObjectId(0x1010, id), text.toUInt(&ok, 16));
+    }
+}
+
+void NodeScreenOD::restoreClicked()
+{
+    quint32 save = 0x64616F6C;
+
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("Restore"), tr("Signature:"), QLineEdit::Normal, "0x" + QString::number(save, 16).toUpper(), &ok);
+    if (ok && !text.isEmpty())
+    {
+        quint8 id = static_cast<uint8_t>(_restoreComboBox->currentIndex()) + 1;
+        _node->writeObject(NodeObjectId(0x1011, id), text.toUInt(&ok, 16));
+    }
+}
+
 
 QString NodeScreenOD::title() const
 {

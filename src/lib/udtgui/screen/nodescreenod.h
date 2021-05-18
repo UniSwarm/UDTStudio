@@ -35,6 +35,14 @@ protected:
     void createWidgets();
     NodeOdWidget *_nodeOdWidget;
 
+    QWidget *createStoreWidget();
+    QComboBox *_storeComboBox;
+    QComboBox *_restoreComboBox;
+
+private slots:
+    void storeClicked();
+    void restoreClicked();
+
     // NodeScreen interface
 public:
     QString title() const override;
