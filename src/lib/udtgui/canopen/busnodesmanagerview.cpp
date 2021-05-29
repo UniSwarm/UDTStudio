@@ -51,6 +51,16 @@ void BusNodesManagerView::setCanOpen(CanOpen *canOpen)
     _busNodeTreeView->expandAll();
 }
 
+CanOpenBus *BusNodesManagerView::currentBus() const
+{
+    return _busNodeTreeView->currentBus();
+}
+
+Node *BusNodesManagerView::currentNode() const
+{
+    return _busNodeTreeView->currentNode();
+}
+
 void BusNodesManagerView::createWidgets()
 {
     QLayout *layout = new QVBoxLayout();

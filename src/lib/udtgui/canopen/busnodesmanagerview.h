@@ -37,6 +37,9 @@ public:
     CanOpen *canOpen() const;
     void setCanOpen(CanOpen *canOpen);
 
+    CanOpenBus *currentBus() const;
+    Node *currentNode() const;
+
     BusNodesTreeView *busNodeTreeView() const;
     BusManagerWidget *busManagerWidget() const;
     NodeManagerWidget *nodeManagerWidget() const;
