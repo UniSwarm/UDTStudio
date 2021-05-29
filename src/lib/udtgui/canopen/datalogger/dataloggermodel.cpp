@@ -184,13 +184,13 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
             return QVariant(dlData->name());
 
         case Value:
-            return QVariant(dlData->lastValue());
+            return dlData->isEmpty() ? QVariant("-") : QVariant(dlData->lastValue());
 
         case Min:
-            return QVariant(dlData->min());
+            return dlData->isEmpty() ? QVariant("-") : QVariant(dlData->min());
 
         case Max:
-            return QVariant(dlData->max());
+            return dlData->isEmpty() ? QVariant("-") : QVariant(dlData->max());
 
         default:
             return QVariant();

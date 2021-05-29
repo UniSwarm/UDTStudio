@@ -140,6 +140,11 @@ void DLData::clear()
     resetMinMax();
 }
 
+bool DLData::isEmpty() const
+{
+    return _values.isEmpty();
+}
+
 qreal DLData::min() const
 {
     return _min;

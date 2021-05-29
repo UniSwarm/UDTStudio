@@ -55,6 +55,7 @@ public:
     // add / remove dada
     void appendData(qreal value, const QDateTime &dateTime);
     void clear();
+    bool isEmpty() const;
 
     // stats
     qreal min() const;
