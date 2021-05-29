@@ -102,7 +102,6 @@ void BusManagerWidget::createWidgets()
 {
     QLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->setContentsMargins(0, 0, 0, 0);
 
     _groupBox = new QGroupBox(tr("Bus"));
     QFormLayout *layoutGroupBox = new QFormLayout();

@@ -91,8 +91,7 @@ void NodePDOMappingWidget::createWidgets()
 {
     QWidget *widget = new QWidget();
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(2, 2, 0, 0);
 
     _toolBar = new QToolBar(tr("PDO commands"));
     _toolBar->setIconSize(QSize(20, 20));

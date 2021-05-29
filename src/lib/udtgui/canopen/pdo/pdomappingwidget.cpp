@@ -83,7 +83,6 @@ void PDOMappingWidget::createWidget()
 {
     QLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->setContentsMargins(0, 0, 0, 0);
 
     QLayout *layoutHeader = new QVBoxLayout();
     layoutHeader->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));

@@ -32,13 +32,14 @@ void NodeScreenPDO::createWidgets()
 {
     QLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->setContentsMargins(0, 0, 0, 0);
+
     QSplitter *splitter = new QSplitter();
     splitter->setStyleSheet("QSplitter {background: #19232D;}");
     layout->addWidget(splitter);
 
     _nodeOdWidget = new NodeOdWidget();
     _nodeOdWidget->setFilter(NodeOdWidget::FilterPDO);
+    _nodeOdWidget->layout()->setContentsMargins(2, 2, 4, 2);
     splitter->addWidget(_nodeOdWidget);
 
     _nodePdoMappingWidget = new NodePDOMappingWidget();
