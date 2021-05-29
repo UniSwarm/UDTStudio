@@ -36,9 +36,8 @@ DLData::DLData(const NodeObjectId &objectId)
         if (nodeSubIndex)
         {
             _name = nodeSubIndex->nodeIndex()->name() + "." + nodeSubIndex->name();
+            _q1516 = nodeSubIndex->isQ1516();
         }
-
-        _q1516 = IndexDb::isQ1516(objectId, _node->profileNumber());
     }
 
     resetMinMax();
