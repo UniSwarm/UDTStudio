@@ -45,9 +45,14 @@ public:
     bool useOpenGL() const;
     bool viewCross() const;
 
+    QtCharts::QChart *chart() const;
+    QList<QtCharts::QXYSeries *> series() const;
+
 public slots:
     void setUseOpenGL(bool useOpenGL);
     void setViewCross(bool viewCross);
+
+    void tooltip(QPointF point, bool state);
 
 protected slots:
     void updateDlData(int id);

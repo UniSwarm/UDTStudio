@@ -26,6 +26,7 @@
 #include <QValueAxis>
 #include <QGraphicsLayout>
 #include <qmath.h>
+#include <QToolTip>
 
 using namespace QtCharts;
 
@@ -162,6 +163,8 @@ void DataLoggerChartsWidget::addDataOk()
         serie->attachAxis(_axisX);
         serie->attachAxis(_axisY);
         _series.append(serie);
+
+        connect(serie, &QLineSeries::hovered, this, &DataLoggerChartsWidget::tooltip);
     }
     _idPending = -1;
 }
@@ -182,6 +185,16 @@ void DataLoggerChartsWidget::removeDataOk()
     _idPending = -1;
 }
 
+QList<QtCharts::QXYSeries *> DataLoggerChartsWidget::series() const
+{
+    return _series;
+}
+
+QtCharts::QChart *DataLoggerChartsWidget::chart() const
+{
+    return _chart;
+}
+
 bool DataLoggerChartsWidget::viewCross() const
 {
     return _viewCross;
@@ -194,6 +207,14 @@ void DataLoggerChartsWidget::setViewCross(bool viewCross)
     {
         serie->setPointsVisible(viewCross);
     }
+}
+
+void DataLoggerChartsWidget::tooltip(QPointF point, bool state)
+{
+    Q_UNUSED(state)
+    QLineSeries *serie = dynamic_cast<QLineSeries *>(sender());
+
+    QToolTip::showText(QCursor::pos(), QString("%1\n%2").arg(serie->name()).arg(point.y()), this, QRect());
 }
 
 bool DataLoggerChartsWidget::useOpenGL() const
