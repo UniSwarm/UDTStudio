@@ -118,24 +118,29 @@ void NodeOdTreeView::setFilter(const QString filterText)
 #endif
 }
 
-void NodeOdTreeView::readCurrent()
+void NodeOdTreeView::readSelected()
 {
-    const QModelIndex &curentIndex = _odModelSorter->mapToSource(selectionModel()->currentIndex());
-    NodeIndex *nodeIndex = _odModel->nodeIndex(curentIndex);
-    if (nodeIndex)
+    QModelIndexList selectedRows = selectionModel()->selectedRows();
+    for (QModelIndex row : qAsConst(selectedRows))
     {
-        for (NodeSubIndex *subIndexN : nodeIndex->subIndexes())
-        {
-            _odModel->node()->readObject(nodeIndex->index(), subIndexN->subIndex());
-        }
-        return;
-    }
+        const QModelIndex &curentIndex = _odModelSorter->mapToSource(row);
 
-    NodeSubIndex *nodeSubIndex = _odModel->nodeSubIndex(curentIndex);
-    if (nodeSubIndex)
-    {
-        _odModel->node()->readObject(nodeSubIndex->index(), nodeSubIndex->subIndex());
-        return;
+        NodeIndex *nodeIndex = _odModel->nodeIndex(curentIndex);
+        if (nodeIndex)
+        {
+            for (NodeSubIndex *subIndexN : nodeIndex->subIndexes())
+            {
+                _odModel->node()->readObject(nodeIndex->index(), subIndexN->subIndex());
+            }
+            continue;
+        }
+
+        NodeSubIndex *nodeSubIndex = _odModel->nodeSubIndex(curentIndex);
+        if (nodeSubIndex)
+        {
+            _odModel->node()->readObject(nodeSubIndex->index(), nodeSubIndex->subIndex());
+            continue;
+        }
     }
 }
 
@@ -186,7 +191,7 @@ void NodeOdTreeView::createActions()
 #if QT_VERSION >= 0x050A00
     _readAction->setShortcutVisibleInContextMenu(true);
 #endif
-    connect(_readAction, &QAction::triggered, this, &NodeOdTreeView::readCurrent);
+    connect(_readAction, &QAction::triggered, this, &NodeOdTreeView::readSelected);
     addAction(_readAction);
 
     _readAllAction = new QAction(this);

@@ -44,7 +44,7 @@ public:
 
 public slots:
     void setFilter(const QString filterText);
-    void readCurrent();
+    void readSelected();
     void readAll();
     void copy();
 
