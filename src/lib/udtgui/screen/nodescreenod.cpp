@@ -33,11 +33,14 @@ void NodeScreenOD::createWidgets()
 {
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->setContentsMargins(0, 0, 0, 0);
 
     _nodeOdWidget = new NodeOdWidget();
     layout->addWidget(_nodeOdWidget);
-    layout->addWidget(createStoreWidget());
+
+    QVBoxLayout *storeBoxlayout = new QVBoxLayout();
+    storeBoxlayout->setContentsMargins(2, 2, 2, 2);
+    storeBoxlayout->addWidget(createStoreWidget());
+    layout->addItem(storeBoxlayout);
 
     setLayout(layout);
 }
@@ -134,4 +137,5 @@ void NodeScreenOD::setNodeInternal(Node *node, uint8_t axis)
     Q_UNUSED(axis)
     _nodeOdWidget->setNode(node);
     connect(node, &Node::statusChanged, this, &NodeScreenOD::statusNodeChanged);
+    statusNodeChanged();
 }
