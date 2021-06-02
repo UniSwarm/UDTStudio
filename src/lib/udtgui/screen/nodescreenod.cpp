@@ -33,21 +33,18 @@ void NodeScreenOD::createWidgets()
 {
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     _nodeOdWidget = new NodeOdWidget();
     layout->addWidget(_nodeOdWidget);
-
-    QVBoxLayout *storeBoxlayout = new QVBoxLayout();
-    storeBoxlayout->setContentsMargins(2, 2, 2, 2);
-    storeBoxlayout->addWidget(createStoreWidget());
-    layout->addItem(storeBoxlayout);
+    layout->addWidget(createStoreWidget());
 
     setLayout(layout);
 }
 
 QWidget *NodeScreenOD::createStoreWidget()
 {
-    QGroupBox *groupBox = new QGroupBox(tr("Store/Restore"));
+    _storeRestoreGroupBox = new QGroupBox(tr("Store/Restore"));
     QFormLayout *layout = new QFormLayout();
 
     QHBoxLayout *storeLayout = new QHBoxLayout();
@@ -82,8 +79,8 @@ QWidget *NodeScreenOD::createStoreWidget()
 
     layout->addRow("Restore :", restoreLayout);
 
-    groupBox->setLayout(layout);
-    return groupBox;
+    _storeRestoreGroupBox->setLayout(layout);
+    return _storeRestoreGroupBox;
 }
 
 void NodeScreenOD::storeClicked()
@@ -112,6 +109,20 @@ void NodeScreenOD::restoreClicked()
     }
 }
 
+void NodeScreenOD::statusNodeChanged()
+{
+    if (_node)
+    {
+        if (_node->status() == Node::STARTED ||  _node->status() == Node::STOPPED)
+        {
+            _storeRestoreGroupBox->setEnabled(false);
+        }
+        else
+        {
+            _storeRestoreGroupBox->setEnabled(true);
+        }
+    }
+}
 
 QString NodeScreenOD::title() const
 {
@@ -122,4 +133,5 @@ void NodeScreenOD::setNodeInternal(Node *node, uint8_t axis)
 {
     Q_UNUSED(axis)
     _nodeOdWidget->setNode(node);
+    connect(node, &Node::statusChanged, this, &NodeScreenOD::statusNodeChanged);
 }

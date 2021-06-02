@@ -25,6 +25,8 @@
 
 #include <canopen/nodeod/nodeodwidget.h>
 
+#include <QGroupBox>
+
 class UDTGUI_EXPORT NodeScreenOD : public NodeScreen
 {
     Q_OBJECT
@@ -36,12 +38,14 @@ protected:
     NodeOdWidget *_nodeOdWidget;
 
     QWidget *createStoreWidget();
+    QGroupBox *groupBox;
     QComboBox *_storeComboBox;
     QComboBox *_restoreComboBox;
 
 private slots:
     void storeClicked();
     void restoreClicked();
+    void statusNodeChanged();
 
     // NodeScreen interface
 public:
