@@ -356,9 +356,16 @@ void P402Widget::readAllObject()
 {
     if (_node)
     {
-        _nodeProfile402->readAllObjects();
-        _nodeProfile402->readModeOfOperationDisplay();
-        _node->readObject(_statusWordObjectId);
+        if (_stackedWidget->currentWidget() == _modes[NodeProfile402::NoMode])
+        {
+            _modes[NodeProfile402::NoMode]->readAllObjects();
+        }
+        else
+        {
+            _nodeProfile402->readAllObjects();
+            _nodeProfile402->readModeOfOperationDisplay();
+            _node->readObject(_statusWordObjectId);
+        }
     }
 }
 
