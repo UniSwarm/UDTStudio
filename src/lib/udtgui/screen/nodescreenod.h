@@ -38,7 +38,7 @@ protected:
     NodeOdWidget *_nodeOdWidget;
 
     QWidget *createStoreWidget();
-    QGroupBox *groupBox;
+    QGroupBox *_storeRestoreGroupBox;
     QComboBox *_storeComboBox;
     QComboBox *_restoreComboBox;
 
