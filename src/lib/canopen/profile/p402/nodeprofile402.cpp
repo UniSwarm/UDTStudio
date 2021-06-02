@@ -500,7 +500,7 @@ void NodeProfile402::changeStateMachine(const State402 state)
     {
     case STATE_NotReadyToSwitchOn:
     case STATE_SwitchOnDisabled:
-        if (state >= STATE_ReadyToSwitchOn)
+        if ((state == STATE_ReadyToSwitchOn) || (state == STATE_OperationEnabled)) // state == STATE_OperationEnabled -> For OperatiobEnabled Quickly
         {
             _controlWord = (_controlWord & ~CW_Mask);
             _controlWord |= (CW_EnableVoltage | CW_QuickStop);
@@ -512,12 +512,12 @@ void NodeProfile402::changeStateMachine(const State402 state)
         {
             _controlWord = (_controlWord & ~CW_Mask);
         }
-        else if (state >= STATE_SwitchedOn)
+        else if (state == STATE_SwitchedOn)
         {
             _controlWord = (_controlWord & ~CW_Mask);
             _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn);
         }
-        else if (state >= STATE_OperationEnabled)
+        else if (state == STATE_OperationEnabled)
         {
             _controlWord = (_controlWord & ~CW_Mask);
             _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn | CW_EnableOperation);
@@ -565,7 +565,7 @@ void NodeProfile402::changeStateMachine(const State402 state)
         break;
 
     case STATE_QuickStopActive:
-        if (state == STATE_SwitchOnDisabled)
+        if (state == STATE_SwitchOnDisabled || (state == STATE_OperationEnabled)) // state == STATE_OperationEnabled -> For OperatiobEnabled Quickly
         {
             _controlWord = (_controlWord & ~CW_Mask);
         }
@@ -765,10 +765,10 @@ bool NodeProfile402::status() const
 
 void NodeProfile402::readAllObjects() const
 {
-    if (_modeCurrent != OperationMode::NoMode)
-    {
+//    if (_modeCurrent != OperationMode::NoMode)
+//    {
         _modes[_modeCurrent]->readAllObjects();
-    }
+//    }
 }
 
 quint16 NodeProfile402::profileNumber() const
