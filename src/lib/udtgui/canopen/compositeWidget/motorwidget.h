@@ -69,10 +69,10 @@ protected:
     IndexCheckBox *_reversePolarity;
 
     // Motor Status
-    IndexLabel *_coderLabel;
-    IndexLabel *_timeCoderLabel;
-    IndexLabel *_phaseLabel;
-    IndexLabel *_bridgePwmLabel;
+    IndexLabel *_hallRawValueLabel;
+    IndexLabel *_hallPhaseLabel;
+    IndexLabel *_bridgePweredPhaseLabel;
+    IndexLabel *_bridgeCommandLabel;
 
     void statusNodeChanged(Node::Status status);
     void stateChanged();

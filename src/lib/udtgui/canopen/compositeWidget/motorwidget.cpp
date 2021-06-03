@@ -84,14 +84,14 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _break->setNode(node);
     _reversePolarity->setNode(node);
 
-    _coderLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_CODER, _axis));
-    _timeCoderLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_TIME_CODER, _axis));
-    _phaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_PHASE, _axis));
-    _bridgePwmLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_BRIDGE_PWM, _axis));
-    _coderLabel->setNode(node);
-    _timeCoderLabel->setNode(node);
-    _phaseLabel->setNode(node);
-    _bridgePwmLabel->setNode(node);
+    _hallRawValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_HALL_RAW_VALUE, _axis));
+    _hallPhaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_HALL_PHASE, _axis));
+    _bridgePweredPhaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_POWERED_PHASE, _axis));
+    _bridgeCommandLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_COMMAND, _axis));
+    _hallRawValueLabel->setNode(node);
+    _hallPhaseLabel->setNode(node);
+    _bridgePweredPhaseLabel->setNode(node);
+    _bridgeCommandLabel->setNode(node);
 }
 
 void MotorWidget::statusNodeChanged(Node::Status status)
@@ -131,10 +131,10 @@ void MotorWidget::readAllObject()
     _break->readObject();    
     _reversePolarity->readObject();
 
-    _coderLabel->readObject();
-    _timeCoderLabel->readObject();
-    _phaseLabel->readObject();
-    _bridgePwmLabel->readObject();
+    _hallRawValueLabel->readObject();
+    _hallPhaseLabel->readObject();
+    _bridgePweredPhaseLabel->readObject();
+    _bridgeCommandLabel->readObject();
 }
 
 void MotorWidget::createWidgets()
@@ -236,17 +236,17 @@ QGroupBox *MotorWidget::motorStatusWidgets()
     QGroupBox *statusGroupBox = new QGroupBox(tr("Motor status"));
     QFormLayout *statusLayout = new QFormLayout();
 
-    _coderLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Coder :"), _coderLabel);
+    _hallRawValueLabel = new IndexLabel();
+    statusLayout->addRow(tr("&Hall raw :"), _hallRawValueLabel);
 
-    _timeCoderLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Time coder :"), _timeCoderLabel);
+    _hallPhaseLabel = new IndexLabel();
+    statusLayout->addRow(tr("&Hall phase :"), _hallPhaseLabel);
 
-    _phaseLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Phase :"), _phaseLabel);
+    _bridgePweredPhaseLabel = new IndexLabel();
+    statusLayout->addRow(tr("&Powered phase :"), _bridgePweredPhaseLabel);
 
-    _bridgePwmLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Bridge PWM :"), _bridgePwmLabel);
+    _bridgeCommandLabel = new IndexLabel();
+    statusLayout->addRow(tr("&Command :"), _bridgeCommandLabel);
 
     statusGroupBox->setLayout(statusLayout);
     return statusGroupBox;

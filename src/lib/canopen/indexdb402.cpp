@@ -339,36 +339,26 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {0x2040, 0x1};
     case OD_MS_BIT_RATE:
         return {0x2040, 0x2};
-    case OD_MS_TEMPERATURE_MOTOR_1:
-        return {static_cast<quint16>((0x4000 + axisModeDecal)), 0x1};
-    case OD_MS_TEMPERATURE_DRIVER_1:
-        return {static_cast<quint16>((0x4001 + axisModeDecal)), 0x1};
-    case OD_MS_TEMPERATURE_DRIVER_2:
-        return {static_cast<quint16>((0x4001 + axisModeDecal)), 0x2};
-    case OD_MS_BACK_EMF_A:
-        return {static_cast<quint16>((0x4002 + axisModeDecal)), 0x1};
-    case OD_MS_BACK_EMF_B:
-        return {static_cast<quint16>((0x4002 + axisModeDecal)), 0x2};
-    case OD_MS_BACK_EMF_C:
-        return {static_cast<quint16>((0x4002 + axisModeDecal)), 0x3};
-    case OD_MS_BACK_EMF_D:
-        return {static_cast<quint16>((0x4002 + axisModeDecal)), 0x4};
-    case OD_MS_CURRENT_A:
-        return {static_cast<quint16>((0x4003 + axisModeDecal)), 0x1};
-    case OD_MS_CURRENT_B:
-        return {static_cast<quint16>((0x4003 + axisModeDecal)), 0x2};
-    case OD_MS_CURRENT_C:
-        return {static_cast<quint16>((0x4003 + axisModeDecal)), 0x3};
-    case OD_MS_CURRENT_D:
-        return {static_cast<quint16>((0x4003 + axisModeDecal)), 0x4};
 
-    case OD_MS_MOTOR_STATUS_CODER:
+    case OD_MS_MOTOR_TEMPERATURE_1:
+        return {static_cast<quint16>((0x4000 + axisModeDecal)), 0x1};
+
+    case OD_MS_TEMPERATURE_DRIVER:
+        return NodeObjectId(static_cast<quint16>((0x2801 + axisModeDecal)), axis + 1);
+    case OD_MS_BACK_EMF:
+        return NodeObjectId(static_cast<quint16>((0x2802 + axisModeDecal)), axis + 1);
+    case OD_MS_CURRENT:
+        return NodeObjectId(static_cast<quint16>((0x2803 + axisModeDecal)), axis + 1);
+    case OD_MS_PWM:
+        return NodeObjectId(static_cast<quint16>((0x2804 + axisModeDecal)), axis + 1);
+
+    case OD_MS_MOTOR_STATUS_HALL_RAW_VALUE:
         return {static_cast<quint16>((0x4006 + axisModeDecal)), 0x1};
-    case OD_MS_MOTOR_STATUS_TIME_CODER:
+    case OD_MS_MOTOR_STATUS_HALL_PHASE:
         return {static_cast<quint16>((0x4006 + axisModeDecal)), 0x2};
-    case OD_MS_MOTOR_STATUS_PHASE:
+    case OD_MS_MOTOR_STATUS_POWERED_PHASE:
         return {static_cast<quint16>((0x4006 + axisModeDecal)), 0x3};
-    case OD_MS_MOTOR_STATUS_BRIDGE_PWM:
+    case OD_MS_MOTOR_STATUS_COMMAND:
         return {static_cast<quint16>((0x4006 + axisModeDecal)), 0x4};
 
     case OD_MS_MOTOR_CONF_TYPE:
