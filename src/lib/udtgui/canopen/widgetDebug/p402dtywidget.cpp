@@ -232,7 +232,7 @@ void P402DtyWidget::targetWidgets()
 void P402DtyWidget::informationWidgets()
 {
     _demandLabel = new IndexLabel();
-    _modeLayout->addRow(tr("Demand :"), _demandLabel);
+    _modeLayout->addRow(tr("Demand:"), _demandLabel);
 }
 
 void P402DtyWidget::limitWidgets()

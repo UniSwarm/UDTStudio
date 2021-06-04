@@ -154,23 +154,23 @@ QGroupBox *NodeScreenSynchro::createSynchroConfigurationWidgets()
     _modeSynchroComboBox = new IndexComboBox();
     _modeSynchroComboBox->addItem("OFF", QVariant(static_cast<uint16_t>(0x0000)));
     _modeSynchroComboBox->addItem("Position", QVariant(static_cast<uint16_t>(0x0001)));
-    layout->addRow(tr("&Mode_Synchro :"), _modeSynchroComboBox);
+    layout->addRow(tr("&Mode_Synchro:"), _modeSynchroComboBox);
 
     _maxDiffSpinBox = new IndexSpinBox();
     _maxDiffSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    layout->addRow(tr("Ma&x diff :"), _maxDiffSpinBox);
+    layout->addRow(tr("Ma&x diff:"), _maxDiffSpinBox);
 
     _coeffSpinBox = new IndexSpinBox();
     _coeffSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    layout->addRow(tr("&Coeff :"), _coeffSpinBox);
+    layout->addRow(tr("&Coeff:"), _coeffSpinBox);
 
     _windowSpinBox = new IndexSpinBox();
     _windowSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    layout->addRow(tr("&Window :"), _windowSpinBox);
+    layout->addRow(tr("&Window:"), _windowSpinBox);
 
     _offsetSpinBox = new IndexSpinBox();
     _offsetSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    layout->addRow(tr("&Offset :"), _offsetSpinBox);
+    layout->addRow(tr("&Offset:"), _offsetSpinBox);
 
     groupBox->setLayout(layout);
     return groupBox;
@@ -182,15 +182,15 @@ QGroupBox *NodeScreenSynchro::createSynchroStatusWidgets()
     QFormLayout *layout = new QFormLayout();
 
     _flagLabel = new IndexLabel();
-    layout->addRow(tr("&Flag :"), _flagLabel);
+    layout->addRow(tr("&Flag:"), _flagLabel);
 
     _erorLabel = new IndexLabel();
     _erorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    layout->addRow(tr("&Error :"), _erorLabel);
+    layout->addRow(tr("&Error:"), _erorLabel);
 
     _correctorLabel = new IndexLabel();
     _correctorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    layout->addRow(tr("&Corrector :"), _correctorLabel);
+    layout->addRow(tr("&Corrector:"), _correctorLabel);
 
     groupBox->setLayout(layout);
     return groupBox;

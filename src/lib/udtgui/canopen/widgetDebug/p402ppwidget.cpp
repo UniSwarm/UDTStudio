@@ -338,7 +338,7 @@ void P402PpWidget::targetWidgets()
     QHBoxLayout *goLayout = new QHBoxLayout();
     goLayout->addLayout(goOneLayout);
     goLayout->addLayout(goTwoLayout);
-    _modeLayout->addRow("Position_Target :", goLayout);
+    _modeLayout->addRow(tr("Position_Target:"), goLayout);
 
     connect(_goOneLineEdit, &QLineEdit::returnPressed, this, &P402PpWidget::goOneLineEditFinished);
     connect(_goTwoLineEdit, &QLineEdit::returnPressed, this, &P402PpWidget::twoOneLineEditFinished);
@@ -350,13 +350,13 @@ void P402PpWidget::informationWidgets()
 {
     _infoLabel = new QLabel();
     _infoLabel->setStyleSheet("QLabel { color : red; }");
-    _modeLayout->addRow(tr("Information :"), _infoLabel);
+    _modeLayout->addRow(tr("Information:"), _infoLabel);
 
     _positionDemandValueLabel = new IndexLabel();
-    _modeLayout->addRow(tr("Position demand value :"), _positionDemandValueLabel);
+    _modeLayout->addRow(tr("Position demand value:"), _positionDemandValueLabel);
 
     _positionActualValueLabel = new IndexLabel();
-    _modeLayout->addRow(tr("Position actual value :"), _positionActualValueLabel);
+    _modeLayout->addRow(tr("Position actual value:"), _positionActualValueLabel);
 }
 
 void P402PpWidget::limitWidgets()
@@ -373,7 +373,7 @@ void P402PpWidget::limitWidgets()
 
     _positionRangelLimitMaxSpinBox = new IndexSpinBox();
     positionLayout->addWidget(_positionRangelLimitMaxSpinBox);
-    label = new QLabel(tr("&Position range limit :"));
+    label = new QLabel(tr("&Position range limit:"));
     label->setToolTip(tr("Min, Max"));
     label->setBuddy(_positionRangelLimitMinSpinBox);
     _modeLayout->addRow(label, positionLayout);
@@ -390,7 +390,7 @@ void P402PpWidget::limitWidgets()
 
     _softwarePositionLimitMaxSpinBox = new IndexSpinBox();
     softwareLayout->addWidget(_softwarePositionLimitMaxSpinBox);
-    label = new QLabel(tr("&Software position limit :"));
+    label = new QLabel(tr("&Software position limit:"));
     label->setToolTip(tr("Min, Max"));
     label->setBuddy(_softwarePositionLimitMinSpinBox);
 
@@ -401,17 +401,17 @@ void P402PpWidget::velocityWidgets()
 {
     // Add Profile velocity (0x6081) and Max motor speed (0x6080)
     _profileVelocitySpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("Profile velocity :"), _profileVelocitySpinBox);
+    _modeLayout->addRow(tr("Profile velocity:"), _profileVelocitySpinBox);
 
     _endVelocitySpinBox = new IndexSpinBox();
-    //qfLayout->addRow(tr("End velocity :"), _endVelocitySpinBox);
+    //qfLayout->addRow(tr("End velocity:"), _endVelocitySpinBox);
 
     // Add Max profile velocity (0x607F) and Max motor speed (0x6080)
     _maxProfileVelocitySpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("Max profile velocity :"), _maxProfileVelocitySpinBox);
+    _modeLayout->addRow(tr("Max profile velocity:"), _maxProfileVelocitySpinBox);
 
     _maxMotorSpeedSpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("Max motor speed :"), _maxMotorSpeedSpinBox);
+    _modeLayout->addRow(tr("Max motor speed:"), _maxMotorSpeedSpinBox);
 }
 
 void P402PpWidget::accelDeccelWidgets()
@@ -426,11 +426,11 @@ void P402PpWidget::accelDeccelWidgets()
 
     _maxAccelerationSpinBox = new IndexSpinBox();
 
-    label = new QLabel(tr("Max :"));
+    label = new QLabel(tr("Max:"));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     accelerationlayout->addWidget(label);
     accelerationlayout->addWidget(_maxAccelerationSpinBox);
-    _modeLayout->addRow(tr("Profile acceleration :"), accelerationlayout);
+    _modeLayout->addRow(tr("Profile acceleration:"), accelerationlayout);
 
     // Add Profile deceleration (0x6084) and Max deceleration (0x60C6)
     QLayout *decelerationlayout = new QHBoxLayout();
@@ -440,27 +440,27 @@ void P402PpWidget::accelDeccelWidgets()
 
     _maxDecelerationSpinBox = new IndexSpinBox();
 
-    label = new QLabel(tr("Max :"));
+    label = new QLabel(tr("Max:"));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     decelerationlayout->addWidget(label);
     decelerationlayout->addWidget(_maxDecelerationSpinBox);
-    _modeLayout->addRow(tr("Profile deceleration :"), decelerationlayout);
+    _modeLayout->addRow(tr("Profile deceleration:"), decelerationlayout);
 
     // Add Quick stop deceleration (0x6085)
     _quickStopDecelerationSpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("Quick stop deceleration :"), _quickStopDecelerationSpinBox);
+    _modeLayout->addRow(tr("Quick stop deceleration:"), _quickStopDecelerationSpinBox);
 }
 
 void P402PpWidget::homePolarityWidgets()
 {
     // Add Home offset (0x607C)
     _homeOffsetSpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("Home offset :"), _homeOffsetSpinBox);
+    _modeLayout->addRow(tr("Home offset:"), _homeOffsetSpinBox);
 
     // Polarity (0x607E)
     _polarityCheckBox = new IndexCheckBox();
     _polarityCheckBox->setBitMask(NodeProfile402::FgPolarity::MASK_POLARITY_POSITION);
-    _modeLayout->addRow(tr("Polarity :"), _polarityCheckBox);
+    _modeLayout->addRow(tr("Polarity:"), _polarityCheckBox);
 }
 
 QGroupBox *P402PpWidget::controlWordWidgets()
@@ -470,16 +470,16 @@ QGroupBox *P402PpWidget::controlWordWidgets()
     QFormLayout *layout = new QFormLayout();
 
     _changeSetImmediatelyPointCheckBox = new QCheckBox();
-    layout->addRow(tr("Change set immediately (bit 5) :"), _changeSetImmediatelyPointCheckBox);
+    layout->addRow(tr("Change set immediately (bit 5):"), _changeSetImmediatelyPointCheckBox);
     connect(_changeSetImmediatelyPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::changeSetImmediatelyPointCheckBoxRampClicked);
     groupBox->setLayout(layout);
 
     _absRelCheckBox = new QCheckBox();
-    layout->addRow(tr("Abs/Rel (bit 6) :"), _absRelCheckBox);
+    layout->addRow(tr("Abs/Rel (bit 6):"), _absRelCheckBox);
     connect(_absRelCheckBox, &QCheckBox::clicked, this, &P402PpWidget::absRelCheckBoxRampClicked);
 
     //_changeOnSetPointCheckBox = new QCheckBox();
-    //    modeControlWordLayout->addRow(tr("Change on set-point (bit 9) :"), _changeOnSetPointCheckBox);
+    //    modeControlWordLayout->addRow(tr("Change on set-point (bit 9):"), _changeOnSetPointCheckBox);
     //    connect(_changeOnSetPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::changeOnSetPointCheckBoxRampClicked);
     //    modeControlWordGroupBox->setLayout(modeControlWordLayout);
 

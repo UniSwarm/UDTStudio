@@ -233,14 +233,14 @@ void NodeManagerWidget::createWidgets()
     layoutGroupBox->addRow(_toolBar);
 
     _nodeNameEdit = new QLineEdit();
-    layoutGroupBox->addRow(tr("Name :"), _nodeNameEdit);
+    layoutGroupBox->addRow(tr("Name:"), _nodeNameEdit);
 
     _nodeStatusLabel = new QLabel();
-    layoutGroupBox->addRow(tr("Status :"), _nodeStatusLabel);
+    layoutGroupBox->addRow(tr("Status:"), _nodeStatusLabel);
 
     _edsFileNameLabel = new QLabel();
     _edsFileNameLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    layoutGroupBox->addRow(tr("Eds file name :"), _edsFileNameLabel);
+    layoutGroupBox->addRow(tr("Eds file name:"), _edsFileNameLabel);
 
     _groupBox->setLayout(layoutGroupBox);
     layout->addWidget(_groupBox);

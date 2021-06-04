@@ -511,7 +511,7 @@ void P402Widget::createWidgets()
     _stackedWidget->addWidget(_modes[NodeProfile402::TQ]);
     _stackedWidget->addWidget(_modes[NodeProfile402::PP]);
     _stackedWidget->addWidget(_modes[NodeProfile402::DTY]);
-    _stackedWidget->setMinimumWidth(550);
+    _stackedWidget->setMinimumWidth(450);
 
     // Create interface
     QWidget *controlWidget = new QWidget();
@@ -532,7 +532,7 @@ void P402Widget::createWidgets()
     scrollArea->setWidget(controlWidget);
     scrollArea->setWidgetResizable(true);
     scrollArea->setMaximumWidth(370);
-    scrollArea->setMinimumWidth(300);
+    scrollArea->setMinimumWidth(200);
 
     QHBoxLayout *hBoxLayout = new QHBoxLayout();
     hBoxLayout->setContentsMargins(0, 0, 0, 0);
@@ -597,7 +597,7 @@ QGroupBox *P402Widget::modeWidgets()
     QFormLayout *layout = new QFormLayout();
 
     _modeComboBox = new QComboBox();
-    layout->addRow(new QLabel(tr("Modes of operation (0x6n60) :")));
+    layout->addRow(new QLabel(tr("Modes of operation (0x6n60):")));
     layout->addRow(_modeComboBox);
 
     _modeLabel = new QLabel();
@@ -681,17 +681,17 @@ QGroupBox *P402Widget::statusWordWidgets()
 
     _statusWordLabel = new IndexLabel();
     _statusWordLabel->setDisplayHint(AbstractIndexWidget::DisplayHexa);
-    layout->addRow(tr("StatusWord raw:"), _statusWordLabel);
+    layout->addRow(tr("Raw:"), _statusWordLabel);
 
     _statusWordStateLabel = new QLabel();
-    layout->addRow(tr("StatusWord State:"), _statusWordStateLabel);
+    layout->addRow(tr("State:"), _statusWordStateLabel);
 
     _informationLabel = new QLabel();
-    layout->addRow(tr("Information :"), _informationLabel);
+    layout->addRow(tr("Information:"), _informationLabel);
 
     _warningLabel = new QLabel();
     _warningLabel->setStyleSheet("QLabel { color : red; }");
-    layout->addRow(tr("Warning :"), _warningLabel);
+    layout->addRow(tr("Warning:"), _warningLabel);
 
     groupBox->setLayout(layout);
 

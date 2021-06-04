@@ -60,26 +60,26 @@ QWidget *NodeScreenHome::createSumaryWidget()
 
     IndexLabel *indexLabel;
     indexLabel = new IndexLabel(NodeObjectId(0x1008, 0));
-    sumaryLayout->addRow(tr("&Device name :"), indexLabel);
+    sumaryLayout->addRow(tr("&Device name:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
     _summaryProfileLabel = new QLabel();
-    sumaryLayout->addRow(tr("&Profile :"), _summaryProfileLabel);
+    sumaryLayout->addRow(tr("&Profile:"), _summaryProfileLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x1009, 0));
-    sumaryLayout->addRow(tr("&Hardware version :"), indexLabel);
+    sumaryLayout->addRow(tr("&Hardware version:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x2001, 0));
-    sumaryLayout->addRow(tr("Manufacture &date :"), indexLabel);
+    sumaryLayout->addRow(tr("Manufacture &date:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x100A, 0));
-    sumaryLayout->addRow(tr("&Software version :"), indexLabel);
+    sumaryLayout->addRow(tr("&Software version:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x2003, 0));
-    sumaryLayout->addRow(tr("Software &build :"), indexLabel);
+    sumaryLayout->addRow(tr("Software &build:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
     hlayout->addItem(sumaryLayout);
@@ -97,14 +97,14 @@ QWidget *NodeScreenHome::createStatusWidget()
     indexLabel->setDisplayHint(AbstractIndexWidget::DisplayFloat);
     indexLabel->setScale(1.0 / 100.0);
     indexLabel->setUnit(" V");
-    sumaryLayout->addRow(tr("Board voltage :"), indexLabel);
+    sumaryLayout->addRow(tr("Board voltage:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x2020, 1));
     indexLabel->setDisplayHint(AbstractIndexWidget::DisplayFloat);
     indexLabel->setScale(1.0 / 10.0);
     indexLabel->setUnit(" °C");
-    sumaryLayout->addRow(tr("CPU temperature :"), indexLabel);
+    sumaryLayout->addRow(tr("CPU temperature:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
     groupBox->setLayout(sumaryLayout);
@@ -120,13 +120,13 @@ QWidget *NodeScreenHome::createOdWidget()
     _odEdsFileLabel = new QLabel();
     _odEdsFileLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
     _odEdsFileLabel->setCursor(Qt::IBeamCursor);
-    odLayout->addRow(tr("&Eds file :"), _odEdsFileLabel);
+    odLayout->addRow(tr("&Eds file:"), _odEdsFileLabel);
 
     _odCountLabel = new QLabel();
-    odLayout->addRow(tr("Index &count :"), _odCountLabel);
+    odLayout->addRow(tr("Index &count:"), _odCountLabel);
 
     _odSubIndexCountLabel = new QLabel();
-    odLayout->addRow(tr("&Sub index count :"), _odSubIndexCountLabel);
+    odLayout->addRow(tr("&Sub index count:"), _odSubIndexCountLabel);
 
     hlayout->addItem(odLayout);
 

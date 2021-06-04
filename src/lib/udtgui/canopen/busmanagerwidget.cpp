@@ -142,7 +142,7 @@ void BusManagerWidget::createWidgets()
     layoutGroupBox->addRow(_toolBar);
 
     _busNameEdit = new QLineEdit();
-    layoutGroupBox->addRow(tr("Name :"), _busNameEdit);
+    layoutGroupBox->addRow(tr("Name:"), _busNameEdit);
 
     _groupBox->setLayout(layoutGroupBox);
     layout->addWidget(_groupBox);

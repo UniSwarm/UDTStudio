@@ -62,7 +62,7 @@ QWidget *NodeScreenOD::createStoreWidget()
     connect(storeButon, &QPushButton::clicked, this, &NodeScreenOD::storeClicked);
     storeLayout->addWidget(storeButon);
 
-    layout->addRow("Store :", storeLayout);
+    layout->addRow("Store:", storeLayout);
 
     QHBoxLayout *restoreLayout = new QHBoxLayout();
     _restoreComboBox = new QComboBox();
@@ -80,7 +80,7 @@ QWidget *NodeScreenOD::createStoreWidget()
     connect(restoreButon, &QPushButton::clicked, this, &NodeScreenOD::restoreClicked);
     restoreLayout->addWidget(restoreButon);
 
-    layout->addRow("Restore :", restoreLayout);
+    layout->addRow("Restore:", restoreLayout);
 
     _storeRestoreGroupBox->setLayout(layout);
     return _storeRestoreGroupBox;

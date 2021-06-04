@@ -333,7 +333,7 @@ void P402VlWidget::targetWidgets()
 {
     _targetVelocitySpinBox = new QSpinBox();
     _targetVelocitySpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    _modeLayout->addRow(tr("Target velocity :"), _targetVelocitySpinBox);
+    _modeLayout->addRow(tr("Target velocity:"), _targetVelocitySpinBox);
 
     QLayout *labelSliderLayout = new QHBoxLayout();
     _sliderMinLabel = new QLabel("min");
@@ -366,7 +366,7 @@ void P402VlWidget::informationWidgets()
 {
     _infoLabel = new QLabel();
     _infoLabel->setStyleSheet("QLabel { color : red; }");
-    _modeLayout->addRow(tr("Information :"), _infoLabel);
+    _modeLayout->addRow(tr("Information:"), _infoLabel);
 
     _velocityDemandLabel = new IndexLabel();
     _modeLayout->addRow(tr("Velocity demand "), _velocityDemandLabel);
@@ -390,7 +390,7 @@ void P402VlWidget::limitWidgets()
 
     _maxVelocityMinMaxAmountSpinBox = new IndexSpinBox();
     minMaxAmountlayout->addWidget(_maxVelocityMinMaxAmountSpinBox);
-    label = new QLabel(tr("Min/Max amo&unt :"));
+    label = new QLabel(tr("Min/Max amo&unt:"));
     label->setToolTip("Min, Max");
     label->setBuddy(_minVelocityMinMaxAmountSpinBox);
 
@@ -413,7 +413,7 @@ void P402VlWidget::accelDeccelWidgets()
 
     _accelerationDeltaTimeSpinBox = new IndexSpinBox();
     accelerationlayout->addWidget(_accelerationDeltaTimeSpinBox);
-    label = new QLabel(tr("&Acceleration :"));
+    label = new QLabel(tr("&Acceleration:"));
     label->setToolTip(QString(QChar(0x0394)) + "speed, " + QString(QChar(0x0394)) + "time");
     label->setBuddy(_accelerationDeltaSpeedSpinBox);
     _modeLayout->addRow(label, accelerationlayout);
@@ -430,7 +430,7 @@ void P402VlWidget::accelDeccelWidgets()
 
     _decelerationDeltaTimeSpinBox = new IndexSpinBox();
     decelerationlayout->addWidget(_decelerationDeltaTimeSpinBox);
-    label = new QLabel(tr("&Deceleration :"));
+    label = new QLabel(tr("&Deceleration:"));
     label->setToolTip(QString(QChar(0x0394)) + "speed, " + QString(QChar(0x0394)) + "time");
     label->setBuddy(_decelerationDeltaSpeedSpinBox);
     _modeLayout->addRow(label, decelerationlayout);
@@ -469,7 +469,7 @@ void P402VlWidget::factorWidgets()
 
     _setPointFactorDenominatorSpinBox = new IndexSpinBox();
     stPointFactorlayout->addWidget(_setPointFactorDenominatorSpinBox);
-    label = new QLabel(tr("&Set-point factor :"));
+    label = new QLabel(tr("&Set-point factor:"));
     label->setToolTip("&Numerator, Denominator");
     label->setBuddy(_setPointFactorNumeratorSpinBox);
     _modeLayout->addRow(label, stPointFactorlayout);
@@ -486,7 +486,7 @@ void P402VlWidget::factorWidgets()
 
     _dimensionFactorDenominatorSpinBox = new IndexSpinBox();
     dimensionFactorlayout->addWidget(_dimensionFactorDenominatorSpinBox);
-    label = new QLabel(tr("D&imension factor :"));
+    label = new QLabel(tr("D&imension factor:"));
     label->setToolTip("Numerator, Denominator");
     label->setBuddy(_dimensionFactorNumeratorSpinBox);
     _modeLayout->addRow(label, dimensionFactorlayout);
@@ -495,19 +495,19 @@ void P402VlWidget::factorWidgets()
 QGroupBox *P402VlWidget::controlWordWidgets()
 {
     // Group Box CONTROL WORD
-    QGroupBox *groupBox = new QGroupBox(tr("Control Word :"));
+    QGroupBox *groupBox = new QGroupBox(tr("Control Word:"));
     QFormLayout *layout = new QFormLayout();
 
     _enableRampCheckBox = new QCheckBox();
-    layout->addRow(tr("Enable Ramp (bit 4) :"), _enableRampCheckBox);
+    layout->addRow(tr("Enable Ramp (bit 4):"), _enableRampCheckBox);
     connect(_enableRampCheckBox, &QCheckBox::clicked, this, &P402VlWidget::enableRampClicked);
 
     _unlockRampCheckBox = new QCheckBox();
-    layout->addRow(tr("Unlock Ramp (bit 5) :"), _unlockRampCheckBox);
+    layout->addRow(tr("Unlock Ramp (bit 5):"), _unlockRampCheckBox);
     connect(_unlockRampCheckBox, &QCheckBox::clicked, this, &P402VlWidget::unlockRampClicked);
 
     _referenceRampCheckBox = new QCheckBox();
-    layout->addRow(tr("Not set ramp to zero (bit 6) :"), _referenceRampCheckBox);
+    layout->addRow(tr("Not set ramp to zero (bit 6):"), _referenceRampCheckBox);
     connect(_referenceRampCheckBox, &QCheckBox::clicked, this, &P402VlWidget::referenceRampClicked);
     groupBox->setLayout(layout);
 

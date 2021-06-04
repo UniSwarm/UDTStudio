@@ -278,10 +278,10 @@ void P402TqWidget::targetWidgets()
 void P402TqWidget::informationWidgets()
 {
     _torqueDemandLabel = new IndexLabel();
-    _modeLayout->addRow(tr("Torque demand :"), _torqueDemandLabel);
+    _modeLayout->addRow(tr("Torque demand:"), _torqueDemandLabel);
 
     _torqueActualValueLabel = new IndexLabel();
-    _modeLayout->addRow(tr("Torque actual value :"), _torqueActualValueLabel);
+    _modeLayout->addRow(tr("Torque actual value:"), _torqueActualValueLabel);
 
     _currentActualValueLabel = new IndexLabel();
     //_modeLayout->addRow(name, _tqCurrentActualValueLabel);

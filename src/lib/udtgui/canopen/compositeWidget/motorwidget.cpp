@@ -199,30 +199,30 @@ QGroupBox *MotorWidget::motorConfigWidgets()
     _motorTypeComboBox->addItem(tr("DC motor"), QVariant(static_cast<uint16_t>(0x0101)));
     _motorTypeComboBox->addItem(tr("BLDC trapezoidal"), QVariant(static_cast<uint16_t>(0x0201)));
     _motorTypeComboBox->addItem(tr("BLDC sinusoidal"), QVariant(static_cast<uint16_t>(0x0202)));
-    configLayout->addRow(tr("&Motor type :"), _motorTypeComboBox);
+    configLayout->addRow(tr("&Motor type:"), _motorTypeComboBox);
 
     _peakCurrent = new IndexSpinBox();
-    configLayout->addRow(tr("P&eak current :"), _peakCurrent);
+    configLayout->addRow(tr("P&eak current:"), _peakCurrent);
 
     _polePair = new IndexSpinBox();
-    configLayout->addRow(tr("P&ole pair :"), _polePair);
+    configLayout->addRow(tr("P&ole pair:"), _polePair);
 
     _maxVelocity = new IndexSpinBox();
-    configLayout->addRow(tr("M&ax velocity :"), _maxVelocity);
+    configLayout->addRow(tr("M&ax velocity:"), _maxVelocity);
 
     _velocityConstant = new IndexSpinBox();
-    configLayout->addRow(tr("Ve&locity constant :"), _velocityConstant);
+    configLayout->addRow(tr("Ve&locity constant:"), _velocityConstant);
 
     _currentConstant = new IndexSpinBox();
-    configLayout->addRow(tr("C&urrent constant :"), _currentConstant);
+    configLayout->addRow(tr("C&urrent constant:"), _currentConstant);
 
     _break = new IndexCheckBox();
     _break->setBitMask(1);
-    configLayout->addRow(tr("&Break :"), _break);
+    configLayout->addRow(tr("&Break:"), _break);
 
     _reversePolarity = new IndexCheckBox();
     _reversePolarity->setBitMask(1);
-    configLayout->addRow(tr("&Reverse polarity :"), _reversePolarity);
+    configLayout->addRow(tr("&Reverse polarity:"), _reversePolarity);
 
     _motorConfigGroupBox->setLayout(configLayout);
 
@@ -235,16 +235,16 @@ QGroupBox *MotorWidget::motorStatusWidgets()
     QFormLayout *statusLayout = new QFormLayout();
 
     _hallRawValueLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Hall raw :"), _hallRawValueLabel);
+    statusLayout->addRow(tr("&Hall raw:"), _hallRawValueLabel);
 
     _hallPhaseLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Hall phase :"), _hallPhaseLabel);
+    statusLayout->addRow(tr("&Hall phase:"), _hallPhaseLabel);
 
     _bridgePweredPhaseLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Powered phase :"), _bridgePweredPhaseLabel);
+    statusLayout->addRow(tr("&Powered phase:"), _bridgePweredPhaseLabel);
 
     _bridgeCommandLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Command :"), _bridgeCommandLabel);
+    statusLayout->addRow(tr("&Command:"), _bridgeCommandLabel);
 
     statusGroupBox->setLayout(statusLayout);
     return statusGroupBox;

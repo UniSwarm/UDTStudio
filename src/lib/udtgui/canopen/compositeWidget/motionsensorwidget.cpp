@@ -356,15 +356,15 @@ QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
 
     _sensorSelectComboBox->addItem(tr("ANALOG_CH1"), QVariant(static_cast<uint16_t>(0x4001)));
     _sensorSelectComboBox->addItem(tr("ANALOG_CH2"), QVariant(static_cast<uint16_t>(0x4002)));
-    formLayout->addRow(tr("&Sensor select :"), _sensorSelectComboBox);
+    formLayout->addRow(tr("&Sensor select:"), _sensorSelectComboBox);
 
     _frequencyDividerSpinBox = new IndexSpinBox();
     _frequencyDividerSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
-    formLayout->addRow(tr("&Frequency divider :"), _frequencyDividerSpinBox);
+    formLayout->addRow(tr("&Frequency divider:"), _frequencyDividerSpinBox);
 
     _configBitCheckBox = new IndexCheckBox();
     _configBitCheckBox->setBitMask(32);
-    formLayout->addRow(tr("Q15.16 :"), _configBitCheckBox);
+    formLayout->addRow(tr("Q15.16:"), _configBitCheckBox);
 
     _sensorParam0SpinBox = new IndexSpinBox();
     formLayout->addRow(tr("Param 0:"), _sensorParam0SpinBox);
@@ -421,15 +421,15 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
 
     _preOffsetSpinBox = new IndexSpinBox();
     _preOffsetSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("Pr&e offset :"), _preOffsetSpinBox);
+    formLayout->addRow(tr("Pr&e offset:"), _preOffsetSpinBox);
 
     _scaleSpinBox = new IndexSpinBox();
     _scaleSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("S&cale :"), _scaleSpinBox);
+    formLayout->addRow(tr("S&cale:"), _scaleSpinBox);
 
     _postOffsetSpinBox = new IndexSpinBox();
     _postOffsetSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&Post offset :"), _postOffsetSpinBox);
+    formLayout->addRow(tr("&Post offset:"), _postOffsetSpinBox);
 
     QLayout *errorRangelayout = new QHBoxLayout();
     errorRangelayout->setSpacing(0);
@@ -442,7 +442,7 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
     _errorMaxSpinBox = new IndexSpinBox();
     _errorMaxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     errorRangelayout->addWidget(_errorMaxSpinBox);
-    QLabel *errorRangeLabel = new QLabel(tr("&Error range :"));
+    QLabel *errorRangeLabel = new QLabel(tr("&Error range:"));
     errorRangeLabel->setBuddy(_errorMinSpinBox);
     formLayout->addRow(errorRangeLabel, errorRangelayout);
 
@@ -451,7 +451,7 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
     _thresholdModeComboBox->addItem(tr("Min-max"), QVariant(static_cast<uint16_t>(0x0001)));
     _thresholdModeComboBox->addItem(tr("Modulo"), QVariant(static_cast<uint16_t>(0x0002)));
     _thresholdModeComboBox->addItem(tr("Old value"), QVariant(static_cast<uint16_t>(0x0003)));
-    formLayout->addRow(tr("Th&reshold mode :"), _thresholdModeComboBox);
+    formLayout->addRow(tr("Th&reshold mode:"), _thresholdModeComboBox);
 
     QLayout *thresholdlayout = new QHBoxLayout();
     thresholdlayout->setSpacing(0);
@@ -464,7 +464,7 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
     _thresholdMaxSpinBox = new IndexSpinBox();
     _thresholdMaxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     thresholdlayout->addWidget(_thresholdMaxSpinBox);
-    QLabel *thresholdLabel = new QLabel(tr("&Threshold :"));
+    QLabel *thresholdLabel = new QLabel(tr("&Threshold:"));
     thresholdLabel->setBuddy(_thresholdMinSpinBox);
     formLayout->addRow(thresholdLabel, thresholdlayout);
 
@@ -479,14 +479,14 @@ QGroupBox *MotionSensorWidget::createSensorStatusWidgets()
 
     _rawDataValueLabel = new IndexLabel();
     _rawDataValueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("Ra&w Data :"), _rawDataValueLabel);
+    formLayout->addRow(tr("Ra&w Data:"), _rawDataValueLabel);
 
     _flagLabel = new IndexLabel();
-    formLayout->addRow(tr("&Flag :"), _flagLabel);
+    formLayout->addRow(tr("&Flag:"), _flagLabel);
 
     _valueLabel = new IndexLabel();
     _valueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&Value :"), _valueLabel);
+    formLayout->addRow(tr("&Value:"), _valueLabel);
 
     groupBox->setLayout(formLayout);
 

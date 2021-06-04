@@ -546,15 +546,15 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
 
     _pSpinBox = new IndexSpinBox();
     _pSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&P :"), _pSpinBox);
+    formLayout->addRow(tr("&P:"), _pSpinBox);
 
     _iSpinBox = new IndexSpinBox();
     _iSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&I :"), _iSpinBox);
+    formLayout->addRow(tr("&I:"), _iSpinBox);
 
     _dSpinBox = new IndexSpinBox();
     _dSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&D :"), _dSpinBox);
+    formLayout->addRow(tr("&D:"), _dSpinBox);
 
     QLayout *minMaxlayout = new QHBoxLayout();
     minMaxlayout->setSpacing(0);
@@ -567,20 +567,20 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
     _maxSpinBox = new IndexSpinBox();
     _maxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     minMaxlayout->addWidget(_maxSpinBox);
-    QLabel *errorRangeLabel = new QLabel(tr("&Min max :"));
+    QLabel *errorRangeLabel = new QLabel(tr("&Min max:"));
     errorRangeLabel->setBuddy(errorRangeLabel);
     formLayout->addRow(errorRangeLabel, minMaxlayout);
 
     _thresholdSpinBox = new IndexSpinBox();
     _thresholdSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&Threshold :"), _thresholdSpinBox);
+    formLayout->addRow(tr("&Threshold:"), _thresholdSpinBox);
 
     _freqDividerSpinBox = new IndexSpinBox();
-    formLayout->addRow(tr("&Frequency divider :"), _freqDividerSpinBox);
+    formLayout->addRow(tr("&Frequency divider:"), _freqDividerSpinBox);
 
     _antiReverse = new IndexCheckBox();
     _antiReverse->setBitMask(1);
-    formLayout->addRow(tr("&Anti reverse :"), _antiReverse);
+    formLayout->addRow(tr("&Anti reverse:"), _antiReverse);
 
     groupBox->setLayout(formLayout);
     return groupBox;
@@ -593,19 +593,19 @@ QGroupBox *PidWidget::createPIDStatusWidgets()
 
     _inputLabel = new IndexLabel();
     _inputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&Input :"), _inputLabel);
+    formLayout->addRow(tr("&Input:"), _inputLabel);
 
     _errorLabel = new IndexLabel();
     _errorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&Error :"), _errorLabel);
+    formLayout->addRow(tr("&Error:"), _errorLabel);
 
     _integratorLabel = new IndexLabel();
     _integratorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&Integrator :"), _integratorLabel);
+    formLayout->addRow(tr("&Integrator:"), _integratorLabel);
 
     _outputLabel = new IndexLabel();
     _outputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&Output :"), _outputLabel);
+    formLayout->addRow(tr("&Output:"), _outputLabel);
 
     groupBox->setLayout(formLayout);
     return groupBox;
@@ -626,7 +626,7 @@ QGroupBox *PidWidget::createPIDTestWidgets()
     _windowFirstTargetSpinBox->setSuffix(" ms");
     firstTargetLayout->addWidget(_firstTargetSpinBox);
     firstTargetLayout->addWidget(_windowFirstTargetSpinBox);
-    formLayout->addRow(tr("First Target :"), firstTargetLayout);
+    formLayout->addRow(tr("First Target:"), firstTargetLayout);
 
     QHBoxLayout *secondTargetLayout = new QHBoxLayout();
     _secondTargetSpinBox = new QSpinBox();
@@ -638,13 +638,13 @@ QGroupBox *PidWidget::createPIDTestWidgets()
     _windowSecondTargetSpinBox->setSuffix(" ms");
     secondTargetLayout->addWidget(_secondTargetSpinBox);
     secondTargetLayout->addWidget(_windowSecondTargetSpinBox);
-    formLayout->addRow(tr("Second Target :"), secondTargetLayout);
+    formLayout->addRow(tr("Second Target:"), secondTargetLayout);
 
     _stopDataLoggerSpinBox = new QSpinBox();
     _stopDataLoggerSpinBox->setRange(10, 5000);
     _stopDataLoggerSpinBox->setValue(100);
     _stopDataLoggerSpinBox->setSuffix(" ms");
-    formLayout->addRow(tr("&End time :"), _stopDataLoggerSpinBox);
+    formLayout->addRow(tr("&End time:"), _stopDataLoggerSpinBox);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     _savePushButton = new QPushButton(tr("&Screenshot logger"));
