@@ -36,6 +36,9 @@ class UDTGUI_EXPORT NodeScreenHome : public NodeScreen
 public:
     NodeScreenHome();
 
+public:
+    void readAll();
+
 protected:
     void createWidgets();
     QWidget *createSumaryWidget();

@@ -34,11 +34,31 @@ NodeScreenHome::NodeScreenHome()
     createWidgets();
 }
 
+void NodeScreenHome::readAll()
+{
+    for (AbstractIndexWidget *indexWidget : _indexWidgets)
+    {
+        indexWidget->readObject();
+    }
+}
+
 void NodeScreenHome::createWidgets()
 {
     QLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(2, 2, 2, 2);
     layout->setSpacing(2);
+
+    QToolBar *toolBar = new QToolBar(tr("PDO commands"));
+    toolBar->setIconSize(QSize(20, 20));
+
+    // read all action
+    QAction *actionReadMappings = toolBar->addAction(tr("Read all"));
+    actionReadMappings->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    actionReadMappings->setShortcut(QKeySequence("Ctrl+R"));
+    actionReadMappings->setStatusTip(tr("Read all PDO mapping from device"));
+    connect(actionReadMappings, &QAction::triggered, this, &NodeScreenHome::readAll);
+
+    layout->addWidget(toolBar);
 
     layout->addWidget(createSumaryWidget());
     layout->addWidget(createStatusWidget());
