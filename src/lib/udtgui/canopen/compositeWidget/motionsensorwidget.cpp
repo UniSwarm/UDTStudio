@@ -318,12 +318,14 @@ QToolBar *MotionSensorWidget::createToolBarWidgets()
 QGroupBox *MotionSensorWidget::createInformationWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Information"));
+    groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QVBoxLayout *vLayout = new QVBoxLayout();
 
-    _informationLabel = new QLabel(tr("Not available in \"Operation Enabled\""));
+    _informationLabel = new QLabel();
+    _informationLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     vLayout->addWidget(_informationLabel);
 
-    _enableButton = new QPushButton(tr("Unlock, Go to \"Switched On\""));
+    _enableButton = new QPushButton(tr("Unlock config, Go to \"Switched On\""));
     vLayout->addWidget(_enableButton);
     connect(_enableButton, &QPushButton::clicked, this, &MotionSensorWidget::goEnableButton);
 
@@ -511,7 +513,7 @@ void MotionSensorWidget::stateChanged()
         _filterGroupBox->setEnabled(false);
         _conditioningGroupBox->setEnabled(false);
         _enableButton->setEnabled(true);
-        _informationLabel->show();
+        _informationLabel->setText(tr("Not available in \"Operation Enabled\""));
     }
     else
     {
@@ -519,7 +521,7 @@ void MotionSensorWidget::stateChanged()
         _filterGroupBox->setEnabled(true);
         _conditioningGroupBox->setEnabled(true);
         _enableButton->setEnabled(false);
-        _informationLabel->hide();
+        _informationLabel->setText("");
     }
 }
 

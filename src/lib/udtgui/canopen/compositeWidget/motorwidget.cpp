@@ -96,14 +96,7 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
 
 void MotorWidget::statusNodeChanged(Node::Status status)
 {
-    if (status == Node::STOPPED)
-    {
-        this->setEnabled(false);
-    }
-    else
-    {
-        this->setEnabled(true);
-    }
+    setEnabled(status != Node::STOPPED);
 }
 
 void MotorWidget::stateChanged()
@@ -111,12 +104,14 @@ void MotorWidget::stateChanged()
     if (_nodeProfile402->currentState() == NodeProfile402::STATE_OperationEnabled)
     {
         _motorConfigGroupBox->setEnabled(false);
-        _informationLabel->show();
+        _enableButton->setEnabled(true);
+        _informationLabel->setText(tr("Not available in \"Operation Enabled\""));
     }
     else
     {
         _motorConfigGroupBox->setEnabled(true);
-        _informationLabel->hide();
+        _enableButton->setEnabled(false);
+        _informationLabel->setText("");
     }
 }
 
@@ -141,7 +136,7 @@ void MotorWidget::createWidgets()
 {
     QWidget *motionSensorWidget = new QWidget(this);
     QVBoxLayout *actionLayout = new QVBoxLayout(motionSensorWidget);
-    actionLayout->setContentsMargins(0, 0, 4, 0);
+    actionLayout->setContentsMargins(0, 0, 0, 0);
     actionLayout->setSpacing(0);
 
     actionLayout->addWidget(informationWidgets());
@@ -179,15 +174,18 @@ QToolBar *MotorWidget::toolBarWidgets()
 QGroupBox *MotorWidget::informationWidgets()
 {
     QGroupBox *informationGroupBox = new QGroupBox(tr("Information"));
-    _informationLabel = new QLabel(tr("Not available in \"Operation Enabled\""));
-    _enableButton = new QPushButton(tr("Unlock, Go to \"Switched On\""));
-    connect(_enableButton, &QPushButton::clicked, this, &MotorWidget::goEnableButton);
-
+    informationGroupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QVBoxLayout *informationLayout = new QVBoxLayout();
-    informationLayout->addWidget(_informationLabel);
-    informationLayout->addWidget(_enableButton);
-    informationGroupBox->setLayout(informationLayout);
 
+    _informationLabel = new QLabel();
+    _informationLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    informationLayout->addWidget(_informationLabel);
+
+    _enableButton = new QPushButton(tr("Unlock config, Go to \"Switched On\""));
+    connect(_enableButton, &QPushButton::clicked, this, &MotorWidget::goEnableButton);
+    informationLayout->addWidget(_enableButton);
+
+    informationGroupBox->setLayout(informationLayout);
     return informationGroupBox;
 }
 
