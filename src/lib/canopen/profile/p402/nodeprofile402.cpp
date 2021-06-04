@@ -520,7 +520,7 @@ void NodeProfile402::changeStateMachine(const State402 state)
         else if (state == STATE_OperationEnabled)
         {
             _controlWord = (_controlWord & ~CW_Mask);
-            _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn | CW_EnableOperation);
+            _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn);
         }
         break;
 
