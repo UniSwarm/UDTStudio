@@ -184,9 +184,6 @@ void P402Widget::stateChanged()
 {
     NodeProfile402::State402 state = _nodeProfile402->currentState();
 
-    _controlWordLabel->setText(QLatin1String("0x") + QString::number(_node->nodeOd()->value(_controlWordObjectId).toUInt(), 16).toUpper().rightJustified(4, '0'));
-    _statusWordLabel->setText(QLatin1String("0x") + QString::number(_node->nodeOd()->value(_statusWordObjectId).toUInt(), 16).toUpper().rightJustified(4, '0'));
-
     if (state == NodeProfile402::STATE_NotReadyToSwitchOn)
     {
         _statusWordStateLabel->setText(tr("NotReadyToSwitchOn"));
