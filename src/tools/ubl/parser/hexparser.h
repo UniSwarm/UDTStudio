@@ -16,16 +16,16 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef HEXFILE_H
-#define HEXFILE_H
+#ifndef HEXPARSER_H
+#define HEXPARSER_H
 
 #include <QByteArray>
 #include <QString>
 
-class HexFile
+class HexParser
 {
 public:
-    HexFile(const QString &fileName = QString());
+    HexParser(const QString &fileName = QString());
 
     bool read();
     const QByteArray &prog() const;
@@ -38,4 +38,4 @@ private:
     unsigned short _checksum;
 };
 
-#endif // HEXFILE_H
+#endif // HEXPARSER_H

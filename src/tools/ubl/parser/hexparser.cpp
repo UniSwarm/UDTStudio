@@ -16,18 +16,18 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "hexfile.h"
+#include "hexparser.h"
 
 #include <QDebug>
 #include <QFile>
 #include <QTextStream>
 
-HexFile::HexFile(const QString &fileName)
+HexParser::HexParser(const QString &fileName)
 {
     _fileName = fileName;
 }
 
-bool HexFile::read()
+bool HexParser::read()
 {
     int lineCount = 1;
     int offsetAddr = 0;
@@ -44,6 +44,8 @@ bool HexFile::read()
     QTextStream stream(&file);
     _prog.clear();
     _prog.fill(static_cast<char>(0xFF), 0x10000);
+    // Save file
+
     while (!stream.atEnd())
     {
         int index = 0;
@@ -82,13 +84,13 @@ bool HexFile::read()
 
         if (type == 0)
         {
-            if (offsetAddr + addr > _prog.size())
+            if (offsetAddr + addr < 0x1E8480)
             {
-                _prog.append(QByteArray(_prog.size() - (offsetAddr + addr + dataCount), static_cast<char>(0xFF)));
-                // qDebug() << "outData" << QString::number(offsetAddr + addr, 16) << line.midRef(index, 2 * dataCount);
-            }
-            // else
-            {
+                if (offsetAddr + addr + dataCount > _prog.size())
+                {
+                    _prog.append(QByteArray((offsetAddr + addr + dataCount) - _prog.size(), static_cast<char>(0xFF)));
+                    qDebug() << "outData" << QString::number(offsetAddr + addr, 16) << line.midRef(index, 2 * dataCount);
+                }
                 for (int i = 0; i < dataCount; i++)
                 {
                     int data = line.midRef(index, 2).toInt(&ok, 16);
@@ -109,7 +111,7 @@ bool HexFile::read()
                 return false;
             }
             index += 4;
-            // qDebug() << "offset" << QString::number(offsetAddr, 16);
+            qDebug() << "line" << line << QString::number(offsetAddr, 16);
         }
         else if (type == 1)
         {
@@ -139,12 +141,12 @@ bool HexFile::read()
     return true;
 }
 
-const QByteArray &HexFile::prog() const
+const QByteArray &HexParser::prog() const
 {
     return _prog;
 }
 
-const unsigned short &HexFile::checksum() const
+const unsigned short &HexParser::checksum() const
 {
     return _checksum;
 }
