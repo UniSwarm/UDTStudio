@@ -58,6 +58,7 @@ public slots:
 protected slots:
     void toggleStartLogger(bool start);
     void setLogTimer(int ms);
+    void statusNodeChanged();
 
 private:
     Node *_node;
@@ -108,7 +109,6 @@ private:
     QLabel *_informationLabel;
     QLabel *_warningLabel;
 
-    void statusNodeChanged();
     void modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew);
     void stateChanged();
     void modeIndexChanged(int id);
