@@ -17,6 +17,7 @@
  **/
 
 #include "node.h"
+
 #include <QDebug>
 
 #include "canopenbus.h"
@@ -73,8 +74,9 @@ Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
     if (!edsFileName.isEmpty())
     {
         loadEds(edsFileName);
+        reset();
+        NodeProfileFactory::profileFactory(this);
     }
-    _nodeProfiles.clear();
 }
 
 Node::~Node()
@@ -144,10 +146,13 @@ QString Node::statusStr() const
     {
     case Node::INIT:
         return tr("init");
+
     case Node::PREOP:
         return tr("preop");
+
     case Node::STARTED:
         return tr("started");
+
     case Node::STOPPED:
         return tr("stopped");
     }
