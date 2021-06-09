@@ -20,6 +20,7 @@
 #define ODDB_H
 
 #include "od_global.h"
+
 #include <QMap>
 #include <QString>
 
@@ -33,13 +34,11 @@ public:
     QString file(quint32 deviceType, quint32 vendorID, quint32 productCode, quint32 revisionNumber);
     void refreshFile();
 
-private:
-    quint32 _deviceType;
-    quint32 _vendorID;
-    quint32 _productCode;
-    quint32 _revisionNumber;
+    const QList<QString> &edsFiles() const;
 
-    QMultiMap<QByteArray, QPair<quint32, QString>> _mapFile;
+private:
+    QMultiMap<QByteArray, QPair<quint32, QString>> _mapFiles;
+    QList<QString> _edsFiles;
     QList<QString> _directoryList;
 
     void searchFile(const QString &directory);
