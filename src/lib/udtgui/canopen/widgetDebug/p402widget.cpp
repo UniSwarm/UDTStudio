@@ -18,16 +18,16 @@
 
 #include "p402widget.h"
 
+#include "canopen/widget/indexlabel.h"
 #include "indexdb402.h"
 #include "services/services.h"
-#include "canopen/widget/indexlabel.h"
 
+#include "p402dtywidget.h"
 #include "p402ipwidget.h"
 #include "p402optionwidget.h"
 #include "p402ppwidget.h"
 #include "p402tqwidget.h"
 #include "p402vlwidget.h"
-#include "p402dtywidget.h"
 
 #include <QApplication>
 #include <QButtonGroup>
@@ -155,13 +155,9 @@ void P402Widget::modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew
         return;
     }
 
-    if ((modeNew == NodeProfile402::IP)
-        || (modeNew == NodeProfile402::VL)
-        || (modeNew == NodeProfile402::TQ)
-        || (modeNew == NodeProfile402::PP)
-        || (modeNew == NodeProfile402::DTY))
+    if ((modeNew == NodeProfile402::IP) || (modeNew == NodeProfile402::VL) || (modeNew == NodeProfile402::TQ) || (modeNew == NodeProfile402::PP) || (modeNew == NodeProfile402::DTY))
     {
-        P402Mode *mode = dynamic_cast<P402Mode*>(_stackedWidget->currentWidget());
+        P402Mode *mode = dynamic_cast<P402Mode *>(_stackedWidget->currentWidget());
         // reset : Patch because the widget Tarqet torque and velocity are not an IndexSpinbox so not read automaticaly
         mode->reset();
 
@@ -184,16 +180,14 @@ void P402Widget::stateChanged()
 {
     NodeProfile402::State402 state = _nodeProfile402->currentState();
 
-    _controlWordLabel->setText(QLatin1String("0x") + QString::number(_node->nodeOd()->value(_controlWordObjectId).toUInt(), 16).toUpper().rightJustified(4, '0'));
-    _statusWordLabel->setText(QLatin1String("0x") + QString::number(_node->nodeOd()->value(_statusWordObjectId).toUInt(), 16).toUpper().rightJustified(4, '0'));
-
-    if (state == NodeProfile402::STATE_NotReadyToSwitchOn)
+    switch (state)
     {
+    case NodeProfile402::STATE_NotReadyToSwitchOn:
         _statusWordStateLabel->setText(tr("NotReadyToSwitchOn"));
         setCheckableStateMachine(STATE_NotReadyToSwitchOn);
-    }
-    if (state == NodeProfile402::STATE_SwitchOnDisabled)
-    {
+        break;
+
+    case NodeProfile402::STATE_SwitchOnDisabled:
         _statusWordStateLabel->setText(tr("SwitchOnDisabled"));
         setCheckableStateMachine(STATE_SwitchOnDisabled);
         _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
@@ -203,9 +197,9 @@ void P402Widget::stateChanged()
         _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
         _haltPushButton->setCheckable(false);
         _haltPushButton->setEnabled(false);
-    }
-    if (state == NodeProfile402::STATE_ReadyToSwitchOn)
-    {
+        break;
+
+    case NodeProfile402::STATE_ReadyToSwitchOn:
         _statusWordStateLabel->setText(tr("ReadyToSwitchOn"));
         setCheckableStateMachine(STATE_ReadyToSwitchOn);
         _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
@@ -215,9 +209,9 @@ void P402Widget::stateChanged()
         _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
         _haltPushButton->setCheckable(false);
         _haltPushButton->setEnabled(false);
-    }
-    if (state == NodeProfile402::STATE_SwitchedOn)
-    {
+        break;
+
+    case NodeProfile402::STATE_SwitchedOn:
         _statusWordStateLabel->setText(tr("SwitchedOn"));
         setCheckableStateMachine(STATE_SwitchedOn);
         _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
@@ -227,9 +221,9 @@ void P402Widget::stateChanged()
         _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
         _haltPushButton->setCheckable(false);
         _haltPushButton->setEnabled(false);
-    }
-    if (state == NodeProfile402::STATE_OperationEnabled)
-    {
+        break;
+
+    case NodeProfile402::STATE_OperationEnabled:
         _statusWordStateLabel->setText(tr("OperationEnabled"));
         setCheckableStateMachine(STATE_OperationEnabled);
         _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
@@ -239,9 +233,9 @@ void P402Widget::stateChanged()
         _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
         _haltPushButton->setEnabled(true);
         _haltPushButton->setCheckable(true);
-    }
-    if (state == NodeProfile402::STATE_QuickStopActive)
-    {
+        break;
+
+    case NodeProfile402::STATE_QuickStopActive:
         _statusWordStateLabel->setText(tr("QuickStopActive"));
         setCheckableStateMachine(STATE_QuickStopActive);
         _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
@@ -251,9 +245,9 @@ void P402Widget::stateChanged()
         _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
         _haltPushButton->setCheckable(false);
         _haltPushButton->setEnabled(false);
-    }
-    if (state == NodeProfile402::STATE_FaultReactionActive)
-    {
+        break;
+
+    case NodeProfile402::STATE_FaultReactionActive:
         _statusWordStateLabel->setText(tr("FaultReactionActive"));
         setCheckableStateMachine(STATE_FaultReactionActive);
         _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(false);
@@ -263,9 +257,9 @@ void P402Widget::stateChanged()
         _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
         _haltPushButton->setCheckable(false);
         _haltPushButton->setEnabled(false);
-    }
-    if (state == NodeProfile402::STATE_Fault)
-    {
+        break;
+
+    case NodeProfile402::STATE_Fault:
         _statusWordStateLabel->setText(tr("Fault"));
         setCheckableStateMachine(STATE_Fault);
         _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
@@ -275,7 +269,9 @@ void P402Widget::stateChanged()
         _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
         _haltPushButton->setCheckable(false);
         _haltPushButton->setEnabled(false);
+        break;
     }
+
     update();
 }
 
@@ -448,7 +444,7 @@ void P402Widget::updateModeComboBox()
     QList<NodeProfile402::OperationMode> modeList = _nodeProfile402->modesSupported();
     _modeComboBox->clear();
 
-    for (quint8 i = 0; i < modeList.size(); i++)
+    for (int i = 0; i < modeList.size(); i++)
     {
         _listModeComboBox.append(modeList.at(i));
         _modeComboBox->insertItem(i, _nodeProfile402->modeStr(modeList.at(i)));
@@ -545,7 +541,7 @@ void P402Widget::createWidgets()
     hBoxLayout->addWidget(_stackedWidget);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
-    vBoxLayout->setContentsMargins(2, 2, 2 ,2);
+    vBoxLayout->setContentsMargins(2, 2, 2, 2);
     vBoxLayout->setSpacing(2);
     vBoxLayout->addWidget(toolBarWidgets());
     vBoxLayout->addLayout(hBoxLayout);
@@ -577,7 +573,7 @@ QToolBar *P402Widget::toolBarWidgets()
     connect(_option402Action, &QAction::triggered, this, &P402Widget::displayOption402);
 
     // read all action
-    QAction * readAllObjectAction = toolBar->addAction(tr("Read all objects"));
+    QAction *readAllObjectAction = toolBar->addAction(tr("Read all objects"));
     readAllObjectAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
     readAllObjectAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllObjectAction->setStatusTip(tr("Read all the objects of the current window"));

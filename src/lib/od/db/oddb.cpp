@@ -19,6 +19,7 @@
 #include "oddb.h"
 
 #include "parser/edsparser.h"
+
 #include <QCryptographicHash>
 #include <QDebug>
 #include <QDirIterator>
@@ -62,7 +63,8 @@ void OdDb::searchFile(const QString &directory)
         QPair<quint32, QString> pair;
         pair.first = deviceDescription->subIndexValue(0x1018, 3).toUInt();
         pair.second = file;
-        _mapFile.insert(hash, pair);
+        _mapFiles.insert(hash, pair);
+        _edsFiles.append(file);
 
         delete deviceDescription;
     }
@@ -76,7 +78,7 @@ QString OdDb::file(quint32 deviceType, quint32 vendorID, quint32 productCode, qu
     byte.append(QVariant(productCode).toByteArray());
     QByteArray hash = QCryptographicHash::hash(byte, QCryptographicHash::Md4);
 
-    QList<QPair<quint32, QString>> values = _mapFile.values(hash);
+    QList<QPair<quint32, QString>> values = _mapFiles.values(hash);
 
     if (!values.isEmpty())
     {
@@ -87,7 +89,6 @@ QString OdDb::file(quint32 deviceType, quint32 vendorID, quint32 productCode, qu
             {
                 if (values.at(i).first == rev)
                 {
-                    // qDebug() << "deviceType :" << deviceType << ", vendorID :" << vendorID << ", productCode :" << productCode << ", revisionNumber :" << rev;
                     return values.at(i).second;
                 }
             }
@@ -104,9 +105,14 @@ QString OdDb::file(quint32 deviceType, quint32 vendorID, quint32 productCode, qu
 
 void OdDb::refreshFile()
 {
-    _mapFile.clear();
+    _mapFiles.clear();
     for (const QString &directory : qAsConst(_directoryList))
     {
         searchFile(directory);
     }
+}
+
+const QList<QString> &OdDb::edsFiles() const
+{
+    return _edsFiles;
 }

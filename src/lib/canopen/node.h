@@ -20,6 +20,7 @@
 #define NODE_H
 
 #include "canopen_global.h"
+
 #include <QMetaType>
 
 #include "nodeod.h"
