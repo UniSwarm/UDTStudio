@@ -26,15 +26,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        hexfile.cpp \
-        main.cpp \
-        mainwindow.cpp \
-        programdownload.cpp
+        $$PWD/main.cpp \
+	$$PWD/mainwindow.cpp \
+	$$PWD/programdownload.cpp \
+	$$PWD/parser/hexparser.cpp \
+	$$PWD/writer/hexwriter.cpp \
+	$$PWD/utility/hexmerger.cpp
 
 HEADERS += \
-	hexfile.h \
-        mainwindow.h \
-        programdownload.h
+        $$PWD/mainwindow.h \
+	$$PWD/programdownload.h \
+	$$PWD/parser/hexparser.h \
+	$$PWD/writer/hexwriter.h \
+	$$PWD/utility/hexmerger.h
 
 FORMS +=
 
