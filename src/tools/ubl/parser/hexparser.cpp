@@ -31,7 +31,7 @@ bool HexParser::read()
 {
     int lineCount = 1;
     int offsetAddr = 0;
-    int dataCount, addr, type;
+    int dataCount, addr, type, checkSum;
     bool ok;
 
     QFile file(_fileName);
@@ -43,8 +43,7 @@ bool HexParser::read()
 
     QTextStream stream(&file);
     _prog.clear();
-    _prog.fill(static_cast<char>(0xFF), 0x10000);
-    // Save file
+    _prog.fill(static_cast<char>(0xFF), 0x100);
 
     while (!stream.atEnd())
     {
@@ -111,7 +110,7 @@ bool HexParser::read()
                 return false;
             }
             index += 4;
-            qDebug() << "line" << line << QString::number(offsetAddr, 16);
+            // qDebug() << "offset" << QString::number(offsetAddr, 16);
         }
         else if (type == 1)
         {
@@ -122,7 +121,7 @@ bool HexParser::read()
             // qDebug() << "unknow type" << type << "at line" << lineCount;
         }
 
-        // checkSum = line.midRef(index, 2).toInt(&ok, 16);
+        checkSum = line.midRef(index, 2).toInt(&ok, 16);
         if (!ok)
         {
             return false;
