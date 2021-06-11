@@ -18,17 +18,71 @@
 
 #include "hexmerger.h"
 
+#include <QDebug>
+
 HexMerger::HexMerger()
 {
 }
 
-void HexMerger::merge(const QByteArray &app1, const QByteArray &app2, int startApp2, int endApp2)
+int HexMerger::merge(const QByteArray &appA, const QByteArray &appB, QStringList addressesA, QStringList addressesB)
 {
-    _prog.append(app1);
-    _prog.replace(startApp2, endApp2 - startApp2, app2.mid(startApp2, endApp2 - startApp2));
+    int ret = 0;
+    ret = append(appA, addressesA);
+    if (ret < 0)
+    {
+        return ret;
+    }
+
+    ret = append(appB, addressesB);
+    if (ret < 0)
+    {
+        return ret;
+    }
+
+    return 0;
 }
 
 const QByteArray &HexMerger::prog() const
 {
     return _prog;
+}
+
+int HexMerger::append(const QByteArray &app, QStringList addresses)
+{
+    bool ok;
+    int i = 0;
+
+    int error = checkAddresses(addresses);
+    if (error < 0)
+    {
+        qDebug() << "HexMerger:append : Error addresses";
+        return error;
+    }
+
+    for (i = 0; i < addresses.size(); i++)
+    {
+        int adrStart = addresses.at(i).split(QLatin1Char(':')).at(0).toInt(&ok, 16);
+        int adrEnd = addresses.at(i).split(QLatin1Char(':')).at(1).toInt(&ok, 16);
+
+        if (adrEnd > _prog.size())
+        {
+            _prog.append(QByteArray(adrEnd - _prog.size(), static_cast<char>(0xFF)));
+        }
+
+        _prog.replace(adrStart, adrEnd - adrStart, app.mid(adrStart, adrEnd - adrStart));
+    }
+    return 0;
+}
+
+int HexMerger::checkAddresses(QStringList addresses)
+{
+    int i = 0;
+    for (i = 0; i < addresses.size(); i++)
+    {
+        if (!addresses.at(i).contains(QLatin1Char(':')))
+        {
+            return -1;
+        }
+    }
+    return 0;
 }

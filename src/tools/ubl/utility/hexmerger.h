@@ -17,6 +17,7 @@
  **/
 
 #include <QByteArray>
+#include <QStringList>
 
 #ifndef HEXMERGER_H
 #define HEXMERGER_H
@@ -26,12 +27,15 @@ class HexMerger
 public:
     HexMerger();
 
-    void merge(const QByteArray &app1, const QByteArray &app2, int startApp2, int endApp2);
+    int merge(const QByteArray &appA, const QByteArray &appB, QStringList adresA, QStringList adresB);
 
     const QByteArray &prog() const;
 
 private:
     QByteArray _prog;
+
+    int append(const QByteArray &app, QStringList addresses);
+    int checkAddresses(QStringList addresses);
 };
 
 #endif // HEXMERGER_H
