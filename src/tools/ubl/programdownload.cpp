@@ -19,6 +19,8 @@
 
 #include "parser/edsparser.h"
 #include <QFileInfo>
+#include "writer/hexwriter.h"
+#include "utility/hexmerger.h"
 
 ProgramDownload::ProgramDownload(Node *node)
     : _node(node)
@@ -96,8 +98,22 @@ void ProgramDownload::saveEds()
 bool ProgramDownload::openHex(QString &fileName)
 {
     _fileNameHex = fileName;
-    hexFile = new HexFile(_fileNameHex);
+    hexFile = new HexParser(_fileNameHex);
     hexFile->read();
+
+//    HexWriter hexWriter;
+//    hexWriter.write(hexFile->prog(), "/home/julien/Seafile/myLibrary/2_FW/4_UIO_fw/UIO8AD/build/test.hex");
+
+
+    HexParser *hexBootFile = new HexParser("/home/julien/Seafile/myLibrary/2_FW/4_UIO_fw/UIO8AD/bootloader/build/uio8ad.hex");
+    hexBootFile->read();
+
+    //HexMerger *merger = new HexMerger();
+    //merger->merge(hexFile->prog(), hexBootFile->prog(), 0x400, 0x6FFF);
+    //QByteArray out = merger->prog();
+
+    //HexWriter hexWriter;
+    //hexWriter.write(out, "/home/julien/Seafile/myLibrary/2_FW/4_UIO_fw/UIO8AD/build/test.hex");
 
     // Save file
     QFile file("fileBeforeSend.hex");

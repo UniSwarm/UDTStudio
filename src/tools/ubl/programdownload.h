@@ -18,7 +18,7 @@
 #ifndef PROGRAMDOWNLOAD_H
 #define PROGRAMDOWNLOAD_H
 
-#include "hexfile.h"
+#include "parser/hexparser.h"
 #include "model/deviceconfiguration.h"
 #include "node.h"
 #include "nodeodsubscriber.h"
@@ -65,7 +65,7 @@ private:
     QString _fileNameEds;
     QString _fileNameHex;
     DeviceConfiguration *_deviceConfiguration;
-    HexFile *hexFile;
+    HexParser *hexFile;
 
     enum ProgramState
     {
