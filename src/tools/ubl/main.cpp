@@ -18,13 +18,15 @@
 
 #include "mainwindow.h"
 
-#include <QCoreApplication>
-#include <QCommandLineParser>
 #include <QApplication>
+#include <QCanBus>
+#include <QCommandLineParser>
+#include <QCoreApplication>
 #include <QFileInfo>
-
 #include <QTextStream>
+#include <thread>
 
+#include <QDebug>
 #include <cstdint>
 
 #include "utility/hexmerger.h"
@@ -39,13 +41,12 @@ int main(int argc, char *argv[])
         w.show();
 
         return a.exec();
-
     }
 
     QCoreApplication app(argc, argv);
     QCoreApplication::setApplicationName("UBL");
     QCoreApplication::setApplicationVersion("1.0");
-
+    // app.exec();
     QTextStream out(stdout, QIODevice::WriteOnly);
     QTextStream err(stderr, QIODevice::WriteOnly);
 
@@ -53,86 +54,152 @@ int main(int argc, char *argv[])
     cliParser.setApplicationDescription(QCoreApplication::translate("main", "UBL."));
     cliParser.addHelpOption();
     cliParser.addVersionOption();
-    //cliParser.addPositionalArgument("file", QCoreApplication::translate("main", "---"), "file");
+    cliParser.addPositionalArgument("merge", QCoreApplication::translate("main", "fileA file B -m -a start:end ... -b start:end ..."), "merge");
 
+    // MERGE
+    QCommandLineOption outOption(QStringList() << "o"
+                                               << "out",
+                                 QCoreApplication::translate("main", "Output directory or file."),
+                                 "out");
+    cliParser.addOption(outOption);
 
-    QCommandLineOption mergeOption(QStringList() << "m"
-                                                 << "merge",
-                                   QCoreApplication::translate("main", "Merge 2 hex files"),
-                                   "merge");
-    cliParser.addOption(mergeOption);
-
-    QCommandLineOption aOption(QStringList() << "a",
-                                   QCoreApplication::translate("main", "Hex file a, with adresses a start:end (hexa)"),
-                                   "a");
+    QCommandLineOption aOption(QStringList() << "a", QCoreApplication::translate("main", "Keep memory file A (hexa)"), "start:end");
     cliParser.addOption(aOption);
-    QCommandLineOption bOption(QStringList() << "b",
-                               QCoreApplication::translate("main", "Hex file b, with adresses b start:end (hexa)"),
-                               "b");
+    QCommandLineOption bOption(QStringList() << "b", QCoreApplication::translate("main", "Keep memory file B (hexa)"), "start:end");
     cliParser.addOption(bOption);
+
+    // DOWNLOAD and Flash
+    cliParser.addPositionalArgument("download", QCoreApplication::translate("main", "-d file -e eds"), "download");
+    QCommandLineOption downloadOption(QStringList() << "d"
+                                                    << "download",
+                                      QCoreApplication::translate("main", "Program download"),
+                                      "download");
+    cliParser.addOption(downloadOption);
+
+    QCommandLineOption edsOption(QStringList() << "e"
+                                               << "eds",
+                                 QCoreApplication::translate("main", "EDS File"),
+                                 "eds");
+    cliParser.addOption(edsOption);
+
+    QCommandLineOption nodeIdOption(QStringList() << "n"
+                                                  << "nodeid",
+                                    QCoreApplication::translate("main", "CANOpen Node Id."),
+                                    "nodeid");
+    cliParser.addOption(nodeIdOption);
+
     cliParser.process(app);
 
     const QStringList files = cliParser.positionalArguments();
     if (files.isEmpty())
     {
-//        err << QCoreApplication::translate("main", "error (1): input file is needed") << endl;
-//        cliParser.showHelp(-1);
+        err << QCoreApplication::translate("main", "error (1): input file is needed") << Qt::endl;
+        cliParser.showHelp(-1);
     }
-//    const QString &inputFile = files.at(0);
-//    QString inSuffix = QFileInfo(inputFile).suffix();
-
-
-
-    QStringList aOptionList = cliParser.values(aOption);
-    QStringList bOptionList = cliParser.values(bOption);
-
-    if ((!aOptionList.isEmpty() && bOptionList.isEmpty()) || (aOptionList.isEmpty() && !bOptionList.isEmpty()))
+    else if (files.size() == 2)
     {
+        const QString &aFile = files.at(0);
+        const QString &bFile = files.at(1);
+        QString aSuffix = QFileInfo(aFile).suffix();
+        QString bSuffix = QFileInfo(bFile).suffix();
+
+        if (aSuffix != "hex" || bSuffix != "hex")
+        {
             err << QCoreApplication::translate("main", "error (1): input file is needed") << Qt::endl;
             cliParser.showHelp(-1);
+        }
+
+        QStringList aOptionList = cliParser.values(aOption);
+        QStringList bOptionList = cliParser.values(bOption);
+
+        if (bOptionList.isEmpty() || aOptionList.isEmpty())
+        {
+            err << QCoreApplication::translate("main", "error (1): option -a or -b is needed") << Qt::endl;
+            cliParser.showHelp(-1);
+        }
+
+        HexParser *hexAFile = new HexParser(aFile);
+        hexAFile->read();
+        HexParser *hexBFile = new HexParser(bFile);
+        hexBFile->read();
+
+        HexMerger *merger = new HexMerger();
+        int ret = merger->merge(hexAFile->prog(), hexBFile->prog(), aOptionList, bOptionList);
+        if (ret < 0)
+        {
+            err << QCoreApplication::translate("main", "error (1): input file is needed") << Qt::endl;
+            cliParser.showHelp(-1);
+        }
+
+        QByteArray merge = merger->prog();
+
+        // output file
+        QString outputFile = cliParser.value("out");
+        if (outputFile.isEmpty())
+        {
+            outputFile = "merge.hex";
+        }
+
+        HexWriter hexWriter;
+        hexWriter.write(merge, outputFile);
     }
-
-    //const QString &aFile = aOptionList.at(0);
-    const QString aFile("/home/julien/Seafile/myLibrary/2_FW/4_UIO_fw/UIO8AD/build/uio8ad.hex");
-    //const QString &bFile = bOptionList.at(0);
-    const QString bFile("/home/julien/Seafile/myLibrary/2_FW/4_UIO_fw/UIO8AD/bootloader/build/uio8ad_boot.hex");
-    QString aSuffix = QFileInfo(aFile).suffix();
-    QString bSuffix = QFileInfo(bFile).suffix();
-
-    if (aSuffix != "hex" || bSuffix != "hex")
+    else if (files.size() == 1)
     {
-        err << QCoreApplication::translate("main", "error (1): input file is needed") << Qt::endl;
-        cliParser.showHelp(-1);
-    }
+        quint8 nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
+        if (nodeid == 0 || nodeid >= 126)
+        {
+            err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << Qt::endl;
+            return -2;
+        }
 
-    HexParser *hexAFile = new HexParser(aFile);
-    hexAFile->read();
-    HexParser *hexBFile = new HexParser(bFile);
-    hexBFile->read();
+        CanOpenBus *bus = nullptr;
+        if (QCanBus::instance()->plugins().contains("socketcan"))
+        {
+            bus = new CanOpenBus(QCanBus::instance()->createDevice("socketcan", "can0"));
+        }
+        else if (QCanBus::instance()->plugins().contains("virtualcan"))
+        {
+            bus = new CanOpenBus(QCanBus::instance()->createDevice("virtualcan", "can0"));
+        }
 
-    aOptionList.removeFirst();
-    bOptionList.removeFirst();
-    HexMerger *merger = new HexMerger();
-    int ret = merger->merge(hexAFile->prog(), hexBFile->prog(), aOptionList, bOptionList);
-    if (ret < 0)
-    {
-        err << QCoreApplication::translate("main", "error (1): input file is needed") << Qt::endl;
-        cliParser.showHelp(-1);
-    }
+        if (bus)
+        {
+            bus->setBusName("Bus 1");
+            CanOpen::addBus(bus);
 
-    QByteArray merge = merger->prog();
+            bus->exploreBus();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    HexWriter hexWriter;
-    hexWriter.write(merge, "fileMerge.hex");
+            for (int i = 0; i < bus->nodes().size(); ++i)
+            {
+                qDebug() << bus->nodes().at(i)->busId() << Qt::endl;
+            }
+        }
+        else
+        {
+            err << QCoreApplication::translate("main", "error (2): bus not connected") << Qt::endl;
+            return -2;
+        }
 
-    QFile file("fileMerge.bin");
-    if (!file.open(QFile::WriteOnly))
-    {
-        return -1;
+        if (!bus->existNode(nodeid))
+        {
+            err << QCoreApplication::translate("main", "error (1): node not exist") << Qt::endl;
+            cliParser.showHelp(-1);
+        }
+
+        ProgramDownload *program = new ProgramDownload(bus->node(nodeid));
+        const QString file = files.at(0);
+        program->openHex(file);
+        program->loadEds(cliParser.value("eds"));
+
+        program->update();
+
+        return app.exec();
     }
     else
     {
-        file.write(merge);
-        file.close();
+        err << QCoreApplication::translate("main", "error (6): invalid number of hex inputs file, need more than one") << Qt::endl;
+        err << QCoreApplication::translate("main", "error (1): input file is needed for download") << Qt::endl;
+        cliParser.showHelp(-1);
     }
 }
