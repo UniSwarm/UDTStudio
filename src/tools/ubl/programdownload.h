@@ -35,7 +35,7 @@ public:
     bool loadEds(const QString &fileName);
     void uploadEds();
 
-    bool openHex(QString &fileName);
+    bool openHex(const QString &fileName);
 
     bool update();
 

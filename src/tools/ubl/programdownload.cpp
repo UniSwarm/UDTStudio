@@ -95,7 +95,7 @@ void ProgramDownload::saveEds()
     file.write(_node->nodeOd()->value(0x1021, 0).toByteArray());
 }
 
-bool ProgramDownload::openHex(QString &fileName)
+bool ProgramDownload::openHex(const QString &fileName)
 {
     _fileNameHex = fileName;
     hexFile = new HexParser(_fileNameHex);
