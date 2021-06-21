@@ -37,7 +37,7 @@ bool HexParser::read()
     QFile file(_fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        qDebug() << "cannot open";
+        qDebug() << "HexParser::read : cannot open" << _fileName;
         return false;
     }
 
