@@ -92,7 +92,8 @@ protected:
     IndexSpinBox *_maxSpinBox;
     IndexSpinBox *_thresholdSpinBox;
     IndexSpinBox *_freqDividerSpinBox;
-    IndexCheckBox *_antiReverse;
+    IndexCheckBox *_antiReverseCheckBox;
+    IndexCheckBox *_directCtrlCheckBox;
 
     QGroupBox *createPIDStatusWidgets();
     QGroupBox *_pidStatusGroupBox;

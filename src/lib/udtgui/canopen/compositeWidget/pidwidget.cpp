@@ -102,7 +102,8 @@ void PidWidget::setNode(Node *node, uint8_t axis)
     _maxSpinBox->setNode(node);
     _thresholdSpinBox->setNode(node);
     _freqDividerSpinBox->setNode(node);
-    _antiReverse->setNode(node);
+    _antiReverseCheckBox->setNode(node);
+    _directCtrlCheckBox->setNode(node);
 }
 
 void PidWidget::setMode(PidWidget::ModePid mode)
@@ -190,7 +191,8 @@ void PidWidget::setIMode()
     _maxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PID_MAX, _axis, odMode402));
     _thresholdSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PID_THRESHOLD, _axis, odMode402));
     _freqDividerSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PID_FREQDIVIDER, _axis, odMode402));
-    _antiReverse->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PID_CONFIGBIT, _axis, odMode402));
+    _antiReverseCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PID_CONFIGBIT, _axis, odMode402));
+    _directCtrlCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PID_CONFIGBIT, _axis, odMode402));
 
     pidInputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_INPUT, _axis, odMode402);
     pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_ERROR, _axis, odMode402);
@@ -452,7 +454,7 @@ void PidWidget::readAllObject()
     _maxSpinBox->readObject();
     _thresholdSpinBox->readObject();
     _freqDividerSpinBox->readObject();
-    _antiReverse->readObject();
+    _antiReverseCheckBox->readObject();
     readStatus();
 }
 
@@ -578,9 +580,13 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
     _freqDividerSpinBox = new IndexSpinBox();
     formLayout->addRow(tr("&Frequency divider:"), _freqDividerSpinBox);
 
-    _antiReverse = new IndexCheckBox();
-    _antiReverse->setBitMask(1);
-    formLayout->addRow(tr("&Anti reverse:"), _antiReverse);
+    _antiReverseCheckBox = new IndexCheckBox();
+    _antiReverseCheckBox->setBitMask(1);
+    formLayout->addRow(tr("&Anti reverse:"), _antiReverseCheckBox);
+
+    _directCtrlCheckBox = new IndexCheckBox();
+    _directCtrlCheckBox->setBitMask(1 << 8);
+    formLayout->addRow(tr("&Direct control:"), _directCtrlCheckBox);
 
     groupBox->setLayout(formLayout);
     return groupBox;
