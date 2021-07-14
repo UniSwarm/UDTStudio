@@ -26,7 +26,7 @@
 #include <QMutex>
 #include <QSocketNotifier>
 
-class CanBusSocketCAN : public CanBusDriver
+class CANOPEN_EXPORT CanBusSocketCAN : public CanBusDriver
 {
     Q_OBJECT
 public:

@@ -27,7 +27,7 @@
 #include <QTcpSocket>
 #include <QQueue>
 
-class CanBusTcpUDT : public CanBusDriver
+class CANOPEN_EXPORT CanBusTcpUDT : public CanBusDriver
 {
     Q_OBJECT
 public:

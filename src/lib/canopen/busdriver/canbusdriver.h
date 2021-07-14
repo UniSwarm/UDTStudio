@@ -25,7 +25,7 @@
 
 #include <QCanBusFrame>
 
-class CanBusDriver : public QObject
+class CANOPEN_EXPORT CanBusDriver : public QObject
 {
     Q_OBJECT
 public:
