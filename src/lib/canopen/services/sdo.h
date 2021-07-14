@@ -20,11 +20,13 @@
 #define SDO_H
 
 #include "canopen_global.h"
+
+#include "service.h"
+
 #include <QQueue>
 #include <QTimer>
 
 #include "nodeindex.h"
-#include "service.h"
 
 class CANOPEN_EXPORT SDO : public Service
 {

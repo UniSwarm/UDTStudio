@@ -21,6 +21,8 @@
 
 #include "canopen_global.h"
 
+#include <QObject>
+
 #include "canopenbus.h"
 
 #include <QList>

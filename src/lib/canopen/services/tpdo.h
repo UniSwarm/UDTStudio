@@ -21,9 +21,9 @@
 
 #include "canopen_global.h"
 
-#include "nodeod.h"
 #include "pdo.h"
-#include "service.h"
+
+#include "nodeod.h"
 
 class CANOPEN_EXPORT TPDO : public PDO
 {

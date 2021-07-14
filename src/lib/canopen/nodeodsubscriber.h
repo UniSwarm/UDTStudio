@@ -20,12 +20,12 @@
 #define NODEODSUBSCRIBER_H
 
 #include "canopen_global.h"
-#include "nodeobjectid.h"
 
 #include <QSet>
 #include <QVariant>
 
 #include "services/sdo.h"
+#include "nodeobjectid.h"
 
 class Node;
 

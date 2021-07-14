@@ -20,9 +20,11 @@
 #define ERRORCONTROL_H
 
 #include "canopen_global.h"
-#include "nodeod.h"
+
 #include "nodeodsubscriber.h"
 #include "service.h"
+
+#include "nodeod.h"
 
 class CANOPEN_EXPORT ErrorControl : public Service, public NodeOdSubscriber
 {

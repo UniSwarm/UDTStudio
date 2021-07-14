@@ -21,9 +21,10 @@
 
 #include "canopen_global.h"
 
+#include <QObject>
+
 #include <QCanBusDevice>
 #include <QCanBusFrame>
-#include <QObject>
 #include <QString>
 
 class CanOpenBus;

@@ -21,11 +21,11 @@
 
 #include "canopen_global.h"
 
+#include "pdo.h"
+
 #include "nodeobjectid.h"
 #include "nodeod.h"
 #include "nodeodsubscriber.h"
-#include "pdo.h"
-#include "service.h"
 
 class CANOPEN_EXPORT RPDO : public PDO
 {

@@ -21,6 +21,8 @@
 
 #include "canopen_global.h"
 
+#include <QObject>
+
 #include <QMetaType>
 
 #include "nodeod.h"

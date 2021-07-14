@@ -20,6 +20,7 @@
 #define EMERGENCY_H
 
 #include "canopen_global.h"
+
 #include "service.h"
 
 class CANOPEN_EXPORT Emergency : public Service
