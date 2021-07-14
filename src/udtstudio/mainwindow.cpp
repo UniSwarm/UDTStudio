@@ -42,6 +42,7 @@
 #ifdef Q_OS_UNIX
 #   include "busdriver/canbussocketcan.h"
 #endif
+#include "busdriver/canbustcpudt.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -61,10 +62,14 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
     if (bus)
     {
-        bus->setBusName("Bus 1");
+        bus->setBusName("Bus can0");
         CanOpen::addBus(bus);
         _canFrameListView->setBus(bus);
     }
+
+    bus = new CanOpenBus(new CanBusTcpUDT("192.168.1.80"));
+    bus->setBusName("Bus net");
+    CanOpen::addBus(bus);
 
     // _connectDialog = new CanSettingsDialog(nullptr, this);
 

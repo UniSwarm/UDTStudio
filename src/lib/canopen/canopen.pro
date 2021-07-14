@@ -1,5 +1,5 @@
 
-QT     += core gui widgets serialbus
+QT     += core gui widgets serialbus network
 TARGET = canopen
 TEMPLATE = lib
 DESTDIR = "$$PWD/../../../bin"
@@ -8,6 +8,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += CANOPEN_EXPORT_LIB
 
 CONFIG += c++11
+QMAKE_CXXFLAGS_RELEASE -= -O1
+QMAKE_CXXFLAGS_RELEASE -= -O2
+QMAKE_CXXFLAGS_RELEASE *= -O3
 
 SOURCES += \
     $$PWD/canopenbus.cpp \
@@ -45,7 +48,8 @@ SOURCES += \
     $$PWD/profile/nodeprofilefactory.cpp \
     $$PWD/profile/p402/modedty.cpp \
     $$PWD/busdriver/canbusdriver.cpp \
-    $$PWD/busdriver/canbussocketcan.cpp
+    $$PWD/busdriver/canbussocketcan.cpp \
+    $$PWD/busdriver/canbustcpudt.cpp
 
 HEADERS += \
     $$PWD/canopen_global.h \
@@ -85,7 +89,8 @@ HEADERS += \
     $$PWD/profile/nodeprofilefactory.h \
     $$PWD/profile/p402/modedty.h \
     $$PWD/busdriver/canbusdriver.h \
-    $$PWD/busdriver/canbussocketcan.h
+    $$PWD/busdriver/canbussocketcan.h \
+    $$PWD/busdriver/canbustcpudt.h
 
 INCLUDEPATH += $$PWD/../od/
 
@@ -95,6 +100,3 @@ unix:{
     QMAKE_LFLAGS_RPATH=
     QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN\'"
 }
-
-SUBDIRS += \
-    busdriver/busdriver.pro
