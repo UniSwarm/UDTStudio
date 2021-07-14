@@ -22,11 +22,11 @@
 
 #include "canopen.h"
 
-CanOpenBus::CanOpenBus(QCanBusDevice *canDevice)
+CanOpenBus::CanOpenBus(CanBusDriver *canBusDriver)
 {
     _canOpen = nullptr;
-    _canDevice = nullptr;
-    setCanDevice(canDevice);
+    _canBusDriver = nullptr;
+    setCanBusDriver(canBusDriver);
     _spyMode = false;
 
     // services
@@ -56,9 +56,9 @@ CanOpenBus::~CanOpenBus()
     delete _serviceDispatcher;
     qDeleteAll(_nodes);
 
-    if (_canDevice)
+    if (_canBusDriver)
     {
-        _canDevice->deleteLater();
+        _canBusDriver->deleteLater();
     }
 }
 
@@ -98,7 +98,7 @@ void CanOpenBus::setBusName(const QString &busName)
 
 bool CanOpenBus::isConnected() const
 {
-    return (_canDevice->state() == QCanBusDevice::ConnectedState);
+    return (_canBusDriver->state() == CanBusDriver::CONNECTED);
 }
 
 const QList<Node *> &CanOpenBus::nodes() const
@@ -140,29 +140,29 @@ const QList<QCanBusFrame> &CanOpenBus::canFramesLog() const
     return _canFramesLog;
 }
 
-QCanBusDevice *CanOpenBus::canDevice() const
+CanBusDriver *CanOpenBus::canBusDriver() const
 {
-    return _canDevice;
+    return _canBusDriver;
 }
 
-void CanOpenBus::setCanDevice(QCanBusDevice *canDevice)
+void CanOpenBus::setCanBusDriver(CanBusDriver *canBusDriver)
 {
-    _canDevice = canDevice;
-    if (_canDevice)
+    _canBusDriver = canBusDriver;
+    if (_canBusDriver)
     {
-        if (_canDevice->state() == QCanBusDevice::UnconnectedState)
+        if (_canBusDriver->state() == CanBusDriver::DISCONNECTED)
         {
-            _canDevice->connectDevice();
+            _canBusDriver->connectDevice();
         }
-        connect(_canDevice, &QCanBusDevice::framesReceived, this, &CanOpenBus::canFrameRec);
-        connect(_canDevice, &QCanBusDevice::errorOccurred, this, &CanOpenBus::frameErrorOccurred);
-        connect(_canDevice, &QCanBusDevice::stateChanged, this, &CanOpenBus::canState);
+        connect(_canBusDriver, &CanBusDriver::framesReceived, this, &CanOpenBus::canFrameRec);
+        // connect(_canBusDriver, &QCanBusDevice::errorOccurred, this, &CanOpenBus::frameErrorOccurred);
+        // connect(_canBusDriver, &QCanBusDevice::stateChanged, this, &CanOpenBus::canState);
     }
 }
 
 bool CanOpenBus::canWrite() const
 {
-    if (!_canDevice || _spyMode)
+    if (!_canBusDriver || _spyMode)
     {
         return false;
     }
@@ -175,7 +175,7 @@ bool CanOpenBus::writeFrame(const QCanBusFrame &frame)
     {
         return false;
     }
-    _canDevice->writeFrame(frame);
+    _canBusDriver->writeFrame(frame);
     QCanBusFrame emitFrame = frame;
     emitFrame.setTimeStamp(QCanBusFrame::TimeStamp::fromMicroSeconds(QDateTime::currentMSecsSinceEpoch() * 1000));
     emitFrame.setLocalEcho(true);
@@ -185,19 +185,21 @@ bool CanOpenBus::writeFrame(const QCanBusFrame &frame)
 
 void CanOpenBus::canFrameRec()
 {
-    while (_canDevice->framesAvailable() > 0)
+    QCanBusFrame frame = _canBusDriver->readFrame();
+    while (frame.isValid())
     {
-        QCanBusFrame frame = _canDevice->readFrame();
         frame.setTimeStamp(QCanBusFrame::TimeStamp::fromMicroSeconds(QDateTime::currentMSecsSinceEpoch() * 1000));
         _serviceDispatcher->parseFrame(frame);
         _canFramesLog.append(frame);
+
+        frame = _canBusDriver->readFrame();
     }
 }
 
-void CanOpenBus::canState(QCanBusDevice::CanBusDeviceState state)
+/*void CanOpenBus::canState(QCanBusDevice::CanBusDeviceState state)
 {
     emit stateCanOpenChanged(state);
-}
+}*/
 
 void CanOpenBus::notifyForNewFrames()
 {

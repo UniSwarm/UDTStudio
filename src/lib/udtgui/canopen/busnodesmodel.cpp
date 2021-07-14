@@ -104,7 +104,7 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
             case Name:
                 return QVariant(bus->busName());
             case Status:
-                return QVariant(bus->canDevice()->state() == QCanBusDevice::ConnectedState ? tr("connected") : tr("unconnected"));
+                return QVariant(bus->isConnected() ? tr("connected") : tr("unconnected"));
             default:
                 return QVariant();
             }

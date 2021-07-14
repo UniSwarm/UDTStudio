@@ -22,7 +22,6 @@
 #include <QMainWindow>
 
 #include <QSortFilterProxyModel>
-#include <QTreeView>
 
 #include "can/canSettingsDialog/cansettingsdialog.h"
 #include "canopenbus.h"
@@ -41,13 +40,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-protected slots:
+public slots:
+    void writeCfgFile();
+    void about();
 
 protected:
-    CanSettingsDialog *_connectDialog;
-
-    CanOpenBus *_bus;
-    QCanBusDevice *_canDevice;
+    // CanSettingsDialog *_connectDialog;
 
     void createDocks();
     QDockWidget *_busNodesManagerDock;
@@ -77,8 +75,6 @@ protected:
     // QObject interface
 public:
     bool event(QEvent *event) override;
-public slots:
-    void about();
 };
 
 #endif // MAINWINDOW_H

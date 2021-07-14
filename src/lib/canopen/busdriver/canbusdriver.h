@@ -1,6 +1,6 @@
 /**
  ** This file is part of the UDTStudio project.
- ** Copyright 2019-2021 UniSwarm
+ ** Copyright 2021 UniSwarm
  **
  ** This program is free software: you can redistribute it and/or modify
  ** it under the terms of the GNU General Public License as published by
@@ -16,47 +16,42 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef SERVICE_H
-#define SERVICE_H
+#ifndef CANBUSDRIVER_H
+#define CANBUSDRIVER_H
 
 #include "canopen_global.h"
 
 #include <QObject>
 
-#include "busdriver/canbusdriver.h"
-
 #include <QCanBusFrame>
-#include <QString>
 
-class CanOpenBus;
-class Node;
-
-class CANOPEN_EXPORT Service : public QObject
+class CanBusDriver : public QObject
 {
     Q_OBJECT
 public:
-    Service(CanOpenBus *bus);
-    Service(Node *node);
-    virtual ~Service();
+    CanBusDriver(const QString &adress);
 
-    virtual void setBus(CanOpenBus *bus);
+    const QString &adress() const;
+    enum State
+    {
+        DISCONNECTED,
+        CONNECTED,
+        ERROR
+    };
+    State state() const;
 
-    virtual void reset();
+    virtual bool connectDevice() = 0;
+    virtual void disconnectDevice() = 0;
 
-    virtual QString type() const = 0;
+    virtual QCanBusFrame readFrame() = 0;
+    virtual bool writeFrame(const QCanBusFrame &qtframe) = 0;
 
-    virtual void parseFrame(const QCanBusFrame &frame) = 0;
-
-    const QList<quint32> &cobIds() const;
-
-    CanOpenBus *bus() const;
-    CanBusDriver *canDevice() const;
-    Node *node() const;
+signals:
+    void framesReceived();
 
 protected:
-    CanOpenBus *_bus;
-    Node *_node;
-    QList<quint32> _cobIds;
+    QString _adress;
+    State _state;
 };
 
-#endif // SERVICE_H
+#endif // CANBUSDRIVER_H

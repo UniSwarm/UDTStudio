@@ -62,12 +62,11 @@ private:
     CanSettingsDialog *_connectDialog = nullptr;
 
     CanOpenBus *_bus;
-    QCanBusDevice *_canDevice = nullptr;
 
     BusNodesTreeView *_busNodesManagerView;
 
-    void connectDevice();
-    void disconnectDevice();
+    //void connectDevice();
+    //void disconnectDevice();
 
     QLabel *_serialNumberLabel;
     QLabel *_vendorIdLabel;

@@ -43,7 +43,9 @@ SOURCES += \
     $$PWD/indexdb401.cpp \
     $$PWD/indexdb402.cpp \
     $$PWD/profile/nodeprofilefactory.cpp \
-    $$PWD/profile/p402/modedty.cpp
+    $$PWD/profile/p402/modedty.cpp \
+    $$PWD/busdriver/canbusdriver.cpp \
+    $$PWD/busdriver/canbussocketcan.cpp
 
 HEADERS += \
     $$PWD/canopen_global.h \
@@ -81,7 +83,9 @@ HEADERS += \
     $$PWD/indexdb401.h \
     $$PWD/indexdb402.h \
     $$PWD/profile/nodeprofilefactory.h \
-    $$PWD/profile/p402/modedty.h
+    $$PWD/profile/p402/modedty.h \
+    $$PWD/busdriver/canbusdriver.h \
+    $$PWD/busdriver/canbussocketcan.h
 
 INCLUDEPATH += $$PWD/../od/
 
@@ -91,3 +95,6 @@ unix:{
     QMAKE_LFLAGS_RPATH=
     QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN\'"
 }
+
+SUBDIRS += \
+    busdriver/busdriver.pro

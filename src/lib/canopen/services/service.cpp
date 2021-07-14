@@ -59,17 +59,17 @@ CanOpenBus *Service::bus() const
     return _bus;
 }
 
-QCanBusDevice *Service::canDevice() const
+CanBusDriver *Service::canDevice() const
 {
     if (_bus)
     {
-        return _bus->canDevice();
+        return _bus->canBusDriver();
     }
     if (_node)
     {
         if (_node->bus())
         {
-            return _node->bus()->canDevice();
+            return _node->bus()->canBusDriver();
         }
     }
     return nullptr;

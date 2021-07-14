@@ -25,11 +25,13 @@
 #include <QApplication>
 #include <QCanBus>
 #include <QDateTime>
+#include <QDir>
 #include <QDockWidget>
 #include <QLayout>
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QProcessEnvironment>
 #include <QScreen>
 #include <QSettings>
 #include <QSplitter>
@@ -37,12 +39,15 @@
 
 #include <QDebug>
 
+#ifdef Q_OS_UNIX
+#   include "busdriver/canbussocketcan.h"
+#endif
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     setWindowTitle(tr("UniSwarm UDTStudio"));
     setWindowIcon(QIcon(":/icons/img/udtstudio.ico"));
-    _connectDialog = new CanSettingsDialog(nullptr, this);
     statusBar()->setVisible(true);
 
     createDocks();
@@ -51,14 +56,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, _nodeScreens, &NodeScreensWidget::setActiveNode);
 
     CanOpenBus *bus = nullptr;
-    if (QCanBus::instance()->plugins().contains("socketcan"))
-    {
-        bus = new CanOpenBus(QCanBus::instance()->createDevice("socketcan", "can0"));
-    }
-    else if (QCanBus::instance()->plugins().contains("virtualcan"))
-    {
-        bus = new CanOpenBus(QCanBus::instance()->createDevice("virtualcan", "can0"));
-    }
+#ifdef Q_OS_UNIX
+    bus = new CanOpenBus(new CanBusSocketCAN("can0"));
+#endif
     if (bus)
     {
         bus->setBusName("Bus 1");
@@ -66,7 +66,9 @@ MainWindow::MainWindow(QWidget *parent)
         _canFrameListView->setBus(bus);
     }
 
-    resize(QApplication::screens()[0]->size() * 3 / 4);
+    // _connectDialog = new CanSettingsDialog(nullptr, this);
+
+    resize(QApplication::screens().at(0)->size() * 3 / 4);
 
     readSettings();
 }
@@ -74,7 +76,35 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     CanOpen::release();
-    delete _connectDialog;
+    // delete _connectDialog;
+}
+
+void MainWindow::writeCfgFile()
+{
+    Node *node = _busNodesManagerView->currentNode();
+    if (!node)
+    {
+        return;
+    }
+
+    QFile file("conf.cfg");
+    file.open(QIODevice::WriteOnly);
+    QTextStream stream(&file);
+    stream << "[Default]" << '\n';
+    for (NodeIndex *index : node->nodeOd()->indexes())
+    {
+        for (NodeSubIndex *subIndex : index->subIndexes())
+        {
+            if (subIndex->isWritable()
+            && subIndex->value() != subIndex->defaultValue()
+            && subIndex->dataType() != NodeSubIndex::DDOMAIN
+             /*&& subIndex->defaultValue().isValid()*/)
+            {
+                qDebug() << QString::number(index->index(), 16) << subIndex->subIndex() << subIndex->value() << subIndex->defaultValue();
+                stream << index->name() << '.' << subIndex->name() << '=' << subIndex->value().toInt() << '\n';
+            }
+        }
+    }
 }
 
 void MainWindow::createDocks()
@@ -142,6 +172,11 @@ void MainWindow::createMenus()
     nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionLoadEds());
     nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionReLoadEds());
 
+    action = new QAction(tr("Save conf file"), this);
+    action->setShortcut(QKeySequence::SaveAs);
+    connect(action, &QAction::triggered, this, &MainWindow::writeCfgFile);
+    nodeMenu->addAction(action);
+
     // ============= View =============
     QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
 
@@ -173,7 +208,7 @@ void MainWindow::createMenus()
 
 void MainWindow::connectDevice()
 {
-    QString errorString;
+    /*QString errorString;
     const CanSettingsDialog::Settings settings = _connectDialog->settings();
 
     _canDevice = _connectDialog->device();
@@ -211,12 +246,12 @@ void MainWindow::connectDevice()
             CanOpen::addBus(bus);
             // connect(bus, &CanOpenBus::frameAvailable, _canFrameListView, &CanFrameListView::appendCanFrame);
         }
-    }
+    }*/
 }
 
 void MainWindow::disconnectDevice()
 {
-    if (!_canDevice)
+    /*if (!_canDevice)
     {
         return;
     }
@@ -224,7 +259,7 @@ void MainWindow::disconnectDevice()
     _canDevice->disconnectDevice();
     _connectAction->setEnabled(true);
     _disconnectAction->setEnabled(false);
-    statusBar()->showMessage(tr("Disconnected"));
+    statusBar()->showMessage(tr("Disconnected"));*/
 }
 
 void MainWindow::writeSettings()
@@ -263,7 +298,7 @@ void MainWindow::about()
 {
     QMessageBox::about(this,
                        "UDTStudio v0",
-                       QString("Copyright (C) 2019-2020 UniSwarm (<a href=\"https://uniswarm.eu\">uniswarm.eu</a>)<br>\
+                       QString("Copyright (C) 2019-2021 UniSwarm (<a href=\"https://uniswarm.eu\">uniswarm.eu</a>)<br>\
 <br>\
 This sofware is part of uDevkit distribution. To check for new version, please visit <a href=\"https://github.com/UniSwarm/UDTStudio\">github.com/UniSwarm/UDTStudio</a><br>\
 <br>\

@@ -37,6 +37,10 @@
 
 #include "programdownload.h"
 
+#ifdef Q_OS_UNIX
+#   include "busdriver/canbussocketcan.h"
+#endif
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -44,16 +48,14 @@ MainWindow::MainWindow(QWidget *parent)
     statusBar()->setVisible(true);
 
     CanOpenBus *bus;
-    if (QCanBus::instance()->plugins().contains("socketcan"))
+#ifdef Q_OS_UNIX
+    bus = new CanOpenBus(new CanBusSocketCAN("can0"));
+#endif
+    if (bus)
     {
-        bus = new CanOpenBus(QCanBus::instance()->createDevice("socketcan", "can0"));
+        bus->setBusName("Bus 1");
+        CanOpen::addBus(bus);
     }
-    else
-    {
-        bus = new CanOpenBus(QCanBus::instance()->createDevice("virtualcan", "can0"));
-    }
-    bus->setBusName("Bus 1");
-    CanOpen::addBus(bus);
 
     createWidget();
     createMenus();
@@ -169,7 +171,7 @@ void MainWindow::uploadEds()
     }
 }
 
-void MainWindow::connectDevice()
+/*void MainWindow::connectDevice()
 {
     QString errorString;
     const CanSettingsDialog::Settings settings = _connectDialog->settings();
@@ -217,7 +219,7 @@ void MainWindow::disconnectDevice()
 
     _canDevice->disconnectDevice();
     statusBar()->showMessage(tr("Disconnected"));
-}
+}*/
 
 void MainWindow::createMenus()
 {
@@ -230,23 +232,23 @@ void MainWindow::createMenus()
     fileMenu->addAction(exitAction);
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
-    QAction *_connectAction = new QAction(tr("&Connect"), this);
+    /*QAction *_connectAction = new QAction(tr("&Connect"), this);
     connect(_connectAction, &QAction::triggered, this, &MainWindow::connectDevice);
 
     QAction *_disconnectAction = new QAction(tr("&Disconnect"), this);
-    connect(_disconnectAction, &QAction::triggered, this, &MainWindow::disconnectDevice);
+    connect(_disconnectAction, &QAction::triggered, this, &MainWindow::disconnectDevice);*/
 
     QAction *_canSettingsAction = new QAction(tr("&Can Settings"), this);
     connect(_canSettingsAction, &QAction::triggered, _connectDialog, &CanSettingsDialog::show);
 
     QMenu *menu;
     menu = menuBar()->addMenu(tr("&Connection"));
-    menu->addAction(_connectAction);
-    menu->addAction(_disconnectAction);
+    //menu->addAction(_connectAction);
+    //menu->addAction(_disconnectAction);
     menu->addAction(_canSettingsAction);
     menu->addSeparator();
 
-    connect(_connectDialog, &QDialog::accepted, this, &MainWindow::connectDevice);
+    //connect(_connectDialog, &QDialog::accepted, this, &MainWindow::connectDevice);
     connect(_busNodesManagerView, &BusNodesTreeView::nodeSelected, this, &MainWindow::nodeChanged);
 }
 

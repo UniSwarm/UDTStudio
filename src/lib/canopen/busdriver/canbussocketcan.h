@@ -1,6 +1,6 @@
 /**
  ** This file is part of the UDTStudio project.
- ** Copyright 2019-2021 UniSwarm
+ ** Copyright 2021 UniSwarm
  **
  ** This program is free software: you can redistribute it and/or modify
  ** it under the terms of the GNU General Public License as published by
@@ -16,47 +16,34 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef SERVICE_H
-#define SERVICE_H
+#ifndef CANBUSSOCKETCAN_H
+#define CANBUSSOCKETCAN_H
 
 #include "canopen_global.h"
 
-#include <QObject>
+#include "canbusdriver.h"
 
-#include "busdriver/canbusdriver.h"
+#include <QMutex>
+#include <QSocketNotifier>
 
-#include <QCanBusFrame>
-#include <QString>
-
-class CanOpenBus;
-class Node;
-
-class CANOPEN_EXPORT Service : public QObject
+class CanBusSocketCAN : public CanBusDriver
 {
     Q_OBJECT
 public:
-    Service(CanOpenBus *bus);
-    Service(Node *node);
-    virtual ~Service();
+    CanBusSocketCAN(const QString &adress);
 
-    virtual void setBus(CanOpenBus *bus);
+    // CanBusDriver interface
+public:
+    bool connectDevice() override;
+    void disconnectDevice() override;
 
-    virtual void reset();
+    QCanBusFrame readFrame() override;
+    bool writeFrame(const QCanBusFrame &qtframe) override;
 
-    virtual QString type() const = 0;
-
-    virtual void parseFrame(const QCanBusFrame &frame) = 0;
-
-    const QList<quint32> &cobIds() const;
-
-    CanOpenBus *bus() const;
-    CanBusDriver *canDevice() const;
-    Node *node() const;
-
-protected:
-    CanOpenBus *_bus;
-    Node *_node;
-    QList<quint32> _cobIds;
+private:
+    int _can_socket;
+    QMutex _socketMutex;
+    QSocketNotifier *_notifier;
 };
 
-#endif // SERVICE_H
+#endif // CANBUSSOCKETCAN_H

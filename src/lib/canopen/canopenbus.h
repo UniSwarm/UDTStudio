@@ -25,8 +25,9 @@
 
 #include "node.h"
 #include "services/services.h"
+#include "busdriver/canbusdriver.h"
 
-#include <QCanBusDevice>
+//#include <QCanBusDevice>
 #include <QMap>
 
 class CanOpen;
@@ -35,7 +36,7 @@ class CANOPEN_EXPORT CanOpenBus : public QObject
 {
     Q_OBJECT
 public:
-    CanOpenBus(QCanBusDevice *canDevice = Q_NULLPTR);
+    CanOpenBus(CanBusDriver *canBusDriver = Q_NULLPTR);
     ~CanOpenBus();
 
     CanOpen *canOpen() const;
@@ -54,8 +55,8 @@ public:
     void addNode(Node *node);
     bool existNode(const quint8 nodeId);
 
-    QCanBusDevice *canDevice() const;
-    void setCanDevice(QCanBusDevice *canDevice);
+    CanBusDriver *canBusDriver() const;
+    void setCanBusDriver(CanBusDriver *canBusDriver);
     bool canWrite() const;
     bool writeFrame(const QCanBusFrame &frame);
 
@@ -63,7 +64,7 @@ public:
 
 protected slots:
     void canFrameRec();
-    void canState(QCanBusDevice::CanBusDeviceState state);
+    //void canState(QCanBusDevice::CanBusDeviceState state);
     void notifyForNewFrames();
 
 public slots:
@@ -71,8 +72,8 @@ public slots:
 
 signals:
     void frameAvailable(int id);
-    void frameErrorOccurred(QCanBusDevice::CanBusError error);
-    void stateCanOpenChanged(QCanBusDevice::CanBusDeviceState state);
+    //void frameErrorOccurred(QCanBusDevice::CanBusError error);
+    //void stateCanOpenChanged(QCanBusDevice::CanBusDeviceState state);
 
     void nodeAdded();
 
@@ -83,7 +84,7 @@ protected:
     QString _busName;
     QMap<quint8, Node *> _nodesMap;
     QList<Node *> _nodes;
-    QCanBusDevice *_canDevice;
+    CanBusDriver *_canBusDriver;
 
     // CAN frames logger
     QList<QCanBusFrame> _canFramesLog;

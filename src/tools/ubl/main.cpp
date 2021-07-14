@@ -32,6 +32,10 @@
 #include "utility/hexmerger.h"
 #include "writer/hexwriter.h"
 
+#ifdef Q_OS_UNIX
+#   include "busdriver/canbussocketcan.h"
+#endif
+
 int main(int argc, char *argv[])
 {
     if (argc == 1)
@@ -153,15 +157,9 @@ int main(int argc, char *argv[])
         }
 
         CanOpenBus *bus = nullptr;
-        if (QCanBus::instance()->plugins().contains("socketcan"))
-        {
-            bus = new CanOpenBus(QCanBus::instance()->createDevice("socketcan", "can0"));
-        }
-        else if (QCanBus::instance()->plugins().contains("virtualcan"))
-        {
-            bus = new CanOpenBus(QCanBus::instance()->createDevice("virtualcan", "can0"));
-        }
-
+#ifdef Q_OS_UNIX
+        bus = new CanOpenBus(new CanBusSocketCAN("can0"));
+#endif
         if (bus)
         {
             bus->setBusName("Bus 1");
