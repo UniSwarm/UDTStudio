@@ -53,6 +53,9 @@ void BusManagerWidget::updateData()
     if (_bus)
     {
         _busNameEdit->setText(_bus->busName());
+        _actionSyncStart->blockSignals(true);
+        _actionSyncStart->setChecked(_bus->sync()->status() == Sync::STARTED);
+        _actionSyncStart->blockSignals(false);
     }
 }
 
