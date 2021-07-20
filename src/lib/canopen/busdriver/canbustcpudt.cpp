@@ -25,21 +25,19 @@ CanBusTcpUDT::CanBusTcpUDT(const QString &adress)
     : CanBusDriver(adress)
 {
     _sock = new QTcpSocket;
-    _state = DISCONNECTED;
     QObject::connect(_sock, &QIODevice::readyRead, this, &CanBusTcpUDT::readTCP);
+    QObject::connect(_sock, &QAbstractSocket::stateChanged, this, &CanBusTcpUDT::stateChanged);
 }
 
 bool CanBusTcpUDT::connectDevice()
 {
     _sock->connectToHost(_adress, 5050);
-    _state = CONNECTED;
-    return _sock->waitForConnected(100);
+    return true;
 }
 
 void CanBusTcpUDT::disconnectDevice()
 {
     _sock->disconnectFromHost();
-    _state = DISCONNECTED;
 }
 
 QCanBusFrame CanBusTcpUDT::readFrame()
@@ -95,7 +93,6 @@ bool CanBusTcpUDT::writeFrame(const QCanBusFrame &qtframe)
     stream << static_cast<quint32>(qtframe.frameId());  // frame id
     data.append(qtframe.payload());
 
-    // qDebug() << data.size() << data.toHex().toUpper() << qtframe.payload().toHex().toUpper();
     return (_sock->write(data) != -1);
 }
 
@@ -153,4 +150,23 @@ int CanBusTcpUDT::readPacket(QByteArray data)
     emit framesReceived();
 
     return dlc + 8;
+}
+
+void CanBusTcpUDT::stateChanged(QAbstractSocket::SocketState socketState)
+{
+    switch (socketState)
+    {
+    case QAbstractSocket::ClosingState:
+    case QAbstractSocket::UnconnectedState:
+    case QAbstractSocket::HostLookupState:
+    case QAbstractSocket::ConnectingState:
+    case QAbstractSocket::BoundState:
+        setState(DISCONNECTED);
+        break;
+
+    case QAbstractSocket::ConnectedState:
+    case QAbstractSocket::ListeningState:
+        setState(CONNECTED);
+        break;
+    }
 }

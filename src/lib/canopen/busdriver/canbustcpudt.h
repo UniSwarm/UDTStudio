@@ -50,6 +50,7 @@ protected slots:
 
 protected:
     int readPacket(QByteArray data);
+    void stateChanged(QAbstractSocket::SocketState socketState);
 };
 
 #endif // CANBUSTCPUDT_H

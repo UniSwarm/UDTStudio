@@ -32,11 +32,19 @@
 #include <iostream>
 using namespace std;
 
+#include <QDebug>
+
 CanBusSocketCAN::CanBusSocketCAN(const QString &adress)
     : CanBusDriver(adress)
 {
     _can_socket = -1;
-    _state = DISCONNECTED;
+    _readNotifier = nullptr;
+    _errorNotifier = nullptr;
+}
+
+CanBusSocketCAN::~CanBusSocketCAN()
+{
+    disconnectDevice();
 }
 
 bool CanBusSocketCAN::connectDevice()
@@ -75,10 +83,13 @@ bool CanBusSocketCAN::connectDevice()
         return false;
     }
 
-    _notifier = new QSocketNotifier(_can_socket, QSocketNotifier::Read, this);
-    connect(_notifier, &QSocketNotifier::activated, this, &CanBusDriver::framesReceived);
+    _readNotifier = new QSocketNotifier(_can_socket, QSocketNotifier::Read, this);
+    connect(_readNotifier, &QSocketNotifier::activated, this, &CanBusDriver::framesReceived);
 
-    _state = CONNECTED;
+    _errorNotifier = new QSocketNotifier(_can_socket, QSocketNotifier::Exception, this);
+    connect(_errorNotifier, &QSocketNotifier::activated, this, &CanBusSocketCAN::handleError);
+
+    setState(CONNECTED);
     return true;
 }
 
@@ -92,7 +103,9 @@ void CanBusSocketCAN::disconnectDevice()
 
     close(_can_socket);
     _can_socket = -1;
-    _state = DISCONNECTED;
+    setState(DISCONNECTED);
+    _readNotifier->deleteLater();
+    _errorNotifier->deleteLater();
 }
 
 QCanBusFrame CanBusSocketCAN::readFrame()
@@ -153,4 +166,9 @@ bool CanBusSocketCAN::writeFrame(const QCanBusFrame &qtframe)
     }
 
     return true;
+}
+
+void CanBusSocketCAN::handleError()
+{
+    disconnectDevice();
 }

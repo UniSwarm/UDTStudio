@@ -46,11 +46,16 @@ public:
     virtual QCanBusFrame readFrame() = 0;
     virtual bool writeFrame(const QCanBusFrame &qtframe) = 0;
 
+
 signals:
     void framesReceived();
+    void stateChanged(State);
 
 protected:
     QString _adress;
+    void setState(const State &state);
+
+private:
     State _state;
 };
 

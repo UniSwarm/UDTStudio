@@ -21,11 +21,22 @@
 CanBusDriver::CanBusDriver(const QString &adress)
     : _adress(adress)
 {
+    _state = DISCONNECTED;
 }
 
 CanBusDriver::State CanBusDriver::state() const
 {
     return _state;
+}
+
+void CanBusDriver::setState(const State &state)
+{
+    bool stateChange = (_state != state);
+    _state = state;
+    if (stateChange)
+    {
+        emit stateChanged(_state);
+    }
 }
 
 const QString &CanBusDriver::adress() const

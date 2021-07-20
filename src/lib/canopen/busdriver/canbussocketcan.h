@@ -31,6 +31,7 @@ class CANOPEN_EXPORT CanBusSocketCAN : public CanBusDriver
     Q_OBJECT
 public:
     CanBusSocketCAN(const QString &adress);
+    ~CanBusSocketCAN();
 
     // CanBusDriver interface
 public:
@@ -43,7 +44,11 @@ public:
 private:
     int _can_socket;
     QMutex _socketMutex;
-    QSocketNotifier *_notifier;
+    QSocketNotifier *_readNotifier;
+    QSocketNotifier *_errorNotifier;
+
+protected slots:
+    void handleError();
 };
 
 #endif // CANBUSSOCKETCAN_H
