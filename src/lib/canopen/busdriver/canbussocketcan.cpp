@@ -96,11 +96,13 @@ bool CanBusSocketCAN::connectDevice()
 void CanBusSocketCAN::disconnectDevice()
 {
     QMutexLocker socketLocker(&_socketMutex);
-    if (_can_socket != -1)
+    if (_can_socket == -1)
     {
         return;
     }
 
+    _readNotifier->setEnabled(false);
+    _errorNotifier->setEnabled(false);
     close(_can_socket);
     _can_socket = -1;
     setState(DISCONNECTED);
