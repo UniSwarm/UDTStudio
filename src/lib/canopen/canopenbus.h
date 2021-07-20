@@ -48,8 +48,6 @@ public:
     QString busName() const;
     void setBusName(const QString &busName);
 
-    bool isConnected() const;
-
     const QList<Node *> &nodes() const;
     Node *node(const quint8 nodeId);
     void addNode(Node *node);
@@ -57,25 +55,25 @@ public:
 
     CanBusDriver *canBusDriver() const;
     void setCanBusDriver(CanBusDriver *canBusDriver);
+    bool isConnected() const;
     bool canWrite() const;
     bool writeFrame(const QCanBusFrame &frame);
 
     const QList<QCanBusFrame> &canFramesLog() const;
-
-protected slots:
-    void canFrameRec();
-    //void canState(QCanBusDevice::CanBusDeviceState state);
-    void notifyForNewFrames();
 
 public slots:
     void exploreBus();
 
 signals:
     void frameAvailable(int id);
-    //void frameErrorOccurred(QCanBusDevice::CanBusError error);
-    //void stateCanOpenChanged(QCanBusDevice::CanBusDeviceState state);
-
     void nodeAdded();
+    void connectedChanged(bool);
+    void busNameChanged(QString);
+
+protected slots:
+    void canFrameRec();
+    void notifyForNewFrames();
+    void updateState();
 
 protected:
     friend class CanOpen;

@@ -93,12 +93,12 @@ QString CanOpenBus::busName() const
 
 void CanOpenBus::setBusName(const QString &busName)
 {
+    bool changed = (_busName != busName);
     _busName = busName;
-}
-
-bool CanOpenBus::isConnected() const
-{
-    return (_canBusDriver->state() == CanBusDriver::CONNECTED);
+    if (changed)
+    {
+        emit busNameChanged(_busName);
+    }
 }
 
 const QList<Node *> &CanOpenBus::nodes() const
@@ -147,6 +147,11 @@ CanBusDriver *CanOpenBus::canBusDriver() const
 
 void CanOpenBus::setCanBusDriver(CanBusDriver *canBusDriver)
 {
+    if (_canBusDriver)
+    {
+        _canBusDriver->deleteLater();
+    }
+
     _canBusDriver = canBusDriver;
     if (_canBusDriver)
     {
@@ -155,9 +160,17 @@ void CanOpenBus::setCanBusDriver(CanBusDriver *canBusDriver)
             _canBusDriver->connectDevice();
         }
         connect(_canBusDriver, &CanBusDriver::framesReceived, this, &CanOpenBus::canFrameRec);
-        // connect(_canBusDriver, &QCanBusDevice::errorOccurred, this, &CanOpenBus::frameErrorOccurred);
-        // connect(_canBusDriver, &QCanBusDevice::stateChanged, this, &CanOpenBus::canState);
+        connect(_canBusDriver, &CanBusDriver::stateChanged, this, &CanOpenBus::updateState);
     }
+}
+
+bool CanOpenBus::isConnected() const
+{
+    if (!_canBusDriver)
+    {
+        return false;
+    }
+    return (_canBusDriver->state() == CanBusDriver::CONNECTED);
 }
 
 bool CanOpenBus::canWrite() const
@@ -185,6 +198,10 @@ bool CanOpenBus::writeFrame(const QCanBusFrame &frame)
 
 void CanOpenBus::canFrameRec()
 {
+    if (!_canBusDriver)
+    {
+        return;
+    }
     QCanBusFrame frame = _canBusDriver->readFrame();
     while (frame.isValid())
     {
@@ -196,11 +213,6 @@ void CanOpenBus::canFrameRec()
     }
 }
 
-/*void CanOpenBus::canState(QCanBusDevice::CanBusDeviceState state)
-{
-    emit stateCanOpenChanged(state);
-}*/
-
 void CanOpenBus::notifyForNewFrames()
 {
     if (_canFrameLogId < _canFramesLog.count())
@@ -208,4 +220,9 @@ void CanOpenBus::notifyForNewFrames()
         _canFrameLogId = _canFramesLog.count();
         emit frameAvailable(_canFrameLogId);
     }
+}
+
+void CanOpenBus::updateState()
+{
+    emit connectedChanged(isConnected());
 }
