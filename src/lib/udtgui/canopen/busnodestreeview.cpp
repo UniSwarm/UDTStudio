@@ -95,6 +95,7 @@ void BusNodesTreeView::refresh()
         for (CanOpenBus *bus : _busNodesModel->canOpen()->buses())
         {
             connect(bus, &CanOpenBus::nodeAdded, this, &BusNodesTreeView::refresh);
+            connect(bus, &CanOpenBus::connectedChanged, this, &BusNodesTreeView::refresh);
         }
     }
     expandAll();
@@ -113,6 +114,10 @@ void BusNodesTreeView::indexDbClick(const QModelIndex &index)
     CanOpenBus *bus = _busNodesModel->bus(indexBusNodeModel);
     if (bus)
     {
+        if (!bus->isConnected())
+        {
+            bus->canBusDriver()->connectDevice();
+        }
         if (bus->isConnected() && bus->nodes().isEmpty())
         {
             bus->exploreBus();

@@ -109,10 +109,17 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
                 return QVariant();
             }
 
+        case Qt::DecorationRole:
+            if (index.column() == NodeId)
+            {
+                return QVariant(QIcon(":/uBoards/connexion-usb.png"));
+            }
+            return QVariant();
+
         case Qt::TextAlignmentRole:
             if (index.column() == NodeId)
             {
-                return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+                return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
             }
             return QVariant();
         }

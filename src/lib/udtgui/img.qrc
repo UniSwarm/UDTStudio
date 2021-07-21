@@ -46,5 +46,7 @@
         <file alias="upm.png">img/uBoards/upm.png</file>
         <file alias="uss.png">img/uBoards/uss.png</file>
         <file alias="uuc.png">img/uBoards/uuc.png</file>
+        <file alias="connexion-usb.png">img/uBoards/icons8-connexion-usb.png</file>
+        <file alias="ethernet-off.png">img/uBoards/icons8-ethernet-off.png</file>
     </qresource>
 </RCC>
