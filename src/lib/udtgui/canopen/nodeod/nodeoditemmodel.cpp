@@ -105,13 +105,28 @@ NodeSubIndex *NodeOdItemModel::nodeSubIndex(const QModelIndex &index) const
 
 void NodeOdItemModel::setNode(Node *node)
 {
+    if (node == _node)
+    {
+        return;
+    }
+
     beginResetModel();
     delete _root;
+
+    if (_node)
+    {
+        disconnect(_node);
+    }
+
     _node = node;
     setNodeInterrest(_node);
     if (_node)
     {
         _root = new NodeOdItem(node->nodeOd());
+        connect(_node, &QObject::destroyed, [=] ()
+        {
+            setNode(nullptr);
+        });
     }
     else
     {
