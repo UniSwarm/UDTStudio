@@ -24,6 +24,7 @@
 
 CanOpenBus::CanOpenBus(CanBusDriver *canBusDriver)
 {
+    _busId = 255;
     _canOpen = nullptr;
     _canBusDriver = nullptr;
     setCanBusDriver(canBusDriver);
@@ -62,30 +63,6 @@ CanOpenBus::~CanOpenBus()
     }
 }
 
-ServiceDispatcher *CanOpenBus::dispatcher() const
-{
-    return _serviceDispatcher;
-}
-
-Sync *CanOpenBus::sync() const
-{
-    return _sync;
-}
-
-CanOpen *CanOpenBus::canOpen() const
-{
-    return _canOpen;
-}
-
-quint8 CanOpenBus::busId() const
-{
-    if (_canOpen)
-    {
-        return static_cast<quint8>(CanOpen::buses().indexOf(const_cast<CanOpenBus *>(this)));
-    }
-    return 255;
-}
-
 QString CanOpenBus::busName() const
 {
     return _busName;
@@ -99,6 +76,16 @@ void CanOpenBus::setBusName(const QString &busName)
     {
         emit busNameChanged(_busName);
     }
+}
+
+CanOpen *CanOpenBus::canOpen() const
+{
+    return _canOpen;
+}
+
+quint8 CanOpenBus::busId() const
+{
+    return _busId;
 }
 
 const QList<Node *> &CanOpenBus::nodes() const
@@ -127,7 +114,25 @@ void CanOpenBus::addNode(Node *node)
     {
         _serviceDispatcher->addService(service.next());
     }
-    emit nodeAdded();
+    emit nodeAdded(node->nodeId());
+}
+
+void CanOpenBus::removeNode(Node *node)
+{
+    // TODO
+    if (_nodes.contains(node))
+    {
+        emit nodeRemoved(node->nodeId());
+        QListIterator<Service *> service(node->services());
+        while (service.hasNext())
+        {
+            _serviceDispatcher->removeService(service.next());
+        }
+
+        _nodes.removeOne(node);
+        _nodesMap.remove(node->nodeId());
+        node->deleteLater();
+    }
 }
 
 void CanOpenBus::exploreBus()
@@ -194,6 +199,16 @@ bool CanOpenBus::writeFrame(const QCanBusFrame &frame)
     emitFrame.setLocalEcho(true);
     _canFramesLog.append(emitFrame);
     return true;
+}
+
+ServiceDispatcher *CanOpenBus::dispatcher() const
+{
+    return _serviceDispatcher;
+}
+
+Sync *CanOpenBus::sync() const
+{
+    return _sync;
 }
 
 void CanOpenBus::canFrameRec()

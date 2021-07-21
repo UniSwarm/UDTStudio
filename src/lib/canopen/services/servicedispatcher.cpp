@@ -36,16 +36,19 @@ QString ServiceDispatcher::type() const
     return QLatin1String("Emergency");
 }
 
-void ServiceDispatcher::addService(uint32_t canId, Service *service)
-{
-    _servicesMap.insert(canId, service);
-}
-
 void ServiceDispatcher::addService(Service *service)
 {
     for (quint32 cobId : service->cobIds())
     {
-        addService(cobId, service);
+        _servicesMap.insert(cobId, service);
+    }
+}
+
+void ServiceDispatcher::removeService(Service *service)
+{
+    for (quint32 cobId : service->cobIds())
+    {
+        _servicesMap.remove(cobId, service);
     }
 }
 
@@ -55,7 +58,6 @@ void ServiceDispatcher::parseFrame(const QCanBusFrame &frame)
     QList<Service *>::const_iterator service = interrestedServices.cbegin();
     while (service != interrestedServices.cend())
     {
-        // qDebug() << (*service)->type() << "Node" << (((*service)->node()) ? (*service)->node()->nodeId() : 0);
         (*service)->parseFrame(frame);
         ++service;
     }

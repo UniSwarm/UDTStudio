@@ -34,8 +34,8 @@ public:
 
     QString type() const override;
 
-    void addService(uint32_t canId, Service *service);
     void addService(Service *service);
+    void removeService(Service *service);
 
     void parseFrame(const QCanBusFrame &frame) override;
 

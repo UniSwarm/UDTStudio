@@ -39,19 +39,46 @@ CanOpenBus *CanOpen::addBus(CanOpenBus *bus)
     return instance()->addBusI(bus);
 }
 
+void CanOpen::removeBus(CanOpenBus *bus)
+{
+    instance()->removeBusI(bus);
+}
+
 CanOpenBus *CanOpen::bus(const quint8 busId)
 {
-    if (busId >= instance()->_buses.count())
+    QMap<quint8, CanOpenBus *>::const_iterator it = instance()->_busesMap.constFind(busId);
+    if (it != instance()->_busesMap.cend())
     {
-        return nullptr;
+        return *it;
     }
-    return instance()->_buses.at(busId);
+    return nullptr;
 }
 
 CanOpenBus *CanOpen::addBusI(CanOpenBus *bus)
 {
     bus->_canOpen = this;
+    bus->_busId = findNewBusId();
     _buses.append(bus);
-    emit busChanged();
+    _busesMap.insert(bus->busId(), bus);
+    emit busAdded(bus->busId());
     return bus;
+}
+
+void CanOpen::removeBusI(CanOpenBus *bus)
+{
+    emit busRemoved(bus->busId());
+    _buses.removeOne(bus);
+    _busesMap.remove(bus->busId());
+}
+
+quint8 CanOpen::findNewBusId() const
+{
+    for (quint8 busId = 0; busId < 255; busId++)
+    {
+        if (!_busesMap.contains(busId))
+        {
+            return busId;
+        }
+    }
+    return 255;
 }

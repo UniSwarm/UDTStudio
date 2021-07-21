@@ -66,13 +66,14 @@ void BusNodesTreeView::setCanOpen(CanOpen *canOpen)
     {
         if (oldCanOpen)
         {
-            disconnect(oldCanOpen, &CanOpen::busChanged, this, &BusNodesTreeView::refresh);
+            disconnect(oldCanOpen);
         }
     }
     _busNodesModel->setCanOpen(canOpen);
     if (canOpen)
     {
-        connect(canOpen, &CanOpen::busChanged, this, &BusNodesTreeView::refresh);
+        connect(canOpen, &CanOpen::busAdded, this, &BusNodesTreeView::refresh);
+        connect(canOpen, &CanOpen::busRemoved, this, &BusNodesTreeView::refresh);
     }
 }
 

@@ -35,6 +35,7 @@ class CANOPEN_EXPORT CanOpen : public QObject
 public:
     static const QList<CanOpenBus *> &buses();
     static CanOpenBus *addBus(CanOpenBus *bus);
+    static void removeBus(CanOpenBus *bus);
     static CanOpenBus *bus(const quint8 busId);
 
     static inline CanOpen *instance()
@@ -52,13 +53,19 @@ public:
     }
 
 signals:
-    void busChanged();
+    void busAdded(quint8 busId);
+    void busRemoved(quint8 busId);
 
 protected:
     CanOpen();
     ~CanOpen();
+
     QList<CanOpenBus *> _buses;
+    QMap<quint8, CanOpenBus *> _busesMap;
+
     CanOpenBus *addBusI(CanOpenBus *bus);
+    void removeBusI(CanOpenBus *bus);
+    quint8 findNewBusId() const;
 
     static CanOpen *_instance;
 };

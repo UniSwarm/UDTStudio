@@ -39,18 +39,15 @@ public:
     CanOpenBus(CanBusDriver *canBusDriver = Q_NULLPTR);
     ~CanOpenBus();
 
+    QString busName() const;
+
     CanOpen *canOpen() const;
     quint8 busId() const;
-    ServiceDispatcher *dispatcher() const;
-
-    Sync *sync() const;
-
-    QString busName() const;
-    void setBusName(const QString &busName);
 
     const QList<Node *> &nodes() const;
     Node *node(const quint8 nodeId);
     void addNode(Node *node);
+    void removeNode(Node *node);
     bool existNode(const quint8 nodeId);
 
     CanBusDriver *canBusDriver() const;
@@ -61,12 +58,17 @@ public:
 
     const QList<QCanBusFrame> &canFramesLog() const;
 
+    ServiceDispatcher *dispatcher() const;
+    Sync *sync() const;
+
 public slots:
     void exploreBus();
+    void setBusName(const QString &busName);
 
 signals:
     void frameAvailable(int id);
-    void nodeAdded();
+    void nodeAdded(int nodeId);
+    void nodeRemoved(int nodeId);
     void connectedChanged(bool);
     void busNameChanged(QString);
 
@@ -78,6 +80,7 @@ protected slots:
 protected:
     friend class CanOpen;
     CanOpen *_canOpen;
+    quint8 _busId;
 
     QString _busName;
     QMap<quint8, Node *> _nodesMap;
