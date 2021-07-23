@@ -47,6 +47,13 @@ public:
         ColumnCount
     };
 
+protected:
+    void prepareAddBus(quint8 busId);
+    void addBus(quint8 busId);
+    void removeBus(quint8 busId);
+    void addNode(CanOpenBus *bus, quint8 nodeId);
+    void removeNode(CanOpenBus *bus, quint8 nodeId);
+
     // QAbstractItemModel interface
 public:
     int columnCount(const QModelIndex &parent) const;

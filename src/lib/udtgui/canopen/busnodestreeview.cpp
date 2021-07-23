@@ -61,20 +61,7 @@ CanOpen *BusNodesTreeView::canOpen() const
 
 void BusNodesTreeView::setCanOpen(CanOpen *canOpen)
 {
-    CanOpen *oldCanOpen = _busNodesModel->canOpen();
-    if (canOpen != oldCanOpen)
-    {
-        if (oldCanOpen)
-        {
-            disconnect(oldCanOpen);
-        }
-    }
     _busNodesModel->setCanOpen(canOpen);
-    if (canOpen)
-    {
-        connect(canOpen, &CanOpen::busAdded, this, &BusNodesTreeView::refresh);
-        connect(canOpen, &CanOpen::busRemoved, this, &BusNodesTreeView::refresh);
-    }
 }
 
 CanOpenBus *BusNodesTreeView::currentBus() const
@@ -85,21 +72,6 @@ CanOpenBus *BusNodesTreeView::currentBus() const
 Node *BusNodesTreeView::currentNode() const
 {
     return _busNodesModel->node(_sortFilterProxyModel->mapToSource(selectionModel()->currentIndex()));
-}
-
-void BusNodesTreeView::refresh()
-{
-    // TODO add a real insert node/bus system
-    _busNodesModel->setCanOpen(_busNodesModel->canOpen());
-    if (_busNodesModel->canOpen())
-    {
-        for (CanOpenBus *bus : _busNodesModel->canOpen()->buses())
-        {
-            connect(bus, &CanOpenBus::nodeAdded, this, &BusNodesTreeView::refresh);
-            connect(bus, &CanOpenBus::connectedChanged, this, &BusNodesTreeView::refresh);
-        }
-    }
-    expandAll();
 }
 
 void BusNodesTreeView::updateSelection()

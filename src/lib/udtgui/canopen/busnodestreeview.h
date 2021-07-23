@@ -44,9 +44,6 @@ signals:
     void busSelected(CanOpenBus *currentBus);
     void nodeSelected(Node *currentNode);
 
-public slots:
-    void refresh();
-
 protected slots:
     void updateSelection();
     void indexDbClick(const QModelIndex &index);
