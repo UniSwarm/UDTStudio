@@ -67,8 +67,12 @@ public slots:
 
 signals:
     void frameAvailable(int id);
+
+    void nodeAboutToBeAdded(int nodeId);
     void nodeAdded(int nodeId);
+    void nodeAboutToBeRemoved(int nodeId);
     void nodeRemoved(int nodeId);
+
     void connectedChanged(bool);
     void busNameChanged(QString);
 

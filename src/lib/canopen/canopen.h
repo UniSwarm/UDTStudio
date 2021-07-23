@@ -53,7 +53,9 @@ public:
     }
 
 signals:
+    void busAboutToBeAdded(quint8 busId);
     void busAdded(quint8 busId);
+    void busAboutToBeRemoved(quint8 busId);
     void busRemoved(quint8 busId);
 
 protected:

@@ -105,6 +105,7 @@ bool CanOpenBus::existNode(const quint8 nodeId)
 
 void CanOpenBus::addNode(Node *node)
 {
+    emit nodeAboutToBeAdded(node->nodeId());
     _nodes.append(node);
     _nodesMap.insert(node->nodeId(), node);
 
@@ -119,10 +120,9 @@ void CanOpenBus::addNode(Node *node)
 
 void CanOpenBus::removeNode(Node *node)
 {
-    // TODO
     if (_nodes.contains(node))
     {
-        emit nodeRemoved(node->nodeId());
+        emit nodeAboutToBeRemoved(node->nodeId());
         QListIterator<Service *> service(node->services());
         while (service.hasNext())
         {
@@ -132,6 +132,7 @@ void CanOpenBus::removeNode(Node *node)
         _nodes.removeOne(node);
         _nodesMap.remove(node->nodeId());
         node->deleteLater();
+        emit nodeRemoved(node->nodeId());
     }
 }
 

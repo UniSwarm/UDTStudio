@@ -56,6 +56,7 @@ CanOpenBus *CanOpen::bus(const quint8 busId)
 
 CanOpenBus *CanOpen::addBusI(CanOpenBus *bus)
 {
+    emit busAboutToBeAdded(bus->busId());
     bus->_canOpen = this;
     bus->_busId = findNewBusId();
     _buses.append(bus);
@@ -66,9 +67,10 @@ CanOpenBus *CanOpen::addBusI(CanOpenBus *bus)
 
 void CanOpen::removeBusI(CanOpenBus *bus)
 {
-    emit busRemoved(bus->busId());
+    emit busAboutToBeRemoved(bus->busId());
     _buses.removeOne(bus);
     _busesMap.remove(bus->busId());
+    emit busRemoved(bus->busId());
 }
 
 quint8 CanOpen::findNewBusId() const
