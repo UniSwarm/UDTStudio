@@ -119,7 +119,7 @@ void NodeScreensWidget::addNode(Node *node)
     // add specific screens node
     if ((node->profileNumber()) == 0x192)
     {
-        for (uint8_t i = 0; i < node->countProfile(); i++)
+        for (int i = 0; i < node->profilesCount(); i++)
         {
             QApplication::processEvents();
             screen = new NodeScreenUmcMotor();
@@ -127,7 +127,7 @@ void NodeScreensWidget::addNode(Node *node)
             screen->setScreenWidget(this);
             nodeScreens.screens.append(screen);
         }
-        if (node->countProfile() > 1)
+        if (node->profilesCount() > 1)
         {
             QApplication::processEvents();
             screen = new NodeScreenSynchro();
