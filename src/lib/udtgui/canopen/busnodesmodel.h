@@ -51,8 +51,12 @@ protected:
     void prepareAddBus(quint8 busId);
     void addBus(quint8 busId);
     void removeBus(quint8 busId);
+    void updateBus(CanOpenBus *bus, quint8 column);
+
+    void prepareAddNode(CanOpenBus *bus, quint8 nodeId);
     void addNode(CanOpenBus *bus, quint8 nodeId);
     void removeNode(CanOpenBus *bus, quint8 nodeId);
+    void updateNode(Node *node, quint8 column);
 
     // QAbstractItemModel interface
 public:

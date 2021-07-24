@@ -1,6 +1,5 @@
 #include "busnodesmodel.h"
 
-#include <QDebug>
 #include <QIcon>
 
 BusNodesModel::BusNodesModel(QObject *parent)
@@ -79,6 +78,8 @@ void BusNodesModel::prepareAddBus(quint8 busId)
 
 void BusNodesModel::addBus(quint8 busId)
 {
+    endInsertRows();
+
     CanOpenBus *bus = _canOpen->bus(busId);
     if (!bus)
     {
@@ -86,11 +87,11 @@ void BusNodesModel::addBus(quint8 busId)
     }
     connect(bus, &CanOpenBus::nodeAboutToBeAdded, [=] (int nodeId)
     {
-        addNode(bus, nodeId);
+        prepareAddNode(bus, nodeId);
     });
-    connect(bus, &CanOpenBus::nodeAdded, [=] ()
+    connect(bus, &CanOpenBus::nodeAdded, [=] (int nodeId)
     {
-        endInsertRows();
+        addNode(bus, nodeId);
     });
     connect(bus, &CanOpenBus::nodeAboutToBeRemoved, [=] (int nodeId)
     {
@@ -100,7 +101,14 @@ void BusNodesModel::addBus(quint8 busId)
     {
         endRemoveRows();
     });
-    endInsertRows();
+    connect(bus, &CanOpenBus::busNameChanged, [=] ()
+    {
+        updateBus(bus, Name);
+    });
+    connect(bus, &CanOpenBus::connectedChanged, [=] ()
+    {
+        updateBus(bus, Status);
+    });
 }
 
 void BusNodesModel::removeBus(quint8 busId)
@@ -117,12 +125,39 @@ void BusNodesModel::removeBus(quint8 busId)
     endRemoveRows();
 }
 
-void BusNodesModel::addNode(CanOpenBus *bus, quint8 nodeId)
+void BusNodesModel::updateBus(CanOpenBus *bus, quint8 column)
+{
+    int indexBus = _canOpen->buses().indexOf(bus);
+    QModelIndex modelIndex = index(indexBus, column, QModelIndex());
+    emit dataChanged(modelIndex, modelIndex);
+}
+
+void BusNodesModel::prepareAddNode(CanOpenBus *bus, quint8 nodeId)
 {
     Q_UNUSED(nodeId)
     int indexBus = _canOpen->buses().indexOf(bus);
     int indexNode = bus->nodes().count();
     beginInsertRows(index(indexBus, 0, QModelIndex()), indexNode, indexNode);
+}
+
+void BusNodesModel::addNode(CanOpenBus *bus, quint8 nodeId)
+{
+    endInsertRows();
+
+    Node *node = bus->node(nodeId);
+    if (!node)
+    {
+        return;
+    }
+
+    connect(node, &Node::nameChanged, [=] ()
+    {
+        updateNode(node, Name);
+    });
+    connect(node, &Node::statusChanged, [=] ()
+    {
+        updateNode(node, Status);
+    });
 }
 
 void BusNodesModel::removeNode(CanOpenBus *bus, quint8 nodeId)
@@ -135,6 +170,16 @@ void BusNodesModel::removeNode(CanOpenBus *bus, quint8 nodeId)
     int indexBus = _canOpen->buses().indexOf(bus);
     int indexNode = bus->nodes().indexOf(node);
     beginRemoveRows(index(indexBus, 0, QModelIndex()), indexNode, indexNode);
+}
+
+void BusNodesModel::updateNode(Node *node, quint8 column)
+{
+    int indexBus = _canOpen->buses().indexOf(node->bus());
+    int indexNode = node->bus()->nodes().indexOf(node);
+
+    QModelIndex modelIndexBus = index(indexBus, 0, QModelIndex());
+    QModelIndex modelIndex = index(indexNode, column, modelIndexBus);
+    emit dataChanged(modelIndex, modelIndex);
 }
 
 int BusNodesModel::columnCount(const QModelIndex &parent) const
