@@ -27,7 +27,7 @@ void BusNodesModel::setCanOpen(CanOpen *canOpen)
     emit layoutAboutToBeChanged();
     if (_canOpen)
     {
-        disconnect(_canOpen, nullptr, nullptr, nullptr);
+        disconnect(_canOpen, nullptr, this, nullptr);
     }
 
     _canOpen = canOpen;
@@ -118,7 +118,7 @@ void BusNodesModel::removeBus(quint8 busId)
     {
         return;
     }
-    disconnect(bus, nullptr, nullptr, nullptr);
+    disconnect(bus, nullptr, this, nullptr);
 
     int indexBus = _canOpen->buses().indexOf(bus);
     beginRemoveRows(QModelIndex(), indexBus, indexBus);

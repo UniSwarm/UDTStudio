@@ -24,6 +24,7 @@
 #include <QFileDialog>
 #include <QFormLayout>
 
+#include "canopenbus.h"
 #include "services/services.h"
 
 NodeManagerWidget::NodeManagerWidget(QWidget *parent)
@@ -37,8 +38,6 @@ NodeManagerWidget::NodeManagerWidget(Node *node, QWidget *parent)
     _node = nullptr;
     createWidgets();
     setNode(node);
-
-    registerSubIndex(0x1000, 0x00);
 }
 
 Node *NodeManagerWidget::node() const
@@ -56,7 +55,6 @@ void NodeManagerWidget::setNode(Node *node)
         }
     }
 
-    setNodeInterrest(node);
     _node = node;
 
     if (_node)
@@ -68,6 +66,8 @@ void NodeManagerWidget::setNode(Node *node)
 
     _actionLoadEds->setEnabled(_node);
     _actionReLoadEds->setEnabled(_node);
+
+    _actionRemoveNode->setEnabled(_node);
 
     updateData();
 }
@@ -142,6 +142,16 @@ void NodeManagerWidget::resetNode()
     }
 }
 
+void NodeManagerWidget::removeNode()
+{
+    if (_node)
+    {
+        Node *node = _node;
+        setNode(nullptr);
+        node->bus()->removeNode(node);
+    }
+}
+
 void NodeManagerWidget::loadEds(const QString &edsFileName)
 {
     if (_node)
@@ -168,6 +178,14 @@ void NodeManagerWidget::reloadEds()
     }
 }
 
+void NodeManagerWidget::setNodeName()
+{
+    if (_node)
+    {
+        _node->setName(_nodeNameEdit->text());
+    }
+}
+
 void NodeManagerWidget::createWidgets()
 {
     QLayout *layout = new QVBoxLayout();
@@ -176,7 +194,7 @@ void NodeManagerWidget::createWidgets()
     _groupBox = new QGroupBox(tr("Node"));
     QFormLayout *layoutGroupBox = new QFormLayout();
     layoutGroupBox->setSpacing(2);
-    layoutGroupBox->setContentsMargins(5, 5, 5, 5);
+    layoutGroupBox->setContentsMargins(2, 2, 2, 2);
 
     // toolbar nmt
     _toolBar = new QToolBar(tr("Node commands"));
@@ -217,23 +235,29 @@ void NodeManagerWidget::createWidgets()
 
     _toolBar->addActions(_groupNmt->actions());
 
-    // EDS actions
-    _toolBar->addSeparator();
+    // Remove node
+    _actionRemoveNode = new QAction(tr("Remove node"));
+    _actionRemoveNode->setIcon(QIcon(":/icons/img/icons8-delete.png"));
+    _actionRemoveNode->setStatusTip(tr("Remove the current node from the bus"));
+    connect(_actionRemoveNode, &QAction::triggered, this, &NodeManagerWidget::removeNode);
 
-    _actionLoadEds = _toolBar->addAction(tr("Load eds"));
+    // EDS actions
+    _actionLoadEds = new QAction(tr("Load eds"));
     _actionLoadEds->setIcon(QIcon(":/icons/img/icons8-import-file.png"));
     _actionLoadEds->setStatusTip(tr("Load an eds file as object dictionary description"));
     connect(_actionLoadEds, &QAction::triggered,  [=](){loadEds();});
 
-    _actionReLoadEds = _toolBar->addAction(tr("Reload eds"));
+    _actionReLoadEds = new QAction(tr("Reload eds"));
     _actionReLoadEds->setIcon(QIcon(":/icons/img/icons8-restore-page.png"));
     _actionReLoadEds->setStatusTip(tr("Reload the current eds file"));
     connect(_actionReLoadEds, &QAction::triggered, this, &NodeManagerWidget::reloadEds);
 
     layoutGroupBox->addRow(_toolBar);
+    layoutGroupBox->addItem(new QSpacerItem(0, 2));
 
     _nodeNameEdit = new QLineEdit();
     layoutGroupBox->addRow(tr("Name:"), _nodeNameEdit);
+    connect(_nodeNameEdit, &QLineEdit::returnPressed, this, &NodeManagerWidget::setNodeName);
 
     _nodeStatusLabel = new QLabel();
     layoutGroupBox->addRow(tr("Status:"), _nodeStatusLabel);
@@ -246,6 +270,11 @@ void NodeManagerWidget::createWidgets()
     layout->addWidget(_groupBox);
 
     setLayout(layout);
+}
+
+QAction *NodeManagerWidget::actionRemoveNode() const
+{
+    return _actionRemoveNode;
 }
 
 QAction *NodeManagerWidget::actionReLoadEds() const
@@ -281,12 +310,4 @@ QAction *NodeManagerWidget::actionStart() const
 QAction *NodeManagerWidget::actionPreop() const
 {
     return _actionPreop;
-}
-
-void NodeManagerWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
-{
-    if (objId.index() == 0x1000 && objId.subIndex() == 0x00)
-    {
-        //_index1000Label->setNum(flags);
-    }
 }

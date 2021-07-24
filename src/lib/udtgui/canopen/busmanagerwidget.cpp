@@ -40,22 +40,67 @@ CanOpenBus *BusManagerWidget::bus() const
 
 void BusManagerWidget::setBus(CanOpenBus *bus)
 {
+    if (_bus)
+    {
+        disconnect(_bus, nullptr, this, nullptr);
+    }
+
     _bus = bus;
+    if (_bus)
+    {
+        connect(_bus, &CanOpenBus::connectedChanged, this, &BusManagerWidget::updateBusData);
+        connect(_bus, &CanOpenBus::busNameChanged, this, &BusManagerWidget::updateBusData);
+    }
+
     _groupBox->setEnabled(_bus);
-    _actionExplore->setEnabled(_bus);
-    _actionSyncOne->setEnabled(_bus);
-    _actionSyncStart->setEnabled(_bus);
-    updateData();
+    updateBusData();
 }
 
-void BusManagerWidget::updateData()
+void BusManagerWidget::updateBusData()
 {
     if (_bus)
     {
-        _busNameEdit->setText(_bus->busName());
+        _actionTogleConnect->blockSignals(true);
+        _actionTogleConnect->setEnabled(true);
+        _actionTogleConnect->setChecked(_bus->isConnected());
+        _actionTogleConnect->setText(_bus->isConnected() ? tr("Disconnect") : tr("Connect"));
+        _actionTogleConnect->blockSignals(false);
+
         _actionSyncStart->blockSignals(true);
         _actionSyncStart->setChecked(_bus->sync()->status() == Sync::STARTED);
         _actionSyncStart->blockSignals(false);
+
+        _busNameEdit->setText(_bus->busName());
+
+        _actionExplore->setEnabled(_bus->isConnected());
+        _actionSyncOne->setEnabled(_bus->isConnected());
+        _actionSyncStart->setEnabled(_bus->isConnected());
+    }
+    if (!_bus)
+    {
+        _actionTogleConnect->setChecked(false);
+        _actionTogleConnect->setEnabled(false);
+        _actionExplore->setEnabled(false);
+        _actionSyncOne->setEnabled(false);
+        _actionSyncStart->setEnabled(false);
+    }
+}
+
+void BusManagerWidget::togleConnect()
+{
+    if (_bus)
+    {
+        if (_bus->canBusDriver())
+        {
+            if (_bus->isConnected())
+            {
+                _bus->canBusDriver()->disconnectDevice();
+            }
+            else
+            {
+                _bus->canBusDriver()->connectDevice();
+            }
+        }
     }
 }
 
@@ -101,6 +146,14 @@ void BusManagerWidget::setSyncTimer(int i)
     }
 }
 
+void BusManagerWidget::setBusName()
+{
+    if (_bus)
+    {
+        _bus->setBusName(_busNameEdit->text());
+    }
+}
+
 void BusManagerWidget::createWidgets()
 {
     QLayout *layout = new QVBoxLayout();
@@ -109,10 +162,20 @@ void BusManagerWidget::createWidgets()
     _groupBox = new QGroupBox(tr("Bus"));
     QFormLayout *layoutGroupBox = new QFormLayout();
     layoutGroupBox->setSpacing(2);
-    layoutGroupBox->setContentsMargins(5, 5, 5, 5);
+    layoutGroupBox->setContentsMargins(2, 2, 2, 2);
 
     _toolBar = new QToolBar(tr("Bus commands"));
     _toolBar->setIconSize(QSize(20, 20));
+
+    // connect
+    _actionTogleConnect = _toolBar->addAction(tr("Connect"));
+    QIcon iconConnect;
+    iconConnect.addFile(":/icons/img/icons8-disconnected.png", QSize(), QIcon::Normal, QIcon::Off);
+    iconConnect.addFile(":/icons/img/icons8-connected.png", QSize(), QIcon::Normal, QIcon::On);
+    _actionTogleConnect->setIcon(iconConnect);
+    _actionTogleConnect->setCheckable(true);
+    _actionTogleConnect->setStatusTip(tr("Connect/disconnect bus"));
+    connect(_actionTogleConnect, &QAction::triggered, this, &BusManagerWidget::togleConnect);
 
     // explore
     _actionExplore = _toolBar->addAction(tr("Explore"));
@@ -143,14 +206,21 @@ void BusManagerWidget::createWidgets()
     connect(_actionSyncStart, &QAction::triggered, this, &BusManagerWidget::toggleSync);
 
     layoutGroupBox->addRow(_toolBar);
+    layoutGroupBox->addItem(new QSpacerItem(0, 2));
 
     _busNameEdit = new QLineEdit();
     layoutGroupBox->addRow(tr("Name:"), _busNameEdit);
+    connect(_busNameEdit, &QLineEdit::returnPressed, this, &BusManagerWidget::setBusName);
 
     _groupBox->setLayout(layoutGroupBox);
     layout->addWidget(_groupBox);
 
     setLayout(layout);
+}
+
+QAction *BusManagerWidget::actionTogleConnect() const
+{
+    return _actionTogleConnect;
 }
 
 QAction *BusManagerWidget::actionSyncStart() const

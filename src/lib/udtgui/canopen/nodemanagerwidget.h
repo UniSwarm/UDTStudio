@@ -31,7 +31,7 @@
 
 #include "node.h"
 
-class UDTGUI_EXPORT NodeManagerWidget : public QWidget, public NodeOdSubscriber
+class UDTGUI_EXPORT NodeManagerWidget : public QWidget
 {
     Q_OBJECT
 public:
@@ -49,7 +49,7 @@ public:
     QAction *actionLoadEds() const;
     QAction *actionReLoadEds() const;
 
-signals:
+    QAction *actionRemoveNode() const;
 
 public slots:
     void setNode(Node *value);
@@ -61,8 +61,13 @@ public slots:
     void resetCom();
     void resetNode();
 
+    void removeNode();
+
     void loadEds(const QString &edsFileName = QString());
     void reloadEds();
+
+protected slots:
+    void setNodeName();
 
 protected:
     void createWidgets();
@@ -82,11 +87,9 @@ protected:
     QAction *_actionLoadEds;
     QAction *_actionReLoadEds;
 
-    Node *_node;
+    QAction *_actionRemoveNode;
 
-    // NodeOdSubscriber interface
-protected:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+    Node *_node;
 };
 
 #endif // NODEMANAGERWIDGET_H

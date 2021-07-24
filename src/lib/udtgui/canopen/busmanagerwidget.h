@@ -40,31 +40,34 @@ public:
 
     CanOpenBus *bus() const;
 
+    QAction *actionTogleConnect() const;
     QAction *actionExplore() const;
     QAction *actionSyncOne() const;
     QAction *actionSyncStart() const;
 
-signals:
-
 public slots:
     void setBus(CanOpenBus *bus);
-    void updateData();
 
+    void togleConnect();
     void exploreBus();
     void sendSyncOne();
     void toggleSync(bool start);
 
 protected slots:
     void setSyncTimer(int i);
+    void setBusName();
+    void updateBusData();
 
 protected:
+    CanOpenBus *_bus;
+
     void createWidgets();
     QGroupBox *_groupBox;
     QToolBar *_toolBar;
     QLineEdit *_busNameEdit;
     QSpinBox *_syncTimerSpinBox;
 
-    CanOpenBus *_bus;
+    QAction *_actionTogleConnect;
     QAction *_actionExplore;
     QAction *_actionSyncOne;
     QAction *_actionSyncStart;

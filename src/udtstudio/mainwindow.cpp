@@ -161,6 +161,7 @@ void MainWindow::createMenus()
 
     // ============= Bus =============
     QMenu *busMenu = menuBar()->addMenu(tr("&Bus"));
+    busMenu->addAction(_busNodesManagerView->busManagerWidget()->actionTogleConnect());
     busMenu->addAction(_busNodesManagerView->busManagerWidget()->actionExplore());
     busMenu->addAction(_busNodesManagerView->busManagerWidget()->actionSyncOne());
     busMenu->addAction(_busNodesManagerView->busManagerWidget()->actionSyncStart());
@@ -176,6 +177,9 @@ void MainWindow::createMenus()
 
     nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionLoadEds());
     nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionReLoadEds());
+    nodeMenu->addSeparator();
+
+    nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionRemoveNode());
 
     action = new QAction(tr("Save conf file"), this);
     action->setShortcut(QKeySequence::SaveAs);
