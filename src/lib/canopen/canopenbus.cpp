@@ -18,8 +18,6 @@
 
 #include "canopenbus.h"
 
-#include <QDebug>
-
 #include "canopen.h"
 
 CanOpenBus::CanOpenBus(CanBusDriver *canBusDriver)

@@ -18,8 +18,6 @@
 
 #include "node.h"
 
-#include <QDebug>
-
 #include "canopenbus.h"
 #include "model/deviceconfiguration.h"
 #include "parser/edsparser.h"
@@ -132,7 +130,12 @@ const QString &Node::name() const
 
 void Node::setName(const QString &name)
 {
+    bool changed = (name != _name);
     _name = name;
+    if (changed)
+    {
+        emit nameChanged(_name);
+    }
 }
 
 Node::Status Node::status() const
@@ -194,9 +197,9 @@ const QList<NodeProfile *> &Node::profiles() const
     return _nodeProfiles;
 }
 
-int Node::countProfile() const
+int Node::profilesCount() const
 {
-    return _nodeProfiles.size();
+    return _nodeProfiles.count();
 }
 
 void Node::sendPreop()
@@ -236,12 +239,10 @@ void Node::setBus(CanOpenBus *bus)
 void Node::reset()
 {
     _nodeOd->resetValue();
-
     for (Service *service : qAsConst(_services))
     {
         service->reset();
     }
-
     for (NodeProfile *nodeProfile : qAsConst(_nodeProfiles))
     {
         nodeProfile->reset();
@@ -260,14 +261,14 @@ const QList<TPDO *> &Node::tpdos() const
 
 bool Node::isMappedObjectInPdo(const NodeObjectId &object) const
 {
-    for (RPDO *rpdo : _rpdos)
+    for (RPDO *rpdo : qAsConst(_rpdos))
     {
         if (rpdo->isMappedObject(object))
         {
             return true;
         }
     }
-    for (TPDO *tpdo : _tpdos)
+    for (TPDO *tpdo : qAsConst(_tpdos))
     {
         if (tpdo->isMappedObject(object))
         {

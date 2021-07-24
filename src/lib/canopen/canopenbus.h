@@ -74,7 +74,7 @@ signals:
     void nodeRemoved(int nodeId);
 
     void connectedChanged(bool);
-    void busNameChanged(QString);
+    void busNameChanged(const QString &);
 
 protected slots:
     void canFrameRec();

@@ -52,7 +52,6 @@ public:
     void setNodeId(const quint8 nodeId);
 
     const QString &name() const;
-    void setName(const QString &name);
 
     void readObject(const NodeObjectId &id);
     void readObject(const quint16 index, const quint8 subindex, const QMetaType::Type dataType = QMetaType::Type::UnknownType);
@@ -78,28 +77,31 @@ public:
     quint16 manufacturerId() const;
     quint16 productCode() const;
     quint16 profileNumber() const;
+
     void addProfile(NodeProfile *nodeProfile);
     const QList<NodeProfile *> &profiles() const;
-    int countProfile() const;
+    int profilesCount() const;
 
     const QList<TPDO *> &tpdos() const;
     const QList<RPDO *> &rpdos() const;
-
     bool isMappedObjectInPdo(const NodeObjectId &object) const;
     RPDO *isMappedObjectInRpdo(const NodeObjectId &object) const;
     TPDO *isMappedObjectInTpdo(const NodeObjectId &object) const;
 
     void reset();
 
-signals:
-    void statusChanged(Node::Status status);
-
 public slots:
+    void setName(const QString &name);
+
     void sendPreop();
     void sendStart();
     void sendStop();
     void sendResetComm();
     void sendResetNode();
+
+signals:
+    void nameChanged(const QString &);
+    void statusChanged(Node::Status);
 
 protected:
     friend class CanOpenBus;
