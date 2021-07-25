@@ -18,8 +18,9 @@
 
 #include "busnodestreeview.h"
 
-#include <QDebug>
 #include <QHeaderView>
+#include <QMenu>
+#include <QContextMenuEvent>
 
 BusNodesTreeView::BusNodesTreeView(QWidget *parent)
     : BusNodesTreeView(nullptr, parent)
@@ -74,6 +75,16 @@ Node *BusNodesTreeView::currentNode() const
     return _busNodesModel->node(_sortFilterProxyModel->mapToSource(selectionModel()->currentIndex()));
 }
 
+void BusNodesTreeView::addBusAction(QAction *action)
+{
+    _busActions.append(action);
+}
+
+void BusNodesTreeView::addNodeAction(QAction *action)
+{
+    _nodeActions.append(action);
+}
+
 void BusNodesTreeView::updateSelection()
 {
     emit busSelected(currentBus());
@@ -96,4 +107,45 @@ void BusNodesTreeView::indexDbClick(const QModelIndex &index)
             bus->exploreBus();
         }
     }
+}
+
+void BusNodesTreeView::contextMenuEvent(QContextMenuEvent *event)
+{
+    QList<CanOpenBus *> selectedBuses;
+    QList<Node *> selectedNodes;
+
+    QModelIndexList selectedRows = selectionModel()->selectedRows();
+    for (QModelIndex row : qAsConst(selectedRows))
+    {
+        const QModelIndex &curentIndex = _sortFilterProxyModel->mapToSource(row);
+
+        CanOpenBus *bus = _busNodesModel->bus(curentIndex);
+        if (bus)
+        {
+            selectedBuses.append(bus);
+            continue;
+        }
+
+        Node *node = _busNodesModel->node(curentIndex);
+        if (node)
+        {
+            selectedNodes.append(node);
+            continue;
+        }
+    }
+
+    QMenu menu;
+    if (!selectedBuses.isEmpty())
+    {
+        menu.addActions(_busActions);
+        if (!selectedNodes.isEmpty())
+        {
+            menu.addSeparator();
+        }
+    }
+    if (!selectedNodes.isEmpty())
+    {
+        menu.addActions(_nodeActions);
+    }
+    menu.exec(event->globalPos());
 }

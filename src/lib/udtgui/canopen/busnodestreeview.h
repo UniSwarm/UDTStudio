@@ -21,10 +21,13 @@
 
 #include "udtgui_global.h"
 
-#include <QSortFilterProxyModel>
 #include <QTreeView>
 
 #include "busnodesmodel.h"
+
+#include <QSortFilterProxyModel>
+#include <QList>
+#include <QAction>
 
 class UDTGUI_EXPORT BusNodesTreeView : public QTreeView
 {
@@ -40,6 +43,9 @@ public:
     CanOpenBus *currentBus() const;
     Node *currentNode() const;
 
+    void addBusAction(QAction *action);
+    void addNodeAction(QAction *action);
+
 signals:
     void busSelected(CanOpenBus *currentBus);
     void nodeSelected(Node *currentNode);
@@ -51,6 +57,13 @@ protected slots:
 protected:
     BusNodesModel *_busNodesModel;
     QSortFilterProxyModel *_sortFilterProxyModel;
+
+    QList<QAction *> _busActions;
+    QList<QAction *> _nodeActions;
+
+    // QWidget interface
+protected:
+    void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
 #endif // BUSNODESTREEVIEW_H

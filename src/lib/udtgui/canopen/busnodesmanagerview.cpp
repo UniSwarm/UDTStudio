@@ -71,9 +71,16 @@ void BusNodesManagerView::createWidgets()
     layout->addWidget(_busNodeTreeView);
 
     _busManagerWidget = new BusManagerWidget();
+    _busNodeTreeView->addBusAction(_busManagerWidget->actionExplore());
+    _busNodeTreeView->addBusAction(_busManagerWidget->actionSyncOne());
+    _busNodeTreeView->addBusAction(_busManagerWidget->actionSyncStart());
+    _busNodeTreeView->addBusAction(_busManagerWidget->actionTogleConnect());
     layout->addWidget(_busManagerWidget);
 
     _nodeManagerWidget = new NodeManagerWidget();
+    _busNodeTreeView->addNodeAction(_nodeManagerWidget->actionRemoveNode());
+    _busNodeTreeView->addNodeAction(_nodeManagerWidget->actionLoadEds());
+    _busNodeTreeView->addNodeAction(_nodeManagerWidget->actionReLoadEds());
     layout->addWidget(_nodeManagerWidget);
 
     setLayout(layout);
