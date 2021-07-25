@@ -18,7 +18,6 @@
 
 #include "nodeoditemmodel.h"
 
-#include <QDebug>
 #include <QMimeData>
 
 #include "node.h"
@@ -115,7 +114,7 @@ void NodeOdItemModel::setNode(Node *node)
 
     if (_node)
     {
-        disconnect(_node);
+        disconnect(_node, nullptr, this, nullptr);
     }
 
     _node = node;
