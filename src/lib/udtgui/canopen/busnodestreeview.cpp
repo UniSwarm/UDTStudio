@@ -119,17 +119,17 @@ void BusNodesTreeView::contextMenuEvent(QContextMenuEvent *event)
     {
         const QModelIndex &curentIndex = _sortFilterProxyModel->mapToSource(row);
 
-        CanOpenBus *bus = _busNodesModel->bus(curentIndex);
-        if (bus)
-        {
-            selectedBuses.append(bus);
-            continue;
-        }
-
         Node *node = _busNodesModel->node(curentIndex);
         if (node)
         {
             selectedNodes.append(node);
+            continue;
+        }
+
+        CanOpenBus *bus = _busNodesModel->bus(curentIndex);
+        if (bus)
+        {
+            selectedBuses.append(bus);
             continue;
         }
     }
