@@ -26,22 +26,41 @@
 
 class OD_EXPORT OdDb
 {
+    Q_DISABLE_COPY(OdDb)
 public:
-    OdDb(QString directory = ".");
+    static void addDirectory(const QString &directory);
+    static void addDirectory(const QStringList &directories);
+    static QString file(quint32 deviceType, quint32 vendorID, quint32 productCode, quint32 revisionNumber);
+    static void refreshFile();
 
-    void addDirectory(const QString &directory);
-    void addDirectory(const QStringList &directories);
-    QString file(quint32 deviceType, quint32 vendorID, quint32 productCode, quint32 revisionNumber);
-    void refreshFile();
+    static const QList<QString> &edsFiles();
 
-    const QList<QString> &edsFiles() const;
+    static inline OdDb *instance()
+    {
+        if (!OdDb::_instance)
+        {
+            OdDb::_instance = new OdDb();
+            _instance->init();
+        }
+        return OdDb::_instance;
+    }
+
+    static inline void release()
+    {
+        delete OdDb::_instance;
+    }
 
 private:
+    OdDb();
+    void init();
+
     QMultiMap<QByteArray, QPair<quint32, QString>> _mapFiles;
     QList<QString> _edsFiles;
     QList<QString> _directoryList;
 
     void searchFile(const QString &directory);
+
+    static OdDb *_instance;
 };
 
 #endif // ODDB_H

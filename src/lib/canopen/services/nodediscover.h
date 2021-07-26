@@ -47,8 +47,6 @@ protected slots:
     void exploreNodeNext();
 
 protected:
-    OdDb *_db;
-
     // explorer bus
     quint8 _exploreBusNodeId;
     QTimer _exploreBusTimer;

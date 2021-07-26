@@ -33,10 +33,6 @@ NodeDiscover::NodeDiscover(CanOpenBus *bus)
         _cobIds.append(0x700u + nodeId);
     }
 
-    // TODO make it static to avoid load every thinks, every time...
-    _db = new OdDb();
-    _db->addDirectory(QProcessEnvironment::systemEnvironment().value("EDS_PATH").split(QDir::listSeparator()));
-
     _exploreBusNodeId = 0;
     connect(&_exploreBusTimer, &QTimer::timeout, this, &NodeDiscover::exploreBusNext);
 
@@ -47,7 +43,6 @@ NodeDiscover::NodeDiscover(CanOpenBus *bus)
 
 NodeDiscover::~NodeDiscover()
 {
-    delete _db;
 }
 
 QString NodeDiscover::type() const
@@ -145,7 +140,7 @@ void NodeDiscover::exploreNodeNext()
         // explore node finished
         Node *node = bus()->node(_exploreNodeCurrentId);
         QString file =
-            _db->file(node->nodeOd()->value(0x1000).toUInt(), node->nodeOd()->value(0x1018, 1).toUInt(), node->nodeOd()->value(0x1018, 2).toUInt(), node->nodeOd()->value(0x1018, 3).toUInt());
+            OdDb::file(node->nodeOd()->value(0x1000).toUInt(), node->nodeOd()->value(0x1018, 1).toUInt(), node->nodeOd()->value(0x1018, 2).toUInt(), node->nodeOd()->value(0x1018, 3).toUInt());
 
         // load object eds
         if (!file.isEmpty())

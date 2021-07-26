@@ -21,12 +21,18 @@
 #include "parser/edsparser.h"
 
 #include <QCryptographicHash>
-#include <QDebug>
 #include <QDirIterator>
+#include <QProcessEnvironment>
 
-OdDb::OdDb(QString directory)
+OdDb *OdDb::_instance = nullptr;
+
+OdDb::OdDb()
 {
-    addDirectory(directory);
+}
+
+void OdDb::init()
+{
+    addDirectory(QProcessEnvironment::systemEnvironment().value("EDS_PATH").split(QDir::listSeparator()));
 }
 
 void OdDb::addDirectory(const QString &directory)
@@ -38,9 +44,9 @@ void OdDb::addDirectory(const QStringList &directories)
 {
     for (const QString &directory : directories)
     {
-        searchFile(directory);
+        instance()->searchFile(directory);
     }
-    _directoryList.append(directories);
+    instance()->_directoryList.append(directories);
 }
 
 void OdDb::searchFile(const QString &directory)
@@ -54,12 +60,12 @@ void OdDb::searchFile(const QString &directory)
 
         DeviceDescription *deviceDescription = parser.parse(file);
 
-        QByteArray byte;
-        byte.append(deviceDescription->subIndexValue(0x1000, 0, "0").toByteArray());
-        byte.append(deviceDescription->subIndexValue(0x1018, 1, "0").toByteArray());
-        byte.append(deviceDescription->subIndexValue(0x1018, 2, "0").toByteArray());
+        QByteArray bytesId;
+        bytesId.append(deviceDescription->subIndexValue(0x1000, 0, "0").toByteArray());
+        bytesId.append(deviceDescription->subIndexValue(0x1018, 1, "0").toByteArray());
+        bytesId.append(deviceDescription->subIndexValue(0x1018, 2, "0").toByteArray());
 
-        QByteArray hash = QCryptographicHash::hash(byte, QCryptographicHash::Md4);
+        QByteArray hash = QCryptographicHash::hash(bytesId, QCryptographicHash::Md4);
         QPair<quint32, QString> pair;
         pair.first = deviceDescription->subIndexValue(0x1018, 3).toUInt();
         pair.second = file;
@@ -72,13 +78,13 @@ void OdDb::searchFile(const QString &directory)
 
 QString OdDb::file(quint32 deviceType, quint32 vendorID, quint32 productCode, quint32 revisionNumber)
 {
-    QByteArray byte;
-    byte.append(QVariant(deviceType).toByteArray());
-    byte.append(QVariant(vendorID).toByteArray());
-    byte.append(QVariant(productCode).toByteArray());
-    QByteArray hash = QCryptographicHash::hash(byte, QCryptographicHash::Md4);
+    QByteArray bytesId;
+    bytesId.append(QVariant(deviceType).toByteArray());
+    bytesId.append(QVariant(vendorID).toByteArray());
+    bytesId.append(QVariant(productCode).toByteArray());
+    QByteArray hash = QCryptographicHash::hash(bytesId, QCryptographicHash::Md4);
 
-    QList<QPair<quint32, QString>> values = _mapFiles.values(hash);
+    QList<QPair<quint32, QString>> values = instance()->_mapFiles.values(hash);
 
     if (!values.isEmpty())
     {
@@ -105,14 +111,14 @@ QString OdDb::file(quint32 deviceType, quint32 vendorID, quint32 productCode, qu
 
 void OdDb::refreshFile()
 {
-    _mapFiles.clear();
-    for (const QString &directory : qAsConst(_directoryList))
+    instance()->_mapFiles.clear();
+    for (const QString &directory : qAsConst(instance()->_directoryList))
     {
-        searchFile(directory);
+        instance()->searchFile(directory);
     }
 }
 
-const QList<QString> &OdDb::edsFiles() const
+const QList<QString> &OdDb::edsFiles()
 {
-    return _edsFiles;
+    return instance()->_edsFiles;
 }
