@@ -33,6 +33,7 @@ class UDTGUI_EXPORT DataLoggerWidget : public QWidget
 public:
     DataLoggerWidget(QWidget *parent = nullptr);
     DataLoggerWidget(DataLogger *dataLogger, QWidget *parent = nullptr);
+    ~DataLoggerWidget();
 
     DataLogger *dataLogger() const;
 

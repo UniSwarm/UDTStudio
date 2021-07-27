@@ -58,7 +58,8 @@ HEADERS += \
     $$PWD/canopen/compositeWidget/motionsensorwidget.h \
     $$PWD/canopen/compositeWidget/motorwidget.h \
     $$PWD/canopen/compositeWidget/pidwidget.h \
-    $$PWD/canopen/widgetDebug/p402dtywidget.h
+    $$PWD/canopen/widgetDebug/p402dtywidget.h \
+    $$PWD/canopen/datalogger/dataloggersingleton.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -110,7 +111,8 @@ SOURCES += \
     $$PWD/canopen/compositeWidget/motionsensorwidget.cpp \
     $$PWD/canopen/compositeWidget/motorwidget.cpp \
     $$PWD/canopen/compositeWidget/pidwidget.cpp \
-    $$PWD/canopen/widgetDebug/p402dtywidget.cpp
+    $$PWD/canopen/widgetDebug/p402dtywidget.cpp \
+    $$PWD/canopen/datalogger/dataloggersingleton.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 

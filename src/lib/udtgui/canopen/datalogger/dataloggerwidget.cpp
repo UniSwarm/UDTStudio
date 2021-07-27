@@ -18,6 +18,8 @@
 
 #include "dataloggerwidget.h"
 
+#include "dataloggersingleton.h"
+
 #include <QHBoxLayout>
 #include <QSplitter>
 
@@ -35,6 +37,12 @@ DataLoggerWidget::DataLoggerWidget(DataLogger *dataLogger, QWidget *parent)
         _dataLogger = new DataLogger(this);
     }
     createWidgets();
+    DataLoggerSingleton::addLogger(this);
+}
+
+DataLoggerWidget::~DataLoggerWidget()
+{
+    DataLoggerSingleton::removeLogger(this);
 }
 
 DataLogger *DataLoggerWidget::dataLogger() const
