@@ -34,7 +34,7 @@
 
 class Node;
 class DataLogger;
-class DataLoggerChartsWidget;
+class DataLoggerWidget;
 class IndexSpinBox;
 class IndexLabel;
 class IndexCheckBox;
@@ -81,7 +81,7 @@ protected:
     QSpinBox *_logTimerSpinBox;
     QAction *_startStopAction;
 
-    DataLoggerChartsWidget *_dataLoggerChartsWidget;
+    DataLoggerWidget *_dataLoggerWidget;
 
     QGroupBox *createPIDConfigWidgets();
     QGroupBox *_pidGroupBox;

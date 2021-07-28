@@ -217,7 +217,7 @@ void PidWidget::setIMode()
 
 void PidWidget::screenshotSave()
 {
-    QPixmap pixmap = _dataLoggerChartsWidget->grab();
+    QPixmap pixmap = _dataLoggerWidget->grab();
     QString file = QString("%1_%2.png").arg(title()).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz"));
     pixmap.save(file, "PNG");
 }
@@ -487,8 +487,8 @@ void PidWidget::createWidgets()
     QWidget *widgetLogger = new QWidget();
     QVBoxLayout *layoutLogger = new QVBoxLayout();
     layoutLogger->setContentsMargins(5, 4, 0, 3);
-    _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
-    layoutLogger->addWidget(_dataLoggerChartsWidget);
+    _dataLoggerWidget = new DataLoggerWidget(_dataLogger, Qt::Vertical);
+    layoutLogger->addWidget(_dataLoggerWidget);
     widgetLogger->setLayout(layoutLogger);
     splitter->addWidget(widgetLogger);
     splitter->setSizes(QList<int>() << 100 << 300);

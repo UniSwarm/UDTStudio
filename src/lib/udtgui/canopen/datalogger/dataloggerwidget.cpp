@@ -24,11 +24,11 @@
 #include <QSplitter>
 
 DataLoggerWidget::DataLoggerWidget(QWidget *parent)
-    : DataLoggerWidget(nullptr, parent)
+    : DataLoggerWidget(nullptr, Qt::Horizontal, parent)
 {
 }
 
-DataLoggerWidget::DataLoggerWidget(DataLogger *dataLogger, QWidget *parent)
+DataLoggerWidget::DataLoggerWidget(DataLogger *dataLogger, Qt::Orientation orientation, QWidget *parent)
     : QWidget(parent)
     , _dataLogger(dataLogger)
 {
@@ -36,7 +36,7 @@ DataLoggerWidget::DataLoggerWidget(DataLogger *dataLogger, QWidget *parent)
     {
         _dataLogger = new DataLogger(this);
     }
-    createWidgets();
+    createWidgets(orientation);
     DataLoggerSingleton::addLogger(this);
 }
 
@@ -50,7 +50,7 @@ DataLogger *DataLoggerWidget::dataLogger() const
     return _dataLogger;
 }
 
-void DataLoggerWidget::createWidgets()
+void DataLoggerWidget::createWidgets(Qt::Orientation orientation)
 {
     QLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(2, 2, 2, 2);
@@ -58,20 +58,32 @@ void DataLoggerWidget::createWidgets()
     QSplitter *splitter = new QSplitter();
     splitter->setStyleSheet("QSplitter {background: #19232D;}");
 
-    _dataLoggerManagerWidget = new DataLoggerManagerWidget(_dataLogger);
-    splitter->addWidget(_dataLoggerManagerWidget);
-
     QWidget *widgetLogger = new QWidget();
     QVBoxLayout *layoutLogger = new QVBoxLayout();
     layoutLogger->setContentsMargins(5, 4, 0, 3);
     _chartView = new DataLoggerChartsWidget(_dataLogger);
     layoutLogger->addWidget(_chartView);
     widgetLogger->setLayout(layoutLogger);
-    splitter->addWidget(widgetLogger);
 
+    _dataLoggerManagerWidget = new DataLoggerManagerWidget(_dataLogger);
     _dataLoggerManagerWidget->setChartWidget(_chartView);
 
-    splitter->setSizes({70, 130});
+    splitter->setOrientation(orientation);
+    switch (orientation)
+    {
+        case Qt::Horizontal:
+            splitter->addWidget(_dataLoggerManagerWidget);
+            splitter->addWidget(widgetLogger);
+            splitter->setSizes({70, 130});
+            break;
+
+        case Qt::Vertical:
+            splitter->addWidget(widgetLogger);
+            splitter->addWidget(_dataLoggerManagerWidget);
+            splitter->setSizes({200, 50});
+            break;
+    }
+
     layout->addWidget(splitter);
     setLayout(layout);
 }

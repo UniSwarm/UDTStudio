@@ -35,7 +35,7 @@
 
 class Node;
 class DataLogger;
-class DataLoggerChartsWidget;
+class DataLoggerWidget;
 class IndexSpinBox;
 class IndexLabel;
 class IndexComboBox;
@@ -73,7 +73,7 @@ protected:
     NodeProfile402 *_nodeProfile402;
 
     DataLogger *_dataLogger;
-    DataLoggerChartsWidget *_dataLoggerChartsWidget;
+    DataLoggerWidget *_dataLoggerWidget;
 
     enum State
     {

@@ -261,8 +261,8 @@ void MotionSensorWidget::createWidgets()
     QWidget *widgetLogger = new QWidget();
     QVBoxLayout *layoutLogger = new QVBoxLayout();
     layoutLogger->setContentsMargins(5, 4, 0, 3);
-    _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
-    layoutLogger->addWidget(_dataLoggerChartsWidget);
+    _dataLoggerWidget = new DataLoggerWidget(_dataLogger, Qt::Vertical);
+    layoutLogger->addWidget(_dataLoggerWidget);
     widgetLogger->setLayout(layoutLogger);
     splitter->addWidget(widgetLogger);
     splitter->setSizes(QList<int>() << 100 << 300);
