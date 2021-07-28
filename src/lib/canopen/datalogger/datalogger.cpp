@@ -216,11 +216,13 @@ void DataLogger::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 void DataLogger::start(int ms)
 {
     _timer.start(ms);
+    emit startChanged(true);
 }
 
 void DataLogger::stop()
 {
     _timer.stop();
+    emit startChanged(false);
 }
 
 void DataLogger::clear()

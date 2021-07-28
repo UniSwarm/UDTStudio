@@ -59,6 +59,8 @@ signals:
     void dataAboutToBeRemoved(int id);
     void dataRemoved();
 
+    void startChanged(bool);
+
 public slots:
     void start(int ms);
     void stop();

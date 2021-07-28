@@ -32,12 +32,10 @@ void DataLoggerManagerWidget::toggleStartLogger(bool start)
 {
     if (start)
     {
-        _startStopAction->setIcon(QIcon(":/icons/img/icons8-stop.png"));
         _logger->start(_logTimerSpinBox->value());
     }
     else
     {
-        _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
         _logger->stop();
     }
 }
@@ -91,9 +89,21 @@ void DataLoggerManagerWidget::createWidgets()
     // start stop
     _startStopAction = _toolBar->addAction(tr("Start / stop"));
     _startStopAction->setCheckable(true);
-    _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
+    QIcon iconStartStop;
+    iconStartStop.addFile(":/icons/img/icons8-stop.png", QSize(), QIcon::Normal, QIcon::On);
+    iconStartStop.addFile(":/icons/img/icons8-play.png", QSize(), QIcon::Normal, QIcon::Off);
+    _startStopAction->setIcon(iconStartStop);
     _startStopAction->setStatusTip(tr("Start or stop the data logger"));
     connect(_startStopAction, &QAction::triggered, this, &DataLoggerManagerWidget::toggleStartLogger);
+    connect(_logger, &DataLogger::startChanged, [=] (bool changed)
+    {
+        if (changed != _startStopAction->isChecked())
+        {
+            _startStopAction->blockSignals(true);
+            _startStopAction->setChecked(changed);
+            _startStopAction->blockSignals(false);
+        }
+    });
 
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
