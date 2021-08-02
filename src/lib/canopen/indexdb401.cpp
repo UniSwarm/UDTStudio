@@ -20,9 +20,8 @@
 
 #include "../canopen/nodeobjectid.h"
 
-NodeObjectId IndexDb401::getObjectId(IndexDb401::OdObject object, uint opt, uint opt2)
+NodeObjectId IndexDb401::getObjectId(IndexDb401::OdObject object, uint channel, uint opt2)
 {
-    Q_UNUSED(opt)
     Q_UNUSED(opt2)
 
     switch (object)
@@ -97,6 +96,85 @@ NodeObjectId IndexDb401::getObjectId(IndexDb401::OdObject object, uint opt, uint
         return {0x4200, 0x7};
     case OD_MS_DO_MODE_07:
         return {0x4200, 0x8};
+
+    case IndexDb401::DI_VALUES_8BITS_CHANNELS_0_7:
+        return {0x6000, 0x1};
+    case IndexDb401::DI_POLARITIES_8BITS_CHANNELS_0_7:
+        return {0x6002, 0x1};
+    case IndexDb401::DI_FILTER_CONSTANTS_8BITS_CHANNELS_0_7:
+        return {0x6003, 0x1};
+    case IndexDb401::DI_GLOBAL_INTERRUPT_ENABLE_8BITS:
+        return {0x6005, 0x1};
+    case IndexDb401::DI_INTERRUPT_MASK_ANY_CHANGE_8BITS_CHANNELS_0_7:
+        return {0x6006, 0x1};
+    case IndexDb401::DI_INTERRUPT_MASK_LOW_TO_HIGH_CHANGE_8BITS_CHANNELS_0_7:
+        return {0x6007, 0x1};
+    case IndexDb401::DI_INTERRUPT_MASK_HIGH_TO_LOW_CHANGE_8BIT_CHANNELS_0_7:
+        return {0x6008, 0x1};
+
+    case IndexDb401::DO_VALUES_8BITS_CHANNELS_0_7:
+        return {0x6200, 0x1};
+    case IndexDb401::DO_POLARITIES_8BITS_CHANNELS_0_7:
+        return {0x6202, 0x1};
+    case IndexDb401::DO_ERROR_MODES_8BITS_CHANNELS_0_7:
+        return {0x6206, 0x1};
+    case IndexDb401::DO_ERROR_VALUES_8BITS_CHANNELS_0_7:
+        return {0x6207, 0x1};
+    case IndexDb401::DO_FILTER_MASKS_8BITS_CHANNELS_0_7:
+        return {0x6208, 0x1};
+
+    case IndexDb401::AI_VALUES_8BITS:
+        return {0x6400, static_cast<quint8>(channel)};
+    case IndexDb401::AI_VALUES_16BITS:
+        return {0x6401, static_cast<quint8>(channel)};
+    case IndexDb401::AI_VALUES_32BITS:
+        return {0x6402, static_cast<quint8>(channel)};
+    case IndexDb401::AI_VALUES_REAL:
+        return {0x6403, static_cast<quint8>(channel)};
+    case IndexDb401::AI_INTERRUPT_TRIGGERS:
+        return {0x6421, static_cast<quint8>(channel)};
+    case IndexDb401::AI_INTERRUPT_SOURCE:
+        return {0x6422, static_cast<quint8>(channel)};
+    case IndexDb401::AI_GLOBAL_INTERRUPT_ENABLE:
+        return {0x6423, static_cast<quint8>(channel)};
+    case IndexDb401::AI_INTERRUPT_UPPER_LIMIT_32BITS:
+        return {0x6424, static_cast<quint8>(channel)};
+    case IndexDb401::AI_INTERRUPT_LOWER_IMIT_32BITS:
+        return {0x6425, static_cast<quint8>(channel)};
+    case IndexDb401::AI_INTERRUPT_DELTA_32BITS:
+        return {0x6426, static_cast<quint8>(channel)};
+    case IndexDb401::AI_INTERRUPT_NEGATIVE_DELTA_32BITS:
+        return {0x6427, static_cast<quint8>(channel)};
+    case IndexDb401::AI_INTERRUPT_POSITIVE_DELTA_32BITS:
+        return {0x6428, static_cast<quint8>(channel)};
+    case IndexDb401::AI_INTERRUPT_UPPER_LIMIT_REAL:
+        return {0x6429, static_cast<quint8>(channel)};
+    case IndexDb401::AI_INTERRUPT_LOWER_LIMIT_REAL:
+        return {0x642A, static_cast<quint8>(channel)};
+    case IndexDb401::AI_INTERRUPT_DELTA_REAL:
+        return {0x642B, static_cast<quint8>(channel)};
+    case IndexDb401::AI_INTERRUPT_NEGATIVE_DELTA_REAL:
+        return {0x642C, static_cast<quint8>(channel)};
+    case IndexDb401::AI_INTERRUPT_POSITIVE_DELTA_REAL:
+        return {0x642D, static_cast<quint8>(channel)};
+    case IndexDb401::AI_OFFSET_REAL:
+        return {0x642E, static_cast<quint8>(channel)};
+    case IndexDb401::AI_PRESCALING_REAL:
+        return {0x642F, static_cast<quint8>(channel)};
+    case IndexDb401::AI_SI_UNIT:
+        return {0x6430, static_cast<quint8>(channel)};
+    case IndexDb401::AI_OFFSET_32BITS:
+        return {0x6431, static_cast<quint8>(channel)};
+    case IndexDb401::AI_PRESCALING_32BITS:
+        return {0x6421, static_cast<quint8>(channel)};
+    case IndexDb401::AO_VALUES_8BITS:
+        return {0x6410, static_cast<quint8>(channel)};
+    case IndexDb401::AO_VALUES_16BITS:
+        return {0x6411, static_cast<quint8>(channel)};
+    case IndexDb401::AO_OUTPUT_32BITS:
+        return {0x6412, static_cast<quint8>(channel)};
+    case IndexDb401::AO_OUTPUT_REAL:
+        return {0x6413, static_cast<quint8>(channel)};
     }
     return NodeObjectId();
 }
