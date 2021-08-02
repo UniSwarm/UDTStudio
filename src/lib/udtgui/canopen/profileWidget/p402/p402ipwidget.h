@@ -19,7 +19,7 @@
 #ifndef P402IP_H
 #define P402IP_H
 
-#include "../../udtgui_global.h"
+#include "../../../udtgui_global.h"
 
 #include "node.h"
 #include "nodeodsubscriber.h"

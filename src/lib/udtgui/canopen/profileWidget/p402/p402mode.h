@@ -16,7 +16,7 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "../../udtgui_global.h"
+#include "../../../udtgui_global.h"
 
 #include "node.h"
 #include "nodeodsubscriber.h"

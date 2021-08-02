@@ -19,7 +19,7 @@
 #ifndef P402TQ_H
 #define P402TQ_H
 
-#include "../../udtgui_global.h"
+#include "../../../udtgui_global.h"
 #include "node.h"
 #include "nodeodsubscriber.h"
 

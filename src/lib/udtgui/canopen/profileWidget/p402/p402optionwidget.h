@@ -19,7 +19,7 @@
 #ifndef P402OPTION_H
 #define P402OPTION_H
 
-#include "../../udtgui_global.h"
+#include "../../../udtgui_global.h"
 
 #include "nodeodsubscriber.h"
 #include "p402mode.h"
