@@ -60,15 +60,15 @@ private:
 
     IndexLabel *_torqueDemandLabel;
     IndexLabel *_torqueActualValueLabel;
-    IndexLabel *_currentActualValueLabel;
+    //IndexLabel *_currentActualValueLabel;
 
     IndexSpinBox *_targetSlopeSpinBox;
     IndexSpinBox *_torqueProfileTypeSpinBox;
     IndexSpinBox *_maxTorqueSpinBox;
-    IndexSpinBox *_maxCurrentSpinBox;
-    IndexSpinBox *_motorRatedTorqueSpinBox;
-    IndexSpinBox *_motorRatedCurrentSpinBox;
-    IndexLabel *_dcLinkVoltageLabel;
+    //IndexSpinBox *_maxCurrentSpinBox;
+    //IndexSpinBox *_motorRatedTorqueSpinBox;
+    //IndexSpinBox *_motorRatedCurrentSpinBox;
+    //IndexLabel *_dcLinkVoltageLabel;
 
     void targetTorqueSpinboxFinished();
     void targetTorqueSliderChanged();

@@ -107,21 +107,21 @@ void P402TqWidget::setNode(Node *node, uint8_t axis)
 
         _torqueDemandLabel->setObjId(_torqueDemandObjectId);
         _torqueActualValueLabel->setObjId(_torqueActualValueObjectId);
-        _currentActualValueLabel->setObjId(_currentActualValueObjectId);
-        _dcLinkVoltageLabel->setObjId(_dcLinkVoltageObjectId);
+        //_currentActualValueLabel->setObjId(_currentActualValueObjectId);
+        //_dcLinkVoltageLabel->setObjId(_dcLinkVoltageObjectId);
 
         _targetSlopeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_SLOPE, axis));
         _torqueProfileTypeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_PROFILE_TYPE, axis));
         _maxTorqueSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_MAX_TORQUE, axis));
-        _maxCurrentSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_MAX_CURRENT, axis));
-        _motorRatedTorqueSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_TORQUE, axis));
-        _motorRatedCurrentSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_CURRENT, axis));
+        //_maxCurrentSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_MAX_CURRENT, axis));
+        //_motorRatedTorqueSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_TORQUE, axis));
+        //_motorRatedCurrentSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_CURRENT, axis));
         _targetSlopeSpinBox->setNode(node);
         _torqueProfileTypeSpinBox->setNode(node);
         _maxTorqueSpinBox->setNode(node);
-        _maxCurrentSpinBox->setNode(node);
-        _motorRatedTorqueSpinBox->setNode(node);
-        _motorRatedCurrentSpinBox->setNode(node);
+        //_maxCurrentSpinBox->setNode(node);
+        //_motorRatedTorqueSpinBox->setNode(node);
+        //_motorRatedCurrentSpinBox->setNode(node);
 
         int max = _node->nodeOd()->value(_maxTorqueSpinBox->objId()).toInt();
         //        _tqTargetTorqueSlider->setValue(_node->nodeOd()->value(_tqTargetTorqueObjectId).toInt());
@@ -283,10 +283,10 @@ void P402TqWidget::informationWidgets()
     _torqueActualValueLabel = new IndexLabel();
     _modeLayout->addRow(tr("Torque actual value:"), _torqueActualValueLabel);
 
-    _currentActualValueLabel = new IndexLabel();
+    //_currentActualValueLabel = new IndexLabel();
     //_modeLayout->addRow(name, _tqCurrentActualValueLabel);
 
-    _dcLinkVoltageLabel = new IndexLabel();
+    //_dcLinkVoltageLabel = new IndexLabel();
     //_modeLayout->addRow(tr("DC Link Voltage "), _tqDCLinkVoltageLabel);
 }
 
@@ -298,13 +298,13 @@ void P402TqWidget::limitWidgets()
     _torqueProfileTypeSpinBox = new IndexSpinBox();
     //    _modeLayout->addRow(tr("To&rque Profile Type "), _tqTorqueProfileTypeSpinBox);
 
-    _maxCurrentSpinBox = new IndexSpinBox();
+    //_maxCurrentSpinBox = new IndexSpinBox();
     //    _modeLayout->addRow(tr("Max &Current "), _tqMaxCurrentSpinBox);
 
-    _motorRatedTorqueSpinBox = new IndexSpinBox();
+    //_motorRatedTorqueSpinBox = new IndexSpinBox();
     //    _modeLayout->addRow(tr("Mot&or Rated Torque "), _tqMotorRatedTorqueSpinBox);
 
-    _motorRatedCurrentSpinBox = new IndexSpinBox();
+    //_motorRatedCurrentSpinBox = new IndexSpinBox();
     //    _modeLayout->addRow(tr("Motor Rate&d Current "), _tqMotorRatedCurrentSpinBox);
 }
 
