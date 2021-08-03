@@ -41,13 +41,6 @@ HEADERS += \
     $$PWD/canopen/widget/indexcombobox.h \
     $$PWD/canopen/widget/indexlabel.h \
     $$PWD/canopen/widget/indexspinbox.h \
-    $$PWD/canopen/widgetDebug/p402widget.h \
-    $$PWD/canopen/widgetDebug/p402mode.h \
-    $$PWD/canopen/widgetDebug/p402optionwidget.h \
-    $$PWD/canopen/widgetDebug/p402vlwidget.h \
-    $$PWD/canopen/widgetDebug/p402ipwidget.h \
-    $$PWD/canopen/widgetDebug/p402tqwidget.h \
-    $$PWD/canopen/widgetDebug/p402ppwidget.h \
     $$PWD/screen/nodescreenswidget.h \
     $$PWD/screen/nodescreen.h \
     $$PWD/screen/nodescreenhome.h \
@@ -58,8 +51,20 @@ HEADERS += \
     $$PWD/canopen/compositeWidget/motionsensorwidget.h \
     $$PWD/canopen/compositeWidget/motorwidget.h \
     $$PWD/canopen/compositeWidget/pidwidget.h \
-    $$PWD/canopen/widgetDebug/p402dtywidget.h \
-    $$PWD/canopen/datalogger/dataloggersingleton.h
+    $$PWD/canopen/datalogger/dataloggersingleton.h \
+    $$PWD/canopen/profileWidget/p402/p402dtywidget.h \
+    $$PWD/canopen/profileWidget/p402/p402ipwidget.h \
+    $$PWD/canopen/profileWidget/p402/p402mode.h \
+    $$PWD/canopen/profileWidget/p402/p402optionwidget.h \
+    $$PWD/canopen/profileWidget/p402/p402ppwidget.h \
+    $$PWD/canopen/profileWidget/p402/p402tqwidget.h \
+    $$PWD/canopen/profileWidget/p402/p402vlwidget.h \
+    $$PWD/canopen/profileWidget/p402/p402widget.h \
+    $$PWD/canopen/profileWidget/p401/p401channelwidget.h \
+    $$PWD/canopen/profileWidget/p401/p401inputwidget.h \
+    $$PWD/canopen/profileWidget/p401/p401outputwidget.h \
+    $$PWD/canopen/profileWidget/p401/p401widget.h \
+    $$PWD/screen/nodescreenuio.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -94,13 +99,6 @@ SOURCES += \
     $$PWD/canopen/widget/indexcombobox.cpp \
     $$PWD/canopen/widget/indexlabel.cpp \
     $$PWD/canopen/widget/indexspinbox.cpp \
-    $$PWD/canopen/widgetDebug/p402widget.cpp \
-    $$PWD/canopen/widgetDebug/p402mode.cpp \
-    $$PWD/canopen/widgetDebug/p402optionwidget.cpp \
-    $$PWD/canopen/widgetDebug/p402vlwidget.cpp \
-    $$PWD/canopen/widgetDebug/p402ipwidget.cpp \
-    $$PWD/canopen/widgetDebug/p402tqwidget.cpp \
-    $$PWD/canopen/widgetDebug/p402ppwidget.cpp \
     $$PWD/screen/nodescreenswidget.cpp \
     $$PWD/screen/nodescreen.cpp \
     $$PWD/screen/nodescreenhome.cpp \
@@ -111,8 +109,20 @@ SOURCES += \
     $$PWD/canopen/compositeWidget/motionsensorwidget.cpp \
     $$PWD/canopen/compositeWidget/motorwidget.cpp \
     $$PWD/canopen/compositeWidget/pidwidget.cpp \
-    $$PWD/canopen/widgetDebug/p402dtywidget.cpp \
-    $$PWD/canopen/datalogger/dataloggersingleton.cpp
+    $$PWD/canopen/datalogger/dataloggersingleton.cpp \
+    $$PWD/canopen/profileWidget/p402/p402dtywidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402ipwidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402mode.cpp \
+    $$PWD/canopen/profileWidget/p402/p402optionwidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402ppwidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402tqwidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402vlwidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402widget.cpp \
+    $$PWD/canopen/profileWidget/p401/p401channelwidget.cpp \
+    $$PWD/canopen/profileWidget/p401/p401inputwidget.cpp \
+    $$PWD/canopen/profileWidget/p401/p401outputwidget.cpp \
+    $$PWD/canopen/profileWidget/p401/p401widget.cpp \
+    $$PWD/screen/nodescreenuio.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 
