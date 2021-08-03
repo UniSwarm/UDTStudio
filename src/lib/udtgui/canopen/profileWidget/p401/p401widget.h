@@ -39,6 +39,7 @@ public:
 
 public slots:
     void setNode(Node *node);
+    void displayOption401();
 
 private:
     quint8 _channelCount;

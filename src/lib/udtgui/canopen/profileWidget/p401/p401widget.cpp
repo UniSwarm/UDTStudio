@@ -64,6 +64,14 @@ void P401Widget::setNode(Node *node)
     readAllObject();
 }
 
+void P401Widget::displayOption401()
+{
+    for (P401ChannelWidget *p401ChannelWidget : _p401ChannelWidgets)
+    {
+        p401ChannelWidget->displayOption401();
+    }
+}
+
 void P401Widget::createWidgets()
 {
     QVBoxLayout *layout = new QVBoxLayout();

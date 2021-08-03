@@ -25,11 +25,13 @@
 #include "nodeobjectid.h"
 #include "nodeodsubscriber.h"
 
+#include <QStackedWidget>
 #include <QWidget>
 
 class IndexComboBox;
 class P401InputWidget;
 class P401OutputWidget;
+class P401OptionWidget;
 
 class P401ChannelWidget : public QWidget
 {
@@ -41,6 +43,7 @@ public:
     uint8_t channel() const;
 
     void readAllObject();
+    void displayOption401();
 
 public slots:
     void setNode(Node *node);
@@ -50,8 +53,13 @@ private:
 
     IndexComboBox *_modeCombobox;
 
+    P401OptionWidget *_optionWidget;
     P401InputWidget *_inputWidget;
     P401OutputWidget *_outputWidget;
+
+    QStackedWidget *_stackedWidget;
+
+
 
     // Create widgets
     void createWidgets();

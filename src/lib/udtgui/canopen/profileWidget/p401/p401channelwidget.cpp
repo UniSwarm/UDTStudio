@@ -21,6 +21,7 @@
 #include "indexdb401.h"
 #include "p401inputwidget.h"
 #include "p401outputwidget.h"
+#include "p401optionwidget.h"
 #include "canopen/widget/indexcombobox.h"
 
 #include <QComboBox>
@@ -34,6 +35,7 @@ P401ChannelWidget::P401ChannelWidget(uint8_t channel, QWidget *parent)
 {
     _channel = channel;
     createWidgets();
+    _stackedWidget->setCurrentWidget(_inputWidget);
 }
 
 uint8_t P401ChannelWidget::channel() const
@@ -45,7 +47,15 @@ void P401ChannelWidget::readAllObject()
 {
     _modeCombobox->readObject();
 
-    _inputWidget->readAllObject();
+    if (_stackedWidget->currentWidget() == _inputWidget)
+    {
+        _inputWidget->readAllObject();
+    }
+    else
+    {
+        _optionWidget->readAllObject();
+    }
+
     _outputWidget->readAllObject();
 }
 
@@ -56,6 +66,19 @@ void P401ChannelWidget::setNode(Node *node)
     _modeCombobox->setNode(node);
     _inputWidget->setNode(node);
     _outputWidget->setNode(node);
+    _optionWidget->setNode(node);
+}
+
+void P401ChannelWidget::displayOption401()
+{
+    if (_stackedWidget->currentWidget() == _inputWidget)
+    {
+        _stackedWidget->setCurrentWidget(_optionWidget);
+    }
+    else
+    {
+        _stackedWidget->setCurrentWidget(_inputWidget);
+    }
 }
 
 void P401ChannelWidget::createWidgets()
@@ -83,12 +106,19 @@ void P401ChannelWidget::createWidgets()
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
 
+    _optionWidget= new P401OptionWidget(_channel, this);
     _inputWidget = new P401InputWidget(_channel, this);
     _outputWidget = new P401OutputWidget(_channel, this);
 
     layout->addItem(channelLayout);
     layout->addWidget(frame);
-    layout->addWidget(_inputWidget);
+
+    // Stacked Widget
+    _stackedWidget = new QStackedWidget;
+    _stackedWidget->addWidget(_inputWidget);
+    _stackedWidget->addWidget(_optionWidget);
+
+    layout->addWidget(_stackedWidget);
 
     frame = new QFrame();
     frame->setFrameStyle(QFrame::VLine);
