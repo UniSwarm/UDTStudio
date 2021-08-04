@@ -22,7 +22,7 @@
 #include "canopen/compositeWidget/pidwidget.h"
 #include <QLayout>
 
-#include "canopen/widgetDebug/p402widget.h"
+#include "canopen/profileWidget/p402/p402widget.h"
 #include <canopen/compositeWidget/motorwidget.h>
 
 NodeScreenUmcMotor::NodeScreenUmcMotor(QWidget *parent)
