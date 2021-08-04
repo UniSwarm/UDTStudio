@@ -48,6 +48,7 @@ public:
 
 public slots:
     void setNode(Node *node);
+    void setSettings(bool checked);
 
 private:
     uint8_t _channel;

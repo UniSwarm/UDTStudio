@@ -73,9 +73,9 @@ void P401ChannelWidget::setNode(Node *node)
     _outputOptionWidget->setNode(node);
 }
 
-void P401ChannelWidget::displayOption401()
+void P401ChannelWidget::setSettings(bool checked)
 {
-    if (_inputStackedWidget->currentWidget() == _inputWidget)
+    if (checked)
     {
         _inputStackedWidget->setCurrentWidget(_inputOptionWidget);
         _outputStackedWidget->setCurrentWidget(_outputOptionWidget);
@@ -92,7 +92,11 @@ void P401ChannelWidget::createWidgets()
     QVBoxLayout *channelLayout = new QVBoxLayout();
     channelLayout->setContentsMargins(0, 0, 0, 0);
 
-    QLabel *channelLabel = new QLabel(tr("Channel ") + QString("%1").arg(QString::number(_channel, 10)));
+    channelLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    QLabel *channelLabel = new QLabel(QString("%1").arg(QString::number(_channel, 10)));
+    channelLabel->setStyleSheet("font: bold 14px;font-size: 20px;");
+
     channelLayout->addWidget(channelLabel);
 
     _modeCombobox = new IndexComboBox();
@@ -104,6 +108,8 @@ void P401ChannelWidget::createWidgets()
     _modeCombobox->addItem(tr("PWM Open-source"), QVariant(static_cast<uint16_t>(0x0012)));
     _modeCombobox->addItem(tr("PWM Push-Pull"), QVariant(static_cast<uint16_t>(0x0013)));
     channelLayout->addWidget(_modeCombobox);
+
+    channelLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
