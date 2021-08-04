@@ -48,9 +48,18 @@ void NodeScreenUio::createWidgets()
     actionReadMappings->setStatusTip(tr("Read all object on window"));
     connect(actionReadMappings, &QAction::triggered, this, &NodeScreenUio::readAll);
 
-    layout->addWidget(toolBar);
-
     _p401Widget = new P401Widget(8, this);
+
+    QAction *_option402Action = new QAction();
+    _option402Action->setCheckable(true);
+    _option402Action->setIcon(QIcon(":/icons/img/icons8-settings.png"));
+    _option402Action->setToolTip(tr("Option code"));
+    connect(_option402Action, &QAction::triggered, _p401Widget, &P401Widget::displayOption401);
+
+    toolBar->addSeparator();
+    toolBar->addAction(_option402Action);
+
+    layout->addWidget(toolBar);
     layout->addWidget(_p401Widget);
 
     setLayout(layout);
