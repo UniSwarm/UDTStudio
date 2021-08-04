@@ -37,7 +37,7 @@ void P401InputWidget::readAllObject()
     _node->readObject(_digitalObjectId);
 }
 
-void P401InputWidget::setNode(Node *node, uint8_t _channel)
+void P401InputWidget::setNode(Node *node)
 {
     if (!node)
     {
@@ -53,27 +53,6 @@ void P401InputWidget::setNode(Node *node, uint8_t _channel)
     _digitalObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_digitalObjectId);
     setNodeInterrest(_node);
-}
-
-void P401InputWidget::update()
-{
-    int value = _node->nodeOd()->value(_analogObjectId).toInt();
-    _analogLcd->display(value);
-    _analogProgressBar->setValue(value);
-
-    uint8_t valueDigital = static_cast<uint8_t>(_node->nodeOd()->value(_digitalObjectId).toUInt());
-    bool act = valueDigital >> _channel;
-
-    if (act)
-    {
-        _digitalLabel->setText("High");
-        _digitalLabel->setStyleSheet("background-color: #1464A0;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px");
-    }
-    else
-    {
-        _digitalLabel->setText("Low");
-        _digitalLabel->setStyleSheet("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px");
-    }
 }
 
 void P401InputWidget::createWidgets()
@@ -110,6 +89,27 @@ void P401InputWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flag
 
     if (objId == _analogObjectId)
     {
-        update();
+        int value = _node->nodeOd()->value(_analogObjectId).toInt();
+        double val = value;
+        if (val != 0.0)
+        {
+            val = (value * 12) / std::numeric_limits<qint16>::max();
+        }
+        _analogLcd->display(val);
+        _analogProgressBar->setValue(static_cast<int>(val));
+
+        uint8_t valueDigital = static_cast<uint8_t>(_node->nodeOd()->value(_digitalObjectId).toUInt());
+        bool act = valueDigital >> _channel;
+
+        if (act)
+        {
+            _digitalLabel->setText("High");
+            _digitalLabel->setStyleSheet("background-color: #1464A0;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px");
+        }
+        else
+        {
+            _digitalLabel->setText("Low");
+            _digitalLabel->setStyleSheet("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px");
+        }
     }
 }

@@ -45,7 +45,7 @@ public:
     void readAllObject();
 
 public slots:
-    void setNode(Node *node, uint8_t _channel = 0);
+    void setNode(Node *node);
 
 private:
     Node *_node;
@@ -54,8 +54,6 @@ private:
     NodeObjectId _analogObjectId;
     NodeObjectId _digitalObjectId;
     QLabel *_digitalLabel;
-
-    void update();
 
     QLCDNumber *_analogLcd;
     QProgressBar *_analogProgressBar;
