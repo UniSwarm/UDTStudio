@@ -24,6 +24,7 @@
 #include "nodescreenpdo.h"
 #include "nodescreensynchro.h"
 #include "nodescreenumcmotor.h"
+#include "nodescreenuio.h"
 
 #include <QApplication>
 #include <QHBoxLayout>
@@ -135,6 +136,16 @@ void NodeScreensWidget::addNode(Node *node)
             screen->setScreenWidget(this);
             nodeScreens.screens.append(screen);
         }
+    }
+
+    // add specific screens node
+    if ((node->profileNumber()) == 0x191)
+    {
+        QApplication::processEvents();
+        screen = new NodeScreenUio();
+        screen->setNode(node);
+        screen->setScreenWidget(this);
+        nodeScreens.screens.append(screen);
     }
 
     // add NodeScreensStruct to nodeIt
