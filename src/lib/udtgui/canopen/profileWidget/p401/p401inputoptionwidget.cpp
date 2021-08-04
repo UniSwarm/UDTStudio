@@ -60,13 +60,15 @@ void P401InputOptionWidget::createWidgets()
 
     _diSchmittTriggersLow = new IndexSpinBox();
     _diSchmittTriggersLow->setScale(12.0 / std::numeric_limits<qint16>::max());
+    _diSchmittTriggersLow->setUnit("V");
     hLayout->addWidget(_diSchmittTriggersLow);
-    QLabel *label = new QLabel(tr(":"));
+    QLabel *label = new QLabel(tr("-"));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     hLayout->addWidget(label);
 
     _diSchmittTriggersHigh = new IndexSpinBox();
     _diSchmittTriggersHigh->setScale(12.0 / std::numeric_limits<qint16>::max());
+    _diSchmittTriggersHigh->setUnit("V");
     hLayout->addWidget(_diSchmittTriggersHigh);
     label = new QLabel(tr("&Schmitt Triggers:"));
     label->setToolTip(tr("Min, Max"));
