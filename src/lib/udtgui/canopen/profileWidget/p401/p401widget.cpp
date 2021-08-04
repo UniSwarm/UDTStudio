@@ -28,6 +28,7 @@
 #include <QFrame>
 #include <QLabel>
 #include <QLayout>
+#include <QScrollArea>
 
 P401Widget::P401Widget(uint8_t channelCount, QWidget *parent)
     : QWidget(parent)
@@ -77,7 +78,7 @@ void P401Widget::createWidgets()
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
 
-    QLabel *laneLabel = new QLabel("");
+    QLabel *laneLabel = new QLabel("Channel");
     QLabel *inputLabel = new QLabel("Input");
     QLabel *outputLabel = new QLabel("Output");
 
@@ -89,15 +90,24 @@ void P401Widget::createWidgets()
 
     layout->addItem(commun);
 
+    QWidget *p401Widget = new QWidget(this);
+    QVBoxLayout *channelLayout = new QVBoxLayout(p401Widget);
+    channelLayout->setContentsMargins(0, 0, 0, 0);
+
     for (uint8_t i = 0; i < _channelCount; i++)
     {
         QFrame *frame = new QFrame();
         frame->setFrameStyle(QFrame::HLine);
         frame->setFrameShadow(QFrame::Sunken);
-        layout->addWidget(frame);
+        channelLayout->addWidget(frame);
         _p401ChannelWidgets.append(new P401ChannelWidget(i, this));
-        layout->addWidget(_p401ChannelWidgets.at(i));
+        channelLayout->addWidget(_p401ChannelWidgets.at(i));
     }
 
+    QScrollArea *channelScrollArea = new QScrollArea();
+    channelScrollArea->setWidget(p401Widget);
+    channelScrollArea->setWidgetResizable(true);
+
+    layout->addWidget(channelScrollArea);
     setLayout(layout);
 }
