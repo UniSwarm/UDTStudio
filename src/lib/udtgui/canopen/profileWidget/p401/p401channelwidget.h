@@ -25,6 +25,7 @@
 #include "nodeobjectid.h"
 #include "nodeodsubscriber.h"
 
+#include <QLabel>
 #include <QStackedWidget>
 #include <QWidget>
 
@@ -44,7 +45,6 @@ public:
     uint8_t channel() const;
 
     void readAllObject();
-    void displayOption401();
 
 public slots:
     void setNode(Node *node);

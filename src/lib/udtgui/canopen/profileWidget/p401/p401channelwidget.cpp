@@ -100,7 +100,7 @@ void P401ChannelWidget::createWidgets()
     channelLayout->addWidget(channelLabel);
 
     _modeCombobox = new IndexComboBox();
-    _modeCombobox->addItem(tr("No output"), QVariant(static_cast<uint16_t>(0x0000)));
+    _modeCombobox->addItem(tr("Output disabled"), QVariant(static_cast<uint16_t>(0x0000)));
     _modeCombobox->addItem(tr("Open-drain"), QVariant(static_cast<uint16_t>(0x0001)));
     _modeCombobox->addItem(tr("Open-source"), QVariant(static_cast<uint16_t>(0x0002)));
     _modeCombobox->addItem(tr("Push-Pull"), QVariant(static_cast<uint16_t>(0x0003)));

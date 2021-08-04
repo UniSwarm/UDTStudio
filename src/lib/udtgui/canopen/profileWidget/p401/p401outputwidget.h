@@ -29,6 +29,7 @@
 
 #include <QCheckBox>
 #include <QDoubleSpinBox>
+#include <QLabel>
 #include <QPushButton>
 #include <QSlider>
 #include <QStackedWidget>
@@ -67,6 +68,7 @@ private:
 
     QWidget *_analogWidget;
     QWidget *_digitalWidget;
+    QLabel *_outputLabel;
 
     QStackedWidget *_stackedWidget;
 

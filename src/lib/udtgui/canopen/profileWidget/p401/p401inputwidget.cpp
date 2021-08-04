@@ -66,13 +66,13 @@ void P401InputWidget::update()
 
     if (act)
     {
-        _digitalLabel->setText("On");
-        _digitalLabel->setStyleSheet("background-color: #1464A0;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; marging: 2px");
+        _digitalLabel->setText("High");
+        _digitalLabel->setStyleSheet("background-color: #1464A0;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px");
     }
     else
     {
-        _digitalLabel->setText("Off");
-        _digitalLabel->setStyleSheet("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; marging: 2px");
+        _digitalLabel->setText("Low");
+        _digitalLabel->setStyleSheet("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px");
     }
 }
 
@@ -81,18 +81,17 @@ void P401InputWidget::createWidgets()
     QHBoxLayout *hlayout = new QHBoxLayout();
     hlayout->setContentsMargins(0, 0, 0, 0);
 
+    _digitalLabel = new QLabel();
+    _digitalLabel->setStyleSheet("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px");
+    _digitalLabel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
+    hlayout->addWidget(_digitalLabel);
+
     _analogLcd = new QLCDNumber();
     _analogLcd->display(QString::number(0, 10, 2));
     hlayout->addWidget(_analogLcd);
 
     QLabel *volt = new QLabel("V");
     hlayout->addWidget(volt);
-
-    _digitalLabel = new QLabel();
-    _digitalLabel->setStyleSheet("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; marging: 2px");
-    _digitalLabel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
-
-    hlayout->addWidget(_digitalLabel);
 
     _analogProgressBar = new QProgressBar();
     _analogProgressBar->setRange(0, 12);

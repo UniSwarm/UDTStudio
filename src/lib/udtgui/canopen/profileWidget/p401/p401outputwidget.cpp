@@ -158,6 +158,9 @@ void P401OutputWidget::createWidgets()
     _stackedWidget->addWidget(_analogWidget);
     _stackedWidget->addWidget(_digitalWidget);
 
+    _outputLabel = new QLabel("Output disabled");
+    _stackedWidget->addWidget(_outputLabel);
+
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(_stackedWidget);
     setLayout(layout);
@@ -250,7 +253,7 @@ void P401OutputWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
         uint16_t value = static_cast<uint16_t>(_node->nodeOd()->value(objId).toUInt());
         if (value == 0x0000)
         {
-            _stackedWidget->setCurrentWidget(_digitalWidget);
+            _stackedWidget->setCurrentWidget(_outputLabel);
             _digitalWidget->setEnabled(false);
 
         }
