@@ -27,9 +27,11 @@
 
 #include <QWidget>
 
+#include <QCheckBox>
 #include <QDoubleSpinBox>
 #include <QPushButton>
 #include <QSlider>
+#include <QStackedWidget>
 
 class Node;
 class IndexCheckBox;
@@ -58,15 +60,24 @@ private:
     NodeObjectId _modeObjectId;
     IndexCheckBox *_digitalCheckBox;
 
-    QDoubleSpinBox *_analogSpinBox;
+    QSpinBox *_analogSpinBox;
+    QCheckBox *_typeCheckBox;
     QSlider *_analogSlider;
     QPushButton *_setZeroButton;
 
+    QWidget *_analogWidget;
+    QWidget *_digitalWidget;
+
+    QStackedWidget *_stackedWidget;
+
     void setZeroButton();
     void update();
+    void typeCheckBoxClicked(bool checked);
 
     // Create widgets
     void createWidgets();
+    QWidget *analogWidgets();
+    QWidget *digitalWidgets();
 
     // NodeOdSubscriber interface
 protected:
