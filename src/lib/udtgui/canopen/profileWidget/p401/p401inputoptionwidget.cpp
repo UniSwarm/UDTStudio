@@ -58,17 +58,19 @@ void P401InputOptionWidget::createWidgets()
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->setSpacing(0);
 
-    _diSchmittTriggersHigh = new IndexSpinBox();
-    hLayout->addWidget(_diSchmittTriggersHigh);
+    _diSchmittTriggersLow = new IndexSpinBox();
+    _diSchmittTriggersLow->setScale(12.0 / std::numeric_limits<qint16>::max());
+    hLayout->addWidget(_diSchmittTriggersLow);
     QLabel *label = new QLabel(tr(":"));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     hLayout->addWidget(label);
 
-    _diSchmittTriggersLow = new IndexSpinBox();
-    hLayout->addWidget(_diSchmittTriggersLow);
+    _diSchmittTriggersHigh = new IndexSpinBox();
+    _diSchmittTriggersHigh->setScale(12.0 / std::numeric_limits<qint16>::max());
+    hLayout->addWidget(_diSchmittTriggersHigh);
     label = new QLabel(tr("&Schmitt Triggers:"));
     label->setToolTip(tr("Min, Max"));
-    label->setBuddy(_diSchmittTriggersLow);
+    label->setBuddy(_diSchmittTriggersHigh);
     formLayout->addRow(label, hLayout);
 
     setLayout(formLayout);
