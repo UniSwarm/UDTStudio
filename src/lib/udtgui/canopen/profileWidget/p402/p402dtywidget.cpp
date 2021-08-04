@@ -179,7 +179,6 @@ void P402DtyWidget::createWidgets()
     layout->setContentsMargins(0, 0, 0, 0);
 
     layout->addWidget(modeGroupBox);
-    ;
 
     QScrollArea *scrollArea = new QScrollArea;
     scrollArea->setWidget(widget);

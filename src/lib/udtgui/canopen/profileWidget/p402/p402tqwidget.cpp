@@ -225,7 +225,7 @@ void P402TqWidget::createWidgets()
     QVBoxLayout *layout = new QVBoxLayout(widget);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    layout->addWidget(modeGroupBox);;
+    layout->addWidget(modeGroupBox);
 
     QScrollArea *scrollArea = new QScrollArea;
     scrollArea->setWidget(widget);
