@@ -21,6 +21,7 @@
 
 #include "../../../udtgui_global.h"
 
+#include <QTimer>
 #include <QToolBar>
 #include <QWidget>
 
@@ -35,11 +36,13 @@ public:
 
     Node *node() const;
 
-    void readAllObject();
+    void start(int msec);
+    void stop();
 
 public slots:
     void setNode(Node *node);
     void setSettings(bool checked);
+    void readAllObject();
 
 signals:
     void settings(bool checked);
@@ -47,6 +50,8 @@ signals:
 private:
     quint8 _channelCount;
     Node *_node;
+
+    QTimer _readTimer;
 
     QList<P401ChannelWidget *> _p401ChannelWidgets;
 

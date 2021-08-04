@@ -23,6 +23,7 @@
 
 #include "nodescreen.h"
 
+#include <QSpinBox>
 #include <QTabWidget>
 
 class P401Widget;
@@ -36,8 +37,20 @@ public:
 public slots:
     void readAll();
 
+protected slots:
+    void toggleStartLogger(bool start);
+    void setLogTimer(int ms);
+
 protected:
     P401Widget *_p401Widget;
+
+    // Logger timer
+    QSpinBox *_logTimerSpinBox;
+
+    // Toolbar action
+    QAction *_startStopAction;
+    QAction *_option402Action;
+
     void createWidgets();    
 
     // NodeScreen interface

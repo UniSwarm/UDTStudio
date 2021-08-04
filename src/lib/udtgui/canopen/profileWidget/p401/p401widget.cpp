@@ -35,6 +35,8 @@ P401Widget::P401Widget(uint8_t channelCount, QWidget *parent)
 {
     _channelCount = channelCount;
     createWidgets();
+
+    connect(&_readTimer, &QTimer::timeout, this, &P401Widget::readAllObject);
 }
 
 Node *P401Widget::node() const
@@ -48,6 +50,16 @@ void P401Widget::readAllObject()
     {
         p401ChannelWidget->readAllObject();
     }
+}
+
+void P401Widget::start(int msec)
+{
+    _readTimer.start(msec);
+}
+
+void P401Widget::stop()
+{
+    _readTimer.stop();
 }
 
 void P401Widget::setNode(Node *node)
