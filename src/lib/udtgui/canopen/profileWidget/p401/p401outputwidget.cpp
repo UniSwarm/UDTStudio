@@ -158,7 +158,8 @@ void P401OutputWidget::createWidgets()
     _stackedWidget->addWidget(_analogWidget);
     _stackedWidget->addWidget(_digitalWidget);
 
-    _outputLabel = new QLabel("Output disabled");
+    _outputLabel = new QLabel(tr("Output disabled"));
+    _outputLabel->setDisabled(true);
     _stackedWidget->addWidget(_outputLabel);
 
     QHBoxLayout *layout = new QHBoxLayout();
