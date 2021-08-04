@@ -21,7 +21,8 @@
 #include "indexdb401.h"
 #include "p401inputwidget.h"
 #include "p401outputwidget.h"
-#include "p401optionwidget.h"
+#include "p401inputoptionwidget.h"
+#include "p401outputoptionwidget.h"
 #include "canopen/widget/indexcombobox.h"
 
 #include <QComboBox>
@@ -35,7 +36,8 @@ P401ChannelWidget::P401ChannelWidget(uint8_t channel, QWidget *parent)
 {
     _channel = channel;
     createWidgets();
-    _stackedWidget->setCurrentWidget(_inputWidget);
+    _inputStackedWidget->setCurrentWidget(_inputWidget);
+    _outputStackedWidget->setCurrentWidget(_outputWidget);
 }
 
 uint8_t P401ChannelWidget::channel() const
@@ -47,37 +49,41 @@ void P401ChannelWidget::readAllObject()
 {
     _modeCombobox->readObject();
 
-    if (_stackedWidget->currentWidget() == _inputWidget)
+    if (_inputStackedWidget->currentWidget() == _inputWidget)
     {
         _inputWidget->readAllObject();
+        _outputWidget->readAllObject();
     }
     else
     {
-        _optionWidget->readAllObject();
+        _inputOptionWidget->readAllObject();
+        _outputOptionWidget->readAllObject();
     }
-
-    _outputWidget->readAllObject();
 }
 
 void P401ChannelWidget::setNode(Node *node)
 {
     _modeCombobox->setObjId(IndexDb401::getObjectId(IndexDb401::OD_MS_DO_MODE, _channel + 1));
-
     _modeCombobox->setNode(node);
-    _inputWidget->setNode(node);
+
+    _inputWidget->setNode(node);    
+    _inputOptionWidget->setNode(node);
+
     _outputWidget->setNode(node);
-    _optionWidget->setNode(node);
+    _outputOptionWidget->setNode(node);
 }
 
 void P401ChannelWidget::displayOption401()
 {
-    if (_stackedWidget->currentWidget() == _inputWidget)
+    if (_inputStackedWidget->currentWidget() == _inputWidget)
     {
-        _stackedWidget->setCurrentWidget(_optionWidget);
+        _inputStackedWidget->setCurrentWidget(_inputOptionWidget);
+        _outputStackedWidget->setCurrentWidget(_outputOptionWidget);
     }
     else
     {
-        _stackedWidget->setCurrentWidget(_inputWidget);
+        _inputStackedWidget->setCurrentWidget(_inputWidget);
+        _outputStackedWidget->setCurrentWidget(_outputWidget);
     }
 }
 
@@ -99,33 +105,38 @@ void P401ChannelWidget::createWidgets()
     _modeCombobox->addItem(tr("PWM Push-Pull"), QVariant(static_cast<uint16_t>(0x0013)));
     channelLayout->addWidget(_modeCombobox);
 
-    QFrame *frame = new QFrame();
-    frame->setFrameStyle(QFrame::VLine);
-    frame->setFrameShadow(QFrame::Sunken);
-
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
 
-    _optionWidget= new P401OptionWidget(_channel, this);
-    _inputWidget = new P401InputWidget(_channel, this);
-    _outputWidget = new P401OutputWidget(_channel, this);
-
     layout->addItem(channelLayout);
+
+    QFrame *frame = new QFrame();
+    frame->setFrameStyle(QFrame::VLine);
+    frame->setFrameShadow(QFrame::Sunken);
     layout->addWidget(frame);
 
-    // Stacked Widget
-    _stackedWidget = new QStackedWidget;
-    _stackedWidget->addWidget(_inputWidget);
-    _stackedWidget->addWidget(_optionWidget);
+    // Input Stacked Widget
+    _inputOptionWidget= new P401InputOptionWidget(_channel, this);
+    _inputWidget = new P401InputWidget(_channel, this);
 
-    layout->addWidget(_stackedWidget);
+    _inputStackedWidget = new QStackedWidget;
+    _inputStackedWidget->addWidget(_inputWidget);
+    _inputStackedWidget->addWidget(_inputOptionWidget);
+    layout->addWidget(_inputStackedWidget);
 
     frame = new QFrame();
     frame->setFrameStyle(QFrame::VLine);
     frame->setFrameShadow(QFrame::Sunken);
     layout->addWidget(frame);
 
-    layout->addWidget(_outputWidget);
+    // Output Stacked Widget
+    _outputWidget = new P401OutputWidget(_channel, this);
+    _outputOptionWidget = new P401OutputOptionWidget(_channel, this);
+
+    _outputStackedWidget = new QStackedWidget;
+    _outputStackedWidget->addWidget(_outputWidget);
+    _outputStackedWidget->addWidget(_outputOptionWidget);
+    layout->addWidget(_outputStackedWidget);
 
     setLayout(layout);
 }

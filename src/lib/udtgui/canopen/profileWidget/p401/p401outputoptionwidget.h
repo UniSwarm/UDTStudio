@@ -16,55 +16,32 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef P401CHANNELWIDGET_H
-#define P401CHANNELWIDGET_H
+#ifndef P401OUTPUTOPTIONWIDGET_H
+#define P401OUTPUTOPTIONWIDGET_H
 
-#include "../../../udtgui_global.h"
-
-#include "node.h"
-#include "nodeobjectid.h"
-#include "nodeodsubscriber.h"
-
-#include <QStackedWidget>
 #include <QWidget>
 
-class IndexComboBox;
-class P401InputWidget;
-class P401OutputWidget;
-class P401InputOptionWidget;
-class P401OutputOptionWidget;
+class IndexSpinBox;
+class Node;
 
-class P401ChannelWidget : public QWidget
+class P401OutputOptionWidget : public QWidget
 {
     Q_OBJECT
-
 public:
-    P401ChannelWidget(uint8_t channel, QWidget *parent = nullptr);
-
-    uint8_t channel() const;
-
+    P401OutputOptionWidget(uint8_t channel, QWidget *parent = nullptr);
     void readAllObject();
-    void displayOption401();
 
 public slots:
     void setNode(Node *node);
 
 private:
     uint8_t _channel;
+    Node *_node;
 
-    IndexComboBox *_modeCombobox;
-
-    P401InputOptionWidget *_inputOptionWidget;
-    P401InputWidget *_inputWidget;
-
-    P401OutputOptionWidget *_outputOptionWidget;
-    P401OutputWidget *_outputWidget;
-
-    QStackedWidget *_inputStackedWidget;
-    QStackedWidget *_outputStackedWidget;
+    IndexSpinBox *_doPwmFrequency;
 
     // Create widgets
     void createWidgets();
 };
 
-#endif // P401CHANNELWIDGET_H
+#endif // P401OUTPUTOPTIONWIDGET_H

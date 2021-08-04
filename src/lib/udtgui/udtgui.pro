@@ -64,7 +64,9 @@ HEADERS += \
     $$PWD/canopen/profileWidget/p401/p401inputwidget.h \
     $$PWD/canopen/profileWidget/p401/p401outputwidget.h \
     $$PWD/canopen/profileWidget/p401/p401widget.h \
-    $$PWD/screen/nodescreenuio.h
+    $$PWD/screen/nodescreenuio.h \
+    $$PWD/canopen/profileWidget/p401/p401inputoptionwidget.h \
+    $$PWD/canopen/profileWidget/p401/p401outputoptionwidget.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -122,7 +124,9 @@ SOURCES += \
     $$PWD/canopen/profileWidget/p401/p401inputwidget.cpp \
     $$PWD/canopen/profileWidget/p401/p401outputwidget.cpp \
     $$PWD/canopen/profileWidget/p401/p401widget.cpp \
-    $$PWD/screen/nodescreenuio.cpp
+    $$PWD/screen/nodescreenuio.cpp \
+    $$PWD/canopen/profileWidget/p401/p401inputoptionwidget.cpp \
+    $$PWD/canopen/profileWidget/p401/p401outputoptionwidget.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 
