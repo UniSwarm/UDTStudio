@@ -29,6 +29,7 @@
 
 #include <QLCDNumber>
 #include <QProgressBar>
+#include <QPushButton>
 #include <QSlider>
 
 class Node;
@@ -51,7 +52,8 @@ private:
     uint8_t _channel;
 
     NodeObjectId _analogObjectId;
-    IndexCheckBox *_digitalCheckBox;
+    NodeObjectId _digitalObjectId;
+    QPushButton *_digitalPushButton;
 
     void update();
 

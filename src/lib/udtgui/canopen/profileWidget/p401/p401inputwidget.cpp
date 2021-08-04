@@ -22,7 +22,7 @@
 #include "canopen/widget/indexcheckbox.h"
 
 #include <QFormLayout>
-#include <QRadioButton>
+#include <QLabel>
 
 P401InputWidget::P401InputWidget(uint8_t channel, QWidget *parent)
     : QWidget(parent)
@@ -34,7 +34,7 @@ P401InputWidget::P401InputWidget(uint8_t channel, QWidget *parent)
 void P401InputWidget::readAllObject()
 {
     _node->readObject(_analogObjectId);
-    _digitalCheckBox->readObject();
+    _node->readObject(_digitalObjectId);
 }
 
 void P401InputWidget::setNode(Node *node, uint8_t _channel)
@@ -48,38 +48,50 @@ void P401InputWidget::setNode(Node *node, uint8_t _channel)
     _analogObjectId = IndexDb401::getObjectId(IndexDb401::AI_VALUES_16BITS, _channel + 1);
     _analogObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_analogObjectId);
-    setNodeInterrest(_node);
 
-    _digitalCheckBox->setNode(_node);
-    _digitalCheckBox->setObjId(IndexDb401::getObjectId(IndexDb401::DI_VALUES_8BITS_CHANNELS_0_7));
-    _digitalCheckBox->setBitMask(1 << _channel);
+    _digitalObjectId = (IndexDb401::getObjectId(IndexDb401::DI_VALUES_8BITS_CHANNELS_0_7));
+    _digitalObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    registerObjId(_digitalObjectId);
+    setNodeInterrest(_node);
 }
 
 void P401InputWidget::update()
 {
     int value = _node->nodeOd()->value(_analogObjectId).toInt();
-    _analogLcd->display(QString::number(value, 10, 2));
+    _analogLcd->display(value);
     _analogProgressBar->setValue(value);
+
+    uint8_t valueDigital = static_cast<uint8_t>(_node->nodeOd()->value(_digitalObjectId).toUInt());
+    bool act = valueDigital >> _channel;
+
+    _digitalPushButton->setCheckable(true);
+    if (act)
+    {
+        _digitalPushButton->setChecked(true);
+        _digitalPushButton->setText("On");
+    }
+    else
+    {
+        _digitalPushButton->setChecked(false);
+        _digitalPushButton->setText("Off");
+    }
 }
 
 void P401InputWidget::createWidgets()
 {
-    QVBoxLayout *vLayout = new QVBoxLayout();
-    vLayout->setContentsMargins(0, 0, 0, 0);
+    QHBoxLayout *hlayout = new QHBoxLayout();
+    hlayout->setContentsMargins(0, 0, 0, 0);
 
     _analogLcd = new QLCDNumber();
     _analogLcd->display(QString::number(0, 10, 2));
-    _analogLcd->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
-    vLayout->addWidget(_analogLcd);
+    hlayout->addWidget(_analogLcd);
 
-    _digitalCheckBox = new IndexCheckBox();
-    _digitalCheckBox->setEnabled(false);
-    _digitalCheckBox->setText("On/Off");
-    vLayout->addWidget(_digitalCheckBox);
+    QLabel *volt = new QLabel("V");
+    hlayout->addWidget(volt);
 
-    QHBoxLayout *hlayout = new QHBoxLayout();
-    hlayout->setContentsMargins(0, 0, 0, 0);
-    hlayout->addLayout(vLayout);
+    _digitalPushButton = new QPushButton();
+    _digitalPushButton->setEnabled(false);
+    hlayout->addWidget(_digitalPushButton);
 
     _analogProgressBar = new QProgressBar();
     _analogProgressBar->setRange(0, 12);
