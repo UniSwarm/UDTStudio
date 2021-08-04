@@ -65,12 +65,9 @@ void P401Widget::setNode(Node *node)
     readAllObject();
 }
 
-void P401Widget::displayOption401()
+void P401Widget::setSettings(bool checked)
 {
-    for (P401ChannelWidget *p401ChannelWidget : _p401ChannelWidgets)
-    {
-        p401ChannelWidget->displayOption401();
-    }
+    emit settings(checked);
 }
 
 void P401Widget::createWidgets()
@@ -102,6 +99,7 @@ void P401Widget::createWidgets()
         channelLayout->addWidget(frame);
         _p401ChannelWidgets.append(new P401ChannelWidget(i, this));
         channelLayout->addWidget(_p401ChannelWidgets.at(i));
+        connect(this, &P401Widget::settings, _p401ChannelWidgets.at(i), &P401ChannelWidget::setSettings);
     }
 
     QScrollArea *channelScrollArea = new QScrollArea();

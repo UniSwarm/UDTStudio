@@ -54,7 +54,7 @@ void NodeScreenUio::createWidgets()
     _option402Action->setCheckable(true);
     _option402Action->setIcon(QIcon(":/icons/img/icons8-settings.png"));
     _option402Action->setToolTip(tr("Option code"));
-    connect(_option402Action, &QAction::triggered, _p401Widget, &P401Widget::displayOption401);
+    connect(_option402Action, &QAction::triggered, _p401Widget, &P401Widget::setSettings);
 
     toolBar->addSeparator();
     toolBar->addAction(_option402Action);

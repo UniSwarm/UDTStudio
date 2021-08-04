@@ -39,7 +39,10 @@ public:
 
 public slots:
     void setNode(Node *node);
-    void displayOption401();
+    void setSettings(bool checked);
+
+signals:
+    void settings(bool checked);
 
 private:
     quint8 _channelCount;
