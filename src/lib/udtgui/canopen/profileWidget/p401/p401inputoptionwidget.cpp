@@ -22,6 +22,7 @@
 #include "canopen/widget/indexspinbox.h"
 
 #include <QFormLayout>
+#include <QLabel>
 P401InputOptionWidget::P401InputOptionWidget(uint8_t channel, QWidget *parent)
     : QWidget(parent)
     , _channel(channel)
@@ -54,11 +55,21 @@ void P401InputOptionWidget::createWidgets()
 {
     QFormLayout *formLayout = new QFormLayout();
 
-    _diSchmittTriggersHigh = new IndexSpinBox();
-    _diSchmittTriggersLow = new IndexSpinBox();
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    hLayout->setSpacing(0);
 
-    formLayout->addRow(tr("Schmitt Triggers High"), _diSchmittTriggersHigh);
-    formLayout->addRow(tr("Schmitt Triggers Low"), _diSchmittTriggersLow);
+    _diSchmittTriggersHigh = new IndexSpinBox();
+    hLayout->addWidget(_diSchmittTriggersHigh);
+    QLabel *label = new QLabel(tr(":"));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    hLayout->addWidget(label);
+
+    _diSchmittTriggersLow = new IndexSpinBox();
+    hLayout->addWidget(_diSchmittTriggersLow);
+    label = new QLabel(tr("&Schmitt Triggers:"));
+    label->setToolTip(tr("Min, Max"));
+    label->setBuddy(_diSchmittTriggersLow);
+    formLayout->addRow(label, hLayout);
 
     setLayout(formLayout);
 }
