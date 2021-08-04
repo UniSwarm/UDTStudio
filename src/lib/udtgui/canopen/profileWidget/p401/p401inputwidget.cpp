@@ -64,16 +64,15 @@ void P401InputWidget::update()
     uint8_t valueDigital = static_cast<uint8_t>(_node->nodeOd()->value(_digitalObjectId).toUInt());
     bool act = valueDigital >> _channel;
 
-    _digitalPushButton->setCheckable(true);
     if (act)
     {
-        _digitalPushButton->setChecked(true);
-        _digitalPushButton->setText("On");
+        _digitalLabel->setText("On");
+        _digitalLabel->setStyleSheet("background-color: #1464A0;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; marging: 2px");
     }
     else
     {
-        _digitalPushButton->setChecked(false);
-        _digitalPushButton->setText("Off");
+        _digitalLabel->setText("Off");
+        _digitalLabel->setStyleSheet("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; marging: 2px");
     }
 }
 
@@ -89,9 +88,11 @@ void P401InputWidget::createWidgets()
     QLabel *volt = new QLabel("V");
     hlayout->addWidget(volt);
 
-    _digitalPushButton = new QPushButton();
-    _digitalPushButton->setEnabled(false);
-    hlayout->addWidget(_digitalPushButton);
+    _digitalLabel = new QLabel();
+    _digitalLabel->setStyleSheet("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; marging: 2px");
+    _digitalLabel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+    hlayout->addWidget(_digitalLabel);
 
     _analogProgressBar = new QProgressBar();
     _analogProgressBar->setRange(0, 12);

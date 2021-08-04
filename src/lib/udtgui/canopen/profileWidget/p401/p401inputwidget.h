@@ -28,8 +28,8 @@
 #include <QWidget>
 
 #include <QLCDNumber>
+#include <QLabel>
 #include <QProgressBar>
-#include <QPushButton>
 #include <QSlider>
 
 class Node;
@@ -53,7 +53,7 @@ private:
 
     NodeObjectId _analogObjectId;
     NodeObjectId _digitalObjectId;
-    QPushButton *_digitalPushButton;
+    QLabel *_digitalLabel;
 
     void update();
 
