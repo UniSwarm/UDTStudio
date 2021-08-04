@@ -73,7 +73,7 @@ void P401InputWidget::createWidgets()
     hlayout->addWidget(volt);
 
     _analogProgressBar = new QProgressBar();
-    _analogProgressBar->setRange(0, 12);
+    _analogProgressBar->setRange(0, std::numeric_limits<qint16>::max());
     _analogProgressBar->setFormat("%v");
     hlayout->addWidget(_analogProgressBar);
 
@@ -90,13 +90,9 @@ void P401InputWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flag
     if (objId == _analogObjectId)
     {
         int value = _node->nodeOd()->value(_analogObjectId).toInt();
-        double val = value;
-        if (val != 0.0)
-        {
-            val = (value * 12) / std::numeric_limits<qint16>::max();
-        }
-        _analogLcd->display(val);
-        _analogProgressBar->setValue(static_cast<int>(val));
+        double val = (value * 12.0) / std::numeric_limits<qint16>::max();
+        _analogLcd->display(QString::number(val, 'f', 2));
+        _analogProgressBar->setValue(value);
 
         uint8_t valueDigital = static_cast<uint8_t>(_node->nodeOd()->value(_digitalObjectId).toUInt());
         bool act = valueDigital >> _channel;
