@@ -43,6 +43,7 @@ public:
         OD_MS_DI_SCHMITT_TRIGGERS_HIGH,
         OD_MS_DI_SCHMITT_TRIGGERS_LOW,
         OD_MS_DO_MODE,
+        OD_MS_DO_PWM_FREQUENCY,
 
         // Object APP
         DI_VALUES_8BITS_CHANNELS_0_7,

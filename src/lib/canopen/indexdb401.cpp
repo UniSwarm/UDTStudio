@@ -57,6 +57,9 @@ NodeObjectId IndexDb401::getObjectId(IndexDb401::OdObject object, uint channel, 
     case OD_MS_DO_MODE:
         return {0x4200, static_cast<quint8>(channel)};
 
+    case OD_MS_DO_PWM_FREQUENCY:
+        return {0x4201, static_cast<quint8>(channel)};
+
     case IndexDb401::DI_VALUES_8BITS_CHANNELS_0_7:
         return {0x6000, 0x1};
     case IndexDb401::DI_POLARITIES_8BITS_CHANNELS_0_7:
