@@ -204,7 +204,7 @@ QWidget *P401OutputWidget::digitalWidgets()
     QVBoxLayout *digitalLayout = new QVBoxLayout(widget);
 
     _digitalCheckBox = new IndexCheckBox();
-    _digitalCheckBox->setText("On/Off");
+    _digitalCheckBox->setText("High/Low");
     digitalLayout->addWidget(_digitalCheckBox);
 
     return widget;

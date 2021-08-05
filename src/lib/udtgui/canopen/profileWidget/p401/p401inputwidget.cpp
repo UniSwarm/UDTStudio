@@ -61,6 +61,8 @@ void P401InputWidget::createWidgets()
     hlayout->setContentsMargins(0, 0, 0, 0);
 
     _digitalLabel = new QLabel();
+    _digitalLabel->setMinimumWidth(44);
+    _digitalLabel->setAlignment(Qt::AlignHCenter);
     _digitalLabel->setStyleSheet("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px");
     _digitalLabel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
     hlayout->addWidget(_digitalLabel);
