@@ -25,9 +25,12 @@ IndexLCDNumber::IndexLCDNumber(const NodeObjectId &objId)
 {
     QHBoxLayout *hlayout = new QHBoxLayout();
     hlayout->setContentsMargins(0, 0, 0, 0);
+    hlayout->setSpacing(0);
 
     _lcdNumber = new QLCDNumber();
+    _lcdNumber->setStyleSheet("margin-right: 0; padding-right: 0;");
     _label = new QLabel();
+    _label->setStyleSheet("margin-left: 0; padding-left: 0;font: italic;");
 
     hlayout->addWidget(_lcdNumber);
     hlayout->addWidget(_label);
@@ -50,9 +53,18 @@ void IndexLCDNumber::setDisplayValue(const QVariant &value, AbstractIndexWidget:
         setFont(mfont);
     }
 
-    QVariant p = pValue(value, _hint);
-
-    _lcdNumber->display(QString::number(p.toDouble(), 'f', 2));
+    if (_hint == AbstractIndexWidget::DisplayFloat)
+    {
+       _lcdNumber->display(QString::number(value.toDouble(), 'f', 2));
+    }
+    else if (_hint == AbstractIndexWidget::DisplayDirectValue)
+    {
+        _lcdNumber->display(value.toInt());
+    }
+    else
+    {
+        return;
+    }
 
     if (!_unit.isEmpty())
     {
