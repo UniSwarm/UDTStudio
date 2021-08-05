@@ -25,8 +25,8 @@
 #include <QPixmap>
 #include <QPushButton>
 
-#include "canopen/widget/indexcombobox.h"
-#include "canopen/widget/indexlabel.h"
+#include "canopen/indexWidget/indexcombobox.h"
+#include "canopen/indexWidget/indexlabel.h"
 #include "screen/nodescreenswidget.h"
 
 NodeScreenHome::NodeScreenHome()

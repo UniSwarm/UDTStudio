@@ -19,9 +19,9 @@
 #include "p402ipwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
-#include "canopen/widget/indexspinbox.h"
-#include "canopen/widget/indexlabel.h"
-#include "canopen/widget/indexcheckbox.h"
+#include "canopen/indexWidget/indexspinbox.h"
+#include "canopen/indexWidget/indexlabel.h"
+#include "canopen/indexWidget/indexcheckbox.h"
 
 #include "services/services.h"
 #include "canopenbus.h"
@@ -34,7 +34,7 @@
 #include <QStringList>
 #include <QtMath>
 
-#include <canopen/widget/indexcheckbox.h>
+#include <canopen/indexWidget/indexcheckbox.h>
 
 P402IpWidget::P402IpWidget(QWidget *parent)
     : P402Mode(parent)

@@ -23,7 +23,7 @@
 #include "p401outputwidget.h"
 #include "p401inputoptionwidget.h"
 #include "p401outputoptionwidget.h"
-#include "canopen/widget/indexcombobox.h"
+#include "canopen/indexWidget/indexcombobox.h"
 
 #include <QComboBox>
 #include <QFormLayout>

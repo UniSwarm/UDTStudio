@@ -19,8 +19,8 @@
 #include "p402ppwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
-#include "canopen/widget/indexspinbox.h"
-#include "canopen/widget/indexcheckbox.h"
+#include "canopen/indexWidget/indexspinbox.h"
+#include "canopen/indexWidget/indexcheckbox.h"
 #include "services/services.h"
 
 #include "indexdb402.h"
@@ -31,7 +31,7 @@
 #include <QStringList>
 #include <QtMath>
 
-#include <canopen/widget/indexlabel.h>
+#include <canopen/indexWidget/indexlabel.h>
 
 P402PpWidget::P402PpWidget(QWidget *parent)
     : P402Mode(parent)

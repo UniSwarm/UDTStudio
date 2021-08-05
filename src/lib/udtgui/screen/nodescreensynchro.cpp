@@ -18,9 +18,9 @@
 
 #include "nodescreensynchro.h"
 
-#include "canopen/widget/indexcombobox.h"
-#include "canopen/widget/indexlabel.h"
-#include "canopen/widget/indexspinbox.h"
+#include "canopen/indexWidget/indexcombobox.h"
+#include "canopen/indexWidget/indexlabel.h"
+#include "canopen/indexWidget/indexspinbox.h"
 #include "canopen/datalogger/dataloggerwidget.h"
 
 #include "indexdb402.h"

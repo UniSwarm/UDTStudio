@@ -19,8 +19,8 @@
 #include "p402dtywidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
-#include "canopen/widget/indexlabel.h"
-#include "canopen/widget/indexspinbox.h"
+#include "canopen/indexWidget/indexlabel.h"
+#include "canopen/indexWidget/indexspinbox.h"
 #include "indexdb402.h"
 #include "node.h"
 #include "profile/p402/nodeprofile402.h"

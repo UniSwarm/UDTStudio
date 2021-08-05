@@ -18,7 +18,7 @@
 
 #include "p401outputoptionwidget.h"
 
-#include "canopen/widget/indexspinbox.h"
+#include "canopen/indexWidget/indexspinbox.h"
 #include "indexdb401.h"
 
 #include <QFormLayout>

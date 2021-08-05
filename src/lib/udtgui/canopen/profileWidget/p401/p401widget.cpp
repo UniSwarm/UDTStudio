@@ -22,7 +22,7 @@
 #include "p401channelwidget.h"
 #include "p401inputwidget.h"
 #include "p401outputwidget.h"
-#include "canopen/widget/indexcombobox.h"
+#include "canopen/indexWidget/indexcombobox.h"
 
 #include <QFormLayout>
 #include <QFrame>

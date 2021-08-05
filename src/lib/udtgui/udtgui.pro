@@ -36,11 +36,11 @@ HEADERS += \
     $$PWD/canopen/pdo/pdomappingpainter.h \
     $$PWD/canopen/pdo/pdomappingview.h \
     $$PWD/canopen/pdo/pdomappingwidget.h \
-    $$PWD/canopen/widget/abstractindexwidget.h \
-    $$PWD/canopen/widget/indexcheckbox.h \
-    $$PWD/canopen/widget/indexcombobox.h \
-    $$PWD/canopen/widget/indexlabel.h \
-    $$PWD/canopen/widget/indexspinbox.h \
+    $$PWD/canopen/indexWidget/abstractindexwidget.h \
+    $$PWD/canopen/indexWidget/indexcheckbox.h \
+    $$PWD/canopen/indexWidget/indexcombobox.h \
+    $$PWD/canopen/indexWidget/indexlabel.h \
+    $$PWD/canopen/indexWidget/indexspinbox.h \
     $$PWD/screen/nodescreenswidget.h \
     $$PWD/screen/nodescreen.h \
     $$PWD/screen/nodescreenhome.h \
@@ -96,11 +96,11 @@ SOURCES += \
     $$PWD/canopen/pdo/pdomappingpainter.cpp \
     $$PWD/canopen/pdo/pdomappingview.cpp \
     $$PWD/canopen/pdo/pdomappingwidget.cpp \
-    $$PWD/canopen/widget/abstractindexwidget.cpp \
-    $$PWD/canopen/widget/indexcheckbox.cpp \
-    $$PWD/canopen/widget/indexcombobox.cpp \
-    $$PWD/canopen/widget/indexlabel.cpp \
-    $$PWD/canopen/widget/indexspinbox.cpp \
+    $$PWD/canopen/indexWidget/abstractindexwidget.cpp \
+    $$PWD/canopen/indexWidget/indexcheckbox.cpp \
+    $$PWD/canopen/indexWidget/indexcombobox.cpp \
+    $$PWD/canopen/indexWidget/indexlabel.cpp \
+    $$PWD/canopen/indexWidget/indexspinbox.cpp \
     $$PWD/screen/nodescreenswidget.cpp \
     $$PWD/screen/nodescreen.cpp \
     $$PWD/screen/nodescreenhome.cpp \

@@ -19,7 +19,7 @@
 #include "p401inputoptionwidget.h"
 
 #include "indexdb401.h"
-#include "canopen/widget/indexspinbox.h"
+#include "canopen/indexWidget/indexspinbox.h"
 
 #include <QFormLayout>
 #include <QLabel>
@@ -59,7 +59,7 @@ void P401InputOptionWidget::createWidgets()
     hLayout->setSpacing(0);
 
     _diSchmittTriggersLow = new IndexSpinBox();
-    _diSchmittTriggersLow->setScale(12.0 / std::numeric_limits<qint16>::max());
+    //_diSchmittTriggersLow->setScale(12.0 / 32767);
     _diSchmittTriggersLow->setUnit("V");
     hLayout->addWidget(_diSchmittTriggersLow);
     QLabel *label = new QLabel(tr("-"));
@@ -67,11 +67,11 @@ void P401InputOptionWidget::createWidgets()
     hLayout->addWidget(label);
 
     _diSchmittTriggersHigh = new IndexSpinBox();
-    _diSchmittTriggersHigh->setScale(12.0 / std::numeric_limits<qint16>::max());
+    //_diSchmittTriggersHigh->setScale(12.0 / 32767);
     _diSchmittTriggersHigh->setUnit("V");
     hLayout->addWidget(_diSchmittTriggersHigh);
     label = new QLabel(tr("&Schmitt Triggers:"));
-    label->setToolTip(tr("Min, Max"));
+    label->setToolTip(tr("Low, High"));
     label->setBuddy(_diSchmittTriggersHigh);
     formLayout->addRow(label, hLayout);
 

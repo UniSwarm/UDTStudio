@@ -19,7 +19,7 @@
 #include "p401inputwidget.h"
 
 #include "indexdb401.h"
-#include "canopen/widget/indexcheckbox.h"
+#include "canopen/indexWidget/indexcheckbox.h"
 
 #include <QFormLayout>
 #include <QLabel>

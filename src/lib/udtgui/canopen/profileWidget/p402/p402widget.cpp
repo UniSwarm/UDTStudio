@@ -18,7 +18,7 @@
 
 #include "p402widget.h"
 
-#include "canopen/widget/indexlabel.h"
+#include "canopen/indexWidget/indexlabel.h"
 #include "indexdb402.h"
 #include "services/services.h"
 
