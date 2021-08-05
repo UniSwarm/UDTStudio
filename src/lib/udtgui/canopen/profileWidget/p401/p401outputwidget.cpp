@@ -32,6 +32,9 @@ P401OutputWidget::P401OutputWidget(uint8_t channel, QWidget *parent)
 {
     _channel = channel;
     createWidgets();
+
+    _stackedWidget->setCurrentWidget(_outputLabel);
+    _digitalWidget->setEnabled(false);
 }
 
 void P401OutputWidget::readAllObject()

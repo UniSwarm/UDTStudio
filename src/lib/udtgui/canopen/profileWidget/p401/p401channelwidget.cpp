@@ -36,6 +36,7 @@ P401ChannelWidget::P401ChannelWidget(uint8_t channel, QWidget *parent)
 {
     _channel = channel;
     createWidgets();
+    _modeCombobox->setCurrentIndex(0);
     _inputStackedWidget->setCurrentWidget(_inputWidget);
     _outputStackedWidget->setCurrentWidget(_outputWidget);
 }
