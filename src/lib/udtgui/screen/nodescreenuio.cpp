@@ -28,7 +28,7 @@ NodeScreenUio::NodeScreenUio(QWidget *parent)
     createWidgets();
 }
 
-void NodeScreenUio::readAll()
+void NodeScreenUio::readAllObject()
 {
     _p401Widget->readAllObject();
 }
@@ -39,14 +39,13 @@ void NodeScreenUio::toggleStartLogger(bool start)
     {
         return;
     }
+
     if (start)
     {
-        _startStopAction->setIcon(QIcon(":/icons/img/icons8-stop.png"));
         _p401Widget->start(_logTimerSpinBox->value());
     }
     else
     {
-        _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
         _p401Widget->stop();
     }
 
@@ -68,14 +67,18 @@ void NodeScreenUio::setLogTimer(int ms)
 
 void NodeScreenUio::createWidgets()
 {
-    _p401Widget = new P401Widget(8, this);
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
 
     QToolBar *toolBar = new QToolBar(tr("UIO commands"));
     toolBar->setIconSize(QSize(20, 20));
 
     _startStopAction = toolBar->addAction(tr("Start / stop"));
     _startStopAction->setCheckable(true);
-    _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
+    QIcon iconStartStop;
+    iconStartStop.addFile(":/icons/img/icons8-stop.png", QSize(), QIcon::Normal, QIcon::On);
+    iconStartStop.addFile(":/icons/img/icons8-play.png", QSize(), QIcon::Normal, QIcon::Off);
+    _startStopAction->setIcon(iconStartStop);
     _startStopAction->setStatusTip(tr("Start or stop the data logger"));
     connect(_startStopAction, &QAction::triggered, this, &NodeScreenUio::toggleStartLogger);
 
@@ -90,27 +93,24 @@ void NodeScreenUio::createWidgets()
     _option402Action->setCheckable(true);
     _option402Action->setIcon(QIcon(":/icons/img/icons8-settings.png"));
     _option402Action->setToolTip(tr("Option code"));
-    connect(_option402Action, &QAction::triggered, _p401Widget, &P401Widget::setSettings);
 
     // read all action
     QAction *readAllObjectAction = toolBar->addAction(tr("Read all objects"));
     readAllObjectAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
     readAllObjectAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllObjectAction->setStatusTip(tr("Read all the objects of the current window"));
-    connect(readAllObjectAction, &QAction::triggered, this, &NodeScreenUio::readAll);
+    connect(readAllObjectAction, &QAction::triggered, this, &NodeScreenUio::readAllObject);
 
     toolBar->addWidget(_logTimerSpinBox);
     toolBar->addSeparator();
     toolBar->addAction(_option402Action);
     toolBar->addAction(readAllObjectAction);
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
-
     toolBar->addSeparator();
     toolBar->addAction(_option402Action);
-
     layout->addWidget(toolBar);
+
+    _p401Widget = new P401Widget(8, this);
+    connect(_option402Action, &QAction::triggered, _p401Widget, &P401Widget::setSettings);
     layout->addWidget(_p401Widget);
 
     setLayout(layout);
@@ -128,6 +128,8 @@ QIcon NodeScreenUio::icon() const
 
 void NodeScreenUio::setNodeInternal(Node *node, uint8_t axis)
 {
+    Q_UNUSED(axis)
+
     if (!node)
     {
         return;

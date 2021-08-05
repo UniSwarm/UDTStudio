@@ -61,6 +61,20 @@ void P401ChannelWidget::readAllObject()
     }
 }
 
+void P401ChannelWidget::readInputObject()
+{
+    _modeCombobox->readObject();
+
+    if (_inputStackedWidget->currentWidget() == _inputWidget)
+    {
+        _inputWidget->readAllObject();
+    }
+    else
+    {
+        _inputOptionWidget->readAllObject();
+    }
+}
+
 void P401ChannelWidget::setNode(Node *node)
 {
     _modeCombobox->setObjId(IndexDb401::getObjectId(IndexDb401::OD_MS_DO_MODE, _channel + 1));

@@ -45,6 +45,7 @@ public:
     uint8_t channel() const;
 
     void readAllObject();
+    void readInputObject();
 
 public slots:
     void setNode(Node *node);

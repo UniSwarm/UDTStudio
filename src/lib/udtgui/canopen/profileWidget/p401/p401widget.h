@@ -43,6 +43,7 @@ public slots:
     void setNode(Node *node);
     void setSettings(bool checked);
     void readAllObject();
+    void readInputObject();
 
 signals:
     void settings(bool checked);

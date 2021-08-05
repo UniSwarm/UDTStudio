@@ -36,7 +36,7 @@ P401Widget::P401Widget(uint8_t channelCount, QWidget *parent)
     _channelCount = channelCount;
     createWidgets();
 
-    connect(&_readTimer, &QTimer::timeout, this, &P401Widget::readAllObject);
+    connect(&_readTimer, &QTimer::timeout, this, &P401Widget::readInputObject);
 }
 
 Node *P401Widget::node() const
@@ -49,6 +49,14 @@ void P401Widget::readAllObject()
     for (P401ChannelWidget *p401ChannelWidget : _p401ChannelWidgets)
     {
         p401ChannelWidget->readAllObject();
+    }
+}
+
+void P401Widget::readInputObject()
+{
+    for (P401ChannelWidget *p401ChannelWidget : _p401ChannelWidgets)
+    {
+        p401ChannelWidget->readInputObject();
     }
 }
 
@@ -74,7 +82,6 @@ void P401Widget::setNode(Node *node)
     {
         p401ChannelWidget->setNode(_node);
     }
-    readAllObject();
 }
 
 void P401Widget::setSettings(bool checked)

@@ -35,7 +35,7 @@ public:
     NodeScreenUio(QWidget *parent = nullptr);
 
 public slots:
-    void readAll();
+    void readAllObject();
 
 protected slots:
     void toggleStartLogger(bool start);
