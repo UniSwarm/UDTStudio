@@ -125,10 +125,10 @@ void P401OutputWidget::typeCheckBoxClicked(bool checked)
         {
             _analogSlider->blockSignals(true);
             _analogSlider->setValue(value);
+            _analogSlider->setRange(0, 100);
             _analogSlider->blockSignals(false);
         }
         _analogSpinBox->setRange(0, 100);
-        _analogSlider->setRange(0, 100);
     }
     else
     {
@@ -258,7 +258,7 @@ void P401OutputWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
             _digitalWidget->setEnabled(false);
 
         }
-        else if ((value == 0x0001) || (value == 0x0001) || (value == 0x0002) || (value == 0x0003))
+        else if ((value == 0x0001) || (value == 0x0002) || (value == 0x0003))
         {
             _digitalWidget->setEnabled(true);
             _stackedWidget->setCurrentWidget(_digitalWidget);

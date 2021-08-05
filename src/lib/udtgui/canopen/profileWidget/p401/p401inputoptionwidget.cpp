@@ -32,7 +32,7 @@ P401InputOptionWidget::P401InputOptionWidget(uint8_t channel, QWidget *parent)
 
 void P401InputOptionWidget::readAllObject()
 {
-    _diSchmittTriggersHigh->readObject();
+    _diSchmittTriggersLow->readObject();
     _diSchmittTriggersHigh->readObject();
 }
 
@@ -59,7 +59,8 @@ void P401InputOptionWidget::createWidgets()
     hLayout->setSpacing(0);
 
     _diSchmittTriggersLow = new IndexSpinBox();
-    //_diSchmittTriggersLow->setScale(12.0 / 32767);
+    _diSchmittTriggersLow->setDisplayHint(IndexSpinBox::DisplayFloat);
+    _diSchmittTriggersLow->setScale(12.0 / 32767);
     _diSchmittTriggersLow->setUnit("V");
     hLayout->addWidget(_diSchmittTriggersLow);
     QLabel *label = new QLabel(tr("-"));
@@ -67,7 +68,8 @@ void P401InputOptionWidget::createWidgets()
     hLayout->addWidget(label);
 
     _diSchmittTriggersHigh = new IndexSpinBox();
-    //_diSchmittTriggersHigh->setScale(12.0 / 32767);
+    _diSchmittTriggersHigh->setDisplayHint(IndexSpinBox::DisplayFloat);
+    _diSchmittTriggersHigh->setScale(12.0 / 32767);
     _diSchmittTriggersHigh->setUnit("V");
     hLayout->addWidget(_diSchmittTriggersHigh);
     label = new QLabel(tr("&Schmitt Triggers:"));

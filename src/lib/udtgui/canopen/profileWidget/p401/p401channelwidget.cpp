@@ -94,10 +94,9 @@ void P401ChannelWidget::createWidgets()
 
     channelLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
-    QLabel *channelLabel = new QLabel(QString("%1").arg(QString::number(_channel, 10)));
+    QLabel *channelLabel = new QLabel(QString("%1").arg(QString::number(_channel, 10)), this);
     channelLabel->setStyleSheet("font: bold 14px;font-size: 20px;");
-
-    channelLayout->addWidget(channelLabel);
+    channelLabel->setGeometry(0, 0, 100, 25);
 
     _modeCombobox = new IndexComboBox();
     _modeCombobox->addItem(tr("Output disabled"), QVariant(static_cast<uint16_t>(0x0000)));
