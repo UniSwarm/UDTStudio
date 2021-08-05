@@ -18,6 +18,7 @@
 
 #ifndef INDEXLCDNUMBER_H
 #define INDEXLCDNUMBER_H
+
 #include "../../udtgui_global.h"
 
 #include "abstractindexwidget.h"
@@ -33,7 +34,7 @@ class IndexLCDNumber : public QWidget, public AbstractIndexWidget
 public:
     IndexLCDNumber(const NodeObjectId &objId = NodeObjectId());
 
-  private:
+private:
     QLCDNumber *_lcdNumber;
     QLabel *_label;
 

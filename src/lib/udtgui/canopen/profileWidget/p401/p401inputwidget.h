@@ -27,7 +27,6 @@
 
 #include <QWidget>
 
-#include <QLCDNumber>
 #include <QLabel>
 #include <QProgressBar>
 #include <QSlider>
@@ -35,6 +34,7 @@
 class Node;
 class IndexCheckBox;
 class NodeObjectId;
+class IndexLCDNumber;
 
 class P401InputWidget : public QWidget, public NodeOdSubscriber
 {
@@ -52,12 +52,11 @@ public:
 private:
     Node *_node;
     uint8_t _channel;
-
+    IndexLCDNumber *_analogLcdNumber;
     NodeObjectId _analogObjectId;
     NodeObjectId _digitalObjectId;
     QLabel *_digitalLabel;
 
-    QLCDNumber *_analogLcd;
     QProgressBar *_analogProgressBar;
 
     // Create widgets

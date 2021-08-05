@@ -20,6 +20,7 @@
 
 #include "indexdb401.h"
 #include "canopen/indexWidget/indexcheckbox.h"
+#include "canopen/indexWidget/indexlcdnumber.h"
 
 #include <QFormLayout>
 #include <QLabel>
@@ -48,11 +49,14 @@ void P401InputWidget::setNode(Node *node)
     _analogObjectId = IndexDb401::getObjectId(IndexDb401::AI_VALUES_16BITS, _channel + 1);
     _analogObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_analogObjectId);
+    setNodeInterrest(_node);
 
     _digitalObjectId = (IndexDb401::getObjectId(IndexDb401::DI_VALUES_8BITS_CHANNELS_0_7));
     _digitalObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_digitalObjectId);
-    setNodeInterrest(_node);
+
+    _analogLcdNumber->setObjId(IndexDb401::getObjectId(IndexDb401::AI_VALUES_16BITS, _channel + 1));
+    _analogLcdNumber->setNode(node);
 }
 
 const NodeObjectId &P401InputWidget::analogObjectId() const
@@ -72,12 +76,11 @@ void P401InputWidget::createWidgets()
     _digitalLabel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
     hlayout->addWidget(_digitalLabel);
 
-    _analogLcd = new QLCDNumber();
-    _analogLcd->display(QString::number(0, 10, 2));
-    hlayout->addWidget(_analogLcd);
-
-    QLabel *volt = new QLabel("V");
-    hlayout->addWidget(volt);
+    _analogLcdNumber = new IndexLCDNumber();
+    _analogLcdNumber->setUnit("V");
+    _analogLcdNumber->setScale(12.0 / std::numeric_limits<qint16>::max());
+    _analogLcdNumber->setDisplayHint(IndexLCDNumber::DisplayFloat);
+    hlayout->addWidget(_analogLcdNumber);
 
     _analogProgressBar = new QProgressBar();
     _analogProgressBar->setRange(0, std::numeric_limits<qint16>::max());
@@ -97,8 +100,12 @@ void P401InputWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flag
     if (objId == _analogObjectId)
     {
         int value = _node->nodeOd()->value(_analogObjectId).toInt();
-        double val = (value * 12.0) / std::numeric_limits<qint16>::max();
-        _analogLcd->display(QString::number(val, 'f', 2));
+        double val = 0.0;
+        if (value != 0)
+        {
+            val = (value * 12.0) / std::numeric_limits<qint16>::max();
+        }
+
         _analogProgressBar->setValue(value);
 
         uint8_t valueDigital = static_cast<uint8_t>(_node->nodeOd()->value(_digitalObjectId).toUInt());
