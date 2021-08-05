@@ -40,7 +40,7 @@ P401OutputWidget::P401OutputWidget(uint8_t channel, QWidget *parent)
 void P401OutputWidget::readAllObject()
 {
     _node->readObject(_analogObjectId);
-    _digitalCheckBox->readObject();
+    _node->readObject(_digitalObjectId);
 }
 
 void P401OutputWidget::setNode(Node *node)
@@ -55,18 +55,15 @@ void P401OutputWidget::setNode(Node *node)
     _analogObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_analogObjectId);
 
+    _digitalObjectId = IndexDb401::getObjectId(IndexDb401::DO_VALUES_8BITS_CHANNELS_0_7);
+    _digitalObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    registerObjId(_digitalObjectId);
+
     _modeObjectId = IndexDb401::getObjectId(IndexDb401::OD_MS_DO_MODE, _channel + 1);
     _modeObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_modeObjectId);
 
     setNodeInterrest(_node);
-
-    _digitalCheckBox->setNode(_node);
-    _digitalCheckBox->setObjId(IndexDb401::getObjectId(IndexDb401::DO_VALUES_8BITS_CHANNELS_0_7));
-    _digitalCheckBox->setBitMask(1 << _channel);
-
-    _typeCheckBox->setChecked(false);
-    typeCheckBoxClicked(false);
 }
 
 void P401OutputWidget::analogSliderChanged()
@@ -100,6 +97,23 @@ void P401OutputWidget::analogSpinboxFinished()
     else
     {
         _node->writeObject(_analogObjectId, QVariant(value));
+    }
+}
+
+void P401OutputWidget::digitalPushButtonClicked(bool clicked)
+{
+    uint8_t valueDigital = static_cast<uint8_t>(_node->nodeOd()->value(_digitalObjectId).toUInt());
+    uint8_t value = valueDigital & ~(1 << _channel);
+    value |= (clicked << _channel);
+    _node->writeObject(_digitalObjectId, QVariant(value));
+
+    if (clicked)
+    {
+        _digitalPushButton->setText("On");
+    }
+    else
+    {
+        _digitalPushButton->setText("Off");
     }
 }
 
@@ -206,9 +220,17 @@ QWidget *P401OutputWidget::digitalWidgets()
     QWidget *widget = new QWidget();
     QVBoxLayout *digitalLayout = new QVBoxLayout(widget);
 
-    _digitalCheckBox = new IndexCheckBox();
-    _digitalCheckBox->setText("High/Low");
-    digitalLayout->addWidget(_digitalCheckBox);
+    _digitalPushButton = new QPushButton("Off");
+    _digitalPushButton->setCheckable(true);
+    _digitalPushButton->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
+    QIcon icon;
+    icon.addFile(":/icons/img/icons8-stop.png", QSize(), QIcon::Normal, QIcon::Off);
+    icon.addFile(":/icons/img/icons8-play.png", QSize(), QIcon::Normal, QIcon::On);
+    _digitalPushButton->setIcon(icon);
+
+    connect(_digitalPushButton, &QPushButton::clicked, this, &P401OutputWidget::digitalPushButtonClicked);
+
+    digitalLayout->addWidget(_digitalPushButton);
 
     return widget;
 }
@@ -250,6 +272,13 @@ void P401OutputWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
             _analogSlider->setValue(value);
             _analogSlider->blockSignals(false);
         }
+    }
+    if (objId == _digitalObjectId)
+    {
+        uint8_t valueDigital = static_cast<uint8_t>(_node->nodeOd()->value(_digitalObjectId).toUInt());
+        bool act = (valueDigital >> _channel) & 1;
+        _digitalPushButton->setEnabled(true);
+        _digitalPushButton->setChecked(act);
     }
 
     if (objId == _modeObjectId)

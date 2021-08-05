@@ -35,7 +35,6 @@
 #include <QStackedWidget>
 
 class Node;
-class IndexCheckBox;
 class NodeObjectId;
 
 class P401OutputWidget : public QWidget, public NodeOdSubscriber
@@ -52,28 +51,29 @@ public slots:
 private slots:
     void analogSliderChanged();
     void analogSpinboxFinished();
-
+    void digitalPushButtonClicked(bool clicked);
 private:
     Node *_node;
     uint8_t _channel;
 
     NodeObjectId _analogObjectId;
+    NodeObjectId _digitalObjectId;
     NodeObjectId _modeObjectId;
-    IndexCheckBox *_digitalCheckBox;
+
+    QPushButton *_digitalPushButton;
+    QWidget *_digitalWidget;
 
     QSpinBox *_analogSpinBox;
-    QCheckBox *_typeCheckBox;
     QSlider *_analogSlider;
+    QCheckBox *_typeCheckBox;    
     QPushButton *_setZeroButton;
-
     QWidget *_analogWidget;
-    QWidget *_digitalWidget;
+
     QLabel *_outputLabel;
 
     QStackedWidget *_stackedWidget;
 
     void setZeroButton();
-    void update();
     void typeCheckBoxClicked(bool checked);
 
     // Create widgets
