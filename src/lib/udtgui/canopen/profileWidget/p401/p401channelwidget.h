@@ -47,7 +47,9 @@ public:
     void readAllObject();
     void readInputObject();
 
-public slots:
+    P401InputWidget *inputWidget() const;
+
+  public slots:
     void setNode(Node *node);
     void setSettings(bool checked);
 

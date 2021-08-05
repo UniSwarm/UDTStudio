@@ -55,6 +55,11 @@ void P401InputWidget::setNode(Node *node)
     setNodeInterrest(_node);
 }
 
+const NodeObjectId &P401InputWidget::analogObjectId() const
+{
+    return _analogObjectId;
+}
+
 void P401InputWidget::createWidgets()
 {
     QHBoxLayout *hlayout = new QHBoxLayout();

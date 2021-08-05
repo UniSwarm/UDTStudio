@@ -44,7 +44,9 @@ public:
 
     void readAllObject();
 
-public slots:
+    const NodeObjectId &analogObjectId() const;
+
+  public slots:
     void setNode(Node *node);
 
 private:

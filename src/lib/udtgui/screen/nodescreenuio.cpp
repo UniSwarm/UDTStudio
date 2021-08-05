@@ -28,11 +28,6 @@ NodeScreenUio::NodeScreenUio(QWidget *parent)
     createWidgets();
 }
 
-void NodeScreenUio::readAllObject()
-{
-    _p401Widget->readAllObject();
-}
-
 void NodeScreenUio::toggleStartLogger(bool start)
 {
     if (!_node)
@@ -79,7 +74,7 @@ void NodeScreenUio::createWidgets()
     iconStartStop.addFile(":/icons/img/icons8-stop.png", QSize(), QIcon::Normal, QIcon::On);
     iconStartStop.addFile(":/icons/img/icons8-play.png", QSize(), QIcon::Normal, QIcon::Off);
     _startStopAction->setIcon(iconStartStop);
-    _startStopAction->setStatusTip(tr("Start or stop the data logger"));
+    _startStopAction->setStatusTip(tr("Start or stop reading input objects "));
     connect(_startStopAction, &QAction::triggered, this, &NodeScreenUio::toggleStartLogger);
 
     _logTimerSpinBox = new QSpinBox();
@@ -89,28 +84,34 @@ void NodeScreenUio::createWidgets()
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
     connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
 
-    QAction *_option402Action = new QAction();
-    _option402Action->setCheckable(true);
-    _option402Action->setIcon(QIcon(":/icons/img/icons8-settings.png"));
-    _option402Action->setToolTip(tr("Option code"));
-
     // read all action
     QAction *readAllObjectAction = toolBar->addAction(tr("Read all objects"));
     readAllObjectAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
     readAllObjectAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllObjectAction->setStatusTip(tr("Read all the objects of the current window"));
-    connect(readAllObjectAction, &QAction::triggered, this, &NodeScreenUio::readAllObject);
+
+    QAction *_dataLoggerAction = new QAction();
+    _dataLoggerAction->setIcon(QIcon(":/icons/img/icons8-line-chart.png"));
+    _dataLoggerAction->setToolTip(tr("Data logger"));
+
+    QAction *settingsAction = new QAction();
+    settingsAction->setCheckable(true);
+    settingsAction->setIcon(QIcon(":/icons/img/icons8-settings.png"));
+    settingsAction->setToolTip(tr("Settings"));
 
     toolBar->addWidget(_logTimerSpinBox);
     toolBar->addSeparator();
-    toolBar->addAction(_option402Action);
+    toolBar->addAction(settingsAction);
     toolBar->addAction(readAllObjectAction);
     toolBar->addSeparator();
-    toolBar->addAction(_option402Action);
+    toolBar->addAction(_dataLoggerAction);
+    toolBar->addAction(settingsAction);
     layout->addWidget(toolBar);
 
     _p401Widget = new P401Widget(8, this);
-    connect(_option402Action, &QAction::triggered, _p401Widget, &P401Widget::setSettings);
+    connect(settingsAction, &QAction::triggered, _p401Widget, &P401Widget::setSettings);
+    connect(readAllObjectAction, &QAction::triggered, _p401Widget, &P401Widget::readAllObject);
+    connect(_dataLoggerAction, &QAction::triggered, _p401Widget, &P401Widget::dataLogger);
     layout->addWidget(_p401Widget);
 
     setLayout(layout);

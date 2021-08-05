@@ -34,9 +34,6 @@ class UDTGUI_EXPORT NodeScreenUio: public NodeScreen
 public:
     NodeScreenUio(QWidget *parent = nullptr);
 
-public slots:
-    void readAllObject();
-
 protected slots:
     void toggleStartLogger(bool start);
     void setLogTimer(int ms);

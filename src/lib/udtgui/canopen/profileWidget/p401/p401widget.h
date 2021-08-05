@@ -44,6 +44,7 @@ public slots:
     void setSettings(bool checked);
     void readAllObject();
     void readInputObject();
+    void dataLogger();
 
 signals:
     void settings(bool checked);

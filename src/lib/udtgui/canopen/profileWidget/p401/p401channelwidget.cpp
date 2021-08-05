@@ -101,6 +101,11 @@ void P401ChannelWidget::setSettings(bool checked)
     }
 }
 
+P401InputWidget *P401ChannelWidget::inputWidget() const
+{
+    return _inputWidget;
+}
+
 void P401ChannelWidget::createWidgets()
 {
     QVBoxLayout *channelLayout = new QVBoxLayout();

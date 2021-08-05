@@ -23,6 +23,7 @@
 #include "p401inputwidget.h"
 #include "p401outputwidget.h"
 #include "canopen/indexWidget/indexcombobox.h"
+#include "canopen/datalogger/dataloggerwidget.h"
 
 #include <QFormLayout>
 #include <QFrame>
@@ -58,6 +59,19 @@ void P401Widget::readInputObject()
     {
         p401ChannelWidget->readInputObject();
     }
+}
+
+void P401Widget::dataLogger()
+{
+    DataLogger *dataLogger = new DataLogger();
+    DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
+
+    for (P401ChannelWidget *p401ChannelWidget : _p401ChannelWidgets)
+    {
+        dataLogger->addData(p401ChannelWidget->inputWidget()->analogObjectId());
+    }
+
+    _dataLoggerWidget->show();
 }
 
 void P401Widget::start(int msec)
