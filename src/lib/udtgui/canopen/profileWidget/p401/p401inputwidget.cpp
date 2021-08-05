@@ -102,7 +102,7 @@ void P401InputWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flag
         _analogProgressBar->setValue(value);
 
         uint8_t valueDigital = static_cast<uint8_t>(_node->nodeOd()->value(_digitalObjectId).toUInt());
-        bool act = valueDigital >> _channel;
+        bool act = (valueDigital >> _channel) & 1;
 
         if (act)
         {
