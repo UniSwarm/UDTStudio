@@ -34,6 +34,11 @@ bool HexParser::read()
     int dataCount, addr, type, checkSum;
     bool ok;
 
+    if(_fileName.isEmpty())
+    {
+        return false;
+    }
+
     QFile file(_fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
