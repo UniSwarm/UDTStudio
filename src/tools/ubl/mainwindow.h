@@ -31,13 +31,13 @@
 
 #include "model/deviceconfiguration.h"
 #include "parser/edsparser.h"
-#include "programdownload.h"
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
     explicit MainWindow(QWidget *parent = nullptr);
+    //explicit MainWindow(QBytequint8 nodeId);
 
 signals:
 
@@ -48,14 +48,12 @@ private:
     void createWidget();
 
     void openHexFile();
-    void openEdsFile();
 
     void update();
     void updateProgram();
     void downloadState(QString state);
 
     void refreshInfo();
-    void uploadEds();
 
     void nodeChanged(Node *currentNode);
 
@@ -82,7 +80,7 @@ private:
     QLabel *_statusLabel;
 
     quint8 _iNodeListSelected;
-    QList<ProgramDownload *> _programList;
+    //QList<ProgramDownload *> _programList;
 };
 
 #endif // MAINWINDOW_H
