@@ -17,6 +17,7 @@
  **/
 
 #include "mainwindow.h"
+#include "ubl.h"
 
 #include <QApplication>
 #include <QCanBus>
@@ -30,7 +31,10 @@
 #include <cstdint>
 
 #include "utility/hexmerger.h"
+#include "utility/createbinary.h"
 #include "writer/hexwriter.h"
+
+#include "process/mergeProcess.h"
 
 #ifdef Q_OS_UNIX
 #   include "busdriver/canbussocketcan.h"
@@ -58,61 +62,54 @@ int main(int argc, char *argv[])
     cliParser.setApplicationDescription(QCoreApplication::translate("main", "UBL."));
     cliParser.addHelpOption();
     cliParser.addVersionOption();
-    cliParser.addPositionalArgument("merge", QCoreApplication::translate("main", "fileA file B -m -a start:end ... -b start:end ..."), "merge");
 
     // MERGE
-    QCommandLineOption outOption(QStringList() << "o"
-                                               << "out",
-                                 QCoreApplication::translate("main", "Output directory or file."),
-                                 "out");
+    cliParser.addPositionalArgument("merge", QCoreApplication::translate("main", "-afileA -bfileB -a start:end ... -b start:end ..."), "merge");
+    // DOWNLOAD and Flash
+    cliParser.addPositionalArgument("download", QCoreApplication::translate("main", "file -n nodeId"), "download");
+    // CREATE BIN
+    cliParser.addPositionalArgument("create", QCoreApplication::translate("main", "-h file.hex -t type -s start:end ..."), "create");
+
+    // MERGE
+    QCommandLineOption outOption(QStringList() << "o" << "out", QCoreApplication::translate("main", "Output directory or file."), "out");
     cliParser.addOption(outOption);
 
-    QCommandLineOption aOption(QStringList() << "a", QCoreApplication::translate("main", "Keep memory file A (hexa)"), "start:end");
+    QCommandLineOption aOption(QStringList() << "a", QCoreApplication::translate("main", "FileHex A and memory segment of FileHex A"), "fileA> -a<start:end");
     cliParser.addOption(aOption);
-    QCommandLineOption bOption(QStringList() << "b", QCoreApplication::translate("main", "Keep memory file B (hexa)"), "start:end");
+    QCommandLineOption bOption(QStringList() << "b", QCoreApplication::translate("main", "FileHex B and memory segment of FileHex B"), "fileB> -b<start:end");
     cliParser.addOption(bOption);
 
     // DOWNLOAD and Flash
-    cliParser.addPositionalArgument("download", QCoreApplication::translate("main", "-d file -e eds"), "download");
-    QCommandLineOption downloadOption(QStringList() << "d"
-                                                    << "download",
-                                      QCoreApplication::translate("main", "Program download"),
-                                      "download");
-    cliParser.addOption(downloadOption);
-
-    QCommandLineOption edsOption(QStringList() << "e"
-                                               << "eds",
-                                 QCoreApplication::translate("main", "EDS File"),
-                                 "eds");
+    QCommandLineOption edsOption(QStringList() << "e" << "eds", QCoreApplication::translate("main", "EDS File"), "eds");
     cliParser.addOption(edsOption);
 
-    QCommandLineOption nodeIdOption(QStringList() << "n"
-                                                  << "nodeid",
-                                    QCoreApplication::translate("main", "CANOpen Node Id."),
-                                    "nodeid");
+    QCommandLineOption nodeIdOption(QStringList() << "n" << "nodeid", QCoreApplication::translate("main", "CANOpen Node Id."), "nodeid");
     cliParser.addOption(nodeIdOption);
+    QCommandLineOption busOption(QStringList() << "c" << "busId", QCoreApplication::translate("main", "CAN bus."), "busId");
+    cliParser.addOption(busOption);
+    QCommandLineOption speedOption(QStringList() << "l" << "speed", QCoreApplication::translate("main", "CAN Speed."), "speed");
+    cliParser.addOption(speedOption);
+
+    // CREATE BIN
+    QCommandLineOption hOption(QStringList() << "f" << "file", QCoreApplication::translate("main", "hex file"), "hex");
+    cliParser.addOption(hOption);
+
+    QCommandLineOption typeOption(QStringList() << "t" << "type", QCoreApplication::translate("main", "type device"), "type");
+    cliParser.addOption(typeOption);
+
+    QCommandLineOption sOption(QStringList() << "s" << "segment", QCoreApplication::translate("main", "Memory segment of hex file"), "start:end");
+    cliParser.addOption(sOption);
 
     cliParser.process(app);
 
-    const QStringList files = cliParser.positionalArguments();
-    if (files.isEmpty())
+    const QStringList argument = cliParser.positionalArguments();
+    if (argument.isEmpty() || argument.count() > 1)
     {
         err << QCoreApplication::translate("main", "error (1): input file is needed") << Qt::endl;
         cliParser.showHelp(-1);
     }
-    else if (files.size() == 2)
+    else if (argument.at(0) == "merge")
     {
-        const QString &aFile = files.at(0);
-        const QString &bFile = files.at(1);
-        QString aSuffix = QFileInfo(aFile).suffix();
-        QString bSuffix = QFileInfo(bFile).suffix();
-
-        if (aSuffix != "hex" || bSuffix != "hex")
-        {
-            err << QCoreApplication::translate("main", "error (1): input file is needed") << Qt::endl;
-            cliParser.showHelp(-1);
-        }
-
         QStringList aOptionList = cliParser.values(aOption);
         QStringList bOptionList = cliParser.values(bOption);
 
@@ -122,22 +119,30 @@ int main(int argc, char *argv[])
             cliParser.showHelp(-1);
         }
 
-        HexParser *hexAFile = new HexParser(aFile);
-        hexAFile->read();
-        HexParser *hexBFile = new HexParser(bFile);
-        hexBFile->read();
+        aOptionList.sort();
+        bOptionList.sort();
+        QString fileA = aOptionList.last();
+        QString fileB = aOptionList.last();
+        aOptionList.removeLast();
+        bOptionList.removeLast();
 
-        HexMerger *merger = new HexMerger();
-        int ret = merger->merge(hexAFile->prog(), hexBFile->prog(), aOptionList, bOptionList);
-        if (ret < 0)
+        if (QFileInfo(fileA).suffix() != "hex" || QFileInfo(fileB).suffix() != "hex")
         {
             err << QCoreApplication::translate("main", "error (1): input file is needed") << Qt::endl;
             cliParser.showHelp(-1);
         }
 
-        QByteArray merge = merger->prog();
+        // MERGE PROCESS
+        MergeProcess mergeProcess(fileA, aOptionList, fileB, bOptionList);
+        if (mergeProcess.merge() < 0)
+        {
+            err << QCoreApplication::translate("main", "error (1): merge process") << Qt::endl;
+            cliParser.showHelp(-1);
+        }
 
-        // output file
+        QByteArray prog = mergeProcess.prog();
+
+        // OUTPUT file
         QString outputFile = cliParser.value("out");
         if (outputFile.isEmpty())
         {
@@ -145,15 +150,15 @@ int main(int argc, char *argv[])
         }
 
         HexWriter hexWriter;
-        hexWriter.write(merge, outputFile);
+        hexWriter.write(prog, outputFile);
     }
-    else if (files.size() == 1)
+    else if (argument.at(0) == "create")
     {
-        quint8 nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
-        if (nodeid == 0 || nodeid >= 126)
+        QString type = cliParser.value("type");
+        if (type.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << Qt::endl;
-            return -2;
+            err << QCoreApplication::translate("main", "error (1): type of device is needed") << Qt::endl;
+            cliParser.showHelp(-1);
         }
 
         CanOpenBus *bus = nullptr;
@@ -164,40 +169,83 @@ int main(int argc, char *argv[])
         {
             bus->setBusName("Bus 1");
             CanOpen::addBus(bus);
-
-            bus->exploreBus();
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-            for (int i = 0; i < bus->nodes().size(); ++i)
+            QStringList segmentList = cliParser.values(sOption);
+            if (segmentList.isEmpty())
             {
-                qDebug() << bus->nodes().at(i)->busId() << Qt::endl;
+                err << QCoreApplication::translate("main", "error (1): segment is needed") << Qt::endl;
+                cliParser.showHelp(-1);
             }
+
+            QString hexFile = cliParser.value(hOption);
+            if (hexFile.isEmpty())
+            {
+                err << QCoreApplication::translate("main", "error (1): Hex file is needed") << Qt::endl;
+                cliParser.showHelp(-1);
+            }
+
+            HexParser *hex = new HexParser(hexFile);
+            hex->read();
+
+            CreateBinary createBinary;
+            createBinary.create(hex->prog(), type, segmentList);
+
+            // Save file
+            QString outputFile = cliParser.value("out");
+            if (outputFile.isEmpty())
+            {
+                outputFile = "binary.uni";
+            }
+            QFile file(outputFile);
+            if (!file.open(QFile::WriteOnly))
+            {
+                err << QCoreApplication::translate("main", "error (1): Hex file is needed") << Qt::endl;
+                cliParser.showHelp(-1);
+            }
+            else
+            {
+                file.write(createBinary.binary());
+                file.close();
+            }
+
+        }
+        else if (argument.at(0) == "download")
+        {
+            quint8 nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
+            if (nodeid == 0 || nodeid >= 126)
+            {
+                err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << Qt::endl;
+                return -2;
+            }
+            quint8 bus = static_cast<uint8_t>(cliParser.value("busId").toUInt());
+    //        if (bus == 0 || bus >= 126)
+    //        {
+    //            err << QCoreApplication::translate("main", "error (3): invalid bus id, busId > 0 && busId < 126") << Qt::endl;
+    //            return -3;
+    //        }
+
+            quint8 speed = static_cast<uint8_t>(cliParser.value("speed").toUInt());
+    //        if (speed == 0 || speed >= 126)
+    //        {
+    //            err << QCoreApplication::translate("main", "error (4): invalid speed") << Qt::endl;
+    //            return -4;
+    //        }
+
+            QString binFile = cliParser.value(hOption);
+            if (binFile.isEmpty())
+            {
+                err << QCoreApplication::translate("main", "error (1): Binary file is needed") << Qt::endl;
+                cliParser.showHelp(-1);
+            }
+
+            UBL *ubl = new UBL(binFile, nodeid);
+
+            return app.exec();
         }
         else
         {
-            err << QCoreApplication::translate("main", "error (2): bus not connected") << Qt::endl;
-            return -2;
-        }
-
-        if (!bus->existNode(nodeid))
-        {
-            err << QCoreApplication::translate("main", "error (1): node not exist") << Qt::endl;
+            err << QCoreApplication::translate("main", "error (6): invalid number of hex inputs file, need more than one") << Qt::endl;
+            err << QCoreApplication::translate("main", "error (1): input file is needed for download") << Qt::endl;
             cliParser.showHelp(-1);
         }
-
-        ProgramDownload *program = new ProgramDownload(bus->node(nodeid));
-        const QString file = files.at(0);
-        program->openHex(file);
-        program->loadEds(cliParser.value("eds"));
-
-        program->update();
-
-        return app.exec();
-    }
-    else
-    {
-        err << QCoreApplication::translate("main", "error (6): invalid number of hex inputs file, need more than one") << Qt::endl;
-        err << QCoreApplication::translate("main", "error (1): input file is needed for download") << Qt::endl;
-        cliParser.showHelp(-1);
     }
 }
