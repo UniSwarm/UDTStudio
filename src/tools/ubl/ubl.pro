@@ -15,7 +15,8 @@ SOURCES += \
 	$$PWD/process/mergeProcess.cpp \
 	$$PWD/utility/createbinary.cpp \
 	$$PWD/utility/phantomremove.cpp \
-	$$PWD/process/updateprocess.cpp
+	$$PWD/process/updateprocess.cpp \
+	$$PWD/mainconsole.cpp
 
 HEADERS += \
         $$PWD/mainwindow.h \
@@ -26,7 +27,8 @@ HEADERS += \
 	$$PWD/process/mergeProcess.h \
 	$$PWD/utility/createbinary.h \
 	$$PWD/utility/phantomremove.h \
-	$$PWD/process/updateprocess.h
+	$$PWD/process/updateprocess.h \
+	$$PWD/mainconsole.h
 
 INCLUDEPATH += $$PWD/../../lib/canopen/ $$PWD/../../lib/od/ $$PWD/../../lib/udtgui/
 
