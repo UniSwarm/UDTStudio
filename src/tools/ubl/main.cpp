@@ -17,29 +17,21 @@
  **/
 
 #include "mainwindow.h"
-#include "ubl.h"
 
 #include <QApplication>
-#include <QCanBus>
 #include <QCommandLineParser>
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QTextStream>
-#include <thread>
 #include <QObject>
 #include <QDebug>
 #include <cstdint>
 
-#include "utility/hexmerger.h"
-#include "utility/createbinary.h"
-#include "writer/hexwriter.h"
+#include "mainconsole.h"
 
 #include "process/mergeProcess.h"
-#include "process/updateprocess.h"
-
-#ifdef Q_OS_UNIX
-#   include "busdriver/canbussocketcan.h"
-#endif
+#include "utility/createbinary.h"
+#include "writer/hexwriter.h"
 
 int main(int argc, char *argv[])
 {
@@ -66,8 +58,8 @@ int main(int argc, char *argv[])
 
     // MERGE
     cliParser.addPositionalArgument("merge", QCoreApplication::translate("main", "-afileA -bfileB -a start:end ... -b start:end ..."), "merge");
-    // DOWNLOAD and Flash
-    cliParser.addPositionalArgument("download", QCoreApplication::translate("main", "file -n nodeId"), "download");
+    // UPDATE and Flash
+    cliParser.addPositionalArgument("update", QCoreApplication::translate("main", "file -n nodeId"), "update");
     // CREATE BIN
     cliParser.addPositionalArgument("create", QCoreApplication::translate("main", "-h file.hex -t type -s start:end ..."), "create");
 
@@ -80,7 +72,7 @@ int main(int argc, char *argv[])
     QCommandLineOption bOption(QStringList() << "b", QCoreApplication::translate("main", "FileHex B and memory segment of FileHex B"), "fileB> -b<start:end");
     cliParser.addOption(bOption);
 
-    // DOWNLOAD and Flash
+    // update and Flash
     QCommandLineOption edsOption(QStringList() << "e" << "eds", QCoreApplication::translate("main", "EDS File"), "eds");
     cliParser.addOption(edsOption);
 
@@ -200,8 +192,8 @@ int main(int argc, char *argv[])
             file.close();
         }
 
-        }
-    else if (argument.at(0) == "download")
+    }
+    else if (argument.at(0) == "update")
     {
         quint8 nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
         if (nodeid == 0 || nodeid >= 126)
@@ -210,7 +202,7 @@ int main(int argc, char *argv[])
             return -2;
         }
         quint8 bus = static_cast<uint8_t>(cliParser.value("busId").toUInt());
-        if (bus == 0 || bus >= 126)
+        if (bus >= 126)
         {
             err << QCoreApplication::translate("main", "error (3): invalid bus id, busId > 0 && busId < 126") << Qt::endl;
             return -3;
@@ -220,7 +212,7 @@ int main(int argc, char *argv[])
         if (speed == 0 || speed >= 126)
         {
             err << QCoreApplication::translate("main", "error (4): invalid speed") << Qt::endl;
-            return -4;
+            //return -4;
         }
 
         QString binFile = cliParser.value(hOption);
@@ -230,24 +222,15 @@ int main(int argc, char *argv[])
             cliParser.showHelp(-1);
         }
 
-        UpdateProcess *updateProcess = new UpdateProcess(bus, speed, nodeid, binFile);
-        updateProcess->openUni(binFile);
-
-        if (!updateProcess->update())
-        {
-            app.exit(-1);
-        }
-        else
-        {
-            app.exit(0);
-        }
+        MainConsole *mainConsole = new MainConsole(bus, speed, nodeid, binFile);
+        QObject::connect(mainConsole, &MainConsole::finished, &app, &QCoreApplication::exit);
 
         return app.exec();
     }
     else
     {
         err << QCoreApplication::translate("main", "error (6): invalid number of hex inputs file, need more than one") << Qt::endl;
-        err << QCoreApplication::translate("main", "error (1): input file is needed for download") << Qt::endl;
+        err << QCoreApplication::translate("main", "error (1): input file is needed for update") << Qt::endl;
         cliParser.showHelp(-1);
     }
 }

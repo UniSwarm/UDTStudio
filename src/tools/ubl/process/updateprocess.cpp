@@ -25,6 +25,7 @@
 
 #include <QCanBus>
 #include <QFile>
+#include <QTimer>
 
 UpdateProcess::UpdateProcess(quint8 busId, quint8 speed, quint8 nodeid, QString binary)
     : _busId(busId)
@@ -36,7 +37,7 @@ UpdateProcess::UpdateProcess(quint8 busId, quint8 speed, quint8 nodeid, QString 
     _node = nullptr;
 }
 
-int UpdateProcess::connectDevice()
+bool UpdateProcess::connectDevice()
 {
 #ifdef Q_OS_UNIX
     _bus = new CanOpenBus(new CanBusSocketCAN("can0"));
@@ -47,21 +48,22 @@ int UpdateProcess::connectDevice()
         _bus->setBusName("Bus 1");
         CanOpen::addBus(_bus);
         connect(_bus, &CanOpenBus::nodeAdded, this, &UpdateProcess::nodeDetected);
+        _nodeDetectedTimer->singleShot(100, this, &UpdateProcess::nodeDetectedTimeout);
         _bus->exploreBus();
     }
     else
     {
-        return -1; // err << QCoreApplication::translate("main", "error (2): bus not connected") << Qt::endl;
+        return false; // err << QCoreApplication::translate("main", "error (2): bus not connected") << Qt::endl;
     }
-    return 0;
+
+    return true;
 }
 
-bool UpdateProcess::nodeDetected()
+void UpdateProcess::nodeDetected()
 {
     if (!_bus->existNode(_nodeId))
     {
-        emit connected(false);
-        return false;
+        emit nodeConnected(false);
     }
 
     _node = _bus->node(_nodeId);
@@ -89,13 +91,17 @@ bool UpdateProcess::nodeDetected()
     registerObjId({0x1F51, 1});
     registerObjId({0x1018, 255});
 
-    emit connected(true);
-    return true;
+    emit nodeConnected(true);
 }
 
 void UpdateProcess::sendSyncOne()
 {
     _node->readObject(_programControlObjectId);
+}
+
+void UpdateProcess::nodeDetectedTimeout()
+{
+    emit nodeConnected(false);
 }
 
 UpdateProcess::Status UpdateProcess::status() const
@@ -139,8 +145,6 @@ bool UpdateProcess::update()
 
     case STATE_STOP_PROGRAM:
     {
-        emit downloadState("Status : stop program");
-        emit downloadState("Status : check before flashing");
         QVariant mdata = 0;
         mdata.convert(_programControlObjectId.dataType());
         _node->writeObject(0x1F51, 1, mdata);
@@ -157,8 +161,6 @@ bool UpdateProcess::update()
     }
     case STATE_DOWNLOAD_PROGRAM:
     {
-        emit downloadState("Status : download programm is starting");
-
         PhantomRemove prog;
         //        QByteArray block1 = prog.remove(_uniBinary->prog().mid(0, (int)_uniBinary->head().memoryBlockEnd1 - (int)_uniBinary->head().memoryBlockStart1));
         //        uint32_t start = _uniBinary->head().memoryBlockStart1;
@@ -177,8 +179,6 @@ bool UpdateProcess::update()
 
     case STATE_FLASH_FINISHED:
     {
-        // CHECK CS SEND
-        emit downloadState("Status : download programm finished");
         _state = STATE_CHECK;
         break;
     }
@@ -192,16 +192,13 @@ bool UpdateProcess::update()
 
     case STATE_OK:
         _state = STATE_FREE;
-        emit downloadState("Status : Flashing successful");
-        emit downloadFinished();
+        emit finished(0);
         _status = STATE_SUCCESSFUL;
         break;
 
     case STATE_NOT_OK:
-        // Error status C, D, M, N, O
         _state = STATE_FREE;
-        emit downloadState("Status : Error, check identity, not corresponding");
-        emit downloadFinished();
+        emit finished(-1);
         _status = STATE_NOT_SUCCESSFUL;
         break;
     }
@@ -242,7 +239,6 @@ void UpdateProcess::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
             else
             {
                 // APP MODE
-                emit downloadState("Status : check before flashing");
                 QVariant mdata = _uniBinary->head().deviceModel;
                 mdata.convert(_bootloaderObjectId.dataType());
                 _node->writeObject(_bootloaderObjectId, mdata);

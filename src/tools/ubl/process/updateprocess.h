@@ -32,7 +32,7 @@ class UpdateProcess : public QObject, public NodeOdSubscriber
 public:
     UpdateProcess(quint8 bus, quint8 speed, quint8 nodeid, QString binary);
 
-    int connectDevice();
+    bool connectDevice();
 
     Node *node() const;
 
@@ -51,16 +51,13 @@ public:
     Status status() const;
 
 signals:
-    void connected(bool connected);
+    void nodeConnected(bool connected);
+    void finished(bool finished);
 
 private slots:
-    bool nodeDetected();
+    void nodeDetected();
     void sendSyncOne();
-
-private:
-signals:
-    void downloadState(QString state);
-    void downloadFinished();
+    void nodeDetectedTimeout();
 
 private:
     Status _status;
@@ -82,6 +79,7 @@ private:
 
     UniParser *_uniBinary;
 
+    QTimer *_nodeDetectedTimer;
     QTimer *_timer;
 
     enum ProgramState
