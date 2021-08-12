@@ -16,26 +16,22 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#ifndef HEXWRITER_H
+#define HEXWRITER_H
+
+#include "canopen_global.h"
+
 #include <QByteArray>
-#include <QStringList>
 
-#ifndef HEXMERGER_H
-#define HEXMERGER_H
-
-class HexMerger
+class CANOPEN_EXPORT HexWriter
 {
 public:
-    HexMerger();
+    HexWriter();
 
-    int merge(const QByteArray &appA, const QByteArray &appB, QStringList adresA, QStringList adresB);
-
-    const QByteArray &prog() const;
+    int write(const QByteArray &prog, const QString &filePath);
 
 private:
-    QByteArray _prog;
-
-    int append(const QByteArray &app, QStringList addresses);
-    int checkAddresses(QStringList addresses);
+    int checksum(QString data);
 };
 
-#endif // HEXMERGER_H
+#endif // HEXWRITER_H

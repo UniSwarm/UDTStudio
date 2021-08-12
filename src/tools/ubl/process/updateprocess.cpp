@@ -21,11 +21,13 @@
 #include "busdriver/canbussocketcan.h"
 #include "canopen.h"
 #include "canopenbus.h"
-#include "utility/phantomremove.h"
+
+#include "bootloader/utility/phantomremover.h"
 
 #include <QCanBus>
 #include <QFile>
 #include <QTimer>
+#include <QDebug>
 
 UpdateProcess::UpdateProcess(quint8 busId, quint8 speed, quint8 nodeid, QString binary)
     : _busId(busId)
@@ -48,7 +50,7 @@ bool UpdateProcess::connectDevice()
         _bus->setBusName("Bus 1");
         CanOpen::addBus(_bus);
         connect(_bus, &CanOpenBus::nodeAdded, this, &UpdateProcess::nodeDetected);
-        _nodeDetectedTimer->singleShot(100, this, &UpdateProcess::nodeDetectedTimeout);
+        _nodeDetectedTimer->singleShot(10000, this, &UpdateProcess::nodeDetectedTimeout);
         _bus->exploreBus();
     }
     else
@@ -59,11 +61,16 @@ bool UpdateProcess::connectDevice()
     return true;
 }
 
-void UpdateProcess::nodeDetected()
+void UpdateProcess::nodeDetected(int nodeId)
 {
+    if (nodeId != _nodeId)
+    {
+        return;
+    }
+
     if (!_bus->existNode(_nodeId))
     {
-        emit nodeConnected(false);
+        return;
     }
 
     _node = _bus->node(_nodeId);
@@ -91,6 +98,8 @@ void UpdateProcess::nodeDetected()
     registerObjId({0x1F51, 1});
     registerObjId({0x1018, 255});
 
+    _state = STATE_CHECK_MODE;
+    _status = STATE_NONE;
     emit nodeConnected(true);
 }
 
@@ -109,6 +118,65 @@ UpdateProcess::Status UpdateProcess::status() const
     return _status;
 }
 
+void UpdateProcess::stopProgram()
+{
+    QVariant mdata = 0;
+    mdata.convert(_programControlObjectId.dataType());
+    _node->writeObject(_programControlObjectId, mdata);
+}
+
+void UpdateProcess::startProgram()
+{
+    QVariant mdata = 1;
+    mdata.convert(_programControlObjectId.dataType());
+    _node->writeObject(_programControlObjectId, mdata);
+    _timer->singleShot(200, this, SLOT(sendSyncOne()));
+}
+
+void UpdateProcess::resetProgram()
+{
+    QVariant mdata = 2;
+    mdata.convert(_programControlObjectId.dataType());
+    _node->writeObject(_programControlObjectId, mdata);
+    _timer->singleShot(200, this, SLOT(sendSyncOne()));
+}
+
+void UpdateProcess::clearProgram()
+{
+    QVariant mdata = 3;
+    mdata.convert(_programControlObjectId.dataType());
+    _node->writeObject(_programControlObjectId, mdata);
+    _timer->singleShot(200, this, SLOT(sendSyncOne()));
+}
+
+void UpdateProcess::updateProgram()
+{
+    PhantomRemover prog;
+    //        QByteArray block1 = prog.remove(_uniBinary->prog().mid(0, (int)_uniBinary->head().memoryBlockEnd1 - (int)_uniBinary->head().memoryBlockStart1));
+    //        uint32_t start = _uniBinary->head().memoryBlockStart1;
+    //        block1.prepend(reinterpret_cast<char*>(&start), sizeof(start));
+    //        _node->updateFirmware(block1);
+
+//    QByteArray segmentBinary = _uniBinary->prog().mid((int)_uniBinary->head().memoryBlockStart2 - (int)_uniBinary->head().memoryBlockStart1,
+//                                                      (int)_uniBinary->head().memoryBlockEnd2 - (int)_uniBinary->head().memoryBlockStart1);
+
+    QByteArray segmentBinary = _uniBinary->prog().mid((int)_uniBinary->head().memoryBlockStart2 - (int)_uniBinary->head().memoryBlockStart1,
+                                                      0x1000);
+
+    QByteArray block2 = prog.remove(segmentBinary);
+
+    uint32_t start2 = 0x20000;
+    segmentBinary.prepend(reinterpret_cast<char *>(&start2), sizeof(start2));
+
+    QFile fileBinB("segmentBinary.bin");
+    fileBinB.open(QFile::WriteOnly);
+    fileBinB.write(segmentBinary);
+    fileBinB.close();
+
+
+    _node->updateFirmware(segmentBinary);
+}
+
 Node *UpdateProcess::node() const
 {
     return _node;
@@ -123,7 +191,7 @@ int UpdateProcess::openUni(const QString &fileName)
     }
     else
     {
-        _uniBinary = new UniParser(fileName);
+        _uniBinary = new UfwParser(fileName);
         _uniBinary->read();
         file.close();
     }
@@ -133,7 +201,6 @@ int UpdateProcess::openUni(const QString &fileName)
 
 bool UpdateProcess::update()
 {
-    _status = STATE_IN_PROGRESS;
     switch (_state)
     {
     case STATE_FREE:
@@ -145,35 +212,19 @@ bool UpdateProcess::update()
 
     case STATE_STOP_PROGRAM:
     {
-        QVariant mdata = 0;
-        mdata.convert(_programControlObjectId.dataType());
-        _node->writeObject(0x1F51, 1, mdata);
+        stopProgram();
         break;
     }
+
     case STATE_CLEAR_PROGRAM:
     {
-        QVariant mdata = 3;
-        mdata.convert(_programControlObjectId.dataType());
-        _node->writeObject(_programControlObjectId, mdata);
-
-        _timer->singleShot(200, this, SLOT(sendSyncOne()));
+        clearProgram();
         break;
     }
-    case STATE_DOWNLOAD_PROGRAM:
+
+    case STATE_UPDATE_PROGRAM:
     {
-        PhantomRemove prog;
-        //        QByteArray block1 = prog.remove(_uniBinary->prog().mid(0, (int)_uniBinary->head().memoryBlockEnd1 - (int)_uniBinary->head().memoryBlockStart1));
-        //        uint32_t start = _uniBinary->head().memoryBlockStart1;
-        //        block1.prepend(reinterpret_cast<char*>(&start), sizeof(start));
-        //        _node->updateFirmware(block1);
-
-        QByteArray block2 = prog.remove(_uniBinary->prog().mid((int)_uniBinary->head().memoryBlockStart2 - (int)_uniBinary->head().memoryBlockStart1,
-                                                               (int)_uniBinary->head().memoryBlockEnd2 - (int)_uniBinary->head().memoryBlockStart1));
-
-        uint32_t start2 = _uniBinary->head().memoryBlockStart2;
-        block2.prepend(reinterpret_cast<char *>(&start2), sizeof(start2));
-        _node->updateFirmware(block2);
-
+        updateProgram();
         break;
     }
 
@@ -233,7 +284,7 @@ void UpdateProcess::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
             else if (program == 3)
             {
                 // BOOTLOADER MODE
-                _state = STATE_DOWNLOAD_PROGRAM;
+                _state = STATE_UPDATE_PROGRAM;
                 update();
             }
             else
@@ -255,7 +306,7 @@ void UpdateProcess::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         }
         else
         {
-            _state = STATE_CLEAR_PROGRAM;
+            _state = STATE_STOP_PROGRAM;
             update();
         }
     }

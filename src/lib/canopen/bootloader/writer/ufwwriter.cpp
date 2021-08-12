@@ -1,13 +1,13 @@
-#include "createbinary.h"
+#include "ufwwriter.h"
 
 #include <QDataStream>
 #include <QIODevice>
 
-CreateBinary::CreateBinary()
+UfwWriter::UfwWriter()
 {
 }
 
-int CreateBinary::create(const QByteArray &hex, QString type, QStringList segment)
+int UfwWriter::create(const QByteArray &hex, QString type, QStringList segment)
 {
     QByteArray head;
 
@@ -27,12 +27,12 @@ int CreateBinary::create(const QByteArray &hex, QString type, QStringList segmen
     return 0;
 }
 
-const QByteArray &CreateBinary::binary() const
+const QByteArray &UfwWriter::binary() const
 {
     return _binary;
 }
 
-int CreateBinary::append(const QByteArray &app, QStringList addresses)
+int UfwWriter::append(const QByteArray &app, QStringList addresses)
 {
     bool ok;
     int i = 0;
@@ -54,7 +54,7 @@ int CreateBinary::append(const QByteArray &app, QStringList addresses)
     return 0;
 }
 
-int CreateBinary::checkAddresses(QStringList addresses)
+int UfwWriter::checkAddresses(QStringList addresses)
 {
     int i = 0;
     for (i = 0; i < addresses.size(); i++)

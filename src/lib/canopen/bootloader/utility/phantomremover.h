@@ -16,40 +16,22 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "uniparser.h"
+#ifndef PHANTOMREMOVER_H
+#define PHANTOMREMOVER_H
 
-#include <QFile>
+#include "canopen_global.h"
 
-UniParser::UniParser(const QString &fileName)
+#include <QByteArray>
+
+class CANOPEN_EXPORT PhantomRemover
 {
-    _fileName = fileName;
-}
+public:
+    PhantomRemover();
 
-bool UniParser::read()
-{
-    QByteArray uni;
-    QFile file(_fileName);
-    if (!file.open(QFile::ReadOnly))
-    {
-        return false;
-    }
-    else
-    {
-        uni = file.read(file.size());
-        file.close();
-    }
+    const QByteArray &remove(const QByteArray &prog);
 
-    _head = *reinterpret_cast<Head*>(uni.data());
-    _prog = uni.mid(sizeof(Head), uni.size());
-    return true;
-}
+private:
+    QByteArray _prog;
+};
 
-const QByteArray &UniParser::prog() const
-{
-    return _prog;
-}
-
-const UniParser::Head &UniParser::head() const
-{
-    return _head;
-}
+#endif // PHANTOMREMOVER_H

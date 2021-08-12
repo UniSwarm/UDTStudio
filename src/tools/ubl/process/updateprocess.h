@@ -21,8 +21,9 @@
 
 #include "canopenbus.h"
 
-#include "nodeodsubscriber.h"
-#include "parser/uniparser.h"
+#include "bootloader/parser/hexparser.h"
+#include "bootloader/utility/hexmerger.h"
+#include "bootloader/parser/ufwparser.h"
 
 #include <QObject>
 
@@ -43,21 +44,32 @@ public:
     enum Status
     {
         STATE_NONE,
-        STATE_IN_PROGRESS,
+        STATE_PROGRAM_STOPPED,
+        STATE_PROGRAM_STARTED,
+        STATE_NO_PROGRAM,
+        STATE_UPDATE_IN_PROGRESS,
         STATE_SUCCESSFUL,
         STATE_NOT_SUCCESSFUL
     };
 
     Status status() const;
 
+public slots:
+  void stopProgram();
+  void startProgram();
+  void resetProgram();
+  void clearProgram();
+  void updateProgram();
+
 signals:
     void nodeConnected(bool connected);
     void finished(bool finished);
 
 private slots:
-    void nodeDetected();
+    void nodeDetected(int nodeId);
     void sendSyncOne();
     void nodeDetectedTimeout();
+
 
 private:
     Status _status;
@@ -77,7 +89,7 @@ private:
     NodeObjectId _manufacturerSoftwareVersionObjectId;
     NodeObjectId _firmwareBuildDateObjectId;
 
-    UniParser *_uniBinary;
+    UfwParser *_uniBinary;
 
     QTimer *_nodeDetectedTimer;
     QTimer *_timer;
@@ -88,7 +100,7 @@ private:
         STATE_CHECK_MODE,
         STATE_STOP_PROGRAM,
         STATE_CLEAR_PROGRAM,
-        STATE_DOWNLOAD_PROGRAM,
+        STATE_UPDATE_PROGRAM,
         STATE_FLASH_FINISHED,
         STATE_CHECK,
         STATE_OK,

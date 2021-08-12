@@ -16,34 +16,21 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "mainconsole.h"
+#include "phantomremover.h"
 
-#include "process/updateprocess.h"
-
-MainConsole::MainConsole(quint8 busId, quint8 speed, quint8 nodeid, QString binary)
-    : _busId(busId)
-      , _speed(speed)
-      , _nodeId(nodeid)
-      , _binary(binary)
+PhantomRemover::PhantomRemover()
 {
-    _updateProcess = new UpdateProcess(_busId, _speed, _nodeId, _binary);
-    connect(_updateProcess, &UpdateProcess::nodeConnected, this, &MainConsole::nodeConnected);
-    connect(_updateProcess, &UpdateProcess::finished, this, &MainConsole::finished);
-
-    if (!_updateProcess->connectDevice())
-    {
-        emit finished(-1);
-    }
 }
 
-void MainConsole::nodeConnected(bool connected)
+const QByteArray &PhantomRemover::remove(const QByteArray &prog)
 {
-    if (!connected)
+    int index = 3;
+    _prog = prog;
+    while (index < _prog.size())
     {
-        emit finished(-1);
-        return;
+        _prog.remove(index, 1);
+        index += 4;
     }
 
-    _updateProcess->openUni(_binary);
-    _updateProcess->update();
+    return _prog;
 }

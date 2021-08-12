@@ -1,4 +1,4 @@
-/**
+﻿/**
  ** This file is part of the UDTStudio project.
  ** Copyright 2019-2021 UniSwarm
  **
@@ -19,6 +19,7 @@
 #include "hexmerger.h"
 
 #include <QDebug>
+#include <QFile>
 
 HexMerger::HexMerger()
 {
@@ -32,11 +33,42 @@ int HexMerger::merge(const QByteArray &appA, const QByteArray &appB, QStringList
     {
         return ret;
     }
-
+    // Save file
+    QFile file("appA");
+    if (!file.open(QFile::WriteOnly))
+    {
+        return false;
+    }
+    else
+    {
+        file.write(appA);
+        file.close();
+    }
     ret = append(appB, addressesB);
     if (ret < 0)
     {
         return ret;
+    }
+    QFile file2("appB");
+    if (!file2.open(QFile::WriteOnly))
+    {
+        return false;
+    }
+    else
+    {
+        file2.write(appB);
+        file2.close();
+    }
+
+    QFile file3("merge");
+    if (!file3.open(QFile::WriteOnly))
+    {
+        return false;
+    }
+    else
+    {
+        file3.write(_prog);
+        file3.close();
     }
 
     return 0;

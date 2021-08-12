@@ -16,20 +16,28 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef HEXWRITER_H
-#define HEXWRITER_H
+#ifndef HEXPARSER_H
+#define HEXPARSER_H
+
+#include "canopen_global.h"
 
 #include <QByteArray>
+#include <QString>
 
-class HexWriter
+class CANOPEN_EXPORT HexParser
 {
 public:
-    HexWriter();
+    HexParser(const QString &fileName = QString());
 
-    int write(const QByteArray &prog, const QString &filePath);
+    bool read();
+    const QByteArray &prog() const;
+
+    const unsigned short &checksum() const;
 
 private:
-    int checksum(QString data);
+    QByteArray _prog;
+    QString _fileName;
+    unsigned short _checksum;
 };
 
-#endif // HEXWRITER_H
+#endif // HEXPARSER_H

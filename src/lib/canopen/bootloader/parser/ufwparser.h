@@ -16,20 +16,37 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef PHANTOMREMOVE_H
-#define PHANTOMREMOVE_H
+#ifndef UFWPARSER_H
+#define UFWPARSER_H
+
+#include "canopen_global.h"
 
 #include <QByteArray>
+#include <QString>
 
-class PhantomRemove
+class CANOPEN_EXPORT UfwParser
 {
 public:
-    PhantomRemove();
+    UfwParser(const QString &fileName = QString());
 
-    const QByteArray &remove(const QByteArray &prog);
+    bool read();
+    const QByteArray &prog() const;
+
+    struct Head
+    {
+        uint32_t deviceModel;
+        uint32_t memoryBlockStart1;
+        uint32_t memoryBlockEnd1;
+        uint32_t memoryBlockStart2;
+        uint32_t memoryBlockEnd2;
+    };
+
+    const UfwParser::Head &head() const;
 
 private:
+    QString _fileName;
+    Head _head;
     QByteArray _prog;
 };
 
-#endif // PHANTOMREMOVE_H
+#endif // UFWPARSER_H

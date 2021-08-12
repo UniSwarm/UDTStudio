@@ -16,26 +16,28 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef HEXPARSER_H
-#define HEXPARSER_H
+#ifndef HEXMERGER_H
+#define HEXMERGER_H
+
+#include "canopen_global.h"
 
 #include <QByteArray>
-#include <QString>
+#include <QStringList>
 
-class HexParser
+class CANOPEN_EXPORT HexMerger
 {
 public:
-    HexParser(const QString &fileName = QString());
+    HexMerger();
 
-    bool read();
+    int merge(const QByteArray &appA, const QByteArray &appB, QStringList adresA, QStringList adresB);
+
     const QByteArray &prog() const;
-
-    const unsigned short &checksum() const;
 
 private:
     QByteArray _prog;
-    QString _fileName;
-    unsigned short _checksum;
+
+    int append(const QByteArray &app, QStringList addresses);
+    int checkAddresses(QStringList addresses);
 };
 
-#endif // HEXPARSER_H
+#endif // HEXMERGER_H

@@ -16,21 +16,40 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "phantomremove.h"
+#include "ufwparser.h"
 
-PhantomRemove::PhantomRemove()
+#include <QFile>
+
+UfwParser::UfwParser(const QString &fileName)
 {
+    _fileName = fileName;
 }
 
-const QByteArray &PhantomRemove::remove(const QByteArray &prog)
+bool UfwParser::read()
 {
-    int index = 3;
-    _prog = prog;
-    while (index < _prog.size())
+    QByteArray uni;
+    QFile file(_fileName);
+    if (!file.open(QFile::ReadOnly))
     {
-        _prog.remove(index, 1);
-        index += 4;
+        return false;
+    }
+    else
+    {
+        uni = file.read(file.size());
+        file.close();
     }
 
+    _head = *reinterpret_cast<Head*>(uni.data());
+    _prog = uni.mid(sizeof(Head), uni.size());
+    return true;
+}
+
+const QByteArray &UfwParser::prog() const
+{
     return _prog;
+}
+
+const UfwParser::Head &UfwParser::head() const
+{
+    return _head;
 }

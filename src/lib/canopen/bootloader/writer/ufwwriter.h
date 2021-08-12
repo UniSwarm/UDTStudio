@@ -16,35 +16,38 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef UNIPARSER_H
-#define UNIPARSER_H
+#ifndef UFWWRITER_H
+#define UFWWRITER_H
+
+#include "canopen_global.h"
 
 #include <QByteArray>
-#include <QString>
+#include <QStringList>
 
-class UniParser
+class CANOPEN_EXPORT UfwWriter
 {
 public:
-    UniParser(const QString &fileName = QString());
+    UfwWriter();
 
-    bool read();
-    const QByteArray &prog() const;
+    int create(const QByteArray &hex, QString type, QStringList segment);
 
+    const QByteArray &binary() const;
+
+private:
     struct Head
     {
         uint32_t deviceModel;
         uint32_t memoryBlockStart1;
-        uint32_t memoryBlockEnd1;
+        uint32_t memoryBlockend1;
         uint32_t memoryBlockStart2;
-        uint32_t memoryBlockEnd2;
+        uint32_t memoryBlockend2;
     };
-
-    const UniParser::Head &head() const;
-
-private:
-    QString _fileName;
     Head _head;
-    QByteArray _prog;
+
+    QByteArray _binary;
+
+    int append(const QByteArray &app, QStringList addresses);
+    int checkAddresses(QStringList addresses);
 };
 
-#endif // UNIPARSER_H
+#endif // UFWWRITER_H

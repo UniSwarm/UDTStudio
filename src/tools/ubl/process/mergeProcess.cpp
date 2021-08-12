@@ -18,8 +18,8 @@
 
 #include "mergeProcess.h"
 
-#include "parser/hexparser.h"
-#include "utility/hexmerger.h"
+#include "bootloader/parser/hexparser.h"
+#include "bootloader/utility/hexmerger.h"
 
 MergeProcess::MergeProcess(const QString fileA, QStringList segmentA, const QString fileB, QStringList segmentB)
     : _fileA(fileA)

@@ -26,12 +26,18 @@
 #include <QObject>
 #include <QDebug>
 #include <cstdint>
+#include <QProcess>
+#include <QDir>
+#include <QStandardPaths>
 
 #include "mainconsole.h"
 
 #include "process/mergeProcess.h"
-#include "utility/createbinary.h"
-#include "writer/hexwriter.h"
+
+#include "bootloader/writer/hexwriter.h"
+#include "bootloader/parser/hexparser.h"
+#include "bootloader/writer/ufwwriter.h"
+#include "bootloader/utility/hexmerger.h"
 
 int main(int argc, char *argv[])
 {
@@ -96,7 +102,78 @@ int main(int argc, char *argv[])
     cliParser.process(app);
 
     const QStringList argument = cliParser.positionalArguments();
-    if (argument.isEmpty() || argument.count() > 1)
+
+    if (argument.size() == 2)
+    {
+        QString fileA = argument.at(0);
+        QString fileB = argument.at(1);
+        if (QFileInfo(fileA).suffix() != "hex" || QFileInfo(fileB).suffix() != "hex")
+        {
+            err << QCoreApplication::translate("main", "error (1): miss file to compare two file") << Qt::endl;
+            cliParser.showHelp(-1);
+        }
+
+        QProcessEnvironment env(QProcessEnvironment::systemEnvironment());
+#if defined(Q_OS_WIN)
+        QChar listSep = ';';
+#else
+        QChar listSep = ':';
+#endif
+
+        QString makePath = QDir::toNativeSeparators("");
+        env.insert("PATH", makePath + listSep + env.value("PATH"));
+
+        env.insert("TERM", "xterm");
+
+        QProcess *_process = new QProcess();
+        _process->setProcessEnvironment(env);
+        QString path = QStandardPaths::findExecutable("hexdump", env.value("PATH").split(listSep));
+
+        HexParser hexFileA(fileA);
+        hexFileA.read();
+        QFile fileBinA(fileA + ".bin");
+        fileBinA.open(QFile::WriteOnly);
+        fileBinA.write(hexFileA.prog());
+        fileBinA.close();
+        //_process->setStandardOutputFile(fileA + ".bin.tmptt");
+        _process->start(path, QStringList() << "-C" << "-v" << QString("%1").arg(fileA + ".bin"));
+        _process->waitForFinished(-1);
+        QByteArray stdOut = _process->readAllStandardOutput();  //Reads standard output
+        QByteArray stdErr = _process->readAllStandardError();  //Reads standard output
+        qDebug() << stdErr;
+        _process->terminate();
+
+        fileBinA.setFileName(fileA + ".bin.tmp");
+        fileBinA.open(QFile::WriteOnly);
+        fileBinA.write(stdOut);
+        fileBinA.close();
+
+        HexParser hexFileB(fileB);
+        hexFileB.read();
+        QFile fileBinB(fileB + ".bin");
+        fileBinB.open(QFile::WriteOnly);
+        fileBinB.write(hexFileB.prog());
+        fileBinB.close();
+
+        _process = new QProcess();
+        _process->start(path, QStringList() << "-C" << "-v" << QString("%1").arg(fileB + ".bin"));
+        _process->waitForFinished(-1);
+
+        stdOut = _process->readAllStandardOutput();  //Reads standard output
+        _process->terminate();
+
+        fileBinB.setFileName(fileB + ".bin.tmp");
+        fileBinB.open(QFile::WriteOnly);
+        fileBinB.write(stdOut);
+        fileBinB.close();
+
+        path = QStandardPaths::findExecutable("meld", env.value("PATH").split(listSep));
+        _process->start(path,  QStringList() << QString("%1.bin.tmp").arg(fileA) << QString("%1.bin.tmp").arg(fileB));
+
+        exit(0);
+    }
+
+    if (argument.isEmpty())
     {
         err << QCoreApplication::translate("main", "error (1): input file is needed") << Qt::endl;
         cliParser.showHelp(-1);
@@ -115,7 +192,7 @@ int main(int argc, char *argv[])
         aOptionList.sort();
         bOptionList.sort();
         QString fileA = aOptionList.last();
-        QString fileB = aOptionList.last();
+        QString fileB = bOptionList.last();
         aOptionList.removeLast();
         bOptionList.removeLast();
 
@@ -171,7 +248,7 @@ int main(int argc, char *argv[])
         HexParser *hex = new HexParser(hexFile);
         hex->read();
 
-        CreateBinary createBinary;
+        UfwWriter createBinary;
         createBinary.create(hex->prog(), type, segmentList);
 
         // Save file
@@ -211,7 +288,7 @@ int main(int argc, char *argv[])
         quint8 speed = static_cast<uint8_t>(cliParser.value("speed").toUInt());
         if (speed == 0 || speed >= 126)
         {
-            err << QCoreApplication::translate("main", "error (4): invalid speed") << Qt::endl;
+            //err << QCoreApplication::translate("main", "error (4): invalid speed") << Qt::endl;
             //return -4;
         }
 

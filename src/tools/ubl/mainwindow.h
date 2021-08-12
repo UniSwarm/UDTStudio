@@ -27,7 +27,7 @@
 #include "canopen/busnodesmanagerview.h"
 #include "canopen/nodeod/nodeodwidget.h"
 #include "canopenbus.h"
-#include "parser/hexparser.h"
+#include "bootloader/parser/hexparser.h"
 
 #include "model/deviceconfiguration.h"
 #include "parser/edsparser.h"
