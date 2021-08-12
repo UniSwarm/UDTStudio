@@ -44,6 +44,7 @@ public:
 
     bool loadEds(const QString &fileName);
     const QString &edsFileName() const;
+    bool exportDcf(const QString &fileName) const;
 
     // index
     const QMap<quint16, NodeIndex *> &indexes() const;

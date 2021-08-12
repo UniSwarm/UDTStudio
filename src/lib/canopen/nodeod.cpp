@@ -18,6 +18,8 @@
 
 #include <QDebug>
 
+#include <writer/dcfwriter.h>
+
 #include "model/deviceconfiguration.h"
 #include "indexdb.h"
 #include "node.h"
@@ -394,6 +396,42 @@ bool NodeOd::loadEds(const QString &fileName)
 const QString &NodeOd::edsFileName() const
 {
     return _fileName;
+}
+
+bool NodeOd::exportDcf(const QString &fileName) const
+{
+    DeviceConfiguration deviceConfiguration;
+    deviceConfiguration.setNodeId(QString::number(_node->nodeId()));
+    deviceConfiguration.setNodeName(_node->name());
+
+    for (NodeIndex *nodeIndex : _nodeIndexes)
+    {
+        Index *index = new Index(nodeIndex->index());
+        index->setName(nodeIndex->name());
+        index->setObjectType(static_cast<Index::Object>(nodeIndex->objectType()));
+        deviceConfiguration.addIndex(index);
+
+        for (NodeSubIndex *nodeSubIndex : nodeIndex->subIndexes())
+        {
+            SubIndex *subIndex = new SubIndex(nodeSubIndex->subIndex());
+            subIndex->setName(nodeSubIndex->name());
+            subIndex->setAccessType(static_cast<SubIndex::AccessType>(nodeSubIndex->accessType()));
+            subIndex->setDataType(static_cast<SubIndex::DataType>(nodeSubIndex->dataType()));
+            if (nodeSubIndex->error() == 0)
+            {
+                subIndex->setValue(QVariant());
+            }
+            else
+            {
+                subIndex->setValue(nodeSubIndex->value());
+            }
+            index->addSubIndex(subIndex);
+        }
+    }
+
+    DcfWriter dcfWriter;
+    dcfWriter.write(&deviceConfiguration, fileName);
+    return true;
 }
 
 QMetaType::Type NodeOd::dataTypeCiaToQt(const NodeSubIndex::DataType type)
