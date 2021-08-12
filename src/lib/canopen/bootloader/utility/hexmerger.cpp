@@ -21,54 +21,45 @@
 #include <QDebug>
 #include <QFile>
 
+#include "bootloader/parser/hexparser.h"
+
 HexMerger::HexMerger()
 {
 }
 
-int HexMerger::merge(const QByteArray &appA, const QByteArray &appB, QStringList addressesA, QStringList addressesB)
+int HexMerger::merge(const QString fileA, QStringList segmentA, const QString fileB, QStringList segmentB)
 {
-    int ret = 0;
-    ret = append(appA, addressesA);
+    HexParser *hexAFile = new HexParser(fileA);
+    hexAFile->read();
+    HexParser *hexBFile = new HexParser(fileB);
+    hexBFile->read();
+
+    HexMerger *merger = new HexMerger();
+
+    int ret = merge(hexAFile->prog(), segmentA, hexBFile->prog(), segmentB);
     if (ret < 0)
     {
-        return ret;
-    }
-    // Save file
-    QFile file("appA");
-    if (!file.open(QFile::WriteOnly))
-    {
-        return false;
-    }
-    else
-    {
-        file.write(appA);
-        file.close();
-    }
-    ret = append(appB, addressesB);
-    if (ret < 0)
-    {
-        return ret;
-    }
-    QFile file2("appB");
-    if (!file2.open(QFile::WriteOnly))
-    {
-        return false;
-    }
-    else
-    {
-        file2.write(appB);
-        file2.close();
+        return -1;
     }
 
-    QFile file3("merge");
-    if (!file3.open(QFile::WriteOnly))
+    _prog = merger->prog();
+
+    return 0;
+}
+
+int HexMerger::merge(const QByteArray &appA, QStringList segmentA, const QByteArray &appB, QStringList segmentB)
+{
+    int ret = 0;
+    ret = append(appA, segmentA);
+    if (ret < 0)
     {
-        return false;
+        return ret;
     }
-    else
+
+    ret = append(appB, segmentB);
+    if (ret < 0)
     {
-        file3.write(_prog);
-        file3.close();
+        return ret;
     }
 
     return 0;

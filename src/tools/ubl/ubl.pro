@@ -8,13 +8,11 @@ DESTDIR = "$$PWD/../../../bin"
 SOURCES += \
         $$PWD/main.cpp \
 	$$PWD/mainwindow.cpp \
-	$$PWD/process/mergeProcess.cpp \
 	$$PWD/process/updateprocess.cpp \
 	$$PWD/mainconsole.cpp
 
 HEADERS += \
         $$PWD/mainwindow.h \
-	$$PWD/process/mergeProcess.h \
 	$$PWD/process/updateprocess.h \
 	$$PWD/mainconsole.h
 
