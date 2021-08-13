@@ -66,7 +66,7 @@ public:
     };
     StatusFlash statusFlash();
 
-    bool openUni(const QString &fileName);
+    bool openUfw(const QString &fileName);
 
 public slots:
     void stopProgram();
@@ -91,7 +91,7 @@ private:
     NodeObjectId _programControlObjectId;
     NodeObjectId _flashStatusObjectId;
 
-    UfwParser *_uniBinary;
+    UfwParser *_ufw;
 
     QTimer *_timer;
 

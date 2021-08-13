@@ -34,16 +34,11 @@ int HexMerger::merge(const QString fileA, QStringList segmentA, const QString fi
     HexParser *hexBFile = new HexParser(fileB);
     hexBFile->read();
 
-    HexMerger *merger = new HexMerger();
-
     int ret = merge(hexAFile->prog(), segmentA, hexBFile->prog(), segmentB);
     if (ret < 0)
     {
         return -1;
     }
-
-    _prog = merger->prog();
-
     return 0;
 }
 

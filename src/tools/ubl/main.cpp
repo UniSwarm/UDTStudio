@@ -32,8 +32,6 @@
 
 #include "mainconsole.h"
 
-#include "process/mergeProcess.h"
-
 #include "bootloader/writer/hexwriter.h"
 #include "bootloader/parser/hexparser.h"
 #include "bootloader/writer/ufwwriter.h"
@@ -203,8 +201,8 @@ int main(int argc, char *argv[])
         }
 
         // MERGE PROCESS
-        MergeProcess mergeProcess(fileA, aOptionList, fileB, bOptionList);
-        if (mergeProcess.merge() < 0)
+        HexMerger mergeProcess;
+        if (mergeProcess.merge(fileA, aOptionList, fileB, bOptionList) < 0)
         {
             err << QCoreApplication::translate("main", "error (1): merge process") << Qt::endl;
             cliParser.showHelp(-1);

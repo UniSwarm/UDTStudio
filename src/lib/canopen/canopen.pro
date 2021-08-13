@@ -45,7 +45,15 @@ SOURCES += \
     $$PWD/profile/nodeprofilefactory.cpp \
     $$PWD/profile/p402/modedty.cpp \
     $$PWD/busdriver/canbusdriver.cpp \
-    $$PWD/busdriver/canbustcpudt.cpp
+    $$PWD/busdriver/canbustcpudt.cpp \
+    $$PWD/bootloader/bootloader.cpp \
+    $$PWD/bootloader/parser/hexparser.cpp \
+    $$PWD/bootloader/parser/ufwparser.cpp \
+    $$PWD/bootloader/utility/hexmerger.cpp \
+    $$PWD/bootloader/utility/phantomremover.cpp \
+    $$PWD/bootloader/utility/ufwupdate.cpp \
+    $$PWD/bootloader/writer/hexwriter.cpp \
+    $$PWD/bootloader/writer/ufwwriter.cpp
 
 unix : SOURCES += $$PWD/busdriver/canbussocketcan.cpp
 
@@ -87,7 +95,15 @@ HEADERS += \
     $$PWD/profile/nodeprofilefactory.h \
     $$PWD/profile/p402/modedty.h \
     $$PWD/busdriver/canbusdriver.h \
-    $$PWD/busdriver/canbustcpudt.h
+    $$PWD/busdriver/canbustcpudt.h \
+    $$PWD/bootloader/bootloader.h \
+    $$PWD/bootloader/parser/hexparser.h \
+    $$PWD/bootloader/parser/ufwparser.h \
+    $$PWD/bootloader/utility/hexmerger.h \
+    $$PWD/bootloader/utility/phantomremover.h \
+    $$PWD/bootloader/utility/ufwupdate.h \
+    $$PWD/bootloader/writer/hexwriter.h \
+    $$PWD/bootloader/writer/ufwwriter.h
 
 unix : HEADERS += $$PWD/busdriver/canbussocketcan.h
 

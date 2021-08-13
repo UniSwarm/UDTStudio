@@ -63,7 +63,7 @@ Bootloader::StatusFlash Bootloader::statusFlash()
     return _statusFlash;
 }
 
-bool Bootloader::openUni(const QString &fileName)
+bool Bootloader::openUfw(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly))
@@ -72,8 +72,8 @@ bool Bootloader::openUni(const QString &fileName)
     }
     else
     {
-        _uniBinary = new UfwParser(fileName);
-        _uniBinary->read();
+        _ufw = new UfwParser(fileName);
+        _ufw->read();
         file.close();
     }
 
