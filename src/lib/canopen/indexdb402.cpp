@@ -457,12 +457,20 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4025 + axisModeDecal)), 0x8};
 
     // CONFIGURATION OF AXIS
-    case OD_MS_CONF_TEMP_SENSOR_TYPE:
+    case OD_MS_DRIVER_TEMP_CONFIG_PROTECTION_SCHMITT_TRIGGERS_HIGH:
+        return {static_cast<quint16>((0x4080 + axisModeDecal)), 0x1};
+    case OD_MS_DRIVER_TEMP_CONFIG_PROTECTION_SCHMITT_TRIGGERS_LOW:
+        return {static_cast<quint16>((0x4080 + axisModeDecal)), 0x2};
+
+    case OD_MS_MOTOR_TEMP_CONFIG_SENSOR_TYPESOR_TYPE:
         return {static_cast<quint16>((0x4081 + axisModeDecal)), 0x1};
-    case OD_MS_CONF_TEMP_SENSOR_CONSTANT:
+    case OD_MS_MOTOR_TEMP_CONFIG_SENSOR_CONSTANT:
         return {static_cast<quint16>((0x4081 + axisModeDecal)), 0x2};
-    case OD_MS_CONF_TEMP_MAX:
+    case OD_MS_MOTOR_TEMP_CONFIG_PROTECTION_SCHMITT_TRIGGERS_HIGH:
         return {static_cast<quint16>((0x4081 + axisModeDecal)), 0x3};
+    case OD_MS_MOTOR_TEMP_CONFIG_PROTECTION_SCHMITT_TRIGGERS_LOW:
+        return {static_cast<quint16>((0x4081 + axisModeDecal)), 0x4};
+
     case OD_MS_CONF_BRAKE_MAINTAIN:
         return {static_cast<quint16>((0x4082 + axisModeDecal)), 0x1};
     case OD_MS_CONF_BRAKE_PEAK:
