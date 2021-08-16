@@ -32,15 +32,12 @@ NodeScreenOD::NodeScreenOD()
 void NodeScreenOD::createWidgets()
 {
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(2, 2, 2, 2);
 
     _nodeOdWidget = new NodeOdWidget();
     layout->addWidget(_nodeOdWidget);
 
-    QVBoxLayout *storeBoxlayout = new QVBoxLayout();
-    storeBoxlayout->setContentsMargins(2, 2, 2, 2);
-    storeBoxlayout->addWidget(createStoreWidget());
-    layout->addItem(storeBoxlayout);
+    layout->addWidget(createStoreWidget());
 
     setLayout(layout);
 }

@@ -95,7 +95,7 @@ void NodeOdWidget::applyFilterCustom(const QString &filterText)
 void NodeOdWidget::createWidgets()
 {
     QLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(2, 2, 2 ,2);
+    layout->setContentsMargins(0, 0, 0 , 0);
 
     // >> toolbar creation
     _toolBar = new QToolBar(tr("Node commands"));
