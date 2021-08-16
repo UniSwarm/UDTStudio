@@ -62,7 +62,17 @@ CanOpen *BusNodesTreeView::canOpen() const
 
 void BusNodesTreeView::setCanOpen(CanOpen *canOpen)
 {
+    if (_busNodesModel->canOpen())
+    {
+        disconnect(_busNodesModel->canOpen(), nullptr, this, nullptr);
+    }
+
     _busNodesModel->setCanOpen(canOpen);
+
+    if (canOpen)
+    {
+        connect(canOpen, &CanOpen::busAdded, this, &BusNodesTreeView::addBus);
+    }
 }
 
 CanOpenBus *BusNodesTreeView::currentBus() const
@@ -105,6 +115,35 @@ void BusNodesTreeView::indexDbClick(const QModelIndex &index)
         if (bus->isConnected() && bus->nodes().isEmpty())
         {
             bus->exploreBus();
+        }
+    }
+}
+
+void BusNodesTreeView::addBus(quint8 busId)
+{
+    CanOpenBus *bus = _busNodesModel->canOpen()->bus(busId);
+    if (!bus)
+    {
+        return;
+    }
+    connect(bus, &CanOpenBus::nodeAdded, [=] (int nodeId)
+    {
+        addNode(bus, nodeId);
+    });
+}
+
+void BusNodesTreeView::addNode(CanOpenBus *bus, quint8 nodeId)
+{
+    Q_UNUSED(nodeId);
+    if (bus->nodes().count() == 1) // first node added to this bus
+    {
+        for (int row = 0; row < _sortFilterProxyModel->rowCount(); row++)
+        {
+            QModelIndex index = _sortFilterProxyModel->index(row, BusNodesModel::NodeId);
+            if (_sortFilterProxyModel->data(index) == QVariant(bus->busId()))
+            {
+                expand(index);
+            }
         }
     }
 }

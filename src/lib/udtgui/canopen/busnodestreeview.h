@@ -54,6 +54,9 @@ protected slots:
     void updateSelection();
     void indexDbClick(const QModelIndex &index);
 
+    void addBus(quint8 busId);
+    void addNode(CanOpenBus *bus, quint8 nodeId);
+
 protected:
     BusNodesModel *_busNodesModel;
     QSortFilterProxyModel *_sortFilterProxyModel;
