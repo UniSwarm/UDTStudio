@@ -220,6 +220,11 @@ void NodeOdTreeView::createActions()
     _expandAllAction->setText(tr("&Expend all"));
     connect(_expandAllAction, &QAction::triggered, this, &QTreeView::expandAll);
     addAction(_expandAllAction);
+
+    _collapseAllAction = new QAction(this);
+    _collapseAllAction->setText(tr("&Collapse all"));
+    connect(_collapseAllAction, &QAction::triggered, this, &QTreeView::collapseAll);
+    addAction(_collapseAllAction);
 }
 
 void NodeOdTreeView::updateSelect(const QItemSelection &selected, const QItemSelection &deselected)
@@ -238,6 +243,8 @@ void NodeOdTreeView::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(_readAction);
     menu.addAction(_readAllAction);
     menu.addAction(_copyAction);
+    menu.addSeparator();
     menu.addAction(_expandAllAction);
+    menu.addAction(_collapseAllAction);
     menu.exec(event->globalPos());
 }

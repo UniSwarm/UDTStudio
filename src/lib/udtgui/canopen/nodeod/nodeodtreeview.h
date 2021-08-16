@@ -61,6 +61,7 @@ protected:
     QAction *_readAllAction;
     QAction *_copyAction;
     QAction *_expandAllAction;
+    QAction *_collapseAllAction;
 
     // QWidget interface
 protected:
