@@ -325,17 +325,23 @@ bool SDO::downloadData(quint16 index, quint8 subindex, const QVariant &data)
 bool SDO::uploadDispatcher()
 {
     quint8 cmd = 0;
-    if (_requestCurrent->index != 0x1F50) // TODO when type domain will create
+    NodeSubIndex *subIndex = nullptr;
+    if (_node->nodeOd()->subIndexExist(_requestCurrent->index, _requestCurrent->subIndex))
     {
-        cmd = CCS::SDO_CCS_CLIENT_UPLOAD_INITIATE;
-        sendSdoRequest(cmd, _requestCurrent->index, _requestCurrent->subIndex);
-        _requestCurrent->state = STATE_UPLOAD;
+        subIndex = _node->nodeOd()->index(_requestCurrent->index)->subIndex(_requestCurrent->subIndex);
     }
-    else
+
+    if ((subIndex != nullptr) && (subIndex->dataType() == NodeSubIndex::DDOMAIN))
     {
         cmd = CCS::SDO_CCS_CLIENT_BLOCK_UPLOAD;
         _requestCurrent->blksize = BLOCK_BLOCK_SIZE;
         sendSdoRequest(cmd, _requestCurrent->index, _requestCurrent->subIndex, _requestCurrent->blksize, 0);
+        _requestCurrent->state = STATE_UPLOAD;
+    }
+    else
+    {
+        cmd = CCS::SDO_CCS_CLIENT_UPLOAD_INITIATE;
+        sendSdoRequest(cmd, _requestCurrent->index, _requestCurrent->subIndex);
         _requestCurrent->state = STATE_UPLOAD;
     }
 
@@ -632,7 +638,13 @@ bool SDO::downloadDispatcher()
 {
     quint8 cmd = 0;
 
-    if (_requestCurrent->size >= 128) // block download
+    NodeSubIndex *subIndex = nullptr;
+    if (_node->nodeOd()->subIndexExist(_requestCurrent->index, _requestCurrent->subIndex))
+    {
+        subIndex = _node->nodeOd()->index(_requestCurrent->index)->subIndex(_requestCurrent->subIndex);
+    }
+
+    if ((subIndex != nullptr) && (subIndex->dataType() == NodeSubIndex::DDOMAIN))
     {
         cmd = CCS::SDO_CCS_CLIENT_BLOCK_DOWNLOAD;
         cmd |= FlagBlock::BLOCK_SIZE;
