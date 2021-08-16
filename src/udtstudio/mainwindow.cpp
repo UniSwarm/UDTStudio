@@ -27,6 +27,7 @@
 #include <QDateTime>
 #include <QDir>
 #include <QDockWidget>
+#include <QFileDialog>
 #include <QLayout>
 #include <QMenu>
 #include <QMenuBar>
@@ -71,8 +72,6 @@ MainWindow::MainWindow(QWidget *parent)
     bus->setBusName("Bus net");
     CanOpen::addBus(bus);
 
-    // _connectDialog = new CanSettingsDialog(nullptr, this);
-
     resize(QApplication::screens().at(0)->size() * 3 / 4);
 
     readSettings();
@@ -81,7 +80,6 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     CanOpen::release();
-    // delete _connectDialog;
 }
 
 void MainWindow::writeCfgFile()
@@ -92,8 +90,20 @@ void MainWindow::writeCfgFile()
         return;
     }
 
-    QFile file("conf.cfg");
-    file.open(QIODevice::WriteOnly);
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                                    tr("Save File"),
+                                                    "",
+                                                    tr("Conf File (*.conf)"));
+    if (fileName.isEmpty())
+    {
+        return;
+    }
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        return;
+    }
     QTextStream stream(&file);
     stream << "[Default]" << '\n';
     for (NodeIndex *index : node->nodeOd()->indexes())
@@ -105,11 +115,31 @@ void MainWindow::writeCfgFile()
             && subIndex->dataType() != NodeSubIndex::DDOMAIN
              /*&& subIndex->defaultValue().isValid()*/)
             {
-                qDebug() << QString::number(index->index(), 16) << subIndex->subIndex() << subIndex->value() << subIndex->defaultValue();
+                // qDebug() << QString::number(index->index(), 16) << subIndex->subIndex() << subIndex->value() << subIndex->defaultValue();
                 stream << index->name() << '.' << subIndex->name() << '=' << subIndex->value().toInt() << '\n';
             }
         }
     }
+}
+
+void MainWindow::exportDCF()
+{
+    Node *node = _busNodesManagerView->currentNode();
+    if (!node)
+    {
+        return;
+    }
+
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                                    tr("Save File"),
+                                                    "",
+                                                    tr("Device File Configuration (*.dcf)"));
+    if (fileName.isEmpty())
+    {
+        return;
+    }
+
+    node->nodeOd()->exportDcf(fileName);
 }
 
 void MainWindow::createDocks()
@@ -181,8 +211,12 @@ void MainWindow::createMenus()
 
     nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionRemoveNode());
 
-    action = new QAction(tr("Save conf file"), this);
+    action = new QAction(tr("Export DCF file"), this);
     action->setShortcut(QKeySequence::SaveAs);
+    connect(action, &QAction::triggered, this, &MainWindow::exportDCF);
+    nodeMenu->addAction(action);
+
+    action = new QAction(tr("Save conf file"), this);
     connect(action, &QAction::triggered, this, &MainWindow::writeCfgFile);
     nodeMenu->addAction(action);
 
@@ -213,62 +247,6 @@ void MainWindow::createMenus()
     aboutQtAction->setIcon(QIcon(":/icons/img/icons8-system-information.png"));
     connect(aboutQtAction, &QAction::triggered, qApp, &QApplication::aboutQt);
     helpMenu->addAction(aboutQtAction);
-}
-
-void MainWindow::connectDevice()
-{
-    /*QString errorString;
-    const CanSettingsDialog::Settings settings = _connectDialog->settings();
-
-    _canDevice = _connectDialog->device();
-    if (!_canDevice)
-    {
-        _connectDialog->show();
-    }
-    else
-    {
-        if (_canDevice->state() == QCanBusDevice::UnconnectedState)
-        {
-            if (!_canDevice->connectDevice())
-            {
-                statusBar()->showMessage(tr("Connection error: %1").arg(_canDevice->errorString()));
-            }
-            else
-            {
-                const QVariant bitRate = _canDevice->configurationParameter(QCanBusDevice::BitRateKey);
-                if (bitRate.isValid())
-                {
-                    statusBar()->showMessage(tr("%1 - %2 at %3 kBit/s").arg(settings.interfaceName).arg(settings.deviceName).arg(bitRate.toInt() / 1000));
-                }
-                else
-                {
-                    statusBar()->showMessage(tr("%1 - %2").arg(settings.interfaceName).arg(settings.deviceName));
-                }
-
-                _connectAction->setEnabled(false);
-                _disconnectAction->setEnabled(true);
-            }
-
-            CanOpenBus *bus = new CanOpenBus(_canDevice);
-            bus->setBusName(settings.interfaceName + ":" + settings.deviceName);
-            statusBar()->showMessage(tr("%1 - %2").arg(settings.interfaceName).arg(settings.deviceName));
-            CanOpen::addBus(bus);
-            // connect(bus, &CanOpenBus::frameAvailable, _canFrameListView, &CanFrameListView::appendCanFrame);
-        }
-    }*/
-}
-
-void MainWindow::disconnectDevice()
-{
-    /*if (!_canDevice)
-    {
-        return;
-    }
-
-    _canDevice->disconnectDevice();
-    _connectAction->setEnabled(true);
-    _disconnectAction->setEnabled(false);
-    statusBar()->showMessage(tr("Disconnected"));*/
 }
 
 void MainWindow::writeSettings()

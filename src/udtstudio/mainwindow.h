@@ -42,6 +42,7 @@ public:
 
 public slots:
     void writeCfgFile();
+    void exportDCF();
     void about();
 
 protected:
@@ -60,14 +61,6 @@ protected:
 
     // actions / menu
     void createMenus();
-
-    QAction *_connectAction;
-    void connectDevice();
-
-    QAction *_disconnectAction;
-    void disconnectDevice();
-
-    QAction *_canSettingsAction;
 
     void writeSettings();
     void readSettings();
