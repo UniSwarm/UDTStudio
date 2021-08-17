@@ -162,6 +162,7 @@ void PidWidget::setIMode()
         _pidGroupBox->setTitle(tr("Torque PID configuration"));
         _pidStatusGroupBox->setTitle(tr("Torque PID status"));
         _pidTestGroupBox->setTitle(tr("Torque PID test"));
+        _dataLoggerWidget->setTitle(tr("Node %1 axis %2 torque PID").arg(_nodeProfile402->nodeId()).arg(_axis));
         odMode402 = IndexDb402::MODE402_TORQUE;
         break;
 
@@ -171,6 +172,7 @@ void PidWidget::setIMode()
         _pidGroupBox->setTitle(tr("Velocity PID configuration"));
         _pidStatusGroupBox->setTitle(tr("Velocity PID status"));
         _pidTestGroupBox->setTitle(tr("Velocity PID test"));
+        _dataLoggerWidget->setTitle(tr("Node %1 axis %2 velocity PID").arg(_nodeProfile402->nodeId()).arg(_axis));
         odMode402 = IndexDb402::MODE402_VELOCITY;
         break;
 
@@ -180,6 +182,7 @@ void PidWidget::setIMode()
         _pidGroupBox->setTitle(tr("Position PID configuration"));
         _pidStatusGroupBox->setTitle(tr("Position PID status"));
         _pidTestGroupBox->setTitle(tr("Position PID test"));
+        _dataLoggerWidget->setTitle(tr("Node %1 axis %2 position PID").arg(_nodeProfile402->nodeId()).arg(_axis));
         odMode402 = IndexDb402::MODE402_POSITION;
         break;
     }
@@ -488,6 +491,7 @@ void PidWidget::createWidgets()
     QVBoxLayout *layoutLogger = new QVBoxLayout();
     layoutLogger->setContentsMargins(5, 4, 0, 3);
     _dataLoggerWidget = new DataLoggerWidget(_dataLogger, Qt::Vertical);
+    _dataLoggerWidget->setType(DataLoggerWidget::InternalType);
     layoutLogger->addWidget(_dataLoggerWidget);
     widgetLogger->setLayout(layoutLogger);
     splitter->addWidget(widgetLogger);

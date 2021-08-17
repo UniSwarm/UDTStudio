@@ -37,8 +37,22 @@ public:
 
     DataLogger *dataLogger() const;
 
+    const QString &title() const;
+    void setTitle(const QString &title);
+
+    enum Type
+    {
+        UserType,
+        DockType,
+        InternalType
+    };
+    Type type() const;
+    void setType(Type type);
+
 protected:
     DataLogger *_dataLogger;
+    QString _title;
+    Type _type;
 
     void createWidgets(Qt::Orientation orientation);
     DataLoggerManagerWidget *_dataLoggerManagerWidget;

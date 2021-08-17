@@ -167,6 +167,7 @@ void MotionSensorWidget::setIMode()
         _filterGroupBox->setTitle(tr("Torque filter"));
         _conditioningGroupBox->setTitle(tr("Torque conditioning"));
         _statusGroupBox->setTitle(tr("Torque sensor status"));
+        _dataLoggerWidget->setTitle(tr("Node %1 axis %2 torque motion sensor").arg(_node->nodeId()).arg(_axis));
         odMode402 = IndexDb402::MODE402_TORQUE;
         break;
 
@@ -175,6 +176,7 @@ void MotionSensorWidget::setIMode()
         _filterGroupBox->setTitle(tr("Velocity filter"));
         _conditioningGroupBox->setTitle(tr("Velocity conditioning"));
         _statusGroupBox->setTitle(tr("Velocity sensor status"));
+        _dataLoggerWidget->setTitle(tr("Node %1 axis %2 velocity motion sensor").arg(_node->nodeId()).arg(_axis));
         odMode402 = IndexDb402::MODE402_VELOCITY;
         break;
 
@@ -183,6 +185,7 @@ void MotionSensorWidget::setIMode()
         _filterGroupBox->setTitle(tr("Position filter"));
         _conditioningGroupBox->setTitle(tr("Position conditioning"));
         _statusGroupBox->setTitle(tr("Position sensor status"));
+        _dataLoggerWidget->setTitle(tr("Node %1 axis %2 position motion sensor").arg(_node->nodeId()).arg(_axis));
         odMode402 = IndexDb402::MODE402_POSITION;
         break;
     }
@@ -262,6 +265,7 @@ void MotionSensorWidget::createWidgets()
     QVBoxLayout *layoutLogger = new QVBoxLayout();
     layoutLogger->setContentsMargins(5, 4, 0, 3);
     _dataLoggerWidget = new DataLoggerWidget(_dataLogger, Qt::Vertical);
+    _dataLoggerWidget->setType(DataLoggerWidget::InternalType);
     layoutLogger->addWidget(_dataLoggerWidget);
     widgetLogger->setLayout(layoutLogger);
     splitter->addWidget(widgetLogger);

@@ -32,6 +32,8 @@ DataLoggerWidget::DataLoggerWidget(DataLogger *dataLogger, Qt::Orientation orien
     : QWidget(parent)
     , _dataLogger(dataLogger)
 {
+    _type = UserType;
+
     if (!_dataLogger)
     {
         _dataLogger = new DataLogger(this);
@@ -48,6 +50,26 @@ DataLoggerWidget::~DataLoggerWidget()
 DataLogger *DataLoggerWidget::dataLogger() const
 {
     return _dataLogger;
+}
+
+const QString &DataLoggerWidget::title() const
+{
+    return _title;
+}
+
+void DataLoggerWidget::setTitle(const QString &title)
+{
+    _title = title;
+}
+
+DataLoggerWidget::Type DataLoggerWidget::type() const
+{
+    return _type;
+}
+
+void DataLoggerWidget::setType(Type type)
+{
+    _type = type;
 }
 
 void DataLoggerWidget::createWidgets(Qt::Orientation orientation)
