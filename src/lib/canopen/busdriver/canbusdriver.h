@@ -40,11 +40,11 @@ public:
     };
     State state() const;
 
-    virtual bool connectDevice() = 0;
-    virtual void disconnectDevice() = 0;
+    virtual bool connectDevice();
+    virtual void disconnectDevice();
 
-    virtual QCanBusFrame readFrame() = 0;
-    virtual bool writeFrame(const QCanBusFrame &qtframe) = 0;
+    virtual QCanBusFrame readFrame();
+    virtual bool writeFrame(const QCanBusFrame &qtframe);
 
 
 signals:

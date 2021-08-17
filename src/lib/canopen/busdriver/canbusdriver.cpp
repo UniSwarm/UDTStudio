@@ -29,6 +29,26 @@ CanBusDriver::State CanBusDriver::state() const
     return _state;
 }
 
+bool CanBusDriver::connectDevice()
+{
+    return false;
+}
+
+void CanBusDriver::disconnectDevice()
+{
+}
+
+QCanBusFrame CanBusDriver::readFrame()
+{
+    return QCanBusFrame();
+}
+
+bool CanBusDriver::writeFrame(const QCanBusFrame &qtframe)
+{
+    Q_UNUSED(qtframe);
+    return false;
+}
+
 void CanBusDriver::setState(const State &state)
 {
     bool stateChange = (_state != state);
