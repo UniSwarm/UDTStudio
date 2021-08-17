@@ -28,6 +28,7 @@
 #include <QDir>
 #include <QDockWidget>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QLayout>
 #include <QMenu>
 #include <QMenuBar>
@@ -71,6 +72,17 @@ MainWindow::MainWindow(QWidget *parent)
     bus = new CanOpenBus(new CanBusTcpUDT("192.168.1.80"));
     bus->setBusName("Bus net");
     CanOpen::addBus(bus);
+
+    bus = new CanOpenBus(new CanBusDriver(""));
+    bus->setBusName("Bus eds");
+    CanOpen::addBus(bus);
+    int id = 1;
+    for (QString edsFile : qAsConst(OdDb::edsFiles()))
+    {
+        Node *node = new Node(id, QFileInfo(edsFile).baseName(), edsFile);
+        bus->addNode(node);
+        id++;
+    }
 
     resize(QApplication::screens().at(0)->size() * 3 / 4);
 
