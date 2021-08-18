@@ -18,12 +18,36 @@
 
 #include "ufwupdate.h"
 
-UfwUpdate::UfwUpdate()
-{
+#include "../utility/phantomremover.h"
+#include "node.h"
 
+#include <QFile>
+
+UfwUpdate::UfwUpdate(Node *node, UfwParser *ufw)
+    : _node(node)
+    , _ufw(ufw)
+{
 }
 
-void UfwUpdate::setUfw(const UfwParser &ufw)
+void UfwUpdate::setUfw(UfwParser *ufw)
 {
     _ufw = ufw;
+}
+
+int UfwUpdate::update()
+{
+    if (!_ufw)
+    {
+        return -1;
+    }
+
+    uint32_t start2 = 0xD000;
+
+    QByteArray prog = _ufw->prog().mid(0xD000, 0x1000);
+    PhantomRemover phantomRemover;
+    QByteArray prog2 = phantomRemover.remove(prog);
+    prog2.prepend(reinterpret_cast<char *>(&start2), sizeof(start2));
+    _node->updateFirmware(prog2);
+
+    return 0;
 }

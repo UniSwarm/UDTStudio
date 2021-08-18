@@ -23,20 +23,23 @@
 
 #include "../parser/ufwparser.h"
 
+class Node;
+class NodeObjectId;
+
 class CANOPEN_EXPORT UfwUpdate
 {
 public:
-    UfwUpdate();
+    UfwUpdate(Node *node, UfwParser *ufw = nullptr);
 
-    void setUfw(const UfwParser &ufw);
+    void setUfw(UfwParser *ufw);
 
     int update();
 
     int status();
 
 private:
-    UfwParser _ufw;
-
+    Node *_node;
+    UfwParser *_ufw;
 };
 
 #endif // UFWUPDATE_H
