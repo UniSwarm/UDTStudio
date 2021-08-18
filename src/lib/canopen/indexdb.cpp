@@ -20,7 +20,7 @@
 
 #include "../canopen/nodeobjectid.h"
 
-NodeObjectId IndexDb::getObjectId(IndexDb::OdObject object, uint optPdoNumber, uint optMappingEntry)
+NodeObjectId IndexDb::getObjectId(IndexDb::OdObject object, uint opt, uint optMappingEntry)
 {
     quint16 index = 0;
     switch (object)
@@ -43,40 +43,12 @@ NodeObjectId IndexDb::getObjectId(IndexDb::OdObject object, uint optPdoNumber, u
         return {0x100C, 0x0};
     case OD_LIFE_TIME_FACTOR:
         return {0x100D, 0x0};
-    case OD_SAVE_ALL_PARAMETERS:
-        return {0x1010, 0x1};
-    case OD_SAVE_COMMUNICATION_PARAMETERS:
-        return {0x1010, 0x2};
-    case OD_SAVE_APPLICATION_PARAMETERS:
-        return {0x1010, 0x3};
-    case OD_SAVE_MANUFACTURER_SPECIFIC_BOARD_GENERIC:
-        return {0x1010, 0x4};
-    case OD_SAVE_MANUFACTURER_SPECIFIC_BOARD_PRODUCT:
-        return {0x1010, 0x5};
-    case OD_SAVE_MANUFACTURER_SPECIFIC:
-        return {0x1010, 0x6};
-    case OD_SAVE_MANUFACTURER_SPECIFIC_SPECIFIC_PRODUCT:
-        return {0x1010, 0x7};
-    case OD_SAVE_ALL_FLASH_PAGES:
-        return {0x1010, 0x8};
-    case OD_SAVE_FACTORY_CONFIGURATION:
-        return {0x1010, 0x9};
-    case OD_RESTORE_ALL_FACTORY_PARAMETERS:
-        return {0x1011, 0x1};
-    case OD_RESTORE_FACTORY_COMMUNICATION_PARAMETERS:
-        return {0x1011, 0x2};
-    case OD_RESTORE_FACTORY_APPLICATION_PARAMETERS:
-        return {0x1011, 0x3};
-    case OD_RESTORE_FACTORY_MANUFACTURER_SPECIFIC:
-        return {0x1011, 0x4};
-    case OD_RESTORE_ALL_SAVED_PARAMETERS:
-        return {0x1011, 0x5};
-    case OD_RESTORE_SAVED_COMMUNICATION_PARAMETERS:
-        return {0x1011, 0x6};
-    case OD_RESTORE_SAVED_APPLICATION_PARAMETERS:
-        return {0x1011, 0x7};
-    case OD_RESTORE_SAVED_MANUFACTURER_SPECIFIC:
-        return {0x1011, 0x8};
+
+    case OD_STORE:
+        return {0x1010, static_cast<quint8>(opt)};
+    case OD_RESTORE:
+        return {0x1011, static_cast<quint8>(opt)};
+
     case OD_COB_ID_EMCY:
         return {0x1014, 0x0};
     case OD_CONSUMER_HEARTBEAT_TIME:
@@ -98,80 +70,80 @@ NodeObjectId IndexDb::getObjectId(IndexDb::OdObject object, uint optPdoNumber, u
     case OD_COB_ID_SERVER_TO_CLIENT:
         return {0x1200, 0x2};
     case OD_RPDO_COB_ID:
-        if ((static_cast<quint16>(optPdoNumber) > 0) && (static_cast<quint16>(optPdoNumber) <= 4))
+        if ((static_cast<quint16>(opt) > 0) && (static_cast<quint16>(opt) <= 4))
         {
-            index = static_cast<quint16>(optPdoNumber - 1) + 0x1400;
+            index = static_cast<quint16>(opt - 1) + 0x1400;
             return {index, 0x1};
         }
         return NodeObjectId();
     case OD_RPDO_TRANSMISSION_TYPE:
-        if ((static_cast<quint16>(optPdoNumber) > 0) && (static_cast<quint16>(optPdoNumber) <= 4))
+        if ((static_cast<quint16>(opt) > 0) && (static_cast<quint16>(opt) <= 4))
         {
-            index = static_cast<quint16>(optPdoNumber - 1) + 0x1400;
+            index = static_cast<quint16>(opt - 1) + 0x1400;
             return {index, 0x2};
         }
         return NodeObjectId();
     case OD_RPDO_INHIBIT_TIME:
-        if ((static_cast<quint16>(optPdoNumber) > 0) && (static_cast<quint16>(optPdoNumber) <= 4))
+        if ((static_cast<quint16>(opt) > 0) && (static_cast<quint16>(opt) <= 4))
         {
-            index = static_cast<quint16>(optPdoNumber - 1) + 0x1400;
+            index = static_cast<quint16>(opt - 1) + 0x1400;
             return {index, 0x3};
         }
         return NodeObjectId();
     case OD_RPDO_EVENT_TIMER:
-        if ((static_cast<quint16>(optPdoNumber) > 0) && (static_cast<quint16>(optPdoNumber) <= 4))
+        if ((static_cast<quint16>(opt) > 0) && (static_cast<quint16>(opt) <= 4))
         {
-            index = static_cast<quint16>(optPdoNumber - 1) + 0x1400;
+            index = static_cast<quint16>(opt - 1) + 0x1400;
             return {index, 0x5};
         }
         return NodeObjectId();
     case OD_RPDO_MAPPING_ENTRY:
-        if ((static_cast<quint16>(optPdoNumber) > 0) && (static_cast<quint16>(optPdoNumber) <= 4))
+        if ((static_cast<quint16>(opt) > 0) && (static_cast<quint16>(opt) <= 4))
         {
-            index = static_cast<quint16>(optPdoNumber - 1) + 0x1600;
+            index = static_cast<quint16>(opt - 1) + 0x1600;
             return {index, static_cast<quint8>(optMappingEntry)};
         }
         return NodeObjectId();
 
     case OD_TPDO_COB_ID:
-        if ((static_cast<quint16>(optPdoNumber) > 0) && (static_cast<quint16>(optPdoNumber) <= 4))
+        if ((static_cast<quint16>(opt) > 0) && (static_cast<quint16>(opt) <= 4))
         {
-            index = static_cast<quint16>(optPdoNumber - 1) + 0x1800;
+            index = static_cast<quint16>(opt - 1) + 0x1800;
             return {index, 0x1};
         }
         return NodeObjectId();
     case OD_TPDO_TRANSMISSION_TYPE:
-        if ((static_cast<quint16>(optPdoNumber) > 0) && (static_cast<quint16>(optPdoNumber) <= 4))
+        if ((static_cast<quint16>(opt) > 0) && (static_cast<quint16>(opt) <= 4))
         {
-            index = static_cast<quint16>(optPdoNumber - 1) + 0x1800;
+            index = static_cast<quint16>(opt - 1) + 0x1800;
             return {index, 0x2};
         }
         return NodeObjectId();
     case OD_TPDO_INHIBIT_TIME:
-        if ((static_cast<quint16>(optPdoNumber) > 0) && (static_cast<quint16>(optPdoNumber) <= 4))
+        if ((static_cast<quint16>(opt) > 0) && (static_cast<quint16>(opt) <= 4))
         {
-            index = static_cast<quint16>(optPdoNumber - 1) + 0x1800;
+            index = static_cast<quint16>(opt - 1) + 0x1800;
             return {index, 0x3};
         }
         return NodeObjectId();
     case OD_TPDO_EVENT_TIMER:
-        if ((static_cast<quint16>(optPdoNumber) > 0) && (static_cast<quint16>(optPdoNumber) <= 4))
+        if ((static_cast<quint16>(opt) > 0) && (static_cast<quint16>(opt) <= 4))
         {
-            index = static_cast<quint16>(optPdoNumber - 1) + 0x1800;
+            index = static_cast<quint16>(opt - 1) + 0x1800;
             return {index, 0x5};
         }
         return NodeObjectId();
     case OD_TPDO_SYNC_START_VALUE:
-        if ((static_cast<quint16>(optPdoNumber) > 0) && (static_cast<quint16>(optPdoNumber) <= 4))
+        if ((static_cast<quint16>(opt) > 0) && (static_cast<quint16>(opt) <= 4))
         {
-            index = static_cast<quint16>(optPdoNumber - 1) + 0x1800;
+            index = static_cast<quint16>(opt - 1) + 0x1800;
             return {index, 0x6};
         }
         return NodeObjectId();
     case OD_TPDO_MAPPING_ENTRY:
-        if ((static_cast<quint16>(optPdoNumber) > 0) && (static_cast<quint16>(optPdoNumber) <= 4))
+        if ((static_cast<quint16>(opt) > 0) && (static_cast<quint16>(opt) <= 4))
         {
-            index = static_cast<quint16>(optPdoNumber - 1) + 0x1A00;
+            index = static_cast<quint16>(opt - 1) + 0x1A00;
             return {index, static_cast<quint8>(optMappingEntry)};
         }
         return NodeObjectId();
