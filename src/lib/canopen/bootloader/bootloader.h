@@ -22,12 +22,13 @@
 #include "canopen_global.h"
 
 #include "nodeodsubscriber.h"
-#include "parser/ufwparser.h"
 
 #include <QObject>
 
 class Node;
 class NodeObjectId;
+class UfwParser;
+class UfwUpdate;
 
 class CANOPEN_EXPORT Bootloader : public QObject, public NodeOdSubscriber
 {
@@ -68,17 +69,19 @@ public:
 
     bool openUfw(const QString &fileName);
 
+    void reset();
+
 public slots:
     void stopProgram();
     void startProgram();
     void resetProgram();
     void clearProgram();
-    void updateProgram();
-    void sendDevice();
+    void updateProgram(const QString &fileName);
+    void sendKey(uint16_t key);
 
 signals:
     void statusProgramChanged(StatusProgram);
-    void statusFlashChanged(StatusFlash);
+    void bootloaderEnabled(bool ok);
 
 private:
     Node *_node;
@@ -86,12 +89,14 @@ private:
     StatusProgram _statusProgram;
     StatusFlash _statusFlash;
 
+    NodeObjectId _deviceTypeObjectId;
     NodeObjectId _bootloaderObjectId;
     NodeObjectId _programObjectId;
     NodeObjectId _programControlObjectId;
     NodeObjectId _flashStatusObjectId;
 
     UfwParser *_ufw;
+    UfwUpdate *_ufwUpdate;
 
     QTimer *_timer;
 

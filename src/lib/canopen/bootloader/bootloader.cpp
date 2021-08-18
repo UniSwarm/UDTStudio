@@ -19,6 +19,8 @@
 #include "bootloader.h"
 
 #include "node.h"
+#include "parser/ufwparser.h"
+#include "utility/ufwupdate.h"
 
 #include <QFile>
 
@@ -26,16 +28,19 @@ Bootloader::Bootloader(Node *node)
     : _node(node)
 {
     _node = node;
+    _deviceTypeObjectId = {_node->busId(), _node->nodeId(), 0x1000, 0, QMetaType::Type::ULong};
     _bootloaderObjectId = {_node->busId(), _node->nodeId(), 0x2050, 0, QMetaType::Type::UShort};
     _programObjectId = {_node->busId(), _node->nodeId(), 0x1F50, 1, QMetaType::Type::QByteArray};
     _programControlObjectId = {_node->busId(), _node->nodeId(), 0x1F51, 1, QMetaType::Type::UChar};
-    _flashStatusObjectId = {_node->busId(), _node->nodeId(), 0x1F56, 1, QMetaType::Type::UChar};
 
     setNodeInterrest(_node);
+    registerObjId({0x1000, 0});
     registerObjId({0x2050, 0});
     registerObjId({0x1F50, 1});
     registerObjId({0x1F51, 1});
     registerObjId({0x1F56, 1});
+
+    emit bootloaderEnabled(false);
 }
 
 quint8 Bootloader::busId() const
@@ -75,9 +80,21 @@ bool Bootloader::openUfw(const QString &fileName)
         _ufw = new UfwParser(fileName);
         _ufw->read();
         file.close();
+
+        _ufwUpdate = new UfwUpdate(_node, _ufw);
     }
 
     return true;
+}
+
+void Bootloader::reset()
+{
+    if (_node == nullptr)
+    {
+        return;
+    }
+
+    _node->readObject(_deviceTypeObjectId);
 }
 
 void Bootloader::stopProgram()
@@ -92,7 +109,6 @@ void Bootloader::startProgram()
     QVariant mdata = 1;
     mdata.convert(_programControlObjectId.dataType());
     _node->writeObject(_programControlObjectId, mdata);
-    _timer->singleShot(200, this, SLOT(sendSyncOne()));
 }
 
 void Bootloader::resetProgram()
@@ -100,7 +116,6 @@ void Bootloader::resetProgram()
     QVariant mdata = 2;
     mdata.convert(_programControlObjectId.dataType());
     _node->writeObject(_programControlObjectId, mdata);
-    _timer->singleShot(200, this, SLOT(sendSyncOne()));
 }
 
 void Bootloader::clearProgram()
@@ -108,24 +123,39 @@ void Bootloader::clearProgram()
     QVariant mdata = 3;
     mdata.convert(_programControlObjectId.dataType());
     _node->writeObject(_programControlObjectId, mdata);
-    _timer->singleShot(200, this, SLOT(sendSyncOne()));
 }
 
-void Bootloader::updateProgram()
+void Bootloader::updateProgram(const QString &fileName)
 {
-
+    openUfw(fileName);
+    _ufwUpdate->update();
 }
 
-void Bootloader::sendDevice()
+void Bootloader::sendKey(uint16_t key)
 {
-    QVariant mdata = 0x4001;
-    mdata.convert(_bootloaderObjectId.dataType());
-    _node->writeObject(_bootloaderObjectId, mdata);
-    _timer->singleShot(200, this, SLOT(sendSyncOne()));
+    _node->writeObject(_bootloaderObjectId, key);
 }
 
 void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (objId.index() == _deviceTypeObjectId.index())
+    {
+        if (flags != SDO::FlagsRequest::Error)
+        {
+            uint32_t deviceType = static_cast<uint32_t>(_node->nodeOd()->value(_deviceTypeObjectId).toUInt());
+            if (deviceType == 0x12D) // 301
+            {
+                _node->nodeOd()->createMandatoryObject();
+                _node->nodeOd()->createMandatoryBootloaderObject();
+                emit bootloaderEnabled(true);
+            }
+            else
+            {
+                emit bootloaderEnabled(false);
+            }
+        }
+    }
+
     if ((objId.index() == _programControlObjectId.index()) && objId.subIndex() == 1)
     {
         if (flags == SDO::FlagsRequest::Error)
@@ -153,18 +183,6 @@ void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
                 // APP MODE
                 _statusProgram = PROGRAM_STARTED;
             }
-        }
-    }
-
-    if ((objId.index() == _bootloaderObjectId.index()) && objId.subIndex() == 0)
-    {
-        if (flags == SDO::FlagsRequest::Error)
-        {
-
-        }
-        else
-        {
-
         }
     }
 }
