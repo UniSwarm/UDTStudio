@@ -332,6 +332,34 @@ void NodeOd::createMandatoryObject()
     addIndex(identityObject);
 }
 
+void NodeOd::createMandatoryBootloaderObject()
+{
+    NodeIndex *programControl = new NodeIndex(0x1F50);
+    programControl->setName("Program");
+    programControl->setObjectType(NodeIndex::RECORD);
+
+    NodeSubIndex *subIndex;
+    subIndex = new NodeSubIndex(0);
+    subIndex->setDataType(NodeSubIndex::UNSIGNED8);
+    subIndex->setName("Highest sub-index supported");
+    subIndex->setValue(1);
+    programControl->addSubIndex(subIndex);
+
+    subIndex = new NodeSubIndex(1);
+    subIndex->setDataType(NodeSubIndex::DDOMAIN);
+    subIndex->setName("Program_1");
+    programControl->addSubIndex(subIndex);
+    addIndex(programControl);
+
+    NodeIndex *bootloader = new NodeIndex(0x2050);
+    bootloader->setName("Bootloader");
+    bootloader->setObjectType(NodeIndex::VAR);
+    bootloader->addSubIndex(new NodeSubIndex(0));
+    bootloader->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED16);
+    bootloader->subIndex(0)->setName("Bootloader");
+    addIndex(bootloader);
+}
+
 void NodeOd::notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySubIndex, SDO::FlagsRequest flags)
 {
     QList<Subscriber> interrestedSubscribers = _subscribers.values(key);

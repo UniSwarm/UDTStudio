@@ -84,12 +84,13 @@ public:
 
     static QMetaType::Type dataTypeCiaToQt(const NodeSubIndex::DataType type);
 
+    void createMandatoryObject();
+    void createMandatoryBootloaderObject();
+
 private:
     Node *_node;
     QMap<quint16, NodeIndex *> _nodeIndexes;
     QString _fileName;
-
-    void createMandatoryObject();
 
     struct Subscriber
     {
