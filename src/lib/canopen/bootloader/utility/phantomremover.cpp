@@ -24,11 +24,10 @@ PhantomRemover::PhantomRemover()
 
 const QByteArray &PhantomRemover::remove(const QByteArray &prog)
 {
-    int index = 3;
-    _prog = prog;
-    while (index < _prog.size())
+    int index = 0;
+    while (index < prog.size())
     {
-        _prog.remove(index, 1);
+        _prog.append(prog.mid(index, 3));
         index += 4;
     }
 
