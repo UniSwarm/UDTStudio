@@ -92,7 +92,7 @@ void NodeScreenOD::storeClicked()
     if (ok && !text.isEmpty())
     {
         quint8 id = static_cast<uint8_t>(_storeComboBox->currentIndex()) + 1;
-        _node->writeObject(NodeObjectId(0x1010, id), text.toUInt(&ok, 16));
+        _node->nodeOd()->store(id, text.toUInt(&ok, 16));
     }
 }
 
@@ -105,7 +105,7 @@ void NodeScreenOD::restoreClicked()
     if (ok && !text.isEmpty())
     {
         quint8 id = static_cast<uint8_t>(_restoreComboBox->currentIndex()) + 1;
-        _node->writeObject(NodeObjectId(0x1011, id), text.toUInt(&ok, 16));
+        _node->nodeOd()->restore(id, text.toUInt(&ok, 16));
     }
 }
 

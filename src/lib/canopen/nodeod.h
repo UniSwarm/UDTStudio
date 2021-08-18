@@ -84,6 +84,9 @@ public:
 
     static QMetaType::Type dataTypeCiaToQt(const NodeSubIndex::DataType type);
 
+    void store(uint8_t subIndex, uint32_t signature);
+    void restore(uint8_t subIndex, uint32_t signature);
+
     void createMandatoryObject();
     void createMandatoryBootloaderObject();
 
