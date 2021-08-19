@@ -55,7 +55,7 @@ bool UpdateProcess::connectDevice()
     }
     else
     {
-        return false; // err << QCoreApplication::translate("main", "error (2): bus not connected") << Qt::endl;
+        return false; // err << QCoreApplication::translate("main", "error (2): bus not connected") << endl;
     }
 
     return true;

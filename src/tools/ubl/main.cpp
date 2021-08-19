@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
         QString fileB = argument.at(1);
         if (QFileInfo(fileA).suffix() != "hex" || QFileInfo(fileB).suffix() != "hex")
         {
-            err << QCoreApplication::translate("main", "error (1): miss file to compare two file") << Qt::endl;
+            err << QCoreApplication::translate("main", "error (1): miss file to compare two file") << endl;
             cliParser.showHelp(-1);
         }
 
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
 
     if (argument.isEmpty())
     {
-        err << QCoreApplication::translate("main", "error (1): input file is needed") << Qt::endl;
+        err << QCoreApplication::translate("main", "error (1): input file is needed") << endl;
         cliParser.showHelp(-1);
     }
     else if (argument.at(0) == "merge")
@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
 
         if (bOptionList.isEmpty() || aOptionList.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): option -a or -b is needed") << Qt::endl;
+            err << QCoreApplication::translate("main", "error (1): option -a or -b is needed") << endl;
             cliParser.showHelp(-1);
         }
 
@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
 
         if (QFileInfo(fileA).suffix() != "hex" || QFileInfo(fileB).suffix() != "hex")
         {
-            err << QCoreApplication::translate("main", "error (1): input file is needed") << Qt::endl;
+            err << QCoreApplication::translate("main", "error (1): input file is needed") << endl;
             cliParser.showHelp(-1);
         }
 
@@ -204,7 +204,7 @@ int main(int argc, char *argv[])
         HexMerger mergeProcess;
         if (mergeProcess.merge(fileA, aOptionList, fileB, bOptionList) < 0)
         {
-            err << QCoreApplication::translate("main", "error (1): merge process") << Qt::endl;
+            err << QCoreApplication::translate("main", "error (1): merge process") << endl;
             cliParser.showHelp(-1);
         }
 
@@ -225,21 +225,21 @@ int main(int argc, char *argv[])
         QString type = cliParser.value("type");
         if (type.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): type of device is needed") << Qt::endl;
+            err << QCoreApplication::translate("main", "error (1): type of device is needed") << endl;
             cliParser.showHelp(-1);
         }
 
         QStringList segmentList = cliParser.values(sOption);
         if (segmentList.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): segment is needed") << Qt::endl;
+            err << QCoreApplication::translate("main", "error (1): segment is needed") << endl;
             cliParser.showHelp(-1);
         }
 
         QString hexFile = cliParser.value(hOption);
         if (hexFile.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): Hex file is needed") << Qt::endl;
+            err << QCoreApplication::translate("main", "error (1): Hex file is needed") << endl;
             cliParser.showHelp(-1);
         }
 
@@ -258,7 +258,7 @@ int main(int argc, char *argv[])
         QFile file(outputFile);
         if (!file.open(QFile::WriteOnly))
         {
-            err << QCoreApplication::translate("main", "error (1): Hex file is needed") << Qt::endl;
+            err << QCoreApplication::translate("main", "error (1): Hex file is needed") << endl;
             cliParser.showHelp(-1);
         }
         else
@@ -273,27 +273,27 @@ int main(int argc, char *argv[])
         quint8 nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
         if (nodeid == 0 || nodeid >= 126)
         {
-            err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << Qt::endl;
+            err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << endl;
             return -2;
         }
         quint8 bus = static_cast<uint8_t>(cliParser.value("busId").toUInt());
         if (bus >= 126)
         {
-            err << QCoreApplication::translate("main", "error (3): invalid bus id, busId > 0 && busId < 126") << Qt::endl;
+            err << QCoreApplication::translate("main", "error (3): invalid bus id, busId > 0 && busId < 126") << endl;
             return -3;
         }
 
         quint8 speed = static_cast<uint8_t>(cliParser.value("speed").toUInt());
         if (speed == 0 || speed >= 126)
         {
-            //err << QCoreApplication::translate("main", "error (4): invalid speed") << Qt::endl;
+            //err << QCoreApplication::translate("main", "error (4): invalid speed") << endl;
             //return -4;
         }
 
         QString binFile = cliParser.value(hOption);
         if (binFile.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): Binary file is needed") << Qt::endl;
+            err << QCoreApplication::translate("main", "error (1): Binary file is needed") << endl;
             cliParser.showHelp(-1);
         }
 
@@ -304,8 +304,8 @@ int main(int argc, char *argv[])
     }
     else
     {
-        err << QCoreApplication::translate("main", "error (6): invalid number of hex inputs file, need more than one") << Qt::endl;
-        err << QCoreApplication::translate("main", "error (1): input file is needed for update") << Qt::endl;
+        err << QCoreApplication::translate("main", "error (6): invalid number of hex inputs file, need more than one") << endl;
+        err << QCoreApplication::translate("main", "error (1): input file is needed for update") << endl;
         cliParser.showHelp(-1);
     }
 }
