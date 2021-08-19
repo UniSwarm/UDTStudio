@@ -63,7 +63,7 @@ void NodeScreenUio::setLogTimer(int ms)
 void NodeScreenUio::createWidgets()
 {
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(2, 2, 2, 2);
 
     QToolBar *toolBar = new QToolBar(tr("UIO commands"));
     toolBar->setIconSize(QSize(20, 20));

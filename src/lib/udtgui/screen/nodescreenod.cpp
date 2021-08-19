@@ -33,6 +33,7 @@ void NodeScreenOD::createWidgets()
 {
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(2, 2, 2, 2);
+    layout->setSpacing(0);
 
     _nodeOdWidget = new NodeOdWidget();
     layout->addWidget(_nodeOdWidget);
@@ -46,6 +47,8 @@ QWidget *NodeScreenOD::createStoreWidget()
 {
     _storeRestoreGroupBox = new QGroupBox(tr("Store/Restore"));
     QFormLayout *layout = new QFormLayout();
+    layout->setContentsMargins(5, 5, 5, 5);
+    layout->setSpacing(5);
 
     QHBoxLayout *storeLayout = new QHBoxLayout();
     _storeComboBox = new QComboBox();

@@ -155,7 +155,7 @@ void NodeScreensWidget::addNode(Node *node)
 void NodeScreensWidget::createWidgets()
 {
     QLayout *layout = new QHBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(2, 2, 2, 2);
 
     _tabWidget = new QTabWidget();
     layout->addWidget(_tabWidget);

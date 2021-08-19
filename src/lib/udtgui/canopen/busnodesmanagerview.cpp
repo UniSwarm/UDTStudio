@@ -65,7 +65,7 @@ void BusNodesManagerView::createWidgets()
 {
     QLayout *layout = new QVBoxLayout();
     layout->setSpacing(0);
-    layout->setContentsMargins(5, 5, 5, 5);
+    layout->setContentsMargins(2, 2, 2, 2);
 
     _busNodeTreeView = new BusNodesTreeView();
     layout->addWidget(_busNodeTreeView);

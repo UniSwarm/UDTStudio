@@ -46,7 +46,7 @@ void NodeScreenHome::createWidgets()
 {
     QLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(2, 2, 2, 2);
-    layout->setSpacing(2);
+    layout->setSpacing(0);
 
     QToolBar *toolBar = new QToolBar(tr("PDO commands"));
     toolBar->setIconSize(QSize(20, 20));

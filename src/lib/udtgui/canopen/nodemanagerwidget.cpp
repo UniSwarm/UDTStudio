@@ -269,6 +269,7 @@ void NodeManagerWidget::createWidgets()
     _groupBox->setLayout(layoutGroupBox);
     layout->addWidget(_groupBox);
 
+    layout->setSizeConstraint(QLayout::SetMinimumSize);
     setLayout(layout);
 }
 
