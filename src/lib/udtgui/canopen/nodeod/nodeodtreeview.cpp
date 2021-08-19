@@ -217,7 +217,7 @@ void NodeOdTreeView::createActions()
     addAction(_copyAction);
 
     _expandAllAction = new QAction(this);
-    _expandAllAction->setText(tr("&Expend all"));
+    _expandAllAction->setText(tr("&Expand all"));
     connect(_expandAllAction, &QAction::triggered, this, &QTreeView::expandAll);
     addAction(_expandAllAction);
 
