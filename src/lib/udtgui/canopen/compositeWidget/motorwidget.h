@@ -73,6 +73,8 @@ protected:
     IndexLabel *_hallPhaseLabel;
     IndexLabel *_bridgePweredPhaseLabel;
     IndexLabel *_bridgeCommandLabel;
+    IndexLabel *_bridgeTemp1Label;
+    IndexLabel *_bridgeTemp2Label;
 
     void statusNodeChanged(Node::Status status);
     void stateChanged();

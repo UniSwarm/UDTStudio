@@ -88,10 +88,14 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _hallPhaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_HALL_PHASE, _axis));
     _bridgePweredPhaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_POWERED_PHASE, _axis));
     _bridgeCommandLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_COMMAND, _axis));
+    _bridgeTemp1Label->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER, _axis, 0));
+    _bridgeTemp2Label->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER, _axis, 1));
     _hallRawValueLabel->setNode(node);
     _hallPhaseLabel->setNode(node);
     _bridgePweredPhaseLabel->setNode(node);
     _bridgeCommandLabel->setNode(node);
+    _bridgeTemp1Label->setNode(node);
+    _bridgeTemp2Label->setNode(node);
 }
 
 void MotorWidget::statusNodeChanged(Node::Status status)
@@ -196,9 +200,12 @@ QGroupBox *MotorWidget::motorConfigWidgets()
 
     _motorTypeComboBox = new IndexComboBox();
     _motorTypeComboBox->addItem(tr("NO motor"), QVariant(static_cast<uint16_t>(0)));
+    _motorTypeComboBox->insertSeparator(_motorTypeComboBox->count());
     _motorTypeComboBox->addItem(tr("DC motor"), QVariant(static_cast<uint16_t>(0x0101)));
+    _motorTypeComboBox->insertSeparator(_motorTypeComboBox->count());
     _motorTypeComboBox->addItem(tr("BLDC trapezoidal"), QVariant(static_cast<uint16_t>(0x0201)));
-    _motorTypeComboBox->addItem(tr("BLDC sinusoidal"), QVariant(static_cast<uint16_t>(0x0202)));
+    _motorTypeComboBox->addItem(tr("BLDC sinusoidal with hall"), QVariant(static_cast<uint16_t>(0x0202)));
+    _motorTypeComboBox->addItem(tr("BLDC sinusoidal with incremental encoder"), QVariant(static_cast<uint16_t>(0x0203)));
     configLayout->addRow(tr("&Motor type:"), _motorTypeComboBox);
 
     _peakCurrent = new IndexSpinBox();
@@ -245,6 +252,16 @@ QGroupBox *MotorWidget::motorStatusWidgets()
 
     _bridgeCommandLabel = new IndexLabel();
     statusLayout->addRow(tr("&Command:"), _bridgeCommandLabel);
+
+    _bridgeTemp1Label = new IndexLabel();
+    statusLayout->addRow(tr("&Temperature bridge 1:"), _bridgeTemp1Label);
+    _bridgeTemp1Label->setScale(1.0 / 10.0);
+    _bridgeTemp1Label->setUnit(" °C");
+
+    _bridgeTemp2Label = new IndexLabel();
+    statusLayout->addRow(tr("&Temperature bridge 2:"), _bridgeTemp2Label);
+    _bridgeTemp2Label->setScale(1.0 / 10.0);
+    _bridgeTemp2Label->setUnit(" °C");
 
     statusGroupBox->setLayout(statusLayout);
     return statusGroupBox;
