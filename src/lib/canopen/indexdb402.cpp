@@ -288,9 +288,8 @@ NodeObjectId IndexDb402::getObjectId(IndexDb402::OdObject object, uint axis, uin
 
 NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, uint opt2)
 {
-    quint16 axisModeDecal = 0;
-    axisModeDecal += 0x0200 * static_cast<quint16>(axis);
-    axisModeDecal += 0x0020 * static_cast<quint16>(opt2);
+    quint16 axisDecal = 0x0200 * static_cast<quint16>(axis);
+    quint16 modeDecal = 0x0020 * static_cast<quint16>(opt2);
 
     switch (object)
     {
@@ -341,150 +340,152 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {0x2040, 0x2};
 
     case OD_MS_MOTOR_TEMPERATURE_1:
-        return {static_cast<quint16>((0x4000 + axisModeDecal)), 0x1};
+        return {static_cast<quint16>((0x4000 + axisDecal)), 0x1};
 
     case OD_MS_TEMPERATURE_DRIVER:
-        return NodeObjectId(static_cast<quint16>((0x2801 + axisModeDecal)), axis + 1);
+        return NodeObjectId(static_cast<quint16>((0x2801 + axisDecal)), opt2 + 1);
     case OD_MS_BACK_EMF:
-        return NodeObjectId(static_cast<quint16>((0x2802 + axisModeDecal)), axis + 1);
+        return NodeObjectId(static_cast<quint16>((0x2802 + axisDecal)), opt2 + 1);
     case OD_MS_CURRENT:
-        return NodeObjectId(static_cast<quint16>((0x2803 + axisModeDecal)), axis + 1);
+        return NodeObjectId(static_cast<quint16>((0x2803 + axisDecal)), opt2 + 1);
     case OD_MS_PWM:
-        return NodeObjectId(static_cast<quint16>((0x2804 + axisModeDecal)), axis + 1);
+        return NodeObjectId(static_cast<quint16>((0x2804 + axisDecal)), opt2 + 1);
 
     case OD_MS_MOTOR_STATUS_HALL_RAW_VALUE:
-        return {static_cast<quint16>((0x4006 + axisModeDecal)), 0x1};
+        return {static_cast<quint16>((0x4006 + axisDecal)), 0x1};
     case OD_MS_MOTOR_STATUS_HALL_PHASE:
-        return {static_cast<quint16>((0x4006 + axisModeDecal)), 0x2};
+        return {static_cast<quint16>((0x4006 + axisDecal)), 0x2};
     case OD_MS_MOTOR_STATUS_POWERED_PHASE:
-        return {static_cast<quint16>((0x4006 + axisModeDecal)), 0x3};
+        return {static_cast<quint16>((0x4006 + axisDecal)), 0x3};
     case OD_MS_MOTOR_STATUS_COMMAND:
-        return {static_cast<quint16>((0x4006 + axisModeDecal)), 0x4};
+        return {static_cast<quint16>((0x4006 + axisDecal)), 0x4};
 
     case OD_MS_MOTOR_CONF_TYPE:
-        return {static_cast<quint16>((0x4007 + axisModeDecal)), 0x1};
+        return {static_cast<quint16>((0x4007 + axisDecal)), 0x1};
     case OD_MS_MOTOR_CONF_PEAK_CURRENT:
-        return {static_cast<quint16>((0x4007 + axisModeDecal)), 0x2};
+        return {static_cast<quint16>((0x4007 + axisDecal)), 0x2};
     case OD_MS_MOTOR_CONF_POLE_PAIR:
-        return {static_cast<quint16>((0x4007 + axisModeDecal)), 0x3};
+        return {static_cast<quint16>((0x4007 + axisDecal)), 0x3};
     case OD_MS_MOTOR_CONF_MAX_VELOCITY:
-        return {static_cast<quint16>((0x4007 + axisModeDecal)), 0x4};
+        return {static_cast<quint16>((0x4007 + axisDecal)), 0x4};
     case OD_MS_MOTOR_CONF_VELOCITY_CONSTANT:
-        return {static_cast<quint16>((0x4007 + axisModeDecal)), 0x5};
+        return {static_cast<quint16>((0x4007 + axisDecal)), 0x5};
     case OD_MS_MOTOR_CONF_CURRENT_CONSTANT:
-        return {static_cast<quint16>((0x4007 + axisModeDecal)), 0x6};
+        return {static_cast<quint16>((0x4007 + axisDecal)), 0x6};
     case OD_MS_MOTOR_CONF_CONFIG_BIT:
-        return {static_cast<quint16>((0x4007 + axisModeDecal)), 0x7};
+        return {static_cast<quint16>((0x4007 + axisDecal)), 0x7};
 
     // RANGE CONTROL LOOP TORQUE
     // a1_Torque_status_PID
     case OD_PID_INPUT:
-        return {static_cast<quint16>((0x4020 + axisModeDecal)), 0x1};
+        return {static_cast<quint16>((0x4020 + axisDecal + modeDecal)), 0x1};
     case OD_PID_ERROR:
-        return {static_cast<quint16>((0x4020 + axisModeDecal)), 0x2};
+        return {static_cast<quint16>((0x4020 + axisDecal + modeDecal)), 0x2};
     case OD_PID_INTEGRATOR:
-        return {static_cast<quint16>((0x4020 + axisModeDecal)), 0x3};
+        return {static_cast<quint16>((0x4020 + axisDecal + modeDecal)), 0x3};
     case OD_PID_OUTPUT:
-        return {static_cast<quint16>((0x4020 + axisModeDecal)), 0x4};
+        return {static_cast<quint16>((0x4020 + axisDecal + modeDecal)), 0x4};
     // a1_Torque_config_PID
     case OD_PID_P:
-        return {static_cast<quint16>((0x4021 + axisModeDecal)), 0x1};
+        return {static_cast<quint16>((0x4021 + axisDecal + modeDecal)), 0x1};
     case OD_PID_I:
-        return {static_cast<quint16>((0x4021 + axisModeDecal)), 0x2};
+        return {static_cast<quint16>((0x4021 + axisDecal + modeDecal)), 0x2};
     case OD_PID_D:
-        return {static_cast<quint16>((0x4021 + axisModeDecal)), 0x3};
+        return {static_cast<quint16>((0x4021 + axisDecal + modeDecal)), 0x3};
     case OD_PID_MIN:
-        return {static_cast<quint16>((0x4021 + axisModeDecal)), 0x4};
+        return {static_cast<quint16>((0x4021 + axisDecal + modeDecal)), 0x4};
     case OD_PID_MAX:
-        return {static_cast<quint16>((0x4021 + axisModeDecal)), 0x5};
+        return {static_cast<quint16>((0x4021 + axisDecal + modeDecal)), 0x5};
     case OD_PID_THRESHOLD:
-        return {static_cast<quint16>((0x4021 + axisModeDecal)), 0x6};
+        return {static_cast<quint16>((0x4021 + axisDecal + modeDecal)), 0x6};
     case OD_PID_FREQDIVIDER:
-        return {static_cast<quint16>((0x4021 + axisModeDecal)), 0x7};
+        return {static_cast<quint16>((0x4021 + axisDecal + modeDecal)), 0x7};
     case OD_PID_CONFIGBIT:
-        return {static_cast<quint16>((0x4021 + axisModeDecal)), 0x8};
+        return {static_cast<quint16>((0x4021 + axisDecal + modeDecal)), 0x8};
+
     // a1_Torque_sensor_status
     case OD_SENSOR_STATUS_RAWDATA:
-        return {static_cast<quint16>((0x4022 + axisModeDecal)), 0x1};
+        return {static_cast<quint16>((0x4022 + axisDecal + modeDecal)), 0x1};
     case OD_SENSOR_STATUS_FLAG:
-        return {static_cast<quint16>((0x4022 + axisModeDecal)), 0x2};
+        return {static_cast<quint16>((0x4022 + axisDecal + modeDecal)), 0x2};
     case OD_SENSOR_STATUS_VALUE:
-        return {static_cast<quint16>((0x4022 + axisModeDecal)), 0x3};
+        return {static_cast<quint16>((0x4022 + axisDecal + modeDecal)), 0x3};
+
     // a1_Torque_sensor_config
     case OD_SENSOR_SELECT:
-        return {static_cast<quint16>((0x4023 + axisModeDecal)), 0x1};
+        return {static_cast<quint16>((0x4023 + axisDecal + modeDecal)), 0x1};
     case OD_SENSOR_FREQUENCY_DIVIDER:
-        return {static_cast<quint16>((0x4023 + axisModeDecal)), 0x2};
+        return {static_cast<quint16>((0x4023 + axisDecal + modeDecal)), 0x2};
     case OD_SENSOR_CONFIG_BIT:
-        return {static_cast<quint16>((0x4023 + axisModeDecal)), 0x3};
+        return {static_cast<quint16>((0x4023 + axisDecal + modeDecal)), 0x3};
     case OD_SENSOR_PARAM_0:
-        return {static_cast<quint16>((0x4023 + axisModeDecal)), 0x4};
+        return {static_cast<quint16>((0x4023 + axisDecal + modeDecal)), 0x4};
     case OD_SENSOR_PARAM_1:
-        return {static_cast<quint16>((0x4023 + axisModeDecal)), 0x5};
+        return {static_cast<quint16>((0x4023 + axisDecal + modeDecal)), 0x5};
     case OD_SENSOR_PARAM_2:
-        return {static_cast<quint16>((0x4023 + axisModeDecal)), 0x6};
+        return {static_cast<quint16>((0x4023 + axisDecal + modeDecal)), 0x6};
     case OD_SENSOR_PARAM_3:
-        return {static_cast<quint16>((0x4023 + axisModeDecal)), 0x7};
+        return {static_cast<quint16>((0x4023 + axisDecal + modeDecal)), 0x7};
 
     // a1_Torque_sensor_filter
     case OD_SENSOR_FILTER_SELECT:
-        return {static_cast<quint16>((0x4024 + axisModeDecal)), 0x1};
+        return {static_cast<quint16>((0x4024 + axisDecal + modeDecal)), 0x1};
     case OD_SENSOR_FILTER_PARAM_0:
-        return {static_cast<quint16>((0x4024 + axisModeDecal)), 0x2};
+        return {static_cast<quint16>((0x4024 + axisDecal + modeDecal)), 0x2};
     case OD_SENSOR_FILTER_PARAM_1:
-        return {static_cast<quint16>((0x4024 + axisModeDecal)), 0x3};
+        return {static_cast<quint16>((0x4024 + axisDecal + modeDecal)), 0x3};
     case OD_SENSOR_FILTER_PARAM_2:
-        return {static_cast<quint16>((0x4024 + axisModeDecal)), 0x4};
+        return {static_cast<quint16>((0x4024 + axisDecal + modeDecal)), 0x4};
     case OD_SENSOR_FILTER_PARAM_3:
-        return {static_cast<quint16>((0x4024 + axisModeDecal)), 0x5};
+        return {static_cast<quint16>((0x4024 + axisDecal + modeDecal)), 0x5};
 
     // a1_Torque_sensor_conditioning
     case OD_SENSOR_PRE_OFFSET:
-        return {static_cast<quint16>((0x4025 + axisModeDecal)), 0x1};
+        return {static_cast<quint16>((0x4025 + axisDecal + modeDecal)), 0x1};
     case OD_SENSOR_SCALE:
-        return {static_cast<quint16>((0x4025 + axisModeDecal)), 0x2};
+        return {static_cast<quint16>((0x4025 + axisDecal + modeDecal)), 0x2};
     case OD_SENSOR_POST_OFFSET:
-        return {static_cast<quint16>((0x4025 + axisModeDecal)), 0x3};
+        return {static_cast<quint16>((0x4025 + axisDecal + modeDecal)), 0x3};
     case OD_SENSOR_ERROR_MIN:
-        return {static_cast<quint16>((0x4025 + axisModeDecal)), 0x4};
+        return {static_cast<quint16>((0x4025 + axisDecal + modeDecal)), 0x4};
     case OD_SENSOR_ERROR_MAX:
-        return {static_cast<quint16>((0x4025 + axisModeDecal)), 0x5};
+        return {static_cast<quint16>((0x4025 + axisDecal + modeDecal)), 0x5};
     case OD_SENSOR_THRESHOLD_MIN:
-        return {static_cast<quint16>((0x4025 + axisModeDecal)), 0x6};
+        return {static_cast<quint16>((0x4025 + axisDecal + modeDecal)), 0x6};
     case OD_SENSOR_THRESHOLD_MAX:
-        return {static_cast<quint16>((0x4025 + axisModeDecal)), 0x7};
+        return {static_cast<quint16>((0x4025 + axisDecal + modeDecal)), 0x7};
     case OD_SENSOR_THRESHOLD_MODE:
-        return {static_cast<quint16>((0x4025 + axisModeDecal)), 0x8};
+        return {static_cast<quint16>((0x4025 + axisDecal + modeDecal)), 0x8};
 
     // CONFIGURATION OF AXIS
     case OD_MS_DRIVER_TEMP_CONFIG_PROTECTION_SCHMITT_TRIGGERS_HIGH:
-        return {static_cast<quint16>((0x4080 + axisModeDecal)), 0x1};
+        return {static_cast<quint16>((0x4080 + axisDecal)), 0x1};
     case OD_MS_DRIVER_TEMP_CONFIG_PROTECTION_SCHMITT_TRIGGERS_LOW:
-        return {static_cast<quint16>((0x4080 + axisModeDecal)), 0x2};
+        return {static_cast<quint16>((0x4080 + axisDecal)), 0x2};
 
     case OD_MS_MOTOR_TEMP_CONFIG_SENSOR_TYPESOR_TYPE:
-        return {static_cast<quint16>((0x4081 + axisModeDecal)), 0x1};
+        return {static_cast<quint16>((0x4081 + axisDecal)), 0x1};
     case OD_MS_MOTOR_TEMP_CONFIG_SENSOR_CONSTANT:
-        return {static_cast<quint16>((0x4081 + axisModeDecal)), 0x2};
+        return {static_cast<quint16>((0x4081 + axisDecal)), 0x2};
     case OD_MS_MOTOR_TEMP_CONFIG_PROTECTION_SCHMITT_TRIGGERS_HIGH:
-        return {static_cast<quint16>((0x4081 + axisModeDecal)), 0x3};
+        return {static_cast<quint16>((0x4081 + axisDecal)), 0x3};
     case OD_MS_MOTOR_TEMP_CONFIG_PROTECTION_SCHMITT_TRIGGERS_LOW:
-        return {static_cast<quint16>((0x4081 + axisModeDecal)), 0x4};
+        return {static_cast<quint16>((0x4081 + axisDecal)), 0x4};
 
     case OD_MS_CONF_BRAKE_MAINTAIN:
-        return {static_cast<quint16>((0x4082 + axisModeDecal)), 0x1};
+        return {static_cast<quint16>((0x4082 + axisDecal)), 0x1};
     case OD_MS_CONF_BRAKE_PEAK:
-        return {static_cast<quint16>((0x4082 + axisModeDecal)), 0x2};
+        return {static_cast<quint16>((0x4082 + axisDecal)), 0x2};
 
     // DUTY CYCLE MODE
     case OD_MS_DUTY_CYCLE_MODE_TARGET:
-        return {static_cast<quint16>((0x41FA + axisModeDecal)), 0x0};
+        return {static_cast<quint16>((0x41FA + axisDecal)), 0x0};
     case OD_MS_DUTY_CYCLE_MODE_DEMAND:
-        return {static_cast<quint16>((0x41FB + axisModeDecal)), 0x0};
+        return {static_cast<quint16>((0x41FB + axisDecal)), 0x0};
     case OD_MS_DUTY_CYCLE_MODE_MAX:
-        return {static_cast<quint16>((0x41FC + axisModeDecal)), 0x0};
+        return {static_cast<quint16>((0x41FC + axisDecal)), 0x0};
     case OD_MS_DUTY_CYCLE_MODE_SLOPE:
-        return {static_cast<quint16>((0x41FD + axisModeDecal)), 0x0};
+        return {static_cast<quint16>((0x41FD + axisDecal)), 0x0};
     default:
         return NodeObjectId();
     }
