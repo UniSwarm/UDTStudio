@@ -555,6 +555,6 @@ void NodeOd::store(uint8_t subIndex, uint32_t signature)
 
 void NodeOd::restore(uint8_t subIndex, uint32_t signature)
 {
-    NodeObjectId restore = IndexDb::getObjectId(IndexDb::OD_STORE, subIndex);
+    NodeObjectId restore = IndexDb::getObjectId(IndexDb::OD_RESTORE, subIndex);
     _node->writeObject(restore, signature);
 }
