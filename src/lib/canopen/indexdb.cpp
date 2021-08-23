@@ -147,6 +147,16 @@ NodeObjectId IndexDb::getObjectId(IndexDb::OdObject object, uint opt, uint optMa
             return {index, static_cast<quint8>(optMappingEntry)};
         }
         return NodeObjectId();
+
+    case OD_PROGRAM_DATA_1:
+        return {0x1F50, 0x1};
+
+    case OD_PROGRAM_CONTROL_1:
+        return {0x1F51, 0x1};
+
+    case OD_BOOTLOADER:
+        return {0x2050, 0x0};
+
     }
     return NodeObjectId();
 }

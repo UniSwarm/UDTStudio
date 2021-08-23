@@ -65,6 +65,9 @@ public:
         OD_TPDO_SYNC_START_VALUE,
         OD_TPDO_MAPPING_ENTRY,
 
+        OD_PROGRAM_DATA_1,
+        OD_PROGRAM_CONTROL_1,
+        OD_BOOTLOADER
     };
 
     static NodeObjectId getObjectId(OdObject object, uint opt = 0, uint opt2 = 0);
