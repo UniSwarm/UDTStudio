@@ -34,6 +34,7 @@
 
 #include "bootloader/writer/hexwriter.h"
 #include "bootloader/parser/hexparser.h"
+#include "bootloader/parser/ufwparser.h"
 #include "bootloader/writer/ufwwriter.h"
 #include "bootloader/utility/hexmerger.h"
 
