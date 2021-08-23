@@ -334,21 +334,38 @@ void NodeOd::createMandatoryObject()
 
 void NodeOd::createMandatoryBootloaderObject()
 {
-    NodeIndex *programControl = new NodeIndex(0x1F50);
-    programControl->setName("Program");
-    programControl->setObjectType(NodeIndex::RECORD);
+    NodeIndex *program = new NodeIndex(0x1F50);
+    program->setName("Program");
+    program->setObjectType(NodeIndex::RECORD);
 
     NodeSubIndex *subIndex;
     subIndex = new NodeSubIndex(0);
     subIndex->setDataType(NodeSubIndex::UNSIGNED8);
     subIndex->setName("Highest sub-index supported");
     subIndex->setValue(1);
-    programControl->addSubIndex(subIndex);
+    program->addSubIndex(subIndex);
 
     subIndex = new NodeSubIndex(1);
     subIndex->setDataType(NodeSubIndex::DDOMAIN);
     subIndex->setName("Program_1");
-    programControl->addSubIndex(subIndex);
+    program->addSubIndex(subIndex);
+    addIndex(program);
+
+    NodeIndex *programControl = new NodeIndex(0x1F51);
+    programControl->setName("Program control");
+    programControl->setObjectType(NodeIndex::RECORD);
+
+    NodeSubIndex *subIndexProgramControl;
+    subIndexProgramControl = new NodeSubIndex(0);
+    subIndexProgramControl->setDataType(NodeSubIndex::UNSIGNED8);
+    subIndexProgramControl->setName("Highest sub-index supported");
+    subIndexProgramControl->setValue(1);
+    programControl->addSubIndex(subIndexProgramControl);
+
+    subIndexProgramControl = new NodeSubIndex(1);
+    subIndexProgramControl->setDataType(NodeSubIndex::UNSIGNED8);
+    subIndexProgramControl->setName("Program_1");
+    programControl->addSubIndex(subIndexProgramControl);
     addIndex(programControl);
 
     NodeIndex *bootloader = new NodeIndex(0x2050);
