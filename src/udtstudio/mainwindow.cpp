@@ -110,6 +110,10 @@ void MainWindow::writeCfgFile()
     {
         return;
     }
+    if (!fileName.endsWith(".conf"))
+    {
+        fileName.append(".conf");
+    }
 
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly))
@@ -149,6 +153,10 @@ void MainWindow::exportDCF()
     if (fileName.isEmpty())
     {
         return;
+    }
+    if (!fileName.endsWith(".dcf"))
+    {
+        fileName.append(".dcf");
     }
 
     node->nodeOd()->exportDcf(fileName);
