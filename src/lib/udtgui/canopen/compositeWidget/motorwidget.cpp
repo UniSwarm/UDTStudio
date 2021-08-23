@@ -121,19 +121,10 @@ void MotorWidget::stateChanged()
 
 void MotorWidget::readAllObject()
 {
-    _motorTypeComboBox->readObject();
-    _peakCurrent->readObject();
-    _polePair->readObject();
-    _maxVelocity->readObject();
-    _velocityConstant->readObject();
-    _currentConstant->readObject();
-    _break->readObject();    
-    _reversePolarity->readObject();
-
-    _hallRawValueLabel->readObject();
-    _hallPhaseLabel->readObject();
-    _bridgePweredPhaseLabel->readObject();
-    _bridgeCommandLabel->readObject();
+    for (AbstractIndexWidget *indexWidget : _indexWidgets)
+    {
+        indexWidget->readObject();
+    }
 }
 
 void MotorWidget::createWidgets()
@@ -207,29 +198,37 @@ QGroupBox *MotorWidget::motorConfigWidgets()
     _motorTypeComboBox->addItem(tr("BLDC sinusoidal with hall"), QVariant(static_cast<uint16_t>(0x0202)));
     _motorTypeComboBox->addItem(tr("BLDC sinusoidal with incremental encoder"), QVariant(static_cast<uint16_t>(0x0203)));
     configLayout->addRow(tr("&Motor type:"), _motorTypeComboBox);
+    _indexWidgets.append(_motorTypeComboBox);
 
     _peakCurrent = new IndexSpinBox();
     configLayout->addRow(tr("P&eak current:"), _peakCurrent);
+    _indexWidgets.append(_peakCurrent);
 
     _polePair = new IndexSpinBox();
     configLayout->addRow(tr("P&ole pair:"), _polePair);
+    _indexWidgets.append(_polePair);
 
     _maxVelocity = new IndexSpinBox();
     configLayout->addRow(tr("M&ax velocity:"), _maxVelocity);
+    _indexWidgets.append(_maxVelocity);
 
     _velocityConstant = new IndexSpinBox();
     configLayout->addRow(tr("Ve&locity constant:"), _velocityConstant);
+    _indexWidgets.append(_velocityConstant);
 
     _currentConstant = new IndexSpinBox();
     configLayout->addRow(tr("C&urrent constant:"), _currentConstant);
+    _indexWidgets.append(_currentConstant);
 
     _break = new IndexCheckBox();
     _break->setBitMask(1);
     configLayout->addRow(tr("&Break:"), _break);
+    _indexWidgets.append(_break);
 
     _reversePolarity = new IndexCheckBox();
     _reversePolarity->setBitMask(1);
     configLayout->addRow(tr("&Reverse polarity:"), _reversePolarity);
+    _indexWidgets.append(_reversePolarity);
 
     _motorConfigGroupBox->setLayout(configLayout);
 
@@ -243,25 +242,31 @@ QGroupBox *MotorWidget::motorStatusWidgets()
 
     _hallRawValueLabel = new IndexLabel();
     statusLayout->addRow(tr("&Hall raw:"), _hallRawValueLabel);
+    _indexWidgets.append(_hallRawValueLabel);
 
     _hallPhaseLabel = new IndexLabel();
     statusLayout->addRow(tr("&Hall phase:"), _hallPhaseLabel);
+    _indexWidgets.append(_hallPhaseLabel);
 
     _bridgePweredPhaseLabel = new IndexLabel();
     statusLayout->addRow(tr("&Powered phase:"), _bridgePweredPhaseLabel);
+    _indexWidgets.append(_bridgePweredPhaseLabel);
 
     _bridgeCommandLabel = new IndexLabel();
     statusLayout->addRow(tr("&Command:"), _bridgeCommandLabel);
+    _indexWidgets.append(_bridgeCommandLabel);
 
     _bridgeTemp1Label = new IndexLabel();
     statusLayout->addRow(tr("&Temperature bridge 1:"), _bridgeTemp1Label);
     _bridgeTemp1Label->setScale(1.0 / 10.0);
     _bridgeTemp1Label->setUnit(" °C");
+    _indexWidgets.append(_bridgeTemp1Label);
 
     _bridgeTemp2Label = new IndexLabel();
     statusLayout->addRow(tr("&Temperature bridge 2:"), _bridgeTemp2Label);
     _bridgeTemp2Label->setScale(1.0 / 10.0);
     _bridgeTemp2Label->setUnit(" °C");
+    _indexWidgets.append(_bridgeTemp2Label);
 
     statusGroupBox->setLayout(statusLayout);
     return statusGroupBox;

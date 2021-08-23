@@ -32,6 +32,7 @@
 #include <QWidget>
 
 class Node;
+class AbstractIndexWidget;
 class IndexSpinBox;
 class IndexLabel;
 class IndexComboBox;
@@ -88,6 +89,8 @@ protected:
     QGroupBox *motorStatusWidgets();
 
     void goEnableButton();
+
+    QList<AbstractIndexWidget *> _indexWidgets;
 };
 
 #endif // MOTORCONFIG_H
