@@ -37,6 +37,183 @@
 #include "bootloader/writer/ufwwriter.h"
 #include "bootloader/utility/hexmerger.h"
 
+int hexdump(QString fileA)
+{
+    if (QFileInfo(fileA).suffix() != "bin" && QFileInfo(fileA).suffix() != "hex")
+    {
+        return -1;
+    }
+
+    QProcessEnvironment env(QProcessEnvironment::systemEnvironment());
+#if defined(Q_OS_WIN)
+    QChar listSep = ';';
+#else
+    QChar listSep = ':';
+#endif
+
+    QString makePath = QDir::toNativeSeparators("");
+    env.insert("PATH", makePath + listSep + env.value("PATH"));
+
+    env.insert("TERM", "xterm");
+
+    QProcess *_process = new QProcess();
+    _process->setProcessEnvironment(env);
+    QString path = QStandardPaths::findExecutable("hexdump", env.value("PATH").split(listSep));
+
+    QFile fileBinA;
+    if (QFileInfo(fileA).suffix() == "hex")
+    {
+        fileA.append(".bin");
+        HexParser hexFileA(fileA);
+        hexFileA.read();
+        fileBinA.setFileName(fileA);
+        fileBinA.open(QFile::WriteOnly);
+        fileBinA.write(hexFileA.prog());
+        fileBinA.close();
+    }
+
+    _process->start(path, QStringList() << "-C" << "-v" << QString("%1").arg(fileA));
+    _process->waitForFinished(-1);
+    QByteArray stdOut = _process->readAllStandardOutput();  //Reads standard output
+    _process->terminate();
+
+    QString fileAHexDump = fileA.split(".").at(0) + ".hexdump";
+    fileBinA.setFileName(fileAHexDump);
+    fileBinA.open(QFile::WriteOnly);
+    fileBinA.write(stdOut);
+    fileBinA.close();
+
+    //QDir dir;
+    //dir.remove(fileA + ".bin");
+
+    return 0;
+}
+
+int diff(QString fileA, QString fileB)
+{
+    if (QFileInfo(fileA).suffix() != "hex" || QFileInfo(fileB).suffix() != "hex")
+    {
+        return -1;
+    }
+
+    QProcessEnvironment env(QProcessEnvironment::systemEnvironment());
+#if defined(Q_OS_WIN)
+    QChar listSep = ';';
+#else
+    QChar listSep = ':';
+#endif
+
+    QString makePath = QDir::toNativeSeparators("");
+    env.insert("PATH", makePath + listSep + env.value("PATH"));
+
+    env.insert("TERM", "xterm");
+
+    QProcess *_process = new QProcess();
+    _process->setProcessEnvironment(env);
+    QString path = QStandardPaths::findExecutable("hexdump", env.value("PATH").split(listSep));
+
+    HexParser hexFileA(fileA);
+    hexFileA.read();
+    QFile fileBinA(fileA + ".bin");
+    fileBinA.open(QFile::WriteOnly);
+    fileBinA.write(hexFileA.prog());
+    fileBinA.close();
+
+    _process->start(path, QStringList() << "-C" << "-v" << QString("%1").arg(fileA + ".bin"));
+    _process->waitForFinished(-1);
+    QByteArray stdOut = _process->readAllStandardOutput();  //Reads standard output
+    _process->terminate();
+
+    QString fileAHexDump = fileA.split(".").at(0) + ".hexdump";
+    fileBinA.setFileName(fileAHexDump);
+    fileBinA.open(QFile::WriteOnly);
+    fileBinA.write(stdOut);
+    fileBinA.close();
+
+    QDir dir;
+    dir.remove(fileA + ".bin");
+
+    HexParser hexFileB(fileB);
+    hexFileB.read();
+    QFile fileBinB(fileB + ".bin");
+    fileBinB.open(QFile::WriteOnly);
+    fileBinB.write(hexFileB.prog());
+    fileBinB.close();
+
+    _process = new QProcess();
+    _process->start(path, QStringList() << "-C" << "-v" << QString("%1").arg(fileB + ".bin"));
+    _process->waitForFinished(-1);
+    stdOut = _process->readAllStandardOutput();  //Reads standard output
+    _process->terminate();
+
+    QString fileBHexDump = fileB.split(".").at(0) + ".hexdump";
+    fileBinB.setFileName(fileBHexDump);
+    fileBinB.open(QFile::WriteOnly);
+    fileBinB.write(stdOut);
+    fileBinB.close();
+
+    dir.remove(fileB + ".bin");
+
+    path = QStandardPaths::findExecutable("meld", env.value("PATH").split(listSep));
+    _process->start(path,  QStringList() << QString("%1").arg(fileAHexDump) << QString("%1").arg(fileBHexDump));
+    _process->waitForFinished(-1);
+
+    dir.remove(fileAHexDump);
+    dir.remove(fileBHexDump);
+
+    return 0;
+}
+
+int merge(QStringList aOptionList, QStringList bOptionList, QString outputFile, QTextStream &err)
+{
+    if (bOptionList.isEmpty() || aOptionList.isEmpty())
+    {
+        err << QCoreApplication::translate("main", "error (1): option -a or -b is needed") << "\n";
+        return -1;
+    }
+
+    aOptionList.sort();
+    bOptionList.sort();
+    QString fileA = aOptionList.last();
+    QString fileB = bOptionList.last();
+    aOptionList.removeLast();
+    bOptionList.removeLast();
+
+    if (QFileInfo(fileA).suffix() != "hex" || QFileInfo(fileB).suffix() != "hex")
+    {
+        err << QCoreApplication::translate("main", "error (1): input file is needed") << "\n";
+        return -1;
+    }
+
+    // MERGE PROCESS
+    HexMerger mergeProcess;
+    if (mergeProcess.merge(fileA, aOptionList, fileB, bOptionList) < 0)
+    {
+        err << QCoreApplication::translate("main", "error (1): merge process") << "\n";
+        return -1;
+    }
+
+    QByteArray prog = mergeProcess.prog();
+
+    // OUTPUT file
+    if (outputFile.isEmpty())
+    {
+        outputFile = "merge.hex";
+    }
+
+    HexWriter hexWriter;
+    hexWriter.write(prog, outputFile);
+}
+int program()
+{
+
+}
+int update()
+{
+
+}
+
+
 int main(int argc, char *argv[])
 {
     if (argc == 1)
@@ -65,7 +242,11 @@ int main(int argc, char *argv[])
     // UPDATE and Flash
     cliParser.addPositionalArgument("update", QCoreApplication::translate("main", "file -n nodeId"), "update");
     // CREATE BIN
-    cliParser.addPositionalArgument("create", QCoreApplication::translate("main", "-h file.hex -t type -s start:end ..."), "create");
+    cliParser.addPositionalArgument("program", QCoreApplication::translate("main", "-h file.hex -t type -s start:end ..."), "create");
+    // DIFF
+    cliParser.addPositionalArgument("diff", QCoreApplication::translate("main", "fileA fileB"), "diff");
+    // HEX DUMP
+    cliParser.addPositionalArgument("hexdump", QCoreApplication::translate("main", "fileA"), "hexdump");
 
     // MERGE
     QCommandLineOption outOption(QStringList() << "o" << "out", QCoreApplication::translate("main", "Output directory or file."), "out");
@@ -101,153 +282,78 @@ int main(int argc, char *argv[])
 
     const QStringList argument = cliParser.positionalArguments();
 
-    if (argument.size() == 2)
+    if (argument.isEmpty())
     {
-        QString fileA = argument.at(0);
-        QString fileB = argument.at(1);
-        if (QFileInfo(fileA).suffix() != "hex" || QFileInfo(fileB).suffix() != "hex")
+        err << QCoreApplication::translate("main", "error (1): input file is needed") << "\n";
+        cliParser.showHelp(-1);
+    }
+    else if (argument.at(0) == "hexdump")
+    {
+        if (argument.size() != 2)
         {
-            err << QCoreApplication::translate("main", "error (1): miss file to compare two file") << endl;
+            err << QCoreApplication::translate("main", "error (1): miss file .bin ") << "\n";
             cliParser.showHelp(-1);
         }
 
-        QProcessEnvironment env(QProcessEnvironment::systemEnvironment());
-#if defined(Q_OS_WIN)
-        QChar listSep = ';';
-#else
-        QChar listSep = ':';
-#endif
-
-        QString makePath = QDir::toNativeSeparators("");
-        env.insert("PATH", makePath + listSep + env.value("PATH"));
-
-        env.insert("TERM", "xterm");
-
-        QProcess *_process = new QProcess();
-        _process->setProcessEnvironment(env);
-        QString path = QStandardPaths::findExecutable("hexdump", env.value("PATH").split(listSep));
-
-        HexParser hexFileA(fileA);
-        hexFileA.read();
-        QFile fileBinA(fileA + ".bin");
-        fileBinA.open(QFile::WriteOnly);
-        fileBinA.write(hexFileA.prog());
-        fileBinA.close();
-        //_process->setStandardOutputFile(fileA + ".bin.tmptt");
-        _process->start(path, QStringList() << "-C" << "-v" << QString("%1").arg(fileA + ".bin"));
-        _process->waitForFinished(-1);
-        QByteArray stdOut = _process->readAllStandardOutput();  //Reads standard output
-        QByteArray stdErr = _process->readAllStandardError();  //Reads standard output
-        qDebug() << stdErr;
-        _process->terminate();
-
-        fileBinA.setFileName(fileA + ".bin.tmp");
-        fileBinA.open(QFile::WriteOnly);
-        fileBinA.write(stdOut);
-        fileBinA.close();
-
-        HexParser hexFileB(fileB);
-        hexFileB.read();
-        QFile fileBinB(fileB + ".bin");
-        fileBinB.open(QFile::WriteOnly);
-        fileBinB.write(hexFileB.prog());
-        fileBinB.close();
-
-        _process = new QProcess();
-        _process->start(path, QStringList() << "-C" << "-v" << QString("%1").arg(fileB + ".bin"));
-        _process->waitForFinished(-1);
-
-        stdOut = _process->readAllStandardOutput();  //Reads standard output
-        _process->terminate();
-
-        fileBinB.setFileName(fileB + ".bin.tmp");
-        fileBinB.open(QFile::WriteOnly);
-        fileBinB.write(stdOut);
-        fileBinB.close();
-
-        path = QStandardPaths::findExecutable("meld", env.value("PATH").split(listSep));
-        _process->start(path,  QStringList() << QString("%1.bin.tmp").arg(fileA) << QString("%1.bin.tmp").arg(fileB));
+        int ret = 0;
+        ret = hexdump(argument.at(1));
+        if (ret < 0)
+        {
+            err << QCoreApplication::translate("main", "error (1): miss file .bin ") << "\n";
+            cliParser.showHelp(-1);
+        }
 
         exit(0);
     }
-
-    if (argument.isEmpty())
+    else if (argument.at(0) == "diff")
     {
-        err << QCoreApplication::translate("main", "error (1): input file is needed") << endl;
-        cliParser.showHelp(-1);
+        int ret = 0;
+        ret = diff(argument.at(1), argument.at(2));
+        if (ret < 0)
+        {
+            err << QCoreApplication::translate("main", "error (1): miss file to compare two file") << "\n";
+            cliParser.showHelp(-1);
+        }
+
+        exit(0);
     }
     else if (argument.at(0) == "merge")
     {
-        QStringList aOptionList = cliParser.values(aOption);
-        QStringList bOptionList = cliParser.values(bOption);
-
-        if (bOptionList.isEmpty() || aOptionList.isEmpty())
+        int ret = 0;
+        ret = merge(cliParser.values(aOption), cliParser.values(bOption), cliParser.value("out"), err);
+        if (ret < 0)
         {
-            err << QCoreApplication::translate("main", "error (1): option -a or -b is needed") << endl;
             cliParser.showHelp(-1);
         }
-
-        aOptionList.sort();
-        bOptionList.sort();
-        QString fileA = aOptionList.last();
-        QString fileB = bOptionList.last();
-        aOptionList.removeLast();
-        bOptionList.removeLast();
-
-        if (QFileInfo(fileA).suffix() != "hex" || QFileInfo(fileB).suffix() != "hex")
-        {
-            err << QCoreApplication::translate("main", "error (1): input file is needed") << endl;
-            cliParser.showHelp(-1);
-        }
-
-        // MERGE PROCESS
-        HexMerger mergeProcess;
-        if (mergeProcess.merge(fileA, aOptionList, fileB, bOptionList) < 0)
-        {
-            err << QCoreApplication::translate("main", "error (1): merge process") << endl;
-            cliParser.showHelp(-1);
-        }
-
-        QByteArray prog = mergeProcess.prog();
-
-        // OUTPUT file
-        QString outputFile = cliParser.value("out");
-        if (outputFile.isEmpty())
-        {
-            outputFile = "merge.hex";
-        }
-
-        HexWriter hexWriter;
-        hexWriter.write(prog, outputFile);
     }
-    else if (argument.at(0) == "create")
+    else if (argument.at(0) == "program")
     {
         QString type = cliParser.value("type");
         if (type.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): type of device is needed") << endl;
+            err << QCoreApplication::translate("main", "error (1): type of device is needed") << "\n";
             cliParser.showHelp(-1);
         }
 
         QStringList segmentList = cliParser.values(sOption);
         if (segmentList.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): segment is needed") << endl;
+            err << QCoreApplication::translate("main", "error (1): segment is needed") << "\n";
             cliParser.showHelp(-1);
         }
 
         QString hexFile = cliParser.value(hOption);
         if (hexFile.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): Hex file is needed") << endl;
+            err << QCoreApplication::translate("main", "error (1): Hex file is needed") << "\n";
             cliParser.showHelp(-1);
         }
 
         HexParser *hex = new HexParser(hexFile);
         hex->read();
 
-        UfwWriter createBinary;
-        createBinary.create(hex->prog(), type, segmentList);
+        UfwWriter *createBinary = new UfwWriter();
+        createBinary->create(hex->prog(), type, segmentList);
 
         // Save file
         QString outputFile = cliParser.value("out");
@@ -258,45 +364,46 @@ int main(int argc, char *argv[])
         QFile file(outputFile);
         if (!file.open(QFile::WriteOnly))
         {
-            err << QCoreApplication::translate("main", "error (1): Hex file is needed") << endl;
+            err << QCoreApplication::translate("main", "error (1): Hex file is needed") << "\n";
             cliParser.showHelp(-1);
         }
         else
         {
-            file.write(createBinary.binary());
+            file.write(createBinary->binary());
             file.close();
         }
-
     }
     else if (argument.at(0) == "update")
     {
         quint8 nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
         if (nodeid == 0 || nodeid >= 126)
         {
-            err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << endl;
+            err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << "\n";
             return -2;
         }
         quint8 bus = static_cast<uint8_t>(cliParser.value("busId").toUInt());
         if (bus >= 126)
         {
-            err << QCoreApplication::translate("main", "error (3): invalid bus id, busId > 0 && busId < 126") << endl;
+            err << QCoreApplication::translate("main", "error (3): invalid bus id, busId > 0 && busId < 126") << "\n";
             return -3;
         }
 
         quint8 speed = static_cast<uint8_t>(cliParser.value("speed").toUInt());
         if (speed == 0 || speed >= 126)
         {
-            //err << QCoreApplication::translate("main", "error (4): invalid speed") << endl;
+            //err << QCoreApplication::translate("main", "error (4): invalid speed") << "\n";
             //return -4;
         }
 
         QString binFile = cliParser.value(hOption);
         if (binFile.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): Binary file is needed") << endl;
+            err << QCoreApplication::translate("main", "error (1): Binary file is needed") << "\n";
             cliParser.showHelp(-1);
         }
 
+        UfwParser *p= new UfwParser(binFile);
+        p->read();
         MainConsole *mainConsole = new MainConsole(bus, speed, nodeid, binFile);
         QObject::connect(mainConsole, &MainConsole::finished, &app, &QCoreApplication::exit);
 
@@ -304,8 +411,8 @@ int main(int argc, char *argv[])
     }
     else
     {
-        err << QCoreApplication::translate("main", "error (6): invalid number of hex inputs file, need more than one") << endl;
-        err << QCoreApplication::translate("main", "error (1): input file is needed for update") << endl;
+        err << QCoreApplication::translate("main", "error (6): invalid number of hex inputs file, need more than one") << "\n";
+        err << QCoreApplication::translate("main", "error (1): input file is needed for update") << "\n";
         cliParser.showHelp(-1);
     }
 }

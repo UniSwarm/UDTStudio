@@ -8,12 +8,10 @@ DESTDIR = "$$PWD/../../../bin"
 SOURCES += \
         $$PWD/main.cpp \
 	$$PWD/mainwindow.cpp \
-	$$PWD/process/updateprocess.cpp \
 	$$PWD/mainconsole.cpp
 
 HEADERS += \
         $$PWD/mainwindow.h \
-	$$PWD/process/updateprocess.h \
 	$$PWD/mainconsole.h
 
 INCLUDEPATH += $$PWD/../../lib/canopen/ $$PWD/../../lib/od/ $$PWD/../../lib/udtgui/
