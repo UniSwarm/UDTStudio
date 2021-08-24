@@ -30,9 +30,11 @@ public:
     HexMerger();
 
     int merge(const QString fileA, QStringList segmentA, const QString fileB, QStringList segmentB);
-    int merge(const QByteArray &appA, QStringList segmentA,const QByteArray &appB,  QStringList segmentB);
+    int merge(const QByteArray &appA, QStringList segmentA, const QByteArray &appB, QStringList segmentB);
 
     const QByteArray &prog() const;
+
+    void setValidProgram(QString adress, QString type);
 
 private:
     QByteArray _prog;

@@ -20,6 +20,7 @@
 
 #include <QDebug>
 #include <QFile>
+#include <QtEndian>
 
 #include "bootloader/parser/hexparser.h"
 
@@ -63,6 +64,16 @@ int HexMerger::merge(const QByteArray &appA, QStringList segmentA, const QByteAr
 const QByteArray &HexMerger::prog() const
 {
     return _prog;
+}
+
+void HexMerger::setValidProgram(QString adress, QString type)
+{
+    bool ok;
+    char buffer[2];
+
+    qToLittleEndian(static_cast<uint16_t>(type.toUInt()), buffer);
+    _prog[adress.toUInt(&ok, 16)] = buffer[0];
+    _prog[adress.toUInt(&ok, 16) + 1] = buffer[1];
 }
 
 int HexMerger::append(const QByteArray &app, QStringList addresses)

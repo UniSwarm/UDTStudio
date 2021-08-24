@@ -165,11 +165,11 @@ int diff(QString fileA, QString fileB)
     return 0;
 }
 
-int merge(QStringList aOptionList, QStringList bOptionList, QString outputFile, QTextStream &err)
+int merge(QStringList aOptionList, QStringList bOptionList, QString type, QString adress, QString outputFile, QTextStream &err)
 {
-    if (bOptionList.isEmpty() || aOptionList.isEmpty())
+    if (bOptionList.isEmpty() || aOptionList.isEmpty() || type.isEmpty() || adress.isEmpty())
     {
-        err << QCoreApplication::translate("main", "error (1): option -a or -b is needed") << "\n";
+        err << QCoreApplication::translate("main", "error (1): option -a, -b, -t or -k is needed") << "\n";
         return -1;
     }
 
@@ -193,6 +193,7 @@ int merge(QStringList aOptionList, QStringList bOptionList, QString outputFile, 
         err << QCoreApplication::translate("main", "error (1): merge process") << "\n";
         return -1;
     }
+    mergeProcess.setValidProgram(adress, type);
 
     QByteArray prog = mergeProcess.prog();
 
@@ -258,6 +259,9 @@ int main(int argc, char *argv[])
     QCommandLineOption bOption(QStringList() << "b", QCoreApplication::translate("main", "FileHex B and memory segment of FileHex B"), "fileB> -b<start:end");
     cliParser.addOption(bOption);
 
+    QCommandLineOption kOption(QStringList() << "k", QCoreApplication::translate("main", "Adress of key"), "-kadress");
+    cliParser.addOption(kOption);
+
     // update and Flash
     QCommandLineOption edsOption(QStringList() << "e" << "eds", QCoreApplication::translate("main", "EDS File"), "eds");
     cliParser.addOption(edsOption);
@@ -321,7 +325,11 @@ int main(int argc, char *argv[])
     else if (argument.at(0) == "merge")
     {
         int ret = 0;
-        ret = merge(cliParser.values(aOption), cliParser.values(bOption), cliParser.value("out"), err);
+        ret = merge(cliParser.values(aOption),
+                    cliParser.values(bOption),
+                    cliParser.value(typeOption),
+                    cliParser.value(kOption),
+                    cliParser.value("out"), err);
         if (ret < 0)
         {
             cliParser.showHelp(-1);
