@@ -18,6 +18,8 @@
 
 #include "dataloggersingleton.h"
 
+#include <QMenu>
+
 DataLoggerSingleton *DataLoggerSingleton::_instance = nullptr;
 
 const QList<DataLoggerWidget *> &DataLoggerSingleton::dataLoggerWidgets()
@@ -47,6 +49,42 @@ void DataLoggerSingleton::stopAll()
     }
 }
 
+QMenu *DataLoggerSingleton::loggersMenu()
+{
+    return instance()->_loggersMenu;
+}
+
 DataLoggerSingleton::DataLoggerSingleton()
 {
+    _loggersMenu = new QMenu(tr("Data loggers"));
+    connect(_loggersMenu, &QMenu::aboutToShow, this, &DataLoggerSingleton::updateLoggersMenu);
+}
+
+DataLoggerSingleton::~DataLoggerSingleton()
+{
+    delete _loggersMenu;
+}
+
+void DataLoggerSingleton::updateLoggersMenu()
+{
+    QAction *action;
+    _loggersMenu->clear();
+    action = _loggersMenu->addAction(tr("Stop all"));
+    connect(action, &QAction::triggered, this, &DataLoggerSingleton::stopAll);
+
+    _loggersMenu->addSection(tr("Loggers list"));
+    for (DataLoggerWidget *logger : qAsConst(_dataLoggerWidgets))
+    {
+        switch (logger->type())
+        {
+        case DataLoggerWidget::UserType:
+        case DataLoggerWidget::DockType:
+            action = _loggersMenu->addAction(logger->title());
+            // action
+            break;
+
+        case DataLoggerWidget::InternalType:
+            break;
+        }
+    }
 }

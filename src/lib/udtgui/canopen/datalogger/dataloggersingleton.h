@@ -36,6 +36,8 @@ public:
     static void addLogger(DataLoggerWidget *logger);
     static void removeLogger(DataLoggerWidget *logger);
 
+    static QMenu *loggersMenu();
+
     static inline DataLoggerSingleton *instance()
     {
         if (!DataLoggerSingleton::_instance)
@@ -58,9 +60,17 @@ signals:
 
 protected:
     DataLoggerSingleton();
+    ~DataLoggerSingleton();
     QList<DataLoggerWidget *> _dataLoggerWidgets;
 
+    QMenu *_loggersMenu;
+
     static DataLoggerSingleton *_instance;
+
+protected slots:
+    void updateLoggersMenu();
 };
+
+#define dataLoggers() (DataLoggerSingleton::instance())
 
 #endif // DATALOGGERSINGLETON_H

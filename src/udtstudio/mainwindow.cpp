@@ -41,6 +41,8 @@
 
 #include <QDebug>
 
+#include "canopen/datalogger/dataloggersingleton.h"
+
 #ifdef Q_OS_UNIX
 #   include "busdriver/canbussocketcan.h"
 #endif
@@ -184,6 +186,7 @@ void MainWindow::createDocks()
     _dataLoggerDock = new QDockWidget(tr("Data logger"), this);
     _dataLoggerDock->setObjectName("dataLoggerDock");
     _dataLoggerWidget = new DataLoggerWidget();
+    _dataLoggerWidget->setTitle("Dock");
     _dataLoggerDock->setWidget(_dataLoggerWidget);
     addDockWidget(Qt::BottomDockWidgetArea, _dataLoggerDock);
 
@@ -239,6 +242,9 @@ void MainWindow::createMenus()
     action = new QAction(tr("Save conf file"), this);
     connect(action, &QAction::triggered, this, &MainWindow::writeCfgFile);
     nodeMenu->addAction(action);
+
+    // ============= Loggers =============
+    menuBar()->addMenu(DataLoggerSingleton::loggersMenu());
 
     // ============= View =============
     QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
