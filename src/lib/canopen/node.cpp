@@ -24,6 +24,7 @@
 #include "profile/nodeprofilefactory.h"
 #include "profile/p402/nodeprofile402.h"
 #include "services/services.h"
+#include "bootloader/bootloader.h"
 
 Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
     : _nodeId(nodeId)
@@ -68,6 +69,8 @@ Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
         _tpdos.append(tpdo);
         _services.append(tpdo);
     }
+
+    _bootloader = new Bootloader(this);
 
     if (!edsFileName.isEmpty())
     {
@@ -234,6 +237,11 @@ void Node::setBus(CanOpenBus *bus)
     {
         service->setBus(bus);
     }
+}
+
+Bootloader *Node::bootloader() const
+{
+    return _bootloader;
 }
 
 void Node::reset()

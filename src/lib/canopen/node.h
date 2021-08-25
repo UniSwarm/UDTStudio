@@ -35,6 +35,7 @@ class Emergency;
 class NMT;
 class ErrorControl;
 class NodeProfile;
+class Bootloader;
 
 class CANOPEN_EXPORT Node : public QObject
 {
@@ -90,7 +91,9 @@ public:
 
     void reset();
 
-public slots:
+    Bootloader *bootloader() const;
+
+  public slots:
     void setName(const QString &name);
 
     void sendPreop();
@@ -122,6 +125,8 @@ protected:
     QList<Service *> _services;
 
     QList<NodeProfile *> _nodeProfiles;
+
+    Bootloader *_bootloader;
 
     NodeOd *_nodeOd;
 };
