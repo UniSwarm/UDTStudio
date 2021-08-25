@@ -34,7 +34,7 @@ bool HexParser::read()
     int dataCount, addr, type, checkSum;
     bool ok;
 
-    if(_fileName.isEmpty())
+    if (_fileName.isEmpty())
     {
         return false;
     }
@@ -93,7 +93,7 @@ bool HexParser::read()
                 if (offsetAddr + addr + dataCount > _prog.size())
                 {
                     _prog.append(QByteArray((offsetAddr + addr + dataCount) - _prog.size(), static_cast<char>(0xFF)));
-                    //qDebug() << "outData" << QString::number(offsetAddr + addr, 16) << line.midRef(index, 2 * dataCount);
+                    // qDebug() << "outData" << QString::number(offsetAddr + addr, 16) << line.midRef(index, 2 * dataCount);
                 }
                 for (int i = 0; i < dataCount; i++)
                 {
