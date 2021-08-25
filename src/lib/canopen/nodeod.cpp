@@ -365,15 +365,36 @@ void NodeOd::createMandatoryBootloaderObject()
     subIndexProgramControl = new NodeSubIndex(1);
     subIndexProgramControl->setDataType(NodeSubIndex::UNSIGNED8);
     subIndexProgramControl->setName("Program_1");
+    subIndexProgramControl->setAccessType(static_cast<NodeSubIndex::AccessType>(0x03));
     programControl->addSubIndex(subIndexProgramControl);
     addIndex(programControl);
 
     NodeIndex *bootloader = new NodeIndex(0x2050);
     bootloader->setName("Bootloader");
-    bootloader->setObjectType(NodeIndex::VAR);
-    bootloader->addSubIndex(new NodeSubIndex(0));
-    bootloader->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED16);
-    bootloader->subIndex(0)->setName("Bootloader");
+    bootloader->setObjectType(NodeIndex::RECORD);
+
+    NodeSubIndex *subIndexbootloader;
+    subIndexbootloader = new NodeSubIndex(0);
+    subIndexbootloader->setDataType(NodeSubIndex::UNSIGNED8);
+    subIndexbootloader->setName("Highest sub-index supported");
+    subIndexbootloader->setValue(1);
+    bootloader->addSubIndex(subIndexbootloader);
+
+    subIndexbootloader = new NodeSubIndex(1);
+    subIndexbootloader->setDataType(NodeSubIndex::UNSIGNED16);
+    subIndexbootloader->setName("Key");
+    bootloader->addSubIndex(subIndexbootloader);
+
+    subIndexbootloader = new NodeSubIndex(2);
+    subIndexbootloader->setDataType(NodeSubIndex::UNSIGNED8);
+    subIndexbootloader->setName("Checksum");
+    bootloader->addSubIndex(subIndexbootloader);
+
+    subIndexbootloader = new NodeSubIndex(3);
+    subIndexbootloader->setDataType(NodeSubIndex::UNSIGNED8);
+    subIndexbootloader->setName("Status");
+    bootloader->addSubIndex(subIndexbootloader);
+
     addIndex(bootloader);
 }
 
