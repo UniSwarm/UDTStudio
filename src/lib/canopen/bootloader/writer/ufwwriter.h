@@ -21,6 +21,8 @@
 
 #include "canopen_global.h"
 
+#include "../parser/ufwparser.h"
+
 #include <QByteArray>
 #include <QStringList>
 
@@ -33,18 +35,11 @@ public:
 
     const QByteArray &binary() const;
 
-private:
-    struct Head
-    {
-        uint32_t deviceModel;
-        uint32_t memoryBlockStart1;
-        uint32_t memoryBlockend1;
-        uint32_t memoryBlockStart2;
-        uint32_t memoryBlockend2;
-    };
-    Head _head;
+    void setBinary(const QByteArray &newBinary);
 
-    QByteArray _binary;
+private:
+    UfwParser::Head *_head;
+    QByteArray _ufw;
 
     int append(const QByteArray &app, QStringList addresses);
     int checkAddresses(QStringList addresses);

@@ -22,6 +22,7 @@
 #include "canopen_global.h"
 
 #include <QByteArray>
+#include <QList>
 #include <QString>
 
 class CANOPEN_EXPORT UfwParser
@@ -32,20 +33,30 @@ public:
     bool read();
     const QByteArray &prog() const;
 
+    struct Segment
+    {
+        uint32_t memorySegmentStart;
+        uint32_t memorySegmentEnd;
+    };
+
     struct Head
     {
-        uint32_t deviceModel;
-        uint32_t memoryBlockStart1;
-        uint32_t memoryBlockEnd1;
-        uint32_t memoryBlockStart2;
-        uint32_t memoryBlockEnd2;
+        uint16_t device;
+        //        QString version;
+        //        QString date;
+        uint32_t vendorId;
+        uint32_t productId;
+        uint32_t revision;
+        uint32_t serial;
+        uint8_t countSegment;
+        QList<Segment *> segmentList;
     };
 
     const UfwParser::Head &head() const;
 
 private:
     QString _fileName;
-    Head _head;
+    Head *_head;
     QByteArray _prog;
 };
 

@@ -2,6 +2,8 @@
 
 #include <QDataStream>
 #include <QIODevice>
+#include <QList>
+#include <QtEndian>
 
 UfwWriter::UfwWriter()
 {
@@ -9,27 +11,54 @@ UfwWriter::UfwWriter()
 
 int UfwWriter::create(const QByteArray &hex, QString type, QStringList segment)
 {
-    QByteArray head;
+    char buffer[4];
 
-    _head.deviceModel = type.toUInt();
+    _ufw.clear();
+    _head = new UfwParser::Head();
+
+    _head->device = static_cast<uint16_t>(type.toUInt());
+    qToLittleEndian(_head->device, buffer);
+    _ufw.append(buffer, sizeof(_head->device));
+
+    _head->countSegment = static_cast<uint8_t>(segment.size());
+    qToLittleEndian(_head->countSegment, buffer);
+    _ufw.append(buffer, sizeof(_head->countSegment));
 
     bool ok;
-    _head.memoryBlockStart1 = segment.at(0).split(":").at(0).toUInt(&ok, 16);
-    _head.memoryBlockend1 = segment.at(0).split(":").at(1).toUInt(&ok, 16);
-    _head.memoryBlockStart2 = segment.at(1).split(":").at(0).toUInt(&ok, 16);
-    _head.memoryBlockend2 = segment.at(1).split(":").at(1).toUInt(&ok, 16);
+    int i = 0;
+    for (i = 0; i < segment.size(); i++)
+    {
+        UfwParser::Segment *seg = new UfwParser::Segment();
+        seg->memorySegmentStart = segment.at(i).split(":").at(0).toUInt(&ok, 16);
+        seg->memorySegmentEnd = segment.at(i).split(":").at(1).toUInt(&ok, 16);
+        _head->segmentList.append(seg);
+    }
 
-    append(hex, segment);
+    for (i = 0; i < _head->countSegment; i++)
+    {
+        uint32_t adrStart = _head->segmentList.at(i)->memorySegmentStart;
+        uint32_t adrEnd = _head->segmentList.at(i)->memorySegmentEnd;
 
-    head.append(reinterpret_cast<char *>(&_head), sizeof(_head));
-    _binary.prepend(head);
+        qToLittleEndian(adrStart, buffer);
+        _ufw.append(buffer, sizeof(adrStart));
+
+        qToLittleEndian(adrEnd, buffer);
+        _ufw.append(buffer, sizeof(adrEnd));
+    }
+
+    _ufw.append(hex);
 
     return 0;
 }
 
 const QByteArray &UfwWriter::binary() const
 {
-    return _binary;
+    return _ufw;
+}
+
+void UfwWriter::setBinary(const QByteArray &newBinary)
+{
+    _ufw = newBinary;
 }
 
 int UfwWriter::append(const QByteArray &app, QStringList addresses)
@@ -49,7 +78,7 @@ int UfwWriter::append(const QByteArray &app, QStringList addresses)
     {
         int adrStart = addresses.at(i).split(QLatin1Char(':')).at(0).toInt(&ok, 16);
         int adrEnd = addresses.at(i).split(QLatin1Char(':')).at(1).toInt(&ok, 16);
-        _binary.append(app.mid(adrStart, adrEnd - adrStart));
+        _ufw.append(app.mid(adrStart, adrEnd - adrStart));
     }
     return 0;
 }

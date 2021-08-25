@@ -19,6 +19,7 @@
 #include "ufwparser.h"
 
 #include <QFile>
+#include <QtEndian>
 
 UfwParser::UfwParser(const QString &fileName)
 {
@@ -39,8 +40,21 @@ bool UfwParser::read()
         file.close();
     }
 
-    _head = *reinterpret_cast<Head*>(uni.data());
-    _prog = uni.mid(sizeof(Head), uni.size());
+    _head = new Head();
+
+    qFromLittleEndian<quint16>(uni, sizeof(_head->device), &_head->device);
+    qFromLittleEndian<quint8>(uni.mid(2, sizeof(_head->countSegment)), sizeof(_head->countSegment), &_head->countSegment);
+
+    for (int i = 0; i < _head->countSegment; i++)
+    {
+        Segment *seg = new Segment();
+
+        qFromLittleEndian<uint32_t>(uni.mid(3 + i * 8, sizeof(seg->memorySegmentStart)), sizeof(seg->memorySegmentStart), &seg->memorySegmentStart);
+        qFromLittleEndian<uint32_t>(uni.mid(7 + i * 8, sizeof(seg->memorySegmentEnd)), sizeof(seg->memorySegmentEnd), &seg->memorySegmentEnd);
+        _head->segmentList.append(seg);
+    }
+
+    _prog = uni.mid(3 + _head->countSegment * 8, uni.size());
     return true;
 }
 
@@ -51,5 +65,5 @@ const QByteArray &UfwParser::prog() const
 
 const UfwParser::Head &UfwParser::head() const
 {
-    return _head;
+    return *_head;
 }
