@@ -52,53 +52,61 @@ public:
     };
     StatusProgram statusProgram();
 
-    enum StatusFlash
-    {
-        STATUS_OK = 0x0,
-        STATUS_IN_PROGRESS = 0x1,
-        STATUS_VALID_PROGRAM_AVAILABLE = 0x2,
-        STATUS_NO_VALID_PROGRAM_AVAILABLE = 0x4,
-        STATUS_DATA_FORMAT_UNKNOWN = 0x8,
-        STATUS_DATA_FORMAT_ERROR_OR_DATA_CRC_ERROR = 0x10,
-        STATUS_FLASH_NOT_CLEARED_BEFORE_WRITE = 0x20,
-        STATUS_FLASH_WRITE_ERROR = 0x40,
-        STATUS_GENERAL_ADDRESS_ERROR = 0x80,
-        STATUS_FLASH_SECURED = 0x100
-    };
-    StatusFlash statusFlash();
-
     bool openUfw(const QString &fileName);
 
-    void reset();
+    void update();
 
 public slots:
     void stopProgram();
     void startProgram();
     void resetProgram();
     void clearProgram();
-    void updateProgram(const QString &fileName);
     void sendKey(uint16_t key);
 
 signals:
-    void statusProgramChanged(StatusProgram);
-    void bootloaderEnabled(bool ok);
+    void isUpdated(bool ok);
+
+private slots:
+    void getStatusProgram();
+    void isUploaded(bool ok);
 
 private:
     Node *_node;
 
     StatusProgram _statusProgram;
-    StatusFlash _statusFlash;
 
-    NodeObjectId _deviceTypeObjectId;
-    NodeObjectId _bootloaderObjectId;
+    NodeObjectId _bootloaderKeyObjectId;
+    NodeObjectId _bootloaderChecksumObjectId;
+    NodeObjectId _bootloaderStatusObjectId;
     NodeObjectId _programObjectId;
     NodeObjectId _programControlObjectId;
-    NodeObjectId _flashStatusObjectId;
 
     UfwParser *_ufw;
     UfwUpdate *_ufwUpdate;
 
     QTimer *_timer;
+
+    enum BootloaderState
+    {
+        STATE_FREE,
+        STATE_CHECK_MODE,
+        STATE_STOP_PROGRAM,
+        STATE_CLEAR_PROGRAM,
+        STATE_UPDATE_PROGRAM,
+        STATE_UPLOADED_FINISHED,
+        STATE_CHECK,
+        STATE_OK,
+        STATE_NOT_OK
+    };
+
+    BootloaderState _state;
+    QTimer _statusTimer;
+
+    void checkSoftware();
+    void process();
+    void uploadProgram();
+    void uploadFinishedProgram();
+    uint8_t calculateCheckSum(const QByteArray &prog);
 
     // NodeOdSubscriber interface
 protected:

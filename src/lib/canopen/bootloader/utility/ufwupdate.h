@@ -22,12 +22,16 @@
 #include "canopen_global.h"
 
 #include "../parser/ufwparser.h"
+#include "nodeodsubscriber.h"
+
+#include <QObject>
 
 class Node;
 class NodeObjectId;
 
-class CANOPEN_EXPORT UfwUpdate
+class CANOPEN_EXPORT UfwUpdate : public QObject, public NodeOdSubscriber
 {
+    Q_OBJECT
 public:
     UfwUpdate(Node *node, UfwParser *ufw = nullptr);
 
@@ -37,9 +41,25 @@ public:
 
     int status();
 
+    uint8_t checksum() const;
+
+signals:
+    void isUploaded(bool);
+
 private:
     Node *_node;
     UfwParser *_ufw;
+    uint8_t _checksum;
+    NodeObjectId _programDataObjectId;
+
+    int _indexList;
+    QList<QByteArray> _byteArrayList;
+    void process();
+    void calculateCheckSum(const QByteArray &prog);
+
+    // NodeOdSubscriber interface
+protected:
+    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
 #endif // UFWUPDATE_H
