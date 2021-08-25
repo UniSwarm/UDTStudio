@@ -21,22 +21,21 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QCoreApplication>
-#include <QFileInfo>
-#include <QTextStream>
-#include <QObject>
 #include <QDebug>
-#include <cstdint>
-#include <QProcess>
 #include <QDir>
+#include <QFileInfo>
+#include <QObject>
+#include <QProcess>
 #include <QStandardPaths>
+#include <QTextStream>
+#include <cstdint>
 
 #include "mainconsole.h"
 
-#include "bootloader/writer/hexwriter.h"
 #include "bootloader/parser/hexparser.h"
-#include "bootloader/parser/ufwparser.h"
-#include "bootloader/writer/ufwwriter.h"
 #include "bootloader/utility/hexmerger.h"
+#include "bootloader/writer/hexwriter.h"
+#include "bootloader/writer/ufwwriter.h"
 
 int hexdump(QString fileA)
 {
@@ -64,18 +63,28 @@ int hexdump(QString fileA)
     QFile fileBinA;
     if (QFileInfo(fileA).suffix() == "hex")
     {
-        fileA.append(".bin");
+        QString file = fileA + ".bin";
         HexParser hexFileA(fileA);
         hexFileA.read();
-        fileBinA.setFileName(fileA);
+        fileBinA.setFileName(file);
         fileBinA.open(QFile::WriteOnly);
         fileBinA.write(hexFileA.prog());
         fileBinA.close();
+
+        _process->start(path,
+                        QStringList() << "-C"
+                                      << "-v" << QString("%1").arg(file));
+        _process->waitForFinished(-1);
+    }
+    else
+    {
+        _process->start(path,
+                        QStringList() << "-C"
+                                      << "-v" << QString("%1").arg(fileA));
+        _process->waitForFinished(-1);
     }
 
-    _process->start(path, QStringList() << "-C" << "-v" << QString("%1").arg(fileA));
-    _process->waitForFinished(-1);
-    QByteArray stdOut = _process->readAllStandardOutput();  //Reads standard output
+    QByteArray stdOut = _process->readAllStandardOutput(); // Reads standard output
     _process->terminate();
 
     QString fileAHexDump = fileA.split(".").at(0) + ".hexdump";
@@ -84,8 +93,8 @@ int hexdump(QString fileA)
     fileBinA.write(stdOut);
     fileBinA.close();
 
-    //QDir dir;
-    //dir.remove(fileA + ".bin");
+    // QDir dir;
+    // dir.remove(fileA + ".bin");
 
     return 0;
 }
@@ -120,9 +129,11 @@ int diff(QString fileA, QString fileB)
     fileBinA.write(hexFileA.prog());
     fileBinA.close();
 
-    _process->start(path, QStringList() << "-C" << "-v" << QString("%1").arg(fileA + ".bin"));
+    _process->start(path,
+                    QStringList() << "-C"
+                                  << "-v" << QString("%1").arg(fileA + ".bin"));
     _process->waitForFinished(-1);
-    QByteArray stdOut = _process->readAllStandardOutput();  //Reads standard output
+    QByteArray stdOut = _process->readAllStandardOutput(); // Reads standard output
     _process->terminate();
 
     QString fileAHexDump = fileA.split(".").at(0) + ".hexdump";
@@ -142,9 +153,11 @@ int diff(QString fileA, QString fileB)
     fileBinB.close();
 
     _process = new QProcess();
-    _process->start(path, QStringList() << "-C" << "-v" << QString("%1").arg(fileB + ".bin"));
+    _process->start(path,
+                    QStringList() << "-C"
+                                  << "-v" << QString("%1").arg(fileB + ".bin"));
     _process->waitForFinished(-1);
-    stdOut = _process->readAllStandardOutput();  //Reads standard output
+    stdOut = _process->readAllStandardOutput(); // Reads standard output
     _process->terminate();
 
     QString fileBHexDump = fileB.split(".").at(0) + ".hexdump";
@@ -156,7 +169,7 @@ int diff(QString fileA, QString fileB)
     dir.remove(fileB + ".bin");
 
     path = QStandardPaths::findExecutable("meld", env.value("PATH").split(listSep));
-    _process->start(path,  QStringList() << QString("%1").arg(fileAHexDump) << QString("%1").arg(fileBHexDump));
+    _process->start(path, QStringList() << QString("%1").arg(fileAHexDump) << QString("%1").arg(fileBHexDump));
     _process->waitForFinished(-1);
 
     dir.remove(fileAHexDump);
@@ -208,13 +221,10 @@ int merge(QStringList aOptionList, QStringList bOptionList, QString type, QStrin
 }
 int program()
 {
-
 }
 int update()
 {
-
 }
-
 
 int main(int argc, char *argv[])
 {
@@ -251,7 +261,10 @@ int main(int argc, char *argv[])
     cliParser.addPositionalArgument("hexdump", QCoreApplication::translate("main", "fileA"), "hexdump");
 
     // MERGE
-    QCommandLineOption outOption(QStringList() << "o" << "out", QCoreApplication::translate("main", "Output directory or file."), "out");
+    QCommandLineOption outOption(QStringList() << "o"
+                                               << "out",
+                                 QCoreApplication::translate("main", "Output directory or file."),
+                                 "out");
     cliParser.addOption(outOption);
 
     QCommandLineOption aOption(QStringList() << "a", QCoreApplication::translate("main", "FileHex A and memory segment of FileHex A"), "fileA> -a<start:end");
@@ -263,24 +276,45 @@ int main(int argc, char *argv[])
     cliParser.addOption(kOption);
 
     // update and Flash
-    QCommandLineOption edsOption(QStringList() << "e" << "eds", QCoreApplication::translate("main", "EDS File"), "eds");
+    QCommandLineOption edsOption(QStringList() << "e"
+                                               << "eds",
+                                 QCoreApplication::translate("main", "EDS File"),
+                                 "eds");
     cliParser.addOption(edsOption);
 
-    QCommandLineOption nodeIdOption(QStringList() << "n" << "nodeid", QCoreApplication::translate("main", "CANOpen Node Id."), "nodeid");
+    QCommandLineOption nodeIdOption(QStringList() << "n"
+                                                  << "nodeid",
+                                    QCoreApplication::translate("main", "CANOpen Node Id."),
+                                    "nodeid");
     cliParser.addOption(nodeIdOption);
-    QCommandLineOption busOption(QStringList() << "c" << "busId", QCoreApplication::translate("main", "CAN bus."), "busId");
+    QCommandLineOption busOption(QStringList() << "c"
+                                               << "busId",
+                                 QCoreApplication::translate("main", "CAN bus."),
+                                 "busId");
     cliParser.addOption(busOption);
-    QCommandLineOption speedOption(QStringList() << "l" << "speed", QCoreApplication::translate("main", "CAN Speed."), "speed");
+    QCommandLineOption speedOption(QStringList() << "l"
+                                                 << "speed",
+                                   QCoreApplication::translate("main", "CAN Speed."),
+                                   "speed");
     cliParser.addOption(speedOption);
 
     // CREATE BIN
-    QCommandLineOption hOption(QStringList() << "f" << "file", QCoreApplication::translate("main", "hex file"), "hex");
+    QCommandLineOption hOption(QStringList() << "f"
+                                             << "file",
+                               QCoreApplication::translate("main", "hex file"),
+                               "hex");
     cliParser.addOption(hOption);
 
-    QCommandLineOption typeOption(QStringList() << "t" << "type", QCoreApplication::translate("main", "type device"), "type");
+    QCommandLineOption typeOption(QStringList() << "t"
+                                                << "type",
+                                  QCoreApplication::translate("main", "type device"),
+                                  "type");
     cliParser.addOption(typeOption);
 
-    QCommandLineOption sOption(QStringList() << "s" << "segment", QCoreApplication::translate("main", "Memory segment of hex file"), "start:end");
+    QCommandLineOption sOption(QStringList() << "s"
+                                             << "segment",
+                               QCoreApplication::translate("main", "Memory segment of hex file"),
+                               "start:end");
     cliParser.addOption(sOption);
 
     cliParser.process(app);
@@ -325,11 +359,7 @@ int main(int argc, char *argv[])
     else if (argument.at(0) == "merge")
     {
         int ret = 0;
-        ret = merge(cliParser.values(aOption),
-                    cliParser.values(bOption),
-                    cliParser.value(typeOption),
-                    cliParser.value(kOption),
-                    cliParser.value("out"), err);
+        ret = merge(cliParser.values(aOption), cliParser.values(bOption), cliParser.value(typeOption), cliParser.value(kOption), cliParser.value("out"), err);
         if (ret < 0)
         {
             cliParser.showHelp(-1);
@@ -400,8 +430,8 @@ int main(int argc, char *argv[])
         quint8 speed = static_cast<uint8_t>(cliParser.value("speed").toUInt());
         if (speed == 0 || speed >= 126)
         {
-            //err << QCoreApplication::translate("main", "error (4): invalid speed") << "\n";
-            //return -4;
+            // err << QCoreApplication::translate("main", "error (4): invalid speed") << "\n";
+            // return -4;
         }
 
         QString binFile = cliParser.value(hOption);
@@ -411,7 +441,7 @@ int main(int argc, char *argv[])
             cliParser.showHelp(-1);
         }
 
-        UfwParser *p= new UfwParser(binFile);
+        UfwParser *p = new UfwParser(binFile);
         p->read();
         MainConsole *mainConsole = new MainConsole(bus, speed, nodeid, binFile);
         QObject::connect(mainConsole, &MainConsole::finished, &app, &QCoreApplication::exit);
