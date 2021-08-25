@@ -154,9 +154,14 @@ NodeObjectId IndexDb::getObjectId(IndexDb::OdObject object, uint opt, uint optMa
     case OD_PROGRAM_CONTROL_1:
         return {0x1F51, 0x1};
 
-    case OD_BOOTLOADER:
-        return {0x2050, 0x0};
+    case OD_BOOTLOADER_KEY:
+        return {0x2050, 0x1};
 
+    case OD_BOOTLOADER_CHECKSUM:
+        return {0x2050, 0x2};
+
+    case OD_BOOTLOADER_STATUS:
+        return {0x2050, 0x3};
     }
     return NodeObjectId();
 }

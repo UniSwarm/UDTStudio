@@ -67,7 +67,9 @@ public:
 
         OD_PROGRAM_DATA_1,
         OD_PROGRAM_CONTROL_1,
-        OD_BOOTLOADER
+        OD_BOOTLOADER_KEY,
+        OD_BOOTLOADER_CHECKSUM,
+        OD_BOOTLOADER_STATUS
     };
 
     static NodeObjectId getObjectId(OdObject object, uint opt = 0, uint opt2 = 0);
