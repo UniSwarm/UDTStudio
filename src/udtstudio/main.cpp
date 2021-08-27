@@ -23,9 +23,9 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    app.setOrganizationName("UniSwarm");
-    app.setOrganizationDomain("UniSwarm");
-    app.setApplicationName("UDTStudio");
+    QApplication::setOrganizationName("UniSwarm");
+    QApplication::setOrganizationDomain("UniSwarm");
+    QApplication::setApplicationName("UDTStudio");
 
     MainWindow w;
     // apply dark style
@@ -41,10 +41,12 @@ int main(int argc, char *argv[])
             QMenu::icon {margin: 1px;} \
             QMenu::icon:checked {margin: 0; background: #505F69; border: 1px inset #505F69; position: absolute; top: 1px; right: 1px; bottom: 1px; left: 1px;} \
             QMenu::item {padding: 4px 24px 4px 8px;} \
-            QComboBox {padding-right: 4px; \
+            QToolBar {border-bottom: none; border-radius: 4px;} \
+            QSplitter::handle:horizontal {width: 2px;} \
+            QSplitter::handle:vertical {height: 2px;} \
         ");
     }
     w.show();
 
-    return app.exec();
+    return QApplication::exec();
 }
