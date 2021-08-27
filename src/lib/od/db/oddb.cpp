@@ -20,6 +20,7 @@
 
 #include "parser/edsparser.h"
 
+#include <QCoreApplication>
 #include <QCryptographicHash>
 #include <QDirIterator>
 #include <QProcessEnvironment>
@@ -33,6 +34,7 @@ OdDb::OdDb()
 void OdDb::init()
 {
     addDirectory(QProcessEnvironment::systemEnvironment().value("EDS_PATH").split(QDir::listSeparator()));
+    addDirectory(QCoreApplication::applicationDirPath() + "/../eds");
 }
 
 void OdDb::addDirectory(const QString &directory)
