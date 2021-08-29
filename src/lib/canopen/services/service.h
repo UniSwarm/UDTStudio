@@ -25,7 +25,7 @@
 
 #include "busdriver/canbusdriver.h"
 
-#include <QCanBusFrame>
+#include "busdriver/qcanbusframe.h"
 #include <QString>
 
 class CanOpenBus;

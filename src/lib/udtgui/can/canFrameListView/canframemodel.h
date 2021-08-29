@@ -23,8 +23,7 @@
 
 #include <QAbstractItemModel>
 
-#include <QCanBus>
-#include <QCanBusFrame>
+#include "busdriver/qcanbusframe.h"
 
 #include "canopenbus.h"
 

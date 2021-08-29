@@ -21,8 +21,8 @@
 
 #include <QLabel>
 #include <QMainWindow>
+#include <QPushButton>
 
-#include "can/canSettingsDialog/cansettingsdialog.h"
 #include "canopen.h"
 #include "canopen/busnodesmanagerview.h"
 #include "canopen/nodeod/nodeodwidget.h"
@@ -56,8 +56,6 @@ private:
     void refreshInfo();
 
     void nodeChanged(Node *currentNode);
-
-    CanSettingsDialog *_connectDialog = nullptr;
 
     CanOpenBus *_bus;
 

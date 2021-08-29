@@ -27,7 +27,6 @@
 #include "services/services.h"
 #include "busdriver/canbusdriver.h"
 
-//#include <QCanBusDevice>
 #include <QMap>
 
 class CanOpen;

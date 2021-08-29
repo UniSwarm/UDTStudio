@@ -1,5 +1,5 @@
 
-QT     += core gui widgets serialbus network
+QT     += core gui widgets network
 TARGET = canopen
 TEMPLATE = lib
 DESTDIR = "$$PWD/../../../bin"
@@ -44,6 +44,7 @@ SOURCES += \
     $$PWD/indexdb402.cpp \
     $$PWD/profile/nodeprofilefactory.cpp \
     $$PWD/profile/p402/modedty.cpp \
+    $$PWD/busdriver/qcanbusframe.cpp \
     $$PWD/busdriver/canbusdriver.cpp \
     $$PWD/busdriver/canbustcpudt.cpp \
     $$PWD/bootloader/bootloader.cpp \
@@ -54,8 +55,6 @@ SOURCES += \
     $$PWD/bootloader/utility/ufwupdate.cpp \
     $$PWD/bootloader/writer/hexwriter.cpp \
     $$PWD/bootloader/writer/ufwwriter.cpp
-
-unix : SOURCES += $$PWD/busdriver/canbussocketcan.cpp
 
 HEADERS += \
     $$PWD/canopen_global.h \
@@ -94,6 +93,7 @@ HEADERS += \
     $$PWD/indexdb402.h \
     $$PWD/profile/nodeprofilefactory.h \
     $$PWD/profile/p402/modedty.h \
+    $$PWD/busdriver/qcanbusframe.h \
     $$PWD/busdriver/canbusdriver.h \
     $$PWD/busdriver/canbustcpudt.h \
     $$PWD/bootloader/bootloader.h \
@@ -105,7 +105,10 @@ HEADERS += \
     $$PWD/bootloader/writer/hexwriter.h \
     $$PWD/bootloader/writer/ufwwriter.h
 
-unix : HEADERS += $$PWD/busdriver/canbussocketcan.h
+unix:{
+    SOURCES += $$PWD/busdriver/canbussocketcan.cpp
+    HEADERS += $$PWD/busdriver/canbussocketcan.h
+}
 
 INCLUDEPATH += $$PWD/../od/
 

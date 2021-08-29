@@ -1,5 +1,5 @@
 
-QT       += core gui serialbus widgets
+QT       += core gui widgets
 
 TARGET = ubl
 TEMPLATE = app

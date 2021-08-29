@@ -23,7 +23,6 @@
 
 #include <QSortFilterProxyModel>
 
-#include "can/canSettingsDialog/cansettingsdialog.h"
 #include "canopenbus.h"
 
 #include "can/canFrameListView/canframelistview.h"

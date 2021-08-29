@@ -18,7 +18,6 @@
 
 #include "mainwindow.h"
 
-#include <QCanBus>
 #include <QDebug>
 #include <QFileDialog>
 #include <QFormLayout>
@@ -42,7 +41,6 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    _connectDialog = new CanSettingsDialog(nullptr, this);
     statusBar()->setVisible(true);
 
     CanOpenBus *bus;
@@ -207,7 +205,7 @@ void MainWindow::createMenus()
     connect(_disconnectAction, &QAction::triggered, this, &MainWindow::disconnectDevice);*/
 
     QAction *_canSettingsAction = new QAction(tr("&Can Settings"), this);
-    connect(_canSettingsAction, &QAction::triggered, _connectDialog, &CanSettingsDialog::show);
+    //connect(_canSettingsAction, &QAction::triggered, _connectDialog, &CanSettingsDialog::show);
 
     QMenu *menu;
     menu = menuBar()->addMenu(tr("&Connection"));

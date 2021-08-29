@@ -23,7 +23,6 @@
 
 #include <QAction>
 #include <QApplication>
-#include <QCanBus>
 #include <QDateTime>
 #include <QDir>
 #include <QDockWidget>

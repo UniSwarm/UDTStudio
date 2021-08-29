@@ -23,7 +23,7 @@
 
 #include <QObject>
 
-#include <QCanBusFrame>
+#include "busdriver/qcanbusframe.h"
 
 class CANOPEN_EXPORT CanBusDriver : public QObject
 {

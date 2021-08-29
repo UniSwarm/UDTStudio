@@ -22,8 +22,7 @@
 #include "../../udtgui_global.h"
 
 #include <QAction>
-#include <QCanBus>
-#include <QCanBusFrame>
+#include "busdriver/qcanbusframe.h"
 #include <QTableView>
 
 #include "canframemodel.h"
