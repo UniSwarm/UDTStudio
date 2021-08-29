@@ -127,9 +127,11 @@ SOURCES += \
     $$PWD/screen/nodescreensynchro.cpp \
     $$PWD/screen/nodescreenuio.cpp
 
-INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
+LIBS += -L"$$PWD/../../../bin"
+android:LIBS += -lod_$${QT_ARCH} -lcanopen_$${QT_ARCH}
+else:LIBS += -lod -lcanopen
 
-LIBS += -L"$$PWD/../../../bin" -lod -lcanopen
+INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 DEPENDPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 unix:{
     QMAKE_LFLAGS_RPATH=

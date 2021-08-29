@@ -110,9 +110,11 @@ unix:{
     HEADERS += $$PWD/busdriver/canbussocketcan.h
 }
 
-INCLUDEPATH += $$PWD/../od/
+LIBS += -L"$$PWD/../../../bin"
+android:LIBS += -lod_$${QT_ARCH}
+else:LIBS += -lod
 
-LIBS += -L"$$PWD/../../../bin" -lod
+INCLUDEPATH += $$PWD/../od/
 DEPENDPATH += $$PWD/../od/
 unix:{
     QMAKE_LFLAGS_RPATH=

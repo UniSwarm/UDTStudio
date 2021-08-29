@@ -9,9 +9,11 @@ HEADERS += \
 SOURCES += \
     $$PWD/uds.cpp
 
-INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/udtgui/
+LIBS += -L"$$PWD/../../../bin"
+android:LIBS += -lod_$${QT_ARCH} -ludtgui_$${QT_ARCH}
+else:LIBS += -lod -ludtgui
 
-LIBS += -L"$$PWD/../../../bin" -lod -ludtgui
+INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/udtgui/
 DEPENDPATH += $$PWD/../../lib/od/ $$PWD/../../lib/udtgui/
 unix:{
     QMAKE_LFLAGS_RPATH=

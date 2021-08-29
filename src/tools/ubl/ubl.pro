@@ -13,12 +13,13 @@ HEADERS += \
         $$PWD/mainwindow.h \
 	$$PWD/mainconsole.h
 
-INCLUDEPATH += $$PWD/../../lib/canopen/ $$PWD/../../lib/od/ $$PWD/../../lib/udtgui/
+LIBS += -L"$$PWD/../../../bin"
+android:LIBS += -lod_$${QT_ARCH} -lcanopen_$${QT_ARCH} -ludtgui_$${QT_ARCH}
+else:LIBS += -lod -lcanopen -ludtgui
 
-LIBS += -L"$$PWD/../../../bin" -lod -lcanopen -ludtgui
+INCLUDEPATH += $$PWD/../../lib/canopen/ $$PWD/../../lib/od/ $$PWD/../../lib/udtgui/
 DEPENDPATH += $$PWD/../lib/od/ $$PWD/../lib/canopen/ $$PWD/../lib/udtgui/
 unix:{
     QMAKE_LFLAGS_RPATH=
     QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN\'"
 }
-

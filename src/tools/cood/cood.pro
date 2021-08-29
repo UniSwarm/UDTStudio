@@ -9,9 +9,11 @@ HEADERS += \
 SOURCES += \
     $$PWD/cood.cpp
 
-INCLUDEPATH += $$PWD/../../lib/od/
+LIBS += -L"$$PWD/../../../bin"
+android:LIBS += -lod_$${QT_ARCH}
+else:LIBS += -lod
 
-LIBS += -L"$$PWD/../../../bin" -lod
+INCLUDEPATH += $$PWD/../../lib/od/
 DEPENDPATH += $$PWD/../../lib/od/
 unix:{
     QMAKE_LFLAGS_RPATH=
