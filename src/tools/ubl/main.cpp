@@ -218,12 +218,18 @@ int merge(QStringList aOptionList, QStringList bOptionList, QString type, QStrin
 
     HexWriter hexWriter;
     hexWriter.write(prog, outputFile);
+
+    return 0;
 }
+
 int program()
 {
+    return 0;
 }
+
 int update()
 {
+    return 0;
 }
 
 int main(int argc, char *argv[])
@@ -454,4 +460,5 @@ int main(int argc, char *argv[])
         err << QCoreApplication::translate("main", "error (1): input file is needed for update") << "\n";
         cliParser.showHelp(-1);
     }
+    return 0;
 }
