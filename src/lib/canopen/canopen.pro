@@ -10,21 +10,21 @@ DEFINES += CANOPEN_EXPORT_LIB
 CONFIG += c++11
 
 SOURCES += \
+    $$PWD/canopen.cpp \
     $$PWD/canopenbus.cpp \
     $$PWD/node.cpp \
-    $$PWD/nodeobjectid.cpp \
     $$PWD/nodeod.cpp \
-    $$PWD/nodeodsubscriber.cpp \
     $$PWD/nodeindex.cpp \
     $$PWD/nodesubindex.cpp \
-    $$PWD/canopen.cpp \
+    $$PWD/nodeobjectid.cpp \
+    $$PWD/nodeodsubscriber.cpp \
+    $$PWD/services/service.cpp \
     $$PWD/services/emergency.cpp \
     $$PWD/services/nmt.cpp \
     $$PWD/services/pdo.cpp \
     $$PWD/services/tpdo.cpp \
     $$PWD/services/rpdo.cpp \
     $$PWD/services/sdo.cpp \
-    $$PWD/services/service.cpp \
     $$PWD/services/sync.cpp \
     $$PWD/services/timestamp.cpp \
     $$PWD/services/errorcontrol.cpp \
@@ -33,17 +33,17 @@ SOURCES += \
     $$PWD/datalogger/datalogger.cpp \
     $$PWD/datalogger/dldata.cpp \
     $$PWD/profile/nodeprofile.cpp \
+    $$PWD/profile/nodeprofilefactory.cpp \
+    $$PWD/profile/p402/nodeprofile402.cpp \
     $$PWD/profile/p402/mode.cpp \
+    $$PWD/profile/p402/modedty.cpp \
     $$PWD/profile/p402/modeip.cpp \
     $$PWD/profile/p402/modetq.cpp \
     $$PWD/profile/p402/modevl.cpp \
     $$PWD/profile/p402/modepp.cpp \
-    $$PWD/profile/p402/nodeprofile402.cpp \
     $$PWD/indexdb.cpp \
     $$PWD/indexdb401.cpp \
     $$PWD/indexdb402.cpp \
-    $$PWD/profile/nodeprofilefactory.cpp \
-    $$PWD/profile/p402/modedty.cpp \
     $$PWD/busdriver/qcanbusframe.cpp \
     $$PWD/busdriver/canbusdriver.cpp \
     $$PWD/busdriver/canbustcpudt.cpp \
@@ -57,23 +57,23 @@ SOURCES += \
     $$PWD/bootloader/writer/ufwwriter.cpp
 
 HEADERS += \
+    $$PWD/canopen.h \
     $$PWD/canopen_global.h \
     $$PWD/canopenbus.h \
     $$PWD/node.h \
-    $$PWD/nodeobjectid.h \
     $$PWD/nodeod.h \
-    $$PWD/nodeodsubscriber.h \
     $$PWD/nodeindex.h \
     $$PWD/nodesubindex.h \
-    $$PWD/canopen.h \
+    $$PWD/nodeobjectid.h \
+    $$PWD/nodeodsubscriber.h \
+    $$PWD/services/service.h \
+    $$PWD/services/services.h \
     $$PWD/services/emergency.h \
     $$PWD/services/nmt.h \
     $$PWD/services/pdo.h \
     $$PWD/services/tpdo.h \
     $$PWD/services/rpdo.h \
     $$PWD/services/sdo.h \
-    $$PWD/services/service.h \
-    $$PWD/services/services.h \
     $$PWD/services/sync.h \
     $$PWD/services/timestamp.h \
     $$PWD/services/errorcontrol.h \
@@ -81,18 +81,18 @@ HEADERS += \
     $$PWD/services/nodediscover.h \
     $$PWD/datalogger/datalogger.h \
     $$PWD/datalogger/dldata.h \
+    $$PWD/profile/nodeprofilefactory.h \
+    $$PWD/profile/p402/nodeprofile402.h \
     $$PWD/profile/nodeprofile.h \
     $$PWD/profile/p402/mode.h \
+    $$PWD/profile/p402/modedty.h \
     $$PWD/profile/p402/modeip.h \
     $$PWD/profile/p402/modepp.h \
     $$PWD/profile/p402/modetq.h \
     $$PWD/profile/p402/modevl.h \
-    $$PWD/profile/p402/nodeprofile402.h \
     $$PWD/indexdb.h \
     $$PWD/indexdb401.h \
     $$PWD/indexdb402.h \
-    $$PWD/profile/nodeprofilefactory.h \
-    $$PWD/profile/p402/modedty.h \
     $$PWD/busdriver/qcanbusframe.h \
     $$PWD/busdriver/canbusdriver.h \
     $$PWD/busdriver/canbustcpudt.h \

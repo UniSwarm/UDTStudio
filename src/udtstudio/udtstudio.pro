@@ -1,6 +1,5 @@
 
 QT       += core gui widgets charts network
-
 TARGET = udtstudio
 TEMPLATE = app
 DESTDIR = "$$PWD/../../bin"

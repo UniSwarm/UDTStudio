@@ -1,6 +1,5 @@
 
 QT       += core gui widgets
-
 TARGET = ubl
 TEMPLATE = app
 DESTDIR = "$$PWD/../../../bin"

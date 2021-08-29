@@ -1,6 +1,5 @@
 
 QT += core
-
 TARGET = cood
 TEMPLATE = app
 DESTDIR = "$$PWD/../../../bin"

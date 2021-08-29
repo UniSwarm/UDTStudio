@@ -1,6 +1,5 @@
 
 QT += core gui widgets charts
-
 TARGET = udtgui
 TEMPLATE = lib
 DESTDIR = "$$PWD/../../../bin"
@@ -26,6 +25,7 @@ HEADERS += \
     $$PWD/canopen/nodeod/nodeodtreeview.h \
     $$PWD/canopen/nodeod/nodeodfilterproxymodel.h \
     $$PWD/canopen/nodeod/nodeodwidget.h \
+    $$PWD/canopen/datalogger/dataloggersingleton.h \
     $$PWD/canopen/datalogger/dataloggerwidget.h \
     $$PWD/canopen/datalogger/dataloggertreeview.h \
     $$PWD/canopen/datalogger/dataloggermodel.h \
@@ -40,17 +40,9 @@ HEADERS += \
     $$PWD/canopen/indexWidget/indexcombobox.h \
     $$PWD/canopen/indexWidget/indexlabel.h \
     $$PWD/canopen/indexWidget/indexspinbox.h \
-    $$PWD/screen/nodescreenswidget.h \
-    $$PWD/screen/nodescreen.h \
-    $$PWD/screen/nodescreenhome.h \
-    $$PWD/screen/nodescreenod.h \
-    $$PWD/screen/nodescreenpdo.h \
-    $$PWD/screen/nodescreenumcmotor.h \
-    $$PWD/screen/nodescreensynchro.h \
     $$PWD/canopen/compositeWidget/motionsensorwidget.h \
     $$PWD/canopen/compositeWidget/motorwidget.h \
     $$PWD/canopen/compositeWidget/pidwidget.h \
-    $$PWD/canopen/datalogger/dataloggersingleton.h \
     $$PWD/canopen/profileWidget/p402/p402dtywidget.h \
     $$PWD/canopen/profileWidget/p402/p402ipwidget.h \
     $$PWD/canopen/profileWidget/p402/p402mode.h \
@@ -63,10 +55,17 @@ HEADERS += \
     $$PWD/canopen/profileWidget/p401/p401inputwidget.h \
     $$PWD/canopen/profileWidget/p401/p401outputwidget.h \
     $$PWD/canopen/profileWidget/p401/p401widget.h \
-    $$PWD/screen/nodescreenuio.h \
     $$PWD/canopen/profileWidget/p401/p401inputoptionwidget.h \
     $$PWD/canopen/profileWidget/p401/p401outputoptionwidget.h \
-    $$PWD/canopen/indexWidget/indexlcdnumber.h
+    $$PWD/canopen/indexWidget/indexlcdnumber.h \
+    $$PWD/screen/nodescreenswidget.h \
+    $$PWD/screen/nodescreen.h \
+    $$PWD/screen/nodescreenhome.h \
+    $$PWD/screen/nodescreenod.h \
+    $$PWD/screen/nodescreenpdo.h \
+    $$PWD/screen/nodescreenumcmotor.h \
+    $$PWD/screen/nodescreensynchro.h \
+    $$PWD/screen/nodescreenuio.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -86,6 +85,7 @@ SOURCES += \
     $$PWD/canopen/nodeod/nodeodtreeview.cpp \
     $$PWD/canopen/nodeod/nodeodfilterproxymodel.cpp \
     $$PWD/canopen/nodeod/nodeodwidget.cpp \
+    $$PWD/canopen/datalogger/dataloggersingleton.cpp \
     $$PWD/canopen/datalogger/dataloggerwidget.cpp \
     $$PWD/canopen/datalogger/dataloggertreeview.cpp \
     $$PWD/canopen/datalogger/dataloggermodel.cpp \
@@ -100,17 +100,9 @@ SOURCES += \
     $$PWD/canopen/indexWidget/indexcombobox.cpp \
     $$PWD/canopen/indexWidget/indexlabel.cpp \
     $$PWD/canopen/indexWidget/indexspinbox.cpp \
-    $$PWD/screen/nodescreenswidget.cpp \
-    $$PWD/screen/nodescreen.cpp \
-    $$PWD/screen/nodescreenhome.cpp \
-    $$PWD/screen/nodescreenod.cpp \
-    $$PWD/screen/nodescreenpdo.cpp \
-    $$PWD/screen/nodescreenumcmotor.cpp \
-    $$PWD/screen/nodescreensynchro.cpp \
     $$PWD/canopen/compositeWidget/motionsensorwidget.cpp \
     $$PWD/canopen/compositeWidget/motorwidget.cpp \
     $$PWD/canopen/compositeWidget/pidwidget.cpp \
-    $$PWD/canopen/datalogger/dataloggersingleton.cpp \
     $$PWD/canopen/profileWidget/p402/p402dtywidget.cpp \
     $$PWD/canopen/profileWidget/p402/p402ipwidget.cpp \
     $$PWD/canopen/profileWidget/p402/p402mode.cpp \
@@ -123,10 +115,17 @@ SOURCES += \
     $$PWD/canopen/profileWidget/p401/p401inputwidget.cpp \
     $$PWD/canopen/profileWidget/p401/p401outputwidget.cpp \
     $$PWD/canopen/profileWidget/p401/p401widget.cpp \
-    $$PWD/screen/nodescreenuio.cpp \
     $$PWD/canopen/profileWidget/p401/p401inputoptionwidget.cpp \
     $$PWD/canopen/profileWidget/p401/p401outputoptionwidget.cpp \
-    $$PWD/canopen/indexWidget/indexlcdnumber.cpp
+    $$PWD/canopen/indexWidget/indexlcdnumber.cpp \
+    $$PWD/screen/nodescreenswidget.cpp \
+    $$PWD/screen/nodescreen.cpp \
+    $$PWD/screen/nodescreenhome.cpp \
+    $$PWD/screen/nodescreenod.cpp \
+    $$PWD/screen/nodescreenpdo.cpp \
+    $$PWD/screen/nodescreenumcmotor.cpp \
+    $$PWD/screen/nodescreensynchro.cpp \
+    $$PWD/screen/nodescreenuio.cpp
 
 INCLUDEPATH += $$PWD/../../lib/od/ $$PWD/../../lib/canopen/
 

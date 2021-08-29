@@ -1,6 +1,5 @@
 
 QT += core
-
 TARGET = od
 TEMPLATE = lib
 DESTDIR = "$$PWD/../../../bin"
@@ -12,15 +11,16 @@ HEADERS += \
     $$PWD/model/subindex.h \
     $$PWD/generator/generator.h \
     $$PWD/generator/cgenerator.h \
+    $$PWD/generator/csvgenerator.h \
     $$PWD/generator/texgenerator.h \
     $$PWD/od_global.h \
-    $$PWD/writer/dcfwriter.h \
     $$PWD/model/deviceconfiguration.h \
     $$PWD/model/devicedescription.h \
     $$PWD/model/devicemodel.h \
     $$PWD/writer/deviceconfigurationwriter.h \
     $$PWD/writer/deviceiniwriter.h \
     $$PWD/writer/devicedescriptionwriter.h \
+    $$PWD/writer/dcfwriter.h \
     $$PWD/writer/edswriter.h \
     $$PWD/parser/dcfparser.h \
     $$PWD/parser/deviceconfigurationparser.h \
@@ -29,7 +29,6 @@ HEADERS += \
     $$PWD/parser/edsparser.h \
     $$PWD/db/oddb.h \
     $$PWD/db/odindexdb.h \
-    $$PWD/generator/csvgenerator.h \
     $$PWD/utility/profileduplicate.h \
     $$PWD/utility/configurationapply.h \
     $$PWD/utility/odmerger.h
@@ -39,14 +38,15 @@ SOURCES += \
     $$PWD/model/subindex.cpp \
     $$PWD/generator/generator.cpp \
     $$PWD/generator/cgenerator.cpp \
+    $$PWD/generator/csvgenerator.cpp \
     $$PWD/generator/texgenerator.cpp \
-    $$PWD/writer/dcfwriter.cpp \
     $$PWD/model/deviceconfiguration.cpp \
     $$PWD/model/devicedescription.cpp \
     $$PWD/model/devicemodel.cpp \
     $$PWD/writer/deviceconfigurationwriter.cpp \
     $$PWD/writer/deviceiniwriter.cpp \
     $$PWD/writer/devicedescriptionwriter.cpp \
+    $$PWD/writer/dcfwriter.cpp \
     $$PWD/writer/edswriter.cpp \
     $$PWD/parser/dcfparser.cpp \
     $$PWD/parser/deviceconfigurationparser.cpp \
@@ -55,7 +55,6 @@ SOURCES += \
     $$PWD/parser/edsparser.cpp \
     $$PWD/db/oddb.cpp \
     $$PWD/db/odindexdb.cpp \
-    $$PWD/generator/csvgenerator.cpp \
     $$PWD/utility/profileduplicate.cpp \
     $$PWD/utility/configurationapply.cpp \
     $$PWD/utility/odmerger.cpp
