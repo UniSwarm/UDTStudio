@@ -30,7 +30,7 @@
 NodeOd::NodeOd(Node *node)
     : _node(node)
 {
-    createMandatoryObject();
+    createMandatoryObjects();
 }
 
 NodeOd::~NodeOd()
@@ -53,6 +53,95 @@ void NodeOd::resetAllObjects()
             subIndex->resetValue();
         }
     }
+}
+
+bool NodeOd::loadEds(const QString &fileName)
+{
+    EdsParser parser;
+    DeviceDescription *deviceDescription = parser.parse(fileName);
+    DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, _node->nodeId());
+    _edsFileName = fileName;
+
+    for (Index *odIndex : deviceConfiguration->indexes())
+    {
+        NodeIndex *nodeIndex;
+        nodeIndex = index(odIndex->index());
+        if (!nodeIndex)
+        {
+            nodeIndex = new NodeIndex(odIndex->index());
+        }
+        nodeIndex->setName(odIndex->name());
+        nodeIndex->setObjectType(static_cast<NodeIndex::ObjectType>(odIndex->objectType()));
+        addIndex(nodeIndex);
+
+        for (SubIndex *odSubIndex : odIndex->subIndexes())
+        {
+            NodeSubIndex *nodeSubIndex;
+            nodeSubIndex = nodeIndex->subIndex(odSubIndex->subIndex());
+            if (!nodeSubIndex)
+            {
+                nodeSubIndex = new NodeSubIndex(odSubIndex->subIndex());
+            }
+            if (!nodeSubIndex->value().isValid())
+            {
+                nodeSubIndex->setValue(odSubIndex->value());
+            }
+            nodeSubIndex->setDefaultValue(odSubIndex->value());
+            nodeSubIndex->setName(odSubIndex->name());
+            nodeSubIndex->setAccessType(static_cast<NodeSubIndex::AccessType>(odSubIndex->accessType()));
+            nodeSubIndex->setDataType(static_cast<NodeSubIndex::DataType>(odSubIndex->dataType()));
+            nodeSubIndex->setLowLimit(odSubIndex->lowLimit());
+            nodeSubIndex->setHighLimit(odSubIndex->highLimit());
+            nodeIndex->addSubIndex(nodeSubIndex);
+            nodeSubIndex->setQ1516(IndexDb::isQ1516(nodeSubIndex->objectId(), _node->profileNumber()));
+        }
+    }
+
+    delete deviceDescription;
+    delete deviceConfiguration;
+
+    return true;
+}
+
+const QString &NodeOd::edsFileName() const
+{
+    return _edsFileName;
+}
+
+bool NodeOd::exportDcf(const QString &fileName) const
+{
+    DeviceConfiguration deviceConfiguration;
+    deviceConfiguration.setNodeId(QString::number(_node->nodeId()));
+    deviceConfiguration.setNodeName(_node->name());
+
+    for (NodeIndex *nodeIndex : _nodeIndexes)
+    {
+        Index *index = new Index(nodeIndex->index());
+        index->setName(nodeIndex->name());
+        index->setObjectType(static_cast<Index::Object>(nodeIndex->objectType()));
+        deviceConfiguration.addIndex(index);
+
+        for (NodeSubIndex *nodeSubIndex : nodeIndex->subIndexes())
+        {
+            SubIndex *subIndex = new SubIndex(nodeSubIndex->subIndex());
+            subIndex->setName(nodeSubIndex->name());
+            subIndex->setAccessType(static_cast<SubIndex::AccessType>(nodeSubIndex->accessType()));
+            subIndex->setDataType(static_cast<SubIndex::DataType>(nodeSubIndex->dataType()));
+            if (nodeSubIndex->error() == 0)
+            {
+                subIndex->setValue(QVariant());
+            }
+            else
+            {
+                subIndex->setValue(nodeSubIndex->value());
+            }
+            index->addSubIndex(subIndex);
+        }
+    }
+
+    DcfWriter dcfWriter;
+    dcfWriter.write(&deviceConfiguration, fileName);
+    return true;
 }
 
 const QMap<quint16, NodeIndex *> &NodeOd::indexes() const
@@ -170,22 +259,6 @@ quint32 NodeOd::errorObject(const quint16 index, const quint8 subIndex) const
     return nodeSubIndex->error();
 }
 
-QMetaType::Type NodeOd::dataType(const NodeObjectId &id) const
-{
-    return dataType(id.index(), id.subIndex());
-}
-
-QMetaType::Type NodeOd::dataType(const quint16 index, const quint8 subIndex) const
-{
-    NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
-    if (!nodeSubIndex)
-    {
-        return QMetaType::UnknownType;
-    }
-
-    return dataTypeCiaToQt(nodeSubIndex->dataType());
-}
-
 QVariant NodeOd::value(const NodeObjectId &id) const
 {
     return value(id.index(), id.subIndex());
@@ -200,6 +273,90 @@ QVariant NodeOd::value(const quint16 index, const quint8 subIndex) const
     }
 
     return nodeSubIndex->value();
+}
+
+QMetaType::Type NodeOd::dataTypeCiaToQt(const NodeSubIndex::DataType type)
+{
+    switch (type)
+    {
+    case NodeSubIndex::NONE:
+        break;
+
+    case NodeSubIndex::VISIBLE_STRING:
+    case NodeSubIndex::OCTET_STRING:
+    case NodeSubIndex::UNICODE_STRING:
+        return QMetaType::QByteArray;
+    case NodeSubIndex::TIME_OF_DAY:
+        break;
+
+    case NodeSubIndex::TIME_DIFFERENCE:
+        break;
+
+    case NodeSubIndex::DDOMAIN:
+        return QMetaType::QByteArray;
+
+    case NodeSubIndex::BOOLEAN:
+    case NodeSubIndex::UNSIGNED8:
+        return QMetaType::UChar;
+    case NodeSubIndex::INTEGER8:
+        return QMetaType::SChar;
+
+    case NodeSubIndex::UNSIGNED16:
+        return QMetaType::UShort;
+    case NodeSubIndex::INTEGER16:
+        return QMetaType::Short;
+
+    case NodeSubIndex::UNSIGNED24:
+        return QMetaType::UnknownType;
+    case NodeSubIndex::INTEGER24:
+        return QMetaType::UnknownType;
+
+    case NodeSubIndex::UNSIGNED32:
+        return QMetaType::UInt;
+    case NodeSubIndex::INTEGER32:
+        return QMetaType::Int;
+    case NodeSubIndex::REAL32:
+        return QMetaType::Float;
+
+    case NodeSubIndex::UNSIGNED40:
+        return QMetaType::UnknownType;
+    case NodeSubIndex::INTEGER40:
+        return QMetaType::UnknownType;
+
+    case NodeSubIndex::UNSIGNED48:
+        return QMetaType::UnknownType;
+    case NodeSubIndex::INTEGER48:
+        return QMetaType::UnknownType;
+
+    case NodeSubIndex::UNSIGNED56:
+        return QMetaType::UnknownType;
+    case NodeSubIndex::INTEGER56:
+        return QMetaType::UnknownType;
+
+    case NodeSubIndex::UNSIGNED64:
+        return QMetaType::ULongLong;
+    case NodeSubIndex::INTEGER64:
+        return QMetaType::LongLong;
+    case NodeSubIndex::REAL64:
+        return QMetaType::Double;
+    }
+    return QMetaType::UnknownType;
+}
+
+QMetaType::Type NodeOd::dataType(const NodeObjectId &id) const
+{
+    return dataType(id.index(), id.subIndex());
+}
+
+QMetaType::Type NodeOd::dataType(const quint16 index, const quint8 subIndex) const
+{
+    NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
+    if (!nodeSubIndex)
+    {
+        return QMetaType::UnknownType;
+    }
+
+    return dataTypeCiaToQt(nodeSubIndex->dataType());
 }
 
 QDateTime NodeOd::lastModification(const NodeObjectId &id) const
@@ -288,7 +445,19 @@ void NodeOd::updateObjectFromDevice(const quint16 indexDevice, const quint8 subi
     notifySubscribers(key, indexDevice, subindexDevice, flags); // notify subscribers to the full od
 }
 
-void NodeOd::createMandatoryObject()
+void NodeOd::store(uint8_t subIndex, uint32_t signature)
+{
+    NodeObjectId store = IndexDb::getObjectId(IndexDb::OD_STORE, subIndex);
+    _node->writeObject(store, signature);
+}
+
+void NodeOd::restore(uint8_t subIndex, uint32_t signature)
+{
+    NodeObjectId restore = IndexDb::getObjectId(IndexDb::OD_RESTORE, subIndex);
+    _node->writeObject(restore, signature);
+}
+
+void NodeOd::createMandatoryObjects()
 {
     NodeIndex *deviceType = new NodeIndex(0x1000);
     deviceType->setName("Device type");
@@ -332,7 +501,7 @@ void NodeOd::createMandatoryObject()
     addIndex(identityObject);
 }
 
-void NodeOd::createMandatoryBootloaderObject()
+void NodeOd::createBootloaderObjects()
 {
     NodeIndex *program = new NodeIndex(0x1F50);
     program->setName("Program");
@@ -409,173 +578,4 @@ void NodeOd::notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySu
         nodeOdSubscriber->notifySubscriber(objId, flags);
         ++subscriber;
     }
-}
-
-bool NodeOd::loadEds(const QString &fileName)
-{
-    EdsParser parser;
-    DeviceDescription *deviceDescription = parser.parse(fileName);
-    DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, _node->nodeId());
-    _fileName = fileName;
-
-    for (Index *odIndex : deviceConfiguration->indexes())
-    {
-        NodeIndex *nodeIndex;
-        nodeIndex = index(odIndex->index());
-        if (!nodeIndex)
-        {
-            nodeIndex = new NodeIndex(odIndex->index());
-        }
-        nodeIndex->setName(odIndex->name());
-        nodeIndex->setObjectType(static_cast<NodeIndex::ObjectType>(odIndex->objectType()));
-        addIndex(nodeIndex);
-
-        for (SubIndex *odSubIndex : odIndex->subIndexes())
-        {
-            NodeSubIndex *nodeSubIndex;
-            nodeSubIndex = nodeIndex->subIndex(odSubIndex->subIndex());
-            if (!nodeSubIndex)
-            {
-                nodeSubIndex = new NodeSubIndex(odSubIndex->subIndex());
-            }
-            if (!nodeSubIndex->value().isValid())
-            {
-                nodeSubIndex->setValue(odSubIndex->value());
-            }
-            nodeSubIndex->setDefaultValue(odSubIndex->value());
-            nodeSubIndex->setName(odSubIndex->name());
-            nodeSubIndex->setAccessType(static_cast<NodeSubIndex::AccessType>(odSubIndex->accessType()));
-            nodeSubIndex->setDataType(static_cast<NodeSubIndex::DataType>(odSubIndex->dataType()));
-            nodeSubIndex->setLowLimit(odSubIndex->lowLimit());
-            nodeSubIndex->setHighLimit(odSubIndex->highLimit());
-            nodeIndex->addSubIndex(nodeSubIndex);
-            nodeSubIndex->setQ1516(IndexDb::isQ1516(nodeSubIndex->objectId(), _node->profileNumber()));
-        }
-    }
-
-    delete deviceDescription;
-    delete deviceConfiguration;
-
-    return true;
-}
-
-const QString &NodeOd::edsFileName() const
-{
-    return _fileName;
-}
-
-bool NodeOd::exportDcf(const QString &fileName) const
-{
-    DeviceConfiguration deviceConfiguration;
-    deviceConfiguration.setNodeId(QString::number(_node->nodeId()));
-    deviceConfiguration.setNodeName(_node->name());
-
-    for (NodeIndex *nodeIndex : _nodeIndexes)
-    {
-        Index *index = new Index(nodeIndex->index());
-        index->setName(nodeIndex->name());
-        index->setObjectType(static_cast<Index::Object>(nodeIndex->objectType()));
-        deviceConfiguration.addIndex(index);
-
-        for (NodeSubIndex *nodeSubIndex : nodeIndex->subIndexes())
-        {
-            SubIndex *subIndex = new SubIndex(nodeSubIndex->subIndex());
-            subIndex->setName(nodeSubIndex->name());
-            subIndex->setAccessType(static_cast<SubIndex::AccessType>(nodeSubIndex->accessType()));
-            subIndex->setDataType(static_cast<SubIndex::DataType>(nodeSubIndex->dataType()));
-            if (nodeSubIndex->error() == 0)
-            {
-                subIndex->setValue(QVariant());
-            }
-            else
-            {
-                subIndex->setValue(nodeSubIndex->value());
-            }
-            index->addSubIndex(subIndex);
-        }
-    }
-
-    DcfWriter dcfWriter;
-    dcfWriter.write(&deviceConfiguration, fileName);
-    return true;
-}
-
-QMetaType::Type NodeOd::dataTypeCiaToQt(const NodeSubIndex::DataType type)
-{
-    switch (type)
-    {
-    case NodeSubIndex::NONE:
-        break;
-
-    case NodeSubIndex::VISIBLE_STRING:
-    case NodeSubIndex::OCTET_STRING:
-    case NodeSubIndex::UNICODE_STRING:
-        return QMetaType::QByteArray;
-    case NodeSubIndex::TIME_OF_DAY:
-        break;
-
-    case NodeSubIndex::TIME_DIFFERENCE:
-        break;
-
-    case NodeSubIndex::DDOMAIN:
-        return QMetaType::QByteArray;
-
-    case NodeSubIndex::BOOLEAN:
-    case NodeSubIndex::UNSIGNED8:
-        return QMetaType::UChar;
-    case NodeSubIndex::INTEGER8:
-        return QMetaType::SChar;
-
-    case NodeSubIndex::UNSIGNED16:
-        return QMetaType::UShort;
-    case NodeSubIndex::INTEGER16:
-        return QMetaType::Short;
-
-    case NodeSubIndex::UNSIGNED24:
-        return QMetaType::UnknownType;
-    case NodeSubIndex::INTEGER24:
-        return QMetaType::UnknownType;
-
-    case NodeSubIndex::UNSIGNED32:
-        return QMetaType::UInt;
-    case NodeSubIndex::INTEGER32:
-        return QMetaType::Int;
-    case NodeSubIndex::REAL32:
-        return QMetaType::Float;
-
-    case NodeSubIndex::UNSIGNED40:
-        return QMetaType::UnknownType;
-    case NodeSubIndex::INTEGER40:
-        return QMetaType::UnknownType;
-
-    case NodeSubIndex::UNSIGNED48:
-        return QMetaType::UnknownType;
-    case NodeSubIndex::INTEGER48:
-        return QMetaType::UnknownType;
-
-    case NodeSubIndex::UNSIGNED56:
-        return QMetaType::UnknownType;
-    case NodeSubIndex::INTEGER56:
-        return QMetaType::UnknownType;
-
-    case NodeSubIndex::UNSIGNED64:
-        return QMetaType::ULongLong;
-    case NodeSubIndex::INTEGER64:
-        return QMetaType::LongLong;
-    case NodeSubIndex::REAL64:
-        return QMetaType::Double;
-    }
-    return QMetaType::UnknownType;
-}
-
-void NodeOd::store(uint8_t subIndex, uint32_t signature)
-{
-    NodeObjectId store = IndexDb::getObjectId(IndexDb::OD_STORE, subIndex);
-    _node->writeObject(store, signature);
-}
-
-void NodeOd::restore(uint8_t subIndex, uint32_t signature)
-{
-    NodeObjectId restore = IndexDb::getObjectId(IndexDb::OD_RESTORE, subIndex);
-    _node->writeObject(restore, signature);
 }

@@ -172,7 +172,7 @@ void Bootloader::process()
             break;
 
         case Bootloader::PROGRAM_STOPPED:
-            _node->nodeOd()->createMandatoryBootloaderObject();
+            _node->nodeOd()->createBootloaderObjects();
 
             if (_ufw)
             {
@@ -192,7 +192,7 @@ void Bootloader::process()
             break;
 
         case Bootloader::NO_PROGRAM:
-            _node->nodeOd()->createMandatoryBootloaderObject();
+            _node->nodeOd()->createBootloaderObjects();
             uploadProgram();
             break;
 
@@ -209,7 +209,7 @@ void Bootloader::process()
 
     case STATE_STOP_PROGRAM:
     {
-        _node->nodeOd()->createMandatoryBootloaderObject();
+        _node->nodeOd()->createBootloaderObjects();
         if (_ufw)
         {
             sendKey(_ufw->head().device);

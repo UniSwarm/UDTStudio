@@ -42,11 +42,12 @@ public:
 
     Node *node() const;
 
+    void resetAllObjects();
+
+    // eds
     bool loadEds(const QString &fileName);
     const QString &edsFileName() const;
     bool exportDcf(const QString &fileName) const;
-
-    void resetAllObjects();
 
     // index
     const QMap<quint16, NodeIndex *> &indexes() const;
@@ -70,6 +71,7 @@ public:
     QVariant value(const quint16 index, const quint8 subIndex = 0x00) const;
 
     // dataType
+    static QMetaType::Type dataTypeCiaToQt(const NodeSubIndex::DataType type);
     QMetaType::Type dataType(const NodeObjectId &id) const;
     QMetaType::Type dataType(const quint16 index, const quint8 subIndex = 0x00) const;
 
@@ -83,18 +85,18 @@ public:
     void unsubscribe(NodeOdSubscriber *object, const quint16 notifyIndex, const quint8 notifySubIndex);
     void updateObjectFromDevice(const quint16 index, const quint8 subindex, const QVariant &value, const SDO::FlagsRequest flags);
 
-    static QMetaType::Type dataTypeCiaToQt(const NodeSubIndex::DataType type);
-
+    // store / restore
     void store(uint8_t subIndex, uint32_t signature);
     void restore(uint8_t subIndex, uint32_t signature);
 
-    void createMandatoryObject();
-    void createMandatoryBootloaderObject();
+    // default objects
+    void createMandatoryObjects();
+    void createBootloaderObjects();
 
 private:
     Node *_node;
     QMap<quint16, NodeIndex *> _nodeIndexes;
-    QString _fileName;
+    QString _edsFileName;
 
     struct Subscriber
     {
