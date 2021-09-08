@@ -44,6 +44,17 @@ Node *NodeOd::node() const
     return _node;
 }
 
+void NodeOd::resetAllObjects()
+{
+    for (NodeIndex *index : qAsConst(_nodeIndexes))
+    {
+        for (NodeSubIndex *subIndex : index->subIndexes())
+        {
+            subIndex->resetValue();
+        }
+    }
+}
+
 const QMap<quint16, NodeIndex *> &NodeOd::indexes() const
 {
     return _nodeIndexes;
@@ -189,17 +200,6 @@ QVariant NodeOd::value(const quint16 index, const quint8 subIndex) const
     }
 
     return nodeSubIndex->value();
-}
-
-void NodeOd::resetValue()
-{
-    for (NodeIndex *index : qAsConst(_nodeIndexes))
-    {
-        for (NodeSubIndex *subIndex : index->subIndexes())
-        {
-            subIndex->resetValue();
-        }
-    }
 }
 
 QDateTime NodeOd::lastModification(const NodeObjectId &id) const

@@ -92,6 +92,15 @@ Node::~Node()
     _nodeOd->deleteLater();
 }
 
+void Node::setBus(CanOpenBus *bus)
+{
+    _bus = bus;
+    for (Service *service : qAsConst(_services))
+    {
+        service->setBus(bus);
+    }
+}
+
 CanOpenBus *Node::bus() const
 {
     return _bus;
@@ -106,16 +115,6 @@ quint8 Node::busId() const
     return 255;
 }
 
-QList<Service *> Node::services() const
-{
-    return _services;
-}
-
-NodeOd *Node::nodeOd() const
-{
-    return _nodeOd;
-}
-
 quint8 Node::nodeId() const
 {
     return _nodeId;
@@ -124,21 +123,6 @@ quint8 Node::nodeId() const
 void Node::setNodeId(const quint8 nodeId)
 {
     _nodeId = nodeId;
-}
-
-const QString &Node::name() const
-{
-    return _name;
-}
-
-void Node::setName(const QString &name)
-{
-    bool changed = (name != _name);
-    _name = name;
-    if (changed)
-    {
-        emit nameChanged(_name);
-    }
 }
 
 Node::Status Node::status() const
@@ -175,6 +159,21 @@ void Node::setStatus(const Status status)
     }
 }
 
+const QString &Node::name() const
+{
+    return _name;
+}
+
+void Node::setName(const QString &name)
+{
+    bool changed = (name != _name);
+    _name = name;
+    if (changed)
+    {
+        emit nameChanged(_name);
+    }
+}
+
 quint16 Node::manufacturerId() const
 {
     return static_cast<quint16>(nodeOd()->value(0x1018, 1).toUInt());
@@ -190,124 +189,9 @@ quint16 Node::profileNumber() const
     return static_cast<quint16>(nodeOd()->value(0x1000).toUInt() & 0xFFFF);
 }
 
-void Node::addProfile(NodeProfile *nodeProfile)
+NodeOd *Node::nodeOd() const
 {
-    _nodeProfiles.append(nodeProfile);
-}
-
-const QList<NodeProfile *> &Node::profiles() const
-{
-    return _nodeProfiles;
-}
-
-int Node::profilesCount() const
-{
-    return _nodeProfiles.count();
-}
-
-void Node::sendPreop()
-{
-    _nmt->sendPreop();
-}
-
-void Node::sendStart()
-{
-    _nmt->sendStart();
-}
-
-void Node::sendStop()
-{
-    _nmt->sendStop();
-}
-
-void Node::sendResetComm()
-{
-    _nmt->sendResetComm();
-}
-
-void Node::sendResetNode()
-{
-    _nmt->sendResetNode();
-}
-
-void Node::setBus(CanOpenBus *bus)
-{
-    _bus = bus;
-    for (Service *service : qAsConst(_services))
-    {
-        service->setBus(bus);
-    }
-}
-
-Bootloader *Node::bootloader() const
-{
-    return _bootloader;
-}
-
-void Node::reset()
-{
-    _nodeOd->resetValue();
-    for (Service *service : qAsConst(_services))
-    {
-        service->reset();
-    }
-    for (NodeProfile *nodeProfile : qAsConst(_nodeProfiles))
-    {
-        nodeProfile->reset();
-    }
-}
-
-const QList<RPDO *> &Node::rpdos() const
-{
-    return _rpdos;
-}
-
-const QList<TPDO *> &Node::tpdos() const
-{
-    return _tpdos;
-}
-
-bool Node::isMappedObjectInPdo(const NodeObjectId &object) const
-{
-    for (RPDO *rpdo : qAsConst(_rpdos))
-    {
-        if (rpdo->isMappedObject(object))
-        {
-            return true;
-        }
-    }
-    for (TPDO *tpdo : qAsConst(_tpdos))
-    {
-        if (tpdo->isMappedObject(object))
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-RPDO *Node::isMappedObjectInRpdo(const NodeObjectId &object) const
-{
-    for (RPDO *rpdo : _rpdos)
-    {
-        if (rpdo->isMappedObject(object))
-        {
-            return rpdo;
-        }
-    }
-    return nullptr;
-}
-
-TPDO *Node::isMappedObjectInTpdo(const NodeObjectId &object) const
-{
-    for (TPDO *tpdo : _tpdos)
-    {
-        if (tpdo->isMappedObject(object))
-        {
-            return tpdo;
-        }
-    }
-    return nullptr;
+    return _nodeOd;
 }
 
 void Node::readObject(const NodeObjectId &id)
@@ -379,9 +263,118 @@ const QString &Node::edsFileName() const
     return _nodeOd->edsFileName();
 }
 
-void Node::updateFirmware(const QByteArray &prog)
+void Node::addProfile(NodeProfile *nodeProfile)
 {
-    quint16 index = 0x1F50;
-    quint8 subindex = 0x01;
-    _sdoClients.at(0)->downloadData(index, subindex, prog);
+    _nodeProfiles.append(nodeProfile);
+}
+
+const QList<NodeProfile *> &Node::profiles() const
+{
+    return _nodeProfiles;
+}
+
+int Node::profilesCount() const
+{
+    return _nodeProfiles.count();
+}
+
+const QList<RPDO *> &Node::rpdos() const
+{
+    return _rpdos;
+}
+
+const QList<TPDO *> &Node::tpdos() const
+{
+    return _tpdos;
+}
+
+bool Node::isMappedObjectInPdo(const NodeObjectId &object) const
+{
+    for (RPDO *rpdo : qAsConst(_rpdos))
+    {
+        if (rpdo->isMappedObject(object))
+        {
+            return true;
+        }
+    }
+    for (TPDO *tpdo : qAsConst(_tpdos))
+    {
+        if (tpdo->isMappedObject(object))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+RPDO *Node::isMappedObjectInRpdo(const NodeObjectId &object) const
+{
+    for (RPDO *rpdo : _rpdos)
+    {
+        if (rpdo->isMappedObject(object))
+        {
+            return rpdo;
+        }
+    }
+    return nullptr;
+}
+
+TPDO *Node::isMappedObjectInTpdo(const NodeObjectId &object) const
+{
+    for (TPDO *tpdo : _tpdos)
+    {
+        if (tpdo->isMappedObject(object))
+        {
+            return tpdo;
+        }
+    }
+    return nullptr;
+}
+
+Bootloader *Node::bootloader() const
+{
+    return _bootloader;
+}
+
+QList<Service *> Node::services() const
+{
+    return _services;
+}
+
+void Node::reset()
+{
+    _nodeOd->resetAllObjects();
+    for (Service *service : qAsConst(_services))
+    {
+        service->reset();
+    }
+    for (NodeProfile *nodeProfile : qAsConst(_nodeProfiles))
+    {
+        nodeProfile->reset();
+    }
+}
+
+void Node::sendPreop()
+{
+    _nmt->sendPreop();
+}
+
+void Node::sendStart()
+{
+    _nmt->sendStart();
+}
+
+void Node::sendStop()
+{
+    _nmt->sendStop();
+}
+
+void Node::sendResetComm()
+{
+    _nmt->sendResetComm();
+}
+
+void Node::sendResetNode()
+{
+    _nmt->sendResetNode();
 }

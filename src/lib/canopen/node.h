@@ -46,23 +46,9 @@ public:
 
     CanOpenBus *bus() const;
     quint8 busId() const;
-    QList<Service *> services() const;
-    NodeOd *nodeOd() const;
 
     quint8 nodeId() const;
     void setNodeId(const quint8 nodeId);
-
-    const QString &name() const;
-
-    void readObject(const NodeObjectId &id);
-    void readObject(const quint16 index, const quint8 subindex, const QMetaType::Type dataType = QMetaType::Type::UnknownType);
-    void writeObject(const NodeObjectId &id, const QVariant &data);
-    void writeObject(const quint16 index, const quint8 subindex, const QVariant &data);
-
-    void loadEds(const QString &fileName);
-    const QString &edsFileName() const;
-
-    void updateFirmware(const QByteArray &prog);
 
     enum Status
     {
@@ -75,25 +61,40 @@ public:
     QString statusStr() const;
     void setStatus(const Status status);
 
+    const QString &name() const;
     quint16 manufacturerId() const;
     quint16 productCode() const;
     quint16 profileNumber() const;
 
+    // Node od
+    NodeOd *nodeOd() const;
+    void readObject(const NodeObjectId &id);
+    void readObject(const quint16 index, const quint8 subindex, const QMetaType::Type dataType = QMetaType::Type::UnknownType);
+    void writeObject(const NodeObjectId &id, const QVariant &data);
+    void writeObject(const quint16 index, const quint8 subindex, const QVariant &data);
+
+    void loadEds(const QString &fileName);
+    const QString &edsFileName() const;
+
+    // Profiles
     void addProfile(NodeProfile *nodeProfile);
     const QList<NodeProfile *> &profiles() const;
     int profilesCount() const;
 
+    // PDOs
     const QList<TPDO *> &tpdos() const;
     const QList<RPDO *> &rpdos() const;
     bool isMappedObjectInPdo(const NodeObjectId &object) const;
     RPDO *isMappedObjectInRpdo(const NodeObjectId &object) const;
     TPDO *isMappedObjectInTpdo(const NodeObjectId &object) const;
 
-    void reset();
-
     Bootloader *bootloader() const;
 
-  public slots:
+    QList<Service *> services() const;
+
+    void reset();
+
+public slots:
     void setName(const QString &name);
 
     void sendPreop();

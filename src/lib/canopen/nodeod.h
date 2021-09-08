@@ -46,6 +46,8 @@ public:
     const QString &edsFileName() const;
     bool exportDcf(const QString &fileName) const;
 
+    void resetAllObjects();
+
     // index
     const QMap<quint16, NodeIndex *> &indexes() const;
     NodeIndex *index(const quint16 index) const;
@@ -66,7 +68,6 @@ public:
     // value
     QVariant value(const NodeObjectId &id) const;
     QVariant value(const quint16 index, const quint8 subIndex = 0x00) const;
-    void resetValue();
 
     // dataType
     QMetaType::Type dataType(const NodeObjectId &id) const;
