@@ -18,14 +18,15 @@
 
 #include "nodeprofile402.h"
 #include "indexdb402.h"
-#include "node.h"
-#include "nodeobjectid.h"
-#include "nodeodsubscriber.h"
+#include "modecp.h"
+#include "modedty.h"
 #include "modeip.h"
 #include "modepp.h"
 #include "modetq.h"
 #include "modevl.h"
-#include "modedty.h"
+#include "node.h"
+#include "nodeobjectid.h"
+#include "nodeodsubscriber.h"
 
 #define TIMER_READ_MODE_OPERATION_DISPLAY 100u
 
@@ -81,7 +82,8 @@ enum SupportedDriveModes : quint32
     SDM_CSV = 0x100,
     SDM_CST = 0x200,
     SDM_CSTCA = 0x400,
-    SDM_DTY = 0x10000
+    SDM_DTY = 0x10000,
+    SDM_CP = 0x100000
 };
 
 NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
@@ -142,7 +144,7 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     _modes.insert(DTY, new ModeDty(this));
     _modes.insert(VL, new ModeVl(this));
     _modes.insert(PP, new ModePp(this));
-    _modes.insert(DTY, new ModeDty(this));
+    _modes.insert(CP, new ModeCp(this));
 
     _controlWord = 0;
 }
@@ -155,9 +157,8 @@ void NodeProfile402::init()
 
 NodeProfile402::OperationMode NodeProfile402::actualMode()
 {
-    if ((_modeCurrent == NoMode) || (_modeCurrent == PP) || (_modeCurrent == VL) || (_modeCurrent == PV)
-        || (_modeCurrent == TQ) || (_modeCurrent == HM) || (_modeCurrent == IP) || (_modeCurrent == CSP)
-        || (_modeCurrent == CSV) || (_modeCurrent == CST) || (_modeCurrent == CSTCA) || (_modeCurrent == DTY))
+    if ((_modeCurrent == CP) || (_modeCurrent == DTY) || (_modeCurrent == NoMode) || (_modeCurrent == PP) || (_modeCurrent == VL) || (_modeCurrent == PV) || (_modeCurrent == TQ) ||
+        (_modeCurrent == HM) || (_modeCurrent == IP) || (_modeCurrent == CSP) || (_modeCurrent == CSV) || (_modeCurrent == CST) || (_modeCurrent == CSTCA))
     {
         return static_cast<OperationMode>(_modeCurrent);
     }
@@ -196,6 +197,9 @@ QString NodeProfile402::modeStr(NodeProfile402::OperationMode mode)
 {
     switch (mode)
     {
+    case OperationMode::CP:
+        return tr("Continuous position (CP)");
+
     case OperationMode::DTY:
         return tr("Duty cycle (DTY)");
 
@@ -777,6 +781,10 @@ void NodeProfile402::decodeSupportedDriveModes(quint32 supportedDriveModes)
 
         case SDM_DTY:
             _modesSupported.append(OperationMode::DTY);
+            break;
+
+        case SDM_CP:
+            _modesSupported.append(OperationMode::CP);
             break;
         }
     }

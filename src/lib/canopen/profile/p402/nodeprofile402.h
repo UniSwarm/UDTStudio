@@ -40,7 +40,8 @@ public:
     enum OperationMode
     {
         MS = -2,
-        DTY = -1,  // Duty Cycle mode
+        CP = -16, // Duty Cycle mode
+        DTY = -1, // Duty Cycle mode
         NoMode = 0, //
         PP = 1, // Profile position mode
         VL = 2, // Velocity mode
