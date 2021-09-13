@@ -26,11 +26,17 @@
 class NodeObjectId;
 class NodeProfile402;
 
-class ModeDty : public Mode
+class CANOPEN_EXPORT ModeDty : public Mode
 {
     Q_OBJECT
 public:
     ModeDty(NodeProfile402 *nodeProfile402);
+
+    //ObjectID
+    const NodeObjectId &targetObjectId() const;
+    const NodeObjectId &demandObjectId() const;
+    const NodeObjectId &slopeObjectId() const;
+    const NodeObjectId &maxObjectId() const;
 
 signals:
     void isAppliedTarget();
@@ -54,7 +60,7 @@ public:
     void reset() override;
 
     // NodeOdSubscriber interface
-public:
+  protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 

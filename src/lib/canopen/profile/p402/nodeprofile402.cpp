@@ -102,32 +102,35 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     _stateMachineCurrent = State402::STATE_NotReadyToSwitchOn;
 
     _nodeProfileState = State::NODEPROFILE_STOPED;
-    _sendRequest = false;
-    connect(&_nodeProfleTimer, &QTimer::timeout, this, &NodeProfile402::updateData);
+    connect(&_nodeProfleTimer, &QTimer::timeout, this, &NodeProfile402::readRealTimeObjects);
+
+    setNodeInterrest(node);
 
     _modesOfOperationObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, axis);
-    _modesOfOperationDisplayObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION_DISPLAY, axis);
-    _supportedDriveModesObjectId = IndexDb402::getObjectId(IndexDb402::OD_SUPPORTED_DRIVE_MODES, axis);
-    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, axis);
-    _statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD, axis);
-
     _modesOfOperationObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    registerObjId(_modesOfOperationObjectId);
+
+    _modesOfOperationDisplayObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION_DISPLAY, axis);
     _modesOfOperationDisplayObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    registerObjId(_modesOfOperationDisplayObjectId);
+
+    _supportedDriveModesObjectId = IndexDb402::getObjectId(IndexDb402::OD_SUPPORTED_DRIVE_MODES, axis);
     _supportedDriveModesObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    registerObjId(_supportedDriveModesObjectId);
+
+    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, axis);
     _controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    _controlWordObjectId.setDataType(QMetaType::Type::UShort);
+    registerObjId(_controlWordObjectId);
+
+    _statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD, axis);
+    _statusWordObjectId.setDataType(QMetaType::Type::UShort);
     _statusWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    registerObjId(_statusWordObjectId);
 
     // Specific
     _fgPolaritybjectId = IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY, axis);
     _fgPolaritybjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-
-    setNodeInterrest(node);
-    registerObjId(_modesOfOperationObjectId);
-    registerObjId(_modesOfOperationDisplayObjectId);
-    registerObjId(_supportedDriveModesObjectId);
-    registerObjId(_controlWordObjectId);
-    registerObjId(_statusWordObjectId);
-    // Specific
     registerObjId(_fgPolaritybjectId);
 
     decodeSupportedDriveModes(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
@@ -421,35 +424,64 @@ bool NodeProfile402::polarityVelocity()
     return value;
 }
 
-void NodeProfile402::updateData()
+const NodeObjectId NodeProfile402::abortConnectionObjectId() const
 {
-    readObject(_statusWordObjectId);
-    if (_modeCurrent != OperationMode::NoMode)
-    {
-        _modes[_modeCurrent]->readRealTimeObjects();
-    }
+    return IndexDb402::getObjectId(IndexDb402::OD_ABORT_CONNECTION_OPTION, _node->nodeId());
 }
 
-void NodeProfile402::readAllObject()
+const NodeObjectId NodeProfile402::quickStopObjectId() const
 {
-    readModeOfOperationDisplay();
-    readObject(_statusWordObjectId);
-    if (_modeCurrent != OperationMode::NoMode)
-    {
-        _modes[_modeCurrent]->readAllObjects();
-    }
+    return IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION, _node->nodeId());
 }
 
-void NodeProfile402::readObject(const NodeObjectId &id)
+const NodeObjectId NodeProfile402::shutdownObjectId() const
 {
-    _sendRequest = true;
-    _node->readObject(id);
+    return IndexDb402::getObjectId(IndexDb402::OD_SHUTDOWN_OPTION, _node->nodeId());
 }
 
-void NodeProfile402::writeObject(const NodeObjectId &id, const QVariant &data)
+const NodeObjectId NodeProfile402::disableObjectId() const
 {
-    _sendRequest = true;
-    _node->writeObject(id, data);
+    return IndexDb402::getObjectId(IndexDb402::OD_DISABLE_OPERATION_OPTION, _node->nodeId());
+}
+
+const NodeObjectId NodeProfile402::haltObjectId() const
+{
+    return IndexDb402::getObjectId(IndexDb402::OD_HALT_OPTION, _node->nodeId());
+}
+
+const NodeObjectId NodeProfile402::faultReactionObjectId() const
+{
+    return IndexDb402::getObjectId(IndexDb402::OD_FAULT_REACTION_OPTION, _node->nodeId());
+}
+
+const NodeObjectId &NodeProfile402::modesOfOperationObjectId() const
+{
+    return _modesOfOperationObjectId;
+}
+
+const NodeObjectId &NodeProfile402::modesOfOperationDisplayObjectId() const
+{
+    return _modesOfOperationDisplayObjectId;
+}
+
+const NodeObjectId &NodeProfile402::supportedDriveModesObjectId() const
+{
+    return _supportedDriveModesObjectId;
+}
+
+const NodeObjectId &NodeProfile402::controlWordObjectId() const
+{
+    return _controlWordObjectId;
+}
+
+const NodeObjectId &NodeProfile402::statusWordObjectId() const
+{
+    return _statusWordObjectId;
+}
+
+const NodeObjectId &NodeProfile402::fgPolaritybjectId() const
+{
+    return _fgPolaritybjectId;
 }
 
 Mode *NodeProfile402::mode(NodeProfile402::OperationMode mode) const

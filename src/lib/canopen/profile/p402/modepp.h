@@ -21,12 +21,9 @@
 
 #include "canopen_global.h"
 
-#include "mode.h"
+#include "modepc.h"
 
-class Node;
-class NodeProfile402;
-
-class CANOPEN_EXPORT ModePp : public Mode
+class CANOPEN_EXPORT ModePp : public ModePc
 {
     Q_OBJECT
 public:
@@ -44,6 +41,9 @@ public:
     void setChangeOnSetPoint(bool ok); // bit 9 of controlWord
     bool isChangeOnSetPoint(void); // bit 9 of controlWord
 
+    //ObjectID
+    const NodeObjectId &targetObjectId() const;
+
 signals:
     void changeNewSetPoint(bool ok);
     void changeSetImmediatelyEvent(bool ok);
@@ -56,36 +56,15 @@ private:
 
     NodeObjectId _targetObjectId;
 
-    NodeObjectId _positionDemandValueObjectId;
-    NodeObjectId _positionActualValueObjectId;
-
-    NodeObjectId _positionRangelLimitMinObjectId;
-    NodeObjectId _positionRangelLimitMaxObjectId;
-    NodeObjectId _softwarePositionLimitMinObjectId;
-    NodeObjectId _softwarePositionLimitMaxObjectId;
-    NodeObjectId _homeOffsetObjectId;
-    NodeObjectId _polarityObjectId;
-    NodeObjectId _profileVelocityObjectId;
-    NodeObjectId _endVelocityObjectId;
-    NodeObjectId _maxProfileVelocityObjectId;
-    NodeObjectId _maxMotorSpeedObjectId;
-    NodeObjectId _profileAccelerationObjectId;
-    NodeObjectId _maxAccelerationObjectId;
-    NodeObjectId _profileDecelerationObjectId;
-    NodeObjectId _maxDecelerationObjectId;
-    NodeObjectId _quickStopDecelerationObjectId;
-
     // Mode interface
 public:
     void setTarget(qint32 target) override;
     quint16 getSpecificCwFlag() override;
     void setCwDefaultflag() override;
-    void readRealTimeObjects() override;
-    void readAllObjects() override;
 
     // NodeOdSubscriber interface
 public:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+  void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
 #endif // MODEPP_H

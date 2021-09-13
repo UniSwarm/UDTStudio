@@ -21,12 +21,12 @@
 
 #include "canopen_global.h"
 
-#include "mode.h"
+#include "modepc.h"
 
 class NodeObjectId;
 class NodeProfile402;
 
-class CANOPEN_EXPORT ModeIp : public Mode
+class CANOPEN_EXPORT ModeIp : public ModePc
 {
     Q_OBJECT
 public:
@@ -34,6 +34,12 @@ public:
 
     void setEnableRamp(bool ok);
     bool isEnableRamp(void);
+
+    //ObjectID
+    const NodeObjectId &targetObjectId() const;
+    const NodeObjectId &bufferClearObjectId() const;
+    const NodeObjectId &timePeriodUnitsObjectId() const;
+    const NodeObjectId &timePeriodIndexObjectId() const;
 
 public slots:
     void bufferClear();
@@ -48,35 +54,20 @@ private:
     NodeObjectId _targetObjectId;
     NodeObjectId _bufferClearObjectId;
 
-    NodeObjectId _positionDemandValueObjectId;
-    NodeObjectId _positionActualValueObjectId;
-
     NodeObjectId _timePeriodUnitObjectId;
     NodeObjectId _timePeriodIndexObjectId;
-
-    NodeObjectId _positionRangelLimitMinObjectId;
-    NodeObjectId _positionRangelLimitMaxObjectId;
-    NodeObjectId _softwarePositionLimitMinObjectId;
-    NodeObjectId _softwarePositionLimitMaxObjectId;
-
-    NodeObjectId _maxProfileVelocityObjectId;
-    NodeObjectId _maxMotorSpeedObjectId;
-
-    NodeObjectId _homeOffsetObjectId;
-    NodeObjectId _polarityObjectId;
 
     // Mode interface
 public:
     void setTarget(qint32 target) override;
     quint16 getSpecificCwFlag() override;
     void setCwDefaultflag() override;
-    void readRealTimeObjects() override;
-    void readAllObjects() override;
     void reset() override;
 
     // NodeOdSubscriber interface
 public:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+  void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+
 };
 
 #endif // MODEIP_H

@@ -111,6 +111,19 @@ public:
     bool polarityPosition();
     bool polarityVelocity();
 
+    // ObjectID
+    const NodeObjectId &modesOfOperationObjectId() const;
+    const NodeObjectId &modesOfOperationDisplayObjectId() const;
+    const NodeObjectId &supportedDriveModesObjectId() const;
+    const NodeObjectId &controlWordObjectId() const;
+    const NodeObjectId &statusWordObjectId() const;
+    const NodeObjectId &fgPolaritybjectId() const;
+    const NodeObjectId abortConnectionObjectId() const;
+    const NodeObjectId quickStopObjectId() const;
+    const NodeObjectId shutdownObjectId() const;
+    const NodeObjectId disableObjectId() const;
+    const NodeObjectId haltObjectId() const;
+    const NodeObjectId faultReactionObjectId() const;
 signals:
     void modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew);
     void stateChanged();
@@ -120,7 +133,6 @@ signals:
     void supportedDriveModesUdpdated();
 
 private:
-
     enum State
     {
         NODEPROFILE_STOPED,

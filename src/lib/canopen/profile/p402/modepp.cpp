@@ -31,48 +31,10 @@ enum ControlWordIP : quint16
 };
 
 ModePp::ModePp(NodeProfile402 *nodeProfile402)
-    : Mode(nodeProfile402)
+    : ModePc(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_PP_POSITION_TARGET, _nodeProfile402->axisId());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
-
-    _positionDemandValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, _nodeProfile402->axisId());
-    _positionActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, _nodeProfile402->axisId());
-
-    _positionRangelLimitMinObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MIN, _nodeProfile402->axisId());
-    _positionRangelLimitMaxObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MAX, _nodeProfile402->axisId());
-    _softwarePositionLimitMinObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MIN, _nodeProfile402->axisId());
-    _softwarePositionLimitMaxObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MAX, _nodeProfile402->axisId());
-    _homeOffsetObjectId = IndexDb402::getObjectId(IndexDb402::OD_HM_HOME_OFFSET, _nodeProfile402->axisId());
-    _polarityObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_VELOCITY, _nodeProfile402->axisId());
-    _profileVelocityObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_VELOCITY, _nodeProfile402->axisId());
-    _endVelocityObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_END_VELOCITY, _nodeProfile402->axisId());
-    _maxProfileVelocityObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_PROFILE_VELOCITY, _nodeProfile402->axisId());
-    _maxMotorSpeedObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_MOTOR_SPEED, _nodeProfile402->axisId());
-    _profileAccelerationObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_ACCELERATION, _nodeProfile402->axisId());
-    _maxAccelerationObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_ACCELERATION, _nodeProfile402->axisId());
-    _profileDecelerationObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_DECELERATION, _nodeProfile402->axisId());
-    _maxDecelerationObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_DECELERATION, _nodeProfile402->axisId());
-    _quickStopDecelerationObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_QUICK_STOP_DECELERATION, _nodeProfile402->axisId());
-
-    _positionDemandValueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _positionActualValueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-
-    _positionRangelLimitMinObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _positionRangelLimitMaxObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _softwarePositionLimitMinObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _softwarePositionLimitMaxObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _homeOffsetObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _polarityObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _profileVelocityObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _endVelocityObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _maxProfileVelocityObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _maxMotorSpeedObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _profileAccelerationObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _maxAccelerationObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _profileDecelerationObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _maxDecelerationObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _quickStopDecelerationObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
 
     _mode = NodeProfile402::OperationMode::PP;
 
@@ -149,6 +111,11 @@ bool ModePp::isChangeOnSetPoint()
     return (_cmdControlWordFlag & CW_PP_ChangeOnSetPoint) >> 9;
 }
 
+const NodeObjectId &ModePp::targetObjectId() const
+{
+    return _targetObjectId;
+}
+
 void ModePp::setAbsRel(bool ok)
 {
     if (ok)
@@ -178,30 +145,6 @@ void ModePp::setCwDefaultflag()
 {
     _cmdControlWordFlag = 0;
 }
-
-void ModePp::readRealTimeObjects()
-{
-    _nodeProfile402->node()->readObject(_positionDemandValueObjectId);
-    _nodeProfile402->node()->readObject( _positionActualValueObjectId);
-}
-
-void ModePp::readAllObjects()
-{
-    _nodeProfile402->node()->readObject(_positionDemandValueObjectId);
-    _nodeProfile402->node()->readObject(_positionActualValueObjectId);
-    _nodeProfile402->node()->readObject(_positionRangelLimitMinObjectId);
-    _nodeProfile402->node()->readObject(_positionRangelLimitMaxObjectId);
-    _nodeProfile402->node()->readObject(_softwarePositionLimitMinObjectId);
-    _nodeProfile402->node()->readObject(_softwarePositionLimitMaxObjectId);
-    _nodeProfile402->node()->readObject(_profileVelocityObjectId);
-    _nodeProfile402->node()->readObject(_maxProfileVelocityObjectId);
-    _nodeProfile402->node()->readObject(_maxMotorSpeedObjectId);
-    _nodeProfile402->node()->readObject(_profileAccelerationObjectId);
-    _nodeProfile402->node()->readObject(_maxAccelerationObjectId);
-    _nodeProfile402->node()->readObject(_profileDecelerationObjectId);
-    _nodeProfile402->node()->readObject(_maxDecelerationObjectId);
-}
-
 
 void ModePp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {

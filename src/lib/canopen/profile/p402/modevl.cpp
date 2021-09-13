@@ -51,21 +51,21 @@ ModeVl::ModeVl(NodeProfile402 *nodeProfile402)
     _dimensionFactorNumeratorObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_NUMERATOR, _nodeProfile402->axisId());
     _dimensionFactorDenominatorObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_DIMENSION_FACTOR_DENOMINATOR, _nodeProfile402->axisId());
 
-    _velocityDemandObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _velocityActualObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _velocityDemandObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+    _velocityActualObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _minVelocityMinMaxAmountObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _maxVelocityMinMaxAmountObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _accelerationDeltaSpeedObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _accelerationDeltaTimeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _decelerationDeltaSpeedObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _decelerationDeltaTimeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _quickStopDeltaSpeedObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _quickStopDeltaTimeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _setPointFactorNumeratorObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _setPointFactorDenominatorObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _dimensionFactorNumeratorObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _dimensionFactorDenominatorObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _minVelocityMinMaxAmountObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+    _maxVelocityMinMaxAmountObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+    _accelerationDeltaSpeedObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+    _accelerationDeltaTimeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+    _decelerationDeltaSpeedObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+    _decelerationDeltaTimeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+    _quickStopDeltaSpeedObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+    _quickStopDeltaTimeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+    _setPointFactorNumeratorObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+    _setPointFactorDenominatorObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+    _dimensionFactorNumeratorObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+    _dimensionFactorDenominatorObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
     _mode = NodeProfile402::OperationMode::VL;
 
@@ -136,12 +136,87 @@ bool ModeVl::isReferenceRamp(void)
     return (_cmdControlWordFlag & CW_VL_ReferenceRamp) >> 6;
 }
 
+const NodeObjectId &ModeVl::targetObjectId() const
+{
+    return _targetObjectId;
+}
+
+const NodeObjectId &ModeVl::velocityDemandObjectId() const
+{
+    return _velocityDemandObjectId;
+}
+
+const NodeObjectId &ModeVl::velocityActualObjectId() const
+{
+    return _velocityActualObjectId;
+}
+
+const NodeObjectId &ModeVl::minVelocityMinMaxAmountObjectId() const
+{
+    return _minVelocityMinMaxAmountObjectId;
+}
+
+const NodeObjectId &ModeVl::maxVelocityMinMaxAmountObjectId() const
+{
+    return _maxVelocityMinMaxAmountObjectId;
+}
+
+const NodeObjectId &ModeVl::accelerationDeltaSpeedObjectId() const
+{
+    return _accelerationDeltaSpeedObjectId;
+}
+
+const NodeObjectId &ModeVl::accelerationDeltaTimeObjectId() const
+{
+    return _accelerationDeltaTimeObjectId;
+}
+
+const NodeObjectId &ModeVl::decelerationDeltaSpeedObjectId() const
+{
+    return _decelerationDeltaSpeedObjectId;
+}
+
+const NodeObjectId &ModeVl::decelerationDeltaTimeObjectId() const
+{
+    return _decelerationDeltaTimeObjectId;
+}
+
+const NodeObjectId &ModeVl::quickStopDeltaSpeedObjectId() const
+{
+    return _quickStopDeltaSpeedObjectId;
+}
+
+const NodeObjectId &ModeVl::quickStopDeltaTimeObjectId() const
+{
+    return _quickStopDeltaTimeObjectId;
+}
+
+const NodeObjectId &ModeVl::setPointFactorNumeratorObjectId() const
+{
+    return _setPointFactorNumeratorObjectId;
+}
+
+const NodeObjectId &ModeVl::setPointFactorDenominatorObjectId() const
+{
+    return _setPointFactorDenominatorObjectId;
+}
+
+const NodeObjectId &ModeVl::dimensionFactorNumeratorObjectId() const
+{
+    return _dimensionFactorNumeratorObjectId;
+}
+
+const NodeObjectId &ModeVl::dimensionFactorDenominatorObjectId() const
+{
+    return _dimensionFactorDenominatorObjectId;
+}
+
 void ModeVl::setTarget(qint32 target)
 {
     _nodeProfile402->node()->writeObject(_targetObjectId, QVariant(static_cast<qint16>(target)));
 }
 
-quint16 ModeVl::getSpecificCwFlag ()
+quint16 ModeVl::getSpecificCwFlag()
 {
     return _cmdControlWordFlag & CW_Mask;
 }

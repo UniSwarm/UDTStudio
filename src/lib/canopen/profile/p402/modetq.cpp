@@ -28,30 +28,45 @@ ModeTq::ModeTq(NodeProfile402 *nodeProfile402)
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 
     _torqueDemandObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_DEMAND, _nodeProfile402->axisId());
+    _torqueDemandObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+
     _torqueActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE, _nodeProfile402->axisId());
-    //_currentActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_CURRENT_ACTUAL_VALUE, _nodeProfile402->axisId());
+    _torqueActualValueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
     _targetSlopeObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_SLOPE, _nodeProfile402->axisId());
-    //_torqueProfileTypeObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_PROFILE_TYPE, _nodeProfile402->axisId());
+    _targetSlopeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+
     _maxTorqueObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_MAX_TORQUE, _nodeProfile402->axisId());
-    //_maxCurrentObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_MAX_CURRENT, _nodeProfile402->axisId());
-    //_motorRatedTorqueObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_TORQUE, _nodeProfile402->axisId());
-    //_motorRatedCurrentObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_CURRENT, _nodeProfile402->axisId());
-    //_dcLinkVoltageObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_DC_LINK_CIRCUIT_VOLTAGE, _nodeProfile402->axisId());
-
-    _torqueDemandObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _torqueActualValueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    //_currentActualValueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-
-    _targetSlopeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    //_torqueProfileTypeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _maxTorqueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    //_maxCurrentObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    //_motorRatedTorqueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    //_motorRatedCurrentObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    //_dcLinkVoltageObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _maxTorqueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
     _mode = NodeProfile402::OperationMode::TQ;
+
+    _cmdControlWordFlag = 0;
+}
+
+const NodeObjectId &ModeTq::targetObjectId() const
+{
+    return _targetObjectId;
+}
+
+const NodeObjectId &ModeTq::torqueDemandObjectId() const
+{
+    return _torqueDemandObjectId;
+}
+
+const NodeObjectId &ModeTq::torqueActualValueObjectId() const
+{
+    return _torqueActualValueObjectId;
+}
+
+const NodeObjectId &ModeTq::targetSlopeObjectId() const
+{
+    return _targetSlopeObjectId;
+}
+
+const NodeObjectId &ModeTq::maxTorqueObjectId() const
+{
+    return _maxTorqueObjectId;
 }
 
 void ModeTq::setTarget(qint32 target)
@@ -79,14 +94,8 @@ void ModeTq::readAllObjects()
 {
     _nodeProfile402->node()->readObject(_torqueDemandObjectId);
     _nodeProfile402->node()->readObject(_torqueActualValueObjectId);
-    //_nodeProfile402->node()->readObject(_currentActualValueLabel);
     _nodeProfile402->node()->readObject(_targetSlopeObjectId);
-    //_nodeProfile402->node()->readObject(_torqueProfileTypeObjectId);
     _nodeProfile402->node()->readObject(_maxTorqueObjectId);
-    //_nodeProfile402->node()->readObject(_maxCurrentObjectId);
-    //_nodeProfile402->node()->readObject(_motorRatedTorqueObjectId);
-    //_nodeProfile402->node()->readObject(_motorRatedCurrentObjectId);
-    //_nodeProfile402->node()->readObject(_dcLinkVoltageLabel);
 }
 
 void ModeTq::reset()

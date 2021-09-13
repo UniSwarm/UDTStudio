@@ -41,6 +41,23 @@ public:
     void setReferenceRamp(bool ok);
     bool isReferenceRamp(void);
 
+    //ObjectID
+    const NodeObjectId &targetObjectId() const;
+    const NodeObjectId &velocityDemandObjectId() const;
+    const NodeObjectId &velocityActualObjectId() const;
+    const NodeObjectId &minVelocityMinMaxAmountObjectId() const;
+    const NodeObjectId &maxVelocityMinMaxAmountObjectId() const;
+    const NodeObjectId &accelerationDeltaSpeedObjectId() const;
+    const NodeObjectId &accelerationDeltaTimeObjectId() const;
+    const NodeObjectId &decelerationDeltaSpeedObjectId() const;
+    const NodeObjectId &decelerationDeltaTimeObjectId() const;
+    const NodeObjectId &quickStopDeltaSpeedObjectId() const;
+    const NodeObjectId &quickStopDeltaTimeObjectId() const;
+    const NodeObjectId &setPointFactorNumeratorObjectId() const;
+    const NodeObjectId &setPointFactorDenominatorObjectId() const;
+    const NodeObjectId &dimensionFactorNumeratorObjectId() const;
+    const NodeObjectId &dimensionFactorDenominatorObjectId() const;
+
 signals:
     void enableRampEvent(bool ok);
     void referenceRampEvent(bool ok);
@@ -79,7 +96,7 @@ public:
 
     // NodeOdSubscriber interface
 public:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+  void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
 #endif // MODEVL_H

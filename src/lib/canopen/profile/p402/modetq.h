@@ -32,6 +32,13 @@ class CANOPEN_EXPORT ModeTq : public Mode
 public:
     ModeTq(NodeProfile402 *nodeProfile402);
 
+    // ObjectId
+    const NodeObjectId &targetObjectId() const;
+    const NodeObjectId &torqueDemandObjectId() const;
+    const NodeObjectId &torqueActualValueObjectId() const;
+    const NodeObjectId &targetSlopeObjectId() const;
+    const NodeObjectId &maxTorqueObjectId() const;
+
 signals:
     void isAppliedTarget();
 
@@ -43,15 +50,9 @@ private:
 
     NodeObjectId _torqueDemandObjectId;
     NodeObjectId _torqueActualValueObjectId;
-    //NodeObjectId _currentActualValueObjectId;
 
     NodeObjectId _targetSlopeObjectId;
-    //NodeObjectId _torqueProfileTypeObjectId;
     NodeObjectId _maxTorqueObjectId;
-    //NodeObjectId _maxCurrentObjectId;
-    //NodeObjectId _motorRatedTorqueObjectId;
-    //NodeObjectId _motorRatedCurrentObjectId;
-    //NodeObjectId _dcLinkVoltageObjectId;
 
     // Mode interface
 public:
@@ -64,7 +65,8 @@ public:
 
     // NodeOdSubscriber interface
 public:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+  void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+
 };
 
 #endif // MODETQ_H

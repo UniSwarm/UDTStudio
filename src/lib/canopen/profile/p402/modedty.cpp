@@ -31,11 +31,32 @@ ModeDty::ModeDty(NodeProfile402 *nodeProfile402)
     _slopeObjectId = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_SLOPE, _nodeProfile402->axisId());
     _maxObjectId = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_MAX, _nodeProfile402->axisId());
 
-    _demandObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _slopeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
-    _maxObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(),_nodeProfile402->node()->nodeId());
+    _demandObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+    _slopeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
+    _maxObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
     _mode = NodeProfile402::OperationMode::TQ;
+    _cmdControlWordFlag = 0;
+}
+
+const NodeObjectId &ModeDty::targetObjectId() const
+{
+    return _targetObjectId;
+}
+
+const NodeObjectId &ModeDty::demandObjectId() const
+{
+    return _demandObjectId;
+}
+
+const NodeObjectId &ModeDty::slopeObjectId() const
+{
+    return _slopeObjectId;
+}
+
+const NodeObjectId &ModeDty::maxObjectId() const
+{
+    return _maxObjectId;
 }
 
 void ModeDty::setTarget(qint32 target)
@@ -72,4 +93,5 @@ void ModeDty::reset()
 
 void ModeDty::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+
 }
