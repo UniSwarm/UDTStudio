@@ -343,13 +343,13 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4000 + axisDecal)), 0x1};
 
     case OD_MS_TEMPERATURE_DRIVER:
-        return NodeObjectId(static_cast<quint16>((0x2801 + axisDecal)), opt2 + 1);
+        return NodeObjectId(static_cast<quint16>((0x2801 + axisDecal)), static_cast<quint8>(opt2 + 1));
     case OD_MS_BACK_EMF:
-        return NodeObjectId(static_cast<quint16>((0x2802 + axisDecal)), opt2 + 1);
+        return NodeObjectId(static_cast<quint16>((0x2802 + axisDecal)), static_cast<quint8>(opt2 + 1));
     case OD_MS_CURRENT:
-        return NodeObjectId(static_cast<quint16>((0x2803 + axisDecal)), opt2 + 1);
+        return NodeObjectId(static_cast<quint16>((0x2803 + axisDecal)), static_cast<quint8>(opt2 + 1));
     case OD_MS_PWM:
-        return NodeObjectId(static_cast<quint16>((0x2804 + axisDecal)), opt2 + 1);
+        return NodeObjectId(static_cast<quint16>((0x2804 + axisDecal)), static_cast<quint8>(opt2 + 1));
 
     case OD_MS_MOTOR_STATUS_HALL_RAW_VALUE:
         return {static_cast<quint16>((0x4006 + axisDecal)), 0x1};
@@ -476,6 +476,10 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4082 + axisDecal)), 0x1};
     case OD_MS_CONF_BRAKE_PEAK:
         return {static_cast<quint16>((0x4082 + axisDecal)), 0x2};
+
+    // CONTINUOUS POSITION
+    case OD_CP_POSITION_TARGET:
+        return {static_cast<quint16>((0x41F0 + axisDecal)), 0x0};
 
     // DUTY CYCLE MODE
     case OD_MS_DUTY_CYCLE_MODE_TARGET:
