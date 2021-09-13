@@ -87,6 +87,10 @@ void P402OptionWidget::setNode(Node *node, uint8_t axis)
         _disableObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
         registerObjId(_disableObjectId);
 
+        _haltObjectId = IndexDb402::getObjectId(IndexDb402::OD_HALT_OPTION, axis);
+        _haltObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        registerObjId(_haltObjectId);
+
         _faultReactionObjectId = IndexDb402::getObjectId(IndexDb402::OD_FAULT_REACTION_OPTION, axis);
         _faultReactionObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
         registerObjId(_faultReactionObjectId);
