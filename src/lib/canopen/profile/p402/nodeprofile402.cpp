@@ -62,7 +62,7 @@ enum StatusWord : quint16
     SW_EventRemote = 0x200,
     SW_EventTargetReached = 0x400,
     SW_EventSetPointAcknowledgeIpModeActive = 0x1000,
-    SW_EventFollowingError = 0x2000, // -> specific ip
+    SW_EventFollowingError = 0x2000,  // -> specific ip
     SW_EventInternalLimitActive = 0x800,
     SW_EventMask = 0xE90,
 
@@ -86,8 +86,7 @@ enum SupportedDriveModes : quint32
     SDM_CP = 0x100000
 };
 
-NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
-    : NodeProfile(node)
+NodeProfile402::NodeProfile402(Node *node, uint8_t axis) : NodeProfile(node)
 {
     if (axis > 8)
     {
@@ -181,8 +180,8 @@ void NodeProfile402::init()
 
 NodeProfile402::OperationMode NodeProfile402::actualMode()
 {
-    if ((_modeCurrent == CP) || (_modeCurrent == DTY) || (_modeCurrent == NoMode) || (_modeCurrent == PP) || (_modeCurrent == VL) || (_modeCurrent == PV) || (_modeCurrent == TQ) ||
-        (_modeCurrent == HM) || (_modeCurrent == IP) || (_modeCurrent == CSP) || (_modeCurrent == CSV) || (_modeCurrent == CST) || (_modeCurrent == CSTCA))
+    if ((_modeCurrent == CP) || (_modeCurrent == DTY) || (_modeCurrent == NoMode) || (_modeCurrent == PP) || (_modeCurrent == VL) || (_modeCurrent == PV) || (_modeCurrent == TQ)
+        || (_modeCurrent == HM) || (_modeCurrent == IP) || (_modeCurrent == CSP) || (_modeCurrent == CSV) || (_modeCurrent == CST) || (_modeCurrent == CSTCA))
     {
         return static_cast<OperationMode>(_modeCurrent);
     }
@@ -203,8 +202,8 @@ bool NodeProfile402::setMode(OperationMode mode)
         return true;
     }
 
-    if ((mode == CP) || (mode == DTY) || (mode == NoMode) || (mode == PP) || (mode == VL) || (mode == PV) || (mode == TQ) || (mode == HM) || (mode == IP) || (mode == CSP) || (mode == CSV) ||
-        (mode == CST) || (mode == CSTCA))
+    if ((mode == CP) || (mode == DTY) || (mode == NoMode) || (mode == PP) || (mode == VL) || (mode == PV) || (mode == TQ) || (mode == HM) || (mode == IP) || (mode == CSP)
+        || (mode == CSV) || (mode == CST) || (mode == CSTCA))
     {
         _node->writeObject(_modesOfOperationObjectId, QVariant(mode));
         _modeState = MODE_CHANGE;
@@ -221,54 +220,54 @@ QString NodeProfile402::modeStr(NodeProfile402::OperationMode mode)
 {
     switch (mode)
     {
-    case OperationMode::CP:
-        return tr("Continuous position (CP)");
+        case OperationMode::CP:
+            return tr("Continuous position (CP)");
 
-    case OperationMode::DTY:
-        return tr("Duty cycle (DTY)");
+        case OperationMode::DTY:
+            return tr("Duty cycle (DTY)");
 
-    case OperationMode::NoMode:
-        return tr("No mode");
+        case OperationMode::NoMode:
+            return tr("No mode");
 
-    case OperationMode::PP:
-        return tr("Profile position (PP)");
+        case OperationMode::PP:
+            return tr("Profile position (PP)");
 
-    case OperationMode::VL:
-        return tr("Velocity (VL)");
+        case OperationMode::VL:
+            return tr("Velocity (VL)");
 
-    case OperationMode::PV:
-        return tr("Profile velocity (PV)");
+        case OperationMode::PV:
+            return tr("Profile velocity (PV)");
 
-    case OperationMode::TQ:
-        return tr("Torque profile(TQ)");
+        case OperationMode::TQ:
+            return tr("Torque profile(TQ)");
 
-    case OperationMode::HM:
-        return tr("Homing (HM)");
+        case OperationMode::HM:
+            return tr("Homing (HM)");
 
-    case OperationMode::IP:
-        return tr("Interpolated position (IP)");
+        case OperationMode::IP:
+            return tr("Interpolated position (IP)");
 
-    case OperationMode::CSP:
-        return tr("Cyclic sync position (CSP)");
+        case OperationMode::CSP:
+            return tr("Cyclic sync position (CSP)");
 
-    case OperationMode::CSV:
-        return tr("Cyclic sync velocity (CSV)");
+        case OperationMode::CSV:
+            return tr("Cyclic sync velocity (CSV)");
 
-    case OperationMode::CST:
-        return tr("Cyclic sync torque (CST)");
+        case OperationMode::CST:
+            return tr("Cyclic sync torque (CST)");
 
-    case OperationMode::CSTCA:
-        return tr("Cyclic sync torque mode with commutation angle (CTCA)");
+        case OperationMode::CSTCA:
+            return tr("Cyclic sync torque mode with commutation angle (CTCA)");
 
-    default:
-        if (_modeCurrent < -1)
-        {
-            return tr("Manufacturer-specific");
-        }
-        else
-        {
-            return tr("Reserved");
-        }
+        default:
+            if (_modeCurrent < -1)
+            {
+                return tr("Manufacturer-specific");
+            }
+            else
+            {
+                return tr("Reserved");
+            }
     }
 }
 
@@ -314,29 +313,29 @@ QString NodeProfile402::stateStr(State402 state) const
 {
     switch (state)
     {
-    case State402::STATE_NotReadyToSwitchOn:
-        return tr("1_Not ready to switch on");
+        case State402::STATE_NotReadyToSwitchOn:
+            return tr("1_Not ready to switch on");
 
-    case State402::STATE_SwitchOnDisabled:
-        return tr("2_Switch on disabled");
+        case State402::STATE_SwitchOnDisabled:
+            return tr("2_Switch on disabled");
 
-    case State402::STATE_ReadyToSwitchOn:
-        return tr("3_Ready to switch on");
+        case State402::STATE_ReadyToSwitchOn:
+            return tr("3_Ready to switch on");
 
-    case State402::STATE_SwitchedOn:
-        return tr("4_Switched on");
+        case State402::STATE_SwitchedOn:
+            return tr("4_Switched on");
 
-    case State402::STATE_OperationEnabled:
-        return tr("5_Operation enabled");
+        case State402::STATE_OperationEnabled:
+            return tr("5_Operation enabled");
 
-    case State402::STATE_QuickStopActive:
-        return tr("6_Quick stop active");
+        case State402::STATE_QuickStopActive:
+            return tr("6_Quick stop active");
 
-    case State402::STATE_FaultReactionActive:
-        return tr("7_Fault reaction active");
+        case State402::STATE_FaultReactionActive:
+            return tr("7_Fault reaction active");
 
-    case State402::STATE_Fault:
-        return tr("8_Fault");
+        case State402::STATE_Fault:
+            return tr("8_Fault");
     }
     return QString();
 }
@@ -377,43 +376,43 @@ QString NodeProfile402::event402Str(quint8 event402)
 {
     switch (event402)
     {
-    case Event402::None:
-        return tr("None");
+        case Event402::None:
+            return tr("None");
 
-    case Event402::InternalLimitActive:
-        return tr("Internal Limit Active");
+        case Event402::InternalLimitActive:
+            return tr("Internal Limit Active");
 
-    case Event402::Warning:
-        return tr("Warning");
+        case Event402::Warning:
+            return tr("Warning");
 
-    case Event402::FollowingError:
-        return tr("Following Error");
+        case Event402::FollowingError:
+            return tr("Following Error");
 
-    case Event402::VoltageEnabled:
-        return tr("Voltage Enabled");
+        case Event402::VoltageEnabled:
+            return tr("Voltage Enabled");
 
-    case Event402::Remote:
-        return tr("Remote");
+        case Event402::Remote:
+            return tr("Remote");
 
-    case Event402::TargetReached:
-        return tr("Target Reached");
+        case Event402::TargetReached:
+            return tr("Target Reached");
 
-    case Event402::ModeSpecific:
-        if (_modeCurrent == OperationMode::PP)
-        {
-            return tr("Set-point acknowledge");
-        }
-        else if (_modeCurrent == OperationMode::IP)
-        {
-            return tr("Interpolation active");
-        }
-        else
-        {
+        case Event402::ModeSpecific:
+            if (_modeCurrent == OperationMode::PP)
+            {
+                return tr("Set-point acknowledge");
+            }
+            else if (_modeCurrent == OperationMode::IP)
+            {
+                return tr("Interpolation active");
+            }
+            else
+            {
+                return QString();
+            }
+
+        default:
             return QString();
-        }
-
-    default:
-        return QString();
     }
 }
 
@@ -555,7 +554,7 @@ void NodeProfile402::changeStateMachine(const State402 state)
         return;
     }
 
-    if (_stateMachineCurrent != STATE_NotReadyToSwitchOn) // for not send cw = 0 during init
+    if (_stateMachineCurrent != STATE_NotReadyToSwitchOn)  // for not send cw = 0 during init
     {
         // Reset specific flag of mode
         _controlWord = (_controlWord & ~CW_OperationModeSpecific);
@@ -568,94 +567,94 @@ void NodeProfile402::changeStateMachine(const State402 state)
 
     switch (_stateMachineCurrent)
     {
-    case STATE_NotReadyToSwitchOn:
-    case STATE_SwitchOnDisabled:
-        if ((state == STATE_ReadyToSwitchOn) || (state == STATE_OperationEnabled)) // state == STATE_OperationEnabled -> For OperatiobEnabled Quickly
-        {
-            _controlWord = (_controlWord & ~CW_Mask);
-            _controlWord |= (CW_EnableVoltage | CW_QuickStop);
-        }
-        break;
-
-    case STATE_ReadyToSwitchOn:
-        if (state == STATE_SwitchOnDisabled)
-        {
-            _controlWord = (_controlWord & ~CW_Mask);
-        }
-        else if (state == STATE_SwitchedOn)
-        {
-            _controlWord = (_controlWord & ~CW_Mask);
-            _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn);
-        }
-        else if (state == STATE_OperationEnabled)
-        {
-            _controlWord = (_controlWord & ~CW_Mask);
-            _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn);
-        }
-        break;
-
-    case STATE_SwitchedOn:
-        if (state == STATE_OperationEnabled)
-        {
-            _controlWord = (_controlWord & ~CW_Mask);
-            _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn | CW_EnableOperation);
-        }
-        if (state == STATE_ReadyToSwitchOn)
-        {
-            _controlWord = (_controlWord & ~CW_Mask);
-            _controlWord |= (CW_EnableVoltage | CW_QuickStop);
-        }
-        if (state == STATE_SwitchOnDisabled)
-        {
-            _controlWord = (_controlWord & ~CW_Mask);
-        }
-        break;
-
-    case STATE_OperationEnabled:
-        if (state == STATE_SwitchOnDisabled)
-        {
-            _controlWord = (_controlWord & ~CW_Mask);
-            _controlWord = (_controlWord & ~CW_Mask);
-        }
-        if (state == STATE_ReadyToSwitchOn)
-        {
-            _controlWord = (_controlWord & ~CW_Mask);
-            _controlWord |= (CW_EnableVoltage | CW_QuickStop);
-        }
-        if (state == STATE_SwitchedOn)
-        {
-            _controlWord = (_controlWord & ~CW_Mask);
-            _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn);
-        }
-        if (state == STATE_QuickStopActive)
-        {
-            _controlWord = (_controlWord & ~CW_Mask);
-            _controlWord |= (CW_EnableVoltage);
-            qint16 quickStopOption = static_cast<qint16>(_node->nodeOd()->value(IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION, _axisId)).toUInt());
-            if ((quickStopOption == 1) || (quickStopOption == 2))
+        case STATE_NotReadyToSwitchOn:
+        case STATE_SwitchOnDisabled:
+            if ((state == STATE_ReadyToSwitchOn) || (state == STATE_OperationEnabled))  // state == STATE_OperationEnabled -> For OperatiobEnabled Quickly
             {
-                _stateMachineRequested = STATE_SwitchOnDisabled;
+                _controlWord = (_controlWord & ~CW_Mask);
+                _controlWord |= (CW_EnableVoltage | CW_QuickStop);
             }
-        }
-        break;
+            break;
 
-    case STATE_QuickStopActive:
-        if (state == STATE_SwitchOnDisabled || (state == STATE_OperationEnabled)) // state == STATE_OperationEnabled -> For OperatiobEnabled Quickly
-        {
-            _controlWord = (_controlWord & ~CW_Mask);
-        }
-        break;
+        case STATE_ReadyToSwitchOn:
+            if (state == STATE_SwitchOnDisabled)
+            {
+                _controlWord = (_controlWord & ~CW_Mask);
+            }
+            else if (state == STATE_SwitchedOn)
+            {
+                _controlWord = (_controlWord & ~CW_Mask);
+                _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn);
+            }
+            else if (state == STATE_OperationEnabled)
+            {
+                _controlWord = (_controlWord & ~CW_Mask);
+                _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn);
+            }
+            break;
 
-    case STATE_FaultReactionActive:
-        break;
+        case STATE_SwitchedOn:
+            if (state == STATE_OperationEnabled)
+            {
+                _controlWord = (_controlWord & ~CW_Mask);
+                _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn | CW_EnableOperation);
+            }
+            if (state == STATE_ReadyToSwitchOn)
+            {
+                _controlWord = (_controlWord & ~CW_Mask);
+                _controlWord |= (CW_EnableVoltage | CW_QuickStop);
+            }
+            if (state == STATE_SwitchOnDisabled)
+            {
+                _controlWord = (_controlWord & ~CW_Mask);
+            }
+            break;
 
-    case STATE_Fault:
-        if (state >= STATE_SwitchOnDisabled)
-        {
-            _controlWord = (_controlWord & ~CW_Mask);
-            _controlWord |= (CW_FaultReset);
-        }
-        break;
+        case STATE_OperationEnabled:
+            if (state == STATE_SwitchOnDisabled)
+            {
+                _controlWord = (_controlWord & ~CW_Mask);
+                _controlWord = (_controlWord & ~CW_Mask);
+            }
+            if (state == STATE_ReadyToSwitchOn)
+            {
+                _controlWord = (_controlWord & ~CW_Mask);
+                _controlWord |= (CW_EnableVoltage | CW_QuickStop);
+            }
+            if (state == STATE_SwitchedOn)
+            {
+                _controlWord = (_controlWord & ~CW_Mask);
+                _controlWord |= (CW_EnableVoltage | CW_QuickStop | CW_SwitchOn);
+            }
+            if (state == STATE_QuickStopActive)
+            {
+                _controlWord = (_controlWord & ~CW_Mask);
+                _controlWord |= (CW_EnableVoltage);
+                qint16 quickStopOption = static_cast<qint16>(_node->nodeOd()->value(IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION, _axisId)).toUInt());
+                if ((quickStopOption == 1) || (quickStopOption == 2))
+                {
+                    _stateMachineRequested = STATE_SwitchOnDisabled;
+                }
+            }
+            break;
+
+        case STATE_QuickStopActive:
+            if (state == STATE_SwitchOnDisabled || (state == STATE_OperationEnabled))  // state == STATE_OperationEnabled -> For OperatiobEnabled Quickly
+            {
+                _controlWord = (_controlWord & ~CW_Mask);
+            }
+            break;
+
+        case STATE_FaultReactionActive:
+            break;
+
+        case STATE_Fault:
+            if (state >= STATE_SwitchOnDisabled)
+            {
+                _controlWord = (_controlWord & ~CW_Mask);
+                _controlWord |= (CW_FaultReset);
+            }
+            break;
     }
 
     _controlWord = (_controlWord & ~CW_Halt);
@@ -772,53 +771,53 @@ void NodeProfile402::decodeSupportedDriveModes(quint32 supportedDriveModes)
     {
         switch ((supportedDriveModes & (1 << i)))
         {
-        case SDM_PP:
-            _modesSupported.append(OperationMode::PP);
-            break;
+            case SDM_PP:
+                _modesSupported.append(OperationMode::PP);
+                break;
 
-        case SDM_VL:
-            _modesSupported.append(OperationMode::VL);
-            break;
+            case SDM_VL:
+                _modesSupported.append(OperationMode::VL);
+                break;
 
-        case SDM_PV:
-            _modesSupported.append(OperationMode::PV);
-            break;
+            case SDM_PV:
+                _modesSupported.append(OperationMode::PV);
+                break;
 
-        case SDM_TQ:
-            _modesSupported.append(OperationMode::TQ);
-            break;
+            case SDM_TQ:
+                _modesSupported.append(OperationMode::TQ);
+                break;
 
-        case SDM_HM:
-            _modesSupported.append(OperationMode::HM);
-            break;
+            case SDM_HM:
+                _modesSupported.append(OperationMode::HM);
+                break;
 
-        case SDM_IP:
-            _modesSupported.append(OperationMode::IP);
-            break;
+            case SDM_IP:
+                _modesSupported.append(OperationMode::IP);
+                break;
 
-        case SDM_CSP:
-            _modesSupported.append(OperationMode::CSP);
-            break;
+            case SDM_CSP:
+                _modesSupported.append(OperationMode::CSP);
+                break;
 
-        case SDM_CSV:
-            _modesSupported.append(OperationMode::CSV);
-            break;
+            case SDM_CSV:
+                _modesSupported.append(OperationMode::CSV);
+                break;
 
-        case SDM_CST:
-            _modesSupported.append(OperationMode::CST);
-            break;
+            case SDM_CST:
+                _modesSupported.append(OperationMode::CST);
+                break;
 
-        case SDM_CSTCA:
-            _modesSupported.append(OperationMode::CSTCA);
-            break;
+            case SDM_CSTCA:
+                _modesSupported.append(OperationMode::CSTCA);
+                break;
 
-        case SDM_DTY:
-            _modesSupported.append(OperationMode::DTY);
-            break;
+            case SDM_DTY:
+                _modesSupported.append(OperationMode::DTY);
+                break;
 
-        case SDM_CP:
-            _modesSupported.append(OperationMode::CP);
-            break;
+            case SDM_CP:
+                _modesSupported.append(OperationMode::CP);
+                break;
         }
     }
     emit supportedDriveModesUdpdated();

@@ -29,8 +29,7 @@ enum ControlWordVL : quint16
     CW_Mask = 0x70
 };
 
-ModeVl::ModeVl(NodeProfile402 *nodeProfile402)
-    : Mode(nodeProfile402)
+ModeVl::ModeVl(NodeProfile402 *nodeProfile402) : Mode(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, _nodeProfile402->axisId());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());

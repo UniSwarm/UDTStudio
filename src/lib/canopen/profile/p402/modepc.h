@@ -21,7 +21,6 @@
 
 #include "canopen_global.h"
 
-#include "mode.h"
 #include "modehm.h"
 
 class Node;
@@ -32,7 +31,7 @@ class CANOPEN_EXPORT ModePc : public ModeHm
 public:
     ModePc(NodeProfile402 *nodeProfile402);
 
-    //ObjectID
+    // ObjectID
     const NodeObjectId &positionDemandValueObjectId() const;
     const NodeObjectId &positionActualValueObjectId() const;
     const NodeObjectId &positionRangeLimitMinObjectId() const;
@@ -79,4 +78,4 @@ public:
     void readAllObjects() override;
 };
 
-#endif // MODEPC_H
+#endif  // MODEPC_H

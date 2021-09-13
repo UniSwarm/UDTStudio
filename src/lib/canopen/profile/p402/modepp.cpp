@@ -30,8 +30,7 @@ enum ControlWordIP : quint16
     CW_Mask = 0x270
 };
 
-ModePp::ModePp(NodeProfile402 *nodeProfile402)
-    : ModePc(nodeProfile402)
+ModePp::ModePp(NodeProfile402 *nodeProfile402) : ModePc(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_PP_POSITION_TARGET, _nodeProfile402->axisId());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());

@@ -18,12 +18,11 @@
 
 #include "mode.h"
 
+#include "indexdb402.h"
 #include "node.h"
 #include "nodeprofile402.h"
-#include "indexdb402.h"
 
-Mode::Mode(NodeProfile402 *nodeProfile402)
-    : _nodeProfile402(nodeProfile402)
+Mode::Mode(NodeProfile402 *nodeProfile402) : _nodeProfile402(nodeProfile402)
 {
     _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, _nodeProfile402->axisId());
     _controlWordObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
@@ -31,15 +30,12 @@ Mode::Mode(NodeProfile402 *nodeProfile402)
 
 void Mode::readRealTimeObjects()
 {
-
 }
 
 void Mode::readAllObjects()
 {
-
 }
 
 void Mode::reset()
 {
-
 }

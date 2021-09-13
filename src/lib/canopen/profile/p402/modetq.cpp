@@ -21,8 +21,7 @@
 #include "node.h"
 #include "nodeprofile402.h"
 
-ModeTq::ModeTq(NodeProfile402 *nodeProfile402)
-    : Mode(nodeProfile402)
+ModeTq::ModeTq(NodeProfile402 *nodeProfile402) : Mode(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_TARGET, _nodeProfile402->axisId());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());

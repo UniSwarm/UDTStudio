@@ -41,7 +41,7 @@ public:
     void setReferenceRamp(bool ok);
     bool isReferenceRamp(void);
 
-    //ObjectID
+    // ObjectID
     const NodeObjectId &targetObjectId() const;
     const NodeObjectId &velocityDemandObjectId() const;
     const NodeObjectId &velocityActualObjectId() const;
@@ -96,7 +96,7 @@ public:
 
     // NodeOdSubscriber interface
 public:
-  void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // MODEVL_H
+#endif  // MODEVL_H

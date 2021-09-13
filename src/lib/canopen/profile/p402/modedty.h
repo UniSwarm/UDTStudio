@@ -32,7 +32,7 @@ class CANOPEN_EXPORT ModeDty : public Mode
 public:
     ModeDty(NodeProfile402 *nodeProfile402);
 
-    //ObjectID
+    // ObjectID
     const NodeObjectId &targetObjectId() const;
     const NodeObjectId &demandObjectId() const;
     const NodeObjectId &slopeObjectId() const;
@@ -60,8 +60,8 @@ public:
     void reset() override;
 
     // NodeOdSubscriber interface
-  protected:
+protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // MODEDC_H
+#endif  // MODEDC_H

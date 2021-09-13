@@ -35,7 +35,7 @@ public:
     void setEnableRamp(bool ok);
     bool isEnableRamp(void);
 
-    //ObjectID
+    // ObjectID
     const NodeObjectId &targetObjectId() const;
     const NodeObjectId &bufferClearObjectId() const;
     const NodeObjectId &timePeriodUnitsObjectId() const;
@@ -66,8 +66,7 @@ public:
 
     // NodeOdSubscriber interface
 public:
-  void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
-
+    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // MODEIP_H
+#endif  // MODEIP_H

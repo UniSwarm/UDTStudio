@@ -27,8 +27,7 @@ enum ControlWordIP : quint16
     CW_Mask = 0x270
 };
 
-ModeCp::ModeCp(NodeProfile402 *nodeProfile402)
-    : ModePc(nodeProfile402)
+ModeCp::ModeCp(NodeProfile402 *nodeProfile402) : ModePc(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_CP_POSITION_TARGET, _nodeProfile402->axisId());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
@@ -49,7 +48,6 @@ void ModeCp::setAbsRel(bool ok)
     quint16 cw = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
     cw = (cw & ~CW_Mask) | _cmdControlWordFlag;
     _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
-
 }
 
 bool ModeCp::isAbsRel()

@@ -21,8 +21,7 @@
 #include "node.h"
 #include "nodeprofile402.h"
 
-ModeDty::ModeDty(NodeProfile402 *nodeProfile402)
-    : Mode(nodeProfile402)
+ModeDty::ModeDty(NodeProfile402 *nodeProfile402) : Mode(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_TARGET, _nodeProfile402->axisId());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
@@ -93,5 +92,4 @@ void ModeDty::reset()
 
 void ModeDty::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-
 }

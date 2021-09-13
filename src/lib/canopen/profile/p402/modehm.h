@@ -32,15 +32,15 @@ class CANOPEN_EXPORT ModeHm : public Mode
 public:
     ModeHm(NodeProfile402 *nodeProfile402);
 
-    //ObjectID
+    // ObjectID
     const NodeObjectId &homeOffsetObjectId() const;
 
 private:
-      NodeObjectId _homeOffsetObjectId;
+    NodeObjectId _homeOffsetObjectId;
 
-      // Mode interface
-    public:
-      void readAllObjects() override;
+    // Mode interface
+public:
+    void readAllObjects() override;
 };
 
-#endif // MODEHM_H
+#endif  // MODEHM_H

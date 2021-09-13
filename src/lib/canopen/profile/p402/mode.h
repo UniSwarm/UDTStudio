@@ -45,4 +45,4 @@ protected:
     NodeObjectId _controlWordObjectId;
 };
 
-#endif // MODE_H
+#endif  // MODE_H

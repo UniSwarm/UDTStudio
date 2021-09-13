@@ -26,8 +26,7 @@ enum ControlWordIP : quint16
     CW_IP_EnableRamp = 0x10,
 };
 
-ModeIp::ModeIp(NodeProfile402 *nodeProfile402)
-    : ModePc(nodeProfile402)
+ModeIp::ModeIp(NodeProfile402 *nodeProfile402) : ModePc(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_DATA_RECORD_SET_POINT, _nodeProfile402->axisId());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());

@@ -22,6 +22,7 @@
 #include "canopen_global.h"
 
 #include "../nodeprofile.h"
+
 #include "node.h"
 
 class NodeObjectId;
@@ -40,19 +41,19 @@ public:
     enum OperationMode
     {
         MS = -2,
-        CP = -16, // Duty Cycle mode
-        DTY = -1, // Duty Cycle mode
-        NoMode = 0, //
-        PP = 1, // Profile position mode
-        VL = 2, // Velocity mode
-        PV = 3, // Profile velocity mode
-        TQ = 4, // Torque profile mode
-        HM = 6, // Homing mode
-        IP = 7, // Interpolated position mode
-        CSP = 8, // Cyclic sync position mode
-        CSV = 9, // Cyclic sync velocity mode
-        CST = 10, // Cyclic sync torque mode
-        CSTCA = 11, // Cyclic sync torque mode with commutation angle
+        CP = -16,    // Duty Cycle mode
+        DTY = -1,    // Duty Cycle mode
+        NoMode = 0,  //
+        PP = 1,      // Profile position mode
+        VL = 2,      // Velocity mode
+        PV = 3,      // Profile velocity mode
+        TQ = 4,      // Torque profile mode
+        HM = 6,      // Homing mode
+        IP = 7,      // Interpolated position mode
+        CSP = 8,     // Cyclic sync position mode
+        CSV = 9,     // Cyclic sync velocity mode
+        CST = 10,    // Cyclic sync torque mode
+        CSTCA = 11,  // Cyclic sync torque mode with commutation angle
         Reserved = 12
     };
 
@@ -207,7 +208,7 @@ public:
     virtual void reset() override;
 
 public:
-  void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // NODEPROFILE402_H
+#endif  // NODEPROFILE402_H

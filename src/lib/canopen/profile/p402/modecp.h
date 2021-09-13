@@ -19,6 +19,8 @@
 #ifndef MODECP_H
 #define MODECP_H
 
+#include "canopen_global.h"
+
 #include "modepc.h"
 
 class CANOPEN_EXPORT ModeCp : public ModePc
@@ -27,13 +29,13 @@ class CANOPEN_EXPORT ModeCp : public ModePc
 public:
     ModeCp(NodeProfile402 *nodeProfile402);
 
-    void setAbsRel(bool ok); // bit 6 of controlWord
-    bool isAbsRel(void); // bit 6 of controlWord
+    void setAbsRel(bool ok);  // bit 6 of controlWord
+    bool isAbsRel(void);      // bit 6 of controlWord
 
-    //ObjectID
+    // ObjectID
     const NodeObjectId &targetObjectId() const;
 
-  signals:
+signals:
     void absRelEvent(bool ok);
 
 private:
@@ -49,4 +51,4 @@ public:
     void setCwDefaultflag() override;
 };
 
-#endif // MODECP_H
+#endif  // MODECP_H
