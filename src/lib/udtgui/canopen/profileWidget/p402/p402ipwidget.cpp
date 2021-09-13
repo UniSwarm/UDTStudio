@@ -36,7 +36,7 @@
 #include <canopen/indexWidget/indexcheckbox.h>
 
 P402IpWidget::P402IpWidget(QWidget *parent)
-    : P402Mode(parent)
+    : P402ModeWidget(parent)
 {
     _nodeProfile402 = nullptr;
     createWidgets();

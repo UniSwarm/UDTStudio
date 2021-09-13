@@ -43,9 +43,10 @@ HEADERS += \
     $$PWD/canopen/compositeWidget/motionsensorwidget.h \
     $$PWD/canopen/compositeWidget/motorwidget.h \
     $$PWD/canopen/compositeWidget/pidwidget.h \
+    $$PWD/canopen/profileWidget/p402/p402modewidget.h \
     $$PWD/canopen/profileWidget/p402/p402dtywidget.h \
     $$PWD/canopen/profileWidget/p402/p402ipwidget.h \
-    $$PWD/canopen/profileWidget/p402/p402mode.h \
+    $$PWD/canopen/profileWidget/p402/p402cpwidget.h \
     $$PWD/canopen/profileWidget/p402/p402optionwidget.h \
     $$PWD/canopen/profileWidget/p402/p402ppwidget.h \
     $$PWD/canopen/profileWidget/p402/p402tqwidget.h \
@@ -65,8 +66,7 @@ HEADERS += \
     $$PWD/screen/nodescreenpdo.h \
     $$PWD/screen/nodescreenumcmotor.h \
     $$PWD/screen/nodescreensynchro.h \
-    $$PWD/screen/nodescreenuio.h \
-    $$PWD/canopen/profileWidget/p402/p402cpwidget.h
+    $$PWD/screen/nodescreenuio.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -104,9 +104,10 @@ SOURCES += \
     $$PWD/canopen/compositeWidget/motionsensorwidget.cpp \
     $$PWD/canopen/compositeWidget/motorwidget.cpp \
     $$PWD/canopen/compositeWidget/pidwidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402modewidget.cpp \
     $$PWD/canopen/profileWidget/p402/p402dtywidget.cpp \
     $$PWD/canopen/profileWidget/p402/p402ipwidget.cpp \
-    $$PWD/canopen/profileWidget/p402/p402mode.cpp \
+    $$PWD/canopen/profileWidget/p402/p402cpwidget.cpp \
     $$PWD/canopen/profileWidget/p402/p402optionwidget.cpp \
     $$PWD/canopen/profileWidget/p402/p402ppwidget.cpp \
     $$PWD/canopen/profileWidget/p402/p402tqwidget.cpp \
@@ -126,8 +127,7 @@ SOURCES += \
     $$PWD/screen/nodescreenpdo.cpp \
     $$PWD/screen/nodescreenumcmotor.cpp \
     $$PWD/screen/nodescreensynchro.cpp \
-    $$PWD/screen/nodescreenuio.cpp \
-    $$PWD/canopen/profileWidget/p402/p402cpwidget.cpp
+    $$PWD/screen/nodescreenuio.cpp
 
 LIBS += -L"$$PWD/../../../bin"
 android:LIBS += -lod_$${QT_ARCH} -lcanopen_$${QT_ARCH}

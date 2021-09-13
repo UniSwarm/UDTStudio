@@ -16,37 +16,32 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "../../../udtgui_global.h"
+#include "p402mode.h"
 
-#include "node.h"
-#include "nodeodsubscriber.h"
-
-#include <QWidget>
-
-#ifndef P402_H
-#define P402_H
-
-
-class UDTGUI_EXPORT P402Mode : public QWidget, public NodeOdSubscriber
+P402ModeWidget::P402ModeWidget(QWidget *parent)
+    :QWidget(parent)
 {
-    Q_OBJECT
-public:
-    P402Mode(QWidget *parent);
+    _node = nullptr;
+}
 
-    Node *node() const;
-    uint8_t axis() const;
+Node *P402ModeWidget::node() const
+{
+    return _node;
+}
 
-    virtual void readRealTimeObjects();
-    virtual void readAllObjects() = 0;
-    virtual void reset();
-    virtual void stop();
+uint8_t P402ModeWidget::axis() const
+{
+    return _axis;
+}
 
-public slots:
-    virtual void setNode(Node *value, uint8_t axis = 0) = 0;
+void P402ModeWidget::readRealTimeObjects()
+{
+}
 
-protected:
-    Node *_node;
-    uint8_t _axis;
-};
+void P402ModeWidget::reset()
+{
+}
 
-#endif // P402_H
+void P402ModeWidget::stop()
+{
+}

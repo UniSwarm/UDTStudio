@@ -28,7 +28,7 @@
 #include "profile/p402/modecp.h"
 
 P402CpWidget::P402CpWidget(QWidget *parent)
-    : P402Mode(parent)
+    : P402ModeWidget(parent)
 {
     createWidgets();
     _nodeProfile402 = nullptr;

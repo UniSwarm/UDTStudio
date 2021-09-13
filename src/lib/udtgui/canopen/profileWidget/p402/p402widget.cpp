@@ -137,7 +137,7 @@ void P402Widget::statusNodeChanged()
             modeChanged(_axis, _nodeProfile402->actualMode());
             _stackedWidget->setEnabled(false);
             _modeGroupBox->setEnabled(true);
-            _stateMachineGroupBox->setEnabled(false);
+            //_stateMachineGroupBox->setEnabled(false);
             _statusWordGroupBox->setEnabled(false);
         }
         else
@@ -161,7 +161,7 @@ void P402Widget::modeChanged(uint8_t axis, NodeProfile402::OperationMode mode)
         || (mode == NodeProfile402::DTY)
         || (mode == NodeProfile402::CP))
     {
-        P402Mode *mode402 = dynamic_cast<P402Mode *>(_stackedWidget->currentWidget());
+        P402ModeWidget *mode402 = dynamic_cast<P402ModeWidget *>(_stackedWidget->currentWidget());
         // reset : Patch because the widget Tarqet torque and velocity are not an IndexSpinbox so not read automaticaly
         mode402->reset();
 
@@ -321,7 +321,7 @@ void P402Widget::toggleStartLogger(bool start)
 
         _stackedWidget->setEnabled(true);
         _modeGroupBox->setEnabled(true);
-        _stateMachineGroupBox->setEnabled(true);
+        //_stateMachineGroupBox->setEnabled(true);
         _statusWordGroupBox->setEnabled(true);
     }
     else
@@ -332,7 +332,7 @@ void P402Widget::toggleStartLogger(bool start)
 
         _stackedWidget->setEnabled(false);
         _modeGroupBox->setEnabled(true);
-        _stateMachineGroupBox->setEnabled(false);
+        //_stateMachineGroupBox->setEnabled(false);
         _statusWordGroupBox->setEnabled(false);
     }
 

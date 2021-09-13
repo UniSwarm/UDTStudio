@@ -29,7 +29,7 @@
 #include <QPushButton>
 
 P402TqWidget::P402TqWidget(QWidget *parent)
-    : P402Mode(parent)
+    : P402ModeWidget(parent)
 {
     createWidgets();
     _nodeProfile402 = nullptr;

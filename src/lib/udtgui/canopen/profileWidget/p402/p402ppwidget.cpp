@@ -33,7 +33,7 @@
 #include <canopen/indexWidget/indexlabel.h>
 
 P402PpWidget::P402PpWidget(QWidget *parent)
-    : P402Mode(parent)
+    : P402ModeWidget(parent)
 {
     createWidgets();
     _nodeProfile402 = nullptr;

@@ -16,14 +16,12 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef P402TQ_H
-#define P402TQ_H
+#ifndef P402TQWIDGET_H
+#define P402TQWIDGET_H
 
 #include "../../../udtgui_global.h"
 
-#include "node.h"
-#include "nodeodsubscriber.h"
-#include "p402mode.h"
+#include "p402modewidget.h"
 
 #include <QLabel>
 #include <QSlider>
@@ -34,10 +32,10 @@
 class NodeProfile402;
 class IndexSpinBox;
 class IndexLabel;
-class P402Mode;
+class P402ModeWidget;
 class ModeTq;
 
-class UDTGUI_EXPORT P402TqWidget : public P402Mode
+class UDTGUI_EXPORT P402TqWidget : public P402ModeWidget
 {
     Q_OBJECT
 public:
@@ -103,4 +101,4 @@ public slots:
     void setNode(Node *value, uint8_t axis) override;
 };
 
-#endif // P402TQ_H
+#endif // P402TQWIDGET_H

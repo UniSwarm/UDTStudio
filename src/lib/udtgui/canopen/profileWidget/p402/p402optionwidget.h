@@ -16,13 +16,12 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef P402OPTION_H
-#define P402OPTION_H
+#ifndef P402OPTIONWIDGET_H
+#define P402OPTIONWIDGET_H
 
 #include "../../../udtgui_global.h"
 
-#include "nodeodsubscriber.h"
-#include "p402mode.h"
+#include "p402modewidget.h"
 
 #include <QButtonGroup>
 #include <QGroupBox>
@@ -30,7 +29,7 @@
 class Node;
 class NodeProfile402;
 
-class UDTGUI_EXPORT P402OptionWidget : public P402Mode
+class UDTGUI_EXPORT P402OptionWidget : public P402ModeWidget
 {
     Q_OBJECT
 public:
@@ -82,4 +81,4 @@ public slots:
     void setNode(Node *value, uint8_t axis) override;
 };
 
-#endif // P402OPTION_H
+#endif // P402OPTIONWIDGET_H

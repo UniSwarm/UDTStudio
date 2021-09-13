@@ -19,12 +19,11 @@
 #ifndef P402WIDGET_H
 #define P402WIDGET_H
 
-#include "udtgui_global.h"
+#include "../../../udtgui_global.h"
 
-#include "node.h"
-#include "nodeodsubscriber.h"
-#include "p402mode.h"
+#include <QWidget>
 
+#include "p402modewidget.h"
 #include "profile/p402/nodeprofile402.h"
 
 #include <QButtonGroup>
@@ -36,7 +35,6 @@
 #include <QSpinBox>
 #include <QStackedWidget>
 #include <QToolBar>
-#include <QWidget>
 
 class IndexLabel;
 
@@ -64,7 +62,7 @@ private:
     Node *_node;
     uint8_t _axis;
 
-    QMap<NodeProfile402::OperationMode, P402Mode*> _modes;
+    QMap<NodeProfile402::OperationMode, P402ModeWidget*> _modes;
 
     enum State
     {

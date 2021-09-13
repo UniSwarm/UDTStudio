@@ -16,14 +16,12 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef P402PP_H
-#define P402PP_H
+#ifndef P402PPWIDGET_H
+#define P402PPWIDGET_H
 
 #include "../../../udtgui_global.h"
 
-#include "node.h"
-#include "nodeodsubscriber.h"
-#include "p402mode.h"
+#include "p402modewidget.h"
 
 #include <QCheckBox>
 #include <QLabel>
@@ -39,7 +37,7 @@ class IndexSpinBox;
 class IndexLabel;
 class IndexCheckBox;
 
-class UDTGUI_EXPORT P402PpWidget : public P402Mode
+class UDTGUI_EXPORT P402PpWidget : public P402ModeWidget
 {
     Q_OBJECT
 public:
@@ -141,4 +139,4 @@ public slots:
     void setNode(Node *value, uint8_t axis) override;
 };
 
-#endif // P402PP_H
+#endif // P402PPWIDGET_H

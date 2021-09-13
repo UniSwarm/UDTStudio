@@ -20,10 +20,11 @@
 #define P402DCWIDGET_H
 
 #include "../../../udtgui_global.h"
-#include "nodeodsubscriber.h"
-#include "p402mode.h"
+
+#include "p402modewidget.h"
 
 #include <QFormLayout>
+#include <QGamepad>
 #include <QGroupBox>
 #include <QLabel>
 #include <QSlider>
@@ -33,10 +34,10 @@ class Node;
 class NodeProfile402;
 class IndexSpinBox;
 class IndexLabel;
-class P402Mode;
+class P402ModeWidget;
 class ModeDty;
 
-class UDTGUI_EXPORT P402DtyWidget : public P402Mode
+class UDTGUI_EXPORT P402DtyWidget : public P402ModeWidget
 {
     Q_OBJECT
 public:
@@ -77,6 +78,9 @@ private:
     void slopeWidgets();
     QHBoxLayout *buttonWidgets();
 
+    QGamepad *_pad;
+    QTimer *_padTimer;
+
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
@@ -89,6 +93,7 @@ public:
 
 public slots:
     void setNode(Node *value, uint8_t axis) override;
+    void updateAxis();
 };
 
 #endif // P402DCWIDGET_H

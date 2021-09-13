@@ -28,7 +28,7 @@
 #include <QScrollArea>
 
 P402OptionWidget::P402OptionWidget(QWidget *parent)
-    : P402Mode(parent)
+    : P402ModeWidget(parent)
 {
     createWidgets();
 }

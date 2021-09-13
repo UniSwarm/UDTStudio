@@ -21,9 +21,7 @@
 
 #include "../../../udtgui_global.h"
 
-#include "node.h"
-#include "nodeodsubscriber.h"
-#include "p402mode.h"
+#include "p402modewidget.h"
 
 #include <QCheckBox>
 #include <QLabel>
@@ -40,7 +38,7 @@ class IndexSpinBox;
 class IndexLabel;
 class IndexCheckBox;
 
-class UDTGUI_EXPORT P402CpWidget : public P402Mode
+class UDTGUI_EXPORT P402CpWidget : public P402ModeWidget
 {
     Q_OBJECT
   public:
@@ -119,7 +117,6 @@ public:
 
 public slots:
     void setNode(Node *node, uint8_t axis) override;
-
 };
 
 #endif // P402CPWIDGET_H
