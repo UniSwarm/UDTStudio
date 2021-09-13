@@ -26,7 +26,7 @@
 class NodeObjectId;
 class NodeProfile402;
 
-class ModeHm : public Mode
+class CANOPEN_EXPORT ModeHm : public Mode
 {
     Q_OBJECT
 public:

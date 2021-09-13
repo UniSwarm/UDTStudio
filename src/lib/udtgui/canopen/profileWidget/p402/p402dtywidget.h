@@ -36,7 +36,7 @@ class IndexLabel;
 class P402Mode;
 class ModeDty;
 
-class P402DtyWidget : public P402Mode
+class UDTGUI_EXPORT P402DtyWidget : public P402Mode
 {
     Q_OBJECT
 public:

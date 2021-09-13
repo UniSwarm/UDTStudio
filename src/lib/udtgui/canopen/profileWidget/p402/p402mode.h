@@ -27,7 +27,7 @@
 #define P402_H
 
 
-class P402Mode : public QWidget, public NodeOdSubscriber
+class UDTGUI_EXPORT P402Mode : public QWidget, public NodeOdSubscriber
 {
     Q_OBJECT
 public:

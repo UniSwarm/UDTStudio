@@ -30,7 +30,7 @@
 class Node;
 class NodeProfile402;
 
-class P402OptionWidget : public P402Mode
+class UDTGUI_EXPORT P402OptionWidget : public P402Mode
 {
     Q_OBJECT
 public:

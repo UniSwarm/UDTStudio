@@ -39,7 +39,7 @@ class IndexSpinBox;
 class IndexLabel;
 class IndexCheckBox;
 
-class P402PpWidget : public P402Mode
+class UDTGUI_EXPORT P402PpWidget : public P402Mode
 {
     Q_OBJECT
 public:

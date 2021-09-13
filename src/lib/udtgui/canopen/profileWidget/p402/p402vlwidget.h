@@ -37,7 +37,7 @@ class ModeVl;
 class IndexSpinBox;
 class IndexLabel;
 
-class P402VlWidget : public P402Mode
+class UDTGUI_EXPORT P402VlWidget : public P402Mode
 {
     Q_OBJECT
 public:
