@@ -43,6 +43,8 @@ public:
 protected:
     NodeProfile402 *_nodeProfile402;
     NodeObjectId _controlWordObjectId;
+
+    quint8 _mode;
 };
 
 #endif  // MODE_H

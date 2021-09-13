@@ -64,7 +64,6 @@ signals:
     void unlockRampEvent(bool ok);
 
 private:
-    quint8 _mode;
     quint16 _cmdControlWordFlag;
 
     NodeObjectId _targetObjectId;

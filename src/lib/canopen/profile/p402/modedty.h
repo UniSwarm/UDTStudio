@@ -42,7 +42,6 @@ signals:
     void isAppliedTarget();
 
 private:
-    quint8 _mode;
     NodeObjectId _targetObjectId;
     quint16 _cmdControlWordFlag;
 
