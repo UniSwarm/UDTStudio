@@ -61,7 +61,7 @@ enum StatusWord : quint16
     SW_EventRemote = 0x200,
     SW_EventTargetReached = 0x400,
     SW_EventSetPointAcknowledgeIpModeActive = 0x1000,
-    SW_EventFollowingError = 0x2000,    // -> specific ip
+    SW_EventFollowingError = 0x2000, // -> specific ip
     SW_EventInternalLimitActive = 0x800,
     SW_EventMask = 0xE90,
 
@@ -136,6 +136,7 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
 
     _modes.insert(IP, new ModeIp(this));
     _modes.insert(TQ, new ModeTq(this));
+    _modes.insert(DTY, new ModeDty(this));
     _modes.insert(VL, new ModeVl(this));
     _modes.insert(PP, new ModePp(this));
     _modes.insert(DTY, new ModeDty(this));
@@ -145,8 +146,8 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
 
 void NodeProfile402::init()
 {
-    readObject(_controlWordObjectId);
-    readObject(_modesOfOperationDisplayObjectId);
+    _node->readObject(_controlWordObjectId);
+    _node->readObject(_modesOfOperationDisplayObjectId);
 }
 
 NodeProfile402::OperationMode NodeProfile402::actualMode()
@@ -174,10 +175,10 @@ bool NodeProfile402::setMode(OperationMode mode)
         return true;
     }
 
-    if ((mode == DTY) ||(mode == NoMode) || (mode == PP) || (mode == VL) || (mode == PV) || (mode == TQ)
-        || (mode == HM) || (mode == IP) || (mode == CSP) || (mode == CSV) || (mode == CST) || (mode == CSTCA))
+    if ((mode == CP) || (mode == DTY) || (mode == NoMode) || (mode == PP) || (mode == VL) || (mode == PV) || (mode == TQ) || (mode == HM) || (mode == IP) || (mode == CSP) || (mode == CSV) ||
+        (mode == CST) || (mode == CSTCA))
     {
-        writeObject(_modesOfOperationObjectId, QVariant(mode));
+        _node->writeObject(_modesOfOperationObjectId, QVariant(mode));
         _modeState = MODE_CHANGE;
         _modeRequested = mode;
         return true;
@@ -327,7 +328,7 @@ bool NodeProfile402::toggleHalt()
         {
             cmdControlWord = _controlWord | CW_Halt;
         }
-        writeObject(_controlWordObjectId, QVariant(cmdControlWord));
+        _node->writeObject(_controlWordObjectId, QVariant(cmdControlWord));
         return true;
     }
     return true;
@@ -398,14 +399,14 @@ void NodeProfile402::setPolarityPosition(bool polarity)
 {
     quint8 value = static_cast<quint8>(_node->nodeOd()->value(_fgPolaritybjectId).toInt());
     value = (value & ~MASK_POLARITY_POSITION) | (MASK_POLARITY_POSITION & static_cast<uint8_t>(MASK_POLARITY_POSITION * polarity));
-    writeObject(_fgPolaritybjectId, QVariant(value));
+    _node->writeObject(_fgPolaritybjectId, QVariant(value));
 }
 
 void NodeProfile402::setPolarityVelocity(bool polarity)
 {
     quint8 value = static_cast<quint8>(_node->nodeOd()->value(_fgPolaritybjectId).toInt());
     value = (value & ~MASK_POLARITY_VELOCITY) | (MASK_POLARITY_VELOCITY & static_cast<uint8_t>(MASK_POLARITY_VELOCITY * polarity));
-    writeObject(_fgPolaritybjectId, QVariant(value));
+    _node->writeObject(_fgPolaritybjectId, QVariant(value));
 }
 
 bool NodeProfile402::polarityPosition()
@@ -464,10 +465,10 @@ void NodeProfile402::statusNodeChanged(Node::Status status)
     }
     if (status == Node::STARTED)
     {
-        readObject(_modesOfOperationDisplayObjectId);
+        _node->readObject(_modesOfOperationDisplayObjectId);
     }
 
-    readObject(_statusWordObjectId);
+    _node->readObject(_statusWordObjectId);
 }
 
 void NodeProfile402::changeStateMachine(const State402 state)
@@ -562,7 +563,7 @@ void NodeProfile402::changeStateMachine(const State402 state)
             _controlWord = (_controlWord & ~CW_Mask);
             _controlWord |= (CW_EnableVoltage);
             qint16 quickStopOption = static_cast<qint16>(_node->nodeOd()->value(IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION, _axisId)).toUInt());
-            if ((quickStopOption ==1) || (quickStopOption == 2))
+            if ((quickStopOption == 1) || (quickStopOption == 2))
             {
                 _stateMachineRequested = STATE_SwitchOnDisabled;
             }
@@ -589,7 +590,7 @@ void NodeProfile402::changeStateMachine(const State402 state)
     }
 
     _controlWord = (_controlWord & ~CW_Halt);
-    writeObject(_controlWordObjectId, QVariant(_controlWord));
+    _node->writeObject(_controlWordObjectId, QVariant(_controlWord));
 }
 
 void NodeProfile402::decodeEventStatusWord(quint16 statusWord)
@@ -644,7 +645,7 @@ void NodeProfile402::decodeStateMachineStatusWord(quint16 statusWord)
         if ((_controlWord & CW_Mask) == CW_FaultReset)
         {
             _controlWord = (_controlWord & ~CW_FaultReset);
-            writeObject(_controlWordObjectId, QVariant(_controlWord));
+            _node->writeObject(_controlWordObjectId, QVariant(_controlWord));
         }
     }
     else if ((statusWord & SW_StateMask2) == SW_StateReadyToSwitchOn)
@@ -752,7 +753,7 @@ void NodeProfile402::decodeSupportedDriveModes(quint32 supportedDriveModes)
 
 void NodeProfile402::readModeOfOperationDisplay()
 {
-    readObject(_modesOfOperationDisplayObjectId);
+    _node->readObject(_modesOfOperationDisplayObjectId);
 }
 
 void NodeProfile402::start(int msec)
@@ -772,12 +773,23 @@ bool NodeProfile402::status() const
     return true;
 }
 
+void NodeProfile402::readRealTimeObjects() const
+{
+    _node->readObject(_statusWordObjectId);
+    if (_modeCurrent != OperationMode::NoMode)
+    {
+        _modes[_modeCurrent]->readRealTimeObjects();
+    }
+}
+
 void NodeProfile402::readAllObjects() const
 {
-//    if (_modeCurrent != OperationMode::NoMode)
-//    {
+    _node->readObject(_statusWordObjectId);
+    _node->readObject(_modesOfOperationDisplayObjectId);
+    if (_modeCurrent != OperationMode::NoMode)
+    {
         _modes[_modeCurrent]->readAllObjects();
-//    }
+    }
 }
 
 quint16 NodeProfile402::profileNumber() const
@@ -794,9 +806,8 @@ void NodeProfile402::reset()
 {
     _stateMachineRequested = State402::STATE_NotReadyToSwitchOn;
 
-    readObject(_modesOfOperationDisplayObjectId);
-    readObject(_controlWordObjectId);
-    readObject(_statusWordObjectId);
+    _node->readObject(_modesOfOperationDisplayObjectId);
+    _node->readObject(_statusWordObjectId);
 
     decodeSupportedDriveModes(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
 
@@ -816,7 +827,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
 
     if (objId == _modesOfOperationObjectId)
     {
-        readObject(_modesOfOperationDisplayObjectId);
+        _node->readObject(_modesOfOperationDisplayObjectId);
     }
 
     if (objId == _modesOfOperationDisplayObjectId)
@@ -830,24 +841,14 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
         if (_modeCurrent != mode)
         {
             _modeCurrent = mode;
+            // Send new ControlWord with specific flag
+            changeStateMachine(_stateMachineCurrent);
             emit modeChanged(_axisId, _modeCurrent);
         }
 
         _modeRequested = _modeCurrent;
         _modeState = NodeProfile402::ModeState::NONE_MODE;
 
-        // Send new ControlWord with specific flag
-        changeStateMachine(_stateMachineCurrent);
-
-        return;
-    }
-
-    if (_sendRequest)
-    {
-        _sendRequest = false;
-    }
-    else
-    {
         return;
     }
 
@@ -865,7 +866,6 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
             emit isHalted(static_cast<bool>(((controlWord & CW_Halt) >> 8)));
         }
         _controlWord = controlWord;
-        readObject(_statusWordObjectId);
     }
 
     if (objId == _statusWordObjectId)

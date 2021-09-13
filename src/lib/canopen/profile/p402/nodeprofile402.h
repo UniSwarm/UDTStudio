@@ -132,16 +132,9 @@ private:
     enum StateState
     {
         NONE_STATE = 0,
-        STATE_CHANGE =1,
+        STATE_CHANGE = 1,
     };
     StateState _stateState;
-
-    void updateData();
-    void readAllObject();
-
-    bool _sendRequest;
-    void readObject(const NodeObjectId &id);
-    void writeObject(const NodeObjectId &id, const QVariant &data);
 
     NodeObjectId _modesOfOperationObjectId;
     NodeObjectId _modesOfOperationDisplayObjectId;
@@ -160,7 +153,7 @@ private:
     OperationMode _modeCurrent;
     OperationMode _modeRequested;
     QList<OperationMode> _modesSupported;
-    QMap<OperationMode, Mode*> _modes;
+    QMap<OperationMode, Mode *> _modes;
     QTimer _modeTimer;
 
     quint16 _controlWord;
@@ -184,6 +177,7 @@ public:
     void start(int msec) override;
     void stop() override;
     bool status() const override;
+    void readRealTimeObjects() const override;
     void readAllObjects() const override;
     quint16 profileNumber() const override;
     QString profileNumberStr() const override;

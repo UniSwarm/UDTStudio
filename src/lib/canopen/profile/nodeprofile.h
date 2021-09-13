@@ -41,6 +41,7 @@ public:
     virtual void start(int msec) = 0;
     virtual void stop() = 0;
     virtual bool status() const;
+    virtual void readRealTimeObjects() const = 0;
     virtual void readAllObjects() const = 0;
     virtual quint16 profileNumber() const = 0;
     virtual QString profileNumberStr() const = 0;
