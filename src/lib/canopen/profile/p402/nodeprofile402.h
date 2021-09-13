@@ -119,12 +119,15 @@ public:
     const NodeObjectId &controlWordObjectId() const;
     const NodeObjectId &statusWordObjectId() const;
     const NodeObjectId &fgPolaritybjectId() const;
-    const NodeObjectId abortConnectionObjectId() const;
-    const NodeObjectId quickStopObjectId() const;
-    const NodeObjectId shutdownObjectId() const;
-    const NodeObjectId disableObjectId() const;
-    const NodeObjectId haltObjectId() const;
-    const NodeObjectId faultReactionObjectId() const;
+    const NodeObjectId &abortConnectionObjectId() const;
+    const NodeObjectId &quickStopObjectId() const;
+    const NodeObjectId &shutdownObjectId() const;
+    const NodeObjectId &disableObjectId() const;
+    const NodeObjectId &haltObjectId() const;
+    const NodeObjectId &faultReactionObjectId() const;
+
+    void readOptionObjects() const;
+
 signals:
     void modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew);
     void stateChanged();
@@ -156,6 +159,13 @@ private:
     NodeObjectId _statusWordObjectId;
 
     NodeObjectId _fgPolaritybjectId;
+
+    NodeObjectId _abortConnectionObjectId;
+    NodeObjectId _quickStopObjectId;
+    NodeObjectId _shutdownObjectId;
+    NodeObjectId _disableObjectId;
+    NodeObjectId _haltObjectId;
+    NodeObjectId _faultReactionObjectId;
 
     enum ModeState
     {
@@ -197,7 +207,7 @@ public:
     virtual void reset() override;
 
 public:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+  void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
 #endif // NODEPROFILE402_H
