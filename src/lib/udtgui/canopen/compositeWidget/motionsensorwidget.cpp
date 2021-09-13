@@ -394,7 +394,7 @@ QGroupBox *MotionSensorWidget::createSensorFilterWidgets()
     _filterSelect = new IndexComboBox();
     _filterSelect->addItem(tr("OFF"), QVariant(static_cast<uint16_t>(0x0000)));
     _filterSelect->addItem(tr("LPF"), QVariant(static_cast<uint16_t>(0x1000)));
-    _filterSelect->addItem(tr("AVEGAGING"), QVariant(static_cast<uint16_t>(0x2000)));
+    _filterSelect->addItem(tr("AVERAGING"), QVariant(static_cast<uint16_t>(0x2000)));
     _filterSelect->addItem(tr("INTEGRATOR"), QVariant(static_cast<uint16_t>(0x8000)));
     formLayout->addRow(tr("Filter select:"), _filterSelect);
 

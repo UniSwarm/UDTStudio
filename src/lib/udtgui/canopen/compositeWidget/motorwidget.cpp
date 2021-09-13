@@ -43,7 +43,7 @@ Node *MotorWidget::node() const
 
 QString MotorWidget::title() const
 {
-    return tr("Motor config");
+    return tr("Motor");
 }
 
 void MotorWidget::setNode(Node *node, uint8_t axis)
