@@ -20,10 +20,9 @@
 #define P402TQ_H
 
 #include "../../../udtgui_global.h"
+
 #include "node.h"
 #include "nodeodsubscriber.h"
-
-
 #include "p402mode.h"
 
 #include <QLabel>
@@ -36,6 +35,7 @@ class NodeProfile402;
 class IndexSpinBox;
 class IndexLabel;
 class P402Mode;
+class ModeTq;
 
 class P402TqWidget : public P402Mode
 {
@@ -45,7 +45,9 @@ public:
     ~P402TqWidget() override;
 
 private:
-    NodeProfile402 *_nodeProfile402;
+
+    NodeProfile402 *_nodeProfile402;    
+    ModeTq *_modeTq;
 
     NodeObjectId _torqueDemandObjectId;
     NodeObjectId _torqueTargetObjectId;
@@ -63,7 +65,7 @@ private:
     //IndexLabel *_currentActualValueLabel;
 
     IndexSpinBox *_targetSlopeSpinBox;
-    IndexSpinBox *_torqueProfileTypeSpinBox;
+    //IndexSpinBox *_torqueProfileTypeSpinBox;
     IndexSpinBox *_maxTorqueSpinBox;
     //IndexSpinBox *_maxCurrentSpinBox;
     //IndexSpinBox *_motorRatedTorqueSpinBox;

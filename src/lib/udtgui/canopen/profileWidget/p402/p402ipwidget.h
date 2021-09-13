@@ -50,13 +50,12 @@ private:
     NodeProfile402 *_nodeProfile402;
     ModeIp *_modeIp;
 
-    NodeObjectId _dataRecordObjectId;
+    NodeObjectId _positionTargetObjectId;
     NodeObjectId _bufferClearObjectId;
     NodeObjectId _positionDemandValueObjectId;
     NodeObjectId _positionActualValueObjectId;
     NodeObjectId _timePeriodIndexObjectId;
     NodeObjectId _timePeriodUnitsObjectId;
-    NodeObjectId _polarityObjectId;
 
     int _iteratorForSendDataRecord;
     QStringList _listDataRecord;
@@ -72,8 +71,8 @@ private:
 
     QPushButton *_clearBufferPushButton;
 
-    IndexSpinBox *_positionRangelLimitMinSpinBox;
-    IndexSpinBox *_positionRangelLimitMaxSpinBox;
+    IndexSpinBox *_positionRangeLimitMinSpinBox;
+    IndexSpinBox *_positionRangeLimitMaxSpinBox;
     IndexSpinBox *_softwarePositionLimitMinSpinBox;
     IndexSpinBox *_softwarePositionLimitMaxSpinBox;
 

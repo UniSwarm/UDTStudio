@@ -23,7 +23,6 @@
 #include "canopen/indexWidget/indexcheckbox.h"
 #include "services/services.h"
 
-#include "indexdb402.h"
 #include "profile/p402/nodeprofile402.h"
 #include "profile/p402/modepp.h"
 
@@ -49,8 +48,7 @@ void P402PpWidget::readRealTimeObjects()
 {
     if (_node)
     {
-        _positionDemandValueLabel->readObject();
-        _positionActualValueLabel->readObject();
+        _nodeProfile402->readRealTimeObjects();
     }
 }
 
@@ -58,19 +56,7 @@ void P402PpWidget::readAllObjects()
 {
     if (_node)
     {
-        _positionDemandValueLabel->readObject();
-        _positionActualValueLabel->readObject();
-        _positionRangelLimitMinSpinBox->readObject();
-        _positionRangelLimitMaxSpinBox->readObject();
-        _softwarePositionLimitMinSpinBox->readObject();
-        _softwarePositionLimitMaxSpinBox->readObject();
-        _profileVelocitySpinBox->readObject();
-        _maxProfileVelocitySpinBox->readObject();
-        _maxMotorSpeedSpinBox->readObject();
-        _profileAccelerationSpinBox->readObject();
-        _maxAccelerationSpinBox->readObject();
-        _profileDecelerationSpinBox->readObject();
-        _maxDecelerationSpinBox->readObject();
+        _nodeProfile402->readAllObjects();
     }
 }
 
@@ -90,15 +76,6 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
 
     if (_node)
     {
-        _positionDemandValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, axis);
-        _positionActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, axis);
-        _targetPositionObjectId = IndexDb402::getObjectId(IndexDb402::OD_PP_POSITION_TARGET, axis);
-
-        _positionDemandValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-        _positionActualValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-        _targetPositionObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-
-        registerObjId(_targetPositionObjectId);
         setNodeInterrest(node);
 
         if (!_node->profiles().isEmpty())
@@ -113,45 +90,36 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
             changeSetImmediatelyPointEvent(_modePp->isChangeSetImmediately());
             absRelEvent(_modePp->isAbsRel());
             changeOnSetPointEvent(_modePp->isChangeOnSetPoint());
+
+            _positionTargetObjectId = _modePp->targetObjectId();
+            registerObjId(_positionTargetObjectId);
+
+            _positionDemandValueObjectId = _modePp->positionDemandValueObjectId();
+            _positionDemandValueLabel->setObjId(_positionDemandValueObjectId);
+
+            _positionActualValueObjectId = _modePp->positionActualValueObjectId();
+            _positionActualValueLabel->setObjId(_positionActualValueObjectId);
+
+            _positionRangeLimitMinSpinBox->setObjId(_modePp->positionRangeLimitMinObjectId());
+            _positionRangeLimitMaxSpinBox->setObjId(_modePp->positionRangeLimitMaxObjectId());
+            registerObjId(_positionRangeLimitMaxSpinBox->objId());
+            _softwarePositionLimitMinSpinBox->setObjId(_modePp->softwarePositionLimitMinObjectId());
+            _softwarePositionLimitMaxSpinBox->setObjId(_modePp->softwarePositionLimitMaxObjectId());
+
+            _profileVelocitySpinBox->setObjId(_modePp->profileVelocityObjectId());
+            _maxProfileVelocitySpinBox->setObjId(_modePp->maxProfileVelocityObjectId());
+            _maxMotorSpeedSpinBox->setObjId(_modePp->maxMotorSpeedObjectId());
+
+            _profileAccelerationSpinBox->setObjId(_modePp->profileAccelerationObjectId());
+            _maxAccelerationSpinBox->setObjId(_modePp->maxAccelerationObjectId());
+            _profileDecelerationSpinBox->setObjId(_modePp->profileDecelerationObjectId());
+            _maxDecelerationSpinBox->setObjId(_modePp->maxDecelerationObjectId());
+            _quickStopDecelerationSpinBox->setObjId(_modePp->quickStopDecelerationObjectId());
+
+            _homeOffsetSpinBox->setObjId(_modePp->homeOffsetObjectId());
+
+            _polarityCheckBox->setObjId(_nodeProfile402->fgPolaritybjectId());
         }
-
-        _positionDemandValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, axis));
-        _positionActualValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, axis));
-
-        _positionRangelLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MIN, axis));
-        _positionRangelLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MAX, axis));
-        _softwarePositionLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MIN, axis));
-        _softwarePositionLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MAX, axis));
-        _homeOffsetSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_HM_HOME_OFFSET, axis));
-        _polarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY, axis));
-        _profileVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_VELOCITY, axis));
-        _endVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_END_VELOCITY, axis));
-        _maxProfileVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_PROFILE_VELOCITY, axis));
-        _maxMotorSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_MOTOR_SPEED, axis));
-        _profileAccelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_ACCELERATION, axis));
-        _maxAccelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_ACCELERATION, axis));
-        _profileDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_DECELERATION, axis));
-        _maxDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_DECELERATION, axis));
-         _quickStopDecelerationSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_QUICK_STOP_DECELERATION, axis));
-
-        _positionDemandValueLabel->setNode(node);
-        _positionActualValueLabel->setNode(node);
-
-        _positionRangelLimitMinSpinBox->setNode(node);
-        _positionRangelLimitMaxSpinBox->setNode(node);
-        _softwarePositionLimitMinSpinBox->setNode(node);
-        _softwarePositionLimitMaxSpinBox->setNode(node);
-        _homeOffsetSpinBox->setNode(node);
-        _polarityCheckBox->setNode(node);
-        _profileVelocitySpinBox->setNode(node);
-        _endVelocitySpinBox->setNode(node);
-        _maxProfileVelocitySpinBox->setNode(node);
-        _maxMotorSpeedSpinBox->setNode(node);
-        _profileAccelerationSpinBox->setNode(node);
-        _maxAccelerationSpinBox->setNode(node);
-        _profileDecelerationSpinBox->setNode(node);
-        _maxDecelerationSpinBox->setNode(node);
-         _quickStopDecelerationSpinBox->setNode(node);
     }
 }
 
@@ -181,7 +149,7 @@ void P402PpWidget::sendDataRecord()
     if (_iteratorForSendDataRecord < _listDataRecord.size())
     {
         qint32 value = _listDataRecord.at(_iteratorForSendDataRecord).toInt();
-        _node->writeObject(_targetPositionObjectId, QVariant(value));
+        _node->writeObject(_positionTargetObjectId, QVariant(value));
         _iteratorForSendDataRecord++;
     }
     else
@@ -247,18 +215,16 @@ void P402PpWidget::dataLogger()
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
     dataLogger->addData(_positionDemandValueObjectId);
-    dataLogger->addData(_targetPositionObjectId);
+    dataLogger->addData(_positionTargetObjectId);
     _dataLoggerWidget->show();
 }
 
 void P402PpWidget::pdoMapping()
 {
-    NodeObjectId controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD);
-    NodeObjectId statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD);
-    controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    statusWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    NodeObjectId controlWordObjectId = _nodeProfile402->controlWordObjectId();
+    NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
 
-    QList<NodeObjectId> ipRpdoObjectList = {controlWordObjectId, _targetPositionObjectId};
+    QList<NodeObjectId> ipRpdoObjectList = {controlWordObjectId, _positionTargetObjectId};
     _node->rpdos().at(0)->writeMapping(ipRpdoObjectList);
 
     QList<NodeObjectId> ipTpdoObjectList = {statusWordObjectId, _positionDemandValueObjectId};
@@ -365,17 +331,17 @@ void P402PpWidget::limitWidgets()
     QLayout *positionLayout = new QHBoxLayout();
     positionLayout->setSpacing(0);
 
-    _positionRangelLimitMinSpinBox = new IndexSpinBox();
-    positionLayout->addWidget(_positionRangelLimitMinSpinBox);
+    _positionRangeLimitMinSpinBox = new IndexSpinBox();
+    positionLayout->addWidget(_positionRangeLimitMinSpinBox);
     QLabel *label = new QLabel(tr(":"));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     positionLayout->addWidget(label);
 
-    _positionRangelLimitMaxSpinBox = new IndexSpinBox();
-    positionLayout->addWidget(_positionRangelLimitMaxSpinBox);
+    _positionRangeLimitMaxSpinBox = new IndexSpinBox();
+    positionLayout->addWidget(_positionRangeLimitMaxSpinBox);
     label = new QLabel(tr("&Position range limit:"));
     label->setToolTip(tr("Min, Max"));
-    label->setBuddy(_positionRangelLimitMinSpinBox);
+    label->setBuddy(_positionRangeLimitMinSpinBox);
     _modeLayout->addRow(label, positionLayout);
 
     // SOFTWARE RANGE LIMIT
@@ -524,7 +490,7 @@ void P402PpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         return;
     }
 
-    if ((objId == _targetPositionObjectId))
+    if ((objId == _positionTargetObjectId))
     {
         if (!_listDataRecord.isEmpty())
         {

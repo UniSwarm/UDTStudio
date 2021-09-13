@@ -50,7 +50,7 @@ private:
     NodeProfile402 *_nodeProfile402;
     ModePp *_modePp;
 
-    NodeObjectId _targetPositionObjectId;
+    NodeObjectId _positionTargetObjectId;
     NodeObjectId _positionDemandValueObjectId;
     NodeObjectId _positionActualValueObjectId;
 
@@ -72,14 +72,11 @@ private:
     IndexLabel *_positionDemandValueLabel;
     IndexLabel *_positionActualValueLabel;
 
-    IndexSpinBox *_timePeriodUnitSpinBox;
-    IndexSpinBox *_timePeriodIndexSpinBox;
-
-    IndexSpinBox *_positionRangelLimitMinSpinBox;
-    IndexSpinBox *_positionRangelLimitMaxSpinBox;
+    IndexSpinBox *_positionRangeLimitMinSpinBox;
+    IndexSpinBox *_positionRangeLimitMaxSpinBox;
     IndexSpinBox *_softwarePositionLimitMinSpinBox;
     IndexSpinBox *_softwarePositionLimitMaxSpinBox;
-    IndexSpinBox *_homeOffsetSpinBox;    
+    IndexSpinBox *_homeOffsetSpinBox;
     IndexCheckBox *_polarityCheckBox;
     IndexSpinBox *_profileVelocitySpinBox;
     IndexSpinBox *_endVelocitySpinBox;

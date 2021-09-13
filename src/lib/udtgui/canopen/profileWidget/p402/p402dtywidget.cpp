@@ -21,10 +21,12 @@
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/indexWidget/indexlabel.h"
 #include "canopen/indexWidget/indexspinbox.h"
-#include "indexdb402.h"
+
 #include "node.h"
 #include "profile/p402/nodeprofile402.h"
 #include "services/services.h"
+
+#include "profile/p402/modedty.h"
 
 #include <QPushButton>
 
@@ -60,7 +62,7 @@ void P402DtyWidget::readAllObjects()
 
 void P402DtyWidget::reset()
 {
-    _node->readObject(_targetObjectId);
+    _modeDty->reset();
 }
 
 void P402DtyWidget::setNode(Node *node, uint8_t axis)
@@ -79,30 +81,25 @@ void P402DtyWidget::setNode(Node *node, uint8_t axis)
 
     if (_node)
     {
-        _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_TARGET, axis);
-        _demandObjectId = IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_DEMAND, axis);
-        _targetObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-        _demandObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-
-        registerObjId(_targetObjectId);
         setNodeInterrest(_node);
-
-        _demandLabel->setObjId(_demandObjectId);
-
-        _slopeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_SLOPE, axis));
-        _maxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_DUTY_CYCLE_MODE_MAX, axis));
-        _slopeSpinBox->setNode(node);
-        _maxSpinBox->setNode(node);
-
-        int max = _node->nodeOd()->value(_maxSpinBox->objId()).toInt();
-        _targetSlider->setRange(-max, max);
-        _targetSlider->setTickInterval(max / 10);
-        _sliderMinLabel->setNum(-max);
-        _sliderMaxLabel->setNum(max);
 
         if (!_node->profiles().isEmpty())
         {
             _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+            _modeDty = dynamic_cast<ModeDty *>(_nodeProfile402->mode(NodeProfile402::OperationMode::DTY));
+            _targetObjectId = _modeDty->targetObjectId();
+            registerObjId(_targetObjectId);
+
+            _demandObjectId = _modeDty->demandObjectId();
+
+            _slopeSpinBox->setObjId(_modeDty->slopeObjectId());
+            _maxSpinBox->setObjId(_modeDty->maxObjectId());
+
+            int max = _node->nodeOd()->value(_maxSpinBox->objId()).toInt();
+            _targetSlider->setRange(-max, max);
+            _targetSlider->setTickInterval(max / 10);
+            _sliderMinLabel->setNum(-max);
+            _sliderMaxLabel->setNum(max);
         }
 
         connect(_maxSpinBox, &QSpinBox::editingFinished, this, &P402DtyWidget::maxSpinboxFinished);
@@ -112,13 +109,13 @@ void P402DtyWidget::setNode(Node *node, uint8_t axis)
 void P402DtyWidget::targetSpinboxFinished()
 {
     qint16 value = static_cast<qint16>(_targetSpinBox->value());
-    _node->writeObject(_targetObjectId, QVariant(value));
+    _modeDty->setTarget(value);
 }
 
 void P402DtyWidget::targetSliderChanged()
 {
     qint16 value = static_cast<qint16>(_targetSlider->value());
-    _node->writeObject(_targetObjectId, QVariant(value));
+    _modeDty->setTarget(value);
 }
 
 void P402DtyWidget::maxSpinboxFinished()
@@ -145,8 +142,8 @@ void P402DtyWidget::dataLogger()
 
 void P402DtyWidget::pdoMapping()
 {
-    NodeObjectId controlWordObjectId = NodeObjectId(0x6040, 0, QMetaType::Type::UShort);
-    NodeObjectId statusWordObjectId = NodeObjectId(0x6041, 0, QMetaType::Type::UShort);
+    NodeObjectId controlWordObjectId = _nodeProfile402->controlWordObjectId();
+    NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
 
     QList<NodeObjectId> tqRpdoObjectList = {controlWordObjectId, _targetObjectId};
 

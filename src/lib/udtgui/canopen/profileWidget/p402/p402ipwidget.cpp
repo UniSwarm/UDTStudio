@@ -26,7 +26,6 @@
 #include "services/services.h"
 #include "canopenbus.h"
 
-#include "indexdb402.h"
 #include "profile/p402/nodeprofile402.h"
 #include "profile/p402/modeip.h"
 
@@ -52,8 +51,7 @@ void P402IpWidget::readRealTimeObjects()
 {
     if (_node)
     {
-        _positionDemandValueLabel->readObject();
-        _positionAcualValueLabel->readObject();
+        _modeIp->readRealTimeObjects();
     }
 }
 
@@ -61,15 +59,7 @@ void P402IpWidget::readAllObjects()
 {
     if (_node)
     {
-        _node->readObject(_positionDemandValueObjectId);
-        _node->readObject(_positionActualValueObjectId);
-
-        _positionRangelLimitMinSpinBox->readObject();
-        _positionRangelLimitMaxSpinBox->readObject();
-        _softwarePositionLimitMinSpinBox->readObject();
-        _softwarePositionLimitMaxSpinBox->readObject();
-        _maxProfileVelocitySpinBox->readObject();
-        _maxMotorSpeedSpinBox->readObject();
+        _modeIp->readAllObjects();
     }
 }
 
@@ -89,16 +79,6 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
 
     if (_node)
     {
-        _positionDemandValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, axis);
-        _positionActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, axis);
-        _dataRecordObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_DATA_RECORD_SET_POINT, axis);
-        _timePeriodIndexObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_PERIOD_TIME_INDEX, axis);
-        _timePeriodUnitsObjectId = IndexDb402::getObjectId(IndexDb402::OD_IP_TIME_PERIOD_TIME_UNITS, axis);
-
-        _positionDemandValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-        _positionActualValueObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-
-        registerObjId(_dataRecordObjectId);
         setNodeInterrest(node);
 
         if (!_node->profiles().isEmpty())
@@ -107,38 +87,35 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
             _modeIp = dynamic_cast<ModeIp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::IP));
             connect(_modeIp, &ModeIp::enableRampEvent, this, &P402IpWidget::enableRampEvent);
             enableRampEvent(_modeIp->isEnableRamp());
+
+            _positionTargetObjectId = _modeIp->targetObjectId();
+            registerObjId(_positionTargetObjectId);
+            _positionDemandValueObjectId = _modeIp->positionDemandValueObjectId();
+            _positionDemandValueLabel->setObjId(_positionDemandValueObjectId);
+
+            _positionActualValueObjectId = _modeIp->positionActualValueObjectId();
+            _positionAcualValueLabel->setObjId(_positionActualValueObjectId);
+
+            _timePeriodIndexObjectId = _modeIp->timePeriodIndexObjectId();
+            _timePeriodIndexSpinBox->setObjId(_timePeriodIndexObjectId);
+
+            _timePeriodUnitsObjectId = _modeIp->timePeriodUnitsObjectId();
+            _timePeriodUnitSpinBox->setObjId(_timePeriodUnitsObjectId);
+
+            _positionRangeLimitMinSpinBox->setObjId(_modeIp->positionRangeLimitMinObjectId());
+            _positionRangeLimitMaxSpinBox->setObjId(_modeIp->positionRangeLimitMaxObjectId());
+            _softwarePositionLimitMinSpinBox->setObjId(_modeIp->softwarePositionLimitMinObjectId());
+            _softwarePositionLimitMaxSpinBox->setObjId(_modeIp->softwarePositionLimitMaxObjectId());
+
+            _maxProfileVelocitySpinBox->setObjId(_modeIp->maxProfileVelocityObjectId());
+            _maxMotorSpeedSpinBox->setObjId(_modeIp->maxMotorSpeedObjectId());
+
+            _homeOffsetSpinBox->setObjId(_modeIp->homeOffsetObjectId());
+
+            _polarityCheckBox->setObjId(_nodeProfile402->fgPolaritybjectId());
         }
 
         connect(&_sendPointSinusoidalTimer, &QTimer::timeout, this, &P402IpWidget::sendDataRecordTargetWithSdo);
-
-        _positionDemandValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, axis));
-        _positionAcualValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, axis));
-
-        _timePeriodUnitSpinBox->setObjId(_timePeriodUnitsObjectId);
-        _timePeriodIndexSpinBox->setObjId(_timePeriodIndexObjectId);
-        _positionRangelLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MIN, axis));
-        _positionRangelLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MAX, axis));
-        _softwarePositionLimitMinSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MIN, axis));
-        _softwarePositionLimitMaxSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MAX, axis));
-        _homeOffsetSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_HM_HOME_OFFSET, axis));
-        _polarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY, axis));
-        _maxProfileVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_PROFILE_VELOCITY, axis));
-        _maxMotorSpeedSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_MOTOR_SPEED, axis));
-
-        _positionDemandValueLabel->setNode(node);
-        _positionAcualValueLabel->setNode(node);
-
-        _timePeriodUnitSpinBox->setNode(node);
-        _timePeriodIndexSpinBox->setNode(node);
-        _positionRangelLimitMinSpinBox->setNode(node);
-        _positionRangelLimitMaxSpinBox->setNode(node);
-        _softwarePositionLimitMinSpinBox->setNode(node);
-        _softwarePositionLimitMaxSpinBox->setNode(node);
-        _homeOffsetSpinBox->setNode(node);
-        _polarityCheckBox->setNode(node);
-        _maxProfileVelocitySpinBox->setNode(node);
-        _maxMotorSpeedSpinBox->setNode(node);
-
         connect(_node->bus()->sync(), &Sync::signalBeforeSync, this, &P402IpWidget::sendDataRecordTargetWithPdo);
     }
 }
@@ -161,7 +138,7 @@ void P402IpWidget::sendDataRecord()
     while (!_listDataRecord.isEmpty())
     {
         qint32 value = _listDataRecord.first().toInt();
-        _node->writeObject(_dataRecordObjectId, QVariant(value));
+        _node->writeObject(_positionTargetObjectId, QVariant(value));
         _listDataRecord.removeFirst();
     }
 
@@ -267,7 +244,7 @@ void P402IpWidget::sendDataRecordTargetWithPdo()
         stopTargetPosition();
         return;
     }
-    _node->writeObject(_dataRecordObjectId, QVariant(_pointSinusoidalVector.at(0)));
+    _node->writeObject(_positionTargetObjectId, QVariant(_pointSinusoidalVector.at(0)));
     _pointSinusoidalVector.remove(0);
 }
 
@@ -286,7 +263,7 @@ void P402IpWidget::sendDataRecordTargetWithSdo()
         {
             break;
         }
-        _node->writeObject(_dataRecordObjectId, QVariant(_pointSinusoidalVector.at(i)));
+        _node->writeObject(_positionTargetObjectId, QVariant(_pointSinusoidalVector.at(i)));
     }
     _pointSinusoidalVector.remove(0, i);
 }
@@ -312,12 +289,10 @@ void P402IpWidget::dataLogger()
 
 void P402IpWidget::pdoMapping()
 {
-    NodeObjectId controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD);
-    NodeObjectId statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD);
-    controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    statusWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    NodeObjectId controlWordObjectId = _nodeProfile402->controlWordObjectId();
+    NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
 
-    QList<NodeObjectId> ipRpdoObjectList = {controlWordObjectId, _dataRecordObjectId};
+    QList<NodeObjectId> ipRpdoObjectList = {controlWordObjectId, _positionTargetObjectId};
     _node->rpdos().at(0)->writeMapping(ipRpdoObjectList);
 
     QList<NodeObjectId> ipTpdoObjectList = {statusWordObjectId, _positionDemandValueObjectId};
@@ -405,17 +380,17 @@ void P402IpWidget::limitWidgets()
     QLayout *positionLayout = new QHBoxLayout();
     positionLayout->setSpacing(0);
 
-    _positionRangelLimitMinSpinBox = new IndexSpinBox();
-    positionLayout->addWidget(_positionRangelLimitMinSpinBox);
+    _positionRangeLimitMinSpinBox = new IndexSpinBox();
+    positionLayout->addWidget(_positionRangeLimitMinSpinBox);
     QLabel *label = new QLabel(tr(":"));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     positionLayout->addWidget(label);
 
-    _positionRangelLimitMaxSpinBox = new IndexSpinBox();
-    positionLayout->addWidget(_positionRangelLimitMaxSpinBox);
+    _positionRangeLimitMaxSpinBox = new IndexSpinBox();
+    positionLayout->addWidget(_positionRangeLimitMaxSpinBox);
     label = new QLabel(tr("&Position range limit:"));
     label->setToolTip(tr("Min, Max"));
-    label->setBuddy(_positionRangelLimitMinSpinBox);
+    label->setBuddy(_positionRangeLimitMinSpinBox);
     _modeLayout->addRow(label, positionLayout);
 
     // SOFTWARE RANGE LIMIT

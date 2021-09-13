@@ -18,6 +18,7 @@
 
 #include "p402optionwidget.h"
 
+#include "profile/p402/nodeprofile402.h"
 #include "indexdb402.h"
 #include "node.h"
 
@@ -64,22 +65,30 @@ void P402OptionWidget::setNode(Node *node, uint8_t axis)
     }
     _axis = axis;
 
-    _abortConnectionObjectId = IndexDb402::getObjectId(IndexDb402::OD_ABORT_CONNECTION_OPTION, axis);
-    _quickStopObjectId = IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION, axis);
-    _shutdownObjectId = IndexDb402::getObjectId(IndexDb402::OD_SHUTDOWN_OPTION, axis);
-    _disableObjectId = IndexDb402::getObjectId(IndexDb402::OD_DISABLE_OPERATION_OPTION, axis);
-    _haltObjectId = IndexDb402::getObjectId(IndexDb402::OD_HALT_OPTION, axis);
-    _faultReactionObjectId = IndexDb402::getObjectId(IndexDb402::OD_FAULT_REACTION_OPTION, axis);
-
-    registerObjId({_abortConnectionObjectId});
-    registerObjId({_quickStopObjectId});
-    registerObjId({_shutdownObjectId});
-    registerObjId({_disableObjectId});
-    registerObjId({_haltObjectId});
-    registerObjId({_faultReactionObjectId});
-
     setNodeInterrest(node);
 
+    if (!_node->profiles().isEmpty())
+    {
+        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+
+        _abortConnectionObjectId = _nodeProfile402->abortConnectionObjectId();
+        registerObjId({_abortConnectionObjectId});
+
+        _quickStopObjectId = _nodeProfile402->quickStopObjectId();
+        registerObjId({_quickStopObjectId});
+
+        _shutdownObjectId = _nodeProfile402->shutdownObjectId();
+        registerObjId({_shutdownObjectId});
+
+        _disableObjectId = _nodeProfile402->disableObjectId();
+        registerObjId({_disableObjectId});
+
+        _haltObjectId = _nodeProfile402->haltObjectId();
+        registerObjId({_haltObjectId});
+
+        _faultReactionObjectId = _nodeProfile402->faultReactionObjectId();
+        registerObjId({_faultReactionObjectId});
+    }
 }
 
 void P402OptionWidget::abortConnectionOptionClicked(int id)

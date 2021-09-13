@@ -109,7 +109,7 @@ private:
     QLabel *_informationLabel;
     QLabel *_warningLabel;
 
-    void modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew);
+    void modeChanged(uint8_t axis, NodeProfile402::OperationMode mode);
     void stateChanged();
     void modeIndexChanged(int id);
 

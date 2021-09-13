@@ -19,7 +19,6 @@
 #include "p402widget.h"
 
 #include "canopen/indexWidget/indexlabel.h"
-#include "indexdb402.h"
 #include "services/services.h"
 
 #include "p402dtywidget.h"
@@ -28,6 +27,7 @@
 #include "p402ppwidget.h"
 #include "p402tqwidget.h"
 #include "p402vlwidget.h"
+#include "p402cpwidget.h"
 
 #include <QApplication>
 #include <QButtonGroup>
@@ -94,11 +94,14 @@ void P402Widget::setNode(Node *node, uint8_t axis)
 
     if (_node)
     {
-        _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, axis);
-        _statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD, axis);
-
         _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
         _nodeProfile402->init();
+
+        _controlWordObjectId = _nodeProfile402->controlWordObjectId();
+        _controlWordLabel->setObjId(_controlWordObjectId);
+
+        _statusWordObjectId = _nodeProfile402->statusWordObjectId();
+        _statusWordLabel->setObjId(_statusWordObjectId);
 
         setCheckableStateMachine(2);
         updateModeComboBox();
@@ -117,15 +120,11 @@ void P402Widget::setNode(Node *node, uint8_t axis)
         _modes[NodeProfile402::IP]->setNode(_node, axis);
         _modes[NodeProfile402::PP]->setNode(_node, axis);
         _modes[NodeProfile402::DTY]->setNode(_node, axis);
+        _modes[NodeProfile402::CP]->setNode(_node, axis);
 
         statusNodeChanged();
         modeChanged(_axis, _nodeProfile402->actualMode());
         stateChanged();
-
-        _controlWordLabel->setNode(_node);
-        _statusWordLabel->setNode(_node);
-        _controlWordLabel->setObjId(_controlWordObjectId);
-        _statusWordLabel->setObjId(_statusWordObjectId);
     }
 }
 
@@ -148,21 +147,26 @@ void P402Widget::statusNodeChanged()
     }
 }
 
-void P402Widget::modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew)
+void P402Widget::modeChanged(uint8_t axis, NodeProfile402::OperationMode mode)
 {
     if (_axis != axis)
     {
         return;
     }
 
-    if ((modeNew == NodeProfile402::IP) || (modeNew == NodeProfile402::VL) || (modeNew == NodeProfile402::TQ) || (modeNew == NodeProfile402::PP) || (modeNew == NodeProfile402::DTY))
+    if ((mode == NodeProfile402::IP)
+        || (mode == NodeProfile402::VL)
+        || (mode == NodeProfile402::TQ)
+        || (mode == NodeProfile402::PP)
+        || (mode == NodeProfile402::DTY)
+        || (mode == NodeProfile402::CP))
     {
-        P402Mode *mode = dynamic_cast<P402Mode *>(_stackedWidget->currentWidget());
+        P402Mode *mode402 = dynamic_cast<P402Mode *>(_stackedWidget->currentWidget());
         // reset : Patch because the widget Tarqet torque and velocity are not an IndexSpinbox so not read automaticaly
-        mode->reset();
+        mode402->reset();
 
         _option402Action->setChecked(false);
-        _stackedWidget->setCurrentWidget(_modes[modeNew]);
+        _stackedWidget->setCurrentWidget(_modes[mode]);
     }
     else
     {
@@ -170,7 +174,7 @@ void P402Widget::modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew
         _stackedWidget->setCurrentWidget(_modes[NodeProfile402::NoMode]);
     }
 
-    int m = _listModeComboBox.indexOf(modeNew);
+    int m = _listModeComboBox.indexOf(mode);
     _modeComboBox->setCurrentIndex(m);
     _modeComboBox->setEnabled(true);
     _modeLabel->clear();
@@ -359,8 +363,6 @@ void P402Widget::readAllObject()
         else
         {
             _nodeProfile402->readAllObjects();
-            _nodeProfile402->readModeOfOperationDisplay();
-            _node->readObject(_statusWordObjectId);
         }
     }
 }
@@ -496,6 +498,7 @@ void P402Widget::createWidgets()
     _modes.insert(NodeProfile402::TQ, new P402TqWidget());
     _modes.insert(NodeProfile402::PP, new P402PpWidget());
     _modes.insert(NodeProfile402::DTY, new P402DtyWidget());
+    _modes.insert(NodeProfile402::CP, new P402CpWidget());
     _modes.insert(NodeProfile402::NoMode, new P402OptionWidget());
 
     // Stacked Widget
@@ -507,6 +510,7 @@ void P402Widget::createWidgets()
     _stackedWidget->addWidget(_modes[NodeProfile402::TQ]);
     _stackedWidget->addWidget(_modes[NodeProfile402::PP]);
     _stackedWidget->addWidget(_modes[NodeProfile402::DTY]);
+    _stackedWidget->addWidget(_modes[NodeProfile402::CP]);
     _stackedWidget->setMinimumWidth(450);
 
     // Create interface

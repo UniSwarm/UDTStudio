@@ -28,6 +28,7 @@
 #include <QGroupBox>
 
 class Node;
+class NodeProfile402;
 
 class P402OptionWidget : public P402Mode
 {
@@ -37,6 +38,8 @@ public:
     ~P402OptionWidget() override;
 
 private:
+    NodeProfile402 *_nodeProfile402;
+
     NodeObjectId _abortConnectionObjectId;
     NodeObjectId _quickStopObjectId;
     NodeObjectId _shutdownObjectId;

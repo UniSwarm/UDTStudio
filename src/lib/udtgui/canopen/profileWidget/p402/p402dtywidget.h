@@ -34,6 +34,7 @@ class NodeProfile402;
 class IndexSpinBox;
 class IndexLabel;
 class P402Mode;
+class ModeDty;
 
 class P402DtyWidget : public P402Mode
 {
@@ -44,6 +45,8 @@ public:
 
 private:
     NodeProfile402 *_nodeProfile402;
+    ModeDty *_modeDty;
+
     NodeObjectId _demandObjectId;
     NodeObjectId _targetObjectId;
 
