@@ -27,7 +27,7 @@ ErrorControl::ErrorControl(Node *node)
 {
     _cobId = 0x700;
     _cobIds.append(_cobId + node->nodeId());
-    toggleBit = false;
+    _oldToggleBit = false;
 
     _guardTimeTimer = new QTimer();
     _lifeTimeTimer = new QTimer();
@@ -55,7 +55,7 @@ void ErrorControl::parseFrame(const QCanBusFrame &frame)
             // BootUp
             _node->setStatus(Node::Status::PREOP);
             _node->reset();
-            toggleBit = false;
+            _oldToggleBit = false;
             return;
         }
     }
@@ -130,12 +130,12 @@ void ErrorControl::manageErrorControl(const QCanBusFrame &frame)
     if (frame.payload().size() == 1)
     {
         bool actualToggleBit = (frame.payload().at(0) >> 7);
-        if (toggleBit == actualToggleBit)
+        if (_oldToggleBit == actualToggleBit)
         {
             // ERROR TogleBit -> connection lost
-            return;
+            // return;
         }
-        toggleBit = actualToggleBit;
+        _oldToggleBit = actualToggleBit;
 
         switch (frame.payload().at(0) & 0x7F)
         {

@@ -47,7 +47,7 @@ private:
     void manageErrorControl(const QCanBusFrame &frame);
 
     uint32_t _cobId;
-    bool toggleBit;
+    bool _oldToggleBit;
 
     quint16 _guardTime;
     quint16 _lifeTime;
