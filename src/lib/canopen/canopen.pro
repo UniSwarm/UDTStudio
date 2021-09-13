@@ -54,7 +54,10 @@ SOURCES += \
     $$PWD/bootloader/utility/phantomremover.cpp \
     $$PWD/bootloader/utility/ufwupdate.cpp \
     $$PWD/bootloader/writer/hexwriter.cpp \
-    $$PWD/bootloader/writer/ufwwriter.cpp
+    $$PWD/bootloader/writer/ufwwriter.cpp \
+    $$PWD/profile/p402/modecp.cpp \
+    $$PWD/profile/p402/modehm.cpp \
+    $$PWD/profile/p402/modepc.cpp
 
 HEADERS += \
     $$PWD/canopen.h \
@@ -103,7 +106,10 @@ HEADERS += \
     $$PWD/bootloader/utility/phantomremover.h \
     $$PWD/bootloader/utility/ufwupdate.h \
     $$PWD/bootloader/writer/hexwriter.h \
-    $$PWD/bootloader/writer/ufwwriter.h
+    $$PWD/bootloader/writer/ufwwriter.h \
+    $$PWD/profile/p402/modecp.h \
+    $$PWD/profile/p402/modehm.h \
+    $$PWD/profile/p402/modepc.h
 
 unix:{
     SOURCES += $$PWD/busdriver/canbussocketcan.cpp
