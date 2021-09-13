@@ -19,16 +19,15 @@
 #include "p402cpwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
-#include "canopen/indexWidget/indexspinbox.h"
 #include "canopen/indexWidget/indexcheckbox.h"
 #include "canopen/indexWidget/indexlabel.h"
+#include "canopen/indexWidget/indexspinbox.h"
 
-#include "services/services.h"
-#include "profile/p402/nodeprofile402.h"
 #include "profile/p402/modecp.h"
+#include "profile/p402/nodeprofile402.h"
+#include "services/services.h"
 
-P402CpWidget::P402CpWidget(QWidget *parent)
-    : P402ModeWidget(parent)
+P402CpWidget::P402CpWidget(QWidget *parent) : P402ModeWidget(parent)
 {
     createWidgets();
     _nodeProfile402 = nullptr;

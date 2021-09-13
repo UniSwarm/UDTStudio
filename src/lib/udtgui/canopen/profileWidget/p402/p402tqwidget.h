@@ -23,11 +23,11 @@
 
 #include "p402modewidget.h"
 
+#include <QFormLayout>
+#include <QGroupBox>
 #include <QLabel>
 #include <QSlider>
 #include <QSpinBox>
-#include <QFormLayout>
-#include <QGroupBox>
 
 class NodeProfile402;
 class IndexSpinBox;
@@ -43,8 +43,7 @@ public:
     ~P402TqWidget() override;
 
 private:
-
-    NodeProfile402 *_nodeProfile402;    
+    NodeProfile402 *_nodeProfile402;
     ModeTq *_modeTq;
 
     NodeObjectId _torqueDemandObjectId;
@@ -60,15 +59,15 @@ private:
 
     IndexLabel *_torqueDemandLabel;
     IndexLabel *_torqueActualValueLabel;
-    //IndexLabel *_currentActualValueLabel;
+    // IndexLabel *_currentActualValueLabel;
 
     IndexSpinBox *_targetSlopeSpinBox;
-    //IndexSpinBox *_torqueProfileTypeSpinBox;
+    // IndexSpinBox *_torqueProfileTypeSpinBox;
     IndexSpinBox *_maxTorqueSpinBox;
-    //IndexSpinBox *_maxCurrentSpinBox;
-    //IndexSpinBox *_motorRatedTorqueSpinBox;
-    //IndexSpinBox *_motorRatedCurrentSpinBox;
-    //IndexLabel *_dcLinkVoltageLabel;
+    // IndexSpinBox *_maxCurrentSpinBox;
+    // IndexSpinBox *_motorRatedTorqueSpinBox;
+    // IndexSpinBox *_motorRatedCurrentSpinBox;
+    // IndexLabel *_dcLinkVoltageLabel;
 
     void targetTorqueSpinboxFinished();
     void targetTorqueSliderChanged();
@@ -101,4 +100,4 @@ public slots:
     void setNode(Node *value, uint8_t axis) override;
 };
 
-#endif // P402TQWIDGET_H
+#endif  // P402TQWIDGET_H

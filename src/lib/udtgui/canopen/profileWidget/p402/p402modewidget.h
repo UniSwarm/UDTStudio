@@ -21,8 +21,8 @@
 
 #include "../../../udtgui_global.h"
 
-#include <QWidget>
 #include "nodeodsubscriber.h"
+#include <QWidget>
 
 class UDTGUI_EXPORT P402ModeWidget : public QWidget, public NodeOdSubscriber
 {
@@ -46,4 +46,4 @@ protected:
     uint8_t _axis;
 };
 
-#endif // P402MODEWIDGET_H
+#endif  // P402MODEWIDGET_H

@@ -19,12 +19,12 @@
 #include "p402ppwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
-#include "canopen/indexWidget/indexspinbox.h"
 #include "canopen/indexWidget/indexcheckbox.h"
+#include "canopen/indexWidget/indexspinbox.h"
 #include "services/services.h"
 
-#include "profile/p402/nodeprofile402.h"
 #include "profile/p402/modepp.h"
+#include "profile/p402/nodeprofile402.h"
 
 #include <QString>
 #include <QStringList>
@@ -32,8 +32,7 @@
 
 #include <canopen/indexWidget/indexlabel.h>
 
-P402PpWidget::P402PpWidget(QWidget *parent)
-    : P402ModeWidget(parent)
+P402PpWidget::P402PpWidget(QWidget *parent) : P402ModeWidget(parent)
 {
     createWidgets();
     _nodeProfile402 = nullptr;
@@ -203,12 +202,12 @@ void P402PpWidget::changeOnSetPointEvent(bool ok)
 
 void P402PpWidget::updateInformationLabel()
 {
-//    QString text;
-//    if (!_changeSetImmediatelyPointCheckBox->isChecked())
-//    {
-//        text = "Change set Immediately disabled";
-//    }
-//    _infoLabel->setText(text);
+    //    QString text;
+    //    if (!_changeSetImmediatelyPointCheckBox->isChecked())
+    //    {
+    //        text = "Change set Immediately disabled";
+    //    }
+    //    _infoLabel->setText(text);
 }
 void P402PpWidget::dataLogger()
 {
@@ -370,7 +369,7 @@ void P402PpWidget::velocityWidgets()
     _modeLayout->addRow(tr("Profile velocity:"), _profileVelocitySpinBox);
 
     _endVelocitySpinBox = new IndexSpinBox();
-    //qfLayout->addRow(tr("End velocity:"), _endVelocitySpinBox);
+    // qfLayout->addRow(tr("End velocity:"), _endVelocitySpinBox);
 
     // Add Max profile velocity (0x607F) and Max motor speed (0x6080)
     _maxProfileVelocitySpinBox = new IndexSpinBox();

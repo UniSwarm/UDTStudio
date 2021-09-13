@@ -62,7 +62,7 @@ private:
     Node *_node;
     uint8_t _axis;
 
-    QMap<NodeProfile402::OperationMode, P402ModeWidget*> _modes;
+    QMap<NodeProfile402::OperationMode, P402ModeWidget *> _modes;
 
     enum State
     {
@@ -133,4 +133,4 @@ private:
     QGroupBox *statusWordWidgets();
 };
 
-#endif // P402Widget_H
+#endif  // P402Widget_H

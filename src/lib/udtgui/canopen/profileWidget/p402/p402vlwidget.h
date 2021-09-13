@@ -24,11 +24,11 @@
 #include "p402modewidget.h"
 
 #include <QCheckBox>
+#include <QFormLayout>
+#include <QGroupBox>
 #include <QLabel>
 #include <QSlider>
 #include <QSpinBox>
-#include <QGroupBox>
-#include <QFormLayout>
 
 class NodeProfile402;
 class ModeVl;
@@ -120,4 +120,4 @@ public slots:
     void setNode(Node *value, uint8_t axis) override;
 };
 
-#endif // P402VLWIDGET_H
+#endif  // P402VLWIDGET_H

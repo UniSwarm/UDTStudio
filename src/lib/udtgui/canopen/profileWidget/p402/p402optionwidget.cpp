@@ -18,17 +18,16 @@
 
 #include "p402optionwidget.h"
 
-#include "profile/p402/nodeprofile402.h"
 #include "indexdb402.h"
 #include "node.h"
+#include "profile/p402/nodeprofile402.h"
 
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QScrollArea>
 
-P402OptionWidget::P402OptionWidget(QWidget *parent)
-    : P402ModeWidget(parent)
+P402OptionWidget::P402OptionWidget(QWidget *parent) : P402ModeWidget(parent)
 {
     createWidgets();
 }
@@ -206,7 +205,7 @@ QGroupBox *P402OptionWidget::abortConnectionWidgets()
     return groupBox;
 }
 
- QGroupBox *P402OptionWidget::quickStopWidgets()
+QGroupBox *P402OptionWidget::quickStopWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Quick stop option (0x6n5A)"));
     QFormLayout *layout = new QFormLayout();
@@ -251,7 +250,7 @@ QGroupBox *P402OptionWidget::shutdownWidgets()
     return groupBox;
 }
 
- QGroupBox *P402OptionWidget::disableWidgets()
+QGroupBox *P402OptionWidget::disableWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Disable operation option code (0x6n5C)"));
     QFormLayout *layout = new QFormLayout();
@@ -320,11 +319,7 @@ void P402OptionWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
         return;
     }
 
-    if ((objId == _abortConnectionObjectId)
-        || (objId == _quickStopObjectId)
-        || (objId == _shutdownObjectId)
-        || (objId == _disableObjectId)
-        || (objId == _haltObjectId)
+    if ((objId == _abortConnectionObjectId) || (objId == _quickStopObjectId) || (objId == _shutdownObjectId) || (objId == _disableObjectId) || (objId == _haltObjectId)
         || (objId == _faultReactionObjectId))
     {
         if (_node->nodeOd()->indexExist(objId.index()))

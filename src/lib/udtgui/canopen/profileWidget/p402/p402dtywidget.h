@@ -96,4 +96,4 @@ public slots:
     void updateAxis();
 };
 
-#endif // P402DCWIDGET_H
+#endif  // P402DCWIDGET_H

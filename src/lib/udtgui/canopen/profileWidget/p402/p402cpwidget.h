@@ -24,13 +24,13 @@
 #include "p402modewidget.h"
 
 #include <QCheckBox>
+#include <QFormLayout>
+#include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QSpinBox>
-#include <QFormLayout>
-#include <QGroupBox>
 #include <QSlider>
+#include <QSpinBox>
 
 class NodeProfile402;
 class ModeCp;
@@ -41,11 +41,11 @@ class IndexCheckBox;
 class UDTGUI_EXPORT P402CpWidget : public P402ModeWidget
 {
     Q_OBJECT
-  public:
+public:
     P402CpWidget(QWidget *parent = nullptr);
     ~P402CpWidget() override;
 
-  private:
+private:
     NodeProfile402 *_nodeProfile402;
     ModeCp *_modeCp;
 
@@ -119,4 +119,4 @@ public slots:
     void setNode(Node *node, uint8_t axis) override;
 };
 
-#endif // P402CPWIDGET_H
+#endif  // P402CPWIDGET_H

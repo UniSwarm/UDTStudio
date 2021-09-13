@@ -81,4 +81,4 @@ public slots:
     void setNode(Node *value, uint8_t axis) override;
 };
 
-#endif // P402OPTIONWIDGET_H
+#endif  // P402OPTIONWIDGET_H

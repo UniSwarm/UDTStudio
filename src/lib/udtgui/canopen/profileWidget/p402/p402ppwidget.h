@@ -24,12 +24,12 @@
 #include "p402modewidget.h"
 
 #include <QCheckBox>
+#include <QFormLayout>
+#include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSpinBox>
-#include <QFormLayout>
-#include <QGroupBox>
 
 class NodeProfile402;
 class ModePp;
@@ -57,7 +57,7 @@ private:
 
     QCheckBox *_changeSetImmediatelyPointCheckBox;
     QCheckBox *_absRelCheckBox;
-    //QCheckBox *_changeOnSetPointCheckBox;
+    // QCheckBox *_changeOnSetPointCheckBox;
 
     QLineEdit *_targetPositionLineEdit;
     QLineEdit *_goOneLineEdit;
@@ -139,4 +139,4 @@ public slots:
     void setNode(Node *value, uint8_t axis) override;
 };
 
-#endif // P402PPWIDGET_H
+#endif  // P402PPWIDGET_H

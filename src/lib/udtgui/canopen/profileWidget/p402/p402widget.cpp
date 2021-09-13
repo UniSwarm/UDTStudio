@@ -21,13 +21,13 @@
 #include "canopen/indexWidget/indexlabel.h"
 #include "services/services.h"
 
+#include "p402cpwidget.h"
 #include "p402dtywidget.h"
 #include "p402ipwidget.h"
 #include "p402optionwidget.h"
 #include "p402ppwidget.h"
 #include "p402tqwidget.h"
 #include "p402vlwidget.h"
-#include "p402cpwidget.h"
 
 #include <QApplication>
 #include <QButtonGroup>
@@ -39,10 +39,7 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 
-P402Widget::P402Widget(Node *node, uint8_t axis, QWidget *parent)
-    : QWidget(parent)
-    , _node(node)
-    , _axis(axis)
+P402Widget::P402Widget(Node *node, uint8_t axis, QWidget *parent) : QWidget(parent), _node(node), _axis(axis)
 {
     createWidgets();
 
@@ -154,11 +151,7 @@ void P402Widget::modeChanged(uint8_t axis, NodeProfile402::OperationMode mode)
         return;
     }
 
-    if ((mode == NodeProfile402::IP)
-        || (mode == NodeProfile402::VL)
-        || (mode == NodeProfile402::TQ)
-        || (mode == NodeProfile402::PP)
-        || (mode == NodeProfile402::DTY)
+    if ((mode == NodeProfile402::IP) || (mode == NodeProfile402::VL) || (mode == NodeProfile402::TQ) || (mode == NodeProfile402::PP) || (mode == NodeProfile402::DTY)
         || (mode == NodeProfile402::CP))
     {
         P402ModeWidget *mode402 = dynamic_cast<P402ModeWidget *>(_stackedWidget->currentWidget());
@@ -186,94 +179,94 @@ void P402Widget::stateChanged()
 
     switch (state)
     {
-    case NodeProfile402::STATE_NotReadyToSwitchOn:
-        _statusWordStateLabel->setText(tr("NotReadyToSwitchOn"));
-        setCheckableStateMachine(STATE_NotReadyToSwitchOn);
-        break;
+        case NodeProfile402::STATE_NotReadyToSwitchOn:
+            _statusWordStateLabel->setText(tr("NotReadyToSwitchOn"));
+            setCheckableStateMachine(STATE_NotReadyToSwitchOn);
+            break;
 
-    case NodeProfile402::STATE_SwitchOnDisabled:
-        _statusWordStateLabel->setText(tr("SwitchOnDisabled"));
-        setCheckableStateMachine(STATE_SwitchOnDisabled);
-        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
-        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
-        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
-        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
-        _haltPushButton->setCheckable(false);
-        _haltPushButton->setEnabled(false);
-        break;
+        case NodeProfile402::STATE_SwitchOnDisabled:
+            _statusWordStateLabel->setText(tr("SwitchOnDisabled"));
+            setCheckableStateMachine(STATE_SwitchOnDisabled);
+            _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+            _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
+            _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
+            _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
+            _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+            _haltPushButton->setCheckable(false);
+            _haltPushButton->setEnabled(false);
+            break;
 
-    case NodeProfile402::STATE_ReadyToSwitchOn:
-        _statusWordStateLabel->setText(tr("ReadyToSwitchOn"));
-        setCheckableStateMachine(STATE_ReadyToSwitchOn);
-        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
-        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
-        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
-        _haltPushButton->setCheckable(false);
-        _haltPushButton->setEnabled(false);
-        break;
+        case NodeProfile402::STATE_ReadyToSwitchOn:
+            _statusWordStateLabel->setText(tr("ReadyToSwitchOn"));
+            setCheckableStateMachine(STATE_ReadyToSwitchOn);
+            _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+            _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
+            _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
+            _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
+            _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+            _haltPushButton->setCheckable(false);
+            _haltPushButton->setEnabled(false);
+            break;
 
-    case NodeProfile402::STATE_SwitchedOn:
-        _statusWordStateLabel->setText(tr("SwitchedOn"));
-        setCheckableStateMachine(STATE_SwitchedOn);
-        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
-        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
-        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
-        _haltPushButton->setCheckable(false);
-        _haltPushButton->setEnabled(false);
-        break;
+        case NodeProfile402::STATE_SwitchedOn:
+            _statusWordStateLabel->setText(tr("SwitchedOn"));
+            setCheckableStateMachine(STATE_SwitchedOn);
+            _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+            _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
+            _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
+            _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
+            _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+            _haltPushButton->setCheckable(false);
+            _haltPushButton->setEnabled(false);
+            break;
 
-    case NodeProfile402::STATE_OperationEnabled:
-        _statusWordStateLabel->setText(tr("OperationEnabled"));
-        setCheckableStateMachine(STATE_OperationEnabled);
-        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
-        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
-        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
-        _haltPushButton->setEnabled(true);
-        _haltPushButton->setCheckable(true);
-        break;
+        case NodeProfile402::STATE_OperationEnabled:
+            _statusWordStateLabel->setText(tr("OperationEnabled"));
+            setCheckableStateMachine(STATE_OperationEnabled);
+            _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+            _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
+            _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
+            _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
+            _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
+            _haltPushButton->setEnabled(true);
+            _haltPushButton->setCheckable(true);
+            break;
 
-    case NodeProfile402::STATE_QuickStopActive:
-        _statusWordStateLabel->setText(tr("QuickStopActive"));
-        setCheckableStateMachine(STATE_QuickStopActive);
-        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
-        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
-        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
-        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
-        _haltPushButton->setCheckable(false);
-        _haltPushButton->setEnabled(false);
-        break;
+        case NodeProfile402::STATE_QuickStopActive:
+            _statusWordStateLabel->setText(tr("QuickStopActive"));
+            setCheckableStateMachine(STATE_QuickStopActive);
+            _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+            _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
+            _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
+            _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
+            _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
+            _haltPushButton->setCheckable(false);
+            _haltPushButton->setEnabled(false);
+            break;
 
-    case NodeProfile402::STATE_FaultReactionActive:
-        _statusWordStateLabel->setText(tr("FaultReactionActive"));
-        setCheckableStateMachine(STATE_FaultReactionActive);
-        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(false);
-        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
-        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
-        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
-        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
-        _haltPushButton->setCheckable(false);
-        _haltPushButton->setEnabled(false);
-        break;
+        case NodeProfile402::STATE_FaultReactionActive:
+            _statusWordStateLabel->setText(tr("FaultReactionActive"));
+            setCheckableStateMachine(STATE_FaultReactionActive);
+            _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(false);
+            _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
+            _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
+            _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
+            _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+            _haltPushButton->setCheckable(false);
+            _haltPushButton->setEnabled(false);
+            break;
 
-    case NodeProfile402::STATE_Fault:
-        _statusWordStateLabel->setText(tr("Fault"));
-        setCheckableStateMachine(STATE_Fault);
-        _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-        _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
-        _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
-        _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
-        _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
-        _haltPushButton->setCheckable(false);
-        _haltPushButton->setEnabled(false);
-        break;
+        case NodeProfile402::STATE_Fault:
+            _statusWordStateLabel->setText(tr("Fault"));
+            setCheckableStateMachine(STATE_Fault);
+            _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
+            _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
+            _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
+            _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
+            _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+            _haltPushButton->setCheckable(false);
+            _haltPushButton->setEnabled(false);
+            break;
     }
 
     update();

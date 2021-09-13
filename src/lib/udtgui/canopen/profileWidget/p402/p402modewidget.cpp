@@ -16,10 +16,9 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "p402mode.h"
+#include "p402modewidget.h"
 
-P402ModeWidget::P402ModeWidget(QWidget *parent)
-    :QWidget(parent)
+P402ModeWidget::P402ModeWidget(QWidget *parent) : QWidget(parent)
 {
     _node = nullptr;
 }

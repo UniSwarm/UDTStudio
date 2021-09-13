@@ -24,12 +24,12 @@
 #include "p402modewidget.h"
 
 #include <QCheckBox>
+#include <QFormLayout>
+#include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSpinBox>
-#include <QFormLayout>
-#include <QGroupBox>
 
 class NodeProfile402;
 class ModeIp;
@@ -136,4 +136,4 @@ protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags);
 };
 
-#endif // P402IPWIDGET_H
+#endif  // P402IPWIDGET_H

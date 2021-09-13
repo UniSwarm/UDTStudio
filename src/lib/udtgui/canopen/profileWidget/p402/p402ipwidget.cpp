@@ -19,15 +19,15 @@
 #include "p402ipwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
-#include "canopen/indexWidget/indexspinbox.h"
-#include "canopen/indexWidget/indexlabel.h"
 #include "canopen/indexWidget/indexcheckbox.h"
+#include "canopen/indexWidget/indexlabel.h"
+#include "canopen/indexWidget/indexspinbox.h"
 
-#include "services/services.h"
 #include "canopenbus.h"
+#include "services/services.h"
 
-#include "profile/p402/nodeprofile402.h"
 #include "profile/p402/modeip.h"
+#include "profile/p402/nodeprofile402.h"
 
 #include <QString>
 #include <QStringList>
@@ -35,8 +35,7 @@
 
 #include <canopen/indexWidget/indexcheckbox.h>
 
-P402IpWidget::P402IpWidget(QWidget *parent)
-    : P402ModeWidget(parent)
+P402IpWidget::P402IpWidget(QWidget *parent) : P402ModeWidget(parent)
 {
     _nodeProfile402 = nullptr;
     createWidgets();
@@ -119,7 +118,6 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
         connect(_node->bus()->sync(), &Sync::signalBeforeSync, this, &P402IpWidget::sendDataRecordTargetWithPdo);
     }
 }
-
 
 void P402IpWidget::stop()
 {

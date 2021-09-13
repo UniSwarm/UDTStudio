@@ -19,17 +19,16 @@
 #include "p402vlwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
-#include "canopen/indexWidget/indexspinbox.h"
 #include "canopen/indexWidget/indexlabel.h"
+#include "canopen/indexWidget/indexspinbox.h"
 #include "services/services.h"
 
-#include "profile/p402/nodeprofile402.h"
 #include "profile/p402/modevl.h"
+#include "profile/p402/nodeprofile402.h"
 
 #include <QPushButton>
 
-P402VlWidget::P402VlWidget(QWidget *parent)
-    : P402ModeWidget(parent)
+P402VlWidget::P402VlWidget(QWidget *parent) : P402ModeWidget(parent)
 {
     createWidgets();
     _nodeProfile402 = nullptr;
@@ -265,7 +264,7 @@ void P402VlWidget::createWidgets()
 
     QFrame *frame = new QFrame();
     frame->setFrameStyle(QFrame::HLine);
-    frame->setFrameShadow(QFrame::Sunken);    
+    frame->setFrameShadow(QFrame::Sunken);
     _modeLayout->addRow(frame);
 
     accelDeccelWidgets();
@@ -365,7 +364,7 @@ void P402VlWidget::accelDeccelWidgets()
 {
     QLabel *label;
 
-    //ACCELERATION
+    // ACCELERATION
     QHBoxLayout *accelerationlayout = new QHBoxLayout();
     accelerationlayout->setSpacing(0);
 
@@ -382,7 +381,7 @@ void P402VlWidget::accelDeccelWidgets()
     label->setBuddy(_accelerationDeltaSpeedSpinBox);
     _modeLayout->addRow(label, accelerationlayout);
 
-    //DECELERATION
+    // DECELERATION
     QHBoxLayout *decelerationlayout = new QHBoxLayout();
     decelerationlayout->setSpacing(0);
 
@@ -399,7 +398,7 @@ void P402VlWidget::accelDeccelWidgets()
     label->setBuddy(_decelerationDeltaSpeedSpinBox);
     _modeLayout->addRow(label, decelerationlayout);
 
-     //DECELERATION QUICKSTOP
+    // DECELERATION QUICKSTOP
     QHBoxLayout *quickStoplayout = new QHBoxLayout();
     quickStoplayout->setSpacing(0);
 
