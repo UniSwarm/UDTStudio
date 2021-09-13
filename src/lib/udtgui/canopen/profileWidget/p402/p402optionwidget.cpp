@@ -71,23 +71,25 @@ void P402OptionWidget::setNode(Node *node, uint8_t axis)
     {
         _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
 
-        _abortConnectionObjectId = _nodeProfile402->abortConnectionObjectId();
-        registerObjId({_abortConnectionObjectId});
+        _abortConnectionObjectId = IndexDb402::getObjectId(IndexDb402::OD_ABORT_CONNECTION_OPTION, axis);
+        _abortConnectionObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        registerObjId(_abortConnectionObjectId);
 
-        _quickStopObjectId = _nodeProfile402->quickStopObjectId();
-        registerObjId({_quickStopObjectId});
+        _quickStopObjectId = IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION, axis);
+        _quickStopObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        registerObjId(_quickStopObjectId);
 
-        _shutdownObjectId = _nodeProfile402->shutdownObjectId();
-        registerObjId({_shutdownObjectId});
+        _shutdownObjectId = IndexDb402::getObjectId(IndexDb402::OD_SHUTDOWN_OPTION, axis);
+        _shutdownObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        registerObjId(_shutdownObjectId);
 
-        _disableObjectId = _nodeProfile402->disableObjectId();
-        registerObjId({_disableObjectId});
+        _disableObjectId = IndexDb402::getObjectId(IndexDb402::OD_DISABLE_OPERATION_OPTION, axis);
+        _disableObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        registerObjId(_disableObjectId);
 
-        _haltObjectId = _nodeProfile402->haltObjectId();
-        registerObjId({_haltObjectId});
-
-        _faultReactionObjectId = _nodeProfile402->faultReactionObjectId();
-        registerObjId({_faultReactionObjectId});
+        _faultReactionObjectId = IndexDb402::getObjectId(IndexDb402::OD_FAULT_REACTION_OPTION, axis);
+        _faultReactionObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        registerObjId(_faultReactionObjectId);
     }
 }
 
