@@ -41,7 +41,7 @@ protected:
     void updateObjId() override;
 
 protected:
-    void setValue(const QVariant &value);
+    void setTextEditValue(const QVariant &value);
     QVariant textEditValue() const;
 
     // QWidget interface

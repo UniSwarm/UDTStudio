@@ -43,7 +43,7 @@ void IndexSpinBox::setDisplayValue(const QVariant &value, DisplayAttribute flags
         mfont.setItalic(false);
         lineEdit()->setFont(mfont);
     }
-    setValue(value);
+    setTextEditValue(value);
 }
 
 bool IndexSpinBox::isEditing() const
@@ -56,18 +56,18 @@ void IndexSpinBox::keyPressEvent(QKeyEvent *event)
     QAbstractSpinBox::keyPressEvent(event);
     switch (event->key())
     {
-    case Qt::Key_Return:
-    case Qt::Key_Enter:
-        requestWriteValue(textEditValue());
-        break;
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+            requestWriteValue(textEditValue());
+            break;
 
-    case Qt::Key_F5:
-        requestReadValue();
-        break;
+        case Qt::Key_F5:
+            requestReadValue();
+            break;
 
-    case Qt::Key_Escape:
-        cancelEdit();
-        break;
+        case Qt::Key_Escape:
+            cancelEdit();
+            break;
     }
 }
 
@@ -77,7 +77,7 @@ void IndexSpinBox::focusOutEvent(QFocusEvent *event)
     QAbstractSpinBox::focusOutEvent(event);
 }
 
-void IndexSpinBox::setValue(const QVariant &value)
+void IndexSpinBox::setTextEditValue(const QVariant &value)
 {
     lineEdit()->setText(pstringValue(value, _hint));
 }
@@ -86,22 +86,21 @@ QVariant IndexSpinBox::textEditValue() const
 {
     bool ok = false;
     QVariant value;
+
     switch (_hint)
     {
-    case AbstractIndexWidget::DisplayDirectValue:
-    case AbstractIndexWidget::DisplayHexa:
-        value = QVariant(text().toInt(&ok, 0));
-        break;
+        case AbstractIndexWidget::DisplayDirectValue:
+        case AbstractIndexWidget::DisplayHexa:
+            value = QVariant(text().toInt(&ok, 0));
+            break;
 
-    case AbstractIndexWidget::DisplayQ15_16:
-    case AbstractIndexWidget::DisplayQ1_15:
-        value = QVariant(static_cast<int32_t>(text().toDouble(&ok) * 65536.0));
-        break;
-
-    case AbstractIndexWidget::DisplayFloat:
-        value = QVariant(text().toDouble(&ok));
-        break;
+        case AbstractIndexWidget::DisplayQ15_16:
+        case AbstractIndexWidget::DisplayQ1_15:
+        case AbstractIndexWidget::DisplayFloat:
+            value = QVariant(text().toDouble(&ok));
+            break;
     }
+
     if (ok)
     {
         return value;
@@ -111,27 +110,68 @@ QVariant IndexSpinBox::textEditValue() const
 
 void IndexSpinBox::stepBy(int steps)
 {
+    QVariant newValue;
+
     switch (_hint)
     {
-    case AbstractIndexWidget::DisplayDirectValue:
-    case AbstractIndexWidget::DisplayHexa:
-        setValue(textEditValue().toInt() + steps);
-        break;
+        case AbstractIndexWidget::DisplayDirectValue:
+        case AbstractIndexWidget::DisplayHexa:
+            newValue = textEditValue().toInt() + steps;
+            break;
 
-    case AbstractIndexWidget::DisplayQ15_16:
-    case AbstractIndexWidget::DisplayQ1_15:
-        setValue(textEditValue().toDouble() + steps * 65536.0);
-        break;
+        case AbstractIndexWidget::DisplayQ15_16:
+        case AbstractIndexWidget::DisplayQ1_15:
+        case AbstractIndexWidget::DisplayFloat:
+            newValue = textEditValue().toDouble() + steps;
+            break;
+    }
 
-    case AbstractIndexWidget::DisplayFloat:
-        setValue(textEditValue().toDouble() + steps);
-        break;
+    switch (inBound(newValue))
+    {
+        case AbstractIndexWidget::BoundTooLow:
+            setTextEditValue(_minValue.toDouble());
+            break;
+        case AbstractIndexWidget::BoundOK:
+            setTextEditValue(newValue);
+            break;
+        case AbstractIndexWidget::BoundTooHigh:
+            setTextEditValue(_maxValue.toDouble());
+            break;
     }
 }
 
 QAbstractSpinBox::StepEnabled IndexSpinBox::stepEnabled() const
 {
-    return StepUpEnabled | StepDownEnabled;
+    if (isReadOnly())
+    {
+        return StepNone;
+    }
+
+    StepEnabled step = StepNone;
+    if (_maxValue.isNull())
+    {
+        step |= StepUpEnabled;
+    }
+    else
+    {
+        if (textEditValue().toDouble() < _maxValue.toDouble())
+        {
+            step |= StepUpEnabled;
+        }
+    }
+
+    if (_minValue.isNull())
+    {
+        step |= StepDownEnabled;
+    }
+    else
+    {
+        if (textEditValue().toDouble() > _minValue.toDouble())
+        {
+            step |= StepDownEnabled;
+        }
+    }
+    return step;
 }
 
 void IndexSpinBox::updateHint()
@@ -139,19 +179,19 @@ void IndexSpinBox::updateHint()
     QRegularExpressionValidator *validator = nullptr;
     switch (_hint)
     {
-    case AbstractIndexWidget::DisplayDirectValue:
-        validator = new QRegularExpressionValidator(QRegularExpression("\\-?[0-9]+"));
-        break;
+        case AbstractIndexWidget::DisplayDirectValue:
+            validator = new QRegularExpressionValidator(QRegularExpression("\\-?[0-9]+"));
+            break;
 
-    case AbstractIndexWidget::DisplayHexa:
-        validator = new QRegularExpressionValidator(QRegularExpression("\\-?(0x)?[0-9A-F]+"));
-        break;
+        case AbstractIndexWidget::DisplayHexa:
+            validator = new QRegularExpressionValidator(QRegularExpression("\\-?(0x)?[0-9A-F]+"));
+            break;
 
-    case AbstractIndexWidget::DisplayQ15_16:
-    case AbstractIndexWidget::DisplayQ1_15:
-    case AbstractIndexWidget::DisplayFloat:
-        validator = new QRegularExpressionValidator(QRegularExpression("\\-?[0-9]*(\\.[0-9]*)?(e-?[0-9]*)?"));
-        break;
+        case AbstractIndexWidget::DisplayQ15_16:
+        case AbstractIndexWidget::DisplayQ1_15:
+        case AbstractIndexWidget::DisplayFloat:
+            validator = new QRegularExpressionValidator(QRegularExpression("\\-?[0-9]*(\\.[0-9]*)?(e-?[0-9]*)?"));
+            break;
     }
     lineEdit()->setValidator(validator);
 }

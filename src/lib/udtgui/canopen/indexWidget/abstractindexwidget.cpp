@@ -49,7 +49,7 @@ void AbstractIndexWidget::setNode(Node *node)
         if (_objId.isValid())
         {
             _lastValue = nodeInterrest()->nodeOd()->value(_objId);
-            setDisplayValue(pValue(_lastValue), DisplayAttribute::Normal);
+            setDisplayValue(pValue(_lastValue, _hint), DisplayAttribute::Normal);
         }
         updateObjId();
     }
@@ -66,9 +66,43 @@ void AbstractIndexWidget::requestWriteValue(const QVariant &value)
     {
         return;
     }
-    _pendingValue = value;
-    nodeInterrest()->writeObject(_objId, value);
-    setDisplayValue(pValue(_pendingValue), DisplayAttribute::PendingValue);
+
+    switch (inBound(value))
+    {
+        case AbstractIndexWidget::BoundTooLow:
+            _pendingValue = _minValue;
+            break;
+        case AbstractIndexWidget::BoundOK:
+            _pendingValue = value;
+            break;
+        case AbstractIndexWidget::BoundTooHigh:
+            _pendingValue = _maxValue;
+            break;
+    }
+
+    if (_scale != 0 && _pendingValue.canConvert(QMetaType::Double))
+    {
+        _pendingValue = _pendingValue.toDouble() / _scale;
+    }
+
+    switch (_hint)
+    {
+        case AbstractIndexWidget::DisplayDirectValue:
+        case AbstractIndexWidget::DisplayHexa:
+            _pendingValue = static_cast<int32_t>(_pendingValue.toDouble());
+            break;
+
+        case AbstractIndexWidget::DisplayQ15_16:
+        case AbstractIndexWidget::DisplayQ1_15:
+            _pendingValue = static_cast<int32_t>(_pendingValue.toDouble() * 65536.0);
+            break;
+
+        case AbstractIndexWidget::DisplayFloat:
+            break;
+    }
+
+    nodeInterrest()->writeObject(_objId, _pendingValue);
+    setDisplayValue(pValue(_pendingValue, _hint), DisplayAttribute::PendingValue);
 }
 
 void AbstractIndexWidget::requestReadValue()
@@ -88,7 +122,7 @@ void AbstractIndexWidget::cancelEdit()
         setDisplayValue(QVariant(), DisplayAttribute::Error);
         return;
     }
-    setDisplayValue(pValue(_lastValue), DisplayAttribute::Normal);
+    setDisplayValue(pValue(_lastValue, _hint), DisplayAttribute::Normal);
 }
 
 void AbstractIndexWidget::updateHint()
@@ -131,29 +165,26 @@ QString AbstractIndexWidget::pstringValue(const QVariant &value, const AbstractI
     QString str;
     switch (hint)
     {
-    case AbstractIndexWidget::DisplayDirectValue:
-        if (value.userType() != QMetaType::QString && value.userType() != QMetaType::QByteArray)
-        {
-            str = QString::number(value.toInt());
-        }
-        else
-        {
-            str = value.toString();
-        }
-        break;
+        case AbstractIndexWidget::DisplayDirectValue:
+            if (value.userType() != QMetaType::QString && value.userType() != QMetaType::QByteArray)
+            {
+                str = QString::number(value.toInt());
+            }
+            else
+            {
+                str = value.toString();
+            }
+            break;
 
-    case AbstractIndexWidget::DisplayHexa:
-        str = "0x" + QString::number(value.toInt(), 16).toUpper();
-        break;
+        case AbstractIndexWidget::DisplayHexa:
+            str = "0x" + QString::number(value.toInt(), 16).toUpper();
+            break;
 
-    case AbstractIndexWidget::DisplayQ1_15:
-    case AbstractIndexWidget::DisplayQ15_16:
-        str = QString::number(value.toDouble() / 65536.0, 'g', 6);
-        break;
-
-    case AbstractIndexWidget::DisplayFloat:
-        str = QString::number(value.toDouble(), 'g', 6);
-        break;
+        case AbstractIndexWidget::DisplayQ1_15:
+        case AbstractIndexWidget::DisplayQ15_16:
+        case AbstractIndexWidget::DisplayFloat:
+            str = QString::number(value.toDouble(), 'g', 6);
+            break;
     }
 
     if (!_unit.isEmpty())
@@ -240,6 +271,10 @@ double AbstractIndexWidget::scale() const
 
 void AbstractIndexWidget::setScale(double scale)
 {
+    if (scale == 0.0)
+    {
+        scale = 1.0;
+    }
     _scale = scale;
 }
 
@@ -278,7 +313,7 @@ void AbstractIndexWidget::setDisplayHint(const AbstractIndexWidget::DisplayHint 
         {
             return;
         }
-        setDisplayValue(pValue(_lastValue), DisplayAttribute::Normal);
+        setDisplayValue(pValue(_lastValue, _hint), DisplayAttribute::Normal);
     }
 }
 
@@ -339,7 +374,7 @@ void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest 
     {
         if (_pendingValue.isValid() && (flags & SDO::Write)) // we request a write value that cause an error
         {
-            setDisplayValue(pValue(_pendingValue), DisplayAttribute::Error);
+            setDisplayValue(pValue(_pendingValue, _hint), DisplayAttribute::Error);
             _pendingValue = QVariant();
             return;
         }
@@ -349,7 +384,7 @@ void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest 
             {
                 return;
             }
-            setDisplayValue(pValue(_lastValue), DisplayAttribute::Error);
+            setDisplayValue(pValue(_lastValue, _hint), DisplayAttribute::Error);
             _requestRead = false;
             return;
         }
@@ -362,7 +397,7 @@ void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest 
     {
         return;
     }
-    setDisplayValue(pValue(_lastValue), DisplayAttribute::Normal);
+    setDisplayValue(pValue(_lastValue, _hint), DisplayAttribute::Normal);
     _requestRead = false;
     _pendingValue = QVariant();
 }
