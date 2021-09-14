@@ -183,6 +183,7 @@ private:
     quint16 _controlWord;
     State402 _stateMachineCurrent;
     State402 _stateMachineRequested;
+    uint _stateCountMachineRequested;
 
     uint8_t _statusWordEvent;
 
