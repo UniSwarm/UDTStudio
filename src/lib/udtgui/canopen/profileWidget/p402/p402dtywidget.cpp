@@ -34,19 +34,6 @@ P402DtyWidget::P402DtyWidget(QWidget *parent) : P402ModeWidget(parent)
 {
     createWidgets();
     _nodeProfile402 = nullptr;
-
-    /*const QList<int> connectedGamepads = QGamepadManager::instance()->connectedGamepads();
-    if (connectedGamepads.isEmpty())
-    {
-        _pad = new QGamepad(0);
-    }
-    else
-    {
-        _pad = new QGamepad(connectedGamepads[0]);
-    }
-    _padTimer = new QTimer();
-    _padTimer->start(100);
-    connect(_padTimer, SIGNAL(timeout()), this, SLOT(updateAxis()));*/
 }
 
 P402DtyWidget::~P402DtyWidget()
@@ -116,16 +103,6 @@ void P402DtyWidget::setNode(Node *node, uint8_t axis)
 
         connect(_maxSpinBox, &QSpinBox::editingFinished, this, &P402DtyWidget::maxSpinboxFinished);
     }
-}
-
-void P402DtyWidget::updateAxis()
-{
-    /*double value = _pad->buttonL2() * 28000;
-    if (value < 500)
-    {
-        value = 0;
-    }
-    _targetSlider->setValue(value);*/
 }
 
 void P402DtyWidget::targetSpinboxFinished()

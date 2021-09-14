@@ -24,7 +24,6 @@
 #include "p402modewidget.h"
 
 #include <QFormLayout>
-#include <QGamepad>
 #include <QGroupBox>
 #include <QLabel>
 #include <QSlider>
@@ -78,9 +77,6 @@ private:
     void slopeWidgets();
     QHBoxLayout *buttonWidgets();
 
-    QGamepad *_pad;
-    QTimer *_padTimer;
-
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
@@ -93,7 +89,6 @@ public:
 
 public slots:
     void setNode(Node *value, uint8_t axis) override;
-    void updateAxis();
 };
 
 #endif  // P402DCWIDGET_H
