@@ -34,8 +34,7 @@
 #include <QSplitter>
 #include <QWidget>
 
-MotionSensorWidget::MotionSensorWidget(QWidget *parent)
-    : QWidget(parent)
+MotionSensorWidget::MotionSensorWidget(QWidget *parent) : QWidget(parent)
 {
     _nodeProfile402 = nullptr;
     createWidgets();
@@ -52,14 +51,14 @@ QString MotionSensorWidget::title() const
 {
     switch (_mode)
     {
-    case MotionSensorWidget::MODE_SENSOR_NONE:
-        return tr("None");
-    case MODE_SENSOR_POSITION:
-        return tr("Position sensor");
-    case MODE_SENSOR_VELOCITY:
-        return tr("Velocity sensor");
-    case MODE_SENSOR_TORQUE:
-        return tr("Torque sensor");
+        case MotionSensorWidget::MODE_SENSOR_NONE:
+            return tr("None");
+        case MODE_SENSOR_POSITION:
+            return tr("Position sensor");
+        case MODE_SENSOR_VELOCITY:
+            return tr("Velocity sensor");
+        case MODE_SENSOR_TORQUE:
+            return tr("Torque sensor");
     }
     return QString();
 }
@@ -159,35 +158,35 @@ void MotionSensorWidget::setIMode()
 
     switch (_mode)
     {
-    case MODE_SENSOR_NONE:
-        break;
+        case MODE_SENSOR_NONE:
+            break;
 
-    case MODE_SENSOR_TORQUE:
-        _sensorConfigGroupBox->setTitle(tr("Torque sensor configuration"));
-        _filterGroupBox->setTitle(tr("Torque filter"));
-        _conditioningGroupBox->setTitle(tr("Torque conditioning"));
-        _statusGroupBox->setTitle(tr("Torque sensor status"));
-        _dataLoggerWidget->setTitle(tr("Node %1 axis %2 torque motion sensor").arg(_node->nodeId()).arg(_axis));
-        odMode402 = IndexDb402::MODE402_TORQUE;
-        break;
+        case MODE_SENSOR_TORQUE:
+            _sensorConfigGroupBox->setTitle(tr("Torque sensor configuration"));
+            _filterGroupBox->setTitle(tr("Torque filter"));
+            _conditioningGroupBox->setTitle(tr("Torque conditioning"));
+            _statusGroupBox->setTitle(tr("Torque sensor status"));
+            _dataLoggerWidget->setTitle(tr("Node %1 axis %2 torque motion sensor").arg(_node->nodeId()).arg(_axis));
+            odMode402 = IndexDb402::MODE402_TORQUE;
+            break;
 
-    case MODE_SENSOR_VELOCITY:
-        _sensorConfigGroupBox->setTitle(tr("Velocity sensor configuration"));
-        _filterGroupBox->setTitle(tr("Velocity filter"));
-        _conditioningGroupBox->setTitle(tr("Velocity conditioning"));
-        _statusGroupBox->setTitle(tr("Velocity sensor status"));
-        _dataLoggerWidget->setTitle(tr("Node %1 axis %2 velocity motion sensor").arg(_node->nodeId()).arg(_axis));
-        odMode402 = IndexDb402::MODE402_VELOCITY;
-        break;
+        case MODE_SENSOR_VELOCITY:
+            _sensorConfigGroupBox->setTitle(tr("Velocity sensor configuration"));
+            _filterGroupBox->setTitle(tr("Velocity filter"));
+            _conditioningGroupBox->setTitle(tr("Velocity conditioning"));
+            _statusGroupBox->setTitle(tr("Velocity sensor status"));
+            _dataLoggerWidget->setTitle(tr("Node %1 axis %2 velocity motion sensor").arg(_node->nodeId()).arg(_axis));
+            odMode402 = IndexDb402::MODE402_VELOCITY;
+            break;
 
-    case MODE_SENSOR_POSITION:
-        _sensorConfigGroupBox->setTitle(tr("Position sensor configuration"));
-        _filterGroupBox->setTitle(tr("Position filter"));
-        _conditioningGroupBox->setTitle(tr("Position conditioning"));
-        _statusGroupBox->setTitle(tr("Position sensor status"));
-        _dataLoggerWidget->setTitle(tr("Node %1 axis %2 position motion sensor").arg(_node->nodeId()).arg(_axis));
-        odMode402 = IndexDb402::MODE402_POSITION;
-        break;
+        case MODE_SENSOR_POSITION:
+            _sensorConfigGroupBox->setTitle(tr("Position sensor configuration"));
+            _filterGroupBox->setTitle(tr("Position filter"));
+            _conditioningGroupBox->setTitle(tr("Position conditioning"));
+            _statusGroupBox->setTitle(tr("Position sensor status"));
+            _dataLoggerWidget->setTitle(tr("Node %1 axis %2 position motion sensor").arg(_node->nodeId()).arg(_axis));
+            odMode402 = IndexDb402::MODE402_POSITION;
+            break;
     }
 
     // Config
@@ -272,7 +271,7 @@ void MotionSensorWidget::createWidgets()
     splitter->setSizes(QList<int>() << 100 << 300);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
-    vBoxLayout->setContentsMargins(2, 2, 2 ,2);
+    vBoxLayout->setContentsMargins(2, 2, 2, 2);
     vBoxLayout->setSpacing(0);
     vBoxLayout->addWidget(createToolBarWidgets());
     vBoxLayout->addWidget(splitter);

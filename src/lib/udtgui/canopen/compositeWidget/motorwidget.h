@@ -21,7 +21,8 @@
 
 #include "../../udtgui_global.h"
 
-#include "node.h"
+#include <QWidget>
+
 #include "profile/p402/nodeprofile402.h"
 
 #include <QGroupBox>
@@ -29,7 +30,6 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QToolBar>
-#include <QWidget>
 
 class Node;
 class AbstractIndexWidget;
@@ -55,9 +55,10 @@ protected:
     uint8_t _axis;
     NodeProfile402 *_nodeProfile402;
 
-    //Information
+    // Information
     QLabel *_informationLabel;
     QPushButton *_enableButton;
+
     // Motor Config
     QGroupBox *_motorConfigGroupBox;
     IndexComboBox *_motorTypeComboBox;
@@ -93,4 +94,4 @@ protected:
     QList<AbstractIndexWidget *> _indexWidgets;
 };
 
-#endif // MOTORCONFIG_H
+#endif  // MOTORCONFIG_H

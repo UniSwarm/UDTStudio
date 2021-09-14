@@ -21,6 +21,8 @@
 
 #include "../../udtgui_global.h"
 
+#include <QWidget>
+
 #include "profile/p402/nodeprofile402.h"
 
 #include <QFormLayout>
@@ -31,7 +33,6 @@
 #include <QTabWidget>
 #include <QTimer>
 #include <QToolBar>
-#include <QWidget>
 
 class Node;
 class DataLogger;
@@ -138,4 +139,4 @@ protected:
     void goEnableButton();
 };
 
-#endif // MOTIONSENSORWIDGET_H
+#endif  // MOTIONSENSORWIDGET_H

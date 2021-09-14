@@ -18,10 +18,10 @@
 
 #include "motorwidget.h"
 
+#include "canopen/indexWidget/indexcheckbox.h"
 #include "canopen/indexWidget/indexcombobox.h"
 #include "canopen/indexWidget/indexlabel.h"
 #include "canopen/indexWidget/indexspinbox.h"
-#include "canopen/indexWidget/indexcheckbox.h"
 
 #include "indexdb402.h"
 
@@ -30,15 +30,14 @@
 #include <QScrollArea>
 #include <QWidget>
 
-MotorWidget::MotorWidget(QWidget *parent)
-    : QWidget(parent)
+MotorWidget::MotorWidget(QWidget *parent) : QWidget(parent)
 {
     createWidgets();
 }
 
 Node *MotorWidget::node() const
 {
-        return _node;
+    return _node;
 }
 
 QString MotorWidget::title() const
@@ -144,7 +143,7 @@ void MotorWidget::createWidgets()
     motionSensorScrollArea->setWidgetResizable(true);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
-    vBoxLayout->setContentsMargins(2, 2, 2 ,2);
+    vBoxLayout->setContentsMargins(2, 2, 2, 2);
     vBoxLayout->setSpacing(0);
     vBoxLayout->addWidget(toolBarWidgets());
     vBoxLayout->addWidget(motionSensorScrollArea);
@@ -158,7 +157,7 @@ QToolBar *MotorWidget::toolBarWidgets()
     toolBar->setIconSize(QSize(20, 20));
 
     // read all action
-    QAction * readAllAction = toolBar->addAction(tr("Read all objects"));
+    QAction *readAllAction = toolBar->addAction(tr("Read all objects"));
     readAllAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
     readAllAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));

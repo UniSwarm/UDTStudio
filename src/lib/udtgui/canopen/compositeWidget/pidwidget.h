@@ -21,6 +21,8 @@
 
 #include "../../udtgui_global.h"
 
+#include <QWidget>
+
 #include "profile/p402/nodeprofile402.h"
 
 #include <QFormLayout>
@@ -30,7 +32,6 @@
 #include <QTabWidget>
 #include <QTimer>
 #include <QToolBar>
-#include <QWidget>
 
 class Node;
 class DataLogger;
@@ -126,7 +127,7 @@ protected:
     void setIMode();
     void screenshotSave();
     void changeMode402();
-    void mode402Changed(uint8_t axis, NodeProfile402::OperationMode modeNew);
+    void mode402Changed(uint8_t axis, NodeProfile402::OperationMode mode);
     void manageMeasurement();
     void stopFirstMeasurement();
     void stopSecondMeasurement();
@@ -137,4 +138,4 @@ protected:
     void statusNodeChanged(Node::Status status);
 };
 
-#endif // PIDWIDGET_H
+#endif  // PIDWIDGET_H
