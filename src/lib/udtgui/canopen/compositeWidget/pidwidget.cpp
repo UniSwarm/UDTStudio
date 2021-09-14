@@ -489,7 +489,7 @@ void PidWidget::createWidgets()
 
     QWidget *widgetLogger = new QWidget();
     QVBoxLayout *layoutLogger = new QVBoxLayout();
-    layoutLogger->setContentsMargins(5, 4, 0, 3);
+    layoutLogger->setContentsMargins(4, 4, 0, 0);
     _dataLoggerWidget = new DataLoggerWidget(_dataLogger, Qt::Vertical);
     _dataLoggerWidget->setType(DataLoggerWidget::InternalType);
     layoutLogger->addWidget(_dataLoggerWidget);

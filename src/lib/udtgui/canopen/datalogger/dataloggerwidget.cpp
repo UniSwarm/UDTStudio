@@ -82,10 +82,7 @@ void DataLoggerWidget::createWidgets(Qt::Orientation orientation)
 
     QWidget *widgetLogger = new QWidget();
     QVBoxLayout *layoutLogger = new QVBoxLayout();
-    layoutLogger->setContentsMargins(5, 4, 0, 3);
     _chartView = new DataLoggerChartsWidget(_dataLogger);
-    layoutLogger->addWidget(_chartView);
-    widgetLogger->setLayout(layoutLogger);
 
     _dataLoggerManagerWidget = new DataLoggerManagerWidget(_dataLogger);
     _dataLoggerManagerWidget->setChartWidget(_chartView);
@@ -97,14 +94,20 @@ void DataLoggerWidget::createWidgets(Qt::Orientation orientation)
             splitter->addWidget(_dataLoggerManagerWidget);
             splitter->addWidget(widgetLogger);
             splitter->setSizes({70, 130});
+            layoutLogger->setContentsMargins(2, 2, 2, 2);
+            _dataLoggerManagerWidget->layout()->setContentsMargins(2, 2, 2, 2);
             break;
 
         case Qt::Vertical:
             splitter->addWidget(widgetLogger);
             splitter->addWidget(_dataLoggerManagerWidget);
             splitter->setSizes({200, 50});
+            layoutLogger->setContentsMargins(0, 0, 0, 4);
+            _dataLoggerManagerWidget->layout()->setContentsMargins(0, 4, 0, 0);
             break;
     }
+    layoutLogger->addWidget(_chartView);
+    widgetLogger->setLayout(layoutLogger);
 
     layout->addWidget(splitter);
     setLayout(layout);

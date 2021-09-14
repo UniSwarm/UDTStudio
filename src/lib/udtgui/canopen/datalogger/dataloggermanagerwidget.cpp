@@ -79,7 +79,7 @@ void DataLoggerManagerWidget::createWidgets()
 {
     QAction *action;
     QLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(2, 2, 2, 2);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(5);
 
     // toolbar nmt
