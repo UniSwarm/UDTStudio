@@ -38,32 +38,36 @@ class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
 public:
     NodeProfile402(Node *node, uint8_t axis);
 
+    void init();
+    void setTarget(qint32 setTarget);
+    bool toggleHalt();
+    void setDefaultValueOfMode();
+
     enum OperationMode
     {
         MS = -2,
-        CP = -16,    // Duty Cycle mode
-        DTY = -1,    // Duty Cycle mode
-        NoMode = 0,  //
-        PP = 1,      // Profile position mode
-        VL = 2,      // Velocity mode
-        PV = 3,      // Profile velocity mode
-        TQ = 4,      // Torque profile mode
-        HM = 6,      // Homing mode
-        IP = 7,      // Interpolated position mode
-        CSP = 8,     // Cyclic sync position mode
-        CSV = 9,     // Cyclic sync velocity mode
-        CST = 10,    // Cyclic sync torque mode
-        CSTCA = 11,  // Cyclic sync torque mode with commutation angle
+        CP = -16, // Duty Cycle mode
+        DTY = -1, // Duty Cycle mode
+        NoMode = 0, //
+        PP = 1, // Profile position mode
+        VL = 2, // Velocity mode
+        PV = 3, // Profile velocity mode
+        TQ = 4, // Torque profile mode
+        HM = 6, // Homing mode
+        IP = 7, // Interpolated position mode
+        CSP = 8, // Cyclic sync position mode
+        CSV = 9, // Cyclic sync velocity mode
+        CST = 10, // Cyclic sync torque mode
+        CSTCA = 11, // Cyclic sync torque mode with commutation angle
         Reserved = 12
     };
-
-    void init();
 
     OperationMode actualMode();
     bool setMode(OperationMode mode);
     QString modeStr(NodeProfile402::OperationMode mode);
     bool isModeSupported(OperationMode mode);
     QList<OperationMode> modesSupported();
+    Mode *mode(OperationMode mode) const;
 
     enum State402
     {
@@ -81,10 +85,6 @@ public:
     void goToState(const State402 state);
     QString stateStr(State402 state) const;
 
-    bool toggleHalt();
-
-    void setTarget(qint32 setTarget);
-
     enum Event402 : quint8
     {
         None = 0x00,
@@ -98,10 +98,6 @@ public:
     };
 
     QString event402Str(quint8 Event402);
-
-    Mode *mode(OperationMode mode) const;
-
-    void setDefaultModeValue();
 
     void setPolarityPosition(bool polarity);
     void setPolarityVelocity(bool polarity);
@@ -138,21 +134,6 @@ signals:
     void supportedDriveModesUdpdated();
 
 private:
-    enum State
-    {
-        NODEPROFILE_STOPED,
-        NODEPROFILE_STARTED
-    };
-    State _nodeProfileState;
-    QTimer _nodeProfleTimer;
-
-    enum StateState
-    {
-        NONE_STATE = 0,
-        STATE_CHANGE = 1,
-    };
-    StateState _stateState;
-
     NodeObjectId _modesOfOperationObjectId;
     NodeObjectId _modesOfOperationDisplayObjectId;
     NodeObjectId _supportedDriveModesObjectId;
@@ -168,6 +149,23 @@ private:
     NodeObjectId _haltObjectId;
     NodeObjectId _faultReactionObjectId;
 
+    // STATE
+    enum State
+    {
+        NODEPROFILE_STOPED,
+        NODEPROFILE_STARTED
+    };
+    State _nodeProfileState;
+    QTimer _nodeProfleTimer;
+
+    enum StateState
+    {
+        NONE_STATE = 0,
+        STATE_CHANGE = 1,
+    };
+    StateState _stateState;
+
+    // OPERATION MODE
     enum ModeState
     {
         NONE_MODE = 0,
@@ -180,6 +178,7 @@ private:
     QMap<OperationMode, Mode *> _modes;
     QTimer _modeTimer;
 
+    // STATE MACHINE 402
     quint16 _controlWord;
     State402 _stateMachineCurrent;
     State402 _stateMachineRequested;
@@ -187,6 +186,7 @@ private:
 
     uint8_t _statusWordEvent;
 
+    void initObjectId(void);
     void statusNodeChanged(Node::Status status);
     void changeStateMachine(const State402 state);
 
@@ -212,4 +212,4 @@ public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif  // NODEPROFILE402_H
+#endif // NODEPROFILE402_H
