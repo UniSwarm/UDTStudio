@@ -363,6 +363,7 @@ QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
 
     _frequencyDividerSpinBox = new IndexSpinBox();
     _frequencyDividerSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
+    _frequencyDividerSpinBox->setRangeValue(1, 1000);
     formLayout->addRow(tr("&Frequency divider:"), _frequencyDividerSpinBox);
 
     _configBitCheckBox = new IndexCheckBox();

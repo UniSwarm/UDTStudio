@@ -579,9 +579,11 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
 
     _thresholdSpinBox = new IndexSpinBox();
     _thresholdSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
+    _thresholdSpinBox->setMinValue(0);
     formLayout->addRow(tr("&Threshold:"), _thresholdSpinBox);
 
     _freqDividerSpinBox = new IndexSpinBox();
+    _freqDividerSpinBox->setRangeValue(1, 1000);
     formLayout->addRow(tr("&Frequency divider:"), _freqDividerSpinBox);
 
     _antiReverseCheckBox = new IndexCheckBox();
