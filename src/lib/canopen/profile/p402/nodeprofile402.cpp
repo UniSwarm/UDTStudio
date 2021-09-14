@@ -29,6 +29,7 @@
 #include "nodeodsubscriber.h"
 
 #define TIMER_READ_MODE_OPERATION_DISPLAY 100u
+#define STATE_MACHINE_REQUESTED_ATTEMPT 10
 
 enum ControlWord : quint16
 {
@@ -170,6 +171,7 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis) : NodeProfile(node)
     _modes.insert(CP, new ModeCp(this));
 
     _controlWord = 0;
+    _stateCountMachineRequested = STATE_MACHINE_REQUESTED_ATTEMPT;
 }
 
 void NodeProfile402::init()
@@ -648,13 +650,14 @@ void NodeProfile402::changeStateMachine(const State402 state)
         case STATE_FaultReactionActive:
             break;
 
-        case STATE_Fault:
-            if (state >= STATE_SwitchOnDisabled)
-            {
-                _controlWord = (_controlWord & ~CW_Mask);
-                _controlWord |= (CW_FaultReset);
-            }
-            break;
+    case STATE_Fault:
+        if (state >= STATE_SwitchOnDisabled)
+        {
+            _node->sendStart();
+            _controlWord = (_controlWord & ~CW_Mask);
+            _controlWord |= (CW_FaultReset);
+        }
+        break;
     }
 
     _controlWord = (_controlWord & ~CW_Halt);
@@ -750,12 +753,21 @@ void NodeProfile402::decodeStateMachineStatusWord(quint16 statusWord)
     if ((_stateState == STATE_CHANGE) && (_stateMachineRequested != _stateMachineCurrent))
     {
         changeStateMachine(_stateMachineRequested);
+        _stateCountMachineRequested--;
+        if (!_stateCountMachineRequested)
+        {
+            _stateState = NONE_STATE;
+            _stateMachineRequested = _stateMachineCurrent;
+            _stateCountMachineRequested = STATE_MACHINE_REQUESTED_ATTEMPT;
+        }
+
         return;
     }
     else
     {
         _stateState = NONE_STATE;
         _stateMachineRequested = _stateMachineCurrent;
+        _stateCountMachineRequested = STATE_MACHINE_REQUESTED_ATTEMPT;
     }
 }
 
