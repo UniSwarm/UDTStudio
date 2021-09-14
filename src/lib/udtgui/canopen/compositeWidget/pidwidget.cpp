@@ -250,7 +250,7 @@ void PidWidget::changeMode402()
             break;
 
         case MODE_PID_VELOCITY:
-            _nodeProfile402->setDefaultModeValue();
+            _nodeProfile402->setDefaultValueOfMode();
             if (_nodeProfile402->actualMode() != NodeProfile402::VL)
             {
                 _nodeProfile402->setMode(NodeProfile402::VL);
@@ -262,7 +262,7 @@ void PidWidget::changeMode402()
             break;
 
         case MODE_PID_POSITION:
-            _nodeProfile402->setDefaultModeValue();
+            _nodeProfile402->setDefaultValueOfMode();
             if (_nodeProfile402->actualMode() != NodeProfile402::IP)
             {
                 _nodeProfile402->setMode(NodeProfile402::IP);
