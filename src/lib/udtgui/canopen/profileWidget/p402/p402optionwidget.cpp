@@ -39,14 +39,9 @@ P402OptionWidget::~P402OptionWidget()
 
 void P402OptionWidget::readAllObjects()
 {
-    if (_node)
+    if (_nodeProfile402)
     {
-        _node->readObject(_abortConnectionObjectId);
-        _node->readObject(_quickStopObjectId);
-        _node->readObject(_shutdownObjectId);
-        _node->readObject(_disableObjectId);
-        _node->readObject(_haltObjectId);
-        _node->readObject(_faultReactionObjectId);
+        _nodeProfile402->readOptionObjects();
     }
 }
 
@@ -56,104 +51,102 @@ void P402OptionWidget::setNode(Node *node, uint8_t axis)
     {
         return;
     }
-    _node = node;
 
     if (axis > 8)
     {
         return;
     }
-    _axis = axis;
 
     setNodeInterrest(node);
 
-    if (!_node->profiles().isEmpty())
+    if (!node->profiles().isEmpty())
     {
-        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
 
         _abortConnectionObjectId = IndexDb402::getObjectId(IndexDb402::OD_ABORT_CONNECTION_OPTION, axis);
-        _abortConnectionObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _abortConnectionObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
         registerObjId(_abortConnectionObjectId);
 
         _quickStopObjectId = IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION, axis);
-        _quickStopObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _quickStopObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
         registerObjId(_quickStopObjectId);
 
         _shutdownObjectId = IndexDb402::getObjectId(IndexDb402::OD_SHUTDOWN_OPTION, axis);
-        _shutdownObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _shutdownObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
         registerObjId(_shutdownObjectId);
 
         _disableObjectId = IndexDb402::getObjectId(IndexDb402::OD_DISABLE_OPERATION_OPTION, axis);
-        _disableObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _disableObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
         registerObjId(_disableObjectId);
 
         _haltObjectId = IndexDb402::getObjectId(IndexDb402::OD_HALT_OPTION, axis);
-        _haltObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _haltObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
         registerObjId(_haltObjectId);
 
         _faultReactionObjectId = IndexDb402::getObjectId(IndexDb402::OD_FAULT_REACTION_OPTION, axis);
-        _faultReactionObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        _faultReactionObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
         registerObjId(_faultReactionObjectId);
     }
 }
 
 void P402OptionWidget::abortConnectionOptionClicked(int id)
 {
-    if (!_node)
+    if (!_nodeProfile402)
     {
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_abortConnectionObjectId, QVariant(value));
+    _nodeProfile402->node()->writeObject(_abortConnectionObjectId, QVariant(value));
 }
 
 void P402OptionWidget::quickStopOptionClicked(int id)
 {
-    if (!_node)
+    if (!_nodeProfile402)
     {
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_quickStopObjectId, QVariant(value));
+    _nodeProfile402->node()->writeObject(_quickStopObjectId, QVariant(value));
 }
 
 void P402OptionWidget::shutdownOptionClicked(int id)
 {
-    if (!_node)
+    if (!_nodeProfile402)
     {
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_shutdownObjectId, QVariant(value));
+    _nodeProfile402->node()->writeObject(_shutdownObjectId, QVariant(value));
 }
 
 void P402OptionWidget::disableOptionClicked(int id)
 {
-    if (!_node)
+    if (!_nodeProfile402)
     {
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_disableObjectId, QVariant(value));
+    _nodeProfile402->node()->writeObject(_disableObjectId, QVariant(value));
 }
 
 void P402OptionWidget::haltOptionClicked(int id)
 {
-    if (!_node)
+    if (!_nodeProfile402)
     {
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_haltObjectId, QVariant(value));
+    _nodeProfile402->node()->writeObject(_haltObjectId, QVariant(value));
 }
 
 void P402OptionWidget::faultReactionOptionClicked(int id)
 {
-    if (!_node)
+    if (!_nodeProfile402)
     {
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _node->writeObject(_faultReactionObjectId, QVariant(value));
+    _nodeProfile402->node()->writeObject(_faultReactionObjectId, QVariant(value));
 }
 
 void P402OptionWidget::createWidgets()
@@ -314,7 +307,7 @@ void P402OptionWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
         return;
     }
 
-    if ((!_node) || (_node->status() != Node::STARTED))
+    if ((!_nodeProfile402->node()) || (_nodeProfile402->node()->status() != Node::STARTED))
     {
         return;
     }
@@ -322,9 +315,9 @@ void P402OptionWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
     if ((objId == _abortConnectionObjectId) || (objId == _quickStopObjectId) || (objId == _shutdownObjectId) || (objId == _disableObjectId) || (objId == _haltObjectId)
         || (objId == _faultReactionObjectId))
     {
-        if (_node->nodeOd()->indexExist(objId.index()))
+        if (_nodeProfile402->node()->nodeOd()->indexExist(objId.index()))
         {
-            int value = _node->nodeOd()->value(objId).toInt();
+            int value = _nodeProfile402->node()->nodeOd()->value(objId).toInt();
 
             if (objId == _abortConnectionObjectId)
             {

@@ -43,7 +43,6 @@ public:
     ~P402TqWidget() override;
 
 private:
-    NodeProfile402 *_nodeProfile402;
     ModeTq *_modeTq;
 
     NodeObjectId _torqueDemandObjectId;

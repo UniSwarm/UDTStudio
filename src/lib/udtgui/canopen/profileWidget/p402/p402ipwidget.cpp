@@ -48,7 +48,7 @@ P402IpWidget::~P402IpWidget()
 
 void P402IpWidget::readRealTimeObjects()
 {
-    if (_node)
+    if (_nodeProfile402)
     {
         _modeIp->readRealTimeObjects();
     }
@@ -56,7 +56,7 @@ void P402IpWidget::readRealTimeObjects()
 
 void P402IpWidget::readAllObjects()
 {
-    if (_node)
+    if (_nodeProfile402)
     {
         _modeIp->readAllObjects();
     }
@@ -68,21 +68,19 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
     {
         return;
     }
-    _node = node;
 
     if (axis > 8)
     {
         return;
     }
-    _axis = axis;
 
-    if (_node)
+    if (node)
     {
         setNodeInterrest(node);
 
-        if (!_node->profiles().isEmpty())
+        if (!node->profiles().isEmpty())
         {
-            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
             _modeIp = dynamic_cast<ModeIp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::IP));
             connect(_modeIp, &ModeIp::enableRampEvent, this, &P402IpWidget::enableRampEvent);
             enableRampEvent(_modeIp->isEnableRamp());
@@ -115,7 +113,7 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
         }
 
         connect(&_sendPointSinusoidalTimer, &QTimer::timeout, this, &P402IpWidget::sendDataRecordTargetWithSdo);
-        connect(_node->bus()->sync(), &Sync::signalBeforeSync, this, &P402IpWidget::sendDataRecordTargetWithPdo);
+        connect(_nodeProfile402->node()->bus()->sync(), &Sync::signalBeforeSync, this, &P402IpWidget::sendDataRecordTargetWithPdo);
     }
 }
 
@@ -136,7 +134,7 @@ void P402IpWidget::sendDataRecord()
     while (!_listDataRecord.isEmpty())
     {
         qint32 value = _listDataRecord.first().toInt();
-        _node->writeObject(_positionTargetObjectId, QVariant(value));
+        _nodeProfile402->node()->writeObject(_positionTargetObjectId, QVariant(value));
         _listDataRecord.removeFirst();
     }
 
@@ -173,10 +171,10 @@ void P402IpWidget::startTargetPosition()
     qreal period = 0;
     qint32 target = 0;
 
-    qint32 initialPosition = _node->nodeOd()->value(_positionDemandValueObjectId).toInt();
+    qint32 initialPosition = _nodeProfile402->node()->nodeOd()->value(_positionDemandValueObjectId).toInt();
 
-    unit = static_cast<quint8>(_node->nodeOd()->value(_timePeriodUnitsObjectId).toUInt());
-    index = static_cast<qint8>(_node->nodeOd()->value(_timePeriodIndexObjectId).toUInt());
+    unit = static_cast<quint8>(_nodeProfile402->node()->nodeOd()->value(_timePeriodUnitsObjectId).toUInt());
+    index = static_cast<qint8>(_nodeProfile402->node()->nodeOd()->value(_timePeriodIndexObjectId).toUInt());
     period = qPow(10, index);
     period = unit * period * 1000;
 
@@ -193,7 +191,7 @@ void P402IpWidget::startTargetPosition()
 
     bufferClearClicked();
 
-    if (_node->bus()->sync()->status() == Sync::Status::STOPPED)
+    if (_nodeProfile402->node()->bus()->sync()->status() == Sync::Status::STOPPED)
     {
         sendDataRecordTargetWithSdo();
         _sendPointSinusoidalTimer.start(static_cast<int>(period) * 5);
@@ -242,7 +240,7 @@ void P402IpWidget::sendDataRecordTargetWithPdo()
         stopTargetPosition();
         return;
     }
-    _node->writeObject(_positionTargetObjectId, QVariant(_pointSinusoidalVector.at(0)));
+    _nodeProfile402->node()->writeObject(_positionTargetObjectId, QVariant(_pointSinusoidalVector.at(0)));
     _pointSinusoidalVector.remove(0);
 }
 
@@ -261,7 +259,7 @@ void P402IpWidget::sendDataRecordTargetWithSdo()
         {
             break;
         }
-        _node->writeObject(_positionTargetObjectId, QVariant(_pointSinusoidalVector.at(i)));
+        _nodeProfile402->node()->writeObject(_positionTargetObjectId, QVariant(_pointSinusoidalVector.at(i)));
     }
     _pointSinusoidalVector.remove(0, i);
 }
@@ -291,10 +289,10 @@ void P402IpWidget::pdoMapping()
     NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
 
     QList<NodeObjectId> ipRpdoObjectList = {controlWordObjectId, _positionTargetObjectId};
-    _node->rpdos().at(0)->writeMapping(ipRpdoObjectList);
+    _nodeProfile402->node()->rpdos().at(0)->writeMapping(ipRpdoObjectList);
 
     QList<NodeObjectId> ipTpdoObjectList = {statusWordObjectId, _positionDemandValueObjectId};
-    _node->tpdos().at(2)->writeMapping(ipTpdoObjectList);
+    _nodeProfile402->node()->tpdos().at(2)->writeMapping(ipTpdoObjectList);
 }
 
 void P402IpWidget::createWidgets()
@@ -532,13 +530,4 @@ QHBoxLayout *P402IpWidget::buttonWidgets()
 
 void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if (flags & SDO::FlagsRequest::Error)
-    {
-        return;
-    }
-
-    if ((!_node) || (_node->status() != Node::STARTED))
-    {
-        return;
-    }
 }

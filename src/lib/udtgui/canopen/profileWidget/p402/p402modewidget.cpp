@@ -20,17 +20,6 @@
 
 P402ModeWidget::P402ModeWidget(QWidget *parent) : QWidget(parent)
 {
-    _node = nullptr;
-}
-
-Node *P402ModeWidget::node() const
-{
-    return _node;
-}
-
-uint8_t P402ModeWidget::axis() const
-{
-    return _axis;
 }
 
 void P402ModeWidget::readRealTimeObjects()

@@ -43,7 +43,6 @@ public:
     ~P402VlWidget() override;
 
 private:
-    NodeProfile402 *_nodeProfile402;
     ModeVl *_modeVl;
 
     NodeObjectId _velocityTargetObjectId;

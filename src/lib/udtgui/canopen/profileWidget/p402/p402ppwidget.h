@@ -45,7 +45,6 @@ public:
     ~P402PpWidget() override;
 
 private:
-    NodeProfile402 *_nodeProfile402;
     ModePp *_modePp;
 
     NodeObjectId _positionTargetObjectId;
@@ -57,7 +56,6 @@ private:
 
     QCheckBox *_changeSetImmediatelyPointCheckBox;
     QCheckBox *_absRelCheckBox;
-    // QCheckBox *_changeOnSetPointCheckBox;
 
     QLineEdit *_targetPositionLineEdit;
     QLineEdit *_goOneLineEdit;

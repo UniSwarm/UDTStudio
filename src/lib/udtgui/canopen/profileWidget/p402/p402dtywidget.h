@@ -44,7 +44,6 @@ public:
     ~P402DtyWidget() override;
 
 private:
-    NodeProfile402 *_nodeProfile402;
     ModeDty *_modeDty;
 
     NodeObjectId _demandObjectId;

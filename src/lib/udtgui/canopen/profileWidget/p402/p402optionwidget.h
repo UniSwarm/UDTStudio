@@ -37,7 +37,6 @@ public:
     ~P402OptionWidget() override;
 
 private:
-    NodeProfile402 *_nodeProfile402;
 
     NodeObjectId _abortConnectionObjectId;
     NodeObjectId _quickStopObjectId;

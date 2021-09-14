@@ -41,17 +41,17 @@ P402VlWidget::~P402VlWidget()
 
 void P402VlWidget::readRealTimeObjects()
 {
-    if (_node)
+    if (_nodeProfile402)
     {
-        _modeVl->readRealTimeObjects();
+        _nodeProfile402->readRealTimeObjects();
     }
 }
 
 void P402VlWidget::readAllObjects()
 {
-    if (_node)
+    if (_nodeProfile402)
     {
-        _modeVl->readAllObjects();
+        _nodeProfile402->readAllObjects();
     }
 }
 
@@ -66,21 +66,19 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
     {
         return;
     }
-    _node = node;
 
     if (axis > 8)
     {
         return;
     }
-    _axis = axis;
 
-    if (_node)
+    if (node)
     {
         setNodeInterrest(node);
 
-        if (!_node->profiles().isEmpty())
+        if (!node->profiles().isEmpty())
         {
-            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
             _modeVl = dynamic_cast<ModeVl *>(_nodeProfile402->mode(NodeProfile402::OperationMode::VL));
 
             connect(_modeVl, &ModeVl::enableRampEvent, this, &P402VlWidget::enableRampEvent);
@@ -120,8 +118,8 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
             _dimensionFactorNumeratorSpinBox->setObjId(_modeVl->dimensionFactorNumeratorObjectId());
             _dimensionFactorDenominatorSpinBox->setObjId(_modeVl->dimensionFactorDenominatorObjectId());
 
-            int max = _node->nodeOd()->value(_maxVelocityMinMaxAmountSpinBox->objId()).toInt();
-            _targetVelocitySlider->setValue(_node->nodeOd()->value(_velocityTargetObjectId).toInt());
+            int max = _nodeProfile402->node()->nodeOd()->value(_maxVelocityMinMaxAmountSpinBox->objId()).toInt();
+            _targetVelocitySlider->setValue(_nodeProfile402->node()->nodeOd()->value(_velocityTargetObjectId).toInt());
             _targetVelocitySlider->setRange(-max, max);
         }
     }
@@ -141,7 +139,7 @@ void P402VlWidget::targetVelocitySliderChanged()
 
 void P402VlWidget::updateMaxVelocityMinMaxAmount()
 {
-    int max = _node->nodeOd()->value(_maxVelocityMinMaxAmountSpinBox->objId()).toInt();
+    int max = _nodeProfile402->node()->nodeOd()->value(_maxVelocityMinMaxAmountSpinBox->objId()).toInt();
     _targetVelocitySlider->setRange(-max, max);
     _sliderMinLabel->setNum(-max);
     _sliderMaxLabel->setNum(max);
@@ -246,10 +244,10 @@ void P402VlWidget::pdoMapping()
     NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
 
     QList<NodeObjectId> vlRpdoObjectList = {controlWordObjectId, _velocityTargetObjectId};
-    _node->rpdos().at(0)->writeMapping(vlRpdoObjectList);
+    _nodeProfile402->node()->rpdos().at(0)->writeMapping(vlRpdoObjectList);
 
     QList<NodeObjectId> vlTpdoObjectList = {statusWordObjectId, _velocityDemandObjectId};
-    _node->tpdos().at(2)->writeMapping(vlTpdoObjectList);
+    _nodeProfile402->node()->tpdos().at(2)->writeMapping(vlTpdoObjectList);
 }
 
 void P402VlWidget::createWidgets()
@@ -512,7 +510,7 @@ void P402VlWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 
     if (objId == _velocityTargetObjectId)
     {
-        int value = _node->nodeOd()->value(objId).toInt();
+        int value = _nodeProfile402->node()->nodeOd()->value(objId).toInt();
         if (!_targetVelocitySpinBox->hasFocus())
         {
             _targetVelocitySpinBox->blockSignals(true);

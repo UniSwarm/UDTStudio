@@ -46,7 +46,6 @@ public:
     ~P402CpWidget() override;
 
 private:
-    NodeProfile402 *_nodeProfile402;
     ModeCp *_modeCp;
 
     NodeObjectId _positionTargetObjectId;

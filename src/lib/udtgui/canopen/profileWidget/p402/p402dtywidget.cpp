@@ -43,20 +43,14 @@ P402DtyWidget::~P402DtyWidget()
 
 void P402DtyWidget::readRealTimeObjects()
 {
-    if (_node)
-    {
-        _demandLabel->readObject();
-    }
+    _demandLabel->readObject();
 }
 
 void P402DtyWidget::readAllObjects()
 {
-    if (_node)
-    {
-        _demandLabel->readObject();
-        _slopeSpinBox->readObject();
-        _maxSpinBox->readObject();
-    }
+    _demandLabel->readObject();
+    _slopeSpinBox->readObject();
+    _maxSpinBox->readObject();
 }
 
 void P402DtyWidget::reset()
@@ -70,21 +64,19 @@ void P402DtyWidget::setNode(Node *node, uint8_t axis)
     {
         return;
     }
-    _node = node;
 
     if (axis > 8)
     {
         return;
     }
-    _axis = axis;
 
-    if (_node)
+    if (node)
     {
-        setNodeInterrest(_node);
+        setNodeInterrest(node);
 
-        if (!_node->profiles().isEmpty())
+        if (!node->profiles().isEmpty())
         {
-            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
             _modeDty = dynamic_cast<ModeDty *>(_nodeProfile402->mode(NodeProfile402::OperationMode::DTY));
             _targetObjectId = _modeDty->targetObjectId();
             registerObjId(_targetObjectId);
@@ -94,7 +86,7 @@ void P402DtyWidget::setNode(Node *node, uint8_t axis)
             _slopeSpinBox->setObjId(_modeDty->slopeObjectId());
             _maxSpinBox->setObjId(_modeDty->maxObjectId());
 
-            int max = _node->nodeOd()->value(_maxSpinBox->objId()).toInt();
+            int max = _nodeProfile402->node()->nodeOd()->value(_maxSpinBox->objId()).toInt();
             _targetSlider->setRange(-max, max);
             _targetSlider->setTickInterval(max / 10);
             _sliderMinLabel->setNum(-max);
@@ -119,7 +111,7 @@ void P402DtyWidget::targetSliderChanged()
 
 void P402DtyWidget::maxSpinboxFinished()
 {
-    int max = _node->nodeOd()->value(_maxSpinBox->objId()).toInt();
+    int max = _nodeProfile402->node()->nodeOd()->value(_maxSpinBox->objId()).toInt();
     _targetSlider->setRange(-max, max);
     _sliderMinLabel->setNum(-max);
     _sliderMaxLabel->setNum(max);
@@ -146,10 +138,10 @@ void P402DtyWidget::pdoMapping()
 
     QList<NodeObjectId> tqRpdoObjectList = {controlWordObjectId, _targetObjectId};
 
-    _node->rpdos().at(0)->writeMapping(tqRpdoObjectList);
+    _nodeProfile402->node()->rpdos().at(0)->writeMapping(tqRpdoObjectList);
     QList<NodeObjectId> tqTpdoObjectList = {statusWordObjectId, _demandObjectId};
 
-    _node->tpdos().at(2)->writeMapping(tqTpdoObjectList);
+    _nodeProfile402->node()->tpdos().at(2)->writeMapping(tqTpdoObjectList);
 }
 
 void P402DtyWidget::createWidgets()
@@ -275,14 +267,14 @@ void P402DtyWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         return;
     }
 
-    if ((!_node) || (_node->status() != Node::STARTED))
+    if ((!_nodeProfile402->node()) || (_nodeProfile402->node()->status() != Node::STARTED))
     {
         return;
     }
 
     if (objId == _targetObjectId)
     {
-        int value = _node->nodeOd()->value(objId).toInt();
+        int value = _nodeProfile402->node()->nodeOd()->value(objId).toInt();
         if (!_targetSpinBox->hasFocus())
         {
             _targetSpinBox->blockSignals(true);

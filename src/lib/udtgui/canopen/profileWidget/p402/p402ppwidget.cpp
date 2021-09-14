@@ -45,7 +45,7 @@ P402PpWidget::~P402PpWidget()
 
 void P402PpWidget::readRealTimeObjects()
 {
-    if (_node)
+    if (_nodeProfile402)
     {
         _nodeProfile402->readRealTimeObjects();
     }
@@ -53,7 +53,7 @@ void P402PpWidget::readRealTimeObjects()
 
 void P402PpWidget::readAllObjects()
 {
-    if (_node)
+    if (_nodeProfile402)
     {
         _nodeProfile402->readAllObjects();
     }
@@ -65,21 +65,19 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
     {
         return;
     }
-    _node = node;
 
     if (axis > 8)
     {
         return;
     }
-    _axis = axis;
 
-    if (_node)
+    if (node)
     {
         setNodeInterrest(node);
 
-        if (!_node->profiles().isEmpty())
+        if (!node->profiles().isEmpty())
         {
-            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
             _modePp = dynamic_cast<ModePp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::PP));
 
             connect(_modePp, &ModePp::changeSetImmediatelyEvent, this, &P402PpWidget::changeSetImmediatelyPointEvent);
@@ -148,7 +146,7 @@ void P402PpWidget::sendDataRecord()
     if (_iteratorForSendDataRecord < _listDataRecord.size())
     {
         qint32 value = _listDataRecord.at(_iteratorForSendDataRecord).toInt();
-        _node->writeObject(_positionTargetObjectId, QVariant(value));
+        _nodeProfile402->setTarget(value);
         _iteratorForSendDataRecord++;
     }
     else
@@ -224,10 +222,10 @@ void P402PpWidget::pdoMapping()
     NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
 
     QList<NodeObjectId> ipRpdoObjectList = {controlWordObjectId, _positionTargetObjectId};
-    _node->rpdos().at(0)->writeMapping(ipRpdoObjectList);
+    _nodeProfile402->node()->rpdos().at(0)->writeMapping(ipRpdoObjectList);
 
     QList<NodeObjectId> ipTpdoObjectList = {statusWordObjectId, _positionDemandValueObjectId};
-    _node->tpdos().at(2)->writeMapping(ipTpdoObjectList);
+    _nodeProfile402->node()->tpdos().at(2)->writeMapping(ipTpdoObjectList);
 }
 
 void P402PpWidget::createWidgets()
@@ -418,11 +416,9 @@ void P402PpWidget::accelDeccelWidgets()
 
 void P402PpWidget::homePolarityWidgets()
 {
-    // Add Home offset (0x607C)
     _homeOffsetSpinBox = new IndexSpinBox();
     _modeLayout->addRow(tr("Home offset:"), _homeOffsetSpinBox);
 
-    // Polarity (0x607E)
     _polarityCheckBox = new IndexCheckBox();
     _polarityCheckBox->setBitMask(NodeProfile402::FgPolarity::MASK_POLARITY_POSITION);
     _modeLayout->addRow(tr("Polarity:"), _polarityCheckBox);
@@ -430,7 +426,6 @@ void P402PpWidget::homePolarityWidgets()
 
 QGroupBox *P402PpWidget::controlWordWidgets()
 {
-    // Group Box Control Word
     QGroupBox *groupBox = new QGroupBox(tr("Control Word"));
     QFormLayout *layout = new QFormLayout();
 
@@ -442,11 +437,6 @@ QGroupBox *P402PpWidget::controlWordWidgets()
     _absRelCheckBox = new QCheckBox();
     layout->addRow(tr("Abs/Rel (bit 6):"), _absRelCheckBox);
     connect(_absRelCheckBox, &QCheckBox::clicked, this, &P402PpWidget::absRelCheckBoxRampClicked);
-
-    //_changeOnSetPointCheckBox = new QCheckBox();
-    //    modeControlWordLayout->addRow(tr("Change on set-point (bit 9):"), _changeOnSetPointCheckBox);
-    //    connect(_changeOnSetPointCheckBox, &QCheckBox::clicked, this, &P402PpWidget::changeOnSetPointCheckBoxRampClicked);
-    //    modeControlWordGroupBox->setLayout(modeControlWordLayout);
 
     return groupBox;
 }
@@ -484,12 +474,12 @@ void P402PpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         return;
     }
 
-    if ((!_node) || (_node->status() != Node::STARTED))
+    if ((!_nodeProfile402->node()) || (_nodeProfile402->node()->status() != Node::STARTED))
     {
         return;
     }
 
-    if ((objId == _positionTargetObjectId))
+    if (objId == _positionTargetObjectId)
     {
         if (!_listDataRecord.isEmpty())
         {

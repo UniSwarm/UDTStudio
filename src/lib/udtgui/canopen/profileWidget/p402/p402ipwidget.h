@@ -45,7 +45,6 @@ public:
     ~P402IpWidget() override;
 
 private:
-    NodeProfile402 *_nodeProfile402;
     ModeIp *_modeIp;
 
     NodeObjectId _positionTargetObjectId;
@@ -133,7 +132,7 @@ public slots:
 
     // NodeOdSubscriber interface
 protected:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags);
+    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
 #endif  // P402IPWIDGET_H

@@ -52,7 +52,7 @@ void P402CpWidget::targetPositionSliderChanged()
 
 void P402CpWidget::maxPositionSpinboxFinished()
 {
-    int max = _node->nodeOd()->value(_positionRangeLimitMaxSpinBox->objId()).toInt();
+    int max = _nodeProfile402->node()->nodeOd()->value(_positionRangeLimitMaxSpinBox->objId()).toInt();
     _positionTargetSlider->setRange(-max, max);
     _sliderMinLabel->setNum(-max);
     _sliderMaxLabel->setNum(max);
@@ -91,10 +91,10 @@ void P402CpWidget::pdoMapping()
     NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
 
     QList<NodeObjectId> ipRpdoObjectList = {controlWordObjectId, _positionTargetObjectId};
-    _node->rpdos().at(0)->writeMapping(ipRpdoObjectList);
+    _nodeProfile402->node()->rpdos().at(0)->writeMapping(ipRpdoObjectList);
 
     QList<NodeObjectId> ipTpdoObjectList = {statusWordObjectId, _positionDemandValueObjectId};
-    _node->tpdos().at(2)->writeMapping(ipTpdoObjectList);
+    _nodeProfile402->node()->tpdos().at(2)->writeMapping(ipTpdoObjectList);
 }
 
 void P402CpWidget::createWidgets()
@@ -333,7 +333,7 @@ void P402CpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 
     if (objId == _positionTargetObjectId)
     {
-        int value = _node->nodeOd()->value(objId).toInt();
+        int value = _nodeProfile402->node()->nodeOd()->value(objId).toInt();
         if (!_positionTargetSpinBox->hasFocus())
         {
             _positionTargetSpinBox->blockSignals(true);
@@ -369,21 +369,19 @@ void P402CpWidget::setNode(Node *node, uint8_t axis)
     {
         return;
     }
-    _node = node;
 
     if (axis > 8)
     {
         return;
     }
-    _axis = axis;
 
-    if (_node)
+    if (node)
     {
         setNodeInterrest(node);
 
-        if (!_node->profiles().isEmpty())
+        if (!node->profiles().isEmpty())
         {
-            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
             _modeCp = dynamic_cast<ModeCp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::CP));
 
             connect(_modeCp, &ModeCp::absRelEvent, this, &P402CpWidget::absRelEvent);
@@ -417,8 +415,8 @@ void P402CpWidget::setNode(Node *node, uint8_t axis)
             _homeOffsetSpinBox->setObjId(_modeCp->homeOffsetObjectId());
             _polarityCheckBox->setObjId(_nodeProfile402->fgPolaritybjectId());
 
-            int max = _node->nodeOd()->value(_positionRangeLimitMaxSpinBox->objId()).toInt();
-            _positionTargetSlider->setValue(_node->nodeOd()->value(_positionTargetObjectId).toInt());
+            int max = _nodeProfile402->node()->nodeOd()->value(_positionRangeLimitMaxSpinBox->objId()).toInt();
+            _positionTargetSlider->setValue(_nodeProfile402->node()->nodeOd()->value(_positionTargetObjectId).toInt());
             _positionTargetSlider->setRange(-max, max);
         }
     }

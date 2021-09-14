@@ -22,6 +22,9 @@
 #include "../../../udtgui_global.h"
 
 #include "nodeodsubscriber.h"
+
+#include "profile/p402/nodeprofile402.h"
+
 #include <QWidget>
 
 class UDTGUI_EXPORT P402ModeWidget : public QWidget, public NodeOdSubscriber
@@ -29,9 +32,6 @@ class UDTGUI_EXPORT P402ModeWidget : public QWidget, public NodeOdSubscriber
     Q_OBJECT
 public:
     P402ModeWidget(QWidget *parent);
-
-    Node *node() const;
-    uint8_t axis() const;
 
     virtual void readRealTimeObjects();
     virtual void readAllObjects() = 0;
@@ -42,8 +42,7 @@ public slots:
     virtual void setNode(Node *value, uint8_t axis = 0) = 0;
 
 protected:
-    Node *_node;
-    uint8_t _axis;
+    NodeProfile402 *_nodeProfile402;
 };
 
 #endif  // P402MODEWIDGET_H
