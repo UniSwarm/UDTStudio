@@ -164,6 +164,65 @@ QString AbstractIndexWidget::pstringValue(const QVariant &value, const AbstractI
     return str;
 }
 
+AbstractIndexWidget::Bound AbstractIndexWidget::inBound(const QVariant &value)
+{
+    switch (_hint)
+    {
+        case AbstractIndexWidget::DisplayDirectValue:
+        case AbstractIndexWidget::DisplayHexa:
+            if (_maxValue.isValid() && value.toInt() > _maxValue.toInt())
+            {
+                return BoundTooHigh;
+            }
+            if (_minValue.isValid() && value.toInt() < _minValue.toInt())
+            {
+                return BoundTooLow;
+            }
+            break;
+
+        case AbstractIndexWidget::DisplayQ15_16:
+        case AbstractIndexWidget::DisplayQ1_15:
+        case AbstractIndexWidget::DisplayFloat:
+            if (_maxValue.isValid() && value.toDouble() > _maxValue.toDouble())
+            {
+                return BoundTooHigh;
+            }
+            if (_minValue.isValid() && value.toDouble() < _minValue.toDouble())
+            {
+                return BoundTooLow;
+            }
+            break;
+    }
+
+    return BoundOK;
+}
+
+const QVariant &AbstractIndexWidget::minValue() const
+{
+    return _minValue;
+}
+
+void AbstractIndexWidget::setMinValue(const QVariant &minValue)
+{
+    _minValue = minValue;
+}
+
+const QVariant &AbstractIndexWidget::maxValue() const
+{
+    return _maxValue;
+}
+
+void AbstractIndexWidget::setMaxValue(const QVariant &maxValue)
+{
+    _maxValue = maxValue;
+}
+
+void AbstractIndexWidget::setRangeValue(const QVariant &minValue, const QVariant &maxValue)
+{
+    _minValue = minValue;
+    _maxValue = maxValue;
+}
+
 QString AbstractIndexWidget::unit() const
 {
     return _unit;

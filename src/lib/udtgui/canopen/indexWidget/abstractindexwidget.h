@@ -49,7 +49,13 @@ public:
     QVariant value() const;
     QString stringValue() const;
 
-    // min max
+    // Range
+    const QVariant &minValue() const;
+    void setMinValue(const QVariant &minValue);
+    const QVariant &maxValue() const;
+    void setMaxValue(const QVariant &maxValue);
+    void setRangeValue(const QVariant &minValue, const QVariant &maxValue);
+
     // tooltip
 
     uint64_t bitMask() const;
@@ -90,6 +96,14 @@ protected:
     QVariant pValue(const QVariant &value, const DisplayHint hint = DisplayHint::DisplayDirectValue) const;
     QString pstringValue(const QVariant &value, const DisplayHint hint = DisplayHint::DisplayDirectValue) const;
 
+    enum Bound
+    {
+        BoundTooLow = -1,
+        BoundOK = 0,
+        BoundTooHigh = 1
+    };
+    Bound inBound(const QVariant &value);
+
 protected:
     NodeObjectId _objId;
     QVariant _lastValue;
@@ -100,6 +114,8 @@ protected:
     uint64_t _bitMask;
     double _offset;
     double _scale;
+    QVariant _minValue;
+    QVariant _maxValue;
     QString _unit;
 
     // NodeOdSubscriber interface
