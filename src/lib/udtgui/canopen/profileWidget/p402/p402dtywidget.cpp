@@ -82,6 +82,7 @@ void P402DtyWidget::setNode(Node *node, uint8_t axis)
             registerObjId(_targetObjectId);
 
             _demandObjectId = _modeDty->demandObjectId();
+            _demandLabel->setObjId(_demandObjectId);
 
             _slopeSpinBox->setObjId(_modeDty->slopeObjectId());
             _maxSpinBox->setObjId(_modeDty->maxObjectId());
