@@ -133,7 +133,7 @@ QVariant NodeOdItem::data(int column, int role) const
                 }
                 else
                 {
-                    return QVariant(QString("%1[%2]").arg(NodeIndex::objectTypeStr(_index->objectType())).arg(_index->subIndexesCount()));
+                    return QVariant(QString("%1[%2]").arg(NodeIndex::objectTypeStr(_index->objectType())).arg(_index->subIndexesCount() - 1));
                 }
 
             case NodeOdItemModel::Acces:
