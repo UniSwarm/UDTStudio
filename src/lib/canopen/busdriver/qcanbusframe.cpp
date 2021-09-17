@@ -1,5 +1,10 @@
+/**
+ ** File get from Qt5.15.1 from compatibility issues
+**/
 
 #include "busdriver/qcanbusframe.h"
+
+#include <QString>
 
 bool QCanBusFrame::isValid() const
 {
