@@ -193,7 +193,11 @@ QGroupBox *P402OptionWidget::abortConnectionWidgets()
     layout->addRow(_3AbortConnectionOptionCheckBox);
     _abortConnectionOptionGroup->addButton(_3AbortConnectionOptionCheckBox, 3);
     groupBox->setLayout(layout);
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_abortConnectionOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { abortConnectionOptionClicked(id); });
+#else
+    connect(_abortConnectionOptionGroup, QOverload<int>::of(&QButtonGroup::idClicked), [=](int id) { abortConnectionOptionClicked(id); });
+#endif
 
     return groupBox;
 }
@@ -220,7 +224,11 @@ QGroupBox *P402OptionWidget::quickStopWidgets()
     layout->addRow(_6QuickStopOptionCheckBox);
     _quickStopOptionGroup->addButton(_6QuickStopOptionCheckBox, 6);
     groupBox->setLayout(layout);
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_quickStopOptionGroup, QOverload<int>::of(&QButtonGroup::buttonPressed), [=](int id) { quickStopOptionClicked(id); });
+#else
+    connect(_quickStopOptionGroup, QOverload<int>::of(&QButtonGroup::idPressed), [=](int id) { quickStopOptionClicked(id); });
+#endif
 
     return groupBox;
 }
@@ -238,7 +246,11 @@ QGroupBox *P402OptionWidget::shutdownWidgets()
     layout->addRow(_1ShutdownOptionCheckBox);
     _shutdownOptionGroup->addButton(_1ShutdownOptionCheckBox, 1);
     groupBox->setLayout(layout);
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_shutdownOptionGroup, QOverload<int>::of(&QButtonGroup::buttonPressed), [=](int id) { shutdownOptionClicked(id); });
+#else
+    connect(_shutdownOptionGroup, QOverload<int>::of(&QButtonGroup::idPressed), [=](int id) { shutdownOptionClicked(id); });
+#endif
 
     return groupBox;
 }
@@ -256,7 +268,11 @@ QGroupBox *P402OptionWidget::disableWidgets()
     layout->addRow(_1DisableOptionCheckBox);
     _disableOptionGroup->addButton(_1DisableOptionCheckBox, 1);
     groupBox->setLayout(layout);
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_disableOptionGroup, QOverload<int>::of(&QButtonGroup::buttonPressed), [=](int id) { disableOptionClicked(id); });
+#else
+    connect(_disableOptionGroup, QOverload<int>::of(&QButtonGroup::idPressed), [=](int id) { disableOptionClicked(id); });
+#endif
 
     return groupBox;
 }
@@ -274,7 +290,11 @@ QGroupBox *P402OptionWidget::haltWidgets()
     layout->addRow(_quickStopRampCheckBox);
     _haltOptionGroup->addButton(_quickStopRampCheckBox, 2);
     groupBox->setLayout(layout);
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_haltOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { haltOptionClicked(id); });
+#else
+    connect(_haltOptionGroup, QOverload<int>::of(&QButtonGroup::idPressed), [=](int id) { haltOptionClicked(id); });
+#endif
 
     return groupBox;
 }
@@ -295,7 +315,11 @@ QGroupBox *P402OptionWidget::faultReactionWidgets()
     layout->addRow(_2FaultReactionOptionCheckBox);
     _faultReactionOptionGroup->addButton(_2FaultReactionOptionCheckBox, 2);
     groupBox->setLayout(layout);
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_faultReactionOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { faultReactionOptionClicked(id); });
+#else
+    connect(_faultReactionOptionGroup, QOverload<int>::of(&QButtonGroup::idPressed), [=](int id) { faultReactionOptionClicked(id); });
+#endif
 
     return groupBox;
 }

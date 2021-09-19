@@ -637,7 +637,11 @@ QGroupBox *P402Widget::stateMachineWidgets()
     layout->addRow(stateFaultPushButton);
     _stateMachineGroup->addButton(stateFaultPushButton, STATE_Fault);
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_stateMachineGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { stateMachineClicked(id); });
+#else
+    connect(_stateMachineGroup, QOverload<int>::of(&QButtonGroup::idClicked), [=](int id) { stateMachineClicked(id); });
+#endif
 
     groupBox->setLayout(layout);
     return groupBox;
