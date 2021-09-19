@@ -37,14 +37,6 @@ public:
     ~P402OptionWidget() override;
 
 private:
-
-    NodeObjectId _abortConnectionObjectId;
-    NodeObjectId _quickStopObjectId;
-    NodeObjectId _shutdownObjectId;
-    NodeObjectId _disableObjectId;
-    NodeObjectId _haltObjectId;
-    NodeObjectId _faultReactionObjectId;
-
     QButtonGroup *_abortConnectionOptionGroup;
     QButtonGroup *_quickStopOptionGroup;
     QButtonGroup *_shutdownOptionGroup;

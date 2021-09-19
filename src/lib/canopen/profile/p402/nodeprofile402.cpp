@@ -477,6 +477,7 @@ void NodeProfile402::readOptionObjects() const
     _node->readObject(_quickStopObjectId);
     _node->readObject(_shutdownObjectId);
     _node->readObject(_disableObjectId);
+    _node->readObject(_haltObjectId);
     _node->readObject(_faultReactionObjectId);
 }
 

@@ -51,42 +51,20 @@ void P402OptionWidget::setNode(Node *node, uint8_t axis)
     {
         return;
     }
-
-    if (axis > 8)
+    if (axis > node->profilesCount())
     {
         return;
     }
 
     setNodeInterrest(node);
 
-    if (!node->profiles().isEmpty())
-    {
-        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
-
-        _abortConnectionObjectId = IndexDb402::getObjectId(IndexDb402::OD_ABORT_CONNECTION_OPTION, axis);
-        _abortConnectionObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
-        registerObjId(_abortConnectionObjectId);
-
-        _quickStopObjectId = IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION, axis);
-        _quickStopObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
-        registerObjId(_quickStopObjectId);
-
-        _shutdownObjectId = IndexDb402::getObjectId(IndexDb402::OD_SHUTDOWN_OPTION, axis);
-        _shutdownObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
-        registerObjId(_shutdownObjectId);
-
-        _disableObjectId = IndexDb402::getObjectId(IndexDb402::OD_DISABLE_OPERATION_OPTION, axis);
-        _disableObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
-        registerObjId(_disableObjectId);
-
-        _haltObjectId = IndexDb402::getObjectId(IndexDb402::OD_HALT_OPTION, axis);
-        _haltObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
-        registerObjId(_haltObjectId);
-
-        _faultReactionObjectId = IndexDb402::getObjectId(IndexDb402::OD_FAULT_REACTION_OPTION, axis);
-        _faultReactionObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
-        registerObjId(_faultReactionObjectId);
-    }
+    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
+    registerObjId(_nodeProfile402->abortConnectionObjectId());
+    registerObjId(_nodeProfile402->quickStopObjectId());
+    registerObjId(_nodeProfile402->shutdownObjectId());
+    registerObjId(_nodeProfile402->disableObjectId());
+    registerObjId(_nodeProfile402->haltObjectId());
+    registerObjId(_nodeProfile402->faultReactionObjectId());
 }
 
 void P402OptionWidget::abortConnectionOptionClicked(int id)
@@ -96,7 +74,7 @@ void P402OptionWidget::abortConnectionOptionClicked(int id)
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _nodeProfile402->node()->writeObject(_abortConnectionObjectId, QVariant(value));
+    _nodeProfile402->node()->writeObject(_nodeProfile402->abortConnectionObjectId(), QVariant(value));
 }
 
 void P402OptionWidget::quickStopOptionClicked(int id)
@@ -106,7 +84,7 @@ void P402OptionWidget::quickStopOptionClicked(int id)
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _nodeProfile402->node()->writeObject(_quickStopObjectId, QVariant(value));
+    _nodeProfile402->node()->writeObject(_nodeProfile402->quickStopObjectId(), QVariant(value));
 }
 
 void P402OptionWidget::shutdownOptionClicked(int id)
@@ -116,7 +94,7 @@ void P402OptionWidget::shutdownOptionClicked(int id)
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _nodeProfile402->node()->writeObject(_shutdownObjectId, QVariant(value));
+    _nodeProfile402->node()->writeObject(_nodeProfile402->shutdownObjectId(), QVariant(value));
 }
 
 void P402OptionWidget::disableOptionClicked(int id)
@@ -126,7 +104,7 @@ void P402OptionWidget::disableOptionClicked(int id)
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _nodeProfile402->node()->writeObject(_disableObjectId, QVariant(value));
+    _nodeProfile402->node()->writeObject(_nodeProfile402->disableObjectId(), QVariant(value));
 }
 
 void P402OptionWidget::haltOptionClicked(int id)
@@ -136,7 +114,7 @@ void P402OptionWidget::haltOptionClicked(int id)
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _nodeProfile402->node()->writeObject(_haltObjectId, QVariant(value));
+    _nodeProfile402->node()->writeObject(_nodeProfile402->haltObjectId(), QVariant(value));
 }
 
 void P402OptionWidget::faultReactionOptionClicked(int id)
@@ -146,7 +124,7 @@ void P402OptionWidget::faultReactionOptionClicked(int id)
         return;
     }
     quint16 value = static_cast<quint16>(id);
-    _nodeProfile402->node()->writeObject(_faultReactionObjectId, QVariant(value));
+    _nodeProfile402->node()->writeObject(_nodeProfile402->faultReactionObjectId(), QVariant(value));
 }
 
 void P402OptionWidget::createWidgets()
@@ -180,18 +158,18 @@ QGroupBox *P402OptionWidget::abortConnectionWidgets()
     QFormLayout *layout = new QFormLayout();
     _abortConnectionOptionGroup = new QButtonGroup(this);
     _abortConnectionOptionGroup->setExclusive(true);
-    QRadioButton *_0AbortConnectionOptionCheckBox = new QRadioButton(tr("0 No action"));
-    layout->addRow(_0AbortConnectionOptionCheckBox);
-    _abortConnectionOptionGroup->addButton(_0AbortConnectionOptionCheckBox, 0);
-    QRadioButton *_1AbortConnectionOptionCheckBox = new QRadioButton(tr("1 Fault signal"));
-    layout->addRow(_1AbortConnectionOptionCheckBox);
-    _abortConnectionOptionGroup->addButton(_1AbortConnectionOptionCheckBox, 1);
-    QRadioButton *_2AbortConnectionOptionCheckBox = new QRadioButton(tr("2 Disable voltage command"));
-    layout->addRow(_2AbortConnectionOptionCheckBox);
-    _abortConnectionOptionGroup->addButton(_2AbortConnectionOptionCheckBox, 2);
-    QRadioButton *_3AbortConnectionOptionCheckBox = new QRadioButton(tr("3 Quick stop command"));
-    layout->addRow(_3AbortConnectionOptionCheckBox);
-    _abortConnectionOptionGroup->addButton(_3AbortConnectionOptionCheckBox, 3);
+    QRadioButton *p0AbortConnectionOptionCheckBox = new QRadioButton(tr("0 No action"));
+    layout->addRow(p0AbortConnectionOptionCheckBox);
+    _abortConnectionOptionGroup->addButton(p0AbortConnectionOptionCheckBox, 0);
+    QRadioButton *p1AbortConnectionOptionCheckBox = new QRadioButton(tr("1 Fault signal"));
+    layout->addRow(p1AbortConnectionOptionCheckBox);
+    _abortConnectionOptionGroup->addButton(p1AbortConnectionOptionCheckBox, 1);
+    QRadioButton *p2AbortConnectionOptionCheckBox = new QRadioButton(tr("2 Disable voltage command"));
+    layout->addRow(p2AbortConnectionOptionCheckBox);
+    _abortConnectionOptionGroup->addButton(p2AbortConnectionOptionCheckBox, 2);
+    QRadioButton *p3AbortConnectionOptionCheckBox = new QRadioButton(tr("3 Quick stop command"));
+    layout->addRow(p3AbortConnectionOptionCheckBox);
+    _abortConnectionOptionGroup->addButton(p3AbortConnectionOptionCheckBox, 3);
     groupBox->setLayout(layout);
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_abortConnectionOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { abortConnectionOptionClicked(id); });
@@ -208,21 +186,21 @@ QGroupBox *P402OptionWidget::quickStopWidgets()
     QFormLayout *layout = new QFormLayout();
     _quickStopOptionGroup = new QButtonGroup(this);
     _quickStopOptionGroup->setExclusive(true);
-    QRadioButton *_0QuickStopOptionCheckBox = new QRadioButton(tr("0 Disable drive function"));
-    layout->addRow(_0QuickStopOptionCheckBox);
-    _quickStopOptionGroup->addButton(_0QuickStopOptionCheckBox, 0);
-    QRadioButton *_1QuickStopOptionCheckBox = new QRadioButton(tr("1 Slow down on slow down ramp and transit into switch on disabled"));
-    layout->addRow(_1QuickStopOptionCheckBox);
-    _quickStopOptionGroup->addButton(_1QuickStopOptionCheckBox, 1);
-    QRadioButton *_2QuickStopOptionCheckBox = new QRadioButton(tr("2 Slow down on quick stop ramp and transit into switch on disabled"));
-    layout->addRow(_2QuickStopOptionCheckBox);
-    _quickStopOptionGroup->addButton(_2QuickStopOptionCheckBox, 2);
-    QRadioButton *_5QuickStopOptionCheckBox = new QRadioButton(tr("5 Slow down on slow down ramp and stay in quick stop active"));
-    layout->addRow(_5QuickStopOptionCheckBox);
-    _quickStopOptionGroup->addButton(_5QuickStopOptionCheckBox, 5);
-    QRadioButton *_6QuickStopOptionCheckBox = new QRadioButton(tr("6 Slow down on quick stop ramp and stay in quick stop active"));
-    layout->addRow(_6QuickStopOptionCheckBox);
-    _quickStopOptionGroup->addButton(_6QuickStopOptionCheckBox, 6);
+    QRadioButton *p0QuickStopOptionCheckBox = new QRadioButton(tr("0 Disable drive function"));
+    layout->addRow(p0QuickStopOptionCheckBox);
+    _quickStopOptionGroup->addButton(p0QuickStopOptionCheckBox, 0);
+    QRadioButton *p1QuickStopOptionCheckBox = new QRadioButton(tr("1 Slow down on slow down ramp and transit into switch on disabled"));
+    layout->addRow(p1QuickStopOptionCheckBox);
+    _quickStopOptionGroup->addButton(p1QuickStopOptionCheckBox, 1);
+    QRadioButton *p2QuickStopOptionCheckBox = new QRadioButton(tr("2 Slow down on quick stop ramp and transit into switch on disabled"));
+    layout->addRow(p2QuickStopOptionCheckBox);
+    _quickStopOptionGroup->addButton(p2QuickStopOptionCheckBox, 2);
+    QRadioButton *p5QuickStopOptionCheckBox = new QRadioButton(tr("5 Slow down on slow down ramp and stay in quick stop active"));
+    layout->addRow(p5QuickStopOptionCheckBox);
+    _quickStopOptionGroup->addButton(p5QuickStopOptionCheckBox, 5);
+    QRadioButton *p6QuickStopOptionCheckBox = new QRadioButton(tr("6 Slow down on quick stop ramp and stay in quick stop active"));
+    layout->addRow(p6QuickStopOptionCheckBox);
+    _quickStopOptionGroup->addButton(p6QuickStopOptionCheckBox, 6);
     groupBox->setLayout(layout);
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_quickStopOptionGroup, QOverload<int>::of(&QButtonGroup::buttonPressed), [=](int id) { quickStopOptionClicked(id); });
@@ -239,12 +217,12 @@ QGroupBox *P402OptionWidget::shutdownWidgets()
     QFormLayout *layout = new QFormLayout();
     _shutdownOptionGroup = new QButtonGroup(this);
     _shutdownOptionGroup->setExclusive(true);
-    QRadioButton *_0ShutdownOptionCheckBox = new QRadioButton(tr("0 Disable drive function (switch-off the drive power stage)"));
-    layout->addRow(_0ShutdownOptionCheckBox);
-    _shutdownOptionGroup->addButton(_0ShutdownOptionCheckBox, 0);
-    QRadioButton *_1ShutdownOptionCheckBox = new QRadioButton(tr("1 Slow down with slow down ramp; disable of the drive function"));
-    layout->addRow(_1ShutdownOptionCheckBox);
-    _shutdownOptionGroup->addButton(_1ShutdownOptionCheckBox, 1);
+    QRadioButton *p0ShutdownOptionCheckBox = new QRadioButton(tr("0 Disable drive function (switch-off the drive power stage)"));
+    layout->addRow(p0ShutdownOptionCheckBox);
+    _shutdownOptionGroup->addButton(p0ShutdownOptionCheckBox, 0);
+    QRadioButton *p1ShutdownOptionCheckBox = new QRadioButton(tr("1 Slow down with slow down ramp; disable of the drive function"));
+    layout->addRow(p1ShutdownOptionCheckBox);
+    _shutdownOptionGroup->addButton(p1ShutdownOptionCheckBox, 1);
     groupBox->setLayout(layout);
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_shutdownOptionGroup, QOverload<int>::of(&QButtonGroup::buttonPressed), [=](int id) { shutdownOptionClicked(id); });
@@ -261,12 +239,12 @@ QGroupBox *P402OptionWidget::disableWidgets()
     QFormLayout *layout = new QFormLayout();
     _disableOptionGroup = new QButtonGroup(this);
     _disableOptionGroup->setExclusive(true);
-    QRadioButton *_0DisableOptionCheckBox = new QRadioButton(tr("0 Disable drive function (switch-off the drive power stage)"));
-    layout->addRow(_0DisableOptionCheckBox);
-    _disableOptionGroup->addButton(_0DisableOptionCheckBox, 0);
-    QRadioButton *_1DisableOptionCheckBox = new QRadioButton(tr("1 Slow down with slow down ramp; disable of the drive function"));
-    layout->addRow(_1DisableOptionCheckBox);
-    _disableOptionGroup->addButton(_1DisableOptionCheckBox, 1);
+    QRadioButton *p0DisableOptionCheckBox = new QRadioButton(tr("0 Disable drive function (switch-off the drive power stage)"));
+    layout->addRow(p0DisableOptionCheckBox);
+    _disableOptionGroup->addButton(p0DisableOptionCheckBox, 0);
+    QRadioButton *p1DisableOptionCheckBox = new QRadioButton(tr("1 Slow down with slow down ramp; disable of the drive function"));
+    layout->addRow(p1DisableOptionCheckBox);
+    _disableOptionGroup->addButton(p1DisableOptionCheckBox, 1);
     groupBox->setLayout(layout);
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_disableOptionGroup, QOverload<int>::of(&QButtonGroup::buttonPressed), [=](int id) { disableOptionClicked(id); });
@@ -283,12 +261,12 @@ QGroupBox *P402OptionWidget::haltWidgets()
     QFormLayout *layout = new QFormLayout();
     _haltOptionGroup = new QButtonGroup(this);
     _haltOptionGroup->setExclusive(true);
-    QRadioButton *_slowDownRampCheckBox = new QRadioButton(tr("1 Slow down on slow down ramp and stay in operation enabled"));
-    layout->addRow(_slowDownRampCheckBox);
-    _haltOptionGroup->addButton(_slowDownRampCheckBox, 1);
-    QRadioButton *_quickStopRampCheckBox = new QRadioButton(tr("2 Slow down on quick stop ramp and stay in operation enabled"));
-    layout->addRow(_quickStopRampCheckBox);
-    _haltOptionGroup->addButton(_quickStopRampCheckBox, 2);
+    QRadioButton *slowDownRampCheckBox = new QRadioButton(tr("1 Slow down on slow down ramp and stay in operation enabled"));
+    layout->addRow(slowDownRampCheckBox);
+    _haltOptionGroup->addButton(slowDownRampCheckBox, 1);
+    QRadioButton *quickStopRampCheckBox = new QRadioButton(tr("2 Slow down on quick stop ramp and stay in operation enabled"));
+    layout->addRow(quickStopRampCheckBox);
+    _haltOptionGroup->addButton(quickStopRampCheckBox, 2);
     groupBox->setLayout(layout);
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_haltOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { haltOptionClicked(id); });
@@ -305,15 +283,15 @@ QGroupBox *P402OptionWidget::faultReactionWidgets()
     QFormLayout *layout = new QFormLayout();
     _faultReactionOptionGroup = new QButtonGroup(this);
     _faultReactionOptionGroup->setExclusive(true);
-    QRadioButton *_0FaultReactionOptionCheckBox = new QRadioButton(tr("0 Disable drive function, motor is free to rotate"));
-    layout->addRow(_0FaultReactionOptionCheckBox);
-    _faultReactionOptionGroup->addButton(_0FaultReactionOptionCheckBox, 0);
-    QRadioButton *_1FaultReactionOptionCheckBox = new QRadioButton(tr("1 Slow down on slow down ramp"));
-    layout->addRow(_1FaultReactionOptionCheckBox);
-    _faultReactionOptionGroup->addButton(_1FaultReactionOptionCheckBox, 1);
-    QRadioButton *_2FaultReactionOptionCheckBox = new QRadioButton(tr("2 Slow down on quick stop ramp"));
-    layout->addRow(_2FaultReactionOptionCheckBox);
-    _faultReactionOptionGroup->addButton(_2FaultReactionOptionCheckBox, 2);
+    QRadioButton *p0FaultReactionOptionCheckBox = new QRadioButton(tr("0 Disable drive function, motor is free to rotate"));
+    layout->addRow(p0FaultReactionOptionCheckBox);
+    _faultReactionOptionGroup->addButton(p0FaultReactionOptionCheckBox, 0);
+    QRadioButton *p1FaultReactionOptionCheckBox = new QRadioButton(tr("1 Slow down on slow down ramp"));
+    layout->addRow(p1FaultReactionOptionCheckBox);
+    _faultReactionOptionGroup->addButton(p1FaultReactionOptionCheckBox, 1);
+    QRadioButton *p2FaultReactionOptionCheckBox = new QRadioButton(tr("2 Slow down on quick stop ramp"));
+    layout->addRow(p2FaultReactionOptionCheckBox);
+    _faultReactionOptionGroup->addButton(p2FaultReactionOptionCheckBox, 2);
     groupBox->setLayout(layout);
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_faultReactionOptionGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { faultReactionOptionClicked(id); });
@@ -331,47 +309,38 @@ void P402OptionWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
         return;
     }
 
-    if ((!_nodeProfile402->node()) || (_nodeProfile402->node()->status() != Node::STARTED))
+    if (_nodeProfile402->node()->nodeOd()->indexExist(objId.index()))
     {
-        return;
-    }
+        int value = _nodeProfile402->node()->nodeOd()->value(objId).toInt();
 
-    if ((objId == _abortConnectionObjectId) || (objId == _quickStopObjectId) || (objId == _shutdownObjectId) || (objId == _disableObjectId) || (objId == _haltObjectId)
-        || (objId == _faultReactionObjectId))
-    {
-        if (_nodeProfile402->node()->nodeOd()->indexExist(objId.index()))
+        if (objId == _nodeProfile402->abortConnectionObjectId())
         {
-            int value = _nodeProfile402->node()->nodeOd()->value(objId).toInt();
+            _abortConnectionOptionGroup->button(value)->setChecked(true);
+        }
 
-            if (objId == _abortConnectionObjectId)
-            {
-                _abortConnectionOptionGroup->button(value)->setChecked(true);
-            }
+        if (objId == _nodeProfile402->quickStopObjectId())
+        {
+            _quickStopOptionGroup->button(value)->setChecked(true);
+        }
 
-            if (objId == _quickStopObjectId)
-            {
-                _quickStopOptionGroup->button(value)->setChecked(true);
-            }
+        if (objId == _nodeProfile402->shutdownObjectId())
+        {
+            _shutdownOptionGroup->button(value)->setChecked(true);
+        }
 
-            if (objId == _shutdownObjectId)
-            {
-                _shutdownOptionGroup->button(value)->setChecked(true);
-            }
+        if (objId == _nodeProfile402->disableObjectId())
+        {
+            _disableOptionGroup->button(value)->setChecked(true);
+        }
 
-            if (objId == _disableObjectId)
-            {
-                _disableOptionGroup->button(value)->setChecked(true);
-            }
+        if (objId == _nodeProfile402->haltObjectId())
+        {
+            _haltOptionGroup->button(value)->setChecked(true);
+        }
 
-            if (objId == _haltObjectId)
-            {
-                _haltOptionGroup->button(value)->setChecked(true);
-            }
-
-            if (objId == _faultReactionObjectId)
-            {
-                _faultReactionOptionGroup->button(value)->setChecked(true);
-            }
+        if (objId == _nodeProfile402->faultReactionObjectId())
+        {
+            _faultReactionOptionGroup->button(value)->setChecked(true);
         }
     }
 }
