@@ -56,7 +56,21 @@ public slots:
 protected slots:
     void toggleStartLogger(bool start);
     void setLogTimer(int ms);
-    void statusNodeChanged();
+
+    void updateNodeStatus();
+    void updateState();
+    void setEvent(quint8 event);
+    void updateMode(uint8_t axis, NodeProfile402::OperationMode mode);
+    void updateModeComboBox();
+    void setModeIndex(int id);
+
+    void displayOption402();
+    void haltClicked();
+
+    void setCheckableStateMachine(int id);
+    void stateMachineClicked(int id);
+
+    void readAllObjects();
 
 private:
     Node *_node;
@@ -79,6 +93,14 @@ private:
     NodeObjectId _controlWordObjectId;
     NodeObjectId _statusWordObjectId;
     NodeProfile402 *_nodeProfile402;
+
+    // Create widgets
+    void createWidgets();
+    QToolBar *toolBarWidgets();
+    QGroupBox *modeWidgets();
+    QGroupBox *stateMachineWidgets();
+    QGroupBox *controlWordWidgets();
+    QGroupBox *statusWordWidgets();
 
     QStackedWidget *_stackedWidget;
 
@@ -106,31 +128,6 @@ private:
     QLabel *_statusWordStateLabel;
     QLabel *_informationLabel;
     QLabel *_warningLabel;
-
-    void modeChanged(uint8_t axis, NodeProfile402::OperationMode mode);
-    void stateChanged();
-    void modeIndexChanged(int id);
-
-    void readAllObject();
-
-    void isHalted(bool state);
-    void eventHappened(quint8 event);
-
-    void updateModeComboBox();
-
-    void displayOption402();
-    void stateMachineClicked(int id);
-    void haltClicked();
-
-    void setCheckableStateMachine(int id);
-
-    // Create widgets
-    void createWidgets();
-    QToolBar *toolBarWidgets();
-    QGroupBox *modeWidgets();
-    QGroupBox *stateMachineWidgets();
-    QGroupBox *controlWordWidgets();
-    QGroupBox *statusWordWidgets();
 };
 
 #endif  // P402Widget_H

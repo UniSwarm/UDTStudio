@@ -103,13 +103,13 @@ void P402Widget::setNode(Node *node, uint8_t axis)
         setCheckableStateMachine(2);
         updateModeComboBox();
 
-        connect(_modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int id) { modeIndexChanged(id); });
-        connect(_nodeProfile402, &NodeProfile402::modeChanged, this, &P402Widget::modeChanged);
-        connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &P402Widget::stateChanged);
-        connect(_nodeProfile402, &NodeProfile402::isHalted, this, &P402Widget::isHalted);
-        connect(_nodeProfile402, &NodeProfile402::eventHappened, this, &P402Widget::eventHappened);
+        connect(_modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int id) { setModeIndex(id); });
+        connect(_nodeProfile402, &NodeProfile402::modeChanged, this, &P402Widget::updateMode);
+        connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &P402Widget::updateState);
+        connect(_nodeProfile402, &NodeProfile402::isHalted, _haltPushButton, &QPushButton::setChecked);
+        connect(_nodeProfile402, &NodeProfile402::eventHappened, this, &P402Widget::setEvent);
 
-        connect(_node, &Node::statusChanged, this, &P402Widget::statusNodeChanged);
+        connect(_node, &Node::statusChanged, this, &P402Widget::updateNodeStatus);
 
         _modes[NodeProfile402::NoMode]->setNode(_node, axis);
         _modes[NodeProfile402::VL]->setNode(_node, axis);
@@ -119,19 +119,19 @@ void P402Widget::setNode(Node *node, uint8_t axis)
         _modes[NodeProfile402::DTY]->setNode(_node, axis);
         _modes[NodeProfile402::CP]->setNode(_node, axis);
 
-        statusNodeChanged();
-        modeChanged(_axis, _nodeProfile402->actualMode());
-        stateChanged();
+        updateNodeStatus();
+        updateMode(_axis, _nodeProfile402->actualMode());
+        updateState();
     }
 }
 
-void P402Widget::statusNodeChanged()
+void P402Widget::updateNodeStatus()
 {
     if (_node)
     {
         if (_node->status() == Node::STARTED)
         {
-            modeChanged(_axis, _nodeProfile402->actualMode());
+            updateMode(_axis, _nodeProfile402->actualMode());
             _stackedWidget->setEnabled(false);
             _modeGroupBox->setEnabled(true);
             //_stateMachineGroupBox->setEnabled(false);
@@ -144,7 +144,7 @@ void P402Widget::statusNodeChanged()
     }
 }
 
-void P402Widget::modeChanged(uint8_t axis, NodeProfile402::OperationMode mode)
+void P402Widget::updateMode(uint8_t axis, NodeProfile402::OperationMode mode)
 {
     if (_axis != axis)
     {
@@ -173,7 +173,7 @@ void P402Widget::modeChanged(uint8_t axis, NodeProfile402::OperationMode mode)
     _modeLabel->clear();
 }
 
-void P402Widget::stateChanged()
+void P402Widget::updateState()
 {
     NodeProfile402::State402 state = _nodeProfile402->currentState();
 
@@ -272,7 +272,7 @@ void P402Widget::stateChanged()
     update();
 }
 
-void P402Widget::modeIndexChanged(int id)
+void P402Widget::setModeIndex(int id)
 {
     if (!_node)
     {
@@ -303,8 +303,6 @@ void P402Widget::toggleStartLogger(bool start)
 
     if (start)
     {
-        _startStopAction->setIcon(QIcon(":/icons/img/icons8-stop.png"));
-
         if (_node->status() != Node::STARTED)
         {
             _node->sendStart();
@@ -319,8 +317,6 @@ void P402Widget::toggleStartLogger(bool start)
     }
     else
     {
-        _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
-
         _nodeProfile402->stop();
 
         _stackedWidget->setEnabled(false);
@@ -345,7 +341,7 @@ void P402Widget::setLogTimer(int ms)
     }
 }
 
-void P402Widget::readAllObject()
+void P402Widget::readAllObjects()
 {
     if (_node)
     {
@@ -360,12 +356,7 @@ void P402Widget::readAllObject()
     }
 }
 
-void P402Widget::isHalted(bool state)
-{
-    _haltPushButton->setChecked(state);
-}
-
-void P402Widget::eventHappened(quint8 event)
+void P402Widget::setEvent(quint8 event)
 {
     _informationLabel->setText(tr("False"));
     _warningLabel->setText(tr("False"));
@@ -450,7 +441,7 @@ void P402Widget::displayOption402()
 {
     if (_stackedWidget->currentWidget() == _modes[NodeProfile402::NoMode])
     {
-        modeChanged(_axis, _nodeProfile402->actualMode());
+        updateMode(_axis, _nodeProfile402->actualMode());
     }
     else
     {
@@ -552,7 +543,10 @@ QToolBar *P402Widget::toolBarWidgets()
 
     _startStopAction = toolBar->addAction(tr("Start / stop"));
     _startStopAction->setCheckable(true);
-    _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
+    QIcon iconStartStop;
+    iconStartStop.addFile(":/icons/img/icons8-stop.png", QSize(), QIcon::Normal, QIcon::On);
+    iconStartStop.addFile(":/icons/img/icons8-play.png", QSize(), QIcon::Normal, QIcon::Off);
+    _startStopAction->setIcon(iconStartStop);
     _startStopAction->setStatusTip(tr("Start or stop the data logger"));
     connect(_startStopAction, &QAction::triggered, this, &P402Widget::toggleStartLogger);
 
@@ -574,7 +568,7 @@ QToolBar *P402Widget::toolBarWidgets()
     readAllObjectAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
     readAllObjectAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllObjectAction->setStatusTip(tr("Read all the objects of the current window"));
-    connect(readAllObjectAction, &QAction::triggered, this, &P402Widget::readAllObject);
+    connect(readAllObjectAction, &QAction::triggered, this, &P402Widget::readAllObjects);
 
     toolBar->addWidget(_logTimerSpinBox);
     toolBar->addSeparator();
