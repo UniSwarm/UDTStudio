@@ -24,6 +24,7 @@
 #include <QInputDialog>
 #include <QPixmap>
 #include <QPushButton>
+#include <QScrollArea>
 
 #include "canopen/indexWidget/indexcombobox.h"
 #include "canopen/indexWidget/indexlabel.h"
@@ -44,8 +45,9 @@ void NodeScreenHome::readAll()
 
 void NodeScreenHome::createWidgets()
 {
+    QWidget *widget = new QWidget(this);
     QLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(2, 2, 2, 2);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
     QToolBar *toolBar = new QToolBar(tr("PDO commands"));
@@ -63,7 +65,15 @@ void NodeScreenHome::createWidgets()
     layout->addWidget(createSumaryWidget());
     layout->addWidget(createStatusWidget());
     layout->addWidget(createOdWidget());
-    setLayout(layout);
+    widget->setLayout(layout);
+
+    QScrollArea *scrollArea = new QScrollArea;
+    scrollArea->setWidget(widget);
+    scrollArea->setWidgetResizable(true);
+    QLayout *glayout = new QVBoxLayout();
+    glayout->setContentsMargins(0, 0, 0, 0);
+    glayout->addWidget(scrollArea);
+    setLayout(glayout);
 }
 
 QWidget *NodeScreenHome::createSumaryWidget()
@@ -142,6 +152,11 @@ QWidget *NodeScreenHome::createOdWidget()
     _odEdsFileLabel->setCursor(Qt::IBeamCursor);
     odLayout->addRow(tr("&Eds file:"), _odEdsFileLabel);
 
+    _odFileInfosLabel = new QLabel();
+    _odFileInfosLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+    _odFileInfosLabel->setCursor(Qt::IBeamCursor);
+    odLayout->addRow(tr("Eds file infos:"), _odFileInfosLabel);
+
     _odCountLabel = new QLabel();
     odLayout->addRow(tr("Index &count:"), _odCountLabel);
 
@@ -192,6 +207,14 @@ void NodeScreenHome::setNodeInternal(Node *node, uint8_t axis)
             }
         }
         _odEdsFileLabel->setText(node->edsFileName());
+        QString fileInfos;
+        QMapIterator<QString, QString> i(node->nodeOd()->edsFileInfos());
+        while (i.hasNext())
+        {
+            i.next();
+            fileInfos.append(i.key() + " : \t" + i.value() + "\n");
+        }
+        _odFileInfosLabel->setText(fileInfos);
         _odCountLabel->setNum(node->nodeOd()->indexCount());
         _odSubIndexCountLabel->setNum(node->nodeOd()->subIndexCount());
     }
@@ -201,6 +224,7 @@ void NodeScreenHome::setNodeInternal(Node *node, uint8_t axis)
         _summaryIconLabel->clear();
 
         _odEdsFileLabel->clear();
+        _odFileInfosLabel->clear();
         _odCountLabel->clear();
         _odSubIndexCountLabel->clear();
     }

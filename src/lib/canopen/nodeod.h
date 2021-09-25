@@ -47,6 +47,7 @@ public:
     // eds
     bool loadEds(const QString &fileName);
     const QString &edsFileName() const;
+    const QMap<QString, QString> &edsFileInfos() const;
     bool exportDcf(const QString &fileName) const;
 
     // index
@@ -97,6 +98,7 @@ private:
     Node *_node;
     QMap<quint16, NodeIndex *> _nodeIndexes;
     QString _edsFileName;
+    QMap<QString, QString> _edsFileInfos;
 
     struct Subscriber
     {

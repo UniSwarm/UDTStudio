@@ -49,6 +49,7 @@ protected:
 
     QWidget *createOdWidget();
     QLabel *_odEdsFileLabel;
+    QLabel *_odFileInfosLabel;
     QLabel *_odCountLabel;
     QLabel *_odSubIndexCountLabel;
 

@@ -59,6 +59,12 @@ bool NodeOd::loadEds(const QString &fileName)
 {
     EdsParser parser;
     DeviceDescription *deviceDescription = parser.parse(fileName);
+    if (!deviceDescription)
+    {
+        return false;
+    }
+    _edsFileInfos = deviceDescription->fileInfos();
+
     DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, _node->nodeId());
     _edsFileName = fileName;
 
@@ -565,6 +571,11 @@ void NodeOd::createBootloaderObjects()
     bootloader->addSubIndex(subIndexbootloader);
 
     addIndex(bootloader);
+}
+
+const QMap<QString, QString> &NodeOd::edsFileInfos() const
+{
+    return _edsFileInfos;
 }
 
 void NodeOd::notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySubIndex, SDO::FlagsRequest flags)
