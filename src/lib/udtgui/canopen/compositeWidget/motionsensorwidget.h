@@ -64,7 +64,6 @@ public slots:
     void setMode(MotionSensorWidget::ModeSensor mode);
 
 protected slots:
-    void toggleStartLogger(bool start);
     void setLogTimer(int ms);
 
 protected:
@@ -95,7 +94,6 @@ protected:
     void createWidgets();
     QToolBar *createToolBarWidgets();
     QSpinBox *_logTimerSpinBox;
-    QAction *_startStopAction;
 
     QGroupBox *createInformationWidgets();
     QLabel *_informationLabel;

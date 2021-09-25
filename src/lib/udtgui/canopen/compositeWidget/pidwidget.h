@@ -80,7 +80,6 @@ protected:
     QToolBar *createToolBarWidgets();
     QToolBar *_toolBar;
     QSpinBox *_logTimerSpinBox;
-    QAction *_startStopAction;
 
     DataLoggerWidget *_dataLoggerWidget;
 

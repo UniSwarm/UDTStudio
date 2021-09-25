@@ -145,3 +145,8 @@ void DataLoggerManagerWidget::createWidgets()
 
     setLayout(layout);
 }
+
+QAction *DataLoggerManagerWidget::startStopAction() const
+{
+    return _startStopAction;
+}

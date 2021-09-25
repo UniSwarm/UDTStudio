@@ -115,21 +115,17 @@ void PidWidget::toggleStartLogger(bool start)
 {
     if (start)
     {
-        _startStopAction->setIcon(QIcon(":/icons/img/icons8-stop.png"));
-        _dataLogger->start(_logTimerSpinBox->value());
         _readStatusTimer.start();
     }
     else
     {
-        _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
-        _dataLogger->stop();
         _readStatusTimer.stop();
     }
 }
 
 void PidWidget::setLogTimer(int ms)
 {
-    if (_startStopAction->isChecked())
+    if (_dataLogger->isStarted())
     {
         _dataLogger->start(ms);
     }
@@ -512,11 +508,8 @@ QToolBar *PidWidget::createToolBarWidgets()
     toolBar->setIconSize(QSize(20, 20));
 
     // start stop
-    _startStopAction = toolBar->addAction(tr("Start / stop"));
-    _startStopAction->setCheckable(true);
-    _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
-    _startStopAction->setStatusTip(tr("Start or stop the data logger"));
-    connect(_startStopAction, &QAction::triggered, this, &PidWidget::toggleStartLogger);
+    toolBar->addAction(_dataLoggerWidget->managerWidget()->startStopAction());
+    connect(_dataLoggerWidget->managerWidget()->startStopAction(), &QAction::triggered, this, &PidWidget::toggleStartLogger);
 
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);

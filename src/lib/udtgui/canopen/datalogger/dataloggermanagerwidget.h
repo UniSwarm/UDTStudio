@@ -38,6 +38,8 @@ public:
     DataLoggerChartsWidget *chartWidget() const;
     void setChartWidget(DataLoggerChartsWidget *chartWidget);
 
+    QAction *startStopAction() const;
+
 protected slots:
     void toggleStartLogger(bool start);
     void setLogTimer(int ms);

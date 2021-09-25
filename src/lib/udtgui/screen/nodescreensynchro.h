@@ -40,7 +40,6 @@ public:
     NodeScreenSynchro(QWidget *parent = nullptr);
 
 protected slots:
-    void toggleStartLogger(bool start);
     void setLogTimer(int ms);
 
 protected:
@@ -54,7 +53,6 @@ protected:
     void createWidgets();
     QToolBar *createToolBarWidgets();
     QSpinBox *_logTimerSpinBox;
-    QAction *_startStopAction;
 
     QGroupBox *createSynchroConfigurationWidgets();
     QGroupBox *_synchroConfigGroupBox;

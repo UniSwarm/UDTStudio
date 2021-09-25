@@ -36,23 +36,9 @@ NodeScreenSynchro::NodeScreenSynchro(QWidget *parent)
     createWidgets();
 }
 
-void NodeScreenSynchro::toggleStartLogger(bool start)
-{
-    if (start)
-    {
-        _startStopAction->setIcon(QIcon(":/icons/img/icons8-stop.png"));
-        _dataLogger->start(_logTimerSpinBox->value());
-    }
-    else
-    {
-        _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
-        _dataLogger->stop();
-    }
-}
-
 void NodeScreenSynchro::setLogTimer(int ms)
 {
-    if (_startStopAction->isChecked())
+    if (_dataLogger->isStarted())
     {
         _dataLogger->start(ms);
     }
@@ -117,11 +103,7 @@ QToolBar *NodeScreenSynchro::createToolBarWidgets()
     toolBar->setIconSize(QSize(20, 20));
 
     // start stop
-    _startStopAction = toolBar->addAction(tr("Start / stop"));
-    _startStopAction->setCheckable(true);
-    _startStopAction->setIcon(QIcon(":/icons/img/icons8-play.png"));
-    _startStopAction->setStatusTip(tr("Start or stop the data logger"));
-    connect(_startStopAction, &QAction::triggered, this, &NodeScreenSynchro::toggleStartLogger);
+    toolBar->addAction(_dataLoggerWidget->managerWidget()->startStopAction());
 
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);

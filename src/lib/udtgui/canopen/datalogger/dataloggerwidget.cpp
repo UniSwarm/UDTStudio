@@ -112,3 +112,8 @@ void DataLoggerWidget::createWidgets(Qt::Orientation orientation)
     layout->addWidget(splitter);
     setLayout(layout);
 }
+
+DataLoggerManagerWidget *DataLoggerWidget::managerWidget() const
+{
+    return _dataLoggerManagerWidget;
+}

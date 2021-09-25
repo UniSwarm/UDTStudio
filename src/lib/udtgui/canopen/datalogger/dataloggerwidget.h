@@ -49,6 +49,8 @@ public:
     Type type() const;
     void setType(Type type);
 
+    DataLoggerManagerWidget *managerWidget() const;
+
 protected:
     DataLogger *_dataLogger;
     QString _title;
