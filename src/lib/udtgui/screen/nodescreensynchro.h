@@ -31,7 +31,7 @@ class IndexComboBox;
 class IndexSpinBox;
 class IndexLabel;
 class DataLogger;
-class DataLoggerChartsWidget;
+class DataLoggerWidget;
 
 class UDTGUI_EXPORT NodeScreenSynchro : public NodeScreen
 {
@@ -47,7 +47,7 @@ protected:
     uint8_t _axis;
 
     DataLogger *_dataLogger;
-    DataLoggerChartsWidget *_dataLoggerChartsWidget;
+    DataLoggerWidget *_dataLoggerWidget;
 
     void readAllObject();
 

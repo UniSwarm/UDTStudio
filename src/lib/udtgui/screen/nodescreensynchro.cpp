@@ -73,36 +73,40 @@ void NodeScreenSynchro::readAllObject()
 
 void NodeScreenSynchro::createWidgets()
 {
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
+    _dataLogger = new DataLogger();
 
-    QWidget *motionSensorWidget = new QWidget(this);
-    QVBoxLayout *actionLayout = new QVBoxLayout(motionSensorWidget);
-    actionLayout->setContentsMargins(0, 0, 4, 0);
-    actionLayout->setSpacing(0);
+    QWidget *widget = new QWidget(this);
+    QVBoxLayout *syncroBoxesLayout = new QVBoxLayout(widget);
+    syncroBoxesLayout->setContentsMargins(0, 0, 4, 0);
+    syncroBoxesLayout->setSpacing(0);
 
     _synchroConfigGroupBox = createSynchroConfigurationWidgets();
-    actionLayout->addWidget(_synchroConfigGroupBox);
+    syncroBoxesLayout->addWidget(_synchroConfigGroupBox);
     _synchroStatusGroupBox = createSynchroStatusWidgets();
-    actionLayout->addWidget(_synchroStatusGroupBox);
+    syncroBoxesLayout->addWidget(_synchroStatusGroupBox);
 
-    QScrollArea *motionSensorScrollArea = new QScrollArea;
-    motionSensorScrollArea->setWidget(motionSensorWidget);
-    motionSensorScrollArea->setWidgetResizable(true);
+    QScrollArea *scrollArea = new QScrollArea;
+    scrollArea->setWidget(widget);
+    scrollArea->setWidgetResizable(true);
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
-    layout->addWidget(splitter);
-    splitter->addWidget(motionSensorScrollArea);
+    splitter->addWidget(scrollArea);
 
-    _dataLogger = new DataLogger();
-    _dataLoggerChartsWidget = new DataLoggerChartsWidget(_dataLogger);
-    splitter->addWidget(_dataLoggerChartsWidget);
+    QWidget *widgetLogger = new QWidget();
+    QVBoxLayout *layoutLogger = new QVBoxLayout();
+    layoutLogger->setContentsMargins(4, 4, 0, 0);
+    _dataLoggerWidget = new DataLoggerWidget(_dataLogger, Qt::Vertical);
+    _dataLoggerWidget->setType(DataLoggerWidget::InternalType);
+    layoutLogger->addWidget(_dataLoggerWidget);
+    widgetLogger->setLayout(layoutLogger);
+    splitter->addWidget(widgetLogger);
     splitter->setSizes(QList<int>() << 100 << 300);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
+    vBoxLayout->setContentsMargins(2, 2, 2, 2);
+    vBoxLayout->setSpacing(0);
     vBoxLayout->addWidget(createToolBarWidgets());
     vBoxLayout->addWidget(splitter);
-    vBoxLayout->setMargin(2);
     setLayout(vBoxLayout);
 }
 
