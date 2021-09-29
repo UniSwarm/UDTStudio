@@ -41,6 +41,7 @@ class IndexSpinBox;
 class IndexLabel;
 class IndexComboBox;
 class IndexCheckBox;
+class AbstractIndexWidget;
 
 class UDTGUI_EXPORT MotionSensorWidget : public QWidget
 {
@@ -133,6 +134,8 @@ protected:
     IndexLabel *_rawDataValueLabel;
     IndexLabel *_flagLabel;
     IndexLabel *_valueLabel;
+
+    QList<AbstractIndexWidget *> _indexWidgets;
 
     void goEnableButton();
 };

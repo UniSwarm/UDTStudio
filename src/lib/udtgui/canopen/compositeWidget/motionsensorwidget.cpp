@@ -87,32 +87,10 @@ void MotionSensorWidget::setNode(Node *node, uint8_t axis)
     }
     setIMode();
 
-    _sensorSelectComboBox->setNode(node);
-    _frequencyDividerSpinBox->setNode(node);
-    _configBitCheckBox->setNode(node);
-    _sensorParam0SpinBox->setNode(node);
-    _sensorParam1SpinBox->setNode(node);
-    _sensorParam2SpinBox->setNode(node);
-    _sensorParam3SpinBox->setNode(node);
-
-    _thresholdMinSpinBox->setNode(node);
-    _thresholdMaxSpinBox->setNode(node);
-    _thresholdModeComboBox->setNode(node);
-    _preOffsetSpinBox->setNode(node);
-    _scaleSpinBox->setNode(node);
-    _postOffsetSpinBox->setNode(node);
-    _errorMinSpinBox->setNode(node);
-    _errorMaxSpinBox->setNode(node);
-
-    _rawDataValueLabel->setNode(node);
-    _flagLabel->setNode(node);
-    _valueLabel->setNode(node);
-
-    _filterSelect->setNode(node);
-    _filterParam0SpinBox->setNode(node);
-    _filterParam1SpinBox->setNode(node);
-    _filterParam2SpinBox->setNode(node);
-    _filterParam3SpinBox->setNode(node);
+    for (AbstractIndexWidget *indexWidget : _indexWidgets)
+    {
+        indexWidget->setNode(node);
+    }
 }
 
 void MotionSensorWidget::setMode(MotionSensorWidget::ModeSensor mode)
@@ -342,27 +320,34 @@ QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
     _sensorSelectComboBox->addItem(tr("ANALOG_CH1"), QVariant(static_cast<uint16_t>(0x4001)));
     _sensorSelectComboBox->addItem(tr("ANALOG_CH2"), QVariant(static_cast<uint16_t>(0x4002)));
     formLayout->addRow(tr("&Sensor select:"), _sensorSelectComboBox);
+    _indexWidgets.append(_sensorSelectComboBox);
 
     _frequencyDividerSpinBox = new IndexSpinBox();
     _frequencyDividerSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     _frequencyDividerSpinBox->setRangeValue(1, 1000);
     formLayout->addRow(tr("&Frequency divider:"), _frequencyDividerSpinBox);
+    _indexWidgets.append(_frequencyDividerSpinBox);
 
     _configBitCheckBox = new IndexCheckBox();
     _configBitCheckBox->setBitMask(32);
     formLayout->addRow(tr("Q15.16:"), _configBitCheckBox);
+    _indexWidgets.append(_configBitCheckBox);
 
     _sensorParam0SpinBox = new IndexSpinBox();
     formLayout->addRow(tr("Param 0:"), _sensorParam0SpinBox);
+    _indexWidgets.append(_sensorParam0SpinBox);
 
     _sensorParam1SpinBox = new IndexSpinBox();
     formLayout->addRow(tr("Param 1:"), _sensorParam1SpinBox);
+    _indexWidgets.append(_sensorParam1SpinBox);
 
     _sensorParam2SpinBox = new IndexSpinBox();
     formLayout->addRow(tr("Param 2:"), _sensorParam2SpinBox);
+    _indexWidgets.append(_sensorParam2SpinBox);
 
     _sensorParam3SpinBox = new IndexSpinBox();
     formLayout->addRow(tr("Param 3:"), _sensorParam3SpinBox);
+    _indexWidgets.append(_sensorParam3SpinBox);
 
     groupBox->setLayout(formLayout);
     return groupBox;
@@ -379,22 +364,27 @@ QGroupBox *MotionSensorWidget::createSensorFilterWidgets()
     _filterSelect->addItem(tr("AVERAGING"), QVariant(static_cast<uint16_t>(0x2000)));
     _filterSelect->addItem(tr("INTEGRATOR"), QVariant(static_cast<uint16_t>(0x8000)));
     formLayout->addRow(tr("Filter select:"), _filterSelect);
+    _indexWidgets.append(_filterSelect);
 
     _filterParam0SpinBox = new IndexSpinBox();
     _filterParam0SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("Param 0:"), _filterParam0SpinBox);
+    _indexWidgets.append(_filterParam0SpinBox);
 
     _filterParam1SpinBox = new IndexSpinBox();
     _filterParam1SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("Param 1:"), _filterParam1SpinBox);
+    _indexWidgets.append(_filterParam1SpinBox);
 
     _filterParam2SpinBox = new IndexSpinBox();
     _filterParam2SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("Param 2:"), _filterParam2SpinBox);
+    _indexWidgets.append(_filterParam2SpinBox);
 
     _filterParam3SpinBox = new IndexSpinBox();
     _filterParam3SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("Param 3:"), _filterParam3SpinBox);
+    _indexWidgets.append(_filterParam3SpinBox);
 
     groupBox->setLayout(formLayout);
     return groupBox;
@@ -408,26 +398,31 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
     _preOffsetSpinBox = new IndexSpinBox();
     _preOffsetSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("Pr&e offset:"), _preOffsetSpinBox);
+    _indexWidgets.append(_preOffsetSpinBox);
 
     _scaleSpinBox = new IndexSpinBox();
     _scaleSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("S&cale:"), _scaleSpinBox);
+    _indexWidgets.append(_scaleSpinBox);
 
     _postOffsetSpinBox = new IndexSpinBox();
     _postOffsetSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("&Post offset:"), _postOffsetSpinBox);
+    _indexWidgets.append(_postOffsetSpinBox);
 
     QLayout *errorRangelayout = new QHBoxLayout();
     errorRangelayout->setSpacing(0);
     _errorMinSpinBox = new IndexSpinBox();
     _errorMinSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     errorRangelayout->addWidget(_errorMinSpinBox);
+    _indexWidgets.append(_errorMinSpinBox);
     QLabel *errorRangeSepLabel = new QLabel(tr("-"));
     errorRangeSepLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     errorRangelayout->addWidget(errorRangeSepLabel);
     _errorMaxSpinBox = new IndexSpinBox();
     _errorMaxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     errorRangelayout->addWidget(_errorMaxSpinBox);
+    _indexWidgets.append(_errorMaxSpinBox);
     QLabel *errorRangeLabel = new QLabel(tr("&Error range:"));
     errorRangeLabel->setBuddy(_errorMinSpinBox);
     formLayout->addRow(errorRangeLabel, errorRangelayout);
@@ -438,21 +433,25 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
     _thresholdModeComboBox->addItem(tr("Modulo"), QVariant(static_cast<uint16_t>(0x0002)));
     _thresholdModeComboBox->addItem(tr("Old value"), QVariant(static_cast<uint16_t>(0x0003)));
     formLayout->addRow(tr("Th&reshold mode:"), _thresholdModeComboBox);
+    _indexWidgets.append(_thresholdModeComboBox);
 
     QLayout *thresholdlayout = new QHBoxLayout();
     thresholdlayout->setSpacing(0);
     _thresholdMinSpinBox = new IndexSpinBox();
     _thresholdMinSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     thresholdlayout->addWidget(_thresholdMinSpinBox);
+    _indexWidgets.append(_thresholdMinSpinBox);
     QLabel *thresholdSepLabel = new QLabel(tr("-"));
     thresholdSepLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     thresholdlayout->addWidget(thresholdSepLabel);
     _thresholdMaxSpinBox = new IndexSpinBox();
     _thresholdMaxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     thresholdlayout->addWidget(_thresholdMaxSpinBox);
+    _indexWidgets.append(_thresholdMaxSpinBox);
     QLabel *thresholdLabel = new QLabel(tr("&Threshold:"));
     thresholdLabel->setBuddy(_thresholdMinSpinBox);
     formLayout->addRow(thresholdLabel, thresholdlayout);
+    _indexWidgets.append(_filterParam3SpinBox);
 
     groupBox->setLayout(formLayout);
     return groupBox;
@@ -466,13 +465,16 @@ QGroupBox *MotionSensorWidget::createSensorStatusWidgets()
     _rawDataValueLabel = new IndexLabel();
     _rawDataValueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("Ra&w Data:"), _rawDataValueLabel);
+    _indexWidgets.append(_rawDataValueLabel);
 
     _flagLabel = new IndexLabel();
     formLayout->addRow(tr("&Flag:"), _flagLabel);
+    _indexWidgets.append(_flagLabel);
 
     _valueLabel = new IndexLabel();
     _valueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("&Value:"), _valueLabel);
+    _indexWidgets.append(_valueLabel);
 
     groupBox->setLayout(formLayout);
 
@@ -513,32 +515,10 @@ void MotionSensorWidget::stateChanged()
 
 void MotionSensorWidget::readAllObject()
 {
-    _sensorSelectComboBox->readObject();
-    _frequencyDividerSpinBox->readObject();
-    _configBitCheckBox->readObject();
-    _sensorParam0SpinBox->readObject();
-    _sensorParam1SpinBox->readObject();
-    _sensorParam2SpinBox->readObject();
-    _sensorParam3SpinBox->readObject();
-
-    _thresholdMinSpinBox->readObject();
-    _thresholdMaxSpinBox->readObject();
-    _thresholdModeComboBox->readObject();
-    _preOffsetSpinBox->readObject();
-    _scaleSpinBox->readObject();
-    _postOffsetSpinBox->readObject();
-    _errorMinSpinBox->readObject();
-    _errorMaxSpinBox->readObject();
-
-    _rawDataValueLabel->readObject();
-    _flagLabel->readObject();
-    _valueLabel->readObject();
-
-    _filterSelect->readObject();
-    _filterParam0SpinBox->readObject();
-    _filterParam1SpinBox->readObject();
-    _filterParam2SpinBox->readObject();
-    _filterParam3SpinBox->readObject();
+    for (AbstractIndexWidget *indexWidget : _indexWidgets)
+    {
+        indexWidget->readObject();
+    }
 }
 
 void MotionSensorWidget::goEnableButton()
