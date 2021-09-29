@@ -26,6 +26,11 @@ DataLogger::DataLogger(QObject *parent)
     connect(&_timer, &QTimer::timeout, this, &DataLogger::readData);
 }
 
+bool DataLogger::isStarted() const
+{
+    return _timer.isActive();
+}
+
 void DataLogger::addData(const NodeObjectId &objId)
 {
     if (_dataMap.contains(objId.key()) || (!objId.isAnIndex() && !objId.isASubIndex()))

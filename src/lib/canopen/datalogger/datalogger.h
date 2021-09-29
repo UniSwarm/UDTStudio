@@ -32,6 +32,8 @@ class CANOPEN_EXPORT DataLogger : public QObject, public NodeOdSubscriber
 public:
     DataLogger(QObject *parent = nullptr);
 
+    bool isStarted() const;
+
     void addData(const NodeObjectId &objId);
     void removeData(const NodeObjectId &objId);
     void removeAllData();
