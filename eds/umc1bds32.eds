@@ -7,17 +7,17 @@ EDSVersion=4.0
 FileName=umc1bds32.eds
 FileRevision=1
 FileVersion=1
-ModificationDate=08-19-2021
-ModificationTime=03:25PM
+ModificationDate=09-13-2021
+ModificationTime=12:51PM
 ModifiedBy=UniSwarm SASU
 
 [DeviceInfo]
-BaudRate_10=0
-BaudRate_20=0
-BaudRate_50=0
-BaudRate_125=0
-BaudRate_250=0
-BaudRate_500=0
+BaudRate_10=1
+BaudRate_20=1
+BaudRate_50=1
+BaudRate_125=1
+BaudRate_250=1
+BaudRate_500=1
 BaudRate_800=0
 BaudRate_1000=1
 CompactPDO=55
@@ -2958,7 +2958,7 @@ ParameterName=a1_Supported_drive_modes
 ObjectType=0x7
 DataType=0x0007
 AccessType=ro
-DefaultValue=65611
+DefaultValue=1114187
 PDOMapping=0
 LowLimit=0
 HighLimit=0xFFFFFFFF
@@ -4218,7 +4218,7 @@ ParameterName=a2_Supported_drive_modes
 ObjectType=0x7
 DataType=0x0007
 AccessType=ro
-DefaultValue=65611
+DefaultValue=1114187
 PDOMapping=0
 LowLimit=0
 HighLimit=0xFFFFFFFF
@@ -4255,7 +4255,7 @@ AccessType=ro
 PDOMapping=0
 
 [ManufacturerObjects]
-SupportedObjects=74
+SupportedObjects=76
 1=0x2000
 2=0x2001
 3=0x2002
@@ -4298,38 +4298,40 @@ SupportedObjects=74
 40=0x4080
 41=0x4081
 42=0x4082
-43=0x41FA
-44=0x41FB
-45=0x41FC
-46=0x41FD
-47=0x4200
-48=0x4206
-49=0x4207
-50=0x4220
-51=0x4221
-52=0x4222
-53=0x4223
-54=0x4224
-55=0x4225
-56=0x4240
-57=0x4241
-58=0x4242
-59=0x4243
-60=0x4244
-61=0x4245
-62=0x4260
-63=0x4261
-64=0x4262
-65=0x4263
-66=0x4264
-67=0x4265
-68=0x4280
-69=0x4281
-70=0x4282
-71=0x43FA
-72=0x43FB
-73=0x43FC
-74=0x43FD
+43=0x41F0
+44=0x41FA
+45=0x41FB
+46=0x41FC
+47=0x41FD
+48=0x4200
+49=0x4206
+50=0x4207
+51=0x4220
+52=0x4221
+53=0x4222
+54=0x4223
+55=0x4224
+56=0x4225
+57=0x4240
+58=0x4241
+59=0x4242
+60=0x4243
+61=0x4244
+62=0x4245
+63=0x4260
+64=0x4261
+65=0x4262
+66=0x4263
+67=0x4264
+68=0x4265
+69=0x4280
+70=0x4281
+71=0x4282
+72=0x43F0
+73=0x43FA
+74=0x43FB
+75=0x43FC
+76=0x43FD
 
 [2000]
 ParameterName=Board_voltage
@@ -4792,14 +4794,14 @@ PDOMapping=1
 [4006]
 ParameterName=a1_Motor_status
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [4006sub0]
 ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=4
+DefaultValue=5
 PDOMapping=0
 
 [4006sub1]
@@ -4830,6 +4832,13 @@ DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
+[4006sub5]
+ParameterName=Error
+ObjectType=0x7
+DataType=0x0006
+AccessType=ro
+PDOMapping=1
+
 [4007]
 ParameterName=a1_Motor_config
 ObjectType=0x9
@@ -4844,7 +4853,7 @@ DefaultValue=7
 PDOMapping=0
 
 [4007sub1]
-ParameterName=Motor_type
+ParameterName=Type
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -4892,7 +4901,7 @@ DefaultValue=0
 PDOMapping=0
 
 [4007sub7]
-ParameterName=Motor_flags
+ParameterName=Flags
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -5031,14 +5040,14 @@ DefaultValue=3
 PDOMapping=0
 
 [4022sub1]
-ParameterName=RawData
+ParameterName=Raw_Data
 ObjectType=0x7
 DataType=0x0004
 AccessType=ro
 PDOMapping=1
 
 [4022sub2]
-ParameterName=Flag
+ParameterName=Flags
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
@@ -5382,14 +5391,14 @@ DefaultValue=3
 PDOMapping=0
 
 [4042sub1]
-ParameterName=RawData
+ParameterName=Raw_Data
 ObjectType=0x7
 DataType=0x0004
 AccessType=ro
 PDOMapping=1
 
 [4042sub2]
-ParameterName=Flag
+ParameterName=Flags
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
@@ -5733,14 +5742,14 @@ DefaultValue=3
 PDOMapping=0
 
 [4062sub1]
-ParameterName=RawData
+ParameterName=Raw_Data
 ObjectType=0x7
 DataType=0x0004
 AccessType=ro
 PDOMapping=1
 
 [4062sub2]
-ParameterName=Flag
+ParameterName=Flags
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
@@ -5966,7 +5975,7 @@ DefaultValue=3
 PDOMapping=0
 
 [4080sub1]
-ParameterName=Protection_schmitt_triggers_high
+ParameterName=Protection_schmitt_triggers_low
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
@@ -5974,7 +5983,7 @@ DefaultValue=1
 PDOMapping=0
 
 [4080sub2]
-ParameterName=Protection_schmitt_triggers_low
+ParameterName=Protection_schmitt_triggers_high
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
@@ -6011,7 +6020,7 @@ DefaultValue=1
 PDOMapping=0
 
 [4081sub3]
-ParameterName=Protection_schmitt_triggers_high
+ParameterName=Protection_schmitt_triggers_low
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
@@ -6019,7 +6028,7 @@ DefaultValue=1
 PDOMapping=0
 
 [4081sub4]
-ParameterName=Protection_schmitt_triggers_low
+ParameterName=Protection_schmitt_triggers_high
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
@@ -6054,6 +6063,14 @@ DataType=0x0004
 AccessType=rw
 DefaultValue=1
 PDOMapping=0
+
+[41F0]
+ParameterName=a1_cp_Target
+ObjectType=0x7
+DataType=0x0004
+AccessType=rww
+DefaultValue=0
+PDOMapping=1
 
 [41FA]
 ParameterName=a1_dty_Target
@@ -6109,14 +6126,14 @@ PDOMapping=1
 [4206]
 ParameterName=a2_Motor_status
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [4206sub0]
 ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=4
+DefaultValue=6
 PDOMapping=0
 
 [4206sub1]
@@ -6147,6 +6164,13 @@ DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
+[4206sub5]
+ParameterName=Error
+ObjectType=0x7
+DataType=0x0006
+AccessType=ro
+PDOMapping=1
+
 [4207]
 ParameterName=a2_Motor_config
 ObjectType=0x9
@@ -6161,7 +6185,7 @@ DefaultValue=7
 PDOMapping=0
 
 [4207sub1]
-ParameterName=Motor_type
+ParameterName=Type
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -6209,7 +6233,7 @@ DefaultValue=0
 PDOMapping=0
 
 [4207sub7]
-ParameterName=Motor_flags
+ParameterName=Flags
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -6348,14 +6372,14 @@ DefaultValue=3
 PDOMapping=0
 
 [4222sub1]
-ParameterName=RawData
+ParameterName=Raw_Data
 ObjectType=0x7
 DataType=0x0004
 AccessType=ro
 PDOMapping=1
 
 [4222sub2]
-ParameterName=Flag
+ParameterName=Flags
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
@@ -6699,7 +6723,7 @@ DefaultValue=3
 PDOMapping=0
 
 [4242sub1]
-ParameterName=RawData
+ParameterName=Raw_Data
 ObjectType=0x7
 DataType=0x0004
 AccessType=ro
@@ -7050,14 +7074,14 @@ DefaultValue=3
 PDOMapping=0
 
 [4262sub1]
-ParameterName=RawData
+ParameterName=Raw_Data
 ObjectType=0x7
 DataType=0x0004
 AccessType=ro
 PDOMapping=1
 
 [4262sub2]
-ParameterName=Flag
+ParameterName=Flags
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
@@ -7283,7 +7307,7 @@ DefaultValue=3
 PDOMapping=0
 
 [4280sub1]
-ParameterName=Protection_schmitt_triggers_high
+ParameterName=Protection_schmitt_triggers_low
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
@@ -7291,7 +7315,7 @@ DefaultValue=1
 PDOMapping=0
 
 [4280sub2]
-ParameterName=Protection_schmitt_triggers_low
+ParameterName=Protection_schmitt_triggers_high
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
@@ -7328,7 +7352,7 @@ DefaultValue=1
 PDOMapping=0
 
 [4281sub3]
-ParameterName=Protection_schmitt_triggers_high
+ParameterName=Protection_schmitt_triggers_low
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
@@ -7336,7 +7360,7 @@ DefaultValue=1
 PDOMapping=0
 
 [4281sub4]
-ParameterName=Protection_schmitt_triggers_low
+ParameterName=Protection_schmitt_triggers_high
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
@@ -7371,6 +7395,14 @@ DataType=0x0004
 AccessType=rw
 DefaultValue=1
 PDOMapping=0
+
+[43F0]
+ParameterName=a2_cp_Target
+ObjectType=0x7
+DataType=0x0004
+AccessType=rww
+DefaultValue=0
+PDOMapping=1
 
 [43FA]
 ParameterName=a2_dty_Target
