@@ -67,6 +67,13 @@ public slots:
 protected slots:
     void setLogTimer(int ms);
 
+    void statusNodeChanged(Node::Status status);
+    void stateChanged();
+    void readAllObject();
+
+    void updateSensorParams(int index);
+    void updateFilterParams(int index);
+
 protected:
     Node *_node;
     uint8_t _axis;
@@ -87,9 +94,6 @@ protected:
     State _state;
 
     void setIMode();
-    void statusNodeChanged(Node::Status status);
-    void stateChanged();
-    void readAllObject();
 
     // Creation widgets
     void createWidgets();
@@ -109,14 +113,16 @@ protected:
     IndexSpinBox *_sensorParam1SpinBox;
     IndexSpinBox *_sensorParam2SpinBox;
     IndexSpinBox *_sensorParam3SpinBox;
+    QList<QLabel *> _sensorParamLabels;
 
     QGroupBox *createSensorFilterWidgets();
     QGroupBox *_filterGroupBox;
-    IndexComboBox *_filterSelect;
+    IndexComboBox *_filterSelectComboBox;
     IndexSpinBox *_filterParam0SpinBox;
     IndexSpinBox *_filterParam1SpinBox;
     IndexSpinBox *_filterParam2SpinBox;
     IndexSpinBox *_filterParam3SpinBox;
+    QList<QLabel *> _filterParamLabels;
 
     QGroupBox *createSensorConditioningWidgets();
     QGroupBox *_conditioningGroupBox;

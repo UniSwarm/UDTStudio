@@ -163,7 +163,7 @@ void MotionSensorWidget::setIMode()
     _sensorParam3SpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_3, _axis, odMode402));
 
     // Filter
-    _filterSelect->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_SELECT, _axis, odMode402));
+    _filterSelectComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_SELECT, _axis, odMode402));
     _filterParam0SpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_0, _axis, odMode402));
     _filterParam1SpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_1, _axis, odMode402));
     _filterParam2SpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FILTER_PARAM_2, _axis, odMode402));
@@ -320,6 +320,7 @@ QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
     _sensorSelectComboBox->addItem(tr("ANALOG_CH1"), QVariant(static_cast<uint16_t>(0x4001)));
     _sensorSelectComboBox->addItem(tr("ANALOG_CH2"), QVariant(static_cast<uint16_t>(0x4002)));
     formLayout->addRow(tr("&Sensor select:"), _sensorSelectComboBox);
+    connect(_sensorSelectComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &MotionSensorWidget::updateSensorParams);
     _indexWidgets.append(_sensorSelectComboBox);
 
     _frequencyDividerSpinBox = new IndexSpinBox();
@@ -334,21 +335,26 @@ QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
     _indexWidgets.append(_configBitCheckBox);
 
     _sensorParam0SpinBox = new IndexSpinBox();
-    formLayout->addRow(tr("Param 0:"), _sensorParam0SpinBox);
+    _sensorParamLabels.append(new QLabel(tr("Param 0:")));
+    formLayout->addRow(_sensorParamLabels.last(), _sensorParam0SpinBox);
     _indexWidgets.append(_sensorParam0SpinBox);
 
     _sensorParam1SpinBox = new IndexSpinBox();
-    formLayout->addRow(tr("Param 1:"), _sensorParam1SpinBox);
+    _sensorParamLabels.append(new QLabel(tr("Param 1:")));
+    formLayout->addRow(_sensorParamLabels.last(), _sensorParam1SpinBox);
     _indexWidgets.append(_sensorParam1SpinBox);
 
     _sensorParam2SpinBox = new IndexSpinBox();
-    formLayout->addRow(tr("Param 2:"), _sensorParam2SpinBox);
+    _sensorParamLabels.append(new QLabel(tr("Param 2:")));
+    formLayout->addRow(_sensorParamLabels.last(), _sensorParam2SpinBox);
     _indexWidgets.append(_sensorParam2SpinBox);
 
     _sensorParam3SpinBox = new IndexSpinBox();
-    formLayout->addRow(tr("Param 3:"), _sensorParam3SpinBox);
+    _sensorParamLabels.append(new QLabel(tr("Param 3:")));
+    formLayout->addRow(_sensorParamLabels.last(), _sensorParam3SpinBox);
     _indexWidgets.append(_sensorParam3SpinBox);
 
+    updateSensorParams(0);
     groupBox->setLayout(formLayout);
     return groupBox;
 }
@@ -358,34 +364,40 @@ QGroupBox *MotionSensorWidget::createSensorFilterWidgets()
     QGroupBox *groupBox = new QGroupBox(tr("Sensor filter"));
     QFormLayout *formLayout = new QFormLayout();
 
-    _filterSelect = new IndexComboBox();
-    _filterSelect->addItem(tr("OFF"), QVariant(static_cast<uint16_t>(0x0000)));
-    _filterSelect->addItem(tr("LPF"), QVariant(static_cast<uint16_t>(0x1000)));
-    _filterSelect->addItem(tr("AVERAGING"), QVariant(static_cast<uint16_t>(0x2000)));
-    _filterSelect->addItem(tr("INTEGRATOR"), QVariant(static_cast<uint16_t>(0x8000)));
-    formLayout->addRow(tr("Filter select:"), _filterSelect);
-    _indexWidgets.append(_filterSelect);
+    _filterSelectComboBox = new IndexComboBox();
+    _filterSelectComboBox->addItem(tr("OFF"), QVariant(static_cast<uint16_t>(0x0000)));
+    _filterSelectComboBox->addItem(tr("LPF"), QVariant(static_cast<uint16_t>(0x1000)));
+    _filterSelectComboBox->addItem(tr("AVERAGING"), QVariant(static_cast<uint16_t>(0x2000)));
+    _filterSelectComboBox->addItem(tr("INTEGRATOR"), QVariant(static_cast<uint16_t>(0x8000)));
+    connect(_filterSelectComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &MotionSensorWidget::updateFilterParams);
+    formLayout->addRow(tr("Filter select:"), _filterSelectComboBox);
+    _indexWidgets.append(_filterSelectComboBox);
 
     _filterParam0SpinBox = new IndexSpinBox();
     _filterParam0SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("Param 0:"), _filterParam0SpinBox);
+    _filterParamLabels.append(new QLabel(tr("Param 0:")));
+    formLayout->addRow(_filterParamLabels.last(), _filterParam0SpinBox);
     _indexWidgets.append(_filterParam0SpinBox);
 
     _filterParam1SpinBox = new IndexSpinBox();
     _filterParam1SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("Param 1:"), _filterParam1SpinBox);
+    _filterParamLabels.append(new QLabel(tr("Param 1:")));
+    formLayout->addRow(_filterParamLabels.last(), _filterParam1SpinBox);
     _indexWidgets.append(_filterParam1SpinBox);
 
     _filterParam2SpinBox = new IndexSpinBox();
     _filterParam2SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("Param 2:"), _filterParam2SpinBox);
+    _filterParamLabels.append(new QLabel(tr("Param 2:")));
+    formLayout->addRow(_filterParamLabels.last(), _filterParam2SpinBox);
     _indexWidgets.append(_filterParam2SpinBox);
 
     _filterParam3SpinBox = new IndexSpinBox();
     _filterParam3SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("Param 3:"), _filterParam3SpinBox);
+    _filterParamLabels.append(new QLabel(tr("Param 3:")));
+    formLayout->addRow(_filterParamLabels.last(), _filterParam3SpinBox);
     _indexWidgets.append(_filterParam3SpinBox);
 
+    updateFilterParams(0);
     groupBox->setLayout(formLayout);
     return groupBox;
 }
@@ -518,6 +530,50 @@ void MotionSensorWidget::readAllObject()
     for (AbstractIndexWidget *indexWidget : _indexWidgets)
     {
         indexWidget->readObject();
+    }
+}
+
+void MotionSensorWidget::updateSensorParams(int index)
+{
+    Q_UNUSED(index)
+
+    _sensorParamLabels.at(0)->setText(tr("Param 0:"));
+    _sensorParamLabels.at(1)->setText(tr("Param 1:"));
+    _sensorParamLabels.at(2)->setText(tr("Param 2:"));
+    _sensorParamLabels.at(3)->setText(tr("Param 3:"));
+    _sensorParam0SpinBox->setEnabled(false);
+    _sensorParam1SpinBox->setEnabled(false);
+    _sensorParam2SpinBox->setEnabled(false);
+    _sensorParam3SpinBox->setEnabled(false);
+
+    switch (_sensorSelectComboBox->currentData().toUInt())
+    {
+        case 0x1200: // VELOCITY_FROM_MOTOR
+            _sensorParamLabels.at(0)->setText(tr("Window size:"));
+            _sensorParam0SpinBox->setEnabled(true);
+            break;
+    }
+}
+
+void MotionSensorWidget::updateFilterParams(int index)
+{
+    Q_UNUSED(index)
+
+    _filterParamLabels.at(0)->setText(tr("Param 0:"));
+    _filterParamLabels.at(1)->setText(tr("Param 1:"));
+    _filterParamLabels.at(2)->setText(tr("Param 2:"));
+    _filterParamLabels.at(3)->setText(tr("Param 3:"));
+    _filterParam0SpinBox->setEnabled(false);
+    _filterParam1SpinBox->setEnabled(false);
+    _filterParam2SpinBox->setEnabled(false);
+    _filterParam3SpinBox->setEnabled(false);
+
+    switch (_filterSelectComboBox->currentData().toUInt())
+    {
+        case 0x2000: // AVERAGING
+            _filterParamLabels.at(0)->setText(tr("Sample count:"));
+            _filterParam0SpinBox->setEnabled(true);
+            break;
     }
 }
 
