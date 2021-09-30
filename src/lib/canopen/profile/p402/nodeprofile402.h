@@ -45,7 +45,7 @@ public:
     bool toggleHalt();
     void setDefaultValueOfMode();
 
-    enum OperationMode
+    enum OperationMode : int8_t
     {
         MS = -2,
         CP = -16, // Continuous mode
@@ -142,7 +142,7 @@ private:
     NodeObjectId _supportedDriveModesObjectId;
     NodeObjectId _controlWordObjectId;
     NodeObjectId _statusWordObjectId;
-    QList<NodeObjectId> _masterObjectIds;
+    QList<NodeObjectId *> _masterObjectIds;
 
     NodeObjectId _fgPolaritybjectId;
 
@@ -152,7 +152,7 @@ private:
     NodeObjectId _disableObjectId;
     NodeObjectId _haltObjectId;
     NodeObjectId _faultReactionObjectId;
-    QList<NodeObjectId> _optionObjectIds;
+    QList<NodeObjectId *> _optionObjectIds;
 
     // STATE
     enum State

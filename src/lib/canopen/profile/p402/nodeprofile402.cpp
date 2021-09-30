@@ -514,63 +514,64 @@ const NodeObjectId &NodeProfile402::faultReactionObjectId() const
 
 void NodeProfile402::readOptionObjects() const
 {
-    for (NodeObjectId optionObjectId : _optionObjectIds)
+    for (NodeObjectId *optionObjectId : _optionObjectIds)
     {
-        _node->readObject(optionObjectId);
+        _node->readObject(*optionObjectId);
     }
 }
 
 void NodeProfile402::initObjectId()
 {
     _modesOfOperationObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, _axisId);
-    _masterObjectIds.append(_modesOfOperationObjectId);
+    _masterObjectIds.append(&_modesOfOperationObjectId);
 
     _modesOfOperationDisplayObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION_DISPLAY, _axisId);
-    _masterObjectIds.append(_modesOfOperationDisplayObjectId);
+    _masterObjectIds.append(&_modesOfOperationDisplayObjectId);
 
     _supportedDriveModesObjectId = IndexDb402::getObjectId(IndexDb402::OD_SUPPORTED_DRIVE_MODES, _axisId);
-    _masterObjectIds.append(_supportedDriveModesObjectId);
+    _supportedDriveModesObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    _masterObjectIds.append(&_supportedDriveModesObjectId);
 
     _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, _axisId);
     _controlWordObjectId.setDataType(QMetaType::Type::UShort);
-    _masterObjectIds.append(_controlWordObjectId);
+    _masterObjectIds.append(&_controlWordObjectId);
 
     _statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD, _axisId);
     _statusWordObjectId.setDataType(QMetaType::Type::UShort);
-    _masterObjectIds.append(_statusWordObjectId);
+    _masterObjectIds.append(&_statusWordObjectId);
 
-    for (NodeObjectId objectId : _masterObjectIds)
+    for (NodeObjectId *objectId : _masterObjectIds)
     {
-        objectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-        registerObjId(objectId);
+        objectId->setBusIdNodeId(_node->busId(), _node->nodeId());
+        registerObjId(*objectId);
     }
 
     // Specific
     _fgPolaritybjectId = IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY, _axisId);
-    _optionObjectIds.append(_fgPolaritybjectId);
+    _optionObjectIds.append(&_fgPolaritybjectId);
 
     _abortConnectionObjectId = IndexDb402::getObjectId(IndexDb402::OD_ABORT_CONNECTION_OPTION, _axisId);
-    _optionObjectIds.append(_abortConnectionObjectId);
+    _optionObjectIds.append(&_abortConnectionObjectId);
 
     _quickStopObjectId = IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION, _axisId);
-    _optionObjectIds.append(_quickStopObjectId);
+    _optionObjectIds.append(&_quickStopObjectId);
 
     _shutdownObjectId = IndexDb402::getObjectId(IndexDb402::OD_SHUTDOWN_OPTION, _axisId);
-    _optionObjectIds.append(_shutdownObjectId);
+    _optionObjectIds.append(&_shutdownObjectId);
 
     _disableObjectId = IndexDb402::getObjectId(IndexDb402::OD_DISABLE_OPERATION_OPTION, _axisId);
-    _optionObjectIds.append(_disableObjectId);
+    _optionObjectIds.append(&_disableObjectId);
 
     _haltObjectId = IndexDb402::getObjectId(IndexDb402::OD_HALT_OPTION, _axisId);
-    _optionObjectIds.append(_haltObjectId);
+    _optionObjectIds.append(&_haltObjectId);
 
     _faultReactionObjectId = IndexDb402::getObjectId(IndexDb402::OD_FAULT_REACTION_OPTION, _axisId);
-    _optionObjectIds.append(_faultReactionObjectId);
+    _optionObjectIds.append(&_faultReactionObjectId);
 
-    for (NodeObjectId objectId : _optionObjectIds)
+    for (NodeObjectId *objectId: _optionObjectIds)
     {
-        objectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-        registerObjId(objectId);
+        objectId->setBusIdNodeId(_node->busId(), _node->nodeId());
+        registerObjId(*objectId);
     }
 }
 
