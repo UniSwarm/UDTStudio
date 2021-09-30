@@ -78,18 +78,6 @@ private:
 
     QMap<NodeProfile402::OperationMode, P402ModeWidget *> _modes;
 
-    enum State
-    {
-        STATE_NotReadyToSwitchOn = 1,
-        STATE_SwitchOnDisabled = 2,
-        STATE_ReadyToSwitchOn = 3,
-        STATE_SwitchedOn = 4,
-        STATE_OperationEnabled = 5,
-        STATE_QuickStopActive = 6,
-        STATE_FaultReactionActive = 7,
-        STATE_Fault = 8,
-    };
-
     NodeObjectId _controlWordObjectId;
     NodeObjectId _statusWordObjectId;
     NodeProfile402 *_nodeProfile402;
@@ -116,7 +104,7 @@ private:
     QLabel *_modeLabel;
 
     QGroupBox *_stateMachineGroupBox;
-    QButtonGroup *_stateMachineGroup;
+    QButtonGroup *_stateMachineButtonGroup;
 
     QGroupBox *_controlWordGroupBox;
     QPushButton *_haltPushButton;

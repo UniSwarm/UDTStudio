@@ -29,9 +29,7 @@
 #include "p402tqwidget.h"
 #include "p402vlwidget.h"
 
-#include <QApplication>
 #include <QButtonGroup>
-#include <QDebug>
 #include <QFormLayout>
 #include <QPushButton>
 #include <QScrollBar>
@@ -103,21 +101,17 @@ void P402Widget::setNode(Node *node, uint8_t axis)
         setCheckableStateMachine(2);
         updateModeComboBox();
 
-        connect(_modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int id) { setModeIndex(id); });
+        connect(_node, &Node::statusChanged, this, &P402Widget::updateNodeStatus);
         connect(_nodeProfile402, &NodeProfile402::modeChanged, this, &P402Widget::updateMode);
         connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &P402Widget::updateState);
         connect(_nodeProfile402, &NodeProfile402::isHalted, _haltPushButton, &QPushButton::setChecked);
         connect(_nodeProfile402, &NodeProfile402::eventHappened, this, &P402Widget::setEvent);
+        connect(_modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int id) { setModeIndex(id); });
 
-        connect(_node, &Node::statusChanged, this, &P402Widget::updateNodeStatus);
-
-        _modes[NodeProfile402::NoMode]->setNode(_node, axis);
-        _modes[NodeProfile402::VL]->setNode(_node, axis);
-        _modes[NodeProfile402::TQ]->setNode(_node, axis);
-        _modes[NodeProfile402::IP]->setNode(_node, axis);
-        _modes[NodeProfile402::PP]->setNode(_node, axis);
-        _modes[NodeProfile402::DTY]->setNode(_node, axis);
-        _modes[NodeProfile402::CP]->setNode(_node, axis);
+        for (P402ModeWidget *mode : _modes)
+        {
+            mode->setNode(_node, axis);
+        }
 
         updateNodeStatus();
         updateMode(_axis, _nodeProfile402->actualMode());
@@ -134,7 +128,6 @@ void P402Widget::updateNodeStatus()
             updateMode(_axis, _nodeProfile402->actualMode());
             _stackedWidget->setEnabled(false);
             _modeGroupBox->setEnabled(true);
-            //_stateMachineGroupBox->setEnabled(false);
             _statusWordGroupBox->setEnabled(false);
         }
         else
@@ -151,8 +144,9 @@ void P402Widget::updateMode(uint8_t axis, NodeProfile402::OperationMode mode)
         return;
     }
 
-    if ((mode == NodeProfile402::IP) || (mode == NodeProfile402::VL) || (mode == NodeProfile402::TQ) || (mode == NodeProfile402::PP) || (mode == NodeProfile402::DTY)
-        || (mode == NodeProfile402::CP))
+    if ((mode == NodeProfile402::IP) || (mode == NodeProfile402::VL)
+        || (mode == NodeProfile402::TQ) || (mode == NodeProfile402::PP)
+        || (mode == NodeProfile402::DTY) || (mode == NodeProfile402::CP))
     {
         P402ModeWidget *mode402 = dynamic_cast<P402ModeWidget *>(_stackedWidget->currentWidget());
         // reset : Patch because the widget Tarqet torque and velocity are not an IndexSpinbox so not read automaticaly
@@ -176,93 +170,81 @@ void P402Widget::updateState()
 {
     NodeProfile402::State402 state = _nodeProfile402->currentState();
 
+    foreach(QAbstractButton *button, _stateMachineButtonGroup->buttons())
+    {
+        button->setEnabled(false);
+    }
+
     switch (state)
     {
         case NodeProfile402::STATE_NotReadyToSwitchOn:
-            _statusWordStateLabel->setText(tr("NotReadyToSwitchOn"));
-            setCheckableStateMachine(STATE_NotReadyToSwitchOn);
+            _statusWordStateLabel->setText(_nodeProfile402->stateStr(NodeProfile402::STATE_NotReadyToSwitchOn));
+            setCheckableStateMachine(NodeProfile402::STATE_NotReadyToSwitchOn);
             break;
 
         case NodeProfile402::STATE_SwitchOnDisabled:
-            _statusWordStateLabel->setText(tr("SwitchOnDisabled"));
-            setCheckableStateMachine(STATE_SwitchOnDisabled);
-            _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-            _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
-            _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
-            _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
-            _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+            _statusWordStateLabel->setText(_nodeProfile402->stateStr(NodeProfile402::STATE_SwitchOnDisabled));
+            setCheckableStateMachine(NodeProfile402::STATE_SwitchOnDisabled);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_SwitchOnDisabled)->setEnabled(true);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_ReadyToSwitchOn)->setEnabled(true);
             _haltPushButton->setCheckable(false);
             _haltPushButton->setEnabled(false);
             break;
 
         case NodeProfile402::STATE_ReadyToSwitchOn:
-            _statusWordStateLabel->setText(tr("ReadyToSwitchOn"));
-            setCheckableStateMachine(STATE_ReadyToSwitchOn);
-            _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-            _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
-            _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
-            _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
-            _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+            _statusWordStateLabel->setText(_nodeProfile402->stateStr(NodeProfile402::STATE_ReadyToSwitchOn));
+            setCheckableStateMachine(NodeProfile402::STATE_ReadyToSwitchOn);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_SwitchOnDisabled)->setEnabled(true);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_ReadyToSwitchOn)->setEnabled(true);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_SwitchedOn)->setEnabled(true);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_OperationEnabled)->setEnabled(true);
             _haltPushButton->setCheckable(false);
             _haltPushButton->setEnabled(false);
             break;
 
         case NodeProfile402::STATE_SwitchedOn:
-            _statusWordStateLabel->setText(tr("SwitchedOn"));
-            setCheckableStateMachine(STATE_SwitchedOn);
-            _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-            _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
-            _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
-            _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
-            _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+            _statusWordStateLabel->setText(_nodeProfile402->stateStr(NodeProfile402::STATE_SwitchedOn));
+            setCheckableStateMachine(NodeProfile402::STATE_SwitchedOn);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_SwitchOnDisabled)->setEnabled(true);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_ReadyToSwitchOn)->setEnabled(true);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_OperationEnabled)->setEnabled(true);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_SwitchedOn)->setEnabled(true);
             _haltPushButton->setCheckable(false);
             _haltPushButton->setEnabled(false);
             break;
 
         case NodeProfile402::STATE_OperationEnabled:
-            _statusWordStateLabel->setText(tr("OperationEnabled"));
-            setCheckableStateMachine(STATE_OperationEnabled);
-            _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-            _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(true);
-            _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(true);
-            _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(true);
-            _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
+            _statusWordStateLabel->setText(_nodeProfile402->stateStr(NodeProfile402::STATE_OperationEnabled));
+            setCheckableStateMachine(NodeProfile402::STATE_OperationEnabled);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_SwitchOnDisabled)->setEnabled(true);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_ReadyToSwitchOn)->setEnabled(true);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_SwitchedOn)->setEnabled(true);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_OperationEnabled)->setEnabled(true);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_QuickStopActive)->setEnabled(true);
             _haltPushButton->setEnabled(true);
             _haltPushButton->setCheckable(true);
             break;
 
         case NodeProfile402::STATE_QuickStopActive:
-            _statusWordStateLabel->setText(tr("QuickStopActive"));
-            setCheckableStateMachine(STATE_QuickStopActive);
-            _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-            _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
-            _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
-            _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
-            _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(true);
+            _statusWordStateLabel->setText(_nodeProfile402->stateStr(NodeProfile402::STATE_QuickStopActive));
+            setCheckableStateMachine(NodeProfile402::STATE_QuickStopActive);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_SwitchOnDisabled)->setEnabled(true);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_QuickStopActive)->setEnabled(true);
             _haltPushButton->setCheckable(false);
             _haltPushButton->setEnabled(false);
             break;
 
         case NodeProfile402::STATE_FaultReactionActive:
-            _statusWordStateLabel->setText(tr("FaultReactionActive"));
-            setCheckableStateMachine(STATE_FaultReactionActive);
-            _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(false);
-            _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
-            _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
-            _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
-            _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+            _statusWordStateLabel->setText(_nodeProfile402->stateStr(NodeProfile402::STATE_FaultReactionActive));
+            setCheckableStateMachine(NodeProfile402::STATE_FaultReactionActive);
             _haltPushButton->setCheckable(false);
             _haltPushButton->setEnabled(false);
             break;
 
         case NodeProfile402::STATE_Fault:
-            _statusWordStateLabel->setText(tr("Fault"));
-            setCheckableStateMachine(STATE_Fault);
-            _stateMachineGroup->button(STATE_SwitchOnDisabled)->setEnabled(true);
-            _stateMachineGroup->button(STATE_ReadyToSwitchOn)->setEnabled(false);
-            _stateMachineGroup->button(STATE_SwitchedOn)->setEnabled(false);
-            _stateMachineGroup->button(STATE_OperationEnabled)->setEnabled(false);
-            _stateMachineGroup->button(STATE_QuickStopActive)->setEnabled(false);
+            _statusWordStateLabel->setText(_nodeProfile402->stateStr(NodeProfile402::STATE_Fault));
+            setCheckableStateMachine(NodeProfile402::STATE_Fault);
+            _stateMachineButtonGroup->button(NodeProfile402::STATE_SwitchOnDisabled)->setEnabled(true);
             _haltPushButton->setCheckable(false);
             _haltPushButton->setEnabled(false);
             break;
@@ -312,7 +294,6 @@ void P402Widget::toggleStartLogger(bool start)
 
         _stackedWidget->setEnabled(true);
         _modeGroupBox->setEnabled(true);
-        //_stateMachineGroupBox->setEnabled(true);
         _statusWordGroupBox->setEnabled(true);
     }
     else
@@ -321,7 +302,6 @@ void P402Widget::toggleStartLogger(bool start)
 
         _stackedWidget->setEnabled(false);
         _modeGroupBox->setEnabled(true);
-        //_stateMachineGroupBox->setEnabled(false);
         _statusWordGroupBox->setEnabled(false);
     }
 
@@ -495,10 +475,10 @@ void P402Widget::setCheckableStateMachine(int id)
 {
     for (int i = 1; i <= 8; i++)
     {
-        _stateMachineGroup->button(i)->setCheckable(false);
+        _stateMachineButtonGroup->button(i)->setCheckable(false);
     }
-    _stateMachineGroup->button(id)->setCheckable(true);
-    _stateMachineGroup->button(id)->setChecked(true);
+    _stateMachineButtonGroup->button(id)->setCheckable(true);
+    _stateMachineButtonGroup->button(id)->setChecked(true);
 }
 
 void P402Widget::createWidgets()
@@ -514,14 +494,11 @@ void P402Widget::createWidgets()
 
     // Stacked Widget
     _stackedWidget = new QStackedWidget;
+    for (P402ModeWidget *mode : _modes)
+    {
+        _stackedWidget->addWidget(mode);
+    }
     _stackedWidget->setStyleSheet("QStackedWidget {padding: 0 0 0 3px;}");
-    _stackedWidget->addWidget(_modes[NodeProfile402::NoMode]);
-    _stackedWidget->addWidget(_modes[NodeProfile402::VL]);
-    _stackedWidget->addWidget(_modes[NodeProfile402::IP]);
-    _stackedWidget->addWidget(_modes[NodeProfile402::TQ]);
-    _stackedWidget->addWidget(_modes[NodeProfile402::PP]);
-    _stackedWidget->addWidget(_modes[NodeProfile402::DTY]);
-    _stackedWidget->addWidget(_modes[NodeProfile402::CP]);
     _stackedWidget->setMinimumWidth(450);
 
     // Create interface
@@ -627,41 +604,48 @@ QGroupBox *P402Widget::stateMachineWidgets()
     groupBox->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
     QFormLayout *layout = new QFormLayout();
 
-    _stateMachineGroup = new QButtonGroup(this);
-    _stateMachineGroup->setExclusive(true);
+    _stateMachineButtonGroup = new QButtonGroup(this);
+    _stateMachineButtonGroup->setExclusive(true);
 
-    QPushButton *stateNotReadyToSwitchOnPushButton = new QPushButton(tr("1_Not ready to switch on"));
+    QPushButton *stateNotReadyToSwitchOnPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_NotReadyToSwitchOn));
     stateNotReadyToSwitchOnPushButton->setEnabled(false);
     layout->addRow(stateNotReadyToSwitchOnPushButton);
-    _stateMachineGroup->addButton(stateNotReadyToSwitchOnPushButton, STATE_NotReadyToSwitchOn);
-    QPushButton *stateSwitchOnDisabledPushButton = new QPushButton(tr("2_Switch on disabled"));
+    _stateMachineButtonGroup->addButton(stateNotReadyToSwitchOnPushButton, NodeProfile402::STATE_NotReadyToSwitchOn);
+
+    QPushButton *stateSwitchOnDisabledPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_SwitchOnDisabled));
     layout->addRow(stateSwitchOnDisabledPushButton);
-    _stateMachineGroup->addButton(stateSwitchOnDisabledPushButton, STATE_SwitchOnDisabled);
-    QPushButton *stateReadyToSwitchOnPushButton = new QPushButton(tr("3_Ready to switch on"));
+    _stateMachineButtonGroup->addButton(stateSwitchOnDisabledPushButton, NodeProfile402::STATE_SwitchOnDisabled);
+
+    QPushButton *stateReadyToSwitchOnPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_ReadyToSwitchOn));
     layout->addRow(stateReadyToSwitchOnPushButton);
-    _stateMachineGroup->addButton(stateReadyToSwitchOnPushButton, STATE_ReadyToSwitchOn);
-    QPushButton *stateSwitchedOnPushButton = new QPushButton(tr("4_Switched on"));
+    _stateMachineButtonGroup->addButton(stateReadyToSwitchOnPushButton, NodeProfile402::STATE_ReadyToSwitchOn);
+
+    QPushButton *stateSwitchedOnPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_SwitchedOn));
     layout->addRow(stateSwitchedOnPushButton);
-    _stateMachineGroup->addButton(stateSwitchedOnPushButton, STATE_SwitchedOn);
-    QPushButton *stateOperationEnabledPushButton = new QPushButton(tr("5_Operation enabled"));
+    _stateMachineButtonGroup->addButton(stateSwitchedOnPushButton, NodeProfile402::STATE_SwitchedOn);
+
+    QPushButton *stateOperationEnabledPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_OperationEnabled));
     layout->addRow(stateOperationEnabledPushButton);
-    _stateMachineGroup->addButton(stateOperationEnabledPushButton, STATE_OperationEnabled);
-    QPushButton *stateQuickStopActivePushButton = new QPushButton(tr("6_Quick stop active"));
+    _stateMachineButtonGroup->addButton(stateOperationEnabledPushButton, NodeProfile402::STATE_OperationEnabled);
+
+    QPushButton *stateQuickStopActivePushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_QuickStopActive));
     layout->addRow(stateQuickStopActivePushButton);
-    _stateMachineGroup->addButton(stateQuickStopActivePushButton, STATE_QuickStopActive);
-    QPushButton *stateFaultReactionActivePushButton = new QPushButton(tr("7_Fault reaction active"));
+    _stateMachineButtonGroup->addButton(stateQuickStopActivePushButton, NodeProfile402::STATE_QuickStopActive);
+
+    QPushButton *stateFaultReactionActivePushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_FaultReactionActive));
     stateFaultReactionActivePushButton->setEnabled(false);
     layout->addRow(stateFaultReactionActivePushButton);
-    _stateMachineGroup->addButton(stateFaultReactionActivePushButton, STATE_FaultReactionActive);
-    QPushButton *stateFaultPushButton = new QPushButton(tr("8_Fault"));
+    _stateMachineButtonGroup->addButton(stateFaultReactionActivePushButton, NodeProfile402::STATE_FaultReactionActive);
+
+    QPushButton *stateFaultPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_Fault));
     stateFaultPushButton->setEnabled(false);
     layout->addRow(stateFaultPushButton);
-    _stateMachineGroup->addButton(stateFaultPushButton, STATE_Fault);
+    _stateMachineButtonGroup->addButton(stateFaultPushButton, NodeProfile402::STATE_Fault);
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_stateMachineGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { stateMachineClicked(id); });
 #else
-    connect(_stateMachineGroup, QOverload<int>::of(&QButtonGroup::idClicked), [=](int id) { stateMachineClicked(id); });
+    connect(_stateMachineButtonGroup, QOverload<int>::of(&QButtonGroup::idClicked), [=](int id) { stateMachineClicked(id); });
 #endif
 
     groupBox->setLayout(layout);
