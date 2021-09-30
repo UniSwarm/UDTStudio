@@ -643,7 +643,7 @@ QGroupBox *P402Widget::stateMachineWidgets()
     _stateMachineButtonGroup->addButton(stateFaultPushButton, NodeProfile402::STATE_Fault);
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    connect(_stateMachineGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { stateMachineClicked(id); });
+    connect(_stateMachineButtonGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { stateMachineClicked(id); });
 #else
     connect(_stateMachineButtonGroup, QOverload<int>::of(&QButtonGroup::idClicked), [=](int id) { stateMachineClicked(id); });
 #endif
