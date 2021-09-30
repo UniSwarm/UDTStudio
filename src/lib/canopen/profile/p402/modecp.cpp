@@ -60,9 +60,9 @@ const NodeObjectId &ModeCp::targetObjectId() const
     return _targetObjectId;
 }
 
-void ModeCp::setTarget(qint32 tarqet)
+void ModeCp::setTarget(qint32 target)
 {
-    _nodeProfile402->node()->writeObject(_targetObjectId, QVariant(tarqet));
+    _nodeProfile402->node()->writeObject(_targetObjectId, QVariant(target));
 }
 
 quint16 ModeCp::getSpecificCwFlag()
