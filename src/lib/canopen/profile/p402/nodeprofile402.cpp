@@ -320,6 +320,11 @@ QList<NodeProfile402::OperationMode> NodeProfile402::modesSupportedByType(IndexD
         {
                 modes.append(modesupported);
         }
+        else if (mode == IndexDb402::MODE402_OTHER
+                 && (modesupported == OperationMode::DTY))
+        {
+            modes.append(modesupported);
+        }
     }
     return modes;
 }
