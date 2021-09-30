@@ -89,8 +89,8 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _hallPhaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_HALL_PHASE, _axis));
     _bridgePweredPhaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_POWERED_PHASE, _axis));
     _bridgeCommandLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_COMMAND, _axis));
-    _bridgeTemp1Label->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER, _axis, 0));
-    _bridgeTemp2Label->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_TEMPERATURE_DRIVER, _axis, 1));
+    _bridgeTemp1Label->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_DRIVER_TEMPERATURE, _axis, 0));
+    _bridgeTemp2Label->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_DRIVER_TEMPERATURE, _axis, 1));
     _hallRawValueLabel->setNode(node);
     _hallPhaseLabel->setNode(node);
     _bridgePweredPhaseLabel->setNode(node);

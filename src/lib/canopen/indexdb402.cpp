@@ -339,10 +339,7 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
     case OD_MS_BIT_RATE:
         return {0x2040, 0x2};
 
-    case OD_MS_MOTOR_TEMPERATURE_1:
-        return {static_cast<quint16>((0x4000 + axisDecal)), 0x1};
-
-    case OD_MS_TEMPERATURE_DRIVER:
+    case OD_MS_DRIVER_TEMPERATURE:
         return NodeObjectId(static_cast<quint16>((0x2801 + axisDecal)), static_cast<quint8>(opt2 + 1));
     case OD_MS_BACK_EMF:
         return NodeObjectId(static_cast<quint16>((0x2802 + axisDecal)), static_cast<quint8>(opt2 + 1));
@@ -350,6 +347,14 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return NodeObjectId(static_cast<quint16>((0x2803 + axisDecal)), static_cast<quint8>(opt2 + 1));
     case OD_MS_PWM:
         return NodeObjectId(static_cast<quint16>((0x2804 + axisDecal)), static_cast<quint8>(opt2 + 1));
+
+    case OD_MS_DRIVER_TEMPERATURE_CONFIG_PROTECTION_SCHMITT_TRIGGERS_LOW:
+        return NodeObjectId(static_cast<quint16>(0x2810), 0x1);
+    case OD_MS_DRIVER_TEMPERATURE_CONFIG_PROTECTION_SCHMITT_TRIGGERS_HIGH:
+        return NodeObjectId(static_cast<quint16>(0x2810), 0x2);
+
+    case OD_MS_MOTION_STATUS_ERROR:
+        return {static_cast<quint16>(0x4000), 0x1};
 
     case OD_MS_MOTOR_STATUS_HALL_RAW_VALUE:
         return {static_cast<quint16>((0x4006 + axisDecal)), 0x1};
@@ -359,6 +364,10 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         return {static_cast<quint16>((0x4006 + axisDecal)), 0x3};
     case OD_MS_MOTOR_STATUS_COMMAND:
         return {static_cast<quint16>((0x4006 + axisDecal)), 0x4};
+    case OD_MS_MOTOR_STATUS_ERROR:
+        return {static_cast<quint16>((0x4006 + axisDecal)), 0x5};
+    case OD_MS_MOTOR_STATUS_TEMP:
+        return {static_cast<quint16>((0x4006 + axisDecal)), 0x6};
 
     case OD_MS_MOTOR_CONF_TYPE:
         return {static_cast<quint16>((0x4007 + axisDecal)), 0x1};
