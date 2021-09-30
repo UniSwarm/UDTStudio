@@ -24,8 +24,7 @@
 #include "../../services/service.h"
 
 #include "nodeodsubscriber.h"
-
-class NodeProfile402;
+#include "nodeprofile402.h"
 
 class CANOPEN_EXPORT Mode : public QObject, public NodeOdSubscriber
 {
@@ -44,7 +43,7 @@ protected:
     NodeProfile402 *_nodeProfile402;
     NodeObjectId _controlWordObjectId;
 
-    quint8 _mode;
+    NodeProfile402::OperationMode _mode;
 };
 
 #endif  // MODE_H
