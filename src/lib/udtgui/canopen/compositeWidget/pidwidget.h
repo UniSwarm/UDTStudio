@@ -25,6 +25,7 @@
 
 #include "profile/p402/nodeprofile402.h"
 
+#include <QComboBox>
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QPushButton>
@@ -39,6 +40,7 @@ class DataLoggerWidget;
 class IndexSpinBox;
 class IndexLabel;
 class IndexCheckBox;
+class AbstractIndexWidget;
 
 class UDTGUI_EXPORT PidWidget : public QWidget
 {
@@ -70,18 +72,18 @@ protected:
     NodeProfile402 *_nodeProfile402;
     ModePid _modePid;
 
-    QTimer _timer;
     QTimer _readStatusTimer;
+
     DataLogger *_dataLogger;
+    DataLoggerWidget *_dataLoggerWidget;
 
     NodeObjectId _actualValue_ObjId;
 
+    QList<AbstractIndexWidget *> _indexWidgets;
+
     void createWidgets();
     QToolBar *createToolBarWidgets();
-    QToolBar *_toolBar;
     QSpinBox *_logTimerSpinBox;
-
-    DataLoggerWidget *_dataLoggerWidget;
 
     QGroupBox *createPIDConfigWidgets();
     QGroupBox *_pidGroupBox;
@@ -103,6 +105,8 @@ protected:
     IndexLabel *_outputLabel;
 
     QGroupBox *createPIDTestWidgets();
+    QTimer _timerTest;
+    QComboBox *_modeComboBox;
     QGroupBox *_pidTestGroupBox;
     QSpinBox *_firstTargetSpinBox;
     QSpinBox *_secondTargetSpinBox;

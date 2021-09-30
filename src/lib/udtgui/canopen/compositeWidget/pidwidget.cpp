@@ -37,7 +37,7 @@ PidWidget::PidWidget(QWidget *parent) : QWidget(parent)
 {
     _nodeProfile402 = nullptr;
     createWidgets();
-    connect(&_timer, &QTimer::timeout, this, &PidWidget::manageMeasurement);
+    connect(&_timerTest, &QTimer::timeout, this, &PidWidget::manageMeasurement);
     connect(&_readStatusTimer, &QTimer::timeout, this, &PidWidget::readStatus);
     _state = NONE;
     _modePid = MODE_PID_NONE;
@@ -86,23 +86,13 @@ void PidWidget::setNode(Node *node, uint8_t axis)
 
     _axis = axis;
     _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
-
     connect(node, &Node::statusChanged, this, &PidWidget::statusNodeChanged);
     setIMode();
 
-    _dSpinBox->setNode(node);
-    _pSpinBox->setNode(node);
-    _iSpinBox->setNode(node);
-    _inputLabel->setNode(node);
-    _errorLabel->setNode(node);
-    _integratorLabel->setNode(node);
-    _outputLabel->setNode(node);
-    _minSpinBox->setNode(node);
-    _maxSpinBox->setNode(node);
-    _thresholdSpinBox->setNode(node);
-    _freqDividerSpinBox->setNode(node);
-    _antiReverseCheckBox->setNode(node);
-    _directCtrlCheckBox->setNode(node);
+    for (AbstractIndexWidget *indexWidget : _indexWidgets)
+    {
+        indexWidget->setNode(node);
+    }
 }
 
 void PidWidget::setMode(PidWidget::ModePid mode)
@@ -138,6 +128,8 @@ void PidWidget::setIMode()
     NodeObjectId pidErrorStatus_ObjId;
     NodeObjectId pidIntegratorStatus_ObjId;
     NodeObjectId pidOutputStatus_ObjId;
+
+    QList<NodeProfile402::OperationMode> modeList;
 
     if (!_nodeProfile402)
     {
@@ -201,6 +193,13 @@ void PidWidget::setIMode()
     _integratorLabel->setObjId(pidIntegratorStatus_ObjId);
     _outputLabel->setObjId(pidOutputStatus_ObjId);
 
+    _modeComboBox->clear();
+    modeList = _nodeProfile402->modesSupportedByType(odMode402);
+    for (int i = 0; i < modeList.size(); i++)
+    {
+        _modeComboBox->addItem(_nodeProfile402->modeStr(modeList.at(i)), QVariant(static_cast<int>(modeList.at(i))));
+    }
+
     // Datalogger
     pidInputStatus_ObjId.setBusIdNodeId(node()->busId(), node()->nodeId());
     pidErrorStatus_ObjId.setBusIdNodeId(node()->busId(), node()->nodeId());
@@ -237,11 +236,12 @@ void PidWidget::changeMode402()
         case MODE_PID_TORQUE:
             if (_nodeProfile402->actualMode() != NodeProfile402::TQ)
             {
-                _nodeProfile402->setMode(NodeProfile402::TQ);
+                NodeProfile402::OperationMode mode = static_cast<NodeProfile402::OperationMode>(_modeComboBox->currentData().toInt());
+                _nodeProfile402->setMode(mode);
             }
             else
             {
-                mode402Changed(_axis, NodeProfile402::TQ);
+                mode402Changed(_axis, _nodeProfile402->actualMode());
             }
             break;
 
@@ -249,23 +249,27 @@ void PidWidget::changeMode402()
             _nodeProfile402->setDefaultValueOfMode();
             if (_nodeProfile402->actualMode() != NodeProfile402::VL)
             {
-                _nodeProfile402->setMode(NodeProfile402::VL);
+                NodeProfile402::OperationMode mode = static_cast<NodeProfile402::OperationMode>(_modeComboBox->currentData().toInt());
+                _nodeProfile402->setMode(mode);
             }
             else
             {
-                mode402Changed(_axis, NodeProfile402::VL);
+                mode402Changed(_axis, _nodeProfile402->actualMode());
             }
             break;
 
         case MODE_PID_POSITION:
             _nodeProfile402->setDefaultValueOfMode();
-            if (_nodeProfile402->actualMode() != NodeProfile402::IP)
+            if (_nodeProfile402->actualMode() != NodeProfile402::PP
+                || _nodeProfile402->actualMode() != NodeProfile402::IP
+                || _nodeProfile402->actualMode() != NodeProfile402::CP)
             {
-                _nodeProfile402->setMode(NodeProfile402::IP);
+                NodeProfile402::OperationMode mode = static_cast<NodeProfile402::OperationMode>(_modeComboBox->currentData().toInt());
+                _nodeProfile402->setMode(mode);
             }
             else
             {
-                mode402Changed(_axis, NodeProfile402::IP);
+                mode402Changed(_axis, _nodeProfile402->actualMode());
             }
             break;
     }
@@ -324,7 +328,7 @@ void PidWidget::mode402Changed(uint8_t axis, NodeProfile402::OperationMode mode)
             break;
         }
     }
-    _timer.start(_windowFirstTargetSpinBox->value());
+    _timerTest.start(_windowFirstTargetSpinBox->value());
 }
 
 void PidWidget::manageMeasurement()
@@ -334,13 +338,13 @@ void PidWidget::manageMeasurement()
         case PidWidget::NONE:
             _dataLogger->clear();
             _dataLogger->start(10);
-            _timer.start(10);
+            _timerTest.start(10);
             _readStatusTimer.start(10);
             _state = LAUCH_DATALOGGER;
             break;
 
         case PidWidget::LAUCH_DATALOGGER:
-            _timer.stop();
+            _timerTest.stop();
             changeMode402();
             _state = LAUCH_FIRST_TARGET;
             break;
@@ -352,7 +356,7 @@ void PidWidget::manageMeasurement()
 
         case PidWidget::LAUCH_SECOND_TARGET:
             stopSecondMeasurement();
-            _timer.start(_stopDataLoggerSpinBox->value());
+            _timerTest.start(_stopDataLoggerSpinBox->value());
             _state = STOP_DATALOGGER;
             break;
 
@@ -377,19 +381,19 @@ void PidWidget::stopFirstMeasurement()
 
         case MODE_PID_TORQUE:
             _nodeProfile402->setTarget(_secondTargetSpinBox->value());
-            _timer.start(_windowSecondTargetSpinBox->value());
+            _timerTest.start(_windowSecondTargetSpinBox->value());
             break;
 
         case MODE_PID_VELOCITY:
             _nodeProfile402->setTarget(_secondTargetSpinBox->value());
-            _timer.start(_windowSecondTargetSpinBox->value());
+            _timerTest.start(_windowSecondTargetSpinBox->value());
             break;
 
         case MODE_PID_POSITION:
         {
             int actualPosition = node()->nodeOd()->value(_actualValue_ObjId).toInt();
             _nodeProfile402->setTarget((_secondTargetSpinBox->value() - actualPosition) + actualPosition);
-            _timer.start(_windowSecondTargetSpinBox->value());
+            _timerTest.start(_windowSecondTargetSpinBox->value());
             break;
         }
     }
@@ -427,7 +431,7 @@ void PidWidget::stopMeasurement()
 
 void PidWidget::stopDataLogger()
 {
-    _timer.stop();
+    _timerTest.stop();
     _state = NONE;
     _dataLogger->stop();
     _savePushButton->setEnabled(true);
@@ -446,15 +450,10 @@ void PidWidget::readStatus()
 
 void PidWidget::readAllObject()
 {
-    _pSpinBox->readObject();
-    _iSpinBox->readObject();
-    _dSpinBox->readObject();
-    _minSpinBox->readObject();
-    _maxSpinBox->readObject();
-    _thresholdSpinBox->readObject();
-    _freqDividerSpinBox->readObject();
-    _antiReverseCheckBox->readObject();
-    readStatus();
+    for (AbstractIndexWidget *indexWidget : _indexWidgets)
+    {
+        indexWidget->readObject();
+    }
 }
 
 void PidWidget::createWidgets()
@@ -546,26 +545,33 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
     _pSpinBox = new IndexSpinBox();
     _pSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("&P:"), _pSpinBox);
+    _indexWidgets.append(_pSpinBox);
 
     _iSpinBox = new IndexSpinBox();
     _iSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&I:"), _iSpinBox);
+    formLayout->addRow(tr("&I:"), _iSpinBox);    
+    _indexWidgets.append(_iSpinBox);
 
     _dSpinBox = new IndexSpinBox();
     _dSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("&D:"), _dSpinBox);
+    _indexWidgets.append(_dSpinBox);
 
     QLayout *minMaxlayout = new QHBoxLayout();
     minMaxlayout->setSpacing(0);
     _minSpinBox = new IndexSpinBox();
     _minSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     minMaxlayout->addWidget(_minSpinBox);
+    _indexWidgets.append(_minSpinBox);
+
     QLabel *errorRangeSepLabel = new QLabel(tr("-"));
     errorRangeSepLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     minMaxlayout->addWidget(errorRangeSepLabel);
     _maxSpinBox = new IndexSpinBox();
     _maxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     minMaxlayout->addWidget(_maxSpinBox);
+    _indexWidgets.append(_maxSpinBox);
+
     QLabel *errorRangeLabel = new QLabel(tr("&Min max:"));
     errorRangeLabel->setBuddy(errorRangeLabel);
     formLayout->addRow(errorRangeLabel, minMaxlayout);
@@ -574,18 +580,22 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
     _thresholdSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     _thresholdSpinBox->setMinValue(0);
     formLayout->addRow(tr("&Threshold:"), _thresholdSpinBox);
+    _indexWidgets.append(_thresholdSpinBox);
 
     _freqDividerSpinBox = new IndexSpinBox();
     _freqDividerSpinBox->setRangeValue(1, 1000);
     formLayout->addRow(tr("&Frequency divider:"), _freqDividerSpinBox);
+    _indexWidgets.append(_freqDividerSpinBox);
 
     _antiReverseCheckBox = new IndexCheckBox();
     _antiReverseCheckBox->setBitMask(1);
     formLayout->addRow(tr("&Anti reverse:"), _antiReverseCheckBox);
+    _indexWidgets.append(_antiReverseCheckBox);
 
     _directCtrlCheckBox = new IndexCheckBox();
     _directCtrlCheckBox->setBitMask(1 << 8);
     formLayout->addRow(tr("&Direct control:"), _directCtrlCheckBox);
+    _indexWidgets.append(_directCtrlCheckBox);
 
     groupBox->setLayout(formLayout);
     return groupBox;
@@ -599,18 +609,22 @@ QGroupBox *PidWidget::createPIDStatusWidgets()
     _inputLabel = new IndexLabel();
     _inputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("&Input:"), _inputLabel);
+    _indexWidgets.append(_inputLabel);
 
     _errorLabel = new IndexLabel();
     _errorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("&Error:"), _errorLabel);
+    _indexWidgets.append(_errorLabel);
 
     _integratorLabel = new IndexLabel();
     _integratorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("&Integrator:"), _integratorLabel);
+    _indexWidgets.append(_integratorLabel);
 
     _outputLabel = new IndexLabel();
     _outputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("&Output:"), _outputLabel);
+    _indexWidgets.append(_outputLabel);
 
     groupBox->setLayout(formLayout);
     return groupBox;
@@ -621,6 +635,9 @@ QGroupBox *PidWidget::createPIDTestWidgets()
     QGroupBox *groupBox = new QGroupBox(tr("PID test"));
     QFormLayout *formLayout = new QFormLayout();
 
+    _modeComboBox = new QComboBox();
+    formLayout->addRow(new QLabel(tr("Mode:")), _modeComboBox);
+
     QHBoxLayout *firstTargetLayout = new QHBoxLayout();
     _firstTargetSpinBox = new QSpinBox();
     _firstTargetSpinBox->setValue(200);
@@ -628,7 +645,7 @@ QGroupBox *PidWidget::createPIDTestWidgets()
     _windowFirstTargetSpinBox = new QSpinBox();
     _windowFirstTargetSpinBox->setRange(10, 5000);
     _windowFirstTargetSpinBox->setValue(3000);
-    _windowFirstTargetSpinBox->setSuffix(" ms");
+    _windowFirstTargetSpinBox->setSuffix( " ms");
     firstTargetLayout->addWidget(_firstTargetSpinBox);
     firstTargetLayout->addWidget(_windowFirstTargetSpinBox);
     formLayout->addRow(tr("First Target:"), firstTargetLayout);
