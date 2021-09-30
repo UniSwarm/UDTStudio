@@ -24,6 +24,7 @@
 #include "../nodeprofile.h"
 
 #include "node.h"
+#include "indexdb402.h"
 
 class NodeObjectId;
 class ModeVl;
@@ -31,6 +32,7 @@ class ModeIp;
 class ModeTq;
 class ModePp;
 class Mode;
+class AbstractIndexWidget;
 
 class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
 {
@@ -46,7 +48,7 @@ public:
     enum OperationMode
     {
         MS = -2,
-        CP = -16, // Duty Cycle mode
+        CP = -16, // Continuous mode
         DTY = -1, // Duty Cycle mode
         NoMode = 0, //
         PP = 1, // Profile position mode
@@ -67,6 +69,7 @@ public:
     QString modeStr(NodeProfile402::OperationMode mode);
     bool isModeSupported(OperationMode mode);
     QList<OperationMode> modesSupported();
+    QList<OperationMode> modesSupportedByType(IndexDb402::OdMode402);
     Mode *mode(OperationMode mode) const;
 
     enum State402
@@ -139,6 +142,7 @@ private:
     NodeObjectId _supportedDriveModesObjectId;
     NodeObjectId _controlWordObjectId;
     NodeObjectId _statusWordObjectId;
+    QList<NodeObjectId> _masterObjectIds;
 
     NodeObjectId _fgPolaritybjectId;
 
@@ -148,6 +152,7 @@ private:
     NodeObjectId _disableObjectId;
     NodeObjectId _haltObjectId;
     NodeObjectId _faultReactionObjectId;
+    QList<NodeObjectId> _optionObjectIds;
 
     // STATE
     enum State

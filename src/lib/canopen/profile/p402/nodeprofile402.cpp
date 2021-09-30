@@ -175,8 +175,13 @@ void NodeProfile402::setDefaultValueOfMode()
 
 NodeProfile402::OperationMode NodeProfile402::actualMode()
 {
-    if ((_modeCurrent == CP) || (_modeCurrent == DTY) || (_modeCurrent == NoMode) || (_modeCurrent == PP) || (_modeCurrent == VL) || (_modeCurrent == PV) || (_modeCurrent == TQ) ||
-        (_modeCurrent == HM) || (_modeCurrent == IP) || (_modeCurrent == CSP) || (_modeCurrent == CSV) || (_modeCurrent == CST) || (_modeCurrent == CSTCA))
+    if ((_modeCurrent == CP) || (_modeCurrent == DTY)
+        || (_modeCurrent == NoMode) || (_modeCurrent == PP)
+        || (_modeCurrent == VL) || (_modeCurrent == PV)
+        || (_modeCurrent == TQ) || (_modeCurrent == HM)
+        || (_modeCurrent == IP) || (_modeCurrent == CSP)
+        || (_modeCurrent == CSV) || (_modeCurrent == CST)
+        || (_modeCurrent == CSTCA))
     {
         return static_cast<OperationMode>(_modeCurrent);
     }
@@ -197,8 +202,13 @@ bool NodeProfile402::setMode(OperationMode mode)
         return true;
     }
 
-    if ((mode == CP) || (mode == DTY) || (mode == NoMode) || (mode == PP) || (mode == VL) || (mode == PV) || (mode == TQ) || (mode == HM) || (mode == IP) || (mode == CSP) || (mode == CSV) ||
-        (mode == CST) || (mode == CSTCA))
+    if ((mode == CP) || (mode == DTY)
+        || (mode == NoMode) || (mode == PP)
+        || (mode == VL) || (mode == PV)
+        || (mode == TQ) || (mode == HM)
+        || (mode == IP) || (mode == CSP)
+        || (mode == CSV) || (mode == CST)
+        || (mode == CSTCA))
     {
         _node->writeObject(_modesOfOperationObjectId, QVariant(mode));
         _modeState = MODE_CHANGE;
@@ -281,6 +291,37 @@ bool NodeProfile402::isModeSupported(OperationMode mode)
 QList<NodeProfile402::OperationMode> NodeProfile402::modesSupported()
 {
     return _modesSupported;
+}
+
+QList<NodeProfile402::OperationMode> NodeProfile402::modesSupportedByType(IndexDb402::OdMode402 mode)
+{
+    QList<NodeProfile402::OperationMode> modes;
+    for (const OperationMode &modesupported : qAsConst(_modesSupported))
+    {
+        if (mode == IndexDb402::MODE402_TORQUE
+            && (modesupported == OperationMode::TQ
+                || modesupported == OperationMode::CST
+                || modesupported == OperationMode::CSTCA))
+        {
+                modes.append(modesupported);
+        }
+        else if (mode == IndexDb402::MODE402_VELOCITY
+                 && (modesupported == OperationMode::VL
+                     || modesupported == OperationMode::PV
+                     || modesupported == OperationMode::CSV))
+        {
+                modes.append(modesupported);
+        }
+        else if (mode == IndexDb402::MODE402_POSITION
+                 && (modesupported == OperationMode::PP
+                     || modesupported == OperationMode::IP
+                     || modesupported == OperationMode::CP
+                     || modesupported == OperationMode::CSP))
+        {
+                modes.append(modesupported);
+        }
+    }
+    return modes;
 }
 
 Mode *NodeProfile402::mode(NodeProfile402::OperationMode mode) const
@@ -473,66 +514,64 @@ const NodeObjectId &NodeProfile402::faultReactionObjectId() const
 
 void NodeProfile402::readOptionObjects() const
 {
-    _node->readObject(_abortConnectionObjectId);
-    _node->readObject(_quickStopObjectId);
-    _node->readObject(_shutdownObjectId);
-    _node->readObject(_disableObjectId);
-    _node->readObject(_haltObjectId);
-    _node->readObject(_faultReactionObjectId);
+    for (NodeObjectId optionObjectId : _optionObjectIds)
+    {
+        _node->readObject(optionObjectId);
+    }
 }
 
 void NodeProfile402::initObjectId()
 {
     _modesOfOperationObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, _axisId);
-    _modesOfOperationObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    registerObjId(_modesOfOperationObjectId);
+    _masterObjectIds.append(_modesOfOperationObjectId);
 
     _modesOfOperationDisplayObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION_DISPLAY, _axisId);
-    _modesOfOperationDisplayObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    registerObjId(_modesOfOperationDisplayObjectId);
+    _masterObjectIds.append(_modesOfOperationDisplayObjectId);
 
     _supportedDriveModesObjectId = IndexDb402::getObjectId(IndexDb402::OD_SUPPORTED_DRIVE_MODES, _axisId);
-    _supportedDriveModesObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    registerObjId(_supportedDriveModesObjectId);
+    _masterObjectIds.append(_supportedDriveModesObjectId);
 
     _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, _axisId);
-    _controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     _controlWordObjectId.setDataType(QMetaType::Type::UShort);
-    registerObjId(_controlWordObjectId);
+    _masterObjectIds.append(_controlWordObjectId);
 
     _statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD, _axisId);
     _statusWordObjectId.setDataType(QMetaType::Type::UShort);
-    _statusWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    registerObjId(_statusWordObjectId);
+    _masterObjectIds.append(_statusWordObjectId);
+
+    for (NodeObjectId objectId : _masterObjectIds)
+    {
+        objectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        registerObjId(objectId);
+    }
 
     // Specific
     _fgPolaritybjectId = IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY, _axisId);
-    _fgPolaritybjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    registerObjId(_fgPolaritybjectId);
+    _optionObjectIds.append(_fgPolaritybjectId);
 
     _abortConnectionObjectId = IndexDb402::getObjectId(IndexDb402::OD_ABORT_CONNECTION_OPTION, _axisId);
-    _abortConnectionObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    registerObjId(_abortConnectionObjectId);
+    _optionObjectIds.append(_abortConnectionObjectId);
 
     _quickStopObjectId = IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION, _axisId);
-    _quickStopObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    registerObjId(_quickStopObjectId);
+    _optionObjectIds.append(_quickStopObjectId);
 
     _shutdownObjectId = IndexDb402::getObjectId(IndexDb402::OD_SHUTDOWN_OPTION, _axisId);
-    _shutdownObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    registerObjId(_shutdownObjectId);
+    _optionObjectIds.append(_shutdownObjectId);
 
     _disableObjectId = IndexDb402::getObjectId(IndexDb402::OD_DISABLE_OPERATION_OPTION, _axisId);
-    _disableObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    registerObjId(_disableObjectId);
+    _optionObjectIds.append(_disableObjectId);
 
     _haltObjectId = IndexDb402::getObjectId(IndexDb402::OD_HALT_OPTION, _axisId);
-    _haltObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    registerObjId(_haltObjectId);
+    _optionObjectIds.append(_haltObjectId);
 
     _faultReactionObjectId = IndexDb402::getObjectId(IndexDb402::OD_FAULT_REACTION_OPTION, _axisId);
-    _faultReactionObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    registerObjId(_faultReactionObjectId);
+    _optionObjectIds.append(_faultReactionObjectId);
+
+    for (NodeObjectId objectId : _optionObjectIds)
+    {
+        objectId.setBusIdNodeId(_node->busId(), _node->nodeId());
+        registerObjId(objectId);
+    }
 }
 
 void NodeProfile402::statusNodeChanged(Node::Status status)
