@@ -62,13 +62,14 @@ protected:
     // Motor Config
     QGroupBox *_motorConfigGroupBox;
     IndexComboBox *_motorTypeComboBox;
-    IndexSpinBox *_peakCurrent;
-    IndexSpinBox *_polePair;
-    IndexSpinBox *_maxVelocity;
-    IndexSpinBox *_velocityConstant;
-    IndexSpinBox *_currentConstant;
-    IndexCheckBox *_break;
-    IndexCheckBox *_reversePolarity;
+    IndexSpinBox *_peakCurrentSpinBox;
+    IndexSpinBox *_polePairSpinBox;
+    IndexSpinBox *_maxVelocitySpinBox;
+    IndexSpinBox *_velocityConstantSpinBox;
+    IndexSpinBox *_currentConstantSpinBox;
+    IndexCheckBox *_brakeBypassCheckBox;
+    IndexCheckBox *_reverseMotorPolarityCheckBox;
+    IndexCheckBox *_reverseHallPolarityCheckBox;
 
     // Motor Status
     IndexLabel *_hallRawValueLabel;

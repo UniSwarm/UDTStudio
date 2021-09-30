@@ -67,21 +67,23 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     }
 
     _motorTypeComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_TYPE, _axis));
-    _peakCurrent->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_PEAK_CURRENT, _axis));
-    _polePair->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_POLE_PAIR, _axis));
-    _maxVelocity->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_MAX_VELOCITY, _axis));
-    _velocityConstant->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_VELOCITY_CONSTANT, _axis));
-    _currentConstant->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_CURRENT_CONSTANT, _axis));
-    _break->setObjId(IndexDb402::getObjectId(IndexDb402::OD_DIGITAL_OUTPUTS_PHYSICAL_OUTPUTS, _axis));
-    _reversePolarity->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_CONFIG_BIT, _axis));
+    _peakCurrentSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_PEAK_CURRENT, _axis));
+    _polePairSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_POLE_PAIR, _axis));
+    _maxVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_MAX_VELOCITY, _axis));
+    _velocityConstantSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_VELOCITY_CONSTANT, _axis));
+    _currentConstantSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_CURRENT_CONSTANT, _axis));
+    _brakeBypassCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_DIGITAL_OUTPUTS_PHYSICAL_OUTPUTS, _axis));
+    _reverseMotorPolarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_CONFIG_BIT, _axis));
+    _reverseHallPolarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_CONFIG_BIT, _axis));
     _motorTypeComboBox->setNode(node);
-    _peakCurrent->setNode(node);
-    _polePair->setNode(node);
-    _maxVelocity->setNode(node);
-    _velocityConstant->setNode(node);
-    _currentConstant->setNode(node);
-    _break->setNode(node);
-    _reversePolarity->setNode(node);
+    _peakCurrentSpinBox->setNode(node);
+    _polePairSpinBox->setNode(node);
+    _maxVelocitySpinBox->setNode(node);
+    _velocityConstantSpinBox->setNode(node);
+    _currentConstantSpinBox->setNode(node);
+    _brakeBypassCheckBox->setNode(node);
+    _reverseMotorPolarityCheckBox->setNode(node);
+    _reverseHallPolarityCheckBox->setNode(node);
 
     _hallRawValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_HALL_RAW_VALUE, _axis));
     _hallPhaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_HALL_PHASE, _axis));
@@ -199,35 +201,40 @@ QGroupBox *MotorWidget::motorConfigWidgets()
     configLayout->addRow(tr("&Motor type:"), _motorTypeComboBox);
     _indexWidgets.append(_motorTypeComboBox);
 
-    _peakCurrent = new IndexSpinBox();
-    configLayout->addRow(tr("P&eak current:"), _peakCurrent);
-    _indexWidgets.append(_peakCurrent);
+    _peakCurrentSpinBox = new IndexSpinBox();
+    configLayout->addRow(tr("P&eak current:"), _peakCurrentSpinBox);
+    _indexWidgets.append(_peakCurrentSpinBox);
 
-    _polePair = new IndexSpinBox();
-    configLayout->addRow(tr("P&ole pair:"), _polePair);
-    _indexWidgets.append(_polePair);
+    _polePairSpinBox = new IndexSpinBox();
+    configLayout->addRow(tr("P&ole pair:"), _polePairSpinBox);
+    _indexWidgets.append(_polePairSpinBox);
 
-    _maxVelocity = new IndexSpinBox();
-    configLayout->addRow(tr("M&ax velocity:"), _maxVelocity);
-    _indexWidgets.append(_maxVelocity);
+    _maxVelocitySpinBox = new IndexSpinBox();
+    configLayout->addRow(tr("M&ax velocity:"), _maxVelocitySpinBox);
+    _indexWidgets.append(_maxVelocitySpinBox);
 
-    _velocityConstant = new IndexSpinBox();
-    configLayout->addRow(tr("Ve&locity constant:"), _velocityConstant);
-    _indexWidgets.append(_velocityConstant);
+    _velocityConstantSpinBox = new IndexSpinBox();
+    configLayout->addRow(tr("Ve&locity constant:"), _velocityConstantSpinBox);
+    _indexWidgets.append(_velocityConstantSpinBox);
 
-    _currentConstant = new IndexSpinBox();
-    configLayout->addRow(tr("C&urrent constant:"), _currentConstant);
-    _indexWidgets.append(_currentConstant);
+    _currentConstantSpinBox = new IndexSpinBox();
+    configLayout->addRow(tr("C&urrent constant:"), _currentConstantSpinBox);
+    _indexWidgets.append(_currentConstantSpinBox);
 
-    _break = new IndexCheckBox();
-    _break->setBitMask(1);
-    configLayout->addRow(tr("&Break:"), _break);
-    _indexWidgets.append(_break);
+    _brakeBypassCheckBox = new IndexCheckBox();
+    _brakeBypassCheckBox->setBitMask(1);
+    configLayout->addRow(tr("&Break:"), _brakeBypassCheckBox);
+    _indexWidgets.append(_brakeBypassCheckBox);
 
-    _reversePolarity = new IndexCheckBox();
-    _reversePolarity->setBitMask(1);
-    configLayout->addRow(tr("&Reverse polarity:"), _reversePolarity);
-    _indexWidgets.append(_reversePolarity);
+    _reverseMotorPolarityCheckBox = new IndexCheckBox();
+    _reverseMotorPolarityCheckBox->setBitMask(1);
+    configLayout->addRow(tr("&Reverse motor polarity:"), _reverseMotorPolarityCheckBox);
+    _indexWidgets.append(_reverseMotorPolarityCheckBox);
+
+    _reverseHallPolarityCheckBox = new IndexCheckBox();
+    _reverseHallPolarityCheckBox->setBitMask(2);
+    configLayout->addRow(tr("&Reverse hall polarity:"), _reverseHallPolarityCheckBox);
+    _indexWidgets.append(_reverseHallPolarityCheckBox);
 
     _motorConfigGroupBox->setLayout(configLayout);
 
