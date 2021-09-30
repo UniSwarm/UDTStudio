@@ -260,7 +260,8 @@ public:
     {
         MODE402_TORQUE = 0,
         MODE402_VELOCITY = 1,
-        MODE402_POSITION = 2
+        MODE402_POSITION = 2,
+        MODE402_OTHER = 3
     };
 
     static NodeObjectId getObjectId(OdObject object, uint axis = 0, uint opt2 = 0);
