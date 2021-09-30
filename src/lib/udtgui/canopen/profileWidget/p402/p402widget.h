@@ -113,7 +113,6 @@ private:
 
     QGroupBox *_modeGroupBox;
     QComboBox *_modeComboBox;
-    QList<NodeProfile402::OperationMode> _listModeComboBox;
     QLabel *_modeLabel;
 
     QGroupBox *_stateMachineGroupBox;

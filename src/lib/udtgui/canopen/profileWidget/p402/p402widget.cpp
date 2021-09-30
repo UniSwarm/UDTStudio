@@ -167,8 +167,7 @@ void P402Widget::updateMode(uint8_t axis, NodeProfile402::OperationMode mode)
         _stackedWidget->setCurrentWidget(_modes[NodeProfile402::NoMode]);
     }
 
-    int m = _listModeComboBox.indexOf(mode);
-    _modeComboBox->setCurrentIndex(m);
+    _modeComboBox->setCurrentText(_nodeProfile402->modeStr(mode));
     _modeComboBox->setEnabled(true);
     _modeLabel->clear();
 }
@@ -285,7 +284,8 @@ void P402Widget::setModeIndex(int id)
     }
     _modeComboBox->setEnabled(false);
     _modeLabel->setText("Mode change in progress");
-    _nodeProfile402->setMode(_listModeComboBox.at(id));
+    NodeProfile402::OperationMode mode = static_cast<NodeProfile402::OperationMode>(_modeComboBox->currentData().toInt());
+    _nodeProfile402->setMode(mode);
 }
 
 void P402Widget::gotoStateOEClicked()
@@ -427,13 +427,40 @@ void P402Widget::setEvent(quint8 event)
 
 void P402Widget::updateModeComboBox()
 {
-    QList<NodeProfile402::OperationMode> modeList = _nodeProfile402->modesSupported();
     _modeComboBox->clear();
-
+    int j = 0;
+    QList<NodeProfile402::OperationMode> modeList = _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_OTHER);
     for (int i = 0; i < modeList.size(); i++)
     {
-        _listModeComboBox.append(modeList.at(i));
-        _modeComboBox->insertItem(i, _nodeProfile402->modeStr(modeList.at(i)));
+        _modeComboBox->addItem(_nodeProfile402->modeStr(modeList.at(i)), QVariant(static_cast<int>(modeList.at(i))));
+        j++;
+    }
+    _modeComboBox->insertSeparator(_modeComboBox->count());
+    j++;
+
+    modeList = _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_TORQUE);
+    for (int i = 0; i < modeList.size(); i++)
+    {
+        _modeComboBox->addItem(_nodeProfile402->modeStr(modeList.at(i)), QVariant(static_cast<int>(modeList.at(i))));
+        j++;
+    }
+    _modeComboBox->insertSeparator(_modeComboBox->count());
+    j++;
+
+    modeList = _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_VELOCITY);
+    for (int i = 0; i < modeList.size(); i++)
+    {
+        _modeComboBox->addItem(_nodeProfile402->modeStr(modeList.at(i)), QVariant(static_cast<int>(modeList.at(i))));
+        j++;
+    }
+    _modeComboBox->insertSeparator(_modeComboBox->count());
+    j++;
+
+    modeList = _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_POSITION);
+    for (int i = 0; i < modeList.size(); i++)
+    {
+        _modeComboBox->addItem(_nodeProfile402->modeStr(modeList.at(i)), QVariant(static_cast<int>(modeList.at(i))));
+        j++;
     }
 }
 
