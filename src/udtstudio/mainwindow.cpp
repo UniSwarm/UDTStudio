@@ -204,6 +204,13 @@ void MainWindow::createMenus()
     // ============= file =============
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
 
+    action = new QAction(tr("&Stop all"), this);
+    action->setIcon(QIcon(":/icons/img/icons8-cancel.png"));
+    action->setStatusTip(tr("Stop all nodes in all buses"));
+    action->setShortcut(QKeySequence::Cancel);
+    fileMenu->addAction(action);
+    connect(action, &QAction::triggered, CanOpen::instance(), &CanOpen::stopAll);
+
     action = new QAction(tr("E&xit"), this);
     action->setIcon(QIcon(":/icons/img/icons8-exit.png"));
     action->setStatusTip(tr("Exits UDTStudio"));
