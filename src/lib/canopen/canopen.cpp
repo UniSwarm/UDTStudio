@@ -54,6 +54,17 @@ CanOpenBus *CanOpen::bus(const quint8 busId)
     return nullptr;
 }
 
+void CanOpen::stopAll()
+{
+    for (CanOpenBus *bus : qAsConst(_buses))
+    {
+        if (bus->isConnected())
+        {
+            bus->stopAll();
+        }
+    }
+}
+
 CanOpenBus *CanOpen::addBusI(CanOpenBus *bus)
 {
     emit busAboutToBeAdded(bus->busId());

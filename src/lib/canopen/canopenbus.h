@@ -62,6 +62,7 @@ public:
 
 public slots:
     void exploreBus();
+    void stopAll();
     void setBusName(const QString &busName);
 
 signals:

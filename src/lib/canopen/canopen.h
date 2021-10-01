@@ -52,6 +52,9 @@ public:
         delete CanOpen::_instance;
     }
 
+public slots:
+    void stopAll();
+
 signals:
     void busAboutToBeAdded(quint8 busId);
     void busAdded(quint8 busId);

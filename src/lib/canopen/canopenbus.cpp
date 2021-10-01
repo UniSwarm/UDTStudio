@@ -139,6 +139,22 @@ void CanOpenBus::exploreBus()
     _nodeDiscover->exploreBus();
 }
 
+void CanOpenBus::stopAll()
+{
+    QByteArray nmtStopPayload;
+    nmtStopPayload.append(static_cast<char>(0x02));
+    nmtStopPayload.append(static_cast<char>(0));
+    QCanBusFrame frameNmt;
+    frameNmt.setFrameId(0);
+    frameNmt.setPayload(nmtStopPayload);
+    writeFrame(frameNmt);
+
+    for (Node *node : _nodes)
+    {
+        node->setStatus(Node::STOPPED);
+    }
+}
+
 const QList<QCanBusFrame> &CanOpenBus::canFramesLog() const
 {
     return _canFramesLog;
