@@ -40,6 +40,7 @@ protected:
 protected:
     void updateObjId() override;
     void setInternalIndex(int index);
+    bool _internalUpdate;
 };
 
 #endif // INDEXCOMBOBOX_H

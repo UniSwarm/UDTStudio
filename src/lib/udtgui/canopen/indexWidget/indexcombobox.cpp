@@ -48,9 +48,9 @@ void IndexComboBox::setDisplayValue(const QVariant &value, AbstractIndexWidget::
     }
     else
     {
-        blockSignals(true);
+        _internalUpdate = true;
         setCurrentIndex(index);
-        blockSignals(false);
+        _internalUpdate = false;
     }
 }
 
@@ -66,5 +66,8 @@ void IndexComboBox::updateObjId()
 
 void IndexComboBox::setInternalIndex(int index)
 {
-    requestWriteValue(itemData(index));
+    if (!_internalUpdate)
+    {
+        requestWriteValue(itemData(index));
+    }
 }
