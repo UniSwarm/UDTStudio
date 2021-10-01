@@ -552,6 +552,11 @@ void MotionSensorWidget::updateSensorParams(int index)
             _sensorParamLabels.at(0)->setText(tr("Window size:"));
             _sensorParam0SpinBox->setEnabled(true);
             break;
+
+        case 0x3101: // QEI_CH1
+            _sensorParamLabels.at(0)->setText(tr("Filter divider:"));
+            _sensorParam0SpinBox->setEnabled(true);
+            break;
     }
 }
 
