@@ -548,7 +548,7 @@ void MotionSensorWidget::updateSensorParams(int index)
 
     switch (_sensorSelectComboBox->currentData().toUInt())
     {
-        case 0x1200: // VELOCITY_FROM_MOTOR
+        case 0x2300: // VELOCITY_FROM_POSITION
             _sensorParamLabels.at(0)->setText(tr("Window size:"));
             _sensorParam0SpinBox->setEnabled(true);
             break;
