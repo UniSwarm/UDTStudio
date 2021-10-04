@@ -19,12 +19,11 @@ Qt module used :
 - gui
 - widgets
 - charts
-- serialbus
 
-## QT5 for UDTStudio : charts + serial buses
+## QT5 for UDTStudio : charts
 
 ```
-sudo apt install git make g++ qt5-default libqt5serialbus5-dev libqt5serialbus5-plugins libqt5charts5-dev
+sudo apt install git make g++ qt5-default libqt5charts5-dev
 ```
 
 ## Build
