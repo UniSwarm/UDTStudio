@@ -31,6 +31,9 @@ ODTreeViewDelegate::ODTreeViewDelegate(QObject *parent)
 
 QWidget *ODTreeViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    Q_UNUSED(parent)
+    Q_UNUSED(option)
+    Q_UNUSED(index)
     /*switch (index.column())
     {
     case ODItemModel::Type:
@@ -49,8 +52,13 @@ QWidget *ODTreeViewDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 
 void ODTreeViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
+    Q_UNUSED(editor)
+    Q_UNUSED(index)
 }
 
 void ODTreeViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
+    Q_UNUSED(editor)
+    Q_UNUSED(index)
+    Q_UNUSED(model)
 }
