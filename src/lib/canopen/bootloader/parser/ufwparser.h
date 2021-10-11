@@ -25,39 +25,17 @@
 #include <QList>
 #include <QString>
 
+class UfwModel;
+
 class CANOPEN_EXPORT UfwParser
 {
 public:
-    UfwParser(const QString &fileName = QString());
+    UfwParser();
+
+    UfwModel *parse(const QString &fileName) const;
 
     bool read();
     const QByteArray &prog() const;
-
-    struct Segment
-    {
-        uint32_t memorySegmentStart;
-        uint32_t memorySegmentEnd;
-    };
-
-    struct Head
-    {
-        uint16_t device;
-        //        QString version;
-        //        QString date;
-        uint32_t vendorId;
-        uint32_t productId;
-        uint32_t revision;
-        uint32_t serial;
-        uint8_t countSegment;
-        QList<Segment *> segmentList;
-    };
-
-    const UfwParser::Head &head() const;
-
-private:
-    QString _fileName;
-    Head *_head;
-    QByteArray _prog;
 };
 
 #endif // UFWPARSER_H

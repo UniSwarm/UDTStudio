@@ -16,50 +16,51 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef UFWUPDATE_H
-#define UFWUPDATE_H
+#ifndef UFWMODEL_H
+#define UFWMODEL_H
 
 #include "canopen_global.h"
 
-#include "../parser/ufwparser.h"
-#include "nodeodsubscriber.h"
+#include <QByteArray>
+#include <QList>
+#include <QString>
 
-#include <QObject>
-
-class Node;
-class NodeObjectId;
-
-class CANOPEN_EXPORT UfwUpdate : public QObject, public NodeOdSubscriber
+class CANOPEN_EXPORT UfwModel
 {
-    Q_OBJECT
 public:
-    UfwUpdate(Node *node, UfwModel *ufw = nullptr);
+    UfwModel();
 
-    void setUfw(UfwModel *ufw);
+    struct Segment
+    {
+        uint32_t memorySegmentStart;
+        uint32_t memorySegmentEnd;
+    };
 
-    int update();
+    struct Head
+    {
+        uint16_t device;
+        //        QString version;
+        //        QString date;
+        uint32_t vendorId;
+        uint32_t productId;
+        uint32_t revision;
+        uint32_t serial;
+        uint8_t countSegment;
+        QList<Segment *> segmentList;
 
-    int status();
+    public:
+        uint16_t getDevice() const;
+        void setDevice(uint16_t newDevice);
+    };
 
-    uint8_t checksum() const;
+    Head *head() const;
 
-signals:
-    void finished(bool ok);
+    const QByteArray &prog() const;
+    void setProg(const QByteArray &prog);
 
 private:
-    Node *_node;
-    UfwModel *_ufw;
-    uint8_t _checksum;
-    NodeObjectId _programDataObjectId;
-
-    int _indexList;
-    QList<QByteArray> _byteArrayList;
-    void process();
-    uint32_t sumByte(const QByteArray &prog);
-
-    // NodeOdSubscriber interface
-protected:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+    Head *_head;
+    QByteArray _prog;
 };
 
-#endif // UFWUPDATE_H
+#endif // UFWMODEL_H

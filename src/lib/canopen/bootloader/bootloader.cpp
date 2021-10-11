@@ -19,6 +19,7 @@
 #include "bootloader.h"
 
 #include "node.h"
+#include "model/ufwmodel.h"
 #include "parser/ufwparser.h"
 #include "utility/ufwupdate.h"
 #include "indexdb.h"
@@ -70,8 +71,8 @@ bool Bootloader::openUfw(const QString &fileName)
     }
     else
     {
-        _ufw = new UfwParser(fileName);
-        _ufw->read();
+        _ufwParser = new UfwParser();
+        _ufw = _ufwParser->parse(fileName);
         file.close();
 
         _ufwUpdate->setUfw(_ufw);
@@ -93,7 +94,7 @@ uint32_t Bootloader::deviceType()
     {
         return 0;
     }
-    return _ufw->head().device;
+    return _ufw->head()->device;
 }
 
 uint32_t Bootloader::vendorId()
@@ -231,7 +232,7 @@ void Bootloader::process()
 
             if (_ufw)
             {
-                sendKey(_ufw->head().device);
+                sendKey(_ufw->head()->device);
             }
             clearProgram();
             _state = STATE_CLEAR_PROGRAM;
@@ -240,7 +241,7 @@ void Bootloader::process()
         case Bootloader::PROGRAM_STARTED:
             if (_ufw)
             {
-                sendKey(_ufw->head().device);
+                sendKey(_ufw->head()->device);
             }
             stopProgram();
             _state = STATE_STOP_PROGRAM;
@@ -252,11 +253,7 @@ void Bootloader::process()
             break;
 
         case Bootloader::UPDATE_IN_PROGRESS:
-            break;
-
         case Bootloader::SUCCESSFUL:
-            break;
-
         case Bootloader::NOT_SUCCESSFUL:
             break;
         }
@@ -267,7 +264,7 @@ void Bootloader::process()
         _node->nodeOd()->createBootloaderObjects();
         if (_ufw)
         {
-            sendKey(_ufw->head().device);
+            sendKey(_ufw->head()->device);
         }
         clearProgram();
         _state = STATE_CLEAR_PROGRAM;

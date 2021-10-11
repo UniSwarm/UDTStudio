@@ -21,18 +21,21 @@
 #include <QFile>
 #include <QtEndian>
 
-UfwParser::UfwParser(const QString &fileName)
+#include "bootloader/model/ufwmodel.h"
+
+UfwParser::UfwParser()
 {
-    _fileName = fileName;
 }
 
-bool UfwParser::read()
+UfwModel *UfwParser::parse(const QString &fileName) const
 {
+    UfwModel *ufw;
     QByteArray uni;
-    QFile file(_fileName);
+    QFile file(fileName);
+
     if (!file.open(QFile::ReadOnly))
     {
-        return false;
+        return nullptr;
     }
     else
     {
@@ -40,30 +43,64 @@ bool UfwParser::read()
         file.close();
     }
 
-    _head = new Head();
+    ufw = new UfwModel();
 
-    qFromLittleEndian<quint16>(uni, sizeof(_head->device), &_head->device);
-    qFromLittleEndian<quint8>(uni.mid(2, sizeof(_head->countSegment)), sizeof(_head->countSegment), &_head->countSegment);
 
-    for (int i = 0; i < _head->countSegment; i++)
+    qFromLittleEndian<quint16>(uni, sizeof(ufw->head()->device), &ufw->head()->device);
+    qFromLittleEndian<quint8>(uni.mid(2, sizeof(ufw->head()->countSegment)), sizeof(ufw->head()->countSegment), &ufw->head()->countSegment);
+
+    for (int i = 0; i < ufw->head()->countSegment; i++)
     {
-        Segment *seg = new Segment();
+        UfwModel::Segment *seg = new UfwModel::Segment();
 
         qFromLittleEndian<uint32_t>(uni.mid(3 + i * 8, sizeof(seg->memorySegmentStart)), sizeof(seg->memorySegmentStart), &seg->memorySegmentStart);
         qFromLittleEndian<uint32_t>(uni.mid(7 + i * 8, sizeof(seg->memorySegmentEnd)), sizeof(seg->memorySegmentEnd), &seg->memorySegmentEnd);
-        _head->segmentList.append(seg);
+        ufw->head()->segmentList.append(seg);
     }
 
-    _prog = uni.mid(3 + _head->countSegment * 8, uni.size());
-    return true;
+    ufw->setProg(uni.mid(3 + ufw->head()->countSegment * 8, uni.size()));
+
+    return ufw;
 }
 
-const QByteArray &UfwParser::prog() const
-{
-    return _prog;
-}
+//bool UfwParser::read()
+//{
+//    QByteArray uni;
+//    QFile file(_fileName);
+//    if (!file.open(QFile::ReadOnly))
+//    {
+//        return false;
+//    }
+//    else
+//    {
+//        uni = file.read(file.size());
+//        file.close();
+//    }
 
-const UfwParser::Head &UfwParser::head() const
-{
-    return *_head;
-}
+//    _head = new Head();
+
+//    qFromLittleEndian<quint16>(uni, sizeof(_head->device), &_head->device);
+//    qFromLittleEndian<quint8>(uni.mid(2, sizeof(_head->countSegment)), sizeof(_head->countSegment), &_head->countSegment);
+
+//    for (int i = 0; i < _head->countSegment; i++)
+//    {
+//        Segment *seg = new Segment();
+
+//        qFromLittleEndian<uint32_t>(uni.mid(3 + i * 8, sizeof(seg->memorySegmentStart)), sizeof(seg->memorySegmentStart), &seg->memorySegmentStart);
+//        qFromLittleEndian<uint32_t>(uni.mid(7 + i * 8, sizeof(seg->memorySegmentEnd)), sizeof(seg->memorySegmentEnd), &seg->memorySegmentEnd);
+//        _head->segmentList.append(seg);
+//    }
+
+//    _prog = uni.mid(3 + _head->countSegment * 8, uni.size());
+//    return true;
+//}
+
+//const QByteArray &UfwParser::prog() const
+//{
+//    return _prog;
+//}
+
+//const UfwParser::Head &UfwParser::head() const
+//{
+//    return *_head;
+//}

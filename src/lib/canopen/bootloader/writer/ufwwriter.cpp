@@ -14,7 +14,7 @@ int UfwWriter::create(const QByteArray &hex, QString type, QStringList segment)
     char buffer[4];
 
     _ufw.clear();
-    _head = new UfwParser::Head();
+    _head = new UfwModel::Head();
 
     _head->device = static_cast<uint16_t>(type.toUInt());
     qToLittleEndian(_head->device, buffer);
@@ -28,7 +28,7 @@ int UfwWriter::create(const QByteArray &hex, QString type, QStringList segment)
     int i = 0;
     for (i = 0; i < segment.size(); i++)
     {
-        UfwParser::Segment *seg = new UfwParser::Segment();
+        UfwModel::Segment *seg = new UfwModel::Segment();
         seg->memorySegmentStart = segment.at(i).split(":").at(0).toUInt(&ok, 16);
         seg->memorySegmentEnd = segment.at(i).split(":").at(1).toUInt(&ok, 16);
         _head->segmentList.append(seg);

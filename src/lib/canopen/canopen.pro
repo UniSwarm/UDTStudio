@@ -48,6 +48,7 @@ SOURCES += \
     $$PWD/busdriver/canbusdriver.cpp \
     $$PWD/busdriver/canbustcpudt.cpp \
     $$PWD/bootloader/bootloader.cpp \
+    $$PWD/bootloader/model/ufwmodel.cpp \
     $$PWD/bootloader/parser/hexparser.cpp \
     $$PWD/bootloader/parser/ufwparser.cpp \
     $$PWD/bootloader/utility/hexmerger.cpp \
@@ -100,6 +101,7 @@ HEADERS += \
     $$PWD/busdriver/canbusdriver.h \
     $$PWD/busdriver/canbustcpudt.h \
     $$PWD/bootloader/bootloader.h \
+    $$PWD/bootloader/model/ufwmodel.h \
     $$PWD/bootloader/parser/hexparser.h \
     $$PWD/bootloader/parser/ufwparser.h \
     $$PWD/bootloader/utility/hexmerger.h \

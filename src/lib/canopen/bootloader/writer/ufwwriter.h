@@ -21,7 +21,7 @@
 
 #include "canopen_global.h"
 
-#include "../parser/ufwparser.h"
+#include "../model/ufwmodel.h"
 
 #include <QByteArray>
 #include <QStringList>
@@ -38,7 +38,7 @@ public:
     void setBinary(const QByteArray &newBinary);
 
 private:
-    UfwParser::Head *_head;
+    UfwModel::Head *_head;
     QByteArray _ufw;
 
     int append(const QByteArray &app, QStringList addresses);

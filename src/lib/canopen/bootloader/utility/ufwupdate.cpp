@@ -27,7 +27,9 @@
 #include <QFile>
 #include <QtEndian>
 
-UfwUpdate::UfwUpdate(Node *node, UfwParser *ufw)
+#include "bootloader/model/ufwmodel.h"
+
+UfwUpdate::UfwUpdate(Node *node, UfwModel *ufw)
     : _node(node)
     , _ufw(ufw)
 {
@@ -36,7 +38,7 @@ UfwUpdate::UfwUpdate(Node *node, UfwParser *ufw)
     registerObjId({0x1F50, 1});
 }
 
-void UfwUpdate::setUfw(UfwParser *ufw)
+void UfwUpdate::setUfw(UfwModel *ufw)
 {
     _ufw = ufw;
 }
@@ -51,10 +53,10 @@ int UfwUpdate::update()
     char buffer[4];
     uint32_t sum = 0;
     _checksum = 0;
-    for (int i = 0; i < _ufw->head().countSegment - 1; i++)
+    for (int i = 0; i < _ufw->head()->countSegment - 1; i++)
     {
-        uint32_t start = _ufw->head().segmentList.at(i)->memorySegmentStart;
-        uint32_t end = _ufw->head().segmentList.at(i)->memorySegmentEnd;
+        uint32_t start = _ufw->head()->segmentList.at(i)->memorySegmentStart;
+        uint32_t end = _ufw->head()->segmentList.at(i)->memorySegmentEnd;
 
         QByteArray prog = _ufw->prog().mid(static_cast<int>(start), static_cast<int>(end) - static_cast<int>(start));
 

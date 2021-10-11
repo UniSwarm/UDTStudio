@@ -27,6 +27,7 @@
 
 class Node;
 class NodeObjectId;
+class UfwModel;
 class UfwParser;
 class UfwUpdate;
 
@@ -88,7 +89,8 @@ private:
     NodeObjectId _programObjectId;
     NodeObjectId _programControlObjectId;
 
-    UfwParser *_ufw;
+    UfwModel *_ufw;
+    UfwParser *_ufwParser;
     UfwUpdate *_ufwUpdate;
 
     QTimer *_timer;
