@@ -66,13 +66,32 @@ void OdDb::searchFile(const QString &directory)
         bytesId.append(deviceDescription->subIndexValue(0x1000, 0, "0").toByteArray());
         bytesId.append(deviceDescription->subIndexValue(0x1018, 1, "0").toByteArray());
         bytesId.append(deviceDescription->subIndexValue(0x1018, 2, "0").toByteArray());
-
+        uint revision = deviceDescription->subIndexValue(0x1018, 3).toUInt();
         QByteArray hash = QCryptographicHash::hash(bytesId, QCryptographicHash::Md4);
-        QPair<quint32, QString> pair;
-        pair.first = deviceDescription->subIndexValue(0x1018, 3).toUInt();
-        pair.second = file;
-        _mapFiles.insert(hash, pair);
-        _edsFiles.append(file);
+
+        QList<QPair<quint32, QString>> values = instance()->_mapFiles.values(hash);
+        bool exists = false;
+        if (!values.isEmpty())
+        {
+            for (int i = 0; i < values.size(); i++)
+            {
+                if (values.at(i).first == revision)
+                {
+                    // eds already exists with this revision number
+                    exists = true;
+                }
+            }
+        }
+
+        if (!exists)
+        {
+            // append eds file
+            QPair<quint32, QString> pair;
+            pair.first = revision;
+            pair.second = file;
+            _mapFiles.insert(hash, pair);
+            _edsFiles.append(file);
+        }
 
         delete deviceDescription;
     }
@@ -105,7 +124,7 @@ QString OdDb::file(quint32 deviceType, quint32 vendorID, quint32 productCode, qu
                 break;
             }
             rev--;
-        } while (1);
+        } while (true);
     }
 
     return QString();
