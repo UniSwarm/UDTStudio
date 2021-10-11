@@ -38,6 +38,8 @@ NodeManagerWidget::NodeManagerWidget(Node *node, QWidget *parent)
     _node = nullptr;
     createWidgets();
     setNode(node);
+
+    _bootloaderWidget = new BootloaderWidget();
 }
 
 Node *NodeManagerWidget::node() const
@@ -68,6 +70,8 @@ void NodeManagerWidget::setNode(Node *node)
     _actionReLoadEds->setEnabled(_node);
 
     _actionRemoveNode->setEnabled(_node);
+
+    _actionUpdateNode->setEnabled(_node);
 
     updateData();
 }
@@ -149,6 +153,15 @@ void NodeManagerWidget::removeNode()
         Node *node = _node;
         setNode(nullptr);
         node->bus()->removeNode(node);
+    }
+}
+
+void NodeManagerWidget::updateNode()
+{
+    if (_node)
+    {
+        _bootloaderWidget->setNode(_node);
+        _bootloaderWidget->show();
     }
 }
 
@@ -241,6 +254,12 @@ void NodeManagerWidget::createWidgets()
     _actionRemoveNode->setStatusTip(tr("Remove the current node from the bus"));
     connect(_actionRemoveNode, &QAction::triggered, this, &NodeManagerWidget::removeNode);
 
+    // Remove node
+    _actionUpdateNode = new QAction(tr("Update node"));
+    //_actionUpdateNode->setIcon(QIcon(":/icons/img/icons8-delete.png"));
+    //_actionUpdateNode->setStatusTip(tr("Remove the current node from the bus"));
+    connect(_actionUpdateNode, &QAction::triggered, this, &NodeManagerWidget::updateNode);
+
     // EDS actions
     _actionLoadEds = new QAction(tr("Load eds"));
     _actionLoadEds->setIcon(QIcon(":/icons/img/icons8-import-file.png"));
@@ -276,6 +295,11 @@ void NodeManagerWidget::createWidgets()
 QAction *NodeManagerWidget::actionRemoveNode() const
 {
     return _actionRemoveNode;
+}
+
+QAction *NodeManagerWidget::actionUpdateNode() const
+{
+    return _actionUpdateNode;
 }
 
 QAction *NodeManagerWidget::actionReLoadEds() const

@@ -31,6 +31,8 @@
 
 #include "node.h"
 
+#include "canopen/bootloaderWidget/bootloaderwidget.h"
+
 class UDTGUI_EXPORT NodeManagerWidget : public QWidget
 {
     Q_OBJECT
@@ -51,6 +53,8 @@ public:
 
     QAction *actionRemoveNode() const;
 
+    QAction *actionUpdateNode() const;
+
 public slots:
     void setNode(Node *value);
     void updateData();
@@ -62,6 +66,8 @@ public slots:
     void resetNode();
 
     void removeNode();
+
+    void updateNode();
 
     void loadEds(const QString &edsFileName = QString());
     void reloadEds();
@@ -88,6 +94,9 @@ protected:
     QAction *_actionReLoadEds;
 
     QAction *_actionRemoveNode;
+
+    QAction *_actionUpdateNode;
+    BootloaderWidget *_bootloaderWidget;
 
     Node *_node;
 };
