@@ -41,8 +41,8 @@ TexGenerator::~TexGenerator()
  */
 bool TexGenerator::generate(DeviceConfiguration *deviceConfiguration, const QString &filePath)
 {
-    Q_UNUSED(deviceConfiguration);
-    Q_UNUSED(filePath);
+    Q_UNUSED(deviceConfiguration)
+    Q_UNUSED(filePath)
     return true;
 }
 
@@ -240,7 +240,7 @@ void TexGenerator::writeListIndexManufacturer402(const QList<Index *> indexes, Q
     for (Index *index : indexes)
     {
         uint16_t numIndex = index->index();
-        if (numIndex >= 0x4000 && numIndex < 0x4080)
+        if (numIndex >= 0x4000 && numIndex < 0x40FF)
         {
             writeIndex(index, out, false);
         }
@@ -248,7 +248,8 @@ void TexGenerator::writeListIndexManufacturer402(const QList<Index *> indexes, Q
     for (Index *index : indexes)
     {
         uint16_t numIndex = index->index();
-        if (numIndex >= 0x4000 && numIndex < 0x4040)
+        if ((numIndex >= 0x4000 && numIndex < 0x4040)
+            || (numIndex >= 0x4080 && numIndex < 0x40FF))
         {
             switch (index->objectType())
             {
@@ -273,7 +274,7 @@ void TexGenerator::writeListIndexManufacturer402(const QList<Index *> indexes, Q
     for (Index *index : indexes)
     {
         uint16_t numIndex = index->index();
-        if (numIndex >= 0x4080 && numIndex < 0x4200)
+        if (numIndex >= 0x40FF && numIndex < 0x4200)
         {
             switch (index->objectType())
             {
