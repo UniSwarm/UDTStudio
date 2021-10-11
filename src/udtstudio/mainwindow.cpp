@@ -248,6 +248,9 @@ void MainWindow::createMenus()
     action = new QAction(tr("Save conf file"), this);
     connect(action, &QAction::triggered, this, &MainWindow::writeCfgFile);
     nodeMenu->addAction(action);
+    nodeMenu->addSeparator();
+
+    nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionUpdateNode());
 
     // ============= Loggers =============
     menuBar()->addMenu(DataLoggerSingleton::loggersMenu());
