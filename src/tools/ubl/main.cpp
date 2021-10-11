@@ -35,6 +35,8 @@
 #include "bootloader/parser/hexparser.h"
 #include "bootloader/utility/hexmerger.h"
 #include "bootloader/writer/hexwriter.h"
+#include "bootloader/model/ufwmodel.h"
+#include "bootloader/parser/ufwparser.h"
 #include "bootloader/writer/ufwwriter.h"
 
 int hexdump(QString fileA)
@@ -206,7 +208,6 @@ int merge(QStringList aOptionList, QStringList bOptionList, QString type, QStrin
         err << QCoreApplication::translate("main", "error (1): merge process") << "\n";
         return -1;
     }
-    mergeProcess.setValidProgram(adress, type);
 
     QByteArray prog = mergeProcess.prog();
 
@@ -447,9 +448,8 @@ int main(int argc, char *argv[])
             cliParser.showHelp(-1);
         }
 
-        UfwParser *p = new UfwParser(binFile);
-        p->read();
-        MainConsole *mainConsole = new MainConsole(bus, speed, nodeid, binFile);
+        UfwParser *p = new UfwParser();
+        MainConsole *mainConsole = new MainConsole(bus, speed, nodeid, p->parse(binFile)->prog());
         QObject::connect(mainConsole, &MainConsole::finished, &app, &QCoreApplication::exit);
 
         return app.exec();
