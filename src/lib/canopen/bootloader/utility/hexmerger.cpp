@@ -28,7 +28,7 @@ HexMerger::HexMerger()
 {
 }
 
-int HexMerger::merge(const QString fileA, QStringList segmentA, const QString fileB, QStringList segmentB)
+int HexMerger::merge(QString &fileA, QStringList &segmentA, QString &fileB, QStringList &segmentB)
 {
     HexParser *hexAFile = new HexParser(fileA);
     hexAFile->read();
@@ -40,7 +40,7 @@ int HexMerger::merge(const QString fileA, QStringList segmentA, const QString fi
     {
         return -1;
     }
-    return 0;
+     return 0;
 }
 
 int HexMerger::merge(const QByteArray &appA, QStringList segmentA, const QByteArray &appB, QStringList segmentB)
@@ -66,17 +66,7 @@ const QByteArray &HexMerger::prog() const
     return _prog;
 }
 
-void HexMerger::setValidProgram(QString adress, QString type)
-{
-    bool ok;
-    char buffer[2];
-
-    qToLittleEndian(static_cast<uint16_t>(type.toUInt()), buffer);
-    _prog[adress.toUInt(&ok, 16)] = buffer[0];
-    _prog[adress.toUInt(&ok, 16) + 1] = buffer[1];
-}
-
-int HexMerger::append(const QByteArray &app, QStringList addresses)
+int HexMerger::append(const QByteArray &a, QStringList addresses)
 {
     bool ok;
     int i = 0;
@@ -88,14 +78,19 @@ int HexMerger::append(const QByteArray &app, QStringList addresses)
         return error;
     }
 
+    QByteArray app = a;
+
     for (i = 0; i < addresses.size(); i++)
     {
         int adrStart = addresses.at(i).split(QLatin1Char(':')).at(0).toInt(&ok, 16);
         int adrEnd = addresses.at(i).split(QLatin1Char(':')).at(1).toInt(&ok, 16);
-
         if (adrEnd > _prog.size())
         {
             _prog.append(QByteArray(adrEnd - _prog.size(), static_cast<char>(0xFF)));
+        }
+        if (adrEnd > app.size())
+        {
+            app.append(QByteArray(adrEnd - app.size(), static_cast<char>(0xFF)));
         }
 
         _prog.replace(adrStart, adrEnd - adrStart, app.mid(adrStart, adrEnd - adrStart));

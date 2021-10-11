@@ -29,17 +29,15 @@ class CANOPEN_EXPORT HexMerger
 public:
     HexMerger();
 
-    int merge(const QString fileA, QStringList segmentA, const QString fileB, QStringList segmentB);
-    int merge(const QByteArray &appA, QStringList segmentA, const QByteArray &appB, QStringList segmentB);
+    int merge(QString &fileA, QStringList &segmentA, QString &fileB, QStringList &segmentB);
 
     const QByteArray &prog() const;
-
-    void setValidProgram(QString adress, QString type);
 
 private:
     QByteArray _prog;
 
-    int append(const QByteArray &app, QStringList addresses);
+    int merge(const QByteArray &appA, QStringList segmentA, const QByteArray &appB, QStringList segmentB);
+    int append(const QByteArray &a, QStringList addresses);
     int checkAddresses(QStringList addresses);
 };
 
