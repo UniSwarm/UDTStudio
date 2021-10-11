@@ -34,7 +34,7 @@ Bootloader::Bootloader(Node *node)
     _node = node;
     _ufw = nullptr;
     _ufwUpdate = new UfwUpdate(_node);
-    connect(_ufwUpdate, &UfwUpdate::isUploaded, this, &Bootloader::isUploaded);
+    connect(_ufwUpdate, &UfwUpdate::finished, this, &Bootloader::processEndUpload);
 
     _bootloaderKeyObjectId = IndexDb::getObjectId(IndexDb::OD_BOOTLOADER_KEY);
     _bootloaderChecksumObjectId = IndexDb::getObjectId(IndexDb::OD_BOOTLOADER_CHECKSUM);
@@ -42,22 +42,13 @@ Bootloader::Bootloader(Node *node)
     _programControlObjectId = IndexDb::getObjectId(IndexDb::OD_PROGRAM_CONTROL_1);
 
     setNodeInterrest(_node);
+    registerObjId({0x1000, 0});
     registerObjId({0x2050, 1});
     registerObjId({0x2050, 2});
     registerObjId({0x2050, 3});
     registerObjId({0x1F51, 1});
 
     _statusProgram = NONE;
-}
-
-quint8 Bootloader::busId() const
-{
-    return _node->busId();
-}
-
-quint8 Bootloader::nodeId() const
-{
-    return _node->nodeId();
 }
 
 Node *Bootloader::node() const
@@ -89,17 +80,81 @@ bool Bootloader::openUfw(const QString &fileName)
     return true;
 }
 
-void Bootloader::update()
+void Bootloader::startUpdate()
 {
     _state = STATE_CHECK_MODE;
-    getStatusProgram();
+    process();
+    //getStatusProgram();
+}
+
+uint32_t Bootloader::deviceType()
+{
+    if (!_ufw)
+    {
+        return 0;
+    }
+    return _ufw->head().device;
+}
+
+uint32_t Bootloader::vendorId()
+{
+    if (!_ufw)
+    {
+        return 0;
+    }
+    return 0;
+}
+
+uint32_t Bootloader::productCode()
+{
+    if (!_ufw)
+    {
+        return 0;
+    }
+    return 0;
+}
+
+uint32_t Bootloader::revisionNumber()
+{
+    if (!_ufw)
+    {
+        return 0;
+    }
+    return 0;
+}
+
+uint32_t Bootloader::serialNumber()
+{
+    if (!_ufw)
+    {
+        return 0;
+    }
+    return 0;
+}
+
+uint32_t Bootloader::versionSoftware()
+{
+    if (!_ufw)
+    {
+        return 0;
+    }
+    return 0;
+}
+
+QString Bootloader::buildDate()
+{
+    if (!_ufw)
+    {
+        return QString();
+    }
+    return QString();
 }
 
 void Bootloader::stopProgram()
 {
     uint8_t data = 0;
     _node->writeObject(_programControlObjectId, data);
-    _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(getStatusProgram()));
+    _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusProgram()));
 }
 
 void Bootloader::startProgram()
@@ -112,22 +167,22 @@ void Bootloader::resetProgram()
 {
     uint8_t data = 2;
     _node->writeObject(_programControlObjectId, data);
-    _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(getStatusProgram()));
+    _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusProgram()));
 }
 
 void Bootloader::clearProgram()
 {
     uint8_t data = 3;
     _node->writeObject(_programControlObjectId, data);
-    _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(getStatusProgram()));
+    _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusProgram()));
 }
 
-void Bootloader::uploadProgram()
+void Bootloader::updateProgram()
 {
     _ufwUpdate->update();
 }
 
-void Bootloader::uploadFinishedProgram()
+void Bootloader::updateFinishedProgram()
 {
     uint8_t data = 0x80;
     _node->writeObject(_programControlObjectId, data);
@@ -138,12 +193,12 @@ void Bootloader::sendKey(uint16_t key)
     _node->writeObject(_bootloaderKeyObjectId, key);
 }
 
-void Bootloader::getStatusProgram()
+void Bootloader::readStatusProgram()
 {
     _node->readObject(_programControlObjectId);
 }
 
-void Bootloader::isUploaded(bool ok)
+void Bootloader::processEndUpload(bool ok)
 {
     if (ok)
     {
@@ -168,7 +223,7 @@ void Bootloader::process()
         switch (_statusProgram)
         {
         case Bootloader::NONE:
-            getStatusProgram();
+            readStatusProgram();
             break;
 
         case Bootloader::PROGRAM_STOPPED:
@@ -193,7 +248,7 @@ void Bootloader::process()
 
         case Bootloader::NO_PROGRAM:
             _node->nodeOd()->createBootloaderObjects();
-            uploadProgram();
+            updateProgram();
             break;
 
         case Bootloader::UPDATE_IN_PROGRESS:
@@ -221,7 +276,7 @@ void Bootloader::process()
 
     case STATE_CLEAR_PROGRAM:
     {
-        uploadProgram();
+        updateProgram();
         break;
     }
 
@@ -248,13 +303,13 @@ void Bootloader::process()
     }
 
     case STATE_OK:
-        emit isUpdated(true);
+        emit finished(true);
         resetProgram();
         _state = STATE_FREE;
         break;
 
     case STATE_NOT_OK:
-        emit isUpdated(false);
+        emit finished(false);
         _state = STATE_FREE;
         break;
     }
@@ -272,6 +327,14 @@ uint8_t Bootloader::calculateCheckSum(const QByteArray &prog)
 
 void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if ((objId.index() == 0x1000) && objId.subIndex() == 0)
+    {
+        uint32_t type = static_cast<uint32_t>(_node->nodeOd()->value(0x1000, 0).toUInt());
+        if (type == 0x12D)
+        {
+           _node->nodeOd()->createBootloaderObjects();
+        }
+    }
     if ((objId.index() == _programControlObjectId.index()) && objId.subIndex() == 1)
     {
         if (flags == SDO::FlagsRequest::Read)

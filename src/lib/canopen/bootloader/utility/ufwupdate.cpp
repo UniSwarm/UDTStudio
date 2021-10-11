@@ -49,8 +49,9 @@ int UfwUpdate::update()
     }
 
     char buffer[4];
+    uint32_t sum = 0;
     _checksum = 0;
-    for (int i = 0; i < _ufw->head().countSegment; i++)
+    for (int i = 0; i < _ufw->head().countSegment - 1; i++)
     {
         uint32_t start = _ufw->head().segmentList.at(i)->memorySegmentStart;
         uint32_t end = _ufw->head().segmentList.at(i)->memorySegmentEnd;
@@ -60,7 +61,7 @@ int UfwUpdate::update()
         PhantomRemover phantomRemover;
         QByteArray progRemove = phantomRemover.remove(prog);
 
-        calculateCheckSum(progRemove);
+        sum += sumByte(progRemove);
 
         qToLittleEndian(start, buffer);
         progRemove.prepend(buffer, sizeof(start));
@@ -68,6 +69,7 @@ int UfwUpdate::update()
         _byteArrayList.append(progRemove);
     }
 
+    _checksum = (~(sum % 256) + 1) & 0xFF;
     _indexList = _byteArrayList.size();
 
     process();
@@ -88,22 +90,22 @@ void UfwUpdate::process()
     {
         _indexList = 0;
         _byteArrayList.clear();
-        emit isUploaded(true);
+        emit finished(true);
         return;
     }
 
     _node->writeObject(_programDataObjectId, _byteArrayList.at(_indexList));
 }
 
-void UfwUpdate::calculateCheckSum(const QByteArray &prog)
+uint32_t UfwUpdate::sumByte(const QByteArray &prog)
 {
-    int checksum = 0;
+    uint32_t checksum = 0;
     int i = 0;
-    for (i = 1; i < prog.size(); i = i + 2)
+    for (i = 0; i < prog.size(); i++)
     {
-        checksum += prog[i];
+        checksum += static_cast<uint8_t>(prog[i]);
     }
-    _checksum = (~(checksum % 256) + 1) & 0xFF;
+    return checksum;
 }
 
 void UfwUpdate::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
@@ -113,7 +115,7 @@ void UfwUpdate::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     {
         if (flags == (SDO::FlagsRequest::Error | SDO::FlagsRequest::Write))
         {
-            emit isUploaded(false);
+            emit finished(false);
         }
         else if (flags == SDO::FlagsRequest::Write)
         {
@@ -121,7 +123,7 @@ void UfwUpdate::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
             {
                 _indexList = 0;
                 _byteArrayList.clear();
-                emit isUploaded(true);
+                emit finished(true);
             }
             else
             {

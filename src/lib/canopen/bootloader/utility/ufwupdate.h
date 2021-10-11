@@ -44,7 +44,7 @@ public:
     uint8_t checksum() const;
 
 signals:
-    void isUploaded(bool);
+    void finished(bool ok);
 
 private:
     Node *_node;
@@ -55,7 +55,7 @@ private:
     int _indexList;
     QList<QByteArray> _byteArrayList;
     void process();
-    void calculateCheckSum(const QByteArray &prog);
+    uint32_t sumByte(const QByteArray &prog);
 
     // NodeOdSubscriber interface
 protected:

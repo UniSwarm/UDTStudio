@@ -36,8 +36,6 @@ class CANOPEN_EXPORT Bootloader : public QObject, public NodeOdSubscriber
 public:
     Bootloader(Node *node);
 
-    quint8 busId() const;
-    quint8 nodeId() const;
     Node *node() const;
 
     enum StatusProgram
@@ -54,7 +52,16 @@ public:
 
     bool openUfw(const QString &fileName);
 
-    void update();
+    void startUpdate();
+
+    // Info UFW
+    uint32_t deviceType(void);
+    uint32_t vendorId(void);
+    uint32_t productCode(void);
+    uint32_t revisionNumber(void);
+    uint32_t serialNumber(void);
+    uint32_t versionSoftware(void);
+    QString buildDate(void);
 
 public slots:
     void stopProgram();
@@ -64,11 +71,11 @@ public slots:
     void sendKey(uint16_t key);
 
 signals:
-    void isUpdated(bool ok);
+    void finished(bool ok);
 
 private slots:
-    void getStatusProgram();
-    void isUploaded(bool ok);
+    void readStatusProgram();
+    void processEndUpload(bool ok);
 
 private:
     Node *_node;
@@ -102,10 +109,9 @@ private:
     BootloaderState _state;
     QTimer _statusTimer;
 
-    void checkSoftware();
     void process();
-    void uploadProgram();
-    void uploadFinishedProgram();
+    void updateProgram();
+    void updateFinishedProgram();
     uint8_t calculateCheckSum(const QByteArray &prog);
 
     // NodeOdSubscriber interface
