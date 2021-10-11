@@ -92,4 +92,6 @@ void ModeDty::reset()
 
 void ModeDty::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    Q_UNUSED(objId)
+    Q_UNUSED(flags)
 }

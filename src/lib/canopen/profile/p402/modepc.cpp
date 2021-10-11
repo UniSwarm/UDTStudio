@@ -145,6 +145,8 @@ const NodeObjectId &ModePc::quickStopDecelerationObjectId() const
 
 void ModePc::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    Q_UNUSED(objId)
+    Q_UNUSED(flags)
 }
 
 void ModePc::readRealTimeObjects()

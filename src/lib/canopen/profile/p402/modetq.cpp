@@ -104,4 +104,6 @@ void ModeTq::reset()
 
 void ModeTq::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    Q_UNUSED(objId)
+    Q_UNUSED(flags)
 }
