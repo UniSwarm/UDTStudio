@@ -33,9 +33,9 @@ class CANOPEN_EXPORT UfwUpdate : public QObject, public NodeOdSubscriber
 {
     Q_OBJECT
 public:
-    UfwUpdate(Node *node, UfwModel *ufw = nullptr);
+    UfwUpdate(Node *node, UfwModel *ufwModel = nullptr);
 
-    void setUfw(UfwModel *ufw);
+    void setUfw(UfwModel *ufwModel);
 
     int update();
 
@@ -48,7 +48,7 @@ signals:
 
 private:
     Node *_node;
-    UfwModel *_ufw;
+    UfwModel *_ufwModel;
     uint8_t _checksum;
     NodeObjectId _programDataObjectId;
 

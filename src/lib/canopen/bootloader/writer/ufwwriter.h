@@ -38,8 +38,8 @@ public:
     void setBinary(const QByteArray &newBinary);
 
 private:
-    UfwModel::Head *_head;
-    QByteArray _ufw;
+    UfwModel *_ufwModel;
+    QByteArray _ufwByteArray;
 
     int append(const QByteArray &app, QStringList addresses);
     int checkAddresses(QStringList addresses);

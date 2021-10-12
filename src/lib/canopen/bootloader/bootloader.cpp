@@ -18,14 +18,14 @@
 
 #include "bootloader.h"
 
-#include "node.h"
+#include "indexdb.h"
 #include "model/ufwmodel.h"
+#include "node.h"
 #include "parser/ufwparser.h"
 #include "utility/ufwupdate.h"
-#include "indexdb.h"
 
-#include <QFile>
 #include <QDebug>
+#include <QFile>
 
 #define TIMER_READ_STATUS_DISPLAY 400
 
@@ -85,7 +85,7 @@ void Bootloader::startUpdate()
 {
     _state = STATE_CHECK_MODE;
     process();
-    //getStatusProgram();
+    // getStatusProgram();
 }
 
 uint32_t Bootloader::deviceType()
@@ -94,7 +94,7 @@ uint32_t Bootloader::deviceType()
     {
         return 0;
     }
-    return _ufw->head()->device;
+    return _ufw->device();
 }
 
 uint32_t Bootloader::vendorId()
@@ -232,7 +232,7 @@ void Bootloader::process()
 
             if (_ufw)
             {
-                sendKey(_ufw->head()->device);
+                sendKey(_ufw->device());
             }
             clearProgram();
             _state = STATE_CLEAR_PROGRAM;
@@ -241,7 +241,7 @@ void Bootloader::process()
         case Bootloader::PROGRAM_STARTED:
             if (_ufw)
             {
-                sendKey(_ufw->head()->device);
+                sendKey(_ufw->device());
             }
             stopProgram();
             _state = STATE_STOP_PROGRAM;
@@ -264,7 +264,7 @@ void Bootloader::process()
         _node->nodeOd()->createBootloaderObjects();
         if (_ufw)
         {
-            sendKey(_ufw->head()->device);
+            sendKey(_ufw->device());
         }
         clearProgram();
         _state = STATE_CLEAR_PROGRAM;
@@ -329,7 +329,7 @@ void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         uint32_t type = static_cast<uint32_t>(_node->nodeOd()->value(0x1000, 0).toUInt());
         if (type == 0x12D)
         {
-           _node->nodeOd()->createBootloaderObjects();
+            _node->nodeOd()->createBootloaderObjects();
         }
     }
     if ((objId.index() == _programControlObjectId.index()) && objId.subIndex() == 1)
@@ -367,11 +367,9 @@ void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 
         if (status)
         {
-
         }
         else
         {
-
         }
     }
     if ((objId.index() == _bootloaderStatusObjectId.index()) && objId.subIndex() == _bootloaderStatusObjectId.subIndex())

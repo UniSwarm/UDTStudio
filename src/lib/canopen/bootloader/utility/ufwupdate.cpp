@@ -29,23 +29,23 @@
 
 #include "bootloader/model/ufwmodel.h"
 
-UfwUpdate::UfwUpdate(Node *node, UfwModel *ufw)
+UfwUpdate::UfwUpdate(Node *node, UfwModel *ufwModel)
     : _node(node)
-    , _ufw(ufw)
+    , _ufwModel(ufwModel)
 {
     _programDataObjectId = IndexDb::getObjectId(IndexDb::OD_PROGRAM_DATA_1);
     setNodeInterrest(_node);
     registerObjId({0x1F50, 1});
 }
 
-void UfwUpdate::setUfw(UfwModel *ufw)
+void UfwUpdate::setUfw(UfwModel *ufwModel)
 {
-    _ufw = ufw;
+    _ufwModel = ufwModel;
 }
 
 int UfwUpdate::update()
 {
-    if (!_ufw)
+    if (!_ufwModel)
     {
         return -1;
     }
@@ -53,12 +53,12 @@ int UfwUpdate::update()
     char buffer[4];
     uint32_t sum = 0;
     _checksum = 0;
-    for (int i = 0; i < _ufw->head()->countSegment - 1; i++)
+    for (int i = 0; i < _ufwModel->countSegment() - 1; i++)
     {
-        uint32_t start = _ufw->head()->segmentList.at(i)->memorySegmentStart;
-        uint32_t end = _ufw->head()->segmentList.at(i)->memorySegmentEnd;
+        uint32_t start = _ufwModel->segmentList().at(i)->memorySegmentStart;
+        uint32_t end = _ufwModel->segmentList().at(i)->memorySegmentEnd;
 
-        QByteArray prog = _ufw->prog().mid(static_cast<int>(start), static_cast<int>(end) - static_cast<int>(start));
+        QByteArray prog = _ufwModel->prog().mid(static_cast<int>(start), static_cast<int>(end) - static_cast<int>(start));
 
         PhantomRemover phantomRemover;
         QByteArray progRemove = phantomRemover.remove(prog);

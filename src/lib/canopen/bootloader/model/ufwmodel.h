@@ -36,30 +36,34 @@ public:
         uint32_t memorySegmentEnd;
     };
 
-    struct Head
-    {
-        uint16_t device;
-        //        QString version;
-        //        QString date;
-        uint32_t vendorId;
-        uint32_t productId;
-        uint32_t revision;
-        uint32_t serial;
-        uint8_t countSegment;
-        QList<Segment *> segmentList;
-
-    public:
-        uint16_t getDevice() const;
-        void setDevice(uint16_t newDevice);
-    };
-
-    Head *head() const;
-
+    uint16_t device() const;
+    void setDevice(uint16_t device);
+    uint32_t vendorId() const;
+    void setVendorId(uint32_t vendorId);
+    uint32_t productId() const;
+    void setProductId(uint32_t productId);
+    uint32_t revision() const;
+    void setRevision(uint32_t revision);
+    uint32_t serial() const;
+    void setSerial(uint32_t newSerial);
+    uint8_t countSegment() const;
+    void setCountSegment(uint8_t countSegment);
+    const QList<Segment *> &segmentList() const;
+    void setSegmentList(const QList<Segment *> &segmentList);
     const QByteArray &prog() const;
     void setProg(const QByteArray &prog);
 
-private:
-    Head *_head;
+  private:
+    uint16_t _device;
+    //        QString version;
+    //        QString date;
+    uint32_t _vendorId;
+    uint32_t _productId;
+    uint32_t _revision;
+    uint32_t _serial;
+    uint8_t _countSegment;
+    QList<Segment *> _segmentList;
+
     QByteArray _prog;
 };
 

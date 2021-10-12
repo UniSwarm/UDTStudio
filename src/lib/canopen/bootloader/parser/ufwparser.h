@@ -31,11 +31,15 @@ class CANOPEN_EXPORT UfwParser
 {
 public:
     UfwParser();
+    ~UfwParser();
 
     UfwModel *parse(const QString &fileName) const;
 
     bool read();
     const QByteArray &prog() const;
+
+private:
+    UfwModel *_ufwModel;
 };
 
 #endif // UFWPARSER_H
