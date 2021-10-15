@@ -83,7 +83,7 @@ void BootloaderWidget::updateStatusLabel(QString string)
 
 void BootloaderWidget::updateFileInformation()
 {
-    _deviceTypeUfwLabel->setText(QString::number(_bootloader->deviceType(), 10));
+    _deviceTypeUfwLabel->setText("0x" + QString::number(_bootloader->deviceType(), 16));
     _versionSoftwareUfwLabel->setText(_bootloader->versionSoftware());
     _buildDateUfwLabel->setText(_bootloader->buildDate());
 }

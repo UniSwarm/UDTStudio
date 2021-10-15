@@ -412,8 +412,9 @@ int main(int argc, char *argv[])
             cliParser.showHelp(-1);
         }
 
+        bool ok;
         UfwWriter *createBinary = new UfwWriter();
-        createBinary->create(static_cast<uint16_t>(type.toUInt()),
+        createBinary->create(static_cast<uint16_t>(type.toUInt(&ok, 16)),
                              cliParser.value(softwareVersionOption),
                              cliParser.value(dateOption),
                              segmentList,
