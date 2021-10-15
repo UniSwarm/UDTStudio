@@ -32,38 +32,30 @@ public:
 
     struct Segment
     {
-        uint32_t memorySegmentStart;
-        uint32_t memorySegmentEnd;
+        uint32_t start;
+        uint32_t end;
     };
 
-    uint16_t device() const;
-    void setDevice(uint16_t device);
-    uint32_t vendorId() const;
-    void setVendorId(uint32_t vendorId);
-    uint32_t productId() const;
-    void setProductId(uint32_t productId);
-    uint32_t revision() const;
-    void setRevision(uint32_t revision);
-    uint32_t serial() const;
-    void setSerial(uint32_t newSerial);
-    uint8_t countSegment() const;
-    void setCountSegment(uint8_t countSegment);
-    const QList<Segment *> &segmentList() const;
-    void setSegmentList(const QList<Segment *> &segmentList);
+    uint16_t deviceType() const;
+    void setDeviceType(uint16_t device);
+
+    const QString &softwareVersion() const;
+    void setSoftwareVersion(const QString &version);
+
+    const QString &buildDate() const;
+    void setBuildDate(const QString &date);
+
+    const QList<Segment> &segmentList() const;
+    void appendSegment(uint32_t start, uint32_t end);
+
     const QByteArray &prog() const;
     void setProg(const QByteArray &prog);
 
   private:
     uint16_t _device;
-    //        QString version;
-    //        QString date;
-    uint32_t _vendorId;
-    uint32_t _productId;
-    uint32_t _revision;
-    uint32_t _serial;
-    uint8_t _countSegment;
-    QList<Segment *> _segmentList;
-
+    QString _softwareVersion;
+    QString _buildDate;
+    QList<Segment> _segmentList;
     QByteArray _prog;
 };
 

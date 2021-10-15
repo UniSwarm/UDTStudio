@@ -5,64 +5,55 @@
 #include <QList>
 #include <QtEndian>
 
+#define VERSION_CHAR_MAX 6
+#define DATE_CHAR_MAX 30
+
 UfwWriter::UfwWriter()
 {
 }
 
-int UfwWriter::create(const QByteArray &hex, QString type, QStringList segment)
+int UfwWriter::create(uint16_t type, QString version, QString date, QStringList segment, const QByteArray &hex)
 {
-    char buffer[4];
+    char buffer[DATE_CHAR_MAX];
 
     _ufwByteArray.clear();
     _ufwModel = new UfwModel();
 
-    _ufwModel->setDevice(qToLittleEndian(static_cast<uint16_t>(type.toUInt())));
-    qToLittleEndian(_ufwModel->device(), buffer);
-    _ufwByteArray.append(buffer, sizeof(_ufwModel->device()));
+    qToLittleEndian(type, buffer);
+    _ufwByteArray.append(buffer, sizeof(uint16_t));
 
-    _ufwModel->setCountSegment(qToLittleEndian(static_cast<uint8_t>(segment.size())));
-    qToLittleEndian(_ufwModel->countSegment(), buffer);
-    _ufwByteArray.append(buffer, sizeof(_ufwModel->countSegment()));
+    uint8_t size = static_cast<uint8_t>(version.size());
+    if (size > VERSION_CHAR_MAX)
+    {
+        size = VERSION_CHAR_MAX;
+    }
+    qToLittleEndian(size, buffer);
+    _ufwByteArray.append(buffer, sizeof(uint8_t));
+    _ufwByteArray.append(version.toUtf8(), size);
 
-    _ufwModel->setVendorId(0);
-    qToLittleEndian(_ufwModel->vendorId(), buffer);
-    _ufwByteArray.append(buffer, sizeof(_ufwModel->vendorId()));
+    size = static_cast<uint8_t>(date.size());
+    if (size >= DATE_CHAR_MAX)
+    {
+        size = DATE_CHAR_MAX;
+    }
+    qToLittleEndian(size, buffer);
+    _ufwByteArray.append(buffer, sizeof(uint8_t));
+    _ufwByteArray.append(date.toUtf8(), size);
 
-    _ufwModel->setProductId(0);
-    qToLittleEndian(_ufwModel->productId(), buffer);
-    _ufwByteArray.append(buffer, sizeof(_ufwModel->productId()));
-
-    _ufwModel->setRevision(0);
-    qToLittleEndian(_ufwModel->revision(), buffer);
-    _ufwByteArray.append(buffer, sizeof(_ufwModel->revision()));
-
-    _ufwModel->setSerial(0);
-    qToLittleEndian(_ufwModel->serial(), buffer);
-    _ufwByteArray.append(buffer, sizeof(_ufwModel->serial()));
+    qToLittleEndian(segment.size(), buffer);
+    _ufwByteArray.append(buffer, sizeof(uint8_t));
 
     bool ok;
-    int i = 0;
-    QList<UfwModel::Segment *> segmentList;
-    for (i = 0; i < segment.size(); i++)
+    for (int i = 0; i < segment.size(); i++)
     {
-        UfwModel::Segment *seg = new UfwModel::Segment();
-        seg->memorySegmentStart = segment.at(i).split(":").at(0).toUInt(&ok, 16);
-        seg->memorySegmentEnd = segment.at(i).split(":").at(1).toUInt(&ok, 16);
-        segmentList.append(seg);
-    }
+        uint32_t start = segment.at(i).split(":").at(0).toUInt(&ok, 16);
+        uint32_t end = segment.at(i).split(":").at(1).toUInt(&ok, 16);
 
-    _ufwModel->setSegmentList(segmentList);
+        qToLittleEndian(start, buffer);
+        _ufwByteArray.append(buffer, sizeof(start));
 
-    for (i = 0; i < _ufwModel->countSegment(); i++)
-    {
-        uint32_t adrStart = _ufwModel->segmentList().at(i)->memorySegmentStart;
-        uint32_t adrEnd = _ufwModel->segmentList().at(i)->memorySegmentEnd;
-
-        qToLittleEndian(adrStart, buffer);
-        _ufwByteArray.append(buffer, sizeof(adrStart));
-
-        qToLittleEndian(adrEnd, buffer);
-        _ufwByteArray.append(buffer, sizeof(adrEnd));
+        qToLittleEndian(end, buffer);
+        _ufwByteArray.append(buffer, sizeof(end));
     }
 
     _ufwByteArray.append(hex);

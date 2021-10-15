@@ -1,15 +1,69 @@
+/**
+ ** This file is part of the UDTStudio project.
+ ** Copyright 2019-2021 UniSwarm
+ **
+ ** This program is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU General Public License as published by
+ ** the Free Software Foundation, either version 3 of the License, or
+ ** (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ ** GNU General Public License for more details.
+ **
+ ** You should have received a copy of the GNU General Public License
+ ** along with this program. If not, see <http://www.gnu.org/licenses/>.
+ **/
+
 #include "ufwmodel.h"
 
 UfwModel::UfwModel()
 {
     _device = 0;
-    //        QString version;
-    //        QString date;
-    _vendorId = 0;
-    _productId = 0;
-    _revision = 0;
-    _serial = 0;
-    _countSegment = 0;
+}
+
+uint16_t UfwModel::deviceType() const
+{
+    return _device;
+}
+
+void UfwModel::setDeviceType(uint16_t device)
+{
+    _device = device;
+}
+
+const QString &UfwModel::softwareVersion() const
+{
+    return _softwareVersion;
+}
+
+void UfwModel::setSoftwareVersion(const QString &version)
+{
+    _softwareVersion = version;
+}
+
+const QString &UfwModel::buildDate() const
+{
+    return _buildDate;
+}
+
+void UfwModel::setBuildDate(const QString &date)
+{
+    _buildDate = date;
+}
+
+const QList<UfwModel::Segment> &UfwModel::segmentList() const
+{
+    return _segmentList;
+}
+
+void UfwModel::appendSegment(uint32_t start, uint32_t end)
+{
+    Segment segment;
+    segment.start = start;
+    segment.end = end;
+    _segmentList.append(segment);
 }
 
 const QByteArray &UfwModel::prog() const
@@ -20,74 +74,4 @@ const QByteArray &UfwModel::prog() const
 void UfwModel::setProg(const QByteArray &prog)
 {
     _prog = prog;
-}
-
-uint16_t UfwModel::device() const
-{
-    return _device;
-}
-
-void UfwModel::setDevice(uint16_t device)
-{
-    _device = device;
-}
-
-uint32_t UfwModel::vendorId() const
-{
-    return _vendorId;
-}
-
-void UfwModel::setVendorId(uint32_t vendorId)
-{
-    _vendorId = vendorId;
-}
-
-uint32_t UfwModel::productId() const
-{
-    return _productId;
-}
-
-void UfwModel::setProductId(uint32_t productId)
-{
-    _productId = productId;
-}
-
-uint32_t UfwModel::revision() const
-{
-    return _revision;
-}
-
-void UfwModel::setRevision(uint32_t revision)
-{
-    _revision = revision;
-}
-
-uint32_t UfwModel::serial() const
-{
-    return _serial;
-}
-
-void UfwModel::setSerial(uint32_t serial)
-{
-    _serial = serial;
-}
-
-uint8_t UfwModel::countSegment() const
-{
-    return _countSegment;
-}
-
-void UfwModel::setCountSegment(uint8_t countSegment)
-{
-    _countSegment = countSegment;
-}
-
-const QList<UfwModel::Segment *> &UfwModel::segmentList() const
-{
-    return _segmentList;
-}
-
-void UfwModel::setSegmentList(const QList<Segment *> &newSegmentList)
-{
-    _segmentList = newSegmentList;
 }

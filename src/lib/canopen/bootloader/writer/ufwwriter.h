@@ -31,7 +31,7 @@ class CANOPEN_EXPORT UfwWriter
 public:
     UfwWriter();
 
-    int create(const QByteArray &hex, QString type, QStringList segment);
+    int create(uint16_t type, QString version, QString date, QStringList segment, const QByteArray &hex);
 
     const QByteArray &binary() const;
 

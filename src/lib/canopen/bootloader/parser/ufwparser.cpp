@@ -50,49 +50,35 @@ UfwModel *UfwParser::parse(const QString &fileName) const
 
     uint8_t index = 0;
 
-    uint16_t device;
-    qFromLittleEndian<quint16>(uni, sizeof(device), &device);
-    _ufwModel->setDevice(device);
-    index = sizeof(_ufwModel->device());
+    uint16_t device = qFromLittleEndian<uint16_t>(uni);
+    _ufwModel->setDeviceType(device);
+    index = sizeof(_ufwModel->deviceType());
 
-    uint8_t count;
-    qFromLittleEndian<uint8_t>(uni.mid(index, sizeof(uint8_t)), sizeof(uint8_t), &count);
-    _ufwModel->setCountSegment(count);
-    index += sizeof(_ufwModel->countSegment());
+    // VERSION
+    uint8_t size = qFromLittleEndian<uint8_t>(uni.mid(index, sizeof(uint8_t)));
+    index += sizeof(uint8_t);
 
-    uint8_t vendorId;
-    qFromLittleEndian<uint8_t>(uni.mid(index, sizeof(uint8_t)), sizeof(uint8_t), &vendorId);
-    _ufwModel->setCountSegment(vendorId);
-    index += sizeof(_ufwModel->vendorId());
+    QString version = uni.mid(index, size);
+    _ufwModel->setSoftwareVersion(version);
+    index += size;
 
-    uint8_t productId;
-    qFromLittleEndian<uint8_t>(uni.mid(index, sizeof(uint8_t)), sizeof(uint8_t), &productId);
-    _ufwModel->setCountSegment(productId);
-    index += sizeof(_ufwModel->productId());
+    // DATE
+    size = qFromLittleEndian<uint8_t>(uni.mid(index, sizeof(uint8_t)));
+    index += sizeof(uint8_t);
 
-    uint8_t revision;
-    qFromLittleEndian<uint8_t>(uni.mid(index, sizeof(uint8_t)), sizeof(uint8_t), &revision);
-    _ufwModel->setCountSegment(revision);
-    index += sizeof(_ufwModel->revision());
+    QString date = uni.mid(index, size);
+    _ufwModel->setBuildDate(date);
+    index += size;
 
-    uint8_t serial;
-    qFromLittleEndian<uint8_t>(uni.mid(2, sizeof(uint8_t)), sizeof(uint8_t), &serial);
-    _ufwModel->setCountSegment(serial);
-    index += sizeof(_ufwModel->serial());
+    uint8_t count = qFromLittleEndian<uint8_t>(uni.mid(index, sizeof(uint8_t)));
+    index += sizeof(uint8_t);
 
-    QList<UfwModel::Segment *> segmentList;
-
-    for (int i = 0; i < _ufwModel->countSegment(); i++)
+    for (int i = 0; i < count; i++)
     {
-        UfwModel::Segment *seg = new UfwModel::Segment();
-
-        qFromLittleEndian<uint32_t>(uni.mid(3 + i * 8, sizeof(seg->memorySegmentStart)), sizeof(seg->memorySegmentStart), &seg->memorySegmentStart);
-        qFromLittleEndian<uint32_t>(uni.mid(7 + i * 8, sizeof(seg->memorySegmentEnd)), sizeof(seg->memorySegmentEnd), &seg->memorySegmentEnd);
-        segmentList.append(seg);
+        uint32_t start = qFromLittleEndian<uint32_t>(uni.mid(index + i * 8, sizeof(uint32_t)));
+        uint32_t end = qFromLittleEndian<uint32_t>(uni.mid(index + 4 + i * 8, sizeof(uint32_t)));
+        _ufwModel->appendSegment(start, end);
     }
-    _ufwModel->setSegmentList(segmentList);
-
-    _ufwModel->setProg(uni.mid(index + _ufwModel->countSegment() * 8, uni.size()));
 
     return _ufwModel;
 }

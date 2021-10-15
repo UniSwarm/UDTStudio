@@ -53,11 +53,11 @@ int UfwUpdate::update()
     char buffer[4];
     uint32_t sum = 0;
     _checksum = 0;
-    for (int i = 0; i < _ufwModel->countSegment() - 1; i++)
+    for (int i = 0; i < _ufwModel->segmentList().size(); i++)
     {
-        uint32_t start = _ufwModel->segmentList().at(i)->memorySegmentStart;
-        uint32_t end = _ufwModel->segmentList().at(i)->memorySegmentEnd;
-
+        uint32_t start = _ufwModel->segmentList().at(i).start;
+        uint32_t end = _ufwModel->segmentList().at(i).end;
+        qDebug() << "segment :" << start << ":" << end;
         QByteArray prog = _ufwModel->prog().mid(static_cast<int>(start), static_cast<int>(end) - static_cast<int>(start));
 
         PhantomRemover phantomRemover;
@@ -112,12 +112,13 @@ uint32_t UfwUpdate::sumByte(const QByteArray &prog)
 
 void UfwUpdate::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-
     if (objId.index() == _programDataObjectId.index())
     {
-        if (flags == (SDO::FlagsRequest::Error | SDO::FlagsRequest::Write))
+        if (flags == (SDO::FlagsRequest::Error))
         {
             emit finished(false);
+            _indexList = 0;
+            _byteArrayList.clear();
         }
         else if (flags == SDO::FlagsRequest::Write)
         {
