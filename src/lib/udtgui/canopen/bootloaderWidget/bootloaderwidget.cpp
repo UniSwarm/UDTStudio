@@ -20,6 +20,8 @@
 
 #include "bootloader/bootloader.h"
 #include "canopen/indexWidget/indexlabel.h"
+#include "indexdb.h"
+#include "indexdb402.h"
 #include "node.h"
 
 #include <QFileDialog>
@@ -57,13 +59,8 @@ void BootloaderWidget::setNode(Node *node)
     _bootloader = _node->bootloader();
 
     connect(_updateButton, &QPushButton::clicked, this, &BootloaderWidget::updateProgram);
-
-    //    connect(_stopButton, &QPushButton::clicked, _bootloader, &Bootloader::stopProgram);
-    //    connect(_startButton, &QPushButton::clicked, _bootloader, &Bootloader::startProgram);
-    //    connect(_resetButton, &QPushButton::clicked, _bootloader, &Bootloader::resetProgram);
-    //    connect(_clearButton, &QPushButton::clicked, _bootloader, &Bootloader::clearProgram);
-    //    connect(_updateButton, &QPushButton::clicked, this, &BootloaderWidget::updateProgram);
-    //    connect(_sendKeyButton, &QPushButton::clicked, this, &BootloaderWidget::sendKeyButton);
+    connect(_bootloader, &Bootloader::status, this, &BootloaderWidget::updateStatusLabel);
+    connect(_bootloader, &Bootloader::parserUfwFinished, this, &BootloaderWidget::updateFileInformation);
 }
 
 void BootloaderWidget::readAll()
@@ -74,67 +71,63 @@ void BootloaderWidget::readAll()
     }
 }
 
-void BootloaderWidget::sendKeyButton()
-{
-    quint16 save = 4001;
-
-    //    bool ok;
-    //    QString text = QInputDialog::getText(this, tr("Bootloader"), tr("Key:"), QLineEdit::Normal, "0x" + QString::number(save, 16).toUpper(), &ok);
-    //    if (ok && !text.isEmpty())
-    //    {
-    _bootloader->sendKey(static_cast<uint16_t>(save));
-    //    }
-}
-
 void BootloaderWidget::updateProgram()
 {
     _bootloader->startUpdate();
 }
 
+void BootloaderWidget::updateStatusLabel(QString string)
+{
+    _statusLabel->setText(string);
+}
+
+void BootloaderWidget::updateFileInformation()
+{
+    _deviceTypeUfwLabel->setText(QString::number(_bootloader->deviceType(), 10));
+    _versionSoftwareUfwLabel->setText(_bootloader->versionSoftware());
+    _buildDateUfwLabel->setText(_bootloader->buildDate());
+}
+
 void BootloaderWidget::openFile()
 {
-    // QString fileName = ("/home/julien/Seafile/myLibrary/2_FW/4_UIO_fw/UIO8AD/build/uio8ad.ufw");
     _fileName = QFileDialog::getOpenFileName(this, tr("Open ufw"), "/home/julien/Seafile/myLibrary/2_FW/4_UIO_fw/UIO8AD/build/", tr("Image File (*.ufw)"));
     _fileUfwLabel->setText(_fileName);
-
     _bootloader->openUfw(_fileName);
-
-    _vendorIdUfwLabel->setText(QString::number(_bootloader->vendorId()));
-    _productCodeUfwLabel->setText(QString::number(_bootloader->productCode()));
-    _revisionNumberUfwLabel->setText(QString::number(_bootloader->revisionNumber()));
-    _versionSoftwareUfwLabel->setText(QString::number(_bootloader->versionSoftware()));
-    _buildDateUfwLabel->setText(_bootloader->buildDate());
 }
 
 void BootloaderWidget::createWidgets()
 {
-    QFormLayout *layout = new QFormLayout();
+    QVBoxLayout *vLayout = new QVBoxLayout();
 
-    layout->addWidget(informationDeviceWidget());
-    layout->addWidget(informationFileWidget());
+    vLayout->addWidget(informationDeviceWidget());
+
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    hLayout->setSpacing(0);
+    hLayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
+
+    QLabel *iconLabel = new QLabel();
+    iconLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+    iconLabel->setAlignment(Qt::AlignTop | Qt::AlignCenter);
+    iconLabel->setPixmap(QPixmap(":/icons/img/icons8-tri-decroissant-48.png"));
+    hLayout->addWidget(iconLabel);
+
+    hLayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
+    vLayout->addLayout(hLayout);
+
+    vLayout->addWidget(informationFileWidget());
+
+    QFormLayout *layout = new QFormLayout();
+    _statusLabel = new QLabel();
+    layout->addRow("Status:", _statusLabel);
+    vLayout->addLayout(layout);
 
     _updateButton = new QPushButton("Start update");
-    layout->addRow(_updateButton);
+    vLayout->addWidget(_updateButton);
 
-    //    _stopButton = new QPushButton("Stop program");
-    //    layout->addRow(_stopButton);
-
-    //    _startButton = new QPushButton("Start program");
-    //    layout->addRow(_startButton);
-
-    //    _resetButton = new QPushButton("Reset program");
-    //    layout->addRow(_resetButton);
-
-    //    _clearButton = new QPushButton("Clear program");
-    //    layout->addRow(_clearButton);
-
-    //    _sendKeyButton = new QPushButton("Send Key");
-    //    layout->addRow(_sendKeyButton);
-
-    setLayout(layout);
+    setLayout(vLayout);
 }
 
-QWidget *BootloaderWidget::informationDeviceWidget()
+QGroupBox *BootloaderWidget::informationDeviceWidget()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Node Information"));
     QHBoxLayout *hlayout = new QHBoxLayout();
@@ -142,37 +135,24 @@ QWidget *BootloaderWidget::informationDeviceWidget()
     QFormLayout *fileLayout = new QFormLayout();
 
     IndexLabel *indexLabel;
-    indexLabel = new IndexLabel(NodeObjectId(0x1018, 1));
-    indexLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
-    indexLabel->setCursor(Qt::IBeamCursor);
-    indexLabel->setDisplayHint(IndexLabel::DisplayHexa);
-    fileLayout->addRow(tr("&Vendor Id:"), indexLabel);
-    _indexWidgets.append(indexLabel);
 
-    indexLabel = new IndexLabel(NodeObjectId(0x1018, 2));
+    indexLabel = new IndexLabel(IndexDb::getObjectId(IndexDb::OD_PRODUCT_CODE));
     indexLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
     indexLabel->setCursor(Qt::IBeamCursor);
     indexLabel->setDisplayHint(IndexLabel::DisplayHexa);
     fileLayout->addRow(tr("&Product Code:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
-    indexLabel = new IndexLabel(NodeObjectId(0x1018, 3));
-    indexLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
-    indexLabel->setCursor(Qt::IBeamCursor);
-    indexLabel->setDisplayHint(IndexLabel::DisplayHexa);
-    fileLayout->addRow(tr("&Revision number"), indexLabel);
-    _indexWidgets.append(indexLabel);
-
-    indexLabel = new IndexLabel(NodeObjectId(0x100A, 0));
+    indexLabel = new IndexLabel(IndexDb::getObjectId(IndexDb::OD_MANUFACTURER_SOFTWARE_VERSION));
     indexLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
     indexLabel->setCursor(Qt::IBeamCursor);
     fileLayout->addRow(tr("&Software version:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
-    indexLabel = new IndexLabel(NodeObjectId(0x2003, 0));
+    indexLabel = new IndexLabel(IndexDb402::getObjectId(IndexDb402::OD_MS_FIRMWARE_BUILD_DATE));
     indexLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
     indexLabel->setCursor(Qt::IBeamCursor);
-    fileLayout->addRow(tr("Software &build:"), indexLabel);
+    fileLayout->addRow(tr("Software &build date:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
     hlayout->addItem(fileLayout);
@@ -181,7 +161,7 @@ QWidget *BootloaderWidget::informationDeviceWidget()
     return groupBox;
 }
 
-QWidget *BootloaderWidget::informationFileWidget()
+QGroupBox *BootloaderWidget::informationFileWidget()
 {
     QGroupBox *groupBox = new QGroupBox(tr("File Information"));
 
@@ -197,20 +177,10 @@ QWidget *BootloaderWidget::informationFileWidget()
     _fileUfwLabel->setCursor(Qt::IBeamCursor);
     fileLayout->addRow(tr("&File:"), _fileUfwLabel);
 
-    _vendorIdUfwLabel = new QLabel();
-    _vendorIdUfwLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
-    _vendorIdUfwLabel->setCursor(Qt::IBeamCursor);
-    fileLayout->addRow(tr("&Vendor Id:"), _vendorIdUfwLabel);
-
-    _productCodeUfwLabel = new QLabel();
-    _productCodeUfwLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
-    _productCodeUfwLabel->setCursor(Qt::IBeamCursor);
-    fileLayout->addRow(tr("&Product Code:"), _productCodeUfwLabel);
-
-    _revisionNumberUfwLabel = new QLabel();
-    _revisionNumberUfwLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
-    _revisionNumberUfwLabel->setCursor(Qt::IBeamCursor);
-    fileLayout->addRow(tr("&Revision number"), _revisionNumberUfwLabel);
+    _deviceTypeUfwLabel = new QLabel();
+    _deviceTypeUfwLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+    _deviceTypeUfwLabel->setCursor(Qt::IBeamCursor);
+    fileLayout->addRow(tr("&Product Code:"), _deviceTypeUfwLabel);
 
     _versionSoftwareUfwLabel = new QLabel();
     _versionSoftwareUfwLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
@@ -220,7 +190,7 @@ QWidget *BootloaderWidget::informationFileWidget()
     _buildDateUfwLabel = new QLabel();
     _buildDateUfwLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
     _buildDateUfwLabel->setCursor(Qt::IBeamCursor);
-    fileLayout->addRow(tr("Software &build:"), _buildDateUfwLabel);
+    fileLayout->addRow(tr("Software &build date:"), _buildDateUfwLabel);
 
     groupBox->setLayout(fileLayout);
     return groupBox;

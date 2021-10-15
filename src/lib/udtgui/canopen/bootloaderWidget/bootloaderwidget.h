@@ -21,6 +21,7 @@
 
 #include "udtgui_global.h"
 
+#include <QGroupBox>
 #include <QLabel>
 #include <QPushButton>
 #include <QWidget>
@@ -46,38 +47,32 @@ public slots:
     void setNode(Node *node);
 
 private slots:
-    void sendKeyButton();
+
     void updateProgram();
+    void updateStatusLabel(QString string);
+    void updateFileInformation();
     void openFile();
 
 private:
     Node *_node;
     Bootloader *_bootloader;
 
-    QPushButton *_stopButton;
-    QPushButton *_startButton;
-    QPushButton *_resetButton;
-    QPushButton *_clearButton;
     QPushButton *_updateButton;
-    QPushButton *_sendKeyButton;
-
     QString _fileName;
+    QLabel *_statusLabel;
 
     // Create widgets
     void createWidgets();
 
     QLabel *_fileUfwLabel;
     QLabel *_deviceTypeUfwLabel;
-    QLabel *_vendorIdUfwLabel;
-    QLabel *_productCodeUfwLabel;
-    QLabel *_revisionNumberUfwLabel;
     QLabel *_versionSoftwareUfwLabel;
     QLabel *_buildDateUfwLabel;
 
     QList<AbstractIndexWidget *> _indexWidgets;
 
-    QWidget *informationDeviceWidget();
-    QWidget *informationFileWidget();
+    QGroupBox *informationDeviceWidget();
+    QGroupBox *informationFileWidget();
 };
 
 #endif // BOOTLOADERWIDGET_H

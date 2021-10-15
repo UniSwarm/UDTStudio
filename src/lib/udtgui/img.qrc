@@ -31,6 +31,7 @@
         <file>img/icons8-copy.png</file>
         <file>img/icons8-import-file.png</file>
         <file>img/icons8-restore-page.png</file>
+        <file>img/icons8-tri-decroissant-48.png</file>
     </qresource>
     <qresource prefix="/diagram">
         <file>img/diagrams/402VLDiagram.png</file>
