@@ -29,11 +29,18 @@
 
 #define TIMER_READ_STATUS_DISPLAY 400
 
+#define PROGRAM_CONTROL_STOP            0x0
+#define PROGRAM_CONTROL_START           0x1
+#define PROGRAM_CONTROL_RESET           0x2
+#define PROGRAM_CONTROL_CLEAR           0x3
+#define PROGRAM_CONTROL_UPDATE_FINISHED 0x80
+
 Bootloader::Bootloader(Node *node)
     : _node(node)
 {
+    sendObject = false;
     _node = node;
-    _ufw = nullptr;
+    _ufwModel = nullptr;
     _ufwUpdate = new UfwUpdate(_node);
     connect(_ufwUpdate, &UfwUpdate::finished, this, &Bootloader::processEndUpload);
 
@@ -67,15 +74,19 @@ bool Bootloader::openUfw(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly))
     {
+        emit status(tr("Error open file"));
         return false;
     }
     else
     {
         _ufwParser = new UfwParser();
-        _ufw = _ufwParser->parse(fileName);
+        _ufwModel = _ufwParser->parse(fileName);
         file.close();
 
-        _ufwUpdate->setUfw(_ufw);
+        _ufwUpdate->setUfw(_ufwModel);
+        emit parserUfwFinished();
+        emit status(tr("File analyzed"));
+        _state = STATE_FREE;
     }
 
     return true;
@@ -83,97 +94,73 @@ bool Bootloader::openUfw(const QString &fileName)
 
 void Bootloader::startUpdate()
 {
+    if (!_ufwModel)
+    {
+        emit status(tr("No file"));
+        return;
+    }
+    if (_state != STATE_FREE)
+    {
+        emit status(tr("Update already in progress"));
+        return;
+    }
+
+    emit status(tr("Check file and device"));
     _state = STATE_CHECK_MODE;
-    process();
-    // getStatusProgram();
+    readStatusProgram();
 }
 
 uint32_t Bootloader::deviceType()
 {
-    if (!_ufw)
+    if (!_ufwModel)
     {
         return 0;
     }
-    return _ufw->device();
+    return _ufwModel->deviceType();
 }
 
-uint32_t Bootloader::vendorId()
+QString Bootloader::versionSoftware()
 {
-    if (!_ufw)
+    if (!_ufwModel)
     {
-        return 0;
+        return QString();
     }
-    return 0;
-}
-
-uint32_t Bootloader::productCode()
-{
-    if (!_ufw)
-    {
-        return 0;
-    }
-    return 0;
-}
-
-uint32_t Bootloader::revisionNumber()
-{
-    if (!_ufw)
-    {
-        return 0;
-    }
-    return 0;
-}
-
-uint32_t Bootloader::serialNumber()
-{
-    if (!_ufw)
-    {
-        return 0;
-    }
-    return 0;
-}
-
-uint32_t Bootloader::versionSoftware()
-{
-    if (!_ufw)
-    {
-        return 0;
-    }
-    return 0;
+    return _ufwModel->softwareVersion();
 }
 
 QString Bootloader::buildDate()
 {
-    if (!_ufw)
+    if (!_ufwModel)
     {
         return QString();
     }
-    return QString();
+    return _ufwModel->buildDate();
 }
 
 void Bootloader::stopProgram()
 {
-    uint8_t data = 0;
+    uint8_t data = PROGRAM_CONTROL_STOP;
     _node->writeObject(_programControlObjectId, data);
     _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusProgram()));
 }
 
 void Bootloader::startProgram()
 {
-    uint8_t data = 1;
+    uint8_t data = PROGRAM_CONTROL_START;
     _node->writeObject(_programControlObjectId, data);
+    _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusProgram()));
 }
 
 void Bootloader::resetProgram()
 {
-    uint8_t data = 2;
+    uint8_t data = PROGRAM_CONTROL_RESET;
     _node->writeObject(_programControlObjectId, data);
     _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusProgram()));
 }
 
 void Bootloader::clearProgram()
 {
-    uint8_t data = 3;
+    uint8_t data = PROGRAM_CONTROL_CLEAR;
     _node->writeObject(_programControlObjectId, data);
     _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusProgram()));
 }
@@ -185,13 +172,13 @@ void Bootloader::updateProgram()
 
 void Bootloader::updateFinishedProgram()
 {
-    uint8_t data = 0x80;
+    uint8_t data = PROGRAM_CONTROL_UPDATE_FINISHED;
     _node->writeObject(_programControlObjectId, data);
 }
 
-void Bootloader::sendKey(uint16_t key)
+void Bootloader::sendKey()
 {
-    _node->writeObject(_bootloaderKeyObjectId, key);
+    _node->writeObject(_bootloaderKeyObjectId, _ufwModel->deviceType());
 }
 
 void Bootloader::readStatusProgram()
@@ -203,7 +190,7 @@ void Bootloader::processEndUpload(bool ok)
 {
     if (ok)
     {
-        _state = STATE_UPLOADED_FINISHED;
+        _state = STATE_UPLOADED_PROGRAM_FINISHED;
     }
     else
     {
@@ -217,109 +204,107 @@ void Bootloader::process()
     switch (_state)
     {
     case STATE_FREE:
+        _statusProgram = StatusProgram::NONE;
         break;
 
     case STATE_CHECK_MODE:
-
+    {
         switch (_statusProgram)
         {
-        case Bootloader::NONE:
+        case StatusProgram::NONE:
             readStatusProgram();
             break;
 
-        case Bootloader::PROGRAM_STOPPED:
+        case StatusProgram::PROGRAM_STOPPED:
+            emit status(tr("Device stopped"));
             _node->nodeOd()->createBootloaderObjects();
 
-            if (_ufw)
+            if (_ufwModel)
             {
-                sendKey(_ufw->device());
+                sendKey();
             }
             clearProgram();
-            _state = STATE_CLEAR_PROGRAM;
+            emit status(tr("Device clear in progress"));
             break;
 
-        case Bootloader::PROGRAM_STARTED:
-            if (_ufw)
+        case StatusProgram::PROGRAM_STARTED:
+            emit status(tr("Device started"));
+            if (_ufwModel)
             {
-                sendKey(_ufw->device());
+                sendKey();
             }
             stopProgram();
-            _state = STATE_STOP_PROGRAM;
             break;
 
-        case Bootloader::NO_PROGRAM:
+        case StatusProgram::NO_PROGRAM:
             _node->nodeOd()->createBootloaderObjects();
-            updateProgram();
+
             break;
 
-        case Bootloader::UPDATE_IN_PROGRESS:
-        case Bootloader::SUCCESSFUL:
-        case Bootloader::NOT_SUCCESSFUL:
+        case StatusProgram::UPDATE_IN_PROGRESS:
+        case StatusProgram::SUCCESSFUL:
+            break;
+        case StatusProgram::NOT_SUCCESSFUL:
+            _state = STATE_NOT_OK;
             break;
         }
         break;
-
+    }
     case STATE_STOP_PROGRAM:
     {
         _node->nodeOd()->createBootloaderObjects();
-        if (_ufw)
+        if (_ufwModel)
         {
-            sendKey(_ufw->device());
+            sendKey();
+            clearProgram();
         }
-        clearProgram();
-        _state = STATE_CLEAR_PROGRAM;
         break;
     }
 
     case STATE_CLEAR_PROGRAM:
     {
-        updateProgram();
+        _node->nodeOd()->createBootloaderObjects();
+        if (_ufwModel)
+        {
+            sendKey();
+            clearProgram();
+        }
         break;
     }
 
     case STATE_UPDATE_PROGRAM:
     {
+        updateProgram();
+        emit status(tr("Device update in progress"));
         break;
     }
 
-    case STATE_UPLOADED_FINISHED:
+    case STATE_UPLOADED_PROGRAM_FINISHED:
     {
+        emit status(tr("Update check"));
         _node->writeObject(_bootloaderChecksumObjectId, _ufwUpdate->checksum());
-
-        uint8_t data = 0x80;
-        _node->writeObject(_programControlObjectId, data);
+        updateFinishedProgram();
         _node->readObject(_bootloaderStatusObjectId);
         _state = STATE_CHECK;
         break;
     }
 
     case STATE_CHECK:
-    {
-        _state = STATE_OK;
         break;
-    }
 
     case STATE_OK:
         emit finished(true);
         resetProgram();
         _state = STATE_FREE;
+        emit status(tr("Update successful"));
         break;
 
     case STATE_NOT_OK:
         emit finished(false);
         _state = STATE_FREE;
+        emit status(tr("Update failed"));
         break;
     }
-}
-
-uint8_t Bootloader::calculateCheckSum(const QByteArray &prog)
-{
-    uint8_t checksum = 0;
-    for (int i = 0; i < prog.size(); i++)
-    {
-        checksum += static_cast<unsigned char>(prog[i]);
-    }
-    return checksum;
 }
 
 void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
@@ -342,48 +327,65 @@ void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
             }
 
             uint8_t program = static_cast<uint8_t>(_node->nodeOd()->value(_programControlObjectId).toUInt());
-            if (program == 0 || program == 2)
+            if (program == PROGRAM_CONTROL_STOP || program == PROGRAM_CONTROL_RESET)
             {
-                // BOOTLOADER MODE
                 _statusProgram = PROGRAM_STOPPED;
+                _state = STATE_CLEAR_PROGRAM;
             }
-            else if (program == 3)
+            else if (program == PROGRAM_CONTROL_CLEAR)
             {
-                // BOOTLOADER MODE
                 _statusProgram = NO_PROGRAM;
+                _state = STATE_UPDATE_PROGRAM;
             }
             else
             {
-                // APP MODE
                 _statusProgram = PROGRAM_STARTED;
             }
+            process();
+        }
+        else if (flags == (SDO::FlagsRequest::Error + SDO::FlagsRequest::Write))
+        {
+            quint32 error = static_cast<quint32>(_node->nodeOd()->errorObject(_programControlObjectId));
+            if (error == SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_1)
+            {
+                emit status(tr("Command failed (1)"));
+            }
+            else if (error == SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_2)
+            {
+                emit status(tr("Authentification failed"));
+            }
+            else if (error == SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_3)
+            {
+                emit status(tr("Command failed (2)"));
+            }
+            else
+            {
+                emit status(tr("Command failed (3)"));
+            }
+            _statusProgram = NOT_SUCCESSFUL;
+            _state = STATE_NOT_OK;
             process();
         }
     }
 
     if ((objId.index() == _bootloaderChecksumObjectId.index()) && objId.subIndex() == _bootloaderChecksumObjectId.subIndex())
     {
-        uint8_t status = static_cast<uint8_t>(_node->nodeOd()->value(_bootloaderChecksumObjectId).toUInt());
-
-        if (status)
-        {
-        }
-        else
-        {
-        }
     }
+
     if ((objId.index() == _bootloaderStatusObjectId.index()) && objId.subIndex() == _bootloaderStatusObjectId.subIndex())
     {
         uint8_t status = static_cast<uint8_t>(_node->nodeOd()->value(_bootloaderStatusObjectId).toUInt());
-
-        if (status)
+        if (_state == STATE_CHECK)
         {
-            _state = STATE_OK;
+            if (status)
+            {
+                _state = STATE_OK;
+            }
+            else
+            {
+                _state = STATE_NOT_OK;
+            }
+            process();
         }
-        else
-        {
-            _state = STATE_NOT_OK;
-        }
-        process();
     }
 }

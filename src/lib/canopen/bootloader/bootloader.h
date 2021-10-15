@@ -57,11 +57,7 @@ public:
 
     // Info UFW
     uint32_t deviceType(void);
-    uint32_t vendorId(void);
-    uint32_t productCode(void);
-    uint32_t revisionNumber(void);
-    uint32_t serialNumber(void);
-    uint32_t versionSoftware(void);
+    QString versionSoftware(void);
     QString buildDate(void);
 
 public slots:
@@ -69,10 +65,12 @@ public slots:
     void startProgram();
     void resetProgram();
     void clearProgram();
-    void sendKey(uint16_t key);
+    void sendKey();
 
-signals:
+signals:  
+    void parserUfwFinished();
     void finished(bool ok);
+    void status(QString string);
 
 private slots:
     void readStatusProgram();
@@ -80,6 +78,8 @@ private slots:
 
 private:
     Node *_node;
+
+    bool sendObject;
 
     StatusProgram _statusProgram;
 
@@ -89,7 +89,7 @@ private:
     NodeObjectId _programObjectId;
     NodeObjectId _programControlObjectId;
 
-    UfwModel *_ufw;
+    UfwModel *_ufwModel;
     UfwParser *_ufwParser;
     UfwUpdate *_ufwUpdate;
 
@@ -102,7 +102,7 @@ private:
         STATE_STOP_PROGRAM,
         STATE_CLEAR_PROGRAM,
         STATE_UPDATE_PROGRAM,
-        STATE_UPLOADED_FINISHED,
+        STATE_UPLOADED_PROGRAM_FINISHED,
         STATE_CHECK,
         STATE_OK,
         STATE_NOT_OK
@@ -114,7 +114,6 @@ private:
     void process();
     void updateProgram();
     void updateFinishedProgram();
-    uint8_t calculateCheckSum(const QByteArray &prog);
 
     // NodeOdSubscriber interface
 protected:
