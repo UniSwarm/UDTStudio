@@ -180,9 +180,9 @@ int diff(QString fileA, QString fileB)
     return 0;
 }
 
-int merge(QStringList aOptionList, QStringList bOptionList, QString type, QString adress, QString outputFile, QTextStream &err)
+int merge(QStringList aOptionList, QStringList bOptionList, QString outputFile, QTextStream &err)
 {
-    if (bOptionList.isEmpty() || aOptionList.isEmpty() || type.isEmpty() || adress.isEmpty())
+    if (bOptionList.isEmpty() || aOptionList.isEmpty())
     {
         err << QCoreApplication::translate("main", "error (1): option -a, -b, -t or -k is needed") << "\n";
         return -1;
@@ -323,7 +323,16 @@ int main(int argc, char *argv[])
                                QCoreApplication::translate("main", "Memory segment of hex file"),
                                "start:end");
     cliParser.addOption(sOption);
-
+    QCommandLineOption softwareVersionOption(QStringList() << "i"
+                                                 << "i",
+                                   QCoreApplication::translate("main", "Software version."),
+                                   "i");
+    cliParser.addOption(softwareVersionOption);
+    QCommandLineOption dateOption(QStringList() << "d"
+                                                 << "date",
+                                   QCoreApplication::translate("main", "Date."),
+                                   "date");
+    cliParser.addOption(dateOption);
     cliParser.process(app);
 
     const QStringList argument = cliParser.positionalArguments();
@@ -366,7 +375,7 @@ int main(int argc, char *argv[])
     else if (argument.at(0) == "merge")
     {
         int ret = 0;
-        ret = merge(cliParser.values(aOption), cliParser.values(bOption), cliParser.value(typeOption), cliParser.value(kOption), cliParser.value("out"), err);
+        ret = merge(cliParser.values(aOption), cliParser.values(bOption), cliParser.value("out"), err);
         if (ret < 0)
         {
             cliParser.showHelp(-1);
@@ -396,10 +405,19 @@ int main(int argc, char *argv[])
         }
 
         HexParser *hex = new HexParser(hexFile);
-        hex->read();
+
+        if (!hex->read())
+        {
+            err << QCoreApplication::translate("main", "error (1): Hex file not present") << "\n";
+            cliParser.showHelp(-1);
+        }
 
         UfwWriter *createBinary = new UfwWriter();
-        createBinary->create(hex->prog(), type, segmentList);
+        createBinary->create(static_cast<uint16_t>(type.toUInt()),
+                             cliParser.value(softwareVersionOption),
+                             cliParser.value(dateOption),
+                             segmentList,
+                             hex->prog());
 
         // Save file
         QString outputFile = cliParser.value("out");
