@@ -40,7 +40,7 @@ public:
     ~MainWindow();
 
 public slots:
-    void writeCfgFile();
+    void exportCfgFile();
     void exportDCF();
     void about();
 

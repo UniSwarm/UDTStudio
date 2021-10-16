@@ -18,9 +18,6 @@
 
 #include "mainwindow.h"
 
-#include "model/deviceconfiguration.h"
-#include "parser/edsparser.h"
-
 #include <QAction>
 #include <QApplication>
 #include <QDateTime>
@@ -95,7 +92,7 @@ MainWindow::~MainWindow()
     CanOpen::release();
 }
 
-void MainWindow::writeCfgFile()
+void MainWindow::exportCfgFile()
 {
     Node *node = _busNodesManagerView->currentNode();
     if (!node)
@@ -104,9 +101,9 @@ void MainWindow::writeCfgFile()
     }
 
     QString fileName = QFileDialog::getSaveFileName(this,
-                                                    tr("Save File"),
+                                                    tr("Save configuration file"),
                                                     "",
-                                                    tr("Conf File (*.conf)"));
+                                                    tr("Configuration file (*.conf)"));
     if (fileName.isEmpty())
     {
         return;
@@ -116,27 +113,7 @@ void MainWindow::writeCfgFile()
         fileName.append(".conf");
     }
 
-    QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly))
-    {
-        return;
-    }
-    QTextStream stream(&file);
-    stream << "[Default]" << '\n';
-    for (NodeIndex *index : node->nodeOd()->indexes())
-    {
-        for (NodeSubIndex *subIndex : index->subIndexes())
-        {
-            if (subIndex->isWritable()
-            && subIndex->value() != subIndex->defaultValue()
-            && subIndex->dataType() != NodeSubIndex::DDOMAIN
-             /*&& subIndex->defaultValue().isValid()*/)
-            {
-                // qDebug() << QString::number(index->index(), 16) << subIndex->subIndex() << subIndex->value() << subIndex->defaultValue();
-                stream << index->name() << '.' << subIndex->name() << '=' << subIndex->value().toInt() << '\n';
-            }
-        }
-    }
+    node->nodeOd()->exportConf(fileName);
 }
 
 void MainWindow::exportDCF()
@@ -148,7 +125,7 @@ void MainWindow::exportDCF()
     }
 
     QString fileName = QFileDialog::getSaveFileName(this,
-                                                    tr("Save File"),
+                                                    tr("Save DCF File"),
                                                     "",
                                                     tr("Device File Configuration (*.dcf)"));
     if (fileName.isEmpty())
@@ -246,7 +223,7 @@ void MainWindow::createMenus()
     nodeMenu->addAction(action);
 
     action = new QAction(tr("Save conf file"), this);
-    connect(action, &QAction::triggered, this, &MainWindow::writeCfgFile);
+    connect(action, &QAction::triggered, this, &MainWindow::exportCfgFile);
     nodeMenu->addAction(action);
     nodeMenu->addSeparator();
 

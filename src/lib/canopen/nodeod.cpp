@@ -17,6 +17,7 @@
  **/
 
 #include <QDebug>
+#include <QFile>
 
 #include <writer/dcfwriter.h>
 
@@ -147,6 +148,30 @@ bool NodeOd::exportDcf(const QString &fileName) const
 
     DcfWriter dcfWriter;
     dcfWriter.write(&deviceConfiguration, fileName);
+    return true;
+}
+
+bool NodeOd::exportConf(const QString &fileName) const
+{
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        return false;
+    }
+    QTextStream stream(&file);
+    stream << "[Default]" << '\n';
+    for (NodeIndex *index : _nodeIndexes)
+    {
+        for (NodeSubIndex *subIndex : index->subIndexes())
+        {
+            if (subIndex->isWritable()
+                && subIndex->value() != subIndex->defaultValue()
+                && subIndex->dataType() != NodeSubIndex::DDOMAIN)
+            {
+                stream << index->name() << '.' << subIndex->name() << '=' << subIndex->value().toInt() << '\n';
+            }
+        }
+    }
     return true;
 }
 
