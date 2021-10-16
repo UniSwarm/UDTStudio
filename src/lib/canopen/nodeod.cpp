@@ -133,7 +133,7 @@ bool NodeOd::exportDcf(const QString &fileName) const
             subIndex->setName(nodeSubIndex->name());
             subIndex->setAccessType(static_cast<SubIndex::AccessType>(nodeSubIndex->accessType()));
             subIndex->setDataType(static_cast<SubIndex::DataType>(nodeSubIndex->dataType()));
-            if (nodeSubIndex->error() == 0)
+            if (nodeSubIndex->error() != 0)
             {
                 subIndex->setValue(QVariant());
             }
