@@ -23,19 +23,16 @@ Qt module used :
 ## QT5 for UDTStudio : charts
 
 ```
-sudo apt install git make g++ qt5-default libqt5charts5-dev
+sudo apt install git make g++ qtbase5-dev libqt5charts5-dev
 ```
 
 ## Build
 
-Do not forget to init and update submodule before build.
+Do not forget to init and update submodule before build ore clone recursively.
 
 ```
-git clone https://github.com/UniSwarm/UDTStudio.git
+git clone https://github.com/UniSwarm/UDTStudio.git --recursive
 cd UDTStudio
-git submodule init
-git submodule update
-
 mkdir build
 cd build
 qmake ../src
@@ -44,10 +41,12 @@ make -j`nproc`
 
 Binaries will be placed in `bin/` directory.
 
-## EDS File
+## EDS files
 
-UDT Studio use an environment variable `EDS_PATH` to read EDS files :
+UDTStudio use an environment variable `EDS_PATH` to read EDS files :
 
 `export EDS_PATH="pathToEdsRepertory"`
 
 You can permanently set it by pushing it to your ~/.profile file.
+
+A directory is provided with eds files of all UniSwarm products.
