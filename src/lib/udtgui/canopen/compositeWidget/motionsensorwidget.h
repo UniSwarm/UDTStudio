@@ -102,7 +102,8 @@ protected:
 
     QGroupBox *createInformationWidgets();
     QLabel *_informationLabel;
-    QPushButton *_enableButton;
+    QPushButton *_unlockButton;
+    QPushButton *_relockButton;
 
     QGroupBox *createSensorConfigurationWidgets();
     QGroupBox *_sensorConfigGroupBox;
@@ -143,7 +144,8 @@ protected:
 
     QList<AbstractIndexWidget *> _indexWidgets;
 
-    void goEnableButton();
+    void unlockConfig();
+    void relockConfig();
 };
 
 #endif  // MOTIONSENSORWIDGET_H

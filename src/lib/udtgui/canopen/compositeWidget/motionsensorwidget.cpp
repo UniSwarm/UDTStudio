@@ -288,9 +288,17 @@ QGroupBox *MotionSensorWidget::createInformationWidgets()
     _informationLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     vLayout->addWidget(_informationLabel);
 
-    _enableButton = new QPushButton(tr("Unlock config, Go to \"Switched On\""));
-    vLayout->addWidget(_enableButton);
-    connect(_enableButton, &QPushButton::clicked, this, &MotionSensorWidget::goEnableButton);
+    QHBoxLayout *hButtonsLayout = new QHBoxLayout();
+    hButtonsLayout->setSpacing(5);
+    _unlockButton = new QPushButton(tr("Unlock config (SO)"));
+    hButtonsLayout->addWidget(_unlockButton);
+    connect(_unlockButton, &QPushButton::clicked, this, &MotionSensorWidget::unlockConfig);
+
+    _relockButton = new QPushButton(tr("Restart (OE)"));
+    hButtonsLayout->addWidget(_relockButton);
+    connect(_relockButton, &QPushButton::clicked, this, &MotionSensorWidget::relockConfig);
+
+    vLayout->addItem(hButtonsLayout);
 
     groupBox->setLayout(vLayout);
     return groupBox;
@@ -512,7 +520,8 @@ void MotionSensorWidget::stateChanged()
         _sensorConfigGroupBox->setEnabled(false);
         _filterGroupBox->setEnabled(false);
         _conditioningGroupBox->setEnabled(false);
-        _enableButton->setEnabled(true);
+        _unlockButton->setEnabled(true);
+        _relockButton->setEnabled(false);
         _informationLabel->setText(tr("Not available in \"Operation Enabled\""));
     }
     else
@@ -520,7 +529,8 @@ void MotionSensorWidget::stateChanged()
         _sensorConfigGroupBox->setEnabled(true);
         _filterGroupBox->setEnabled(true);
         _conditioningGroupBox->setEnabled(true);
-        _enableButton->setEnabled(false);
+        _unlockButton->setEnabled(false);
+        _relockButton->setEnabled(true);
         _informationLabel->setText("");
     }
 }
@@ -582,7 +592,12 @@ void MotionSensorWidget::updateFilterParams(int index)
     }
 }
 
-void MotionSensorWidget::goEnableButton()
+void MotionSensorWidget::unlockConfig()
 {
     _nodeProfile402->goToState(NodeProfile402::STATE_SwitchedOn);
+}
+
+void MotionSensorWidget::relockConfig()
+{
+    _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
 }
