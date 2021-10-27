@@ -408,39 +408,27 @@ void P402Widget::setEvent(quint8 event)
 void P402Widget::updateModeComboBox()
 {
     _modeComboBox->clear();
-    int j = 0;
-    QList<NodeProfile402::OperationMode> modeList = _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_OTHER);
-    for (int i = 0; i < modeList.size(); i++)
+    for (NodeProfile402::OperationMode mode : _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_OTHER))
     {
-        _modeComboBox->addItem(_nodeProfile402->modeStr(modeList.at(i)), QVariant(static_cast<int>(modeList.at(i))));
-        j++;
+        _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
     }
     _modeComboBox->insertSeparator(_modeComboBox->count());
-    j++;
 
-    modeList = _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_TORQUE);
-    for (int i = 0; i < modeList.size(); i++)
+    for (NodeProfile402::OperationMode mode : _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_TORQUE))
     {
-        _modeComboBox->addItem(_nodeProfile402->modeStr(modeList.at(i)), QVariant(static_cast<int>(modeList.at(i))));
-        j++;
+        _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
     }
     _modeComboBox->insertSeparator(_modeComboBox->count());
-    j++;
 
-    modeList = _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_VELOCITY);
-    for (int i = 0; i < modeList.size(); i++)
+    for (NodeProfile402::OperationMode mode : _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_VELOCITY))
     {
-        _modeComboBox->addItem(_nodeProfile402->modeStr(modeList.at(i)), QVariant(static_cast<int>(modeList.at(i))));
-        j++;
+        _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
     }
     _modeComboBox->insertSeparator(_modeComboBox->count());
-    j++;
 
-    modeList = _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_POSITION);
-    for (int i = 0; i < modeList.size(); i++)
+    for (NodeProfile402::OperationMode mode : _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_POSITION))
     {
-        _modeComboBox->addItem(_nodeProfile402->modeStr(modeList.at(i)), QVariant(static_cast<int>(modeList.at(i))));
-        j++;
+        _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
     }
 }
 
