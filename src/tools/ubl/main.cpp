@@ -261,7 +261,7 @@ int main(int argc, char *argv[])
     // UPDATE and Flash
     cliParser.addPositionalArgument("update", QCoreApplication::translate("main", "file -n nodeId"), "update");
     // CREATE BIN
-    cliParser.addPositionalArgument("program", QCoreApplication::translate("main", "-h file.hex -t type -s start:end ..."), "create");
+    cliParser.addPositionalArgument("ufw", QCoreApplication::translate("main", "-h file.hex -t type -s start:end ..."), "create");
     // DIFF
     cliParser.addPositionalArgument("diff", QCoreApplication::translate("main", "fileA fileB"), "diff");
     // HEX DUMP
@@ -381,7 +381,7 @@ int main(int argc, char *argv[])
             cliParser.showHelp(-1);
         }
     }
-    else if (argument.at(0) == "program")
+    else if (argument.at(0) == "ufw")
     {
         QString type = cliParser.value("type");
         if (type.isEmpty())
