@@ -38,6 +38,7 @@ public:
 
 public:
     void readAll();
+    void updateFirmware();
 
 protected:
     void createWidgets();

@@ -30,6 +30,8 @@
 #include "canopen/indexWidget/indexlabel.h"
 #include "screen/nodescreenswidget.h"
 
+#include "canopen/bootloaderWidget/bootloaderwidget.h"
+
 NodeScreenHome::NodeScreenHome()
 {
     createWidgets();
@@ -41,6 +43,16 @@ void NodeScreenHome::readAll()
     {
         indexWidget->readObject();
     }
+}
+
+void NodeScreenHome::updateFirmware()
+{
+    QDialog dialog(this);
+    BootloaderWidget *bootloaderWidget = new BootloaderWidget();
+    bootloaderWidget->setNode(_node);
+    QLayout *layout = new QVBoxLayout(&dialog);
+    layout->addWidget(bootloaderWidget);
+    dialog.exec();
 }
 
 void NodeScreenHome::createWidgets()
@@ -113,6 +125,15 @@ QWidget *NodeScreenHome::createSumaryWidget()
     _indexWidgets.append(indexLabel);
 
     hlayout->addItem(sumaryLayout);
+
+    QVBoxLayout *buttonlayout = new QVBoxLayout();
+    QPushButton *goFirmwareButton = new QPushButton(tr("Update firmware"));
+    goFirmwareButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+    connect(goFirmwareButton, &QPushButton::released, [=]() { updateFirmware(); });
+    buttonlayout->addWidget(goFirmwareButton);
+    buttonlayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
+    hlayout->addItem(buttonlayout);
+
     groupBox->setLayout(hlayout);
     return groupBox;
 }
