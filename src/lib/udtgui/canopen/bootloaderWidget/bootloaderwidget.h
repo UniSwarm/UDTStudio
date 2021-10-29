@@ -47,7 +47,6 @@ public slots:
     void setNode(Node *node);
 
 private slots:
-
     void updateProgram();
     void updateStatus();
     void openFile();

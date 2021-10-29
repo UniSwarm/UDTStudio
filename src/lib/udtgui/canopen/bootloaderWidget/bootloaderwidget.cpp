@@ -68,7 +68,8 @@ void BootloaderWidget::setNode(Node *node)
     connect(_sendKeyButton, &QPushButton::clicked, this, &BootloaderWidget::sendKeyButton);
 #endif
 
-        _infoLabel->setText(QString("Update firmware for Node %1").arg(_node->nodeId()));
+    _infoLabel->setText(QString("Update firmware for Node %1").arg(_node->nodeId()));
+    readAll();
 }
 
 void BootloaderWidget::readAll()
@@ -123,9 +124,10 @@ void BootloaderWidget::updateStatus()
 
 void BootloaderWidget::openFile()
 {
-    _fileName = QFileDialog::getOpenFileName(this, tr("Open ufw"), "/home/julien/Seafile/myLibrary/2_FW/4_UIO_fw/UIO8AD/build/", tr("Image File (*.ufw)"));
+    _fileName = QFileDialog::getOpenFileName(this, tr("Open ufw"), "", tr("Image File (*.ufw)"));
     _fileUfwLabel->setText(_fileName);
-    _bootloader->openUfw(_fileName);
+    bool ok = _bootloader->openUfw(_fileName);
+    _updateButton->setEnabled(ok);
 }
 
 void BootloaderWidget::createWidgets()
@@ -158,6 +160,7 @@ void BootloaderWidget::createWidgets()
     vLayout->addLayout(layout);
 
     _updateButton = new QPushButton("Start update");
+    _updateButton->setEnabled(false);
     vLayout->addWidget(_updateButton);
 #ifdef DEBUG_BOOT
     _stopButton = new QPushButton("Stop program");
