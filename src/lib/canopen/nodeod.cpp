@@ -18,6 +18,7 @@
 
 #include <QDebug>
 
+
 #include <writer/dcfwriter.h>
 
 #include "model/deviceconfiguration.h"
@@ -26,6 +27,8 @@
 #include "nodeod.h"
 #include "nodeodsubscriber.h"
 #include "parser/edsparser.h"
+
+#include <QFile>
 
 NodeOd::NodeOd(Node *node)
     : _node(node)
