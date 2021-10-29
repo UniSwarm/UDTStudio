@@ -37,6 +37,8 @@
 MotionSensorWidget::MotionSensorWidget(QWidget *parent) : QWidget(parent)
 {
     _nodeProfile402 = nullptr;
+    _dataLogger = new DataLogger();
+
     createWidgets();
     _state = NONE;
     _mode = MODE_SENSOR_NONE;
@@ -51,12 +53,15 @@ QString MotionSensorWidget::title() const
 {
     switch (_mode)
     {
-        case MotionSensorWidget::MODE_SENSOR_NONE:
+        case MODE_SENSOR_NONE:
             return tr("None");
+
         case MODE_SENSOR_POSITION:
             return tr("Position sensor");
+
         case MODE_SENSOR_VELOCITY:
             return tr("Velocity sensor");
+
         case MODE_SENSOR_TORQUE:
             return tr("Torque sensor");
     }
@@ -199,8 +204,6 @@ void MotionSensorWidget::setIMode()
 
 void MotionSensorWidget::createWidgets()
 {
-    _dataLogger = new DataLogger();
-
     QWidget *motionSensorWidget = new QWidget(this);
     QVBoxLayout *actionLayout = new QVBoxLayout(motionSensorWidget);
     actionLayout->setContentsMargins(0, 0, 4, 0);
@@ -311,19 +314,22 @@ QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
 
     _sensorSelectComboBox = new IndexComboBox();
     _sensorSelectComboBox->addItem(tr("OFF"), QVariant(static_cast<uint16_t>(0x0000)));
+    _sensorSelectComboBox->insertSeparator(_sensorSelectComboBox->count());
 
     _sensorSelectComboBox->addItem(tr("TORQUE_FROM_MOTOR"), QVariant(static_cast<uint16_t>(0x1100)));
     _sensorSelectComboBox->addItem(tr("VELOCITY_FROM_MOTOR"), QVariant(static_cast<uint16_t>(0x1200)));
     _sensorSelectComboBox->addItem(tr("POSITION_FROM_MOTOR"), QVariant(static_cast<uint16_t>(0x1300)));
+    _sensorSelectComboBox->insertSeparator(_sensorSelectComboBox->count());
 
     _sensorSelectComboBox->addItem(tr("POSITION_FROM_VELOCITY"), QVariant(static_cast<uint16_t>(0x2200)));
     _sensorSelectComboBox->addItem(tr("VELOCITY_FROM_POSITION"), QVariant(static_cast<uint16_t>(0x2300)));
+    _sensorSelectComboBox->insertSeparator(_sensorSelectComboBox->count());
 
     _sensorSelectComboBox->addItem(tr("QEI_CH1"), QVariant(static_cast<uint16_t>(0x3101)));
     _sensorSelectComboBox->addItem(tr("QEI_CH2"), QVariant(static_cast<uint16_t>(0x3102)));
-
     _sensorSelectComboBox->addItem(tr("SSI_CH1"), QVariant(static_cast<uint16_t>(0x3201)));
     _sensorSelectComboBox->addItem(tr("SSI_CH2"), QVariant(static_cast<uint16_t>(0x3202)));
+    _sensorSelectComboBox->insertSeparator(_sensorSelectComboBox->count());
 
     _sensorSelectComboBox->addItem(tr("ANALOG_CH1"), QVariant(static_cast<uint16_t>(0x4001)));
     _sensorSelectComboBox->addItem(tr("ANALOG_CH2"), QVariant(static_cast<uint16_t>(0x4002)));
@@ -339,7 +345,7 @@ QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
 
     _configBitCheckBox = new IndexCheckBox();
     _configBitCheckBox->setBitMask(32);
-    formLayout->addRow(tr("Q15.16:"), _configBitCheckBox);
+    formLayout->addRow(tr("Q15.16 (<<16):"), _configBitCheckBox);
     _indexWidgets.append(_configBitCheckBox);
 
     _sensorParam0SpinBox = new IndexSpinBox();
@@ -452,7 +458,7 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
     _thresholdModeComboBox->addItem(tr("Min-max"), QVariant(static_cast<uint16_t>(0x0001)));
     _thresholdModeComboBox->addItem(tr("Modulo"), QVariant(static_cast<uint16_t>(0x0002)));
     _thresholdModeComboBox->addItem(tr("Old value"), QVariant(static_cast<uint16_t>(0x0003)));
-    formLayout->addRow(tr("Th&reshold mode:"), _thresholdModeComboBox);
+    formLayout->addRow(tr("Th&reshold:"), _thresholdModeComboBox);
     _indexWidgets.append(_thresholdModeComboBox);
 
     QLayout *thresholdlayout = new QHBoxLayout();
@@ -468,7 +474,7 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
     _thresholdMaxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     thresholdlayout->addWidget(_thresholdMaxSpinBox);
     _indexWidgets.append(_thresholdMaxSpinBox);
-    QLabel *thresholdLabel = new QLabel(tr("&Threshold:"));
+    QLabel *thresholdLabel = new QLabel();
     thresholdLabel->setBuddy(_thresholdMinSpinBox);
     formLayout->addRow(thresholdLabel, thresholdlayout);
     _indexWidgets.append(_filterParam3SpinBox);
@@ -505,11 +511,11 @@ void MotionSensorWidget::statusNodeChanged(Node::Status status)
 {
     if (status == Node::STOPPED)
     {
-        this->setEnabled(false);
+        setEnabled(false);
     }
     else
     {
-        this->setEnabled(true);
+        setEnabled(true);
     }
 }
 
