@@ -211,7 +211,7 @@ void MainWindow::createMenus()
     nodeMenu->addAction(action);
     nodeMenu->addSeparator();
 
-    nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionUpdateNode());
+    nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionUpdateFirmware());
 
     // ============= Loggers =============
     menuBar()->addMenu(DataLoggerSingleton::loggersMenu());

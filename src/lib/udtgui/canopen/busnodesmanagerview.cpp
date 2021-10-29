@@ -79,6 +79,7 @@ void BusNodesManagerView::createWidgets()
 
     _nodeManagerWidget = new NodeManagerWidget();
     _busNodeTreeView->addNodeAction(_nodeManagerWidget->actionRemoveNode());
+    _busNodeTreeView->addNodeAction(_nodeManagerWidget->actionUpdateFirmware());
     _busNodeTreeView->addNodeAction(_nodeManagerWidget->actionLoadEds());
     _busNodeTreeView->addNodeAction(_nodeManagerWidget->actionReLoadEds());
     layout->addWidget(_nodeManagerWidget);

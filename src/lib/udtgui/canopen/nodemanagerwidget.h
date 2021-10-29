@@ -51,7 +51,7 @@ public:
 
     QAction *actionRemoveNode() const;
 
-    QAction *actionUpdateNode() const;
+    QAction *actionUpdateFirmware() const;
 
 public slots:
     void setNode(Node *value);
@@ -65,7 +65,7 @@ public slots:
 
     void removeNode();
 
-    void updateNode();
+    void updateNodeFirmware();
 
     void loadEds(const QString &edsFileName = QString());
     void reloadEds();
@@ -93,7 +93,7 @@ protected:
 
     QAction *_actionRemoveNode;
 
-    QAction *_actionUpdateNode;
+    QAction *_actionUpdateFirmware;
 
     Node *_node;
 };

@@ -71,7 +71,7 @@ void NodeManagerWidget::setNode(Node *node)
 
     _actionRemoveNode->setEnabled(_node);
 
-    _actionUpdateNode->setEnabled(_node);
+    _actionUpdateFirmware->setEnabled(_node);
 
     updateData();
 }
@@ -156,7 +156,7 @@ void NodeManagerWidget::removeNode()
     }
 }
 
-void NodeManagerWidget::updateNode()
+void NodeManagerWidget::updateNodeFirmware()
 {
     if (_node)
     {
@@ -258,11 +258,11 @@ void NodeManagerWidget::createWidgets()
     _actionRemoveNode->setStatusTip(tr("Remove the current node from the bus"));
     connect(_actionRemoveNode, &QAction::triggered, this, &NodeManagerWidget::removeNode);
 
-    // Remove node
-    _actionUpdateNode = new QAction(tr("Update node"));
-    //_actionUpdateNode->setIcon(QIcon(":/icons/img/icons8-delete.png"));
-    //_actionUpdateNode->setStatusTip(tr("Remove the current node from the bus"));
-    connect(_actionUpdateNode, &QAction::triggered, this, &NodeManagerWidget::updateNode);
+    // Update firmware
+    _actionUpdateFirmware = new QAction(tr("Update firmware"));
+    _actionUpdateFirmware->setIcon(QIcon(":/icons/img/icons8-restore-page.png"));
+    _actionUpdateFirmware->setStatusTip(tr("Launch a firmware update to the node"));
+    connect(_actionUpdateFirmware, &QAction::triggered, this, &NodeManagerWidget::updateNodeFirmware);
 
     // EDS actions
     _actionLoadEds = new QAction(tr("Load eds"));
@@ -301,9 +301,9 @@ QAction *NodeManagerWidget::actionRemoveNode() const
     return _actionRemoveNode;
 }
 
-QAction *NodeManagerWidget::actionUpdateNode() const
+QAction *NodeManagerWidget::actionUpdateFirmware() const
 {
-    return _actionUpdateNode;
+    return _actionUpdateFirmware;
 }
 
 QAction *NodeManagerWidget::actionReLoadEds() const
