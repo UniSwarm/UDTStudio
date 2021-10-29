@@ -39,17 +39,25 @@ public:
 
     Node *node() const;
 
-    enum StatusProgram
+    enum Status
     {
-        NONE,
-        PROGRAM_STOPPED,
-        PROGRAM_STARTED,
-        NO_PROGRAM,
-        UPDATE_IN_PROGRESS,
-        SUCCESSFUL,
-        NOT_SUCCESSFUL
+        STATUS_ERROR_OPEN_FILE = -1,
+        STATUS_ERROR_NO_FILE = -2,
+        STATUS_ERROR_ERROR_PARSER = -3,
+        STATUS_ERROR_FILE_NOT_CORRESPONDING = -4,
+        STATUS_ERROR_UPDATE_FAILED = -5,
+        STATUS_UPDATE_ALREADY_IN_PROGRESS = -6,
+
+        STATUS_FILE_ANALYZED_OK = 1,
+        STATUS_UPDATE_SUCCESSFUL = 2,
+        STATUS_CHECK_FILE_AND_DEVICE = 3,
+        STATUS_DEVICE_STOP_IN_PROGRESS = 4,
+        STATUS_DEVICE_CLEAR_IN_PROGRESS = 5,
+        STATUS_DEVICE_UPDATE_IN_PROGRESS = 6,
+        STATUS_CHECKING_UPDATE = 7,
     };
-    StatusProgram statusProgram();
+    Status status() const;
+    QString statusStr(Status status) const;
 
     bool openUfw(const QString &fileName);
 
@@ -71,17 +79,29 @@ signals:
     void parserUfwFinished();
     void finished(bool ok);
     void status(QString string);
+    void statusEvent();
 
 private slots:
     void readStatusProgram();
+    void readStatusBootloader();
     void processEndUpload(bool ok);
 
 private:
     Node *_node;
 
     bool sendObject;
+    Status _status;
+    void setStatus(Status status);
 
+    enum StatusProgram
+    {
+        NONE,
+        PROGRAM_STOPPED,
+        PROGRAM_STARTED,
+        NO_PROGRAM
+    };
     StatusProgram _statusProgram;
+    uint8_t _counterError;
 
     NodeObjectId _bootloaderKeyObjectId;
     NodeObjectId _bootloaderChecksumObjectId;
@@ -113,6 +133,7 @@ private:
 
     void process();
     void updateProgram();
+    void updateStartProgram();
     void updateFinishedProgram();
 
     // NodeOdSubscriber interface

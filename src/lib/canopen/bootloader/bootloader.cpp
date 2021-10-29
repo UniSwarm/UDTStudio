@@ -27,13 +27,20 @@
 #include <QDebug>
 #include <QFile>
 
-#define TIMER_READ_STATUS_DISPLAY 400
+#define TIMER_READ_STATUS_DISPLAY 500
+#define ATTEMPT_MAX_ERROR 3
 
 #define PROGRAM_CONTROL_STOP            0x0
 #define PROGRAM_CONTROL_START           0x1
 #define PROGRAM_CONTROL_RESET           0x2
 #define PROGRAM_CONTROL_CLEAR           0x3
-#define PROGRAM_CONTROL_UPDATE_FINISHED 0x80
+#define PROGRAM_CONTROL_UPDATE_START    0x80
+#define PROGRAM_CONTROL_UPDATE_FINISHED 0x81
+
+#define BOOTLOADER_STATUS_OBJECT_OK             0x1
+#define BOOTLOADER_STATUS_OBJECT_NOK            0x2
+#define BOOTLOADER_STATUS_OBJECT_CLEAR_NOK      0x4
+#define BOOTLOADER_STATUS_OBJECT_CK_NOK         0x8
 
 Bootloader::Bootloader(Node *node)
     : _node(node)
@@ -64,9 +71,48 @@ Node *Bootloader::node() const
     return _node;
 }
 
-Bootloader::StatusProgram Bootloader::statusProgram()
+Bootloader::Status Bootloader::status() const
 {
-    return _statusProgram;
+    return _status;
+}
+
+void Bootloader::setStatus(Status status)
+{
+    _status = status;
+    emit statusEvent();
+}
+
+QString Bootloader::statusStr(Status status) const
+{
+    switch (status)
+    {
+    case Bootloader::STATUS_ERROR_OPEN_FILE:
+        return QString(tr("Error open file"));
+    case Bootloader::STATUS_ERROR_NO_FILE:
+        return QString(tr("No file"));
+    case Bootloader::STATUS_ERROR_ERROR_PARSER:
+        return QString(tr("Error parser"));
+    case Bootloader::STATUS_ERROR_FILE_NOT_CORRESPONDING:
+        return QString(tr("File not corresponding"));
+    case Bootloader::STATUS_ERROR_UPDATE_FAILED:
+        return QString(tr("Update failed"));
+    case Bootloader::STATUS_FILE_ANALYZED_OK:
+        return QString(tr("File analyzed ok"));
+    case Bootloader::STATUS_UPDATE_ALREADY_IN_PROGRESS:
+        return QString(tr("Update already in progress"));
+    case Bootloader::STATUS_CHECK_FILE_AND_DEVICE:
+        return QString(tr("Checking the settings"));
+    case Bootloader::STATUS_DEVICE_STOP_IN_PROGRESS:
+        return QString(tr("Device stop in progress"));
+    case Bootloader::STATUS_DEVICE_CLEAR_IN_PROGRESS:
+        return QString(tr("Device clear in progress"));
+    case Bootloader::STATUS_DEVICE_UPDATE_IN_PROGRESS:
+        return QString(tr("Device update in progress"));
+    case Bootloader::STATUS_CHECKING_UPDATE:
+        return QString(tr("Checking the update"));
+    case Bootloader::STATUS_UPDATE_SUCCESSFUL:
+        return QString(tr("Update successful"));
+    }
 }
 
 bool Bootloader::openUfw(const QString &fileName)
@@ -74,7 +120,7 @@ bool Bootloader::openUfw(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly))
     {
-        emit status(tr("Error open file"));
+        setStatus(STATUS_ERROR_OPEN_FILE);
         return false;
     }
     else
@@ -83,10 +129,23 @@ bool Bootloader::openUfw(const QString &fileName)
         _ufwModel = _ufwParser->parse(fileName);
         file.close();
 
-        _ufwUpdate->setUfw(_ufwModel);
-        emit parserUfwFinished();
-        emit status(tr("File analyzed"));
-        _state = STATE_FREE;
+        if (!_ufwModel)
+        {
+            setStatus(STATUS_ERROR_ERROR_PARSER);
+            return false;
+        }
+        /*if (_ufwModel->deviceType() != _node->nodeOd()->value(IndexDb::getObjectId(IndexDb::OD_PRODUCT_CODE)).toUInt())
+        {
+            setStatus(STATUS_ERROR_FILE_NOT_CORRESPONDING);
+            delete _ufwParser;
+        }
+        else
+        {*/
+            _ufwUpdate->setUfw(_ufwModel);
+            emit parserUfwFinished();
+            setStatus(STATUS_FILE_ANALYZED_OK);
+            _state = STATE_FREE;
+        //}
     }
 
     return true;
@@ -96,17 +155,20 @@ void Bootloader::startUpdate()
 {
     if (!_ufwModel)
     {
-        emit status(tr("No file"));
-        return;
-    }
-    if (_state != STATE_FREE)
-    {
-        emit status(tr("Update already in progress"));
+        setStatus(STATUS_ERROR_NO_FILE);
         return;
     }
 
-    emit status(tr("Check file and device"));
+    if (_state != STATE_FREE)
+    {
+        setStatus(STATUS_UPDATE_ALREADY_IN_PROGRESS);
+        return;
+    }
+
+    setStatus(STATUS_CHECK_FILE_AND_DEVICE);
     _state = STATE_CHECK_MODE;
+    _counterError = ATTEMPT_MAX_ERROR;
+    _node->nodeOd()->createBootloaderObjects();
     readStatusProgram();
 }
 
@@ -170,6 +232,12 @@ void Bootloader::updateProgram()
     _ufwUpdate->update();
 }
 
+void Bootloader::updateStartProgram()
+{
+    uint8_t data = PROGRAM_CONTROL_UPDATE_START;
+    _node->writeObject(_programControlObjectId, data);
+}
+
 void Bootloader::updateFinishedProgram()
 {
     uint8_t data = PROGRAM_CONTROL_UPDATE_FINISHED;
@@ -178,12 +246,20 @@ void Bootloader::updateFinishedProgram()
 
 void Bootloader::sendKey()
 {
-    _node->writeObject(_bootloaderKeyObjectId, _ufwModel->deviceType());
+    if (_ufwModel)
+    {
+        _node->writeObject(_bootloaderKeyObjectId, _ufwModel->deviceType());
+    }
 }
 
 void Bootloader::readStatusProgram()
 {
     _node->readObject(_programControlObjectId);
+}
+
+void Bootloader::readStatusBootloader()
+{
+    _node->readObject(_bootloaderStatusObjectId);
 }
 
 void Bootloader::processEndUpload(bool ok)
@@ -216,75 +292,52 @@ void Bootloader::process()
             break;
 
         case StatusProgram::PROGRAM_STOPPED:
-            emit status(tr("Device stopped"));
-            _node->nodeOd()->createBootloaderObjects();
-
-            if (_ufwModel)
-            {
-                sendKey();
-            }
+            setStatus(STATUS_DEVICE_CLEAR_IN_PROGRESS);
+            sendKey();
             clearProgram();
-            emit status(tr("Device clear in progress"));
             break;
 
         case StatusProgram::PROGRAM_STARTED:
-            emit status(tr("Device started"));
-            if (_ufwModel)
-            {
-                sendKey();
-            }
+            setStatus(STATUS_DEVICE_STOP_IN_PROGRESS);
+            sendKey();
             stopProgram();
             break;
 
         case StatusProgram::NO_PROGRAM:
-            _node->nodeOd()->createBootloaderObjects();
-
-            break;
-
-        case StatusProgram::UPDATE_IN_PROGRESS:
-        case StatusProgram::SUCCESSFUL:
-            break;
-        case StatusProgram::NOT_SUCCESSFUL:
-            _state = STATE_NOT_OK;
             break;
         }
         break;
     }
     case STATE_STOP_PROGRAM:
     {
-        _node->nodeOd()->createBootloaderObjects();
-        if (_ufwModel)
-        {
-            sendKey();
-            clearProgram();
-        }
+        setStatus(STATUS_DEVICE_UPDATE_IN_PROGRESS);
+        sendKey();
+        clearProgram();
         break;
     }
 
     case STATE_CLEAR_PROGRAM:
     {
-        _node->nodeOd()->createBootloaderObjects();
-        if (_ufwModel)
-        {
-            sendKey();
-            clearProgram();
-        }
+        setStatus(STATUS_DEVICE_UPDATE_IN_PROGRESS);
+        sendKey();
+        clearProgram();
         break;
     }
 
     case STATE_UPDATE_PROGRAM:
     {
-        updateProgram();
-        emit status(tr("Device update in progress"));
+        updateStartProgram();
+        setStatus(STATUS_DEVICE_UPDATE_IN_PROGRESS);
+        updateProgram();        
         break;
     }
 
     case STATE_UPLOADED_PROGRAM_FINISHED:
-    {
-        emit status(tr("Update check"));
+    {        
+        setStatus(STATUS_CHECKING_UPDATE);
         _node->writeObject(_bootloaderChecksumObjectId, _ufwUpdate->checksum());
         updateFinishedProgram();
-        _node->readObject(_bootloaderStatusObjectId);
+        _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusBootloader()));
         _state = STATE_CHECK;
         break;
     }
@@ -296,13 +349,13 @@ void Bootloader::process()
         emit finished(true);
         resetProgram();
         _state = STATE_FREE;
-        emit status(tr("Update successful"));
+        setStatus(STATUS_UPDATE_SUCCESSFUL);
         break;
 
     case STATE_NOT_OK:
         emit finished(false);
         _state = STATE_FREE;
-        emit status(tr("Update failed"));
+        setStatus(STATUS_ERROR_UPDATE_FAILED);
         break;
     }
 }
@@ -343,27 +396,34 @@ void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
             }
             process();
         }
-        else if (flags == (SDO::FlagsRequest::Error + SDO::FlagsRequest::Write))
+        else if ((flags & SDO::FlagsRequest::Error) == SDO::FlagsRequest::Error)
         {
             quint32 error = static_cast<quint32>(_node->nodeOd()->errorObject(_programControlObjectId));
             if (error == SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_1)
             {
                 emit status(tr("Command failed (1)"));
+                _state = STATE_NOT_OK;
             }
             else if (error == SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_2)
             {
                 emit status(tr("Authentification failed"));
+                _state = STATE_NOT_OK;
             }
             else if (error == SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_3)
             {
                 emit status(tr("Command failed (2)"));
+                _state = STATE_NOT_OK;
+            }
+            else if (error == SDO::CO_SDO_ABORT_CODE_TIMED_OUT && _state == STATE_CLEAR_PROGRAM)
+            {
+                _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusProgram()));
             }
             else
             {
                 emit status(tr("Command failed (3)"));
+                _state = STATE_NOT_OK;
             }
-            _statusProgram = NOT_SUCCESSFUL;
-            _state = STATE_NOT_OK;
+
             process();
         }
     }
@@ -377,7 +437,7 @@ void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         uint8_t status = static_cast<uint8_t>(_node->nodeOd()->value(_bootloaderStatusObjectId).toUInt());
         if (_state == STATE_CHECK)
         {
-            if (status)
+            if ((status & BOOTLOADER_STATUS_OBJECT_OK) == BOOTLOADER_STATUS_OBJECT_OK)
             {
                 _state = STATE_OK;
             }
