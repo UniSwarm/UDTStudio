@@ -59,8 +59,16 @@ void BootloaderWidget::setNode(Node *node)
     _bootloader = _node->bootloader();
 
     connect(_updateButton, &QPushButton::clicked, this, &BootloaderWidget::updateProgram);
-    connect(_bootloader, &Bootloader::status, this, &BootloaderWidget::updateStatusLabel);
-    connect(_bootloader, &Bootloader::parserUfwFinished, this, &BootloaderWidget::updateFileInformation);
+    connect(_bootloader, &Bootloader::statusEvent, this, &BootloaderWidget::updateStatus);
+#ifdef DEBUG_BOOT
+    connect(_stopButton, &QPushButton::clicked, _bootloader, &Bootloader::stopProgram);
+    connect(_startButton, &QPushButton::clicked, _bootloader, &Bootloader::startProgram);
+    connect(_resetButton, &QPushButton::clicked, _bootloader, &Bootloader::resetProgram);
+    connect(_clearButton, &QPushButton::clicked, _bootloader, &Bootloader::clearProgram);
+    connect(_sendKeyButton, &QPushButton::clicked, this, &BootloaderWidget::sendKeyButton);
+#endif
+
+        _infoLabel->setText(QString("Update firmware for Node %1").arg(_node->nodeId()));
 }
 
 void BootloaderWidget::readAll()
@@ -71,21 +79,46 @@ void BootloaderWidget::readAll()
     }
 }
 
+void BootloaderWidget::sendKeyButton()
+{
+    _bootloader->sendKey();
+}
+
 void BootloaderWidget::updateProgram()
 {
     _bootloader->startUpdate();
 }
 
-void BootloaderWidget::updateStatusLabel(QString string)
+void BootloaderWidget::updateStatus()
 {
-    _statusLabel->setText(string);
-}
+    Bootloader::Status status = _bootloader->status();
 
-void BootloaderWidget::updateFileInformation()
-{
-    _deviceTypeUfwLabel->setText("0x" + QString::number(_bootloader->deviceType(), 16));
-    _versionSoftwareUfwLabel->setText(_bootloader->versionSoftware());
-    _buildDateUfwLabel->setText(_bootloader->buildDate());
+    if (status >= 0)
+    {
+        _statusLabel->setStyleSheet("QLabel { color : green;font-weight: bold; }");
+        _statusLabel->setText(_bootloader->statusStr(status));
+    }
+    else
+    {
+        _statusLabel->setStyleSheet("QLabel { color : red;font-weight: bold; }");
+        _statusLabel->setText(_bootloader->statusStr(status));
+    }
+
+    if (status == Bootloader::Status::STATUS_FILE_ANALYZED_OK)
+    {
+        _deviceTypeUfwLabel->setText("0x" + QString::number(_bootloader->deviceType(), 16));
+        _versionSoftwareUfwLabel->setText(_bootloader->versionSoftware());
+        _buildDateUfwLabel->setText(_bootloader->buildDate());
+    }
+
+    if (status > Bootloader::Status::STATUS_CHECK_FILE_AND_DEVICE)
+    {
+        _updateButton->setEnabled(false);
+    }
+    else
+    {
+        _updateButton->setEnabled(true);
+    }
 }
 
 void BootloaderWidget::openFile()
@@ -98,6 +131,9 @@ void BootloaderWidget::openFile()
 void BootloaderWidget::createWidgets()
 {
     QVBoxLayout *vLayout = new QVBoxLayout();
+
+    _infoLabel = new QLabel();
+    vLayout->addWidget(_infoLabel);
 
     vLayout->addWidget(informationDeviceWidget());
 
@@ -123,7 +159,22 @@ void BootloaderWidget::createWidgets()
 
     _updateButton = new QPushButton("Start update");
     vLayout->addWidget(_updateButton);
+#ifdef DEBUG_BOOT
+    _stopButton = new QPushButton("Stop program");
+    vLayout->addWidget(_stopButton);
 
+    _startButton = new QPushButton("Start program");
+    vLayout->addWidget(_startButton);
+
+    _resetButton = new QPushButton("Reset program");
+    vLayout->addWidget(_resetButton);
+
+    _clearButton = new QPushButton("Clear program");
+    vLayout->addWidget(_clearButton);
+
+    _sendKeyButton = new QPushButton("Send Key");
+    vLayout->addWidget(_sendKeyButton);
+#endif
     setLayout(vLayout);
 }
 
@@ -167,7 +218,7 @@ QGroupBox *BootloaderWidget::informationFileWidget()
 
     QFormLayout *fileLayout = new QFormLayout();
 
-    QPushButton *openButton = new QPushButton(tr("Open Ufw"));
+    QPushButton *openButton = new QPushButton(tr("Open firmware"));
     connect(openButton, &QPushButton::clicked, this, &BootloaderWidget::openFile);
 
     fileLayout->addRow(openButton);

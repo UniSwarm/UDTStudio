@@ -49,17 +49,27 @@ public slots:
 private slots:
 
     void updateProgram();
-    void updateStatusLabel(QString string);
-    void updateFileInformation();
+    void updateStatus();
     void openFile();
+
+    void sendKeyButton();
 
 private:
     Node *_node;
     Bootloader *_bootloader;
 
+    QLabel *_infoLabel;
     QPushButton *_updateButton;
     QString _fileName;
     QLabel *_statusLabel;
+
+#ifdef DEBUG_BOOT
+    QPushButton *_stopButton;
+    QPushButton *_startButton;
+    QPushButton *_resetButton;
+    QPushButton *_clearButton;
+    QPushButton *_sendKeyButton;
+#endif
 
     // Create widgets
     void createWidgets();
