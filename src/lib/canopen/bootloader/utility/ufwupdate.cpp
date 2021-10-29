@@ -47,6 +47,13 @@ int UfwUpdate::update()
 {
     if (!_ufwModel)
     {
+        emit finished(false);
+        return -1;
+    }
+
+    if (_ufwModel->prog().size() == 0)
+    {
+        emit finished(false);
         return -1;
     }
 
@@ -57,13 +64,14 @@ int UfwUpdate::update()
     {
         uint32_t start = _ufwModel->segmentList().at(i).start;
         uint32_t end = _ufwModel->segmentList().at(i).end;
-        qDebug() << "segment :" << start << ":" << end;
+
         QByteArray prog = _ufwModel->prog().mid(static_cast<int>(start), static_cast<int>(end) - static_cast<int>(start));
 
         PhantomRemover phantomRemover;
         QByteArray progRemove = phantomRemover.remove(prog);
 
         sum += sumByte(progRemove);
+        removeByte(progRemove);
 
         qToLittleEndian(start, buffer);
         progRemove.prepend(buffer, sizeof(start));
@@ -108,6 +116,25 @@ uint32_t UfwUpdate::sumByte(const QByteArray &prog)
         checksum += static_cast<uint8_t>(prog[i]);
     }
     return checksum;
+}
+
+uint32_t UfwUpdate::removeByte(QByteArray &prog)
+{
+    char str[8] = {static_cast<char>(0xFF),
+                   static_cast<char>(0xFF),
+                   static_cast<char>(0xFF),
+                   static_cast<char>(0xFF),
+                   static_cast<char>(0xFF),
+                   static_cast<char>(0xFF),
+                   static_cast<char>(0xFF),
+                   static_cast<char>(0xFF)};
+
+    int j = 0;
+    while ((j = prog.indexOf(str, j)) != -1)
+    {
+        prog.remove(j, 8);
+    }
+    return 0;
 }
 
 void UfwUpdate::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

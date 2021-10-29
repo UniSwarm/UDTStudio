@@ -56,6 +56,7 @@ private:
     QList<QByteArray> _byteArrayList;
     void process();
     uint32_t sumByte(const QByteArray &prog);
+    uint32_t removeByte(QByteArray &prog);
 
     // NodeOdSubscriber interface
 protected:
