@@ -31,8 +31,6 @@
 
 #include "node.h"
 
-#include "canopen/bootloaderWidget/bootloaderwidget.h"
-
 class UDTGUI_EXPORT NodeManagerWidget : public QWidget
 {
     Q_OBJECT
@@ -96,7 +94,6 @@ protected:
     QAction *_actionRemoveNode;
 
     QAction *_actionUpdateNode;
-    BootloaderWidget *_bootloaderWidget;
 
     Node *_node;
 };

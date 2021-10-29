@@ -17,7 +17,6 @@
  **/
 
 #include "nodemanagerwidget.h"
-#include "indexdb.h"
 
 #include <QDebug>
 #include <QFileInfo>
@@ -26,6 +25,9 @@
 
 #include "canopenbus.h"
 #include "services/services.h"
+#include "indexdb.h"
+
+#include "canopen/bootloaderWidget/bootloaderwidget.h"
 
 NodeManagerWidget::NodeManagerWidget(QWidget *parent)
     : NodeManagerWidget(nullptr, parent)
@@ -38,8 +40,6 @@ NodeManagerWidget::NodeManagerWidget(Node *node, QWidget *parent)
     _node = nullptr;
     createWidgets();
     setNode(node);
-
-    _bootloaderWidget = new BootloaderWidget();
 }
 
 Node *NodeManagerWidget::node() const
@@ -160,8 +160,12 @@ void NodeManagerWidget::updateNode()
 {
     if (_node)
     {
-        _bootloaderWidget->setNode(_node);
-        _bootloaderWidget->show();
+        QDialog dialog(this);
+        BootloaderWidget *bootloaderWidget = new BootloaderWidget();
+        bootloaderWidget->setNode(_node);
+        QLayout *layout = new QVBoxLayout(&dialog);
+        layout->addWidget(bootloaderWidget);
+        dialog.exec();
     }
 }
 
