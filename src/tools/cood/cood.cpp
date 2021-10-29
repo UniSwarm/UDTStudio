@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
         if (inSuffix == "eds" && outSuffix != "eds")
         {
             nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
-            if (nodeid == 0 || nodeid >= 126)
+            if (nodeid == 0 || nodeid > 127)
             {
                 err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << endl;
                 return -2;
