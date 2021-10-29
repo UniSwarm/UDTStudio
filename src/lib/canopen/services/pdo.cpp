@@ -492,14 +492,7 @@ void PDO::managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequ
         if (_stateMapping == STATE_DEACTIVATE)
         {
             _objectIdFsm = 0;
-            if (_objectToMap.isEmpty())
-            {
-                _stateMapping = STATE_MODIFY;
-            }
-            else
-            {
-                _stateMapping = STATE_DISABLE;
-            }
+            _stateMapping = STATE_DISABLE;
             processMapping();
         }
         if (_stateMapping == STATE_DISABLE)
@@ -514,7 +507,7 @@ void PDO::managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequ
                 return;
             }
             _objectIdFsm++;
-            if (_objectIdFsm == _objectToMap.size())
+            if (_objectIdFsm == 8)
             {
                 _stateMapping = STATE_MODIFY;
             }
