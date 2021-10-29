@@ -66,7 +66,7 @@ int HexWriter::write(const QByteArray &prog, const QString &filePath)
             line.append(prog.mid(index, dataCount).toHex().rightJustified(16, '0').toUpper());
             // Checksum
             line.append(QString::number(checksum(line), 16).rightJustified(2, '0').toUpper());
-            if (!line.contains("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"))
+            // if (!line.contains("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"))
             {
                 stream << line << "\n";
             }
