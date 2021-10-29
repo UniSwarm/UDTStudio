@@ -167,6 +167,7 @@ private:
         quint8 seqno; // sequence number of segment
         quint8 ackseq; // sequence number of segment
         bool error;
+        quint8 attemptCount;
     };
 
     RequestSdo *_requestCurrent;

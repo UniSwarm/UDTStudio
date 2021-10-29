@@ -20,6 +20,9 @@
 #include "canopenbus.h"
 #include <QDataStream>
 #include <QDebug>
+#include <QThread>
+
+#define ATTEMPT_ERROR_MAX   3
 
 SDO::SDO(Node *node)
     : Service(node)
@@ -30,7 +33,7 @@ SDO::SDO(Node *node)
     _cobIds.append(_cobIdClientToServer + _nodeId);
     _cobIds.append(_cobIdServerToClient + _nodeId);
 
-    _time = 1000;
+    _time = 1800;
     _timer = new QTimer(this);
     connect(_timer, &QTimer::timeout, this, &SDO::timeout);
 
@@ -658,6 +661,7 @@ bool SDO::downloadDispatcher()
 
         _requestCurrent->seqno = 1;
         _requestCurrent->stay = _requestCurrent->size;
+        _requestCurrent->attemptCount = 0;
     }
     else
     {
@@ -815,6 +819,12 @@ bool SDO::sdoBlockDownload(const QCanBusFrame &frame)
 
     quint8 ss = static_cast<quint8>(frame.payload().at(0) & SS::SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_MASK);
 
+    if (!_requestCurrent)
+    {
+        sendErrorSdoToDevice(CO_SDO_ABORT_CODE_CMD_NOT_VALID);
+        return false;
+    }
+
     if ((ss == SS::SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_INIT_RESP) && (_requestCurrent->state == STATE_DOWNLOAD))
     {
         index = indexFromFrame(frame);
@@ -856,9 +866,16 @@ bool SDO::sdoBlockDownload(const QCanBusFrame &frame)
         if (ackseq != (_requestCurrent->seqno - 1))
         {
             // ERROR sequence detection from server -> Re-Send block
-            qDebug() << ">>SDO::sdoBlockDownload, Error sequence detection from server, ackseq : " << ackseq;
+            qDebug() << ">>SDO::sdoBlockDownload, Error sequence detection from server, ackseq : " << ackseq << "attempt:" << _requestCurrent->attemptCount;
             _requestCurrent->stay += (_requestCurrent->seqno - 1) * SDO_SG_SIZE;
             _requestCurrent->state = STATE_BLOCK_DOWNLOAD;
+            _requestCurrent->attemptCount++;
+            if (_requestCurrent->attemptCount == ATTEMPT_ERROR_MAX)
+            {
+                _requestCurrent->attemptCount = 0;
+                 sendErrorSdoToDevice(CO_SDO_ABORT_CODE_INVALID_SEQ_NUMBER);
+                 return false;
+            }
         }
 
         if (_requestCurrent->state == STATE_BLOCK_DOWNLOAD)
@@ -898,6 +915,8 @@ void SDO::sdoBlockDownloadSubBlock()
         _requestCurrent->stay -= SDO_SG_SIZE;
         _requestCurrent->seqno++;
 
+        QThread::usleep(1000);
+
         if (_requestCurrent->stay <= SDO_SG_SIZE)
         {
             seek = _requestCurrent->size - _requestCurrent->stay;
@@ -907,6 +926,7 @@ void SDO::sdoBlockDownloadSubBlock()
             sendSdoRequest(false, _requestCurrent->seqno, buffer);
             _requestCurrent->state = STATE_BLOCK_DOWNLOAD_END;
             _requestCurrent->seqno++;
+            QThread::usleep(1000);
             return;
         }
     }
