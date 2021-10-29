@@ -75,7 +75,6 @@ Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
     if (!edsFileName.isEmpty())
     {
         loadEds(edsFileName);
-        reset();
         NodeProfileFactory::profileFactory(this);
     }
 }
@@ -99,6 +98,7 @@ void Node::setBus(CanOpenBus *bus)
     {
         service->setBus(bus);
     }
+    reset();
 }
 
 CanOpenBus *Node::bus() const
