@@ -35,9 +35,6 @@ public:
 
     UfwModel *parse(const QString &fileName) const;
 
-    bool read();
-    const QByteArray &prog() const;
-
 private:
     UfwModel *_ufwModel;
 };

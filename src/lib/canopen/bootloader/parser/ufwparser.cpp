@@ -48,6 +48,11 @@ UfwModel *UfwParser::parse(const QString &fileName) const
         file.close();
     }
 
+    if (uni.size() < 0x25)
+    {
+        return nullptr;
+    }
+
     uint8_t index = 0;
 
     uint16_t device = qFromLittleEndian<uint16_t>(uni);
@@ -78,6 +83,12 @@ UfwModel *UfwParser::parse(const QString &fileName) const
         uint32_t start = qFromLittleEndian<uint32_t>(uni.mid(index + i * 8, sizeof(uint32_t)));
         uint32_t end = qFromLittleEndian<uint32_t>(uni.mid(index + 4 + i * 8, sizeof(uint32_t)));
         _ufwModel->appendSegment(start, end);
+    }
+
+    _ufwModel->setProg(uni.mid(index + count * 8, uni.size()));
+    if (_ufwModel->prog().size() == 0)
+    {
+        return nullptr;
     }
 
     return _ufwModel;
