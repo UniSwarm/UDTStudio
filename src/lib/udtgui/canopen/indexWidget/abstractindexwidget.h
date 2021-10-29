@@ -22,7 +22,6 @@
 #include "../../udtgui_global.h"
 
 #include "nodeodsubscriber.h"
-#include <QWidget>
 
 class UDTGUI_EXPORT AbstractIndexWidget : public NodeOdSubscriber
 {
@@ -70,11 +69,7 @@ public:
     QString unit() const;
     void setUnit(const QString &unit);
 
-public slots:
     void readObject();
-
-signals:
-    void valueChanged(QVariant value);
 
 protected:
     enum DisplayAttribute
