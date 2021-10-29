@@ -29,6 +29,7 @@ public:
     PhantomRemover();
 
     const QByteArray &remove(const QByteArray &prog);
+    const QByteArray &replace(const QByteArray &prog);
 
 private:
     QByteArray _prog;

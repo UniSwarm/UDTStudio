@@ -33,3 +33,15 @@ const QByteArray &PhantomRemover::remove(const QByteArray &prog)
 
     return _prog;
 }
+
+const QByteArray &PhantomRemover::replace(const QByteArray &prog)
+{
+    int index = 4;
+    while (index < prog.size())
+    {
+        _prog.replace(index, 1, "00");
+        index += 4;
+    }
+
+    return _prog;
+}
