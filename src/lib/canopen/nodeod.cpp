@@ -17,7 +17,6 @@
  **/
 
 #include <QDebug>
-#include <QFile>
 
 #include <writer/dcfwriter.h>
 
@@ -534,6 +533,14 @@ void NodeOd::createMandatoryObjects()
 
 void NodeOd::createBootloaderObjects()
 {
+    NodeIndex *version = new NodeIndex(0x100A);
+    version->setName("Manufacturer Software Version");
+    version->setObjectType(NodeIndex::VAR);
+    version->addSubIndex(new NodeSubIndex(0));
+    version->subIndex(0)->setDataType(NodeSubIndex::VISIBLE_STRING);
+    version->subIndex(0)->setName("Manufacturer Software Version");
+    addIndex(version);
+
     NodeIndex *program = new NodeIndex(0x1F50);
     program->setName("Program");
     program->setObjectType(NodeIndex::RECORD);
@@ -541,7 +548,7 @@ void NodeOd::createBootloaderObjects()
     NodeSubIndex *subIndex;
     subIndex = new NodeSubIndex(0);
     subIndex->setDataType(NodeSubIndex::UNSIGNED8);
-    subIndex->setName("Highest sub-index supported");
+    subIndex->setName("Number of Entries");
     subIndex->setValue(1);
     program->addSubIndex(subIndex);
 
@@ -558,7 +565,7 @@ void NodeOd::createBootloaderObjects()
     NodeSubIndex *subIndexProgramControl;
     subIndexProgramControl = new NodeSubIndex(0);
     subIndexProgramControl->setDataType(NodeSubIndex::UNSIGNED8);
-    subIndexProgramControl->setName("Highest sub-index supported");
+    subIndexProgramControl->setName("Number of Entries");
     subIndexProgramControl->setValue(1);
     programControl->addSubIndex(subIndexProgramControl);
 
@@ -568,6 +575,42 @@ void NodeOd::createBootloaderObjects()
     subIndexProgramControl->setAccessType(static_cast<NodeSubIndex::AccessType>(0x03));
     programControl->addSubIndex(subIndexProgramControl);
     addIndex(programControl);
+
+    NodeIndex *date = new NodeIndex(0x2003);
+    date->setName("Firmware_build_date");
+    date->setObjectType(NodeIndex::VAR);
+    date->addSubIndex(new NodeSubIndex(0));
+    date->subIndex(0)->setDataType(NodeSubIndex::VISIBLE_STRING);
+    date->subIndex(0)->setName("Firmware_build_date");
+    addIndex(date);
+
+    NodeIndex *conf = new NodeIndex(0x2040);
+    conf->setName("Comunication_config");
+    conf->setObjectType(NodeIndex::ARRAY);
+
+    NodeSubIndex *subIndexconf;
+    subIndexconf = new NodeSubIndex(0);
+    subIndexconf->setDataType(NodeSubIndex::UNSIGNED8);
+    subIndexconf->setName("Number of Entries");
+    subIndexconf->setValue(1);
+    conf->addSubIndex(subIndexconf);
+
+    subIndexconf = new NodeSubIndex(1);
+    subIndexconf->setDataType(NodeSubIndex::UNSIGNED8);
+    subIndexProgramControl->setAccessType(static_cast<NodeSubIndex::AccessType>(0x03));
+    subIndexconf->setName("Node_ID");
+    conf->addSubIndex(subIndexconf);
+
+    subIndexconf = new NodeSubIndex(2);
+    subIndexconf->setDataType(NodeSubIndex::UNSIGNED8);
+    subIndexconf->setAccessType(static_cast<NodeSubIndex::AccessType>(0x03));
+    subIndexconf->setName("Bit_rate");
+    conf->addSubIndex(subIndexconf);
+
+    if (!indexExist(conf->_index))
+    {
+        addIndex(conf);
+    }
 
     NodeIndex *bootloader = new NodeIndex(0x2050);
     bootloader->setName("Bootloader");
@@ -582,20 +625,26 @@ void NodeOd::createBootloaderObjects()
 
     subIndexbootloader = new NodeSubIndex(1);
     subIndexbootloader->setDataType(NodeSubIndex::UNSIGNED16);
+    subIndexbootloader->setAccessType(NodeSubIndex::AccessType::WRITE);
     subIndexbootloader->setName("Key");
     bootloader->addSubIndex(subIndexbootloader);
 
     subIndexbootloader = new NodeSubIndex(2);
     subIndexbootloader->setDataType(NodeSubIndex::UNSIGNED8);
+    subIndexbootloader->setAccessType(NodeSubIndex::AccessType::WRITE);
     subIndexbootloader->setName("Checksum");
     bootloader->addSubIndex(subIndexbootloader);
 
     subIndexbootloader = new NodeSubIndex(3);
     subIndexbootloader->setDataType(NodeSubIndex::UNSIGNED8);
+    subIndexbootloader->setAccessType(NodeSubIndex::AccessType::READ);
     subIndexbootloader->setName("Status");
     bootloader->addSubIndex(subIndexbootloader);
 
-    addIndex(bootloader);
+    if (!indexExist(bootloader->_index))
+    {
+        addIndex(bootloader);
+    }
 }
 
 const QMap<QString, QString> &NodeOd::edsFileInfos() const
