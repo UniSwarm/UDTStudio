@@ -119,6 +119,16 @@ const QString &NodeOd::edsFileName() const
 
 bool NodeOd::exportDcf(const QString &fileName) const
 {
+    QString mfileName(fileName);
+    if (mfileName.isEmpty())
+    {
+        return false;
+    }
+    if (!mfileName.endsWith(".dcf"))
+    {
+        mfileName.append(".dcf");
+    }
+
     DeviceConfiguration deviceConfiguration;
     deviceConfiguration.setNodeId(QString::number(_node->nodeId()));
     deviceConfiguration.setNodeName(_node->name());
@@ -149,13 +159,23 @@ bool NodeOd::exportDcf(const QString &fileName) const
     }
 
     DcfWriter dcfWriter;
-    dcfWriter.write(&deviceConfiguration, fileName);
+    dcfWriter.write(&deviceConfiguration, mfileName);
     return true;
 }
 
 bool NodeOd::exportConf(const QString &fileName) const
 {
-    QFile file(fileName);
+    QString mfileName(fileName);
+    if (mfileName.isEmpty())
+    {
+        return false;
+    }
+    if (!mfileName.endsWith(".conf"))
+    {
+        mfileName.append(".conf");
+    }
+
+    QFile file(mfileName);
     if (!file.open(QIODevice::WriteOnly))
     {
         return false;

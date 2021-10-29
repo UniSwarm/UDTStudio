@@ -104,14 +104,6 @@ void MainWindow::exportCfgFile()
                                                     tr("Save configuration file"),
                                                     "",
                                                     tr("Configuration file (*.conf)"));
-    if (fileName.isEmpty())
-    {
-        return;
-    }
-    if (!fileName.endsWith(".conf"))
-    {
-        fileName.append(".conf");
-    }
 
     node->nodeOd()->exportConf(fileName);
 }
@@ -128,14 +120,6 @@ void MainWindow::exportDCF()
                                                     tr("Save DCF File"),
                                                     "",
                                                     tr("Device File Configuration (*.dcf)"));
-    if (fileName.isEmpty())
-    {
-        return;
-    }
-    if (!fileName.endsWith(".dcf"))
-    {
-        fileName.append(".dcf");
-    }
 
     node->nodeOd()->exportDcf(fileName);
 }
