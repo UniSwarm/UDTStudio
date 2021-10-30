@@ -120,7 +120,12 @@ void NodeOdSubscriber::unRegisterIndex(const quint16 index)
 
 void NodeOdSubscriber::unRegisterFullOd()
 {
-    unRegisterKey(NodeObjectId(0xFFFFu, 0xFFu));
+    _indexSubIndexList.clear();
+    _objIdList.clear();
+    if (_nodeInterrest)
+    {
+        _nodeInterrest->nodeOd()->unsubscribe(this);
+    }
 }
 
 QList<NodeObjectId> NodeOdSubscriber::objIdList() const
@@ -181,7 +186,7 @@ void NodeOdSubscriber::unRegisterKey(const NodeObjectId &objId)
         if (node)
         {
             NodeOd *nodeOd = node->nodeOd();
-            nodeOd->subscribe(this, objId.index(), objId.subIndex());
+            nodeOd->unsubscribe(this, objId.index(), objId.subIndex());
         }
     }
 }
