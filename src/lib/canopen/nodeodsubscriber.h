@@ -58,6 +58,8 @@ protected:
     virtual void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) = 0; // TODO constify flags param
 
 private:
+    friend class NodeOd;
+
     Node *_nodeInterrest;
     QSet<quint64> _indexSubIndexList;
     QList<NodeObjectId> _objIdList;

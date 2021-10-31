@@ -16,18 +16,16 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <QDebug>
-
-
-#include <writer/dcfwriter.h>
+#include "nodeod.h"
 
 #include "model/deviceconfiguration.h"
 #include "indexdb.h"
 #include "node.h"
-#include "nodeod.h"
 #include "nodeodsubscriber.h"
 #include "parser/edsparser.h"
+#include "writer/dcfwriter.h"
 
+#include <QDebug>
 #include <QFile>
 
 NodeOd::NodeOd(Node *node)
@@ -38,6 +36,14 @@ NodeOd::NodeOd(Node *node)
 
 NodeOd::~NodeOd()
 {
+    // Remove reference of this instance to all subcriber
+    QMultiMap<quint32, Subscriber>::iterator itSub = _subscribers.begin();
+    while (itSub != _subscribers.end())
+    {
+        itSub.value().object->_nodeInterrest = nullptr;
+        ++itSub;
+    }
+
     qDeleteAll(_nodeIndexes);
     _nodeIndexes.clear();
 }
