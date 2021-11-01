@@ -24,7 +24,7 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QPushButton>
-#include <QWidget>
+#include <QDialog>
 
 #include "canopen/indexWidget/abstractindexwidget.h"
 
@@ -32,11 +32,12 @@ class Node;
 class Bootloader;
 class IndexLabel;
 
-class UDTGUI_EXPORT BootloaderWidget : public QWidget
+class UDTGUI_EXPORT BootloaderWidget : public QDialog
 {
     Q_OBJECT
 public:
     BootloaderWidget(QWidget *parent = nullptr);
+    BootloaderWidget(Node *node, QWidget *parent = nullptr);
 
     Node *node() const;
 
@@ -55,7 +56,6 @@ private slots:
 
 private:
     Node *_node;
-    Bootloader *_bootloader;
 
     QLabel *_infoLabel;
     QPushButton *_updateButton;

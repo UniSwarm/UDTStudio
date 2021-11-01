@@ -160,12 +160,8 @@ void NodeManagerWidget::updateNodeFirmware()
 {
     if (_node)
     {
-        QDialog dialog(this);
-        BootloaderWidget *bootloaderWidget = new BootloaderWidget();
-        bootloaderWidget->setNode(_node);
-        QLayout *layout = new QVBoxLayout(&dialog);
-        layout->addWidget(bootloaderWidget);
-        dialog.exec();
+        BootloaderWidget bootloaderWidget(_node, this);
+        bootloaderWidget.exec();
     }
 }
 

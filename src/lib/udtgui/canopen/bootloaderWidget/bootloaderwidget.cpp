@@ -32,10 +32,16 @@
 #include <QPushButton>
 
 BootloaderWidget::BootloaderWidget(QWidget *parent)
-    : QWidget(parent)
+    : QDialog(parent)
 {
     setWindowTitle("UniSwarm UDTStudio - Update Node");
     createWidgets();
+}
+
+BootloaderWidget::BootloaderWidget(Node *node, QWidget *parent)
+    : BootloaderWidget(parent)
+{
+    setNode(node);
 }
 
 Node *BootloaderWidget::node() const
@@ -56,15 +62,14 @@ void BootloaderWidget::setNode(Node *node)
     }
 
     _node = node;
-    _bootloader = _node->bootloader();
 
     connect(_updateButton, &QPushButton::clicked, this, &BootloaderWidget::updateProgram);
-    connect(_bootloader, &Bootloader::statusEvent, this, &BootloaderWidget::updateStatus);
+    connect(_node->bootloader(), &Bootloader::statusEvent, this, &BootloaderWidget::updateStatus);
 #ifdef DEBUG_BOOT
-    connect(_stopButton, &QPushButton::clicked, _bootloader, &Bootloader::stopProgram);
-    connect(_startButton, &QPushButton::clicked, _bootloader, &Bootloader::startProgram);
-    connect(_resetButton, &QPushButton::clicked, _bootloader, &Bootloader::resetProgram);
-    connect(_clearButton, &QPushButton::clicked, _bootloader, &Bootloader::clearProgram);
+    connect(_stopButton, &QPushButton::clicked, _node->bootloader(), &Bootloader::stopProgram);
+    connect(_startButton, &QPushButton::clicked, _node->bootloader(), &Bootloader::startProgram);
+    connect(_resetButton, &QPushButton::clicked, _node->bootloader(), &Bootloader::resetProgram);
+    connect(_clearButton, &QPushButton::clicked, _node->bootloader(), &Bootloader::clearProgram);
     connect(_sendKeyButton, &QPushButton::clicked, this, &BootloaderWidget::sendKeyButton);
 #endif
 
@@ -82,34 +87,34 @@ void BootloaderWidget::readAll()
 
 void BootloaderWidget::sendKeyButton()
 {
-    _bootloader->sendKey();
+    _node->bootloader()->sendKey();
 }
 
 void BootloaderWidget::updateProgram()
 {
-    _bootloader->startUpdate();
+    _node->bootloader()->startUpdate();
 }
 
 void BootloaderWidget::updateStatus()
 {
-    Bootloader::Status status = _bootloader->status();
+    Bootloader::Status status = _node->bootloader()->status();
 
     if (status >= 0)
     {
         _statusLabel->setStyleSheet("QLabel { color : green;font-weight: bold; }");
-        _statusLabel->setText(_bootloader->statusStr(status));
+        _statusLabel->setText(_node->bootloader()->statusStr(status));
     }
     else
     {
         _statusLabel->setStyleSheet("QLabel { color : red;font-weight: bold; }");
-        _statusLabel->setText(_bootloader->statusStr(status));
+        _statusLabel->setText(_node->bootloader()->statusStr(status));
     }
 
     if (status == Bootloader::Status::STATUS_FILE_ANALYZED_OK)
     {
-        _deviceTypeUfwLabel->setText("0x" + QString::number(_bootloader->deviceType(), 16));
-        _versionSoftwareUfwLabel->setText(_bootloader->versionSoftware());
-        _buildDateUfwLabel->setText(_bootloader->buildDate());
+        _deviceTypeUfwLabel->setText("0x" + QString::number(_node->bootloader()->deviceType(), 16));
+        _versionSoftwareUfwLabel->setText(_node->bootloader()->versionSoftware());
+        _buildDateUfwLabel->setText(_node->bootloader()->buildDate());
     }
 
     if (status > Bootloader::Status::STATUS_CHECK_FILE_AND_DEVICE)
@@ -126,7 +131,7 @@ void BootloaderWidget::openFile()
 {
     _fileName = QFileDialog::getOpenFileName(this, tr("Open ufw"), "", tr("Image File (*.ufw)"));
     _fileUfwLabel->setText(_fileName);
-    bool ok = _bootloader->openUfw(_fileName);
+    bool ok = _node->bootloader()->openUfw(_fileName);
     _updateButton->setEnabled(ok);
 }
 
