@@ -47,6 +47,7 @@ public:
     const QList<qreal> &values() const;
     double firstValue() const;
     double lastValue() const;
+    int valuesCount() const;
 
     const QList<QDateTime> &times() const;
     QDateTime firstDateTime() const;

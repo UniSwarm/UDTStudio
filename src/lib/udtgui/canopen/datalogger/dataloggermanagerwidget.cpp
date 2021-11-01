@@ -40,7 +40,7 @@ void DataLoggerManagerWidget::toggleStartLogger(bool start)
     }
 }
 
-void DataLoggerManagerWidget::setLogTimer(int ms)
+void DataLoggerManagerWidget::setLogTimerMs(int ms)
 {
     if (_startStopAction->isChecked())
     {
@@ -62,6 +62,22 @@ void DataLoggerManagerWidget::setViewCross(bool viewCross)
     if (_chartWidget)
     {
         _chartWidget->setViewCross(viewCross);
+    }
+}
+
+void DataLoggerManagerWidget::setRollingEnabled(bool enabled)
+{
+    if (_chartWidget)
+    {
+        _chartWidget->setRollingEnabled(enabled);
+    }
+}
+
+void DataLoggerManagerWidget::setRollingTimeMs(int ms)
+{
+    if (_chartWidget)
+    {
+        _chartWidget->setRollingTimeMs(ms);
     }
 }
 
@@ -111,7 +127,10 @@ void DataLoggerManagerWidget::createWidgets()
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
     _toolBar->addWidget(_logTimerSpinBox);
-    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
+    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i)
+    {
+        setLogTimerMs(i);
+    });
 
     // clear
     action = _toolBar->addAction(tr("Clear"));
@@ -136,6 +155,27 @@ void DataLoggerManagerWidget::createWidgets()
     _crossAction->setIcon(QIcon(":/icons/img/icons8-line-chart.png"));
     _crossAction->setStatusTip(tr("Adds cross to line chart"));
     connect(_crossAction, &QAction::triggered, this, &DataLoggerManagerWidget::setViewCross);
+
+    _toolBar->addSeparator();
+
+    // rolling
+    _rollAction = _toolBar->addAction(tr("Cross"));
+    _rollAction->setCheckable(true);
+    _rollAction->setEnabled(true);
+    _rollAction->setIcon(QIcon(":/icons/img/icons8-video-trimming.png"));
+    _rollAction->setStatusTip(tr("Enable the rolling mode"));
+    connect(_rollAction, &QAction::triggered, this, &DataLoggerManagerWidget::setRollingEnabled);
+
+    _rollingTimeSpinBox = new QSpinBox();
+    _rollingTimeSpinBox->setRange(100, 120000);
+    _rollingTimeSpinBox->setValue(1000);
+    _rollingTimeSpinBox->setSuffix(" ms");
+    _rollingTimeSpinBox->setStatusTip(tr("Sets the rolling mode time in ms"));
+    _toolBar->addWidget(_rollingTimeSpinBox);
+    connect(_rollingTimeSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i)
+    {
+        setRollingTimeMs(i);
+    });
 
     layout->addWidget(_toolBar);
 

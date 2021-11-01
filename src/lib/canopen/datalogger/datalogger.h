@@ -50,10 +50,6 @@ public:
 
     void addDataValue(DLData *dlData, const QVariant &value, const QDateTime &dateTime);
 
-    // NodeOdSubscriber interface
-protected:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
-
 signals:
     void dataChanged(int id);
     void dataAboutToBeAdded(int id);
@@ -75,6 +71,10 @@ protected:
     QMap<quint64, DLData *> _dataMap;
     QList<DLData *> _dataList;
     QTimer _timer;
+
+    // NodeOdSubscriber interface
+protected:
+    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
 #endif // DATALOGGER_H

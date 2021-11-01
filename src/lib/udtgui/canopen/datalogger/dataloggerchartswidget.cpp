@@ -34,6 +34,8 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
     : QChartView(parent)
 {
     _dataLogger = nullptr;
+    _rollingEnabled = false;
+    _rollingTimeMs = 1000;
 
     setStyleSheet("QAbstractScrollArea {padding: 0px;}");
 
@@ -49,7 +51,7 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
     setChart(_chart);
 
     _axisX = new QtCharts::QDateTimeAxis();
-    _axisX->setTickCount(10);
+    _axisX->setTickCount(11);
     _axisX->setFormat("hh:mm:ss");
     //_axisX->setTitleText("Time");
 
@@ -92,46 +94,62 @@ void DataLoggerChartsWidget::setDataLogger(DataLogger *dataLogger)
 
 void DataLoggerChartsWidget::updateDlData(int id)
 {
-    if (id < _series.count())
+    if (id >= _series.count())
     {
-        DLData *dlData = _dataLogger->data(id);
-        QtCharts::QXYSeries *serie = _series[id];
-        if (dlData->values().isEmpty())
+        return;
+    }
+
+    DLData *dlData = _dataLogger->data(id);
+    QtCharts::QXYSeries *serie = _series[id];
+    if (dlData->values().isEmpty())
+    {
+        serie->clear();
+        return;
+    }
+
+    serie->append(dlData->lastDateTime().toMSecsSinceEpoch(), dlData->lastValue());
+
+    if (serie->color() != dlData->color())
+    {
+        serie->setPen(QPen(dlData->color(), 2));
+    }
+
+    QDateTime firstDateTime = _dataLogger->firstDateTime();
+    QDateTime lastDateTime = _dataLogger->lastDateTime();
+
+    if (_rollingEnabled) // rolling mode
+    {
+        // TODO FIXME
+        /*if (serie->count() > _rollingTimeMs)
         {
-            serie->clear();
-            return;
-        }
-
-        serie->append(dlData->lastDateTime().toMSecsSinceEpoch(), dlData->lastValue());
-
-        if (serie->color() != dlData->color())
-        {
-            serie->setPen(QPen(dlData->color(), 2));
-        }
-
-        qreal min = qFloor(_dataLogger->min());
-        qreal max = qCeil(_dataLogger->max());
-        qreal border = qMax(qCeil((max - min) * .1), 1);
-        qreal range = max - min + 2 * border;
-        if (min < _axisY->min() || min + border > _axisY->min() || max > _axisY->max() || max - border < _axisY->max())
-        {
-            _axisY->setRange(min - border, max + border);
-            if (range < 10.0)
-            {
-                _axisY->setTickCount(range + 1);
-            }
-            else if (range < 20.0)
-            {
-                _axisY->setTickCount(range / 2.0 + 1);
-            }
-        }
-
-        QDateTime firstDateTime = _dataLogger->firstDateTime();
-        QDateTime lastDateTime = _dataLogger->lastDateTime();
+            serie->removePoints(0, serie->count() - _rollingTimeMs);
+        }*/
+        firstDateTime = _dataLogger->lastDateTime().addMSecs(-10 * _rollingTimeMs);
+        _axisX->setRange(firstDateTime, lastDateTime);
+    }
+    else
+    {
         if (firstDateTime != _axisX->min() || lastDateTime > _axisX->max())
         {
             qint64 msDiff = firstDateTime.msecsTo(lastDateTime);
             _axisX->setRange(firstDateTime, lastDateTime.addMSecs(msDiff / 5));
+        }
+    }
+
+    qreal min = qFloor(_dataLogger->min());
+    qreal max = qCeil(_dataLogger->max());
+    qreal border = qMax(qCeil((max - min) * .1), 1);
+    qreal range = max - min + 2 * border;
+    if (min < _axisY->min() || min + border > _axisY->min() || max > _axisY->max() || max - border < _axisY->max())
+    {
+        _axisY->setRange(min - border, max + border);
+        if (range < 10.0)
+        {
+            _axisY->setTickCount(range + 1);
+        }
+        else if (range < 20.0)
+        {
+            _axisY->setTickCount(range / 2.0 + 1);
         }
     }
 }
@@ -183,6 +201,26 @@ void DataLoggerChartsWidget::removeDataPrepare(int id)
 void DataLoggerChartsWidget::removeDataOk()
 {
     _idPending = -1;
+}
+
+int DataLoggerChartsWidget::rollingTimeMs() const
+{
+    return _rollingTimeMs;
+}
+
+void DataLoggerChartsWidget::setRollingTimeMs(int rollingTimeMs)
+{
+    _rollingTimeMs = rollingTimeMs;
+}
+
+bool DataLoggerChartsWidget::isRollingEnabled() const
+{
+    return _rollingEnabled;
+}
+
+void DataLoggerChartsWidget::setRollingEnabled(bool rollingEnabled)
+{
+    _rollingEnabled = rollingEnabled;
 }
 
 QList<QtCharts::QXYSeries *> DataLoggerChartsWidget::series() const

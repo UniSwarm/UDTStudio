@@ -96,6 +96,11 @@ double DLData::lastValue() const
     return _values.last();
 }
 
+int DLData::valuesCount() const
+{
+    return _values.size();
+}
+
 QDateTime DLData::firstDateTime() const
 {
     if (_values.isEmpty())

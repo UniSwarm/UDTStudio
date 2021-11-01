@@ -146,7 +146,7 @@ void BootloaderWidget::createWidgets()
     QLabel *iconLabel = new QLabel();
     iconLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     iconLabel->setAlignment(Qt::AlignTop | Qt::AlignCenter);
-    iconLabel->setPixmap(QPixmap(":/icons/img/icons8-tri-decroissant-48.png"));
+    iconLabel->setPixmap(QPixmap(":/icons/img/icons8-sort-desc.png"));
     hLayout->addWidget(iconLabel);
 
     hLayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));

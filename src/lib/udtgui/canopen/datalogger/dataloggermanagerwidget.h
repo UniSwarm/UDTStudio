@@ -42,9 +42,13 @@ public:
 
 protected slots:
     void toggleStartLogger(bool start);
-    void setLogTimer(int ms);
+    void setLogTimerMs(int ms);
+
     void setUseOpenGL(bool useOpenGL);
     void setViewCross(bool viewCross);
+
+    void setRollingEnabled(bool enabled);
+    void setRollingTimeMs(int ms);
 
 protected:
     DataLogger *_logger;
@@ -58,6 +62,8 @@ protected:
     QAction *_startStopAction;
     QAction *_openGLAction;
     QAction *_crossAction;
+    QAction *_rollAction;
+    QSpinBox *_rollingTimeSpinBox;
 };
 
 #endif // DATALOGGERMANAGERWIDGET_H

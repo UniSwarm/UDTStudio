@@ -48,9 +48,15 @@ public:
     QtCharts::QChart *chart() const;
     QList<QtCharts::QXYSeries *> series() const;
 
+    bool isRollingEnabled() const;
+    int rollingTimeMs() const;
+
 public slots:
     void setUseOpenGL(bool useOpenGL);
     void setViewCross(bool viewCross);
+
+    void setRollingEnabled(bool rollingEnabled);
+    void setRollingTimeMs(int rollingTimeMs);
 
     void tooltip(QPointF point, bool state);
 
@@ -71,6 +77,9 @@ private:
     QtCharts::QValueAxis *_axisY;
 
     int _idPending;
+
+    bool _rollingEnabled;
+    int _rollingTimeMs;
 
     bool _useOpenGL;
     bool _viewCross;
