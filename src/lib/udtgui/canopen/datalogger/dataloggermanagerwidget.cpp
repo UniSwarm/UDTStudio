@@ -89,6 +89,43 @@ DataLoggerChartsWidget *DataLoggerManagerWidget::chartWidget() const
 void DataLoggerManagerWidget::setChartWidget(DataLoggerChartsWidget *chartWidget)
 {
     _chartWidget = chartWidget;
+
+    connect(_chartWidget, &DataLoggerChartsWidget::useOpenGLChanged, [=] (bool changed)
+    {
+        if (changed != _openGLAction->isChecked())
+        {
+            _openGLAction->blockSignals(true);
+            _openGLAction->setChecked(changed);
+            _openGLAction->blockSignals(false);
+        }
+    });
+    connect(_chartWidget, &DataLoggerChartsWidget::viewCrossChanged, [=] (bool changed)
+    {
+        if (changed != _crossAction->isChecked())
+        {
+            _crossAction->blockSignals(true);
+            _crossAction->setChecked(changed);
+            _crossAction->blockSignals(false);
+        }
+    });
+    connect(_chartWidget, &DataLoggerChartsWidget::rollingChanged, [=] (bool changed)
+    {
+        if (changed != _rollAction->isChecked())
+        {
+            _rollAction->blockSignals(true);
+            _rollAction->setChecked(changed);
+            _rollAction->blockSignals(false);
+        }
+    });
+    connect(_chartWidget, &DataLoggerChartsWidget::rollingTimeMsChanged, [=] (int timeMs)
+    {
+        if (timeMs != _rollingTimeSpinBox->value())
+        {
+            _rollingTimeSpinBox->blockSignals(true);
+            _rollingTimeSpinBox->setValue(timeMs);
+            _rollingTimeSpinBox->blockSignals(false);
+        }
+    });
 }
 
 void DataLoggerManagerWidget::createWidgets()
@@ -140,7 +177,7 @@ void DataLoggerManagerWidget::createWidgets()
 
     _toolBar->addSeparator();
 
-    // speed
+    // open gl
     _openGLAction = _toolBar->addAction(tr("Open-GL"));
     _openGLAction->setCheckable(true);
     _openGLAction->setChecked(false);

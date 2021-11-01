@@ -92,6 +92,16 @@ void DataLoggerChartsWidget::setDataLogger(DataLogger *dataLogger)
     _dataLogger = dataLogger;
 }
 
+QList<QtCharts::QXYSeries *> DataLoggerChartsWidget::series() const
+{
+    return _series;
+}
+
+QtCharts::QChart *DataLoggerChartsWidget::chart() const
+{
+    return _chart;
+}
+
 void DataLoggerChartsWidget::updateDlData(int id)
 {
     if (id >= _series.count())
@@ -203,16 +213,6 @@ void DataLoggerChartsWidget::removeDataOk()
     _idPending = -1;
 }
 
-int DataLoggerChartsWidget::rollingTimeMs() const
-{
-    return _rollingTimeMs;
-}
-
-void DataLoggerChartsWidget::setRollingTimeMs(int rollingTimeMs)
-{
-    _rollingTimeMs = rollingTimeMs;
-}
-
 bool DataLoggerChartsWidget::isRollingEnabled() const
 {
     return _rollingEnabled;
@@ -221,16 +221,26 @@ bool DataLoggerChartsWidget::isRollingEnabled() const
 void DataLoggerChartsWidget::setRollingEnabled(bool rollingEnabled)
 {
     _rollingEnabled = rollingEnabled;
+    emit rollingChanged(rollingEnabled);
 }
 
-QList<QtCharts::QXYSeries *> DataLoggerChartsWidget::series() const
+int DataLoggerChartsWidget::rollingTimeMs() const
 {
-    return _series;
+    return _rollingTimeMs;
 }
 
-QtCharts::QChart *DataLoggerChartsWidget::chart() const
+void DataLoggerChartsWidget::setRollingTimeMs(int rollingTimeMs)
 {
-    return _chart;
+    _rollingTimeMs = rollingTimeMs;
+    emit rollingTimeMsChanged(rollingTimeMs);
+}
+
+void DataLoggerChartsWidget::tooltip(QPointF point, bool state)
+{
+    Q_UNUSED(state)
+    QLineSeries *serie = dynamic_cast<QLineSeries *>(sender());
+
+    QToolTip::showText(QCursor::pos(), QString("%1\n%2").arg(serie->name()).arg(point.y()), this, QRect());
 }
 
 bool DataLoggerChartsWidget::viewCross() const
@@ -245,14 +255,7 @@ void DataLoggerChartsWidget::setViewCross(bool viewCross)
     {
         serie->setPointsVisible(viewCross);
     }
-}
-
-void DataLoggerChartsWidget::tooltip(QPointF point, bool state)
-{
-    Q_UNUSED(state)
-    QLineSeries *serie = dynamic_cast<QLineSeries *>(sender());
-
-    QToolTip::showText(QCursor::pos(), QString("%1\n%2").arg(serie->name()).arg(point.y()), this, QRect());
+    emit viewCrossChanged(viewCross);
 }
 
 bool DataLoggerChartsWidget::useOpenGL() const
@@ -274,6 +277,8 @@ void DataLoggerChartsWidget::setUseOpenGL(bool useOpenGL)
     }
     invalidateScene();
     update();
+
+    emit useOpenGLChanged(useOpenGL);
 }
 
 void DataLoggerChartsWidget::dropEvent(QDropEvent *event)

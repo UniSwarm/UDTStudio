@@ -22,6 +22,7 @@
 #include "../../udtgui_global.h"
 
 #include <QChartView>
+
 #include <QLineSeries>
 
 #include "datalogger/datalogger.h"
@@ -42,11 +43,11 @@ public:
     DataLogger *dataLogger() const;
     void setDataLogger(DataLogger *dataLogger);
 
-    bool useOpenGL() const;
-    bool viewCross() const;
-
     QtCharts::QChart *chart() const;
     QList<QtCharts::QXYSeries *> series() const;
+
+    bool useOpenGL() const;
+    bool viewCross() const;
 
     bool isRollingEnabled() const;
     int rollingTimeMs() const;
@@ -59,6 +60,12 @@ public slots:
     void setRollingTimeMs(int rollingTimeMs);
 
     void tooltip(QPointF point, bool state);
+
+signals:
+    void useOpenGLChanged(bool);
+    void viewCrossChanged(bool);
+    void rollingChanged(bool);
+    void rollingTimeMsChanged(int);
 
 protected slots:
     void updateDlData(int id);
@@ -78,11 +85,11 @@ private:
 
     int _idPending;
 
-    bool _rollingEnabled;
-    int _rollingTimeMs;
-
     bool _useOpenGL;
     bool _viewCross;
+
+    bool _rollingEnabled;
+    int _rollingTimeMs;
 
     // QWidget interface
 protected:
