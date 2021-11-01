@@ -487,6 +487,8 @@ void PidWidget::createWidgets()
     layoutLogger->setContentsMargins(4, 4, 0, 0);
     _dataLoggerWidget = new DataLoggerWidget(_dataLogger, Qt::Vertical);
     _dataLoggerWidget->setType(DataLoggerWidget::InternalType);
+    _dataLoggerWidget->chartView()->setRollingTimeMs(1000);
+    _dataLoggerWidget->chartView()->setRollingEnabled(true);
     layoutLogger->addWidget(_dataLoggerWidget);
     widgetLogger->setLayout(layoutLogger);
     splitter->addWidget(widgetLogger);

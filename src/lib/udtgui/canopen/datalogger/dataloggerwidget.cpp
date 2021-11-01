@@ -113,6 +113,11 @@ void DataLoggerWidget::createWidgets(Qt::Orientation orientation)
     setLayout(layout);
 }
 
+DataLoggerChartsWidget *DataLoggerWidget::chartView() const
+{
+    return _chartView;
+}
+
 DataLoggerManagerWidget *DataLoggerWidget::managerWidget() const
 {
     return _dataLoggerManagerWidget;

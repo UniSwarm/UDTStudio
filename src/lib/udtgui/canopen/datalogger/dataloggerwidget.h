@@ -50,6 +50,7 @@ public:
     void setType(Type type);
 
     DataLoggerManagerWidget *managerWidget() const;
+    DataLoggerChartsWidget *chartView() const;
 
 protected:
     DataLogger *_dataLogger;
