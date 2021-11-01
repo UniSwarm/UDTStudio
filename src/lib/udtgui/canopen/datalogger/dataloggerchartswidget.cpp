@@ -134,7 +134,7 @@ void DataLoggerChartsWidget::updateDlData(int id)
         {
             serie->removePoints(0, serie->count() - _rollingTimeMs);
         }*/
-        firstDateTime = _dataLogger->lastDateTime().addMSecs(-10 * _rollingTimeMs);
+        firstDateTime = _dataLogger->lastDateTime().addMSecs(-_rollingTimeMs);
         _axisX->setRange(firstDateTime, lastDateTime);
     }
     else
