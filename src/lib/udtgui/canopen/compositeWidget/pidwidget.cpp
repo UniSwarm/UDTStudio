@@ -510,7 +510,7 @@ QToolBar *PidWidget::createToolBarWidgets()
 
     // start stop
     toolBar->addAction(_dataLoggerWidget->managerWidget()->startStopAction());
-    connect(_dataLoggerWidget->managerWidget()->startStopAction(), &QAction::triggered, this, &PidWidget::toggleStartLogger);
+    connect(_dataLogger, &DataLogger::startChanged, this, &PidWidget::toggleStartLogger);
 
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
