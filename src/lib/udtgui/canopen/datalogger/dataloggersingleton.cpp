@@ -68,23 +68,35 @@ DataLoggerSingleton::~DataLoggerSingleton()
 void DataLoggerSingleton::updateLoggersMenu()
 {
     QAction *action;
+    QString actionText;
+
     _loggersMenu->clear();
     action = _loggersMenu->addAction(tr("Stop all"));
     connect(action, &QAction::triggered, this, &DataLoggerSingleton::stopAll);
 
     _loggersMenu->addSection(tr("Loggers list"));
-    for (DataLoggerWidget *logger : qAsConst(_dataLoggerWidgets))
+    for (DataLoggerWidget *loggerWidget : qAsConst(_dataLoggerWidgets))
     {
-        switch (logger->type())
+        switch (loggerWidget->type())
         {
-        case DataLoggerWidget::UserType:
-        case DataLoggerWidget::DockType:
-            action = _loggersMenu->addAction(logger->title());
-            // action
-            break;
+            case DataLoggerWidget::UserType:
+            case DataLoggerWidget::DockType:
+                actionText = loggerWidget->title();
+                if (loggerWidget->dataLogger()->isStarted())
+                {
+                    actionText.append(tr(" (Running)"));
+                }
+                action = _loggersMenu->addAction(actionText);
+                // action
+                break;
 
-        case DataLoggerWidget::InternalType:
-            break;
+            case DataLoggerWidget::InternalType:
+                if (loggerWidget->dataLogger()->isStarted())
+                {
+                    action = _loggersMenu->addAction(loggerWidget->title() + tr(" (Running)"));
+                    // action
+                }
+                break;
         }
     }
 }
