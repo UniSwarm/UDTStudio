@@ -203,14 +203,18 @@ void MainWindow::createMenus()
 
     action = new QAction(tr("Export DCF file"), this);
     action->setShortcut(QKeySequence::SaveAs);
+    action->setEnabled(false);
     connect(action, &QAction::triggered, this, &MainWindow::exportDCF);
     nodeMenu->addAction(action);
+    connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, action, &QAction::setEnabled);
 
     action = new QAction(tr("Save conf file"), this);
+    action->setEnabled(false);
     connect(action, &QAction::triggered, this, &MainWindow::exportCfgFile);
     nodeMenu->addAction(action);
-    nodeMenu->addSeparator();
+    connect(_busNodesManagerView, &BusNodesManagerView::nodeSelected, action, &QAction::setEnabled);
 
+    nodeMenu->addSeparator();
     nodeMenu->addAction(_busNodesManagerView->nodeManagerWidget()->actionUpdateFirmware());
 
     // ============= Loggers =============
