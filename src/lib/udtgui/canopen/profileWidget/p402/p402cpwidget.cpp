@@ -303,7 +303,7 @@ QHBoxLayout *P402CpWidget::buttonWidgets()
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402CpWidget::dataLogger);
 
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Mapping Pdo"));
+    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map CP to PDOs"));
     connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402CpWidget::pdoMapping);
 
     QPixmap ipModePixmap;

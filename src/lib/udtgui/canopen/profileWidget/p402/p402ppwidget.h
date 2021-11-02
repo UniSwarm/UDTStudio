@@ -110,7 +110,7 @@ private:
     void updateInformationLabel(void);
 
     void createDataLogger();
-    void pdoMapping();
+    void mapDefaultObjects();
 
     // Create widgets
     QFormLayout *_modeLayout;

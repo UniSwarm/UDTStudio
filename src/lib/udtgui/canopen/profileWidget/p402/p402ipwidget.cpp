@@ -290,16 +290,15 @@ void P402IpWidget::createDataLogger()
     _dataLoggerWidget->activateWindow();
 }
 
-void P402IpWidget::pdoMapping()
+void P402IpWidget::mapDefaultObjects()
 {
     NodeObjectId controlWordObjectId = _nodeProfile402->controlWordObjectId();
-    NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
-
     QList<NodeObjectId> ipRpdoObjectList = {controlWordObjectId, _positionTargetObjectId};
     _nodeProfile402->node()->rpdos().at(0)->writeMapping(ipRpdoObjectList);
 
+    NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
     QList<NodeObjectId> ipTpdoObjectList = {statusWordObjectId, _positionDemandValueObjectId};
-    _nodeProfile402->node()->tpdos().at(2)->writeMapping(ipTpdoObjectList);
+    _nodeProfile402->node()->tpdos().at(0)->writeMapping(ipTpdoObjectList);
 }
 
 void P402IpWidget::createWidgets()
@@ -514,8 +513,8 @@ QHBoxLayout *P402IpWidget::buttonWidgets()
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402IpWidget::createDataLogger);
 
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Mapping Pdo"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402IpWidget::pdoMapping);
+    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map IP to PDOs"));
+    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402IpWidget::mapDefaultObjects);
 
     QPixmap ipModePixmap;
     QLabel *ipModeLabel;

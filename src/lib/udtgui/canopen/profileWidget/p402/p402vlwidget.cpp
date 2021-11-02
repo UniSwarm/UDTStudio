@@ -243,16 +243,15 @@ void P402VlWidget::createDataLogger()
     _dataLoggerWidget->activateWindow();
 }
 
-void P402VlWidget::pdoMapping()
+void P402VlWidget::mapDefaultObjects()
 {
     NodeObjectId controlWordObjectId = _nodeProfile402->controlWordObjectId();
-    NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
-
     QList<NodeObjectId> vlRpdoObjectList = {controlWordObjectId, _velocityTargetObjectId};
     _nodeProfile402->node()->rpdos().at(0)->writeMapping(vlRpdoObjectList);
 
+    NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
     QList<NodeObjectId> vlTpdoObjectList = {statusWordObjectId, _velocityDemandObjectId};
-    _nodeProfile402->node()->tpdos().at(2)->writeMapping(vlTpdoObjectList);
+    _nodeProfile402->node()->tpdos().at(0)->writeMapping(vlTpdoObjectList);
 }
 
 void P402VlWidget::createWidgets()
@@ -485,8 +484,8 @@ QHBoxLayout *P402VlWidget::buttonWidgets()
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402VlWidget::createDataLogger);
 
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Mapping Pdo"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402VlWidget::pdoMapping);
+    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map VL to PDOs"));
+    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402VlWidget::mapDefaultObjects);
 
     QPixmap modePixmap;
     QLabel *vlModeLabel;

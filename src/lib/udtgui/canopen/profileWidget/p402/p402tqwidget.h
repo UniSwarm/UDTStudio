@@ -74,7 +74,7 @@ private:
 
     void setZeroButton();
     void createDataLogger();
-    void pdoMapping();
+    void mapDefaultObjects();
 
     // Create widgets
     QFormLayout *_modeLayout;
