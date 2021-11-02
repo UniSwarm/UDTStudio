@@ -26,6 +26,11 @@ DataLogger::DataLogger(QObject *parent)
     connect(&_timer, &QTimer::timeout, this, &DataLogger::readData);
 }
 
+DataLogger::~DataLogger()
+{
+    removeAllData();
+}
+
 bool DataLogger::isStarted() const
 {
     return _timer.isActive();
