@@ -109,7 +109,7 @@ private:
 
     void updateInformationLabel(void);
 
-    void dataLogger();
+    void createDataLogger();
     void pdoMapping();
 
     // Create widgets

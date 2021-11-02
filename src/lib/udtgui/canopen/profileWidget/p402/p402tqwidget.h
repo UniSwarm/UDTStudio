@@ -73,7 +73,7 @@ private:
     void maxTorqueSpinboxFinished();
 
     void setZeroButton();
-    void dataLogger();
+    void createDataLogger();
     void pdoMapping();
 
     // Create widgets

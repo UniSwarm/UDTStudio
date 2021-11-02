@@ -129,14 +129,21 @@ void P402TqWidget::setZeroButton()
     _nodeProfile402->setTarget(0);
 }
 
-void P402TqWidget::dataLogger()
+void P402TqWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
+
     dataLogger->addData(_torqueActualValueObjectId);
     dataLogger->addData(_torqueTargetObjectId);
     dataLogger->addData(_torqueDemandObjectId);
+
+    _dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
+    connect(_dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
+
     _dataLoggerWidget->show();
+    _dataLoggerWidget->raise();
+    _dataLoggerWidget->activateWindow();
 }
 
 void P402TqWidget::pdoMapping()
@@ -250,7 +257,7 @@ void P402TqWidget::slopeWidgets()
 QHBoxLayout *P402TqWidget::buttonWidgets()
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402TqWidget::dataLogger);
+    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402TqWidget::createDataLogger);
 
     QPushButton *mappingPdoPushButton = new QPushButton(tr("Mapping Pdo"));
     connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402TqWidget::pdoMapping);

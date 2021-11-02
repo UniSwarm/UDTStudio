@@ -226,7 +226,7 @@ void P402VlWidget::updateInformationLabel()
     _infoLabel->setText(text);
 }
 
-void P402VlWidget::dataLogger()
+void P402VlWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
@@ -235,7 +235,12 @@ void P402VlWidget::dataLogger()
     dataLogger->addData(_velocityTargetObjectId);
     dataLogger->addData(_velocityDemandObjectId);
 
+    _dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
+    connect(_dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
+
     _dataLoggerWidget->show();
+    _dataLoggerWidget->raise();
+    _dataLoggerWidget->activateWindow();
 }
 
 void P402VlWidget::pdoMapping()
@@ -478,7 +483,7 @@ QGroupBox *P402VlWidget::controlWordWidgets()
 QHBoxLayout *P402VlWidget::buttonWidgets()
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402VlWidget::dataLogger);
+    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402VlWidget::createDataLogger);
 
     QPushButton *mappingPdoPushButton = new QPushButton(tr("Mapping Pdo"));
     connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402VlWidget::pdoMapping);

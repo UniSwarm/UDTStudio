@@ -64,7 +64,7 @@ private:
     void maxSpinboxFinished();
 
     void setZeroButton();
-    void dataLogger();
+    void createDataLogger();
     void pdoMapping();
 
     // Create widgets

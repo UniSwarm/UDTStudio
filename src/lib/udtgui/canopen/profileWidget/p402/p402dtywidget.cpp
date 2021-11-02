@@ -123,13 +123,20 @@ void P402DtyWidget::setZeroButton()
     _nodeProfile402->setTarget(0);
 }
 
-void P402DtyWidget::dataLogger()
+void P402DtyWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
+
     dataLogger->addData(_targetObjectId);
     dataLogger->addData(_demandObjectId);
+
+    _dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
+    connect(_dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
+
     _dataLoggerWidget->show();
+    _dataLoggerWidget->raise();
+    _dataLoggerWidget->activateWindow();
 }
 
 void P402DtyWidget::pdoMapping()
@@ -238,7 +245,7 @@ void P402DtyWidget::slopeWidgets()
 QHBoxLayout *P402DtyWidget::buttonWidgets()
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402DtyWidget::dataLogger);
+    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402DtyWidget::createDataLogger);
 
     QPushButton *mappingPdoPushButton = new QPushButton(tr("Mapping Pdo"));
     connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402DtyWidget::pdoMapping);
