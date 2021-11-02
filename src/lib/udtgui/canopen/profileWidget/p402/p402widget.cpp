@@ -589,7 +589,6 @@ QGroupBox *P402Widget::modeWidgets()
 QGroupBox *P402Widget::stateMachineWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("State Machine"));
-    groupBox->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
     QFormLayout *layout = new QFormLayout();
 
     _stateMachineButtonGroup = new QButtonGroup(this);
@@ -601,31 +600,45 @@ QGroupBox *P402Widget::stateMachineWidgets()
     _stateMachineButtonGroup->addButton(stateNotReadyToSwitchOnPushButton, NodeProfile402::STATE_NotReadyToSwitchOn);
 
     QPushButton *stateSwitchOnDisabledPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_SwitchOnDisabled));
+    stateSwitchOnDisabledPushButton->setStyleSheet("QPushButton:checked { background-color : #ffa500; }" \
+                                                   "QPushButton:checked:hover { border: 1px solid #7f5200; }");
     layout->addRow(stateSwitchOnDisabledPushButton);
     _stateMachineButtonGroup->addButton(stateSwitchOnDisabledPushButton, NodeProfile402::STATE_SwitchOnDisabled);
 
     QPushButton *stateReadyToSwitchOnPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_ReadyToSwitchOn));
+    stateReadyToSwitchOnPushButton->setStyleSheet("QPushButton:checked { background-color : #ffa500; }" \
+                                                  "QPushButton:checked:hover { border: 1px solid #7f5200; }");
     layout->addRow(stateReadyToSwitchOnPushButton);
     _stateMachineButtonGroup->addButton(stateReadyToSwitchOnPushButton, NodeProfile402::STATE_ReadyToSwitchOn);
 
     QPushButton *stateSwitchedOnPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_SwitchedOn));
+    stateSwitchedOnPushButton->setStyleSheet("QPushButton:checked { background-color : #ffa500; }" \
+                                             "QPushButton:checked:hover { border: 1px solid #7f5200; }");
     layout->addRow(stateSwitchedOnPushButton);
     _stateMachineButtonGroup->addButton(stateSwitchedOnPushButton, NodeProfile402::STATE_SwitchedOn);
 
     QPushButton *stateOperationEnabledPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_OperationEnabled));
+    stateOperationEnabledPushButton->setStyleSheet("QPushButton:checked { background-color : #008000; }" \
+                                                   "QPushButton:checked:hover { border: 1px solid #004000; }");
     layout->addRow(stateOperationEnabledPushButton);
     _stateMachineButtonGroup->addButton(stateOperationEnabledPushButton, NodeProfile402::STATE_OperationEnabled);
 
     QPushButton *stateQuickStopActivePushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_QuickStopActive));
+    stateQuickStopActivePushButton->setStyleSheet("QPushButton:checked { background-color : #148CD2; }" \
+                                                  "QPushButton:checked:hover { border: 1px solid #094669; }");
     layout->addRow(stateQuickStopActivePushButton);
     _stateMachineButtonGroup->addButton(stateQuickStopActivePushButton, NodeProfile402::STATE_QuickStopActive);
 
     QPushButton *stateFaultReactionActivePushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_FaultReactionActive));
+    stateFaultReactionActivePushButton->setStyleSheet("QPushButton:checked { background-color : #ff0000; }" \
+                                                      "QPushButton:checked:hover { border: 1px solid #7f0000; }");
     stateFaultReactionActivePushButton->setEnabled(false);
     layout->addRow(stateFaultReactionActivePushButton);
     _stateMachineButtonGroup->addButton(stateFaultReactionActivePushButton, NodeProfile402::STATE_FaultReactionActive);
 
     QPushButton *stateFaultPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_Fault));
+    stateFaultPushButton->setStyleSheet("QPushButton:checked { background-color : #ff0000; }" \
+                                        "QPushButton:checked:hover { border: 1px solid #7f0000; }");
     stateFaultPushButton->setEnabled(false);
     layout->addRow(stateFaultPushButton);
     _stateMachineButtonGroup->addButton(stateFaultPushButton, NodeProfile402::STATE_Fault);
