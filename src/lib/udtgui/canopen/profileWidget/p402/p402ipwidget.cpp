@@ -278,6 +278,7 @@ void P402IpWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
+    _dataLoggerWidget->setTitle(tr("Node %1 axis %2 IP").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
 
     dataLogger->addData(_positionDemandValueObjectId);
     dataLogger->addData(_positionActualValueObjectId);
