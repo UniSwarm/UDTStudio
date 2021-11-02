@@ -92,14 +92,76 @@ void DataLoggerChartsWidget::setDataLogger(DataLogger *dataLogger)
     _dataLogger = dataLogger;
 }
 
+QtCharts::QChart *DataLoggerChartsWidget::chart() const
+{
+    return _chart;
+}
+
 QList<QtCharts::QXYSeries *> DataLoggerChartsWidget::series() const
 {
     return _series;
 }
 
-QtCharts::QChart *DataLoggerChartsWidget::chart() const
+bool DataLoggerChartsWidget::useOpenGL() const
 {
-    return _chart;
+    return _useOpenGL;
+}
+
+void DataLoggerChartsWidget::setUseOpenGL(bool useOpenGL)
+{
+    _useOpenGL = useOpenGL;
+    for (QXYSeries *serie : qAsConst(_series))
+    {
+        serie->setUseOpenGL(useOpenGL);
+    }
+    QList<QOpenGLWidget *> glWidgets = findChildren<QOpenGLWidget *>();
+    for (QOpenGLWidget *glWidget : qAsConst(glWidgets))
+    {
+        glWidget->update();
+    }
+    invalidateScene();
+    update();
+
+    emit useOpenGLChanged(useOpenGL);
+}
+
+bool DataLoggerChartsWidget::viewCross() const
+{
+    return _viewCross;
+}
+
+void DataLoggerChartsWidget::setViewCross(bool viewCross)
+{
+    _viewCross = viewCross;
+    for (QXYSeries *serie : qAsConst(_series))
+    {
+        serie->setPointsVisible(viewCross);
+    }
+    emit viewCrossChanged(viewCross);
+}
+
+bool DataLoggerChartsWidget::isRollingEnabled() const
+{
+    return _rollingEnabled;
+}
+
+void DataLoggerChartsWidget::setRollingEnabled(bool rollingEnabled)
+{
+    _rollingEnabled = rollingEnabled;
+    updateYaxis();
+    emit rollingChanged(rollingEnabled);
+}
+
+int DataLoggerChartsWidget::rollingTimeMs() const
+{
+    return _rollingTimeMs;
+}
+
+void DataLoggerChartsWidget::setRollingTimeMs(int rollingTimeMs)
+{
+    _rollingTimeMs = rollingTimeMs;
+    updateYaxis();
+    emit rollingTimeMsChanged(rollingTimeMs);
 }
 
 void DataLoggerChartsWidget::updateDlData(int id)
@@ -124,27 +186,7 @@ void DataLoggerChartsWidget::updateDlData(int id)
         serie->setPen(QPen(dlData->color(), 2));
     }
 
-    QDateTime firstDateTime = _dataLogger->firstDateTime();
-    QDateTime lastDateTime = _dataLogger->lastDateTime();
-
-    if (_rollingEnabled) // rolling mode
-    {
-        // TODO FIXME
-        /*if (serie->count() > _rollingTimeMs)
-        {
-            serie->removePoints(0, serie->count() - _rollingTimeMs);
-        }*/
-        firstDateTime = _dataLogger->lastDateTime().addMSecs(-_rollingTimeMs);
-        _axisX->setRange(firstDateTime, lastDateTime);
-    }
-    else
-    {
-        if (firstDateTime != _axisX->min() || lastDateTime > _axisX->max())
-        {
-            qint64 msDiff = firstDateTime.msecsTo(lastDateTime);
-            _axisX->setRange(firstDateTime, lastDateTime.addMSecs(msDiff / 5));
-        }
-    }
+    updateYaxis();
 
     qreal min = qFloor(_dataLogger->min());
     qreal max = qCeil(_dataLogger->max());
@@ -213,26 +255,28 @@ void DataLoggerChartsWidget::removeDataOk()
     _idPending = -1;
 }
 
-bool DataLoggerChartsWidget::isRollingEnabled() const
+void DataLoggerChartsWidget::updateYaxis()
 {
-    return _rollingEnabled;
-}
+    QDateTime firstDateTime = _dataLogger->firstDateTime();
+    QDateTime lastDateTime = _dataLogger->lastDateTime();
 
-void DataLoggerChartsWidget::setRollingEnabled(bool rollingEnabled)
-{
-    _rollingEnabled = rollingEnabled;
-    emit rollingChanged(rollingEnabled);
-}
-
-int DataLoggerChartsWidget::rollingTimeMs() const
-{
-    return _rollingTimeMs;
-}
-
-void DataLoggerChartsWidget::setRollingTimeMs(int rollingTimeMs)
-{
-    _rollingTimeMs = rollingTimeMs;
-    emit rollingTimeMsChanged(rollingTimeMs);
+    if (_rollingEnabled) // rolling mode
+    {
+        /*if (serie->count() > _rollingTimeMs)
+        {
+            serie->removePoints(0, serie->count() - _rollingTimeMs);
+        }*/
+        firstDateTime = _dataLogger->lastDateTime().addMSecs(-_rollingTimeMs);
+        _axisX->setRange(firstDateTime, lastDateTime);
+    }
+    else
+    {
+        if (firstDateTime != _axisX->min() || lastDateTime > _axisX->max())
+        {
+            qint64 msDiff = firstDateTime.msecsTo(lastDateTime);
+            _axisX->setRange(firstDateTime, lastDateTime.addMSecs(msDiff / 5));
+        }
+    }
 }
 
 void DataLoggerChartsWidget::tooltip(QPointF point, bool state)
@@ -241,44 +285,6 @@ void DataLoggerChartsWidget::tooltip(QPointF point, bool state)
     QLineSeries *serie = dynamic_cast<QLineSeries *>(sender());
 
     QToolTip::showText(QCursor::pos(), QString("%1\n%2").arg(serie->name()).arg(point.y()), this, QRect());
-}
-
-bool DataLoggerChartsWidget::viewCross() const
-{
-    return _viewCross;
-}
-
-void DataLoggerChartsWidget::setViewCross(bool viewCross)
-{
-    _viewCross = viewCross;
-    for (QXYSeries *serie : qAsConst(_series))
-    {
-        serie->setPointsVisible(viewCross);
-    }
-    emit viewCrossChanged(viewCross);
-}
-
-bool DataLoggerChartsWidget::useOpenGL() const
-{
-    return _useOpenGL;
-}
-
-void DataLoggerChartsWidget::setUseOpenGL(bool useOpenGL)
-{
-    _useOpenGL = useOpenGL;
-    for (QXYSeries *serie : qAsConst(_series))
-    {
-        serie->setUseOpenGL(useOpenGL);
-    }
-    QList<QOpenGLWidget *> glWidgets = findChildren<QOpenGLWidget *>();
-    for (QOpenGLWidget *glWidget : qAsConst(glWidgets))
-    {
-        glWidget->update();
-    }
-    invalidateScene();
-    update();
-
-    emit useOpenGLChanged(useOpenGL);
 }
 
 void DataLoggerChartsWidget::dropEvent(QDropEvent *event)

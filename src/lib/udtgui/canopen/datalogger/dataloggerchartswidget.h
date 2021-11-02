@@ -75,6 +75,9 @@ protected slots:
     void removeDataPrepare(int id);
     void removeDataOk();
 
+protected:
+    void updateYaxis();
+
 private:
     DataLogger *_dataLogger;
 
