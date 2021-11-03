@@ -123,11 +123,6 @@ public:
 
     QString sdoAbort(quint32 error);
 
-signals:
-    void sdoFree();
-    void dataObjetAvailable(NodeIndex *nodeIndex);
-    void dataObjetWritten();
-
 private:
     quint32 _cobIdClientToServer;
     quint32 _cobIdServerToClient;
@@ -172,18 +167,18 @@ private:
 
     RequestSdo *_requestCurrent;
     QQueue<RequestSdo *> _requestQueue;
-    Status _state;
+    Status _status;
 
     bool uploadDispatcher();
     bool downloadDispatcher();
 
     void sendErrorSdoToDevice(SDOAbortCodes error);
     void setErrorToObject(SDOAbortCodes error);
-    void requestFinished();
+    void endRequest();
     void nextRequest();
 
-    int _time;
-    QTimer *_timer;
+    int _requestTimeout;
+    QTimer *_timeoutTimer;
     void timeout();
 
     quint16 indexFromFrame(const QCanBusFrame &frame);

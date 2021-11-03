@@ -17,15 +17,16 @@
  **/
 
 #include "sdo.h"
+
 #include "canopenbus.h"
+
 #include <QDataStream>
 #include <QDebug>
 #include <QThread>
 
-#define ATTEMPT_ERROR_MAX   3
+#define ATTEMPT_ERROR_MAX 3
 
-SDO::SDO(Node *node)
-    : Service(node)
+SDO::SDO(Node *node) : Service(node)
 {
     _nodeId = node->nodeId();
     _cobIdClientToServer = 0x600;
@@ -33,17 +34,17 @@ SDO::SDO(Node *node)
     _cobIds.append(_cobIdClientToServer + _nodeId);
     _cobIds.append(_cobIdServerToClient + _nodeId);
 
-    _time = 1800;
-    _timer = new QTimer(this);
-    connect(_timer, &QTimer::timeout, this, &SDO::timeout);
+    _requestTimeout = 1800;
+    _timeoutTimer = new QTimer(this);
+    connect(_timeoutTimer, &QTimer::timeout, this, &SDO::timeout);
 
-    _state = SDO_STATE_FREE;
+    _status = SDO_STATE_FREE;
     _requestCurrent = nullptr;
 }
 
 SDO::~SDO()
 {
-    delete _timer;
+    delete _timeoutTimer;
 }
 
 QString SDO::type() const
@@ -83,10 +84,10 @@ void SDO::parseFrame(const QCanBusFrame &frame)
 
 void SDO::reset()
 {
-    _timer->stop();
+    _timeoutTimer->stop();
     qDeleteAll(_requestQueue);
     _requestQueue.clear();
-    _state = SDO_STATE_FREE;
+    _status = SDO_STATE_FREE;
 }
 
 /**
@@ -123,44 +124,44 @@ void SDO::processingFrameFromServer(const QCanBusFrame &frame)
 
     quint8 scs = static_cast<quint8>(frame.payload().at(0) & SDO_CSS_MASK);
 
-    _timer->stop();
+    _timeoutTimer->stop();
     switch (scs)
     {
-    case SCS::SDO_SCS_SERVER_UPLOAD_INITIATE:
-        sdoUploadInitiate(frame);
-        break;
+        case SCS::SDO_SCS_SERVER_UPLOAD_INITIATE:
+            sdoUploadInitiate(frame);
+            break;
 
-    case SCS::SDO_SCS_SERVER_UPLOAD_SEGMENT:
-        sdoUploadSegment(frame);
-        break;
+        case SCS::SDO_SCS_SERVER_UPLOAD_SEGMENT:
+            sdoUploadSegment(frame);
+            break;
 
-    case SCS::SDO_SCS_SERVER_BLOCK_UPLOAD:
-        sdoBlockUpload(frame);
-        break;
+        case SCS::SDO_SCS_SERVER_BLOCK_UPLOAD:
+            sdoBlockUpload(frame);
+            break;
 
-    case SCS::SDO_SCS_SERVER_DOWNLOAD_INITIATE:
-        sdoDownloadInitiate(frame);
-        break;
+        case SCS::SDO_SCS_SERVER_DOWNLOAD_INITIATE:
+            sdoDownloadInitiate(frame);
+            break;
 
-    case SCS::SDO_SCS_SERVER_DOWNLOAD_SEGMENT:
-        sdoDownloadSegment(frame);
-        break;
+        case SCS::SDO_SCS_SERVER_DOWNLOAD_SEGMENT:
+            sdoDownloadSegment(frame);
+            break;
 
-    case SCS::SDO_SCS_SERVER_BLOCK_DOWNLOAD:
-        sdoBlockDownload(frame);
-        break;
+        case SCS::SDO_SCS_SERVER_BLOCK_DOWNLOAD:
+            sdoBlockDownload(frame);
+            break;
 
-    case SCS::SDO_SCS_CLIENT_ABORT:
-    {
-        quint32 error = arrangeDataUpload(frame.payload().mid(4, 4), QMetaType::Type::UInt).toUInt();
-        qDebug() << "ABORT received : Index :" << QString::number(indexFromFrame(frame), 16).toUpper() << ", SubIndex :" << QString::number(subIndexFromFrame(frame), 16).toUpper()
-                 << ", abort :" << QString::number(error, 16).toUpper() << sdoAbort(error);
+        case SCS::SDO_SCS_CLIENT_ABORT:
+        {
+            quint32 error = arrangeDataUpload(frame.payload().mid(4, 4), QMetaType::Type::UInt).toUInt();
+            qDebug() << "ABORT received : Index :" << QString::number(indexFromFrame(frame), 16).toUpper()
+                     << ", SubIndex :" << QString::number(subIndexFromFrame(frame), 16).toUpper() << ", abort :" << QString::number(error, 16).toUpper() << sdoAbort(error);
 
-        setErrorToObject(static_cast<SDOAbortCodes>(error));
-        break;
-    }
-    default:
-        break;
+            setErrorToObject(static_cast<SDOAbortCodes>(error));
+            break;
+        }
+        default:
+            break;
     }
 }
 
@@ -179,77 +180,77 @@ bool SDO::hasRequestPending()
  */
 SDO::Status SDO::status() const
 {
-    return _state;
+    return _status;
 }
 
 QString SDO::sdoAbort(quint32 error)
 {
     switch (error)
     {
-    case SDO::CO_SDO_ABORT_CODE_BIT_NOT_ALTERNATED:
-        return QString("Toggle bit not alternated");
-    case SDO::CO_SDO_ABORT_CODE_TIMED_OUT:
-        return QString("SDO protocol timed out");
-    case SDO::CO_SDO_ABORT_CODE_CMD_NOT_VALID:
-        return QString("Client/server command specifier not valid or unknown");
-    case SDO::CO_SDO_ABORT_CODE_INVALID_BLOCK_SIZE:
-        return QString("Invalid block size (block mode only)");
-    case SDO::CO_SDO_ABORT_CODE_INVALID_SEQ_NUMBER:
-        return QString("Invalid sequence number (block mode only)");
-    case SDO::CO_SDO_ABORT_CODE_CRC_ERROR:
-        return QString("CRC error (block mode only)");
-    case SDO::CO_SDO_ABORT_CODE_OUT_OF_MEMORY:
-        return QString("Out of memory");
-    case SDO::CO_SDO_ABORT_CODE_UNSUPPORTED_ACCESS:
-        return QString("Unsupported access to an object");
-    case SDO::CO_SDO_ABORT_CODE_WRITE_ONLY:
-        return QString("Attempt to read a write only object");
-    case SDO::CO_SDO_ABORT_CODE_READ_ONLY:
-        return QString("Attempt to write a read only object");
-    case SDO::CO_SDO_ABORT_CODE_NO_OBJECT:
-        return QString("Object does not exist in the object dictionary");
-    case SDO::CO_SDO_ABORT_CODE_NO_SUBINDEX:
-        return QString("Sub-index does not exist");
-    case SDO::CO_SDO_ABORT_CODE_CANNOT_MAP_PDO:
-        return QString("Object cannot be mapped to the PDO");
-    case SDO::CO_SDO_ABORT_CODE_EXCEED_PDO_LENGTH:
-        return QString("The number and length of the objects to be mapped would exceed PDO length");
-    case SDO::CO_SDO_ABORT_CODE_PARAM_IMCOMPATIBILITY:
-        return QString("General parameter incompatibility reason");
-    case SDO::CO_SDO_ABORT_CODE_ITRN_IMCOMPATIBILITY:
-        return QString("General internal incompatibility in the device");
-    case SDO::CO_SDO_ABORT_CODE_FAILED_HARDWARE_ERR:
-        return QString("Access failed due to an hardware error");
-    case SDO::CO_SDO_ABORT_CODE_LENGTH_DOESNT_MATCH:
-        return QString("Data type does not match, length of service parameter does not match");
-    case SDO::CO_SDO_ABORT_CODE_LENGTH_TOO_HIGH:
-        return QString("Data type does not match, length of service parameter too high");
-    case SDO::CO_SDO_ABORT_CODE_LENGTH_TOO_LOW:
-        return QString("Data type does not match, length of service parameter too low");
-    case SDO::CO_SDO_ABORT_CODE_INVALID_VALUE:
-        return QString("Invalid value for parameter (download only)");
-    case SDO::CO_SDO_ABORT_CODE_VALUE_TOO_HIGH:
-        return QString("Value of parameter written too high (download only)");
-    case SDO::CO_SDO_ABORT_CODE_VALUE_TOO_LOW:
-        return QString("Value of parameter written too low (download only)");
-    case SDO::CO_SDO_ABORT_CODE_MAX_VALUE_LESS_MIN:
-        return QString("Maximum value is less than minimum value");
-    case SDO::CO_SDO_ABORT_CODE_RESRC_NOT_AVAILABLE:
-        return QString("esource not available: SDO connection");
-    case SDO::CO_SDO_ABORT_CODE_GENERAL_ERROR:
-        return QString("General error");
-    case SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_1:
-        return QString("Data cannot be transferred or stored to the application");
-    case SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_2:
-        return QString("Data cannot be transferred or stored to the application because of local control");
-    case SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_3:
-        return QString("Data cannot be transferred or stored to the application because of the present device state");
-    case SDO::CO_SDO_ABORT_CODE_NO_OBJECT_DICO:
-        return QString("Object dictionary dynamic generation fails or no object dictionary is present");
-    case SDO::CO_SDO_ABORT_CODE_NO_DATA_AVAILABLE:
-        return QString("No data available");
-    default:
-        return QString("Unknown error code");
+        case SDO::CO_SDO_ABORT_CODE_BIT_NOT_ALTERNATED:
+            return QString("Toggle bit not alternated");
+        case SDO::CO_SDO_ABORT_CODE_TIMED_OUT:
+            return QString("SDO protocol timed out");
+        case SDO::CO_SDO_ABORT_CODE_CMD_NOT_VALID:
+            return QString("Client/server command specifier not valid or unknown");
+        case SDO::CO_SDO_ABORT_CODE_INVALID_BLOCK_SIZE:
+            return QString("Invalid block size (block mode only)");
+        case SDO::CO_SDO_ABORT_CODE_INVALID_SEQ_NUMBER:
+            return QString("Invalid sequence number (block mode only)");
+        case SDO::CO_SDO_ABORT_CODE_CRC_ERROR:
+            return QString("CRC error (block mode only)");
+        case SDO::CO_SDO_ABORT_CODE_OUT_OF_MEMORY:
+            return QString("Out of memory");
+        case SDO::CO_SDO_ABORT_CODE_UNSUPPORTED_ACCESS:
+            return QString("Unsupported access to an object");
+        case SDO::CO_SDO_ABORT_CODE_WRITE_ONLY:
+            return QString("Attempt to read a write only object");
+        case SDO::CO_SDO_ABORT_CODE_READ_ONLY:
+            return QString("Attempt to write a read only object");
+        case SDO::CO_SDO_ABORT_CODE_NO_OBJECT:
+            return QString("Object does not exist in the object dictionary");
+        case SDO::CO_SDO_ABORT_CODE_NO_SUBINDEX:
+            return QString("Sub-index does not exist");
+        case SDO::CO_SDO_ABORT_CODE_CANNOT_MAP_PDO:
+            return QString("Object cannot be mapped to the PDO");
+        case SDO::CO_SDO_ABORT_CODE_EXCEED_PDO_LENGTH:
+            return QString("The number and length of the objects to be mapped would exceed PDO length");
+        case SDO::CO_SDO_ABORT_CODE_PARAM_IMCOMPATIBILITY:
+            return QString("General parameter incompatibility reason");
+        case SDO::CO_SDO_ABORT_CODE_ITRN_IMCOMPATIBILITY:
+            return QString("General internal incompatibility in the device");
+        case SDO::CO_SDO_ABORT_CODE_FAILED_HARDWARE_ERR:
+            return QString("Access failed due to an hardware error");
+        case SDO::CO_SDO_ABORT_CODE_LENGTH_DOESNT_MATCH:
+            return QString("Data type does not match, length of service parameter does not match");
+        case SDO::CO_SDO_ABORT_CODE_LENGTH_TOO_HIGH:
+            return QString("Data type does not match, length of service parameter too high");
+        case SDO::CO_SDO_ABORT_CODE_LENGTH_TOO_LOW:
+            return QString("Data type does not match, length of service parameter too low");
+        case SDO::CO_SDO_ABORT_CODE_INVALID_VALUE:
+            return QString("Invalid value for parameter (download only)");
+        case SDO::CO_SDO_ABORT_CODE_VALUE_TOO_HIGH:
+            return QString("Value of parameter written too high (download only)");
+        case SDO::CO_SDO_ABORT_CODE_VALUE_TOO_LOW:
+            return QString("Value of parameter written too low (download only)");
+        case SDO::CO_SDO_ABORT_CODE_MAX_VALUE_LESS_MIN:
+            return QString("Maximum value is less than minimum value");
+        case SDO::CO_SDO_ABORT_CODE_RESRC_NOT_AVAILABLE:
+            return QString("esource not available: SDO connection");
+        case SDO::CO_SDO_ABORT_CODE_GENERAL_ERROR:
+            return QString("General error");
+        case SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_1:
+            return QString("Data cannot be transferred or stored to the application");
+        case SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_2:
+            return QString("Data cannot be transferred or stored to the application because of local control");
+        case SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_3:
+            return QString("Data cannot be transferred or stored to the application because of the present device state");
+        case SDO::CO_SDO_ABORT_CODE_NO_OBJECT_DICO:
+            return QString("Object dictionary dynamic generation fails or no object dictionary is present");
+        case SDO::CO_SDO_ABORT_CODE_NO_DATA_AVAILABLE:
+            return QString("No data available");
+        default:
+            return QString("Unknown error code");
     }
 }
 
@@ -397,7 +398,7 @@ bool SDO::sdoUploadInitiate(const QCanBusFrame &frame)
 
     if (transferType == SDO_E_EXPEDITED)
     {
-        if (sizeIndicator == 1) // data set size is indicated
+        if (sizeIndicator == 1)  // data set size is indicated
         {
             _requestCurrent->stay = (4 - (((frame.payload().at(0)) & SDO_N_NUMBER_INIT_MASK) >> 2));
             _requestCurrent->dataByte.append(frame.payload().mid(4, static_cast<quint8>(_requestCurrent->stay)));
@@ -406,11 +407,11 @@ bool SDO::sdoUploadInitiate(const QCanBusFrame &frame)
         {
             // d contains unspecified number of bytes to be uploaded.
         }
-        requestFinished();
+        endRequest();
     }
     else if (transferType == Flag::SDO_E_NORMAL)
     {
-        if (sizeIndicator == 0) // data set size is not indicated
+        if (sizeIndicator == 0)  // data set size is not indicated
         {
             // NOT USED -> ERROR d is reserved for further use.
         }
@@ -469,12 +470,12 @@ bool SDO::sdoUploadSegment(const QCanBusFrame &frame)
         _requestCurrent->dataByte.append(frame.payload().mid(1, size));
         _requestCurrent->stay -= size;
 
-        if ((frame.payload().at(0) & SDO_C_MORE_MASK) == SDO_C_MORE) // no more segments to be uploaded
+        if ((frame.payload().at(0) & SDO_C_MORE_MASK) == SDO_C_MORE)  // no more segments to be uploaded
         {
             _requestCurrent->state = STATE_UPLOAD;
-            requestFinished();
+            endRequest();
         }
-        else // more segments to be uploaded (C=0)
+        else  // more segments to be uploaded (C=0)
         {
             cmd = CCS::SDO_CCS_CLIENT_UPLOAD_SEGMENT;
             _requestCurrent->toggle = ~_requestCurrent->toggle;
@@ -523,7 +524,7 @@ bool SDO::sdoBlockUpload(const QCanBusFrame &frame)
         cmd = CCS::SDO_CCS_CLIENT_BLOCK_UPLOAD;
         cmd |= SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_START;
         sendSdoRequest(cmd);
-        _timer->stop();
+        _timeoutTimer->stop();
         _requestCurrent->state = STATE_BLOCK_UPLOAD;
         _requestCurrent->seqno = 1;
         _requestCurrent->dataByteBySegment.clear();
@@ -551,7 +552,7 @@ bool SDO::sdoBlockUpload(const QCanBusFrame &frame)
         cmd |= CS::SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_END_REQ;
         _requestCurrent->state = STATE_UPLOAD;
         sendSdoRequest(cmd);
-        requestFinished();
+        endRequest();
     }
 
     return true;
@@ -665,7 +666,7 @@ bool SDO::downloadDispatcher()
     }
     else
     {
-        if (_requestCurrent->size <= 4) // expedited transfer
+        if (_requestCurrent->size <= 4)  // expedited transfer
         {
             cmd = CCS::SDO_CCS_CLIENT_DOWNLOAD_INITIATE;
             cmd |= SDO_E_EXPEDITED << 1;
@@ -675,7 +676,7 @@ bool SDO::downloadDispatcher()
             sendSdoRequest(cmd, _requestCurrent->index, _requestCurrent->subIndex, _requestCurrent->dataByte);
             _requestCurrent->state = STATE_DOWNLOAD;
         }
-        else // normal transfer
+        else  // normal transfer
         {
             cmd = CCS::SDO_CCS_CLIENT_DOWNLOAD_INITIATE;
             cmd |= Flag::SDO_S_SIZE;
@@ -728,12 +729,12 @@ bool SDO::sdoDownloadInitiate(const QCanBusFrame &frame)
             buffer.clear();
             buffer = _requestCurrent->dataByte.mid(static_cast<int32_t>(seek), SDO_SG_SIZE);
 
-            if (_requestCurrent->stay < SDO_SG_SIZE) // no more segments to be downloaded
+            if (_requestCurrent->stay < SDO_SG_SIZE)  // no more segments to be downloaded
             {
                 _requestCurrent->state = STATE_DOWNLOAD;
                 cmd |= SDO_C_MORE;
                 sendSdoRequest(cmd, buffer);
-                requestFinished();
+                endRequest();
                 return true;
             }
             else
@@ -745,7 +746,7 @@ bool SDO::sdoDownloadInitiate(const QCanBusFrame &frame)
         }
         else if (_requestCurrent->state == STATE_DOWNLOAD)
         {
-            requestFinished();
+            endRequest();
             return true;
         }
     }
@@ -791,9 +792,9 @@ bool SDO::sdoDownloadSegment(const QCanBusFrame &frame)
         {
             _requestCurrent->state = STATE_DOWNLOAD;
             cmd |= ((SDO_SG_SIZE - _requestCurrent->stay) << 1) & SDO_N_NUMBER_SEG_MASK;
-            cmd |= SDO_C_MORE; // no more segments to be downloaded
+            cmd |= SDO_C_MORE;  // no more segments to be downloaded
             sendSdoRequest(cmd, buffer);
-            requestFinished();
+            endRequest();
             return true;
         }
         else
@@ -873,8 +874,8 @@ bool SDO::sdoBlockDownload(const QCanBusFrame &frame)
             if (_requestCurrent->attemptCount == ATTEMPT_ERROR_MAX)
             {
                 _requestCurrent->attemptCount = 0;
-                 sendErrorSdoToDevice(CO_SDO_ABORT_CODE_INVALID_SEQ_NUMBER);
-                 return false;
+                sendErrorSdoToDevice(CO_SDO_ABORT_CODE_INVALID_SEQ_NUMBER);
+                return false;
             }
         }
 
@@ -890,7 +891,7 @@ bool SDO::sdoBlockDownload(const QCanBusFrame &frame)
     else if (ss == SS::SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_END_RESP)
     {
         _requestCurrent->state = STATE_DOWNLOAD;
-        requestFinished();
+        endRequest();
         return true;
     }
     return true;
@@ -931,7 +932,7 @@ void SDO::sdoBlockDownloadSubBlock()
         }
     }
     _requestCurrent->state = STATE_BLOCK_DOWNLOAD;
-    _timer->start(_time);
+    _timeoutTimer->start(_requestTimeout);
     return;
 }
 
@@ -978,28 +979,29 @@ void SDO::setErrorToObject(SDOAbortCodes error)
 
     _node->nodeOd()->updateObjectFromDevice(_requestCurrent->index, _requestCurrent->subIndex, QVariant(error), static_cast<SDO::FlagsRequest>(flags));
 
-    _state = SDO_STATE_FREE;
+    _status = SDO_STATE_FREE;
     _requestCurrent->state = STATE_FREE;
-    _timer->stop();
+    _timeoutTimer->stop();
     nextRequest();
 }
 
 /**
  * @brief Management request finished
  */
-void SDO::requestFinished()
+void SDO::endRequest()
 {
     if (_requestCurrent->state == STATE_UPLOAD)
     {
-        _node->nodeOd()->updateObjectFromDevice(_requestCurrent->index, _requestCurrent->subIndex, arrangeDataUpload(_requestCurrent->dataByte, _requestCurrent->dataType), FlagsRequest::Read);
+        _node->nodeOd()->updateObjectFromDevice(
+            _requestCurrent->index, _requestCurrent->subIndex, arrangeDataUpload(_requestCurrent->dataByte, _requestCurrent->dataType), FlagsRequest::Read);
     }
     else if (_requestCurrent->state == STATE_DOWNLOAD)
     {
         _node->nodeOd()->updateObjectFromDevice(_requestCurrent->index, _requestCurrent->subIndex, _requestCurrent->data, FlagsRequest::Write);
     }
 
-    _state = SDO_STATE_FREE;
-    _timer->stop();
+    _status = SDO_STATE_FREE;
+    _timeoutTimer->stop();
     nextRequest();
 }
 
@@ -1010,17 +1012,17 @@ void SDO::nextRequest()
 {
     if (!_requestQueue.isEmpty())
     {
-        if (_state == SDO_STATE_FREE)
+        if (_status == SDO_STATE_FREE)
         {
             _requestCurrent = _requestQueue.dequeue();
             if (_requestCurrent->state == STATE_UPLOAD)
             {
-                _state = SDO_STATE_NOT_FREE;
+                _status = SDO_STATE_NOT_FREE;
                 uploadDispatcher();
             }
             else if (_requestCurrent->state == STATE_DOWNLOAD)
             {
-                _state = SDO_STATE_NOT_FREE;
+                _status = SDO_STATE_NOT_FREE;
                 downloadDispatcher();
             }
         }
@@ -1072,7 +1074,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex)
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timer->start(_time);
+    _timeoutTimer->start(_requestTimeout);
     return bus()->writeFrame(frame);
 }
 
@@ -1103,7 +1105,7 @@ bool SDO::sendSdoRequest(quint8 cmd)
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timer->start(_time);
+    _timeoutTimer->start(_requestTimeout);
     return bus()->writeFrame(frame);
 }
 
@@ -1140,7 +1142,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QByte
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timer->start(_time);
+    _timeoutTimer->start(_requestTimeout);
     return bus()->writeFrame(frame);
 }
 
@@ -1170,7 +1172,7 @@ bool SDO::sendSdoRequest(quint8 cmd, const QByteArray &data)
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
-    _timer->start(_time);
+    _timeoutTimer->start(_requestTimeout);
     return bus()->writeFrame(frame);
 }
 
@@ -1203,7 +1205,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 &crc)
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timer->start(_time);
+    _timeoutTimer->start(_requestTimeout);
     return bus()->writeFrame(frame);
 }
 
@@ -1242,7 +1244,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blks
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timer->start(_time);
+    _timeoutTimer->start(_requestTimeout);
     return bus()->writeFrame(frame);
 }
 
@@ -1300,7 +1302,7 @@ bool SDO::sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segD
 
     if (moreSegments == false)
     {
-        _timer->start(_time);
+        _timeoutTimer->start(_requestTimeout);
         seqno |= 0x80;
         request << static_cast<quint8>(seqno);
     }
@@ -1348,7 +1350,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint32 err
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timer->start(_time);
+    _timeoutTimer->start(_requestTimeout);
     return bus()->writeFrame(frame);
 }
 
@@ -1365,99 +1367,99 @@ QVariant SDO::arrangeDataUpload(QByteArray data, QMetaType::Type type)
 
     switch (type)
     {
-    case QMetaType::Int:
-        int a;
-        dataStream >> a;
-        return QVariant(a);
+        case QMetaType::Int:
+            int a;
+            dataStream >> a;
+            return QVariant(a);
 
-    case QMetaType::UInt:
-        unsigned int b;
-        dataStream >> b;
-        return QVariant(b);
+        case QMetaType::UInt:
+            unsigned int b;
+            dataStream >> b;
+            return QVariant(b);
 
-    case QMetaType::LongLong:
-        qint64 c;
-        dataStream >> c;
-        return QVariant(c);
+        case QMetaType::LongLong:
+            qint64 c;
+            dataStream >> c;
+            return QVariant(c);
 
-    case QMetaType::ULongLong:
-        quint64 d;
-        dataStream >> d;
-        return QVariant(d);
+        case QMetaType::ULongLong:
+            quint64 d;
+            dataStream >> d;
+            return QVariant(d);
 
-    case QMetaType::Double:
-        double e;
-        dataStream >> e;
-        return QVariant(e);
+        case QMetaType::Double:
+            double e;
+            dataStream >> e;
+            return QVariant(e);
 
-    case QMetaType::Long:
-    {
-        long f;
-        memcpy(&f, data.constData(), sizeof(long));
-        QVariant w;
-        w.setValue(f);
-        return w;
-    }
+        case QMetaType::Long:
+        {
+            long f;
+            memcpy(&f, data.constData(), sizeof(long));
+            QVariant w;
+            w.setValue(f);
+            return w;
+        }
 
-    case QMetaType::Short:
-        short g;
-        dataStream >> g;
-        return QVariant(g);
+        case QMetaType::Short:
+            short g;
+            dataStream >> g;
+            return QVariant(g);
 
-    case QMetaType::Char:
-        return QVariant(data);
+        case QMetaType::Char:
+            return QVariant(data);
 
-    case QMetaType::ULong:
-    {
-        unsigned long i;
-        memcpy(&i, data.constData(), sizeof(unsigned long));
-        QVariant y;
-        y.setValue(i);
-        return y;
-    }
+        case QMetaType::ULong:
+        {
+            unsigned long i;
+            memcpy(&i, data.constData(), sizeof(unsigned long));
+            QVariant y;
+            y.setValue(i);
+            return y;
+        }
 
-    case QMetaType::UShort:
-    {
-        unsigned short j;
-        memcpy(&j, data.constData(), sizeof(unsigned short));
-        QVariant z;
-        z.setValue(j);
-        return z;
-    }
+        case QMetaType::UShort:
+        {
+            unsigned short j;
+            memcpy(&j, data.constData(), sizeof(unsigned short));
+            QVariant z;
+            z.setValue(j);
+            return z;
+        }
 
-    case QMetaType::UChar:
-    {
-        unsigned char k;
-        memcpy(&k, data.constData(), sizeof(unsigned char));
-        QVariant n;
-        n.setValue(k);
-        return n;
-    }
+        case QMetaType::UChar:
+        {
+            unsigned char k;
+            memcpy(&k, data.constData(), sizeof(unsigned char));
+            QVariant n;
+            n.setValue(k);
+            return n;
+        }
 
-    case QMetaType::Float:
-    {
-        float f;
-        f = *(const float *)(data.constData());
-        return QVariant(f);
-    }
+        case QMetaType::Float:
+        {
+            float f;
+            f = *(const float *)(data.constData());
+            return QVariant(f);
+        }
 
-    case QMetaType::SChar:
-    {
-        signed char m;
-        memcpy(&m, data.constData(), sizeof(signed char));
-        QVariant x;
-        x.setValue(m);
-        return x;
-    }
+        case QMetaType::SChar:
+        {
+            signed char m;
+            memcpy(&m, data.constData(), sizeof(signed char));
+            QVariant x;
+            x.setValue(m);
+            return x;
+        }
 
-    case QMetaType::QString:
-        return QVariant(QString(data));
+        case QMetaType::QString:
+            return QVariant(QString(data));
 
-    case QMetaType::QByteArray:
-        return QVariant(data);
+        case QMetaType::QByteArray:
+            return QVariant(data);
 
-    default:
-        break;
+        default:
+            break;
     }
 
     return QVariant();
@@ -1472,70 +1474,70 @@ void SDO::arrangeDataDownload(QDataStream &request, const QVariant &data)
 {
     switch (QMetaType::Type(data.type()))
     {
-    case QMetaType::Long:
-        request << data;
-        break;
+        case QMetaType::Long:
+            request << data;
+            break;
 
-    case QMetaType::LongLong:
-        request << data.value<qint64>();
-        break;
+        case QMetaType::LongLong:
+            request << data.value<qint64>();
+            break;
 
-    case QMetaType::Int:
-        request << data.value<int>();
-        break;
+        case QMetaType::Int:
+            request << data.value<int>();
+            break;
 
-    case QMetaType::ULong:
-        request << data;
-        break;
+        case QMetaType::ULong:
+            request << data;
+            break;
 
-    case QMetaType::ULongLong:
-        request << data.value<quint64>();
-        break;
+        case QMetaType::ULongLong:
+            request << data.value<quint64>();
+            break;
 
-    case QMetaType::UInt:
-        request << data.value<unsigned int>();
-        break;
+        case QMetaType::UInt:
+            request << data.value<unsigned int>();
+            break;
 
-    case QMetaType::Double:
-        request << data.value<double>();
-        break;
+        case QMetaType::Double:
+            request << data.value<double>();
+            break;
 
-    case QMetaType::Short:
-        request << data.value<short>();
-        break;
+        case QMetaType::Short:
+            request << data.value<short>();
+            break;
 
-    case QMetaType::Char:
-        request << data.value<char>();
-        break;
+        case QMetaType::Char:
+            request << data.value<char>();
+            break;
 
-    case QMetaType::UShort:
-        request << data.value<unsigned short>();
-        break;
+        case QMetaType::UShort:
+            request << data.value<unsigned short>();
+            break;
 
-    case QMetaType::UChar:
-        request << data.value<unsigned char>();
-        break;
+        case QMetaType::UChar:
+            request << data.value<unsigned char>();
+            break;
 
-    case QMetaType::Float:
+        case QMetaType::Float:
         {
             float f = data.toFloat();
             request.writeRawData((char *)&f, 4);
         }
         break;
 
-    case QMetaType::SChar:
-        request << data.value<signed char>();
-        break;
+        case QMetaType::SChar:
+            request << data.value<signed char>();
+            break;
 
-    case QMetaType::QString:
-        request << data;
-        break;
+        case QMetaType::QString:
+            request << data;
+            break;
 
-    case QMetaType::QByteArray:
-        request << data;
-        break;
+        case QMetaType::QByteArray:
+            request << data;
+            break;
 
-    default:
-        break;
+        default:
+            break;
     }
 }
