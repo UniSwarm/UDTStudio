@@ -257,6 +257,7 @@ void Node::writeObject(const quint16 index, const quint8 subindex, const QVarian
 void Node::loadEds(const QString &fileName)
 {
     _nodeOd->loadEds(fileName);
+    emit edsFileChanged(fileName);
 }
 
 const QString &Node::edsFileName() const

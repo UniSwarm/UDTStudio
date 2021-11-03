@@ -106,6 +106,7 @@ public slots:
 signals:
     void nameChanged(const QString &);
     void statusChanged(Node::Status);
+    void edsFileChanged(const QString &);
 
 protected:
     friend class CanOpenBus;
