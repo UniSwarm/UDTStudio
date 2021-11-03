@@ -22,7 +22,8 @@
 #include "node.h"
 #include "nodeprofile402.h"
 
-ModeHm::ModeHm(NodeProfile402 *nodeProfile402) : Mode(nodeProfile402)
+ModeHm::ModeHm(NodeProfile402 *nodeProfile402)
+    : Mode(nodeProfile402)
 {
     _homeOffsetObjectId = IndexDb402::getObjectId(IndexDb402::OD_HM_HOME_OFFSET, _nodeProfile402->axisId());
     _homeOffsetObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());

@@ -29,7 +29,8 @@ enum ControlWordVL : quint16
     CW_Mask = 0x70
 };
 
-ModeVl::ModeVl(NodeProfile402 *nodeProfile402) : Mode(nodeProfile402)
+ModeVl::ModeVl(NodeProfile402 *nodeProfile402)
+    : Mode(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_TARGET, _nodeProfile402->axisId());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
@@ -90,7 +91,7 @@ void ModeVl::setEnableRamp(bool ok)
     _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
-bool ModeVl::isEnableRamp(void)
+bool ModeVl::isEnableRamp(void) const
 {
     return (_cmdControlWordFlag & CW_VL_EnableRamp) >> 4;
 }
@@ -110,7 +111,7 @@ void ModeVl::setUnlockRamp(bool ok)
     _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
-bool ModeVl::isUnlockRamp(void)
+bool ModeVl::isUnlockRamp(void) const
 {
     return (_cmdControlWordFlag & CW_VL_UnlockRamp) >> 5;
 }
@@ -130,7 +131,7 @@ void ModeVl::setReferenceRamp(bool ok)
     _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
-bool ModeVl::isReferenceRamp(void)
+bool ModeVl::isReferenceRamp(void) const
 {
     return (_cmdControlWordFlag & CW_VL_ReferenceRamp) >> 6;
 }

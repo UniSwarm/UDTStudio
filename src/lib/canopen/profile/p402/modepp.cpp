@@ -30,7 +30,8 @@ enum ControlWordIP : quint16
     CW_Mask = 0x270
 };
 
-ModePp::ModePp(NodeProfile402 *nodeProfile402) : ModePc(nodeProfile402)
+ModePp::ModePp(NodeProfile402 *nodeProfile402)
+    : ModePc(nodeProfile402)
 {
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_PP_POSITION_TARGET, _nodeProfile402->axisId());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
@@ -60,7 +61,7 @@ void ModePp::newSetPoint(bool ok)
     _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
-bool ModePp::isNewSetPoint()
+bool ModePp::isNewSetPoint() const
 {
     return (_cmdControlWordFlag & CW_PP_NewSetPoint) >> 4;
 }
@@ -80,12 +81,12 @@ void ModePp::setChangeSetImmediately(bool ok)
     _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
-bool ModePp::isChangeSetImmediately()
+bool ModePp::isChangeSetImmediately() const
 {
     return (_cmdControlWordFlag & CW_PP_ChangeSetImmediately) >> 5;
 }
 
-bool ModePp::isAbsRel()
+bool ModePp::isAbsRel() const
 {
     return (_cmdControlWordFlag & CW_PP_AbsRel) >> 6;
 }
@@ -105,7 +106,7 @@ void ModePp::setChangeOnSetPoint(bool ok)
     _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
-bool ModePp::isChangeOnSetPoint()
+bool ModePp::isChangeOnSetPoint() const
 {
     return (_cmdControlWordFlag & CW_PP_ChangeOnSetPoint) >> 9;
 }

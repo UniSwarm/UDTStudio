@@ -30,7 +30,7 @@ public:
     ModeCp(NodeProfile402 *nodeProfile402);
 
     void setAbsRel(bool ok);  // bit 6 of controlWord
-    bool isAbsRel(void);      // bit 6 of controlWord
+    bool isAbsRel(void) const;      // bit 6 of controlWord
 
     // ObjectID
     const NodeObjectId &targetObjectId() const;

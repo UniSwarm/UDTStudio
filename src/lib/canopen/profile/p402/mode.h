@@ -21,9 +21,9 @@
 
 #include "canopen_global.h"
 
-#include "../../services/service.h"
-
+#include <QObject>
 #include "nodeodsubscriber.h"
+
 #include "nodeprofile402.h"
 
 class CANOPEN_EXPORT Mode : public QObject, public NodeOdSubscriber

@@ -22,7 +22,8 @@
 #include "node.h"
 #include "nodeprofile402.h"
 
-ModePc::ModePc(NodeProfile402 *nodeProfile402) : ModeHm(nodeProfile402)
+ModePc::ModePc(NodeProfile402 *nodeProfile402)
+    : ModeHm(nodeProfile402)
 {
     _positionDemandValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, _nodeProfile402->axisId());
     _positionDemandValueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
