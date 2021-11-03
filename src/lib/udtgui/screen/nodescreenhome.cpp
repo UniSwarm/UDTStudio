@@ -194,19 +194,8 @@ QWidget *NodeScreenHome::createOdWidget()
     return groupBox;
 }
 
-QString NodeScreenHome::title() const
+void NodeScreenHome::updateInfos(Node *node)
 {
-    return QString(tr("Node"));
-}
-
-void NodeScreenHome::setNodeInternal(Node *node, uint8_t axis)
-{
-    Q_UNUSED(axis)
-    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
-    {
-        indexWidget->setNode(node);
-    }
-
     if (node)
     {
         _summaryProfileLabel->setText(QString("DS%1").arg(node->profileNumber()));
@@ -244,5 +233,29 @@ void NodeScreenHome::setNodeInternal(Node *node, uint8_t axis)
         _odFileInfosLabel->clear();
         _odCountLabel->clear();
         _odSubIndexCountLabel->clear();
+    }
+}
+
+QString NodeScreenHome::title() const
+{
+    return QString(tr("Node"));
+}
+
+void NodeScreenHome::setNodeInternal(Node *node, uint8_t axis)
+{
+    Q_UNUSED(axis)
+    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
+    {
+        indexWidget->setNode(node);
+    }
+
+    updateInfos(node);
+
+    if (node)
+    {
+        connect(node, &Node::edsFileChanged, [=]()
+        {
+            updateInfos(node);
+        });
     }
 }

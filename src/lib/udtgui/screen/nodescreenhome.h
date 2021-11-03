@@ -56,6 +56,8 @@ protected:
 
     QList<AbstractIndexWidget *> _indexWidgets;
 
+    void updateInfos();
+
     // NodeScreen interface
 public:
     QString title() const override;
