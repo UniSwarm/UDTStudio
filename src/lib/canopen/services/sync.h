@@ -66,4 +66,4 @@ private:
     uint32_t _syncCobId;
 };
 
-#endif // SYNC_H
+#endif  // SYNC_H

@@ -47,4 +47,4 @@ private:
     void sendNmt(quint8 cmd);
 };
 
-#endif // NMT_H
+#endif  // NMT_H

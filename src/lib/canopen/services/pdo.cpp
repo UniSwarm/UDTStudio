@@ -24,10 +24,10 @@
 #include <QDataStream>
 #include <QDebug>
 
-#define PDO_INDEX_MASK 0xFFFF0000
-#define PDO_SUBINDEX_MASK 0x0000FF00
-#define PDO_DATASIZE_MASK 0x000000FF
-#define COBID_MASK 0x7FFFFFFF
+#define PDO_INDEX_MASK        0xFFFF0000
+#define PDO_SUBINDEX_MASK     0x0000FF00
+#define PDO_DATASIZE_MASK     0x000000FF
+#define COBID_MASK            0x7FFFFFFF
 #define COBID_VALID_NOT_VALID 0x80000000u
 
 PDO::PDO(Node *node, quint8 number)
@@ -544,59 +544,61 @@ void PDO::processMapping()
 
     switch (_stateMapping)
     {
-    case STATE_FREE:
-        // Deactivate the PDO
-        _node->writeObject(
-            _objectCommList[PDO_COMM_COB_ID].index(), _objectCommList[PDO_COMM_COB_ID].subIndex(), QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toUInt() | COBID_VALID_NOT_VALID));
-        break;
+        case STATE_FREE:
+            // Deactivate the PDO
+            _node->writeObject(_objectCommList[PDO_COMM_COB_ID].index(),
+                               _objectCommList[PDO_COMM_COB_ID].subIndex(),
+                               QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toUInt() | COBID_VALID_NOT_VALID));
+            break;
 
-    case STATE_DEACTIVATE:
-        // Disable the mapping
-        if (((_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toUInt() & COBID_VALID_NOT_VALID) == COBID_VALID_NOT_VALID))
-        {
-            _node->writeObject(_objectMappingId, 0x00, QVariant(quint8(0)));
-        }
-        else
-        {
-            setError(ERROR_DISABLE_MAPPING);
+        case STATE_DEACTIVATE:
+            // Disable the mapping
+            if (((_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toUInt() & COBID_VALID_NOT_VALID) == COBID_VALID_NOT_VALID))
+            {
+                _node->writeObject(_objectMappingId, 0x00, QVariant(quint8(0)));
+            }
+            else
+            {
+                setError(ERROR_DISABLE_MAPPING);
+                _stateMapping = STATE_FREE;
+            }
+            break;
+
+        case STATE_DISABLE:
+            // Modify the mapping
+            if (_objectIdFsm < _objectToMap.size())
+            {
+                quint32 map = 0;
+                map = static_cast<quint32>(_objectToMap.at(_objectIdFsm).index() << 16);
+                map = map | (static_cast<quint16>(_objectToMap.at(_objectIdFsm).subIndex() << 8));
+                map = map | _objectToMap.at(_objectIdFsm).bitSize();
+                _node->writeObject(_objectMappingId, _objectIdFsm + 1, map);
+            }
+            else
+            {
+                _node->writeObject(_objectMappingId, _objectIdFsm + 1, 0);
+            }
+            break;
+
+        case STATE_MODIFY:
+            // Enable the mapping
+            _node->writeObject(_objectMappingId, 0x00, QVariant(quint8(_objectToMap.size())));
+            break;
+
+        case STATE_ENABLE:
+            // Activate the PDO
+            _node->writeObject(_objectCommList[PDO_COMM_COB_ID].index(),
+                               _objectCommList[PDO_COMM_COB_ID].subIndex(),
+                               QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toInt() & COBID_MASK));
+            break;
+
+        case STATE_ACTIVATE:
+            _statusPdo = STATE_NONE;
             _stateMapping = STATE_FREE;
-        }
-        break;
-
-    case STATE_DISABLE:
-        // Modify the mapping
-        if (_objectIdFsm < _objectToMap.size())
-        {
-            quint32 map = 0;
-            map = static_cast<quint32>(_objectToMap.at(_objectIdFsm).index() << 16);
-            map = map | (static_cast<quint16>(_objectToMap.at(_objectIdFsm).subIndex() << 8));
-            map = map | _objectToMap.at(_objectIdFsm).bitSize();
-            _node->writeObject(_objectMappingId, _objectIdFsm + 1, map);
-        }
-        else
-        {
-            _node->writeObject(_objectMappingId, _objectIdFsm + 1, 0);
-        }
-        break;
-
-    case STATE_MODIFY:
-        // Enable the mapping
-        _node->writeObject(_objectMappingId, 0x00, QVariant(quint8(_objectToMap.size())));
-        break;
-
-    case STATE_ENABLE:
-        // Activate the PDO
-        _node->writeObject(
-            _objectCommList[PDO_COMM_COB_ID].index(), _objectCommList[PDO_COMM_COB_ID].subIndex(), QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toInt() & COBID_MASK));
-        break;
-
-    case STATE_ACTIVATE:
-        _statusPdo = STATE_NONE;
-        _stateMapping = STATE_FREE;
-        _objectToMap.clear();
-        _objectIdFsm = 0;
-        createListObjectMapped();
-        break;
+            _objectToMap.clear();
+            _objectIdFsm = 0;
+            createListObjectMapped();
+            break;
     }
 }
 

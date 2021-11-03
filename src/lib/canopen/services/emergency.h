@@ -39,4 +39,4 @@ private:
     uint32_t _cobId;
 };
 
-#endif // EMERGENCY_H
+#endif  // EMERGENCY_H

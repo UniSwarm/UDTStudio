@@ -58,4 +58,4 @@ protected:
     int _exploreNodeState;
 };
 
-#endif // NODEDISCOVER_H
+#endif  // NODEDISCOVER_H

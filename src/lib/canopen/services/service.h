@@ -59,4 +59,4 @@ protected:
     QList<quint32> _cobIds;
 };
 
-#endif // SERVICE_H
+#endif  // SERVICE_H

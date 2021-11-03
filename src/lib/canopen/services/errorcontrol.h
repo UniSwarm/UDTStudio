@@ -59,4 +59,4 @@ public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // ERRORCONTROL_H
+#endif  // ERRORCONTROL_H

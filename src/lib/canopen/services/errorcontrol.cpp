@@ -139,21 +139,21 @@ void ErrorControl::manageErrorControl(const QCanBusFrame &frame)
 
         switch (frame.payload().at(0) & 0x7F)
         {
-        case 4: // Stopped
-            _node->setStatus(Node::Status::STOPPED);
-            break;
+            case 4:  // Stopped
+                _node->setStatus(Node::Status::STOPPED);
+                break;
 
-        case 5: // Operational
-            _node->setStatus(Node::Status::STARTED);
-            break;
+            case 5:  // Operational
+                _node->setStatus(Node::Status::STARTED);
+                break;
 
-        case 127: // Pre-operational
-            _node->setStatus(Node::Status::PREOP);
-            break;
+            case 127:  // Pre-operational
+                _node->setStatus(Node::Status::PREOP);
+                break;
 
-        default:
-            // qDebug() << "Error control : error state" << QString::number(frame.frameId(), 16).toUpper() << frame.payload().toHex().toUpper();
-            break;
+            default:
+                // qDebug() << "Error control : error state" << QString::number(frame.frameId(), 16).toUpper() << frame.payload().toHex().toUpper();
+                break;
         }
     }
 }

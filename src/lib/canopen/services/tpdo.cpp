@@ -155,97 +155,97 @@ QVariant TPDO::convertQByteArrayToQVariant(QByteArray data, QMetaType::Type type
 
     switch (type)
     {
-    case QMetaType::Int:
-        int a;
-        dataStream >> a;
-        return QVariant(a);
+        case QMetaType::Int:
+            int a;
+            dataStream >> a;
+            return QVariant(a);
 
-    case QMetaType::UInt:
-        unsigned int b;
-        dataStream >> b;
-        return QVariant(b);
+        case QMetaType::UInt:
+            unsigned int b;
+            dataStream >> b;
+            return QVariant(b);
 
-    case QMetaType::LongLong:
-        qint64 c;
-        dataStream >> c;
-        return QVariant(c);
+        case QMetaType::LongLong:
+            qint64 c;
+            dataStream >> c;
+            return QVariant(c);
 
-    case QMetaType::ULongLong:
-        quint64 d;
-        dataStream >> d;
-        return QVariant(d);
+        case QMetaType::ULongLong:
+            quint64 d;
+            dataStream >> d;
+            return QVariant(d);
 
-    case QMetaType::Double:
-        double e;
-        dataStream >> e;
-        return QVariant(e);
+        case QMetaType::Double:
+            double e;
+            dataStream >> e;
+            return QVariant(e);
 
-    case QMetaType::Long:
-    {
-        long f;
-        memcpy(&f, data.constData(), sizeof(long));
-        QVariant w;
-        w.setValue(f);
-        return w;
-    }
+        case QMetaType::Long:
+        {
+            long f;
+            memcpy(&f, data.constData(), sizeof(long));
+            QVariant w;
+            w.setValue(f);
+            return w;
+        }
 
-    case QMetaType::Short:
-        short g;
-        dataStream >> g;
-        return QVariant(g);
+        case QMetaType::Short:
+            short g;
+            dataStream >> g;
+            return QVariant(g);
 
-    case QMetaType::Char:
-        return QVariant(data);
+        case QMetaType::Char:
+            return QVariant(data);
 
-    case QMetaType::ULong:
-    {
-        unsigned long i;
-        memcpy(&i, data.constData(), sizeof(unsigned long));
-        QVariant y;
-        y.setValue(i);
-        return y;
-    }
+        case QMetaType::ULong:
+        {
+            unsigned long i;
+            memcpy(&i, data.constData(), sizeof(unsigned long));
+            QVariant y;
+            y.setValue(i);
+            return y;
+        }
 
-    case QMetaType::UShort:
-    {
-        unsigned short j;
-        memcpy(&j, data.constData(), sizeof(unsigned short));
-        QVariant z;
-        z.setValue(j);
-        return z;
-    }
+        case QMetaType::UShort:
+        {
+            unsigned short j;
+            memcpy(&j, data.constData(), sizeof(unsigned short));
+            QVariant z;
+            z.setValue(j);
+            return z;
+        }
 
-    case QMetaType::UChar:
-    {
-        unsigned char k;
-        memcpy(&k, data.constData(), sizeof(unsigned char));
-        QVariant n;
-        n.setValue(k);
-        return n;
-    }
+        case QMetaType::UChar:
+        {
+            unsigned char k;
+            memcpy(&k, data.constData(), sizeof(unsigned char));
+            QVariant n;
+            n.setValue(k);
+            return n;
+        }
 
-    case QMetaType::Float:
-        float l;
-        dataStream >> l;
-        return QVariant(l);
+        case QMetaType::Float:
+            float l;
+            dataStream >> l;
+            return QVariant(l);
 
-    case QMetaType::SChar:
-    {
-        signed char m;
-        memcpy(&m, data.constData(), sizeof(signed char));
-        QVariant x;
-        x.setValue(m);
-        return x;
-    }
+        case QMetaType::SChar:
+        {
+            signed char m;
+            memcpy(&m, data.constData(), sizeof(signed char));
+            QVariant x;
+            x.setValue(m);
+            return x;
+        }
 
-    case QMetaType::QString:
-        return QVariant(QString(data));
+        case QMetaType::QString:
+            return QVariant(QString(data));
 
-    case QMetaType::QByteArray:
-        return QVariant(data);
+        case QMetaType::QByteArray:
+            return QVariant(data);
 
-    default:
-        break;
+        default:
+            break;
     }
 
     return QVariant();

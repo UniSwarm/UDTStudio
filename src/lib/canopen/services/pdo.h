@@ -145,8 +145,8 @@ protected:
     struct PDO_conf
     {
         quint8 transType;
-        quint32 inhibitTime; // The value is defined as multiple of 100 μs. The value of 0 shall disable the inhibit time.
-        quint32 eventTimer; // The value is defined as multiple of 1 ms. The value of 0 shall disable the event-timer.
+        quint32 inhibitTime;  // The value is defined as multiple of 100 μs. The value of 0 shall disable the inhibit time.
+        quint32 eventTimer;   // The value is defined as multiple of 1 ms. The value of 0 shall disable the event-timer.
         quint8 syncStartValue;
     };
     PDO_conf _waitingConf;
@@ -166,4 +166,4 @@ public:
     void reset() override;
 };
 
-#endif // PDO_H
+#endif  // PDO_H

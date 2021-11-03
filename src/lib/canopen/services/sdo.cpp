@@ -26,7 +26,8 @@
 
 #define ATTEMPT_ERROR_MAX 3
 
-SDO::SDO(Node *node) : Service(node)
+SDO::SDO(Node *node)
+    : Service(node)
 {
     _nodeId = node->nodeId();
     _cobIdClientToServer = 0x600;

@@ -43,4 +43,4 @@ protected:
     QMultiMap<quint32, Service *> _servicesMap;
 };
 
-#endif // SERVICEDISPATCHER_H
+#endif  // SERVICEDISPATCHER_H

@@ -34,4 +34,4 @@ public:
     void parseFrame(const QCanBusFrame &frame) override;
 };
 
-#endif // TIMESTAMP_H
+#endif  // TIMESTAMP_H

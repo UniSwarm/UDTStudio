@@ -63,20 +63,20 @@ void NodeDiscover::parseFrame(const QCanBusFrame &frame)
             {
                 switch (frame.payload().at(0) & 0x7F)
                 {
-                case 4: // Stopped
-                    node->setStatus(Node::Status::STOPPED);
-                    break;
+                    case 4:  // Stopped
+                        node->setStatus(Node::Status::STOPPED);
+                        break;
 
-                case 5: // Operational
-                    node->setStatus(Node::Status::STARTED);
-                    break;
+                    case 5:  // Operational
+                        node->setStatus(Node::Status::STARTED);
+                        break;
 
-                case 127: // Pre-operational
-                    node->setStatus(Node::Status::PREOP);
-                    break;
+                    case 127:  // Pre-operational
+                        node->setStatus(Node::Status::PREOP);
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
                 }
             }
             bus()->addNode(node);
@@ -135,12 +135,15 @@ void NodeDiscover::exploreNodeNext()
     QList<NodeObjectId> objectsId{{0x1000, 0x0}, {0x1018, 0x1}, {0x1018, 0x2}, {0x1018, 0x3}};
 
     Node *node = bus()->node(_exploreNodeCurrentId);
-    if (_exploreNodeState >= objectsId.size() && (node->nodeOd()->value(objectsId[_exploreNodeState - 1]).isValid() || node->nodeOd()->errorObject(objectsId[_exploreNodeState - 1]) != 0))
+    if (_exploreNodeState >= objectsId.size()
+        && (node->nodeOd()->value(objectsId[_exploreNodeState - 1]).isValid() || node->nodeOd()->errorObject(objectsId[_exploreNodeState - 1]) != 0))
     {
         // explore node finished
         Node *node = bus()->node(_exploreNodeCurrentId);
-        QString file =
-            OdDb::file(node->nodeOd()->value(0x1000).toUInt(), node->nodeOd()->value(0x1018, 1).toUInt(), node->nodeOd()->value(0x1018, 2).toUInt(), node->nodeOd()->value(0x1018, 3).toUInt());
+        QString file = OdDb::file(node->nodeOd()->value(0x1000).toUInt(),
+                                  node->nodeOd()->value(0x1018, 1).toUInt(),
+                                  node->nodeOd()->value(0x1018, 2).toUInt(),
+                                  node->nodeOd()->value(0x1018, 3).toUInt());
 
         // load object eds
         if (!file.isEmpty())

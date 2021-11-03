@@ -124,8 +124,8 @@ void RPDO::receiveSync()
     // Update data of object in NodeOd after a sync
     for (const NodeObjectId &objectIterator : qAsConst(_objectCurrentMapped))
     {
-        if (_dataObjectCurrentMapped.contains(objectIterator.key()) && _node->nodeOd()->indexExist(objectIterator.index()) &&
-            _node->nodeOd()->subIndexExist(objectIterator.index(), objectIterator.subIndex()))
+        if (_dataObjectCurrentMapped.contains(objectIterator.key()) && _node->nodeOd()->indexExist(objectIterator.index())
+            && _node->nodeOd()->subIndexExist(objectIterator.index(), objectIterator.subIndex()))
         {
             _node->nodeOd()->index(objectIterator.index())->subIndex(objectIterator.subIndex())->setValue(_dataObjectCurrentMapped.value(objectIterator.key()));
         }
@@ -225,56 +225,56 @@ void RPDO::convertQVariantToQDataStream(QDataStream &request, const QVariant &da
 {
     switch (type)
     {
-    case QMetaType::Long:
-    case QMetaType::LongLong:
-    case QMetaType::Int:
-        request << data.value<int>();
-        break;
+        case QMetaType::Long:
+        case QMetaType::LongLong:
+        case QMetaType::Int:
+            request << data.value<int>();
+            break;
 
-    case QMetaType::ULong:
-    case QMetaType::ULongLong:
-    case QMetaType::UInt:
-        request << data.value<unsigned int>();
-        break;
+        case QMetaType::ULong:
+        case QMetaType::ULongLong:
+        case QMetaType::UInt:
+            request << data.value<unsigned int>();
+            break;
 
-    case QMetaType::Double:
-        request << data.value<double>();
-        break;
+        case QMetaType::Double:
+            request << data.value<double>();
+            break;
 
-    case QMetaType::Short:
-        request << data.value<short>();
-        break;
+        case QMetaType::Short:
+            request << data.value<short>();
+            break;
 
-    case QMetaType::Char:
-        request << data.value<char>();
-        break;
+        case QMetaType::Char:
+            request << data.value<char>();
+            break;
 
-    case QMetaType::UShort:
-        request << data.value<unsigned short>();
-        break;
+        case QMetaType::UShort:
+            request << data.value<unsigned short>();
+            break;
 
-    case QMetaType::UChar:
-        request << data.value<unsigned char>();
-        break;
+        case QMetaType::UChar:
+            request << data.value<unsigned char>();
+            break;
 
-    case QMetaType::Float:
-        request << data.value<float>();
-        break;
+        case QMetaType::Float:
+            request << data.value<float>();
+            break;
 
-    case QMetaType::SChar:
-        request << data.value<signed char>();
-        break;
+        case QMetaType::SChar:
+            request << data.value<signed char>();
+            break;
 
-    case QMetaType::QString:
-        request << data;
-        break;
+        case QMetaType::QString:
+            request << data;
+            break;
 
-    case QMetaType::QByteArray:
-        request << data;
-        break;
+        case QMetaType::QByteArray:
+            request << data;
+            break;
 
-    default:
-        break;
+        default:
+            break;
     }
 }
 

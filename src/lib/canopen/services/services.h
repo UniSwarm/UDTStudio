@@ -32,4 +32,4 @@
 #include "timestamp.h"
 #include "tpdo.h"
 
-#endif // SERVICES_H
+#endif  // SERVICES_H
