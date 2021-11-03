@@ -281,4 +281,4 @@ private:
     //    static QString description(const NodeObjectId &nodeObjectId);
 };
 
-#endif // INDEXDB402_H
+#endif  // INDEXDB402_H

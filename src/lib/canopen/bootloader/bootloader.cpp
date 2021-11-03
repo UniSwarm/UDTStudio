@@ -28,7 +28,7 @@
 #include <QFile>
 
 #define TIMER_READ_STATUS_DISPLAY 500
-#define ATTEMPT_MAX_ERROR 3
+#define ATTEMPT_MAX_ERROR         3
 
 #define PROGRAM_CONTROL_STOP            0x0
 #define PROGRAM_CONTROL_START           0x1
@@ -37,10 +37,10 @@
 #define PROGRAM_CONTROL_UPDATE_START    0x80
 #define PROGRAM_CONTROL_UPDATE_FINISHED 0x81
 
-#define BOOTLOADER_STATUS_OBJECT_OK             0x1
-#define BOOTLOADER_STATUS_OBJECT_NOK            0x2
-#define BOOTLOADER_STATUS_OBJECT_CLEAR_NOK      0x4
-#define BOOTLOADER_STATUS_OBJECT_CK_NOK         0x8
+#define BOOTLOADER_STATUS_OBJECT_OK        0x1
+#define BOOTLOADER_STATUS_OBJECT_NOK       0x2
+#define BOOTLOADER_STATUS_OBJECT_CLEAR_NOK 0x4
+#define BOOTLOADER_STATUS_OBJECT_CK_NOK    0x8
 
 Bootloader::Bootloader(Node *node)
     : _node(node)
@@ -86,32 +86,32 @@ QString Bootloader::statusStr(Status status) const
 {
     switch (status)
     {
-    case Bootloader::STATUS_ERROR_OPEN_FILE:
-        return QString(tr("Error open file"));
-    case Bootloader::STATUS_ERROR_NO_FILE:
-        return QString(tr("No file"));
-    case Bootloader::STATUS_ERROR_ERROR_PARSER:
-        return QString(tr("Error parser"));
-    case Bootloader::STATUS_ERROR_FILE_NOT_CORRESPONDING:
-        return QString(tr("File not corresponding"));
-    case Bootloader::STATUS_ERROR_UPDATE_FAILED:
-        return QString(tr("Update failed"));
-    case Bootloader::STATUS_FILE_ANALYZED_OK:
-        return QString(tr("File analyzed ok"));
-    case Bootloader::STATUS_UPDATE_ALREADY_IN_PROGRESS:
-        return QString(tr("Update already in progress"));
-    case Bootloader::STATUS_CHECK_FILE_AND_DEVICE:
-        return QString(tr("Checking the settings"));
-    case Bootloader::STATUS_DEVICE_STOP_IN_PROGRESS:
-        return QString(tr("Device stop in progress"));
-    case Bootloader::STATUS_DEVICE_CLEAR_IN_PROGRESS:
-        return QString(tr("Device clear in progress"));
-    case Bootloader::STATUS_DEVICE_UPDATE_IN_PROGRESS:
-        return QString(tr("Device update in progress"));
-    case Bootloader::STATUS_CHECKING_UPDATE:
-        return QString(tr("Checking the update"));
-    case Bootloader::STATUS_UPDATE_SUCCESSFUL:
-        return QString(tr("Update successful"));
+        case Bootloader::STATUS_ERROR_OPEN_FILE:
+            return QString(tr("Error open file"));
+        case Bootloader::STATUS_ERROR_NO_FILE:
+            return QString(tr("No file"));
+        case Bootloader::STATUS_ERROR_ERROR_PARSER:
+            return QString(tr("Error parser"));
+        case Bootloader::STATUS_ERROR_FILE_NOT_CORRESPONDING:
+            return QString(tr("File not corresponding"));
+        case Bootloader::STATUS_ERROR_UPDATE_FAILED:
+            return QString(tr("Update failed"));
+        case Bootloader::STATUS_FILE_ANALYZED_OK:
+            return QString(tr("File analyzed ok"));
+        case Bootloader::STATUS_UPDATE_ALREADY_IN_PROGRESS:
+            return QString(tr("Update already in progress"));
+        case Bootloader::STATUS_CHECK_FILE_AND_DEVICE:
+            return QString(tr("Checking the settings"));
+        case Bootloader::STATUS_DEVICE_STOP_IN_PROGRESS:
+            return QString(tr("Device stop in progress"));
+        case Bootloader::STATUS_DEVICE_CLEAR_IN_PROGRESS:
+            return QString(tr("Device clear in progress"));
+        case Bootloader::STATUS_DEVICE_UPDATE_IN_PROGRESS:
+            return QString(tr("Device update in progress"));
+        case Bootloader::STATUS_CHECKING_UPDATE:
+            return QString(tr("Checking the update"));
+        case Bootloader::STATUS_UPDATE_SUCCESSFUL:
+            return QString(tr("Update successful"));
     }
 }
 
@@ -141,10 +141,10 @@ bool Bootloader::openUfw(const QString &fileName)
         }
         else
         {*/
-            _ufwUpdate->setUfw(_ufwModel);
-            emit parserUfwFinished();
-            setStatus(STATUS_FILE_ANALYZED_OK);
-            _state = STATE_FREE;
+        _ufwUpdate->setUfw(_ufwModel);
+        emit parserUfwFinished();
+        setStatus(STATUS_FILE_ANALYZED_OK);
+        _state = STATE_FREE;
         //}
     }
 
@@ -279,84 +279,84 @@ void Bootloader::process()
 {
     switch (_state)
     {
-    case STATE_FREE:
-        _statusProgram = StatusProgram::NONE;
-        break;
-
-    case STATE_CHECK_MODE:
-    {
-        switch (_statusProgram)
-        {
-        case StatusProgram::NONE:
-            readStatusProgram();
+        case STATE_FREE:
+            _statusProgram = StatusProgram::NONE;
             break;
 
-        case StatusProgram::PROGRAM_STOPPED:
-            setStatus(STATUS_DEVICE_CLEAR_IN_PROGRESS);
+        case STATE_CHECK_MODE:
+        {
+            switch (_statusProgram)
+            {
+                case StatusProgram::NONE:
+                    readStatusProgram();
+                    break;
+
+                case StatusProgram::PROGRAM_STOPPED:
+                    setStatus(STATUS_DEVICE_CLEAR_IN_PROGRESS);
+                    sendKey();
+                    clearProgram();
+                    break;
+
+                case StatusProgram::PROGRAM_STARTED:
+                    setStatus(STATUS_DEVICE_STOP_IN_PROGRESS);
+                    sendKey();
+                    stopProgram();
+                    break;
+
+                case StatusProgram::NO_PROGRAM:
+                    break;
+            }
+            break;
+        }
+        case STATE_STOP_PROGRAM:
+        {
+            setStatus(STATUS_DEVICE_UPDATE_IN_PROGRESS);
             sendKey();
             clearProgram();
             break;
+        }
 
-        case StatusProgram::PROGRAM_STARTED:
-            setStatus(STATUS_DEVICE_STOP_IN_PROGRESS);
+        case STATE_CLEAR_PROGRAM:
+        {
+            setStatus(STATUS_DEVICE_UPDATE_IN_PROGRESS);
             sendKey();
-            stopProgram();
-            break;
-
-        case StatusProgram::NO_PROGRAM:
+            clearProgram();
             break;
         }
-        break;
-    }
-    case STATE_STOP_PROGRAM:
-    {
-        setStatus(STATUS_DEVICE_UPDATE_IN_PROGRESS);
-        sendKey();
-        clearProgram();
-        break;
-    }
 
-    case STATE_CLEAR_PROGRAM:
-    {
-        setStatus(STATUS_DEVICE_UPDATE_IN_PROGRESS);
-        sendKey();
-        clearProgram();
-        break;
-    }
+        case STATE_UPDATE_PROGRAM:
+        {
+            updateStartProgram();
+            setStatus(STATUS_DEVICE_UPDATE_IN_PROGRESS);
+            updateProgram();
+            break;
+        }
 
-    case STATE_UPDATE_PROGRAM:
-    {
-        updateStartProgram();
-        setStatus(STATUS_DEVICE_UPDATE_IN_PROGRESS);
-        updateProgram();        
-        break;
-    }
+        case STATE_UPLOADED_PROGRAM_FINISHED:
+        {
+            setStatus(STATUS_CHECKING_UPDATE);
+            _node->writeObject(_bootloaderChecksumObjectId, _ufwUpdate->checksum());
+            updateFinishedProgram();
+            _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusBootloader()));
+            _state = STATE_CHECK;
+            break;
+        }
 
-    case STATE_UPLOADED_PROGRAM_FINISHED:
-    {        
-        setStatus(STATUS_CHECKING_UPDATE);
-        _node->writeObject(_bootloaderChecksumObjectId, _ufwUpdate->checksum());
-        updateFinishedProgram();
-        _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusBootloader()));
-        _state = STATE_CHECK;
-        break;
-    }
+        case STATE_CHECK:
+            break;
 
-    case STATE_CHECK:
-        break;
+        case STATE_OK:
+            emit finished(true);
+            resetProgram();
+            _state = STATE_FREE;
+            setStatus(STATUS_UPDATE_SUCCESSFUL);
+            break;
 
-    case STATE_OK:
-        emit finished(true);
-        resetProgram();
-        _state = STATE_FREE;
-        setStatus(STATUS_UPDATE_SUCCESSFUL);
-        break;
-
-    case STATE_NOT_OK:
-        emit finished(false);
-        _state = STATE_FREE;
-        setStatus(STATUS_ERROR_UPDATE_FAILED);
-        break;
+        case STATE_NOT_OK:
+            emit finished(false);
+            _state = STATE_FREE;
+            setStatus(STATUS_ERROR_UPDATE_FAILED);
+            break;
     }
 }
 

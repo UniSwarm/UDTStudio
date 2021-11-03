@@ -34,4 +34,4 @@ private:
     int checksum(QString data);
 };
 
-#endif // HEXWRITER_H
+#endif  // HEXWRITER_H

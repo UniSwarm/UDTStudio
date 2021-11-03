@@ -149,7 +149,7 @@ void CanOpenBus::stopAll()
     frameNmt.setPayload(nmtStopPayload);
     writeFrame(frameNmt);
 
-    for (Node *node : _nodes)
+    for (Node *node : qAsConst(_nodes))
     {
         node->setStatus(Node::STOPPED);
     }

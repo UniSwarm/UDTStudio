@@ -23,9 +23,9 @@
 
 #include <QObject>
 
+#include "busdriver/canbusdriver.h"
 #include "node.h"
 #include "services/services.h"
-#include "busdriver/canbusdriver.h"
 
 #include <QMap>
 
@@ -106,4 +106,4 @@ protected:
     bool _spyMode;
 };
 
-#endif // CANOPENBUS_H
+#endif  // CANOPENBUS_H

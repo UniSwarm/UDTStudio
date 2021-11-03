@@ -192,10 +192,10 @@ NodeSubIndex *NodeObjectId::nodeSubIndex() const
 QString NodeObjectId::mimeData() const
 {
     return QString("%1.%2.%3.%4")
-        .arg(QString::number(_busId, 16).rightJustified(2, '0'))
-        .arg(QString::number(_nodeId, 16).rightJustified(2, '0'))
-        .arg(QString::number(_index, 16).rightJustified(4, '0'))
-        .arg(QString::number(_subIndex, 16).rightJustified(2, '0'));
+        .arg(QString::number(_busId, 16).rightJustified(2, '0'),
+             QString::number(_nodeId, 16).rightJustified(2, '0'),
+             QString::number(_index, 16).rightJustified(4, '0'),
+             QString::number(_subIndex, 16).rightJustified(2, '0'));
 }
 
 NodeObjectId NodeObjectId::fromMimeData(const QString mimeData)
@@ -207,8 +207,10 @@ NodeObjectId NodeObjectId::fromMimeData(const QString mimeData)
     }
 
     bool ok;
-    return NodeObjectId(
-        static_cast<quint8>(fields[0].toUShort(&ok, 16)), static_cast<quint8>(fields[1].toUShort(&ok, 16)), fields[2].toUShort(&ok, 16), static_cast<quint8>(fields[3].toUShort(&ok, 16)));
+    return NodeObjectId(static_cast<quint8>(fields[0].toUShort(&ok, 16)),
+                        static_cast<quint8>(fields[1].toUShort(&ok, 16)),
+                        fields[2].toUShort(&ok, 16),
+                        static_cast<quint8>(fields[3].toUShort(&ok, 16)));
 }
 
 quint8 NodeObjectId::nodeId() const
@@ -281,30 +283,30 @@ quint8 NodeObjectId::bitSize() const
 {
     switch (_dataType)
     {
-    case QMetaType::Bool:
-        return 1;
+        case QMetaType::Bool:
+            return 1;
 
-    case QMetaType::Char:
-    case QMetaType::UChar:
-    case QMetaType::SChar:
-        return 8;
+        case QMetaType::Char:
+        case QMetaType::UChar:
+        case QMetaType::SChar:
+            return 8;
 
-    case QMetaType::Short:
-    case QMetaType::UShort:
-        return 16;
+        case QMetaType::Short:
+        case QMetaType::UShort:
+            return 16;
 
-    case QMetaType::UInt:
-    case QMetaType::Int:
-    case QMetaType::Float:
-        return 32;
+        case QMetaType::UInt:
+        case QMetaType::Int:
+        case QMetaType::Float:
+            return 32;
 
-    case QMetaType::Double:
-    case QMetaType::Long:
-    case QMetaType::ULong:
-        return 64;
+        case QMetaType::Double:
+        case QMetaType::Long:
+        case QMetaType::ULong:
+            return 64;
 
-    default:
-        return 0;
+        default:
+            return 0;
     }
 }
 

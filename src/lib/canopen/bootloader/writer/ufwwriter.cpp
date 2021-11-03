@@ -6,7 +6,7 @@
 #include <QtEndian>
 
 #define VERSION_CHAR_MAX 6
-#define DATE_CHAR_MAX 30
+#define DATE_CHAR_MAX    30
 
 UfwWriter::UfwWriter()
 {

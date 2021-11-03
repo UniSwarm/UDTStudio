@@ -1,6 +1,6 @@
 /**
  ** File get from Qt5.15.1 from compatibility issues
-**/
+ **/
 
 #include "busdriver/qcanbusframe.h"
 
@@ -33,8 +33,7 @@ bool QCanBusFrame::isValid() const
             return false;
         }
 
-        return length <= 8 || length == 12 || length == 16 || length == 20 || length == 24 || length == 32
-               || length == 48 || length == 64;
+        return length <= 8 || length == 12 || length == 16 || length == 20 || length == 24 || length == 32 || length == 48 || length == 64;
     }
 
     return length <= 8;
@@ -100,16 +99,26 @@ quint32 QCanBusFrame::frameId() const
 }
 
 QCanBusFrame::QCanBusFrame(FrameType type)
-    : _isExtendedFrame(0x0), _isFlexibleDataRate(0x0), _isBitrateSwitch(0x0), _isErrorStateIndicator(0x0), _isLocalEcho(0x0),
-      _reserved0(0x0)
+    : _isExtendedFrame(0x0)
+    , _isFlexibleDataRate(0x0)
+    , _isBitrateSwitch(0x0)
+    , _isErrorStateIndicator(0x0)
+    , _isLocalEcho(0x0)
+    , _reserved0(0x0)
 {
     setFrameId(0x0);
     setFrameType(type);
 }
 
 QCanBusFrame::QCanBusFrame(quint32 identifier, const QByteArray &data)
-    : _format(DataFrame), _isExtendedFrame(0x0), _isFlexibleDataRate(data.length() > 8 ? 0x1 : 0x0), _isBitrateSwitch(0x0),
-      _isErrorStateIndicator(0x0), _isLocalEcho(0x0), _reserved0(0x0), _load(data)
+    : _format(DataFrame)
+    , _isExtendedFrame(0x0)
+    , _isFlexibleDataRate(data.length() > 8 ? 0x1 : 0x0)
+    , _isBitrateSwitch(0x0)
+    , _isErrorStateIndicator(0x0)
+    , _isLocalEcho(0x0)
+    , _reserved0(0x0)
+    , _load(data)
 {
     setFrameId(identifier);
 }

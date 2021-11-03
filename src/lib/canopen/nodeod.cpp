@@ -18,8 +18,8 @@
 
 #include "nodeod.h"
 
-#include "model/deviceconfiguration.h"
 #include "indexdb.h"
+#include "model/deviceconfiguration.h"
 #include "node.h"
 #include "nodeodsubscriber.h"
 #include "parser/edsparser.h"
@@ -192,9 +192,7 @@ bool NodeOd::exportConf(const QString &fileName) const
     {
         for (NodeSubIndex *subIndex : index->subIndexes())
         {
-            if (subIndex->isWritable()
-                && subIndex->value() != subIndex->defaultValue()
-                && subIndex->dataType() != NodeSubIndex::DDOMAIN)
+            if (subIndex->isWritable() && subIndex->value() != subIndex->defaultValue() && subIndex->dataType() != NodeSubIndex::DDOMAIN)
             {
                 stream << index->name() << '.' << subIndex->name() << '=' << subIndex->value().toInt() << '\n';
             }
@@ -338,66 +336,66 @@ QMetaType::Type NodeOd::dataTypeCiaToQt(const NodeSubIndex::DataType type)
 {
     switch (type)
     {
-    case NodeSubIndex::NONE:
-        break;
+        case NodeSubIndex::NONE:
+            break;
 
-    case NodeSubIndex::VISIBLE_STRING:
-    case NodeSubIndex::OCTET_STRING:
-    case NodeSubIndex::UNICODE_STRING:
-        return QMetaType::QByteArray;
-    case NodeSubIndex::TIME_OF_DAY:
-        break;
+        case NodeSubIndex::VISIBLE_STRING:
+        case NodeSubIndex::OCTET_STRING:
+        case NodeSubIndex::UNICODE_STRING:
+            return QMetaType::QByteArray;
+        case NodeSubIndex::TIME_OF_DAY:
+            break;
 
-    case NodeSubIndex::TIME_DIFFERENCE:
-        break;
+        case NodeSubIndex::TIME_DIFFERENCE:
+            break;
 
-    case NodeSubIndex::DDOMAIN:
-        return QMetaType::QByteArray;
+        case NodeSubIndex::DDOMAIN:
+            return QMetaType::QByteArray;
 
-    case NodeSubIndex::BOOLEAN:
-    case NodeSubIndex::UNSIGNED8:
-        return QMetaType::UChar;
-    case NodeSubIndex::INTEGER8:
-        return QMetaType::SChar;
+        case NodeSubIndex::BOOLEAN:
+        case NodeSubIndex::UNSIGNED8:
+            return QMetaType::UChar;
+        case NodeSubIndex::INTEGER8:
+            return QMetaType::SChar;
 
-    case NodeSubIndex::UNSIGNED16:
-        return QMetaType::UShort;
-    case NodeSubIndex::INTEGER16:
-        return QMetaType::Short;
+        case NodeSubIndex::UNSIGNED16:
+            return QMetaType::UShort;
+        case NodeSubIndex::INTEGER16:
+            return QMetaType::Short;
 
-    case NodeSubIndex::UNSIGNED24:
-        return QMetaType::UnknownType;
-    case NodeSubIndex::INTEGER24:
-        return QMetaType::UnknownType;
+        case NodeSubIndex::UNSIGNED24:
+            return QMetaType::UnknownType;
+        case NodeSubIndex::INTEGER24:
+            return QMetaType::UnknownType;
 
-    case NodeSubIndex::UNSIGNED32:
-        return QMetaType::UInt;
-    case NodeSubIndex::INTEGER32:
-        return QMetaType::Int;
-    case NodeSubIndex::REAL32:
-        return QMetaType::Float;
+        case NodeSubIndex::UNSIGNED32:
+            return QMetaType::UInt;
+        case NodeSubIndex::INTEGER32:
+            return QMetaType::Int;
+        case NodeSubIndex::REAL32:
+            return QMetaType::Float;
 
-    case NodeSubIndex::UNSIGNED40:
-        return QMetaType::UnknownType;
-    case NodeSubIndex::INTEGER40:
-        return QMetaType::UnknownType;
+        case NodeSubIndex::UNSIGNED40:
+            return QMetaType::UnknownType;
+        case NodeSubIndex::INTEGER40:
+            return QMetaType::UnknownType;
 
-    case NodeSubIndex::UNSIGNED48:
-        return QMetaType::UnknownType;
-    case NodeSubIndex::INTEGER48:
-        return QMetaType::UnknownType;
+        case NodeSubIndex::UNSIGNED48:
+            return QMetaType::UnknownType;
+        case NodeSubIndex::INTEGER48:
+            return QMetaType::UnknownType;
 
-    case NodeSubIndex::UNSIGNED56:
-        return QMetaType::UnknownType;
-    case NodeSubIndex::INTEGER56:
-        return QMetaType::UnknownType;
+        case NodeSubIndex::UNSIGNED56:
+            return QMetaType::UnknownType;
+        case NodeSubIndex::INTEGER56:
+            return QMetaType::UnknownType;
 
-    case NodeSubIndex::UNSIGNED64:
-        return QMetaType::ULongLong;
-    case NodeSubIndex::INTEGER64:
-        return QMetaType::LongLong;
-    case NodeSubIndex::REAL64:
-        return QMetaType::Double;
+        case NodeSubIndex::UNSIGNED64:
+            return QMetaType::ULongLong;
+        case NodeSubIndex::INTEGER64:
+            return QMetaType::LongLong;
+        case NodeSubIndex::REAL64:
+            return QMetaType::Double;
     }
     return QMetaType::UnknownType;
 }
@@ -495,13 +493,13 @@ void NodeOd::updateObjectFromDevice(const quint16 indexDevice, const quint8 subi
     }
 
     quint32 key = (static_cast<quint32>(indexDevice) << 8) + subindexDevice;
-    notifySubscribers(key, indexDevice, subindexDevice, flags); // notify subscribers to index/subindex
+    notifySubscribers(key, indexDevice, subindexDevice, flags);  // notify subscribers to index/subindex
 
     key = (static_cast<quint32>(indexDevice) << 8) + 0xFFu;
-    notifySubscribers(key, indexDevice, subindexDevice, flags); // notify subscribers to index with all subindex
+    notifySubscribers(key, indexDevice, subindexDevice, flags);  // notify subscribers to index with all subindex
 
     key = (static_cast<quint32>(0xFFFFu) << 8) + 0xFFu;
-    notifySubscribers(key, indexDevice, subindexDevice, flags); // notify subscribers to the full od
+    notifySubscribers(key, indexDevice, subindexDevice, flags);  // notify subscribers to the full od
 }
 
 void NodeOd::store(uint8_t subIndex, uint32_t signature)

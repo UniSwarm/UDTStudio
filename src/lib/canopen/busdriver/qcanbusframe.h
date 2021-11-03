@@ -1,6 +1,6 @@
 /**
  ** File get from Qt5.15.1 from compatibility issues
-**/
+ **/
 
 #ifndef QCANBUSFRAME_H
 #define QCANBUSFRAME_H

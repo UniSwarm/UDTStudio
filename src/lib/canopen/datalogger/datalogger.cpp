@@ -23,6 +23,7 @@
 DataLogger::DataLogger(QObject *parent)
     : QObject(parent)
 {
+    _timer.setTimerType(Qt::PreciseTimer);
     connect(&_timer, &QTimer::timeout, this, &DataLogger::readData);
 }
 

@@ -51,7 +51,7 @@ public:
     const QByteArray &prog() const;
     void setProg(const QByteArray &prog);
 
-  private:
+private:
     uint16_t _device;
     QString _softwareVersion;
     QString _buildDate;
@@ -59,4 +59,4 @@ public:
     QByteArray _prog;
 };
 
-#endif // UFWMODEL_H
+#endif  // UFWMODEL_H

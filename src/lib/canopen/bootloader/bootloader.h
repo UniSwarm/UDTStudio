@@ -75,7 +75,7 @@ public slots:
     void clearProgram();
     void sendKey();
 
-signals:  
+signals:
     void parserUfwFinished();
     void finished(bool ok);
     void status(QString string);
@@ -141,4 +141,4 @@ protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // BOOTLOADER_H
+#endif  // BOOTLOADER_H

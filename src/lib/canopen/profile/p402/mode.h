@@ -21,8 +21,8 @@
 
 #include "canopen_global.h"
 
-#include <QObject>
 #include "nodeodsubscriber.h"
+#include <QObject>
 
 #include "nodeprofile402.h"
 

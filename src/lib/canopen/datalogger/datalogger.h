@@ -78,4 +78,4 @@ protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // DATALOGGER_H
+#endif  // DATALOGGER_H

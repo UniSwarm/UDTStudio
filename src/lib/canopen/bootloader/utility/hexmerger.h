@@ -41,4 +41,4 @@ private:
     int checkAddresses(QStringList addresses);
 };
 
-#endif // HEXMERGER_H
+#endif  // HEXMERGER_H

@@ -85,4 +85,4 @@ public:
     static bool isQ1516(const NodeObjectId &objId, quint16 profileNumber);
 };
 
-#endif // INDEXDB_H
+#endif  // INDEXDB_H

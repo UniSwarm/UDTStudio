@@ -87,9 +87,9 @@ public:
         AO_VALUES_16BITS,
         AO_OUTPUT_32BITS,
         AO_OUTPUT_REAL,
-      };
+    };
 
     static NodeObjectId getObjectId(OdObject object, uint channel = 0, uint opt2 = 0);
 };
 
-#endif // INDEXDB401_H
+#endif  // INDEXDB401_H

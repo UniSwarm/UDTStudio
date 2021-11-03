@@ -40,4 +40,4 @@ private:
     unsigned short _checksum;
 };
 
-#endif // HEXPARSER_H
+#endif  // HEXPARSER_H

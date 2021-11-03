@@ -75,4 +75,4 @@ protected:
     static CanOpen *_instance;
 };
 
-#endif // CANOPEN_H
+#endif  // CANOPEN_H

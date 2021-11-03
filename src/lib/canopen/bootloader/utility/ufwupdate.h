@@ -63,4 +63,4 @@ protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // UFWUPDATE_H
+#endif  // UFWUPDATE_H

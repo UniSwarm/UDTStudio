@@ -39,4 +39,4 @@ private:
     UfwModel *_ufwModel;
 };
 
-#endif // UFWPARSER_H
+#endif  // UFWPARSER_H

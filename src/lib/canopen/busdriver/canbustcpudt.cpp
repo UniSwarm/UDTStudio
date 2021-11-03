@@ -56,28 +56,28 @@ bool CanBusTcpUDT::writeFrame(const QCanBusFrame &qtframe)
     quint8 dlc;
     switch (qtframe.frameType())
     {
-    case QCanBusFrame::UnknownFrame:
-    case QCanBusFrame::InvalidFrame:
-        return false;
+        case QCanBusFrame::UnknownFrame:
+        case QCanBusFrame::InvalidFrame:
+            return false;
 
-    case QCanBusFrame::DataFrame:
-        if (qtframe.hasExtendedFrameFormat())
-        {
-            flags = 2;
-        }
-        else
-        {
-            flags = 1;
-        }
-        break;
+        case QCanBusFrame::DataFrame:
+            if (qtframe.hasExtendedFrameFormat())
+            {
+                flags = 2;
+            }
+            else
+            {
+                flags = 1;
+            }
+            break;
 
-    case QCanBusFrame::ErrorFrame:
-        flags = 3;
-        break;
+        case QCanBusFrame::ErrorFrame:
+            flags = 3;
+            break;
 
-    case QCanBusFrame::RemoteRequestFrame:
-        flags = 4;
-        break;
+        case QCanBusFrame::RemoteRequestFrame:
+            flags = 4;
+            break;
     }
 
     QByteArray data;
@@ -156,17 +156,17 @@ void CanBusTcpUDT::stateChanged(QAbstractSocket::SocketState socketState)
 {
     switch (socketState)
     {
-    case QAbstractSocket::ClosingState:
-    case QAbstractSocket::UnconnectedState:
-    case QAbstractSocket::HostLookupState:
-    case QAbstractSocket::ConnectingState:
-    case QAbstractSocket::BoundState:
-        setState(DISCONNECTED);
-        break;
+        case QAbstractSocket::ClosingState:
+        case QAbstractSocket::UnconnectedState:
+        case QAbstractSocket::HostLookupState:
+        case QAbstractSocket::ConnectingState:
+        case QAbstractSocket::BoundState:
+            setState(DISCONNECTED);
+            break;
 
-    case QAbstractSocket::ConnectedState:
-    case QAbstractSocket::ListeningState:
-        setState(CONNECTED);
-        break;
+        case QAbstractSocket::ConnectedState:
+        case QAbstractSocket::ListeningState:
+            setState(CONNECTED);
+            break;
     }
 }

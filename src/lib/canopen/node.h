@@ -133,4 +133,4 @@ protected:
     NodeOd *_nodeOd;
 };
 
-#endif // NODE_H
+#endif  // NODE_H

@@ -29,17 +29,17 @@ class CANOPEN_EXPORT ModePp : public ModePc
 public:
     ModePp(NodeProfile402 *nodeProfile402);
 
-    void newSetPoint(bool ok);  // bit 4 of controlWord front upright
-    bool isNewSetPoint(void) const;   // bit 4 of controlWord front upright
+    void newSetPoint(bool ok);       // bit 4 of controlWord front upright
+    bool isNewSetPoint(void) const;  // bit 4 of controlWord front upright
 
-    void setChangeSetImmediately(bool ok);  // bit 5 of controlWord
-    bool isChangeSetImmediately(void) const;      // bit 5 of controlWord
+    void setChangeSetImmediately(bool ok);    // bit 5 of controlWord
+    bool isChangeSetImmediately(void) const;  // bit 5 of controlWord
 
-    void setAbsRel(bool ok);  // bit 6 of controlWord
-    bool isAbsRel(void) const;      // bit 6 of controlWord
+    void setAbsRel(bool ok);    // bit 6 of controlWord
+    bool isAbsRel(void) const;  // bit 6 of controlWord
 
-    void setChangeOnSetPoint(bool ok);  // bit 9 of controlWord
-    bool isChangeOnSetPoint(void) const;      // bit 9 of controlWord
+    void setChangeOnSetPoint(bool ok);    // bit 9 of controlWord
+    bool isChangeOnSetPoint(void) const;  // bit 9 of controlWord
 
     // ObjectID
     const NodeObjectId &targetObjectId() const;

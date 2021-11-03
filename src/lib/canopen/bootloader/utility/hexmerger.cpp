@@ -40,7 +40,7 @@ int HexMerger::merge(QString &fileA, QStringList &segmentA, QString &fileB, QStr
     {
         return -1;
     }
-     return 0;
+    return 0;
 }
 
 int HexMerger::merge(const QByteArray &appA, QStringList segmentA, const QByteArray &appB, QStringList segmentB)

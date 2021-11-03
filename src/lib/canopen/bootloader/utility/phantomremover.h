@@ -35,4 +35,4 @@ private:
     QByteArray _prog;
 };
 
-#endif // PHANTOMREMOVER_H
+#endif  // PHANTOMREMOVER_H

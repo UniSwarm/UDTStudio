@@ -24,8 +24,8 @@
 #include <QSet>
 #include <QVariant>
 
-#include "services/sdo.h"
 #include "nodeobjectid.h"
+#include "services/sdo.h"
 
 class Node;
 
@@ -55,7 +55,7 @@ protected:
     void unRegisterIndex(const quint16 index);
     void unRegisterFullOd();
 
-    virtual void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) = 0; // TODO constify flags param
+    virtual void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) = 0;  // TODO constify flags param
 
 private:
     friend class NodeOd;
@@ -67,4 +67,4 @@ private:
     void unRegisterKey(const NodeObjectId &objId);
 };
 
-#endif // NODEODSUBSCRIBER_H
+#endif  // NODEODSUBSCRIBER_H

@@ -22,9 +22,9 @@
 #include <QtCore/qglobal.h>
 
 #if defined(CANOPEN_EXPORT_LIB)
-#define CANOPEN_EXPORT Q_DECL_EXPORT
+#    define CANOPEN_EXPORT Q_DECL_EXPORT
 #else
-#define CANOPEN_EXPORT Q_DECL_IMPORT
+#    define CANOPEN_EXPORT Q_DECL_IMPORT
 #endif
 
-#endif // CANOPEN_GLOBAL_H
+#endif  // CANOPEN_GLOBAL_H

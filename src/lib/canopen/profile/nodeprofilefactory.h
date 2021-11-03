@@ -31,4 +31,4 @@ public:
     static void profileFactory(Node *node);
 };
 
-#endif // NODEPROFILEFACTORY_H
+#endif  // NODEPROFILEFACTORY_H

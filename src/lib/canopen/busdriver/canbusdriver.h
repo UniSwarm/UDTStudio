@@ -46,10 +46,9 @@ public:
     virtual QCanBusFrame readFrame();
     virtual bool writeFrame(const QCanBusFrame &qtframe);
 
-
 signals:
     void framesReceived();
-    void stateChanged(State);
+    void stateChanged(CanBusDriver::State);
 
 protected:
     QString _adress;
@@ -59,4 +58,4 @@ private:
     State _state;
 };
 
-#endif // CANBUSDRIVER_H
+#endif  // CANBUSDRIVER_H

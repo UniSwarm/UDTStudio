@@ -52,4 +52,4 @@ protected:
     uint8_t _axisId;
 };
 
-#endif // NODEPROFILE_H
+#endif  // NODEPROFILE_H

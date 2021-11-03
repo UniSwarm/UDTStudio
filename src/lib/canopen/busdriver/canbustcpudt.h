@@ -24,8 +24,8 @@
 #include "canbusdriver.h"
 
 #include <QMutex>
-#include <QTcpSocket>
 #include <QQueue>
+#include <QTcpSocket>
 
 class CANOPEN_EXPORT CanBusTcpUDT : public CanBusDriver
 {
@@ -53,4 +53,4 @@ protected:
     void stateChanged(QAbstractSocket::SocketState socketState);
 };
 
-#endif // CANBUSTCPUDT_H
+#endif  // CANBUSTCPUDT_H

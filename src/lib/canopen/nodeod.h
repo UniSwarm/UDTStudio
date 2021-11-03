@@ -112,4 +112,4 @@ private:
     void notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySubIndex, SDO::FlagsRequest flags);
 };
 
-#endif // NODEOD_H
+#endif  // NODEOD_H

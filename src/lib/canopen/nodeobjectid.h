@@ -84,4 +84,4 @@ private:
 bool CANOPEN_EXPORT operator==(const NodeObjectId &a, const NodeObjectId &b);
 QDebug CANOPEN_EXPORT operator<<(QDebug debug, const NodeObjectId &c);
 
-#endif // NODEOBJECTID_H
+#endif  // NODEOBJECTID_H

@@ -82,4 +82,4 @@ protected:
     bool _q1516;
 };
 
-#endif // DLDATA_H
+#endif  // DLDATA_H

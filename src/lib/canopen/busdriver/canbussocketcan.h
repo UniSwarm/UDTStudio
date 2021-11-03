@@ -51,4 +51,4 @@ protected slots:
     void handleError();
 };
 
-#endif // CANBUSSOCKETCAN_H
+#endif  // CANBUSSOCKETCAN_H

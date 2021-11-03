@@ -132,22 +132,22 @@ QString NodeIndex::objectTypeStr(const ObjectType &objectType)
 {
     switch (objectType)
     {
-    case NONE:
-        return QString("NONE");
-    case OBJECT_NULL:
-        return QString("NULL");
-    case OBJECT_DOMAIN:
-        return QString("DOMAIN");
-    case DEFTYPE:
-        return QString("DEFTYPE");
-    case DEFSTRUCT:
-        return QString("DEFSTRUCT");
-    case VAR:
-        return QString("VAR");
-    case ARRAY:
-        return QString("ARRAY");
-    case RECORD:
-        return QString("RECORD");
+        case NONE:
+            return QString("NONE");
+        case OBJECT_NULL:
+            return QString("NULL");
+        case OBJECT_DOMAIN:
+            return QString("DOMAIN");
+        case DEFTYPE:
+            return QString("DEFTYPE");
+        case DEFSTRUCT:
+            return QString("DEFSTRUCT");
+        case VAR:
+            return QString("VAR");
+        case ARRAY:
+            return QString("ARRAY");
+        case RECORD:
+            return QString("RECORD");
     }
     return QString();
 }

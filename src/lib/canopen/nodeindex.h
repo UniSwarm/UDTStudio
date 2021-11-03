@@ -80,4 +80,4 @@ private:
     QMap<quint8, NodeSubIndex *> _nodeSubIndexes;
 };
 
-#endif // NODEINDEX_H
+#endif  // NODEINDEX_H

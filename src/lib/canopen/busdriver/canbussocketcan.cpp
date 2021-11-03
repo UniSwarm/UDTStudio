@@ -18,8 +18,8 @@
 
 #include "canbussocketcan.h"
 
-#include <fcntl.h>
 #include <cstdio>
+#include <fcntl.h>
 #include <unistd.h>
 
 #include <linux/can.h>

@@ -45,4 +45,4 @@ private:
     int checkAddresses(QStringList addresses);
 };
 
-#endif // UFWWRITER_H
+#endif  // UFWWRITER_H

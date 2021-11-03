@@ -18,13 +18,13 @@
 
 #include "node.h"
 
+#include "bootloader/bootloader.h"
 #include "canopenbus.h"
 #include "model/deviceconfiguration.h"
 #include "parser/edsparser.h"
 #include "profile/nodeprofilefactory.h"
 #include "profile/p402/nodeprofile402.h"
 #include "services/services.h"
-#include "bootloader/bootloader.h"
 
 Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
     : _nodeId(nodeId)
@@ -135,17 +135,17 @@ QString Node::statusStr() const
 {
     switch (_status)
     {
-    case Node::INIT:
-        return tr("init");
+        case Node::INIT:
+            return tr("init");
 
-    case Node::PREOP:
-        return tr("preop");
+        case Node::PREOP:
+            return tr("preop");
 
-    case Node::STARTED:
-        return tr("started");
+        case Node::STARTED:
+            return tr("started");
 
-    case Node::STOPPED:
-        return tr("stopped");
+        case Node::STOPPED:
+            return tr("stopped");
     }
     return QString();
 }

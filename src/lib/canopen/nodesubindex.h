@@ -156,4 +156,4 @@ private:
     bool _q1516;
 };
 
-#endif // NODESUBINDEX_H
+#endif  // NODESUBINDEX_H
