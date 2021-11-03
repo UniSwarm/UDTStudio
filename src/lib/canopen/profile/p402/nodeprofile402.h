@@ -23,8 +23,8 @@
 
 #include "../nodeprofile.h"
 
-#include "node.h"
 #include "indexdb402.h"
+#include "node.h"
 
 class NodeObjectId;
 class ModeVl;
@@ -48,19 +48,19 @@ public:
     enum OperationMode : int8_t
     {
         MS = -2,
-        CP = -16, // Continuous mode
-        DTY = -1, // Duty Cycle mode
-        NoMode = 0, //
-        PP = 1, // Profile position mode
-        VL = 2, // Velocity mode
-        PV = 3, // Profile velocity mode
-        TQ = 4, // Torque profile mode
-        HM = 6, // Homing mode
-        IP = 7, // Interpolated position mode
-        CSP = 8, // Cyclic sync position mode
-        CSV = 9, // Cyclic sync velocity mode
-        CST = 10, // Cyclic sync torque mode
-        CSTCA = 11, // Cyclic sync torque mode with commutation angle
+        CP = -16,    // Continuous mode
+        DTY = -1,    // Duty Cycle mode
+        NoMode = 0,  //
+        PP = 1,      // Profile position mode
+        VL = 2,      // Velocity mode
+        PV = 3,      // Profile velocity mode
+        TQ = 4,      // Torque profile mode
+        HM = 6,      // Homing mode
+        IP = 7,      // Interpolated position mode
+        CSP = 8,     // Cyclic sync position mode
+        CSV = 9,     // Cyclic sync velocity mode
+        CST = 10,    // Cyclic sync torque mode
+        CSTCA = 11,  // Cyclic sync torque mode with commutation angle
         Reserved = 12
     };
 
@@ -86,7 +86,7 @@ public:
 
     State402 currentState() const;
     void goToState(const State402 state);
-    QString stateStr(State402 state) const;
+    QString stateStr(const State402 state) const;
 
     enum Event402 : quint8
     {
@@ -100,7 +100,7 @@ public:
         ModeSpecific = 0x40
     };
 
-    QString event402Str(quint8 Event402);
+    QString event402Str(quint8 Event402) const;
 
     void setPolarityPosition(bool polarity);
     void setPolarityVelocity(bool polarity);
@@ -109,8 +109,8 @@ public:
         MASK_POLARITY_VELOCITY = 0x40,
         MASK_POLARITY_POSITION = 0x80
     };
-    bool polarityPosition();
-    bool polarityVelocity();
+    bool polarityPosition() const;
+    bool polarityVelocity() const;
 
     // ObjectID
     const NodeObjectId &modesOfOperationObjectId() const;
@@ -142,7 +142,6 @@ private:
     NodeObjectId _supportedDriveModesObjectId;
     NodeObjectId _controlWordObjectId;
     NodeObjectId _statusWordObjectId;
-    QList<NodeObjectId *> _masterObjectIds;
 
     NodeObjectId _fgPolaritybjectId;
 
@@ -152,7 +151,7 @@ private:
     NodeObjectId _disableObjectId;
     NodeObjectId _haltObjectId;
     NodeObjectId _faultReactionObjectId;
-    QList<NodeObjectId *> _optionObjectIds;
+    QList<NodeObjectId> _optionObjectIds;
 
     // STATE
     enum State
@@ -191,7 +190,7 @@ private:
 
     uint8_t _statusWordEvent;
 
-    void initObjectId(void);
+    void initializeObjectsId(void);
     void statusNodeChanged(Node::Status status);
     void changeStateMachine(const State402 state);
 
@@ -217,4 +216,4 @@ public:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // NODEPROFILE402_H
+#endif  // NODEPROFILE402_H
