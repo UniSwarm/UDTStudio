@@ -56,4 +56,4 @@ protected:
     PDOMappingView *_pdoMappingView;
 };
 
-#endif // PDOMAPPINGWIDGET_H
+#endif  // PDOMAPPINGWIDGET_H

@@ -43,4 +43,4 @@ protected:
     bool _internalUpdate;
 };
 
-#endif // INDEXCOMBOBOX_H
+#endif  // INDEXCOMBOBOX_H

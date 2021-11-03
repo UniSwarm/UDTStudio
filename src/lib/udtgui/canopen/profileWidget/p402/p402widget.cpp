@@ -37,7 +37,10 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 
-P402Widget::P402Widget(Node *node, uint8_t axis, QWidget *parent) : QWidget(parent), _node(node), _axis(axis)
+P402Widget::P402Widget(Node *node, uint8_t axis, QWidget *parent)
+    : QWidget(parent)
+    , _node(node)
+    , _axis(axis)
 {
     createWidgets();
 
@@ -106,9 +109,14 @@ void P402Widget::setNode(Node *node, uint8_t axis)
         connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &P402Widget::updateState);
         connect(_nodeProfile402, &NodeProfile402::isHalted, _haltPushButton, &QPushButton::setChecked);
         connect(_nodeProfile402, &NodeProfile402::eventHappened, this, &P402Widget::setEvent);
-        connect(_modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int id) { setModeIndex(id); });
+        connect(_modeComboBox,
+                QOverload<int>::of(&QComboBox::currentIndexChanged),
+                [=](int id)
+                {
+                    setModeIndex(id);
+                });
 
-        for (P402ModeWidget *mode : _modes)
+        for (P402ModeWidget *mode : qAsConst(_modes))
         {
             mode->setNode(_node, axis);
         }
@@ -144,9 +152,8 @@ void P402Widget::updateMode(uint8_t axis, NodeProfile402::OperationMode mode)
         return;
     }
 
-    if ((mode == NodeProfile402::IP) || (mode == NodeProfile402::VL)
-        || (mode == NodeProfile402::TQ) || (mode == NodeProfile402::PP)
-        || (mode == NodeProfile402::DTY) || (mode == NodeProfile402::CP))
+    if ((mode == NodeProfile402::IP) || (mode == NodeProfile402::VL) || (mode == NodeProfile402::TQ) || (mode == NodeProfile402::PP) || (mode == NodeProfile402::DTY)
+        || (mode == NodeProfile402::CP))
     {
         P402ModeWidget *mode402 = dynamic_cast<P402ModeWidget *>(_stackedWidget->currentWidget());
         // reset : Patch because the widget Tarqet torque and velocity are not an IndexSpinbox so not read automaticaly
@@ -170,7 +177,7 @@ void P402Widget::updateState()
 {
     NodeProfile402::State402 state = _nodeProfile402->currentState();
 
-    foreach(QAbstractButton *button, _stateMachineButtonGroup->buttons())
+    foreach (QAbstractButton *button, _stateMachineButtonGroup->buttons())
     {
         button->setEnabled(false);
     }
@@ -482,7 +489,7 @@ void P402Widget::createWidgets()
 
     // Stacked Widget
     _stackedWidget = new QStackedWidget;
-    for (P402ModeWidget *mode : _modes)
+    for (P402ModeWidget *mode : qAsConst(_modes))
     {
         _stackedWidget->addWidget(mode);
     }
@@ -547,7 +554,12 @@ QToolBar *P402Widget::toolBarWidgets()
     _logTimerSpinBox->setValue(100);
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
-    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
+    connect(_logTimerSpinBox,
+            QOverload<int>::of(&QSpinBox::valueChanged),
+            [=](int i)
+            {
+                setLogTimer(i);
+            });
 
     _option402Action = new QAction();
     _option402Action->setCheckable(true);
@@ -600,53 +612,63 @@ QGroupBox *P402Widget::stateMachineWidgets()
     _stateMachineButtonGroup->addButton(stateNotReadyToSwitchOnPushButton, NodeProfile402::STATE_NotReadyToSwitchOn);
 
     QPushButton *stateSwitchOnDisabledPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_SwitchOnDisabled));
-    stateSwitchOnDisabledPushButton->setStyleSheet("QPushButton:checked { background-color : #ffa500; }" \
+    stateSwitchOnDisabledPushButton->setStyleSheet("QPushButton:checked { background-color : #ffa500; }"
                                                    "QPushButton:checked:hover { border: 1px solid #7f5200; }");
     layout->addRow(stateSwitchOnDisabledPushButton);
     _stateMachineButtonGroup->addButton(stateSwitchOnDisabledPushButton, NodeProfile402::STATE_SwitchOnDisabled);
 
     QPushButton *stateReadyToSwitchOnPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_ReadyToSwitchOn));
-    stateReadyToSwitchOnPushButton->setStyleSheet("QPushButton:checked { background-color : #ffa500; }" \
+    stateReadyToSwitchOnPushButton->setStyleSheet("QPushButton:checked { background-color : #ffa500; }"
                                                   "QPushButton:checked:hover { border: 1px solid #7f5200; }");
     layout->addRow(stateReadyToSwitchOnPushButton);
     _stateMachineButtonGroup->addButton(stateReadyToSwitchOnPushButton, NodeProfile402::STATE_ReadyToSwitchOn);
 
     QPushButton *stateSwitchedOnPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_SwitchedOn));
-    stateSwitchedOnPushButton->setStyleSheet("QPushButton:checked { background-color : #ffa500; }" \
+    stateSwitchedOnPushButton->setStyleSheet("QPushButton:checked { background-color : #ffa500; }"
                                              "QPushButton:checked:hover { border: 1px solid #7f5200; }");
     layout->addRow(stateSwitchedOnPushButton);
     _stateMachineButtonGroup->addButton(stateSwitchedOnPushButton, NodeProfile402::STATE_SwitchedOn);
 
     QPushButton *stateOperationEnabledPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_OperationEnabled));
-    stateOperationEnabledPushButton->setStyleSheet("QPushButton:checked { background-color : #008000; }" \
+    stateOperationEnabledPushButton->setStyleSheet("QPushButton:checked { background-color : #008000; }"
                                                    "QPushButton:checked:hover { border: 1px solid #004000; }");
     layout->addRow(stateOperationEnabledPushButton);
     _stateMachineButtonGroup->addButton(stateOperationEnabledPushButton, NodeProfile402::STATE_OperationEnabled);
 
     QPushButton *stateQuickStopActivePushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_QuickStopActive));
-    stateQuickStopActivePushButton->setStyleSheet("QPushButton:checked { background-color : #148CD2; }" \
+    stateQuickStopActivePushButton->setStyleSheet("QPushButton:checked { background-color : #148CD2; }"
                                                   "QPushButton:checked:hover { border: 1px solid #094669; }");
     layout->addRow(stateQuickStopActivePushButton);
     _stateMachineButtonGroup->addButton(stateQuickStopActivePushButton, NodeProfile402::STATE_QuickStopActive);
 
     QPushButton *stateFaultReactionActivePushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_FaultReactionActive));
-    stateFaultReactionActivePushButton->setStyleSheet("QPushButton:checked { background-color : #ff0000; }" \
+    stateFaultReactionActivePushButton->setStyleSheet("QPushButton:checked { background-color : #ff0000; }"
                                                       "QPushButton:checked:hover { border: 1px solid #7f0000; }");
     stateFaultReactionActivePushButton->setEnabled(false);
     layout->addRow(stateFaultReactionActivePushButton);
     _stateMachineButtonGroup->addButton(stateFaultReactionActivePushButton, NodeProfile402::STATE_FaultReactionActive);
 
     QPushButton *stateFaultPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_Fault));
-    stateFaultPushButton->setStyleSheet("QPushButton:checked { background-color : #ff0000; }" \
+    stateFaultPushButton->setStyleSheet("QPushButton:checked { background-color : #ff0000; }"
                                         "QPushButton:checked:hover { border: 1px solid #7f0000; }");
     stateFaultPushButton->setEnabled(false);
     layout->addRow(stateFaultPushButton);
     _stateMachineButtonGroup->addButton(stateFaultPushButton, NodeProfile402::STATE_Fault);
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    connect(_stateMachineButtonGroup, QOverload<int>::of(&QButtonGroup::buttonClicked), [=](int id) { stateMachineClicked(id); });
+    connect(_stateMachineButtonGroup,
+            QOverload<int>::of(&QButtonGroup::buttonClicked),
+            [=](int id)
+            {
+                stateMachineClicked(id);
+            });
 #else
-    connect(_stateMachineButtonGroup, QOverload<int>::of(&QButtonGroup::idClicked), [=](int id) { stateMachineClicked(id); });
+    connect(_stateMachineButtonGroup,
+            QOverload<int>::of(&QButtonGroup::idClicked),
+            [=](int id)
+            {
+                stateMachineClicked(id);
+            });
 #endif
 
     groupBox->setLayout(layout);

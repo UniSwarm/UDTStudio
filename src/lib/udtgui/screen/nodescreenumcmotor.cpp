@@ -48,7 +48,7 @@ void NodeScreenUmcMotor::createWidgets()
     ");
     layout->addWidget(_tabWidget);
 
-    _motorConfigWidget = new MotorWidget() ;
+    _motorConfigWidget = new MotorWidget();
 
     _pidVelocityWidget = new PidWidget();
     _pidTorqueWidget = new PidWidget();

@@ -18,9 +18,9 @@
 
 #include "p401inputwidget.h"
 
-#include "indexdb401.h"
 #include "canopen/indexWidget/indexcheckbox.h"
 #include "canopen/indexWidget/indexlcdnumber.h"
+#include "indexdb401.h"
 
 #include <QFormLayout>
 #include <QLabel>
@@ -73,7 +73,7 @@ void P401InputWidget::createWidgets()
     _digitalLabel->setMinimumWidth(44);
     _digitalLabel->setAlignment(Qt::AlignHCenter);
     _digitalLabel->setStyleSheet("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px");
-    _digitalLabel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
+    _digitalLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     hlayout->addWidget(_digitalLabel);
 
     _analogLcdNumber = new IndexLCDNumber();

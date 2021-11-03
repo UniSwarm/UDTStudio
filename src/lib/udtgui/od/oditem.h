@@ -63,4 +63,4 @@ protected:
     void createChildren();
 };
 
-#endif // ODITEM_H
+#endif  // ODITEM_H

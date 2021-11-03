@@ -21,8 +21,8 @@
 
 #include "../udtgui_global.h"
 
-#include <QWidget>
 #include "nodeodsubscriber.h"
+#include <QWidget>
 
 #include <QGroupBox>
 #include <QLabel>
@@ -98,4 +98,4 @@ protected:
     Node *_node;
 };
 
-#endif // NODEMANAGERWIDGET_H
+#endif  // NODEMANAGERWIDGET_H

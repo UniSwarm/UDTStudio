@@ -49,4 +49,4 @@ protected:
     QAction *_actionReadMappings;
 };
 
-#endif // NODEPDOMAPPINGWIDGET_H
+#endif  // NODEPDOMAPPINGWIDGET_H

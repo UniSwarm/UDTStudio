@@ -62,4 +62,4 @@ protected:
     DataLoggerChartsWidget *_chartView;
 };
 
-#endif // DATALOGGERWIDGET_H
+#endif  // DATALOGGERWIDGET_H

@@ -21,8 +21,8 @@
 
 #include "../../udtgui_global.h"
 
-#include <QAction>
 #include "busdriver/qcanbusframe.h"
+#include <QAction>
 #include <QTableView>
 
 #include "canframemodel.h"
@@ -61,4 +61,4 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
-#endif // CANFRAMEVIEW_H
+#endif  // CANFRAMEVIEW_H

@@ -126,23 +126,23 @@ QVariant DataLoggerModel::headerData(int section, Qt::Orientation orientation, i
     }
     switch (role)
     {
-    case Qt::DisplayRole:
-        switch (section)
-        {
-        case NodeName:
-            return QVariant(tr("Node"));
-        case Index:
-            return QVariant(tr("Index"));
-        case Name:
-            return QVariant(tr("Name"));
-        case Value:
-            return QVariant(tr("Value"));
-        case Min:
-            return QVariant(tr("Min"));
-        case Max:
-            return QVariant(tr("Max"));
-        }
-        break;
+        case Qt::DisplayRole:
+            switch (section)
+            {
+                case NodeName:
+                    return QVariant(tr("Node"));
+                case Index:
+                    return QVariant(tr("Index"));
+                case Name:
+                    return QVariant(tr("Name"));
+                case Value:
+                    return QVariant(tr("Value"));
+                case Min:
+                    return QVariant(tr("Min"));
+                case Max:
+                    return QVariant(tr("Max"));
+            }
+            break;
     }
     return QVariant();
 }
@@ -163,46 +163,46 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
 
     switch (role)
     {
-    case Qt::DisplayRole:
-        switch (index.column())
-        {
-        case NodeName:
-            node = dlData->node();
-            if (node)
+        case Qt::DisplayRole:
+            switch (index.column())
             {
-                return QVariant(QString("%1.%2 %3").arg(node->busId()).arg(node->nodeId()).arg(node->name()));
+                case NodeName:
+                    node = dlData->node();
+                    if (node)
+                    {
+                        return QVariant(QString("%1.%2 %3").arg(node->busId()).arg(node->nodeId()).arg(node->name()));
+                    }
+                    else
+                    {
+                        return QVariant(tr("Unknown"));
+                    }
+
+                case Index:
+                    return QVariant(QString("0x%1.%2").arg(QString::number(dlData->objectId().index(), 16), QString::number(dlData->objectId().subIndex(), 16)));
+
+                case Name:
+                    return QVariant(dlData->name());
+
+                case Value:
+                    return dlData->isEmpty() ? QVariant("-") : QVariant(dlData->lastValue());
+
+                case Min:
+                    return dlData->isEmpty() ? QVariant("-") : QVariant(dlData->min());
+
+                case Max:
+                    return dlData->isEmpty() ? QVariant("-") : QVariant(dlData->max());
+
+                default:
+                    return QVariant();
             }
-            else
+
+        case Qt::DecorationRole:
+            if (index.column() == NodeName)
             {
-                return QVariant(tr("Unknown"));
+                QPixmap pix(24, 24);
+                pix.fill(dlData->color());
+                return pix;
             }
-
-        case Index:
-            return QVariant(QString("0x%1.%2").arg(QString::number(dlData->objectId().index(), 16)).arg(QString::number(dlData->objectId().subIndex(), 16)));
-
-        case Name:
-            return QVariant(dlData->name());
-
-        case Value:
-            return dlData->isEmpty() ? QVariant("-") : QVariant(dlData->lastValue());
-
-        case Min:
-            return dlData->isEmpty() ? QVariant("-") : QVariant(dlData->min());
-
-        case Max:
-            return dlData->isEmpty() ? QVariant("-") : QVariant(dlData->max());
-
-        default:
-            return QVariant();
-        }
-
-    case Qt::DecorationRole:
-        if (index.column() == NodeName)
-        {
-            QPixmap pix(24, 24);
-            pix.fill(dlData->color());
-            return pix;
-        }
     }
     return QVariant();
 }

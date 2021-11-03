@@ -55,7 +55,7 @@ void IndexLCDNumber::setDisplayValue(const QVariant &value, AbstractIndexWidget:
 
     if (_hint == AbstractIndexWidget::DisplayFloat)
     {
-       _lcdNumber->display(QString::number(value.toDouble(), 'f', 2));
+        _lcdNumber->display(QString::number(value.toDouble(), 'f', 2));
     }
     else if (_hint == AbstractIndexWidget::DisplayDirectValue)
     {
@@ -79,7 +79,7 @@ bool IndexLCDNumber::isEditing() const
 
 void IndexLCDNumber::updateObjId()
 {
-    setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0')).arg(QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
+    setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
 }
 
 void IndexLCDNumber::mouseDoubleClickEvent(QMouseEvent *event)

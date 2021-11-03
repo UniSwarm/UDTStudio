@@ -63,4 +63,4 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
-#endif // DATALOGGERTREEVIEW_H
+#endif  // DATALOGGERTREEVIEW_H

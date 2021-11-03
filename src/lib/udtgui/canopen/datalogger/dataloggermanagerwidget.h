@@ -66,4 +66,4 @@ protected:
     QSpinBox *_rollingTimeSpinBox;
 };
 
-#endif // DATALOGGERMANAGERWIDGET_H
+#endif  // DATALOGGERMANAGERWIDGET_H

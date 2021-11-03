@@ -39,7 +39,7 @@ public:
 
 protected:
     uint8_t _axis;
-    void createWidgets();    
+    void createWidgets();
 
     MotorWidget *_motorConfigWidget;
 
@@ -62,4 +62,4 @@ public:
     void setNodeInternal(Node *node, uint8_t axis) override;
 };
 
-#endif // NODESCREENUMCMOTOR_H
+#endif  // NODESCREENUMCMOTOR_H

@@ -30,7 +30,8 @@
 #include <QScrollArea>
 #include <QWidget>
 
-MotorWidget::MotorWidget(QWidget *parent) : QWidget(parent)
+MotorWidget::MotorWidget(QWidget *parent)
+    : QWidget(parent)
 {
     createWidgets();
 }
@@ -122,7 +123,7 @@ void MotorWidget::stateChanged()
 
 void MotorWidget::readAllObject()
 {
-    for (AbstractIndexWidget *indexWidget : _indexWidgets)
+    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
     {
         indexWidget->readObject();
     }

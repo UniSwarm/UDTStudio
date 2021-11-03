@@ -139,7 +139,7 @@ void DataLoggerTreeView::exportOneCurrent()
     {
         return;
     }
-    QFile file(QString("%1_export_%2.csv").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz")).arg(dlData->name()));
+    QFile file(QString("export.csv").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz"), dlData->name()));
     if (!file.open(QIODevice::WriteOnly))
     {
         return;
@@ -148,7 +148,7 @@ void DataLoggerTreeView::exportOneCurrent()
     int minCount = qMin(dlData->values().count(), dlData->times().count());
     for (int i = 0; i < minCount; i++)
     {
-        stream << dlData->times()[i].toString("yyyy-MM-dd_hh:mm:ss.zzz") << ';' << dlData->values()[i] << '\n';
+        stream << dlData->times()[i].toString("ss.zzz") << ';' << QString::number(dlData->values()[i], 'f') << '\n';
     }
     file.close();
 }

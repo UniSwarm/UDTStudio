@@ -44,4 +44,4 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 };
 
-#endif // INDEXLABEL_H
+#endif  // INDEXLABEL_H

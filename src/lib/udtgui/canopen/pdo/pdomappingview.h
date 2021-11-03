@@ -85,4 +85,4 @@ public:
     bool event(QEvent *event) override;
 };
 
-#endif // PDOMAPPINGVIEW_H
+#endif  // PDOMAPPINGVIEW_H

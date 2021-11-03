@@ -18,7 +18,8 @@
 
 #include "p402modewidget.h"
 
-P402ModeWidget::P402ModeWidget(QWidget *parent) : QWidget(parent)
+P402ModeWidget::P402ModeWidget(QWidget *parent)
+    : QWidget(parent)
 {
 }
 

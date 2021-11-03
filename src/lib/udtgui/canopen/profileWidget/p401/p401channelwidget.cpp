@@ -18,12 +18,12 @@
 
 #include "p401channelwidget.h"
 
-#include "indexdb401.h"
-#include "p401inputwidget.h"
-#include "p401outputwidget.h"
-#include "p401inputoptionwidget.h"
-#include "p401outputoptionwidget.h"
 #include "canopen/indexWidget/indexcombobox.h"
+#include "indexdb401.h"
+#include "p401inputoptionwidget.h"
+#include "p401inputwidget.h"
+#include "p401outputoptionwidget.h"
+#include "p401outputwidget.h"
 
 #include <QComboBox>
 #include <QFormLayout>
@@ -81,7 +81,7 @@ void P401ChannelWidget::setNode(Node *node)
     _modeCombobox->setObjId(IndexDb401::getObjectId(IndexDb401::OD_MS_DO_MODE, _channel + 1));
     _modeCombobox->setNode(node);
 
-    _inputWidget->setNode(node);    
+    _inputWidget->setNode(node);
     _inputOptionWidget->setNode(node);
 
     _outputWidget->setNode(node);
@@ -141,7 +141,7 @@ void P401ChannelWidget::createWidgets()
     layout->addWidget(frame);
 
     // Input Stacked Widget
-    _inputOptionWidget= new P401InputOptionWidget(_channel, this);
+    _inputOptionWidget = new P401InputOptionWidget(_channel, this);
     _inputWidget = new P401InputWidget(_channel, this);
 
     _inputStackedWidget = new QStackedWidget;

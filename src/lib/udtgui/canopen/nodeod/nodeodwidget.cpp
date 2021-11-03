@@ -95,7 +95,7 @@ void NodeOdWidget::applyFilterCustom(const QString &filterText)
 void NodeOdWidget::createWidgets()
 {
     QLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0 , 0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     // >> toolbar creation
     _toolBar = new QToolBar(tr("Node commands"));
@@ -119,7 +119,12 @@ void NodeOdWidget::createWidgets()
     _filterCombobox->addItem(tr("Man. objects"), QVariant("0x[2-4][0-9A-F]{3}"));
     _filterCombobox->addItem(tr("Profile objects"), QVariant("0x[6-9][0-9A-F]{3}"));
     _filterCombobox->insertSeparator(1);
-    connect(_filterCombobox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index) { this->selectFilter(index); });
+    connect(_filterCombobox,
+            QOverload<int>::of(&QComboBox::currentIndexChanged),
+            [=](int index)
+            {
+                this->selectFilter(index);
+            });
     connect(_filterLineEdit, &QLineEdit::textChanged, this, &NodeOdWidget::applyFilterCustom);
 
     _nodeOdTreeView = new NodeOdTreeView();
@@ -144,28 +149,28 @@ void NodeOdWidget::createDefaultFilters(uint profile)
     // profile dependant filters
     switch (profile)
     {
-    case 401:
-        _filterCombobox->addItem(tr("401 DI"), QVariant("0x60[0-9A-F]{2}"));
-        _filterCombobox->addItem(tr("401 DO"), QVariant("0x62[0-9A-F]{2}"));
-        _filterCombobox->addItem(tr("401 AI"), QVariant("0x64[023][0-9A-F]"));
-        _filterCombobox->addItem(tr("401 AO"), QVariant("0x64[14-5][0-9A-F]"));
-        break;
+        case 401:
+            _filterCombobox->addItem(tr("401 DI"), QVariant("0x60[0-9A-F]{2}"));
+            _filterCombobox->addItem(tr("401 DO"), QVariant("0x62[0-9A-F]{2}"));
+            _filterCombobox->addItem(tr("401 AI"), QVariant("0x64[023][0-9A-F]"));
+            _filterCombobox->addItem(tr("401 AO"), QVariant("0x64[14-5][0-9A-F]"));
+            break;
 
-    case 402:
-        _filterCombobox->addItem(tr("402 FSA"), QVariant("0x[6-A][058](0[27]|3F|4[01]|5[A-E]|6[01])"));
-        _filterCombobox->addItem(tr("402 tq (Torque)"), QVariant("0x[6-A][08](7[1-9]|8[7-8])"));
-        _filterCombobox->addItem(tr("402 tp (Torque profile)"), QVariant("0x[6-A][08](B[8-D]|D0)"));
-        _filterCombobox->addItem(tr("402 pt (Profile Torque)"), QVariant("0x[6-A][08](7[1-9]|E[01])"));
-        _filterCombobox->addItem(tr("402 hm (Homming)"), QVariant("0x[6-A][08](9[89A]|7C|E3)"));
-        _filterCombobox->addItem(tr("402 pc (Position Control)"), QVariant("0x[6-A][08](6[2-8]|F[24AC])"));
-        _filterCombobox->addItem(tr("402 pp (Profile Position)"), QVariant("0x[6-A][08](7[ABDEF]|8[0-6]|A[34]|C[56]|6[2-4])"));
-        _filterCombobox->addItem(tr("402 ip (Interpolated Position)"), QVariant("0x[6-A][08](C[0-4]|7[B-F]|8[0-5]|C[5-6]|6[2-4])"));
-        _filterCombobox->addItem(tr("402 cp (Continuous Position)"), QVariant("0x[6-A][08](7[BDEF]|8[01345]|C[56]|6[2-4])|0x4[1-8]F0"));
-        _filterCombobox->addItem(tr("402 pv (Profile Velocity"), QVariant("0x[6-A][08](6[9-F]|70|F[8F])"));
-        _filterCombobox->addItem(tr("402 vl (Velocity)"), QVariant("0x[6-A][08]4[2-F]"));
-        _filterCombobox->addItem(tr("402 dty (Duty cycle)"), QVariant("0x4[13579BDE][A-F]"));
-        _filterCombobox->addItem(tr("402 factors"), QVariant("0x[6-A][08](8F|9[0-267]|A[8-B])"));
-        break;
+        case 402:
+            _filterCombobox->addItem(tr("402 FSA"), QVariant("0x[6-A][058](0[27]|3F|4[01]|5[A-E]|6[01])"));
+            _filterCombobox->addItem(tr("402 tq (Torque)"), QVariant("0x[6-A][08](7[1-9]|8[7-8])"));
+            _filterCombobox->addItem(tr("402 tp (Torque profile)"), QVariant("0x[6-A][08](B[8-D]|D0)"));
+            _filterCombobox->addItem(tr("402 pt (Profile Torque)"), QVariant("0x[6-A][08](7[1-9]|E[01])"));
+            _filterCombobox->addItem(tr("402 hm (Homming)"), QVariant("0x[6-A][08](9[89A]|7C|E3)"));
+            _filterCombobox->addItem(tr("402 pc (Position Control)"), QVariant("0x[6-A][08](6[2-8]|F[24AC])"));
+            _filterCombobox->addItem(tr("402 pp (Profile Position)"), QVariant("0x[6-A][08](7[ABDEF]|8[0-6]|A[34]|C[56]|6[2-4])"));
+            _filterCombobox->addItem(tr("402 ip (Interpolated Position)"), QVariant("0x[6-A][08](C[0-4]|7[B-F]|8[0-5]|C[5-6]|6[2-4])"));
+            _filterCombobox->addItem(tr("402 cp (Continuous Position)"), QVariant("0x[6-A][08](7[BDEF]|8[01345]|C[56]|6[2-4])|0x4[1-8]F0"));
+            _filterCombobox->addItem(tr("402 pv (Profile Velocity"), QVariant("0x[6-A][08](6[9-F]|70|F[8F])"));
+            _filterCombobox->addItem(tr("402 vl (Velocity)"), QVariant("0x[6-A][08]4[2-F]"));
+            _filterCombobox->addItem(tr("402 dty (Duty cycle)"), QVariant("0x4[13579BDE][A-F]"));
+            _filterCombobox->addItem(tr("402 factors"), QVariant("0x[6-A][08](8F|9[0-267]|A[8-B])"));
+            break;
     }
     _oldProfile = profile;
     if (oldIndex > 3)

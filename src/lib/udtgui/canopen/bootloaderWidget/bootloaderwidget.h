@@ -21,10 +21,10 @@
 
 #include "udtgui_global.h"
 
+#include <QDialog>
 #include <QGroupBox>
 #include <QLabel>
 #include <QPushButton>
-#include <QDialog>
 
 #include "canopen/indexWidget/abstractindexwidget.h"
 
@@ -84,4 +84,4 @@ private:
     QGroupBox *informationFileWidget();
 };
 
-#endif // BOOTLOADERWIDGET_H
+#endif  // BOOTLOADERWIDGET_H

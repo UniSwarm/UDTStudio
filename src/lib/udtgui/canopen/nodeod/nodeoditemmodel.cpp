@@ -122,17 +122,21 @@ void NodeOdItemModel::setNode(Node *node)
 
     if (_node)
     {
-        _root = new NodeOdItem(node->nodeOd());
-        connect(_node, &QObject::destroyed, [=] ()
-        {
-            setNode(nullptr);
-        });
-        connect(_node, &Node::edsFileChanged, [=] ()
-        {
-            Node *newNode = node;
-            setNode(nullptr);
-            setNode(newNode);
-        });
+        _root = new NodeOdItem(_node->nodeOd());
+        connect(_node,
+                &QObject::destroyed,
+                [=]()
+                {
+                    setNode(nullptr);
+                });
+        connect(_node,
+                &Node::edsFileChanged,
+                [=]()
+                {
+                    Node *newNode = node;
+                    setNode(nullptr);
+                    setNode(newNode);
+                });
     }
     else
     {
@@ -165,21 +169,21 @@ QVariant NodeOdItemModel::headerData(int section, Qt::Orientation orientation, i
     }
     switch (role)
     {
-    case Qt::DisplayRole:
-        switch (section)
-        {
-        case OdIndex:
-            return QVariant(tr("Index"));
-        case Name:
-            return QVariant(tr("Name"));
-        case Type:
-            return QVariant(tr("Type"));
-        case Acces:
-            return QVariant(tr("Acces"));
-        case Value:
-            return QVariant(tr("Value"));
-        }
-        break;
+        case Qt::DisplayRole:
+            switch (section)
+            {
+                case OdIndex:
+                    return QVariant(tr("Index"));
+                case Name:
+                    return QVariant(tr("Name"));
+                case Type:
+                    return QVariant(tr("Type"));
+                case Acces:
+                    return QVariant(tr("Acces"));
+                case Value:
+                    return QVariant(tr("Value"));
+            }
+            break;
     }
     return QVariant();
 }

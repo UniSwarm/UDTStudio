@@ -73,4 +73,4 @@ protected:
     QAction *_actionSyncStart;
 };
 
-#endif // BUSMANAGERWIDGET_H
+#endif  // BUSMANAGERWIDGET_H

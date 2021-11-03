@@ -20,13 +20,13 @@
 
 #include <QDateTimeAxis>
 #include <QDebug>
+#include <QGraphicsLayout>
 #include <QMimeData>
 #include <QOpenGLWidget>
 #include <QScatterSeries>
-#include <QValueAxis>
-#include <QGraphicsLayout>
-#include <qmath.h>
 #include <QToolTip>
+#include <QValueAxis>
+#include <qmath.h>
 
 using namespace QtCharts;
 
@@ -47,7 +47,7 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
     _chart->setTheme(QtCharts::QChart::ChartThemeBlueCerulean);
     setRenderHint(QPainter::Antialiasing);
     _chart->layout()->setContentsMargins(0, 0, 0, 0);
-    _chart->setBackgroundBrush(QColor("#19232D"));
+    _chart->setBackgroundBrush(QColor(0x19232D));
     setChart(_chart);
 
     _axisX = new QtCharts::QDateTimeAxis();
@@ -260,7 +260,7 @@ void DataLoggerChartsWidget::updateYaxis()
     QDateTime firstDateTime = _dataLogger->firstDateTime();
     QDateTime lastDateTime = _dataLogger->lastDateTime();
 
-    if (_rollingEnabled) // rolling mode
+    if (_rollingEnabled)  // rolling mode
     {
         /*if (serie->count() > _rollingTimeMs)
         {

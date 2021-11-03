@@ -18,9 +18,9 @@
 
 #include "busnodestreeview.h"
 
+#include <QContextMenuEvent>
 #include <QHeaderView>
 #include <QMenu>
-#include <QContextMenuEvent>
 
 BusNodesTreeView::BusNodesTreeView(QWidget *parent)
     : BusNodesTreeView(nullptr, parent)
@@ -126,16 +126,18 @@ void BusNodesTreeView::addBus(quint8 busId)
     {
         return;
     }
-    connect(bus, &CanOpenBus::nodeAdded, [=] (int nodeId)
-    {
-        addNode(bus, nodeId);
-    });
+    connect(bus,
+            &CanOpenBus::nodeAdded,
+            [=](int nodeId)
+            {
+                addNode(bus, nodeId);
+            });
 }
 
 void BusNodesTreeView::addNode(CanOpenBus *bus, quint8 nodeId)
 {
     Q_UNUSED(nodeId);
-    if (bus->nodes().count() == 1) // first node added to this bus
+    if (bus->nodes().count() == 1)  // first node added to this bus
     {
         for (int row = 0; row < _sortFilterProxyModel->rowCount(); row++)
         {

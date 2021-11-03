@@ -54,7 +54,11 @@ void PDOMappingPainter::drawDragPos(const QRect &rect, double pos)
     drawPolygon(arrow);
 }
 
-void PDOMappingPainter::drawListMapping(const QRect &rect, const QList<NodeObjectId> &nodeListMapping, const QList<QString> &nodeListName, const QList<QColor> &nodeListColor, bool enabled)
+void PDOMappingPainter::drawListMapping(const QRect &rect,
+                                        const QList<NodeObjectId> &nodeListMapping,
+                                        const QList<QString> &nodeListName,
+                                        const QList<QColor> &nodeListColor,
+                                        bool enabled)
 {
     setViewport(rect);
 
@@ -129,11 +133,13 @@ void PDOMappingPainter::drawMapping(const QRect &objRect, const NodeObjectId &no
 
     if (objName.isEmpty() || textRext.height() < fontMetrics.height() * 2)
     {
-        drawText(textRext, Qt::AlignCenter, QString("0x%1.%2").arg(QString::number(nodeObjectId.index(), 16).toUpper()).arg(QString::number(nodeObjectId.subIndex(), 16).toUpper()));
+        drawText(textRext, Qt::AlignCenter, QString("0x%1.%2").arg(QString::number(nodeObjectId.index(), 16).toUpper(), QString::number(nodeObjectId.subIndex(), 16).toUpper()));
     }
     else
     {
-        drawText(textRext, Qt::AlignCenter, QString("0x%1.%2\n%3").arg(QString::number(nodeObjectId.index(), 16).toUpper()).arg(QString::number(nodeObjectId.subIndex(), 16).toUpper()).arg(objName));
+        drawText(textRext,
+                 Qt::AlignCenter,
+                 QString("0x%1.%2\n%3").arg(QString::number(nodeObjectId.index(), 16).toUpper(), QString::number(nodeObjectId.subIndex(), 16).toUpper()).arg(objName));
     }
 }
 

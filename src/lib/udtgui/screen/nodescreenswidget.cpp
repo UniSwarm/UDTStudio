@@ -23,8 +23,8 @@
 #include "nodescreenod.h"
 #include "nodescreenpdo.h"
 #include "nodescreensynchro.h"
-#include "nodescreenumcmotor.h"
 #include "nodescreenuio.h"
+#include "nodescreenumcmotor.h"
 
 #include <QApplication>
 #include <QHBoxLayout>

@@ -25,9 +25,9 @@
 
 #include "busnodesmodel.h"
 
-#include <QSortFilterProxyModel>
-#include <QList>
 #include <QAction>
+#include <QList>
+#include <QSortFilterProxyModel>
 
 class UDTGUI_EXPORT BusNodesTreeView : public QTreeView
 {
@@ -69,4 +69,4 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
-#endif // BUSNODESTREEVIEW_H
+#endif  // BUSNODESTREEVIEW_H

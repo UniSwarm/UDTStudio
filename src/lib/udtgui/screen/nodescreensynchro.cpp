@@ -18,10 +18,10 @@
 
 #include "nodescreensynchro.h"
 
+#include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/indexWidget/indexcombobox.h"
 #include "canopen/indexWidget/indexlabel.h"
 #include "canopen/indexWidget/indexspinbox.h"
-#include "canopen/datalogger/dataloggerwidget.h"
 
 #include "indexdb402.h"
 #include "node.h"
@@ -111,7 +111,12 @@ QToolBar *NodeScreenSynchro::createToolBarWidgets()
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
     toolBar->addWidget(_logTimerSpinBox);
-    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
+    connect(_logTimerSpinBox,
+            QOverload<int>::of(&QSpinBox::valueChanged),
+            [=](int i)
+            {
+                setLogTimer(i);
+            });
 
     // clear
     QAction *action;
@@ -123,7 +128,7 @@ QToolBar *NodeScreenSynchro::createToolBarWidgets()
     toolBar->addSeparator();
 
     // read all action
-    QAction * readAllAction = toolBar->addAction(tr("Read all objects"));
+    QAction *readAllAction = toolBar->addAction(tr("Read all objects"));
     readAllAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
     readAllAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));

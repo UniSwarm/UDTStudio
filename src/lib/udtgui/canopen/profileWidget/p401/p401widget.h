@@ -62,4 +62,4 @@ private:
     QToolBar *toolBarWidgets();
 };
 
-#endif // P401WIDGET_H
+#endif  // P401WIDGET_H

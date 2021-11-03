@@ -18,14 +18,14 @@
 
 #include "p401outputwidget.h"
 
-#include "indexdb401.h"
 #include "canopen/indexWidget/indexcheckbox.h"
+#include "indexdb401.h"
 
-#include <QSpinBox>
 #include <QFormLayout>
 #include <QLayout>
 #include <QPushButton>
 #include <QSlider>
+#include <QSpinBox>
 
 P401OutputWidget::P401OutputWidget(uint8_t channel, QWidget *parent)
     : QWidget(parent)
@@ -195,7 +195,7 @@ QWidget *P401OutputWidget::analogWidgets()
     _analogSpinBox->setRange(0, 100);
     connect(_analogSpinBox, &QSpinBox::editingFinished, this, &P401OutputWidget::analogSpinboxFinished);
 
-    _typeCheckBox  = new QCheckBox();
+    _typeCheckBox = new QCheckBox();
     _typeCheckBox->setText("Percent");
     connect(_typeCheckBox, &QCheckBox::clicked, this, &P401OutputWidget::typeCheckBoxClicked);
 
@@ -288,7 +288,6 @@ void P401OutputWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest fla
         {
             _stackedWidget->setCurrentWidget(_outputLabel);
             _digitalWidget->setEnabled(false);
-
         }
         else if ((value == 0x0001) || (value == 0x0002) || (value == 0x0003))
         {

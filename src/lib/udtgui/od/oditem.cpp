@@ -93,21 +93,21 @@ int ODItem::rowCount() const
 {
     switch (_type)
     {
-    case ODItem::TOD:
-        return _deviceModel->indexCount();
+        case ODItem::TOD:
+            return _deviceModel->indexCount();
 
-    case ODItem::TIndex:
-        if (_index->objectType() == Index::VAR)
-        {
+        case ODItem::TIndex:
+            if (_index->objectType() == Index::VAR)
+            {
+                return 0;
+            }
+            else
+            {
+                return _index->subIndexes().count();
+            }
+
+        default:
             return 0;
-        }
-        else
-        {
-            return _index->subIndexes().count();
-        }
-
-    default:
-        return 0;
     }
 }
 
@@ -115,126 +115,126 @@ QVariant ODItem::data(int column, int role) const
 {
     switch (_type)
     {
-    case ODItem::TOD:
-        break;
+        case ODItem::TOD:
+            break;
 
-    case ODItem::TIndex:
-        switch (role)
-        {
-        case Qt::DisplayRole:
-            switch (column)
+        case ODItem::TIndex:
+            switch (role)
             {
-            case ODItemModel::OdIndex:
-                return QVariant(QLatin1String("0x") + QString::number(_index->index(), 16).toUpper());
-
-            case ODItemModel::Name:
-                return QVariant(_index->name());
-
-            case ODItemModel::Type:
-                if (_index->objectType() == Index::VAR && _index->subIndexesCount() == 1)
-                {
-                    return QVariant(SubIndex::dataTypeStr(_index->subIndex(0)->dataType()));
-                }
-                else
-                {
-                    return QVariant(Index::objectTypeStr(_index->objectType()));
-                }
-
-            case ODItemModel::Value:
-                if (_index->objectType() == Index::VAR && _index->subIndexesCount() == 1)
-                {
-                    if (_index->subIndex(0)->hasNodeId() && _deviceModel->type() == DeviceModel::Description)
+                case Qt::DisplayRole:
+                    switch (column)
                     {
-                        return QString("$NODEID+%1").arg(_index->subIndex(0)->value().toString());
+                        case ODItemModel::OdIndex:
+                            return QVariant(QLatin1String("0x") + QString::number(_index->index(), 16).toUpper());
+
+                        case ODItemModel::Name:
+                            return QVariant(_index->name());
+
+                        case ODItemModel::Type:
+                            if (_index->objectType() == Index::VAR && _index->subIndexesCount() == 1)
+                            {
+                                return QVariant(SubIndex::dataTypeStr(_index->subIndex(0)->dataType()));
+                            }
+                            else
+                            {
+                                return QVariant(Index::objectTypeStr(_index->objectType()));
+                            }
+
+                        case ODItemModel::Value:
+                            if (_index->objectType() == Index::VAR && _index->subIndexesCount() == 1)
+                            {
+                                if (_index->subIndex(0)->hasNodeId() && _deviceModel->type() == DeviceModel::Description)
+                                {
+                                    return QString("$NODEID+%1").arg(_index->subIndex(0)->value().toString());
+                                }
+                                else
+                                {
+                                    return _index->subIndex(0)->value();
+                                }
+                            }
+                            else
+                            {
+                                return QVariant(QString("%1 items").arg(_index->subIndexesCount()));
+                            }
+                        default:
+                            return QVariant();
                     }
-                    else
+                case Qt::EditRole:
+                    switch (column)
                     {
-                        return _index->subIndex(0)->value();
+                        case ODItemModel::OdIndex:
+                            return QVariant(QLatin1String("0x") + QString::number(_index->index(), 16).toUpper());
+
+                        case ODItemModel::Name:
+                            return _index->name();
+
+                        case ODItemModel::Type:
+                            return _index->objectType();
+
+                        case ODItemModel::Value:
+                            if (_index->objectType() == Index::VAR && _index->subIndexesCount() == 1)
+                            {
+                                return _index->subIndex(0)->value();
+                            }
+                            else
+                            {
+                                return QVariant();
+                            }
+
+                        default:
+                            return QVariant();
                     }
-                }
-                else
-                {
-                    return QVariant(QString("%1 items").arg(_index->subIndexesCount()));
-                }
-            default:
-                return QVariant();
             }
-        case Qt::EditRole:
-            switch (column)
+            break;
+
+        case ODItem::TSubIndex:
+            switch (role)
             {
-            case ODItemModel::OdIndex:
-                return QVariant(QLatin1String("0x") + QString::number(_index->index(), 16).toUpper());
+                case Qt::DisplayRole:
+                    switch (column)
+                    {
+                        case ODItemModel::OdIndex:
+                            return QVariant(QLatin1String("0x") + QString::number(_subIndex->subIndex(), 16).toUpper());
 
-            case ODItemModel::Name:
-                return _index->name();
+                        case ODItemModel::Name:
+                            return QVariant(_subIndex->name());
 
-            case ODItemModel::Type:
-                return _index->objectType();
+                        case ODItemModel::Type:
+                            return QVariant(SubIndex::dataTypeStr(_subIndex->dataType()));
 
-            case ODItemModel::Value:
-                if (_index->objectType() == Index::VAR && _index->subIndexesCount() == 1)
-                {
-                    return _index->subIndex(0)->value();
-                }
-                else
-                {
-                    return QVariant();
-                }
+                        case ODItemModel::Value:
+                            if (_subIndex->hasNodeId() && _deviceModel->type() == DeviceModel::Description)
+                            {
+                                return QString("$NODEID+%1").arg(_subIndex->value().toString());
+                            }
+                            else
+                            {
+                                return _subIndex->value();
+                            }
 
-            default:
-                return QVariant();
+                        default:
+                            return QVariant();
+                    }
+                case Qt::EditRole:
+                    switch (column)
+                    {
+                        case ODItemModel::OdIndex:
+                            return _subIndex->subIndex();
+
+                        case ODItemModel::Name:
+                            return _subIndex->name();
+
+                        case ODItemModel::Type:
+                            return _subIndex->dataType();
+
+                        case ODItemModel::Value:
+                            return _subIndex->value();
+
+                        default:
+                            return QVariant();
+                    }
             }
-        }
-        break;
-
-    case ODItem::TSubIndex:
-        switch (role)
-        {
-        case Qt::DisplayRole:
-            switch (column)
-            {
-            case ODItemModel::OdIndex:
-                return QVariant(QLatin1String("0x") + QString::number(_subIndex->subIndex(), 16).toUpper());
-
-            case ODItemModel::Name:
-                return QVariant(_subIndex->name());
-
-            case ODItemModel::Type:
-                return QVariant(SubIndex::dataTypeStr(_subIndex->dataType()));
-
-            case ODItemModel::Value:
-                if (_subIndex->hasNodeId() && _deviceModel->type() == DeviceModel::Description)
-                {
-                    return QString("$NODEID+%1").arg(_subIndex->value().toString());
-                }
-                else
-                {
-                    return _subIndex->value();
-                }
-
-            default:
-                return QVariant();
-            }
-        case Qt::EditRole:
-            switch (column)
-            {
-            case ODItemModel::OdIndex:
-                return _subIndex->subIndex();
-
-            case ODItemModel::Name:
-                return _subIndex->name();
-
-            case ODItemModel::Type:
-                return _subIndex->dataType();
-
-            case ODItemModel::Value:
-                return _subIndex->value();
-
-            default:
-                return QVariant();
-            }
-        }
-        break;
+            break;
     }
     return QVariant();
 }
@@ -243,95 +243,95 @@ bool ODItem::setData(int column, const QVariant &value, int role)
 {
     switch (_type)
     {
-    case ODItem::TOD:
-        break;
+        case ODItem::TOD:
+            break;
 
-    case ODItem::TIndex:
-        switch (role)
-        {
-        case Qt::EditRole:
-            switch (column)
+        case ODItem::TIndex:
+            switch (role)
             {
-            case ODItemModel::OdIndex:
-                if (value.toString().startsWith("0x", Qt::CaseInsensitive))
-                {
-                    bool ok;
-                    index()->setIndex(static_cast<uint16_t>(value.toString().toInt(&ok, 16)));
-                    if (!ok)
+                case Qt::EditRole:
+                    switch (column)
                     {
-                        return false;
+                        case ODItemModel::OdIndex:
+                            if (value.toString().startsWith("0x", Qt::CaseInsensitive))
+                            {
+                                bool ok;
+                                index()->setIndex(static_cast<uint16_t>(value.toString().toInt(&ok, 16)));
+                                if (!ok)
+                                {
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                bool ok;
+                                index()->setIndex(static_cast<uint16_t>(value.toString().toInt(&ok, 10)));
+                                if (!ok)
+                                {
+                                    return false;
+                                }
+                            }
+                            return true;
+
+                        case ODItemModel::Name:
+                            index()->setName(value.toString());
+                            return true;
+
+                        case ODItemModel::Type:
+                            if (_index->objectType() == Index::VAR && index()->subIndexesCount() == 1)
+                            {
+                                index()->subIndex(0)->setDataType(static_cast<SubIndex::DataType>(value.toInt()));
+                            }
+                            else
+                            {
+                                index()->setObjectType(value.toInt());
+                            }
+                            return true;
+
+                        case ODItemModel::Value:
+                            if (_index->objectType() == Index::VAR && index()->subIndexesCount() == 1)
+                            {
+                                index()->subIndex(0)->setValue(value);
+                                return true;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+
+                        default:
+                            return false;
                     }
-                }
-                else
-                {
-                    bool ok;
-                    index()->setIndex(static_cast<uint16_t>(value.toString().toInt(&ok, 10)));
-                    if (!ok)
-                    {
-                        return false;
-                    }
-                }
-                return true;
-
-            case ODItemModel::Name:
-                index()->setName(value.toString());
-                return true;
-
-            case ODItemModel::Type:
-                if (_index->objectType() == Index::VAR && index()->subIndexesCount() == 1)
-                {
-                    index()->subIndex(0)->setDataType(static_cast<SubIndex::DataType>(value.toInt()));
-                }
-                else
-                {
-                    index()->setObjectType(value.toInt());
-                }
-                return true;
-
-            case ODItemModel::Value:
-                if (_index->objectType() == Index::VAR && index()->subIndexesCount() == 1)
-                {
-                    index()->subIndex(0)->setValue(value);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-
-            default:
-                return false;
             }
-        }
-        break;
+            break;
 
-    case ODItem::TSubIndex:
-        switch (role)
-        {
-        case Qt::EditRole:
-            switch (column)
+        case ODItem::TSubIndex:
+            switch (role)
             {
-            case ODItemModel::OdIndex:
-                _subIndex->setSubIndex(value.toInt());
-                return true;
+                case Qt::EditRole:
+                    switch (column)
+                    {
+                        case ODItemModel::OdIndex:
+                            _subIndex->setSubIndex(value.toInt());
+                            return true;
 
-            case ODItemModel::Name:
-                _subIndex->setName(value.toString());
-                return true;
+                        case ODItemModel::Name:
+                            _subIndex->setName(value.toString());
+                            return true;
 
-            case ODItemModel::Type:
-                _subIndex->setDataType(static_cast<SubIndex::DataType>(value.toInt()));
-                return true;
+                        case ODItemModel::Type:
+                            _subIndex->setDataType(static_cast<SubIndex::DataType>(value.toInt()));
+                            return true;
 
-            case ODItemModel::Value:
-                _subIndex->setValue(value);
-                return true;
+                        case ODItemModel::Value:
+                            _subIndex->setValue(value);
+                            return true;
 
-            default:
-                return false;
+                        default:
+                            return false;
+                    }
             }
-        }
-        break;
+            break;
     }
     return false;
 }
@@ -367,16 +367,16 @@ void ODItem::createChildren()
     {
         switch (_type)
         {
-        case ODItem::TOD:
-            _children.append(new ODItem(_deviceModel->indexes().values()[i], this));
-            break;
+            case ODItem::TOD:
+                _children.append(new ODItem(_deviceModel->indexes().values()[i], this));
+                break;
 
-        case ODItem::TIndex:
-            _children.append(new ODItem(_index->subIndexes().values()[i], this));
-            break;
+            case ODItem::TIndex:
+                _children.append(new ODItem(_index->subIndexes().values()[i], this));
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
     }
 }

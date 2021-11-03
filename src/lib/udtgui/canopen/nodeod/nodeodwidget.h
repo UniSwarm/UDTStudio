@@ -67,4 +67,4 @@ protected:
     Filter _filter;
 };
 
-#endif // NODEODWIDGET_H
+#endif  // NODEODWIDGET_H

@@ -71,4 +71,4 @@ public slots:
     void reject() override;
 };
 
-#endif // CANSETTINGDIALOG_H
+#endif  // CANSETTINGDIALOG_H

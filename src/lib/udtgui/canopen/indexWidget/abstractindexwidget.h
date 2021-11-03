@@ -118,4 +118,4 @@ protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags);
 };
 
-#endif // ABSTRACTINDEXWIDGET_H
+#endif  // ABSTRACTINDEXWIDGET_H

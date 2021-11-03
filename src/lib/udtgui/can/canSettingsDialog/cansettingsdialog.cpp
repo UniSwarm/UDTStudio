@@ -80,7 +80,8 @@ void CanSettingsDialog::accept()
         _canDevice = QCanBus::instance()->createDevice(_currentSettings.interfaceName, _currentSettings.deviceName, &errorString);
         if (!_canDevice)
         {
-            QMessageBox::warning(this, tr("My Application"), tr("Error creating device '%1', reason: '%2'").arg(_currentSettings.interfaceName).arg(errorString), QMessageBox::Cancel);
+            QMessageBox::warning(
+                this, tr("My Application"), tr("Error creating device '%1', reason: '%2'").arg(_currentSettings.interfaceName).arg(errorString), QMessageBox::Cancel);
         }
     }
     QDialog::accept();

@@ -50,4 +50,4 @@ protected:
     NodeScreensWidget *_screenWidget;
 };
 
-#endif // NODESCREEN_H
+#endif  // NODESCREEN_H

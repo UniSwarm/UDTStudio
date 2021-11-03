@@ -90,42 +90,50 @@ void DataLoggerManagerWidget::setChartWidget(DataLoggerChartsWidget *chartWidget
 {
     _chartWidget = chartWidget;
 
-    connect(_chartWidget, &DataLoggerChartsWidget::useOpenGLChanged, [=] (bool changed)
-    {
-        if (changed != _openGLAction->isChecked())
-        {
-            _openGLAction->blockSignals(true);
-            _openGLAction->setChecked(changed);
-            _openGLAction->blockSignals(false);
-        }
-    });
-    connect(_chartWidget, &DataLoggerChartsWidget::viewCrossChanged, [=] (bool changed)
-    {
-        if (changed != _crossAction->isChecked())
-        {
-            _crossAction->blockSignals(true);
-            _crossAction->setChecked(changed);
-            _crossAction->blockSignals(false);
-        }
-    });
-    connect(_chartWidget, &DataLoggerChartsWidget::rollingChanged, [=] (bool changed)
-    {
-        if (changed != _rollAction->isChecked())
-        {
-            _rollAction->blockSignals(true);
-            _rollAction->setChecked(changed);
-            _rollAction->blockSignals(false);
-        }
-    });
-    connect(_chartWidget, &DataLoggerChartsWidget::rollingTimeMsChanged, [=] (int timeMs)
-    {
-        if (timeMs != _rollingTimeSpinBox->value())
-        {
-            _rollingTimeSpinBox->blockSignals(true);
-            _rollingTimeSpinBox->setValue(timeMs);
-            _rollingTimeSpinBox->blockSignals(false);
-        }
-    });
+    connect(_chartWidget,
+            &DataLoggerChartsWidget::useOpenGLChanged,
+            [=](bool changed)
+            {
+                if (changed != _openGLAction->isChecked())
+                {
+                    _openGLAction->blockSignals(true);
+                    _openGLAction->setChecked(changed);
+                    _openGLAction->blockSignals(false);
+                }
+            });
+    connect(_chartWidget,
+            &DataLoggerChartsWidget::viewCrossChanged,
+            [=](bool changed)
+            {
+                if (changed != _crossAction->isChecked())
+                {
+                    _crossAction->blockSignals(true);
+                    _crossAction->setChecked(changed);
+                    _crossAction->blockSignals(false);
+                }
+            });
+    connect(_chartWidget,
+            &DataLoggerChartsWidget::rollingChanged,
+            [=](bool changed)
+            {
+                if (changed != _rollAction->isChecked())
+                {
+                    _rollAction->blockSignals(true);
+                    _rollAction->setChecked(changed);
+                    _rollAction->blockSignals(false);
+                }
+            });
+    connect(_chartWidget,
+            &DataLoggerChartsWidget::rollingTimeMsChanged,
+            [=](int timeMs)
+            {
+                if (timeMs != _rollingTimeSpinBox->value())
+                {
+                    _rollingTimeSpinBox->blockSignals(true);
+                    _rollingTimeSpinBox->setValue(timeMs);
+                    _rollingTimeSpinBox->blockSignals(false);
+                }
+            });
 }
 
 void DataLoggerManagerWidget::createWidgets()
@@ -148,15 +156,17 @@ void DataLoggerManagerWidget::createWidgets()
     _startStopAction->setIcon(iconStartStop);
     _startStopAction->setStatusTip(tr("Start or stop the data logger"));
     connect(_startStopAction, &QAction::triggered, this, &DataLoggerManagerWidget::toggleStartLogger);
-    connect(_logger, &DataLogger::startChanged, [=] (bool changed)
-    {
-        if (changed != _startStopAction->isChecked())
-        {
-            _startStopAction->blockSignals(true);
-            _startStopAction->setChecked(changed);
-            _startStopAction->blockSignals(false);
-        }
-    });
+    connect(_logger,
+            &DataLogger::startChanged,
+            [=](bool changed)
+            {
+                if (changed != _startStopAction->isChecked())
+                {
+                    _startStopAction->blockSignals(true);
+                    _startStopAction->setChecked(changed);
+                    _startStopAction->blockSignals(false);
+                }
+            });
 
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
@@ -164,10 +174,12 @@ void DataLoggerManagerWidget::createWidgets()
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
     _toolBar->addWidget(_logTimerSpinBox);
-    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i)
-    {
-        setLogTimerMs(i);
-    });
+    connect(_logTimerSpinBox,
+            QOverload<int>::of(&QSpinBox::valueChanged),
+            [=](int i)
+            {
+                setLogTimerMs(i);
+            });
 
     // clear
     action = _toolBar->addAction(tr("Clear"));
@@ -209,10 +221,12 @@ void DataLoggerManagerWidget::createWidgets()
     _rollingTimeSpinBox->setSuffix(" ms");
     _rollingTimeSpinBox->setStatusTip(tr("Sets the rolling mode time in ms"));
     _toolBar->addWidget(_rollingTimeSpinBox);
-    connect(_rollingTimeSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i)
-    {
-        setRollingTimeMs(i);
-    });
+    connect(_rollingTimeSpinBox,
+            QOverload<int>::of(&QSpinBox::valueChanged),
+            [=](int i)
+            {
+                setRollingTimeMs(i);
+            });
 
     layout->addWidget(_toolBar);
 

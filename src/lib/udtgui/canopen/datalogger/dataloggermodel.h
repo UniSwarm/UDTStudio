@@ -83,4 +83,4 @@ private:
     DataLogger *_dataLogger;
 };
 
-#endif // DATALOGGERMODEL_H
+#endif  // DATALOGGERMODEL_H

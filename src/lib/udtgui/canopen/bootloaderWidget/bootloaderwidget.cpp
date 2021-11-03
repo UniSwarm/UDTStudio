@@ -79,7 +79,7 @@ void BootloaderWidget::setNode(Node *node)
 
 void BootloaderWidget::readAll()
 {
-    for (AbstractIndexWidget *indexWidget : _indexWidgets)
+    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
     {
         indexWidget->readObject();
     }

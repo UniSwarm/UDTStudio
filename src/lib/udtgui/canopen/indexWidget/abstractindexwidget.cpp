@@ -197,32 +197,19 @@ QString AbstractIndexWidget::pstringValue(const QVariant &value, const AbstractI
 
 AbstractIndexWidget::Bound AbstractIndexWidget::inBound(const QVariant &value)
 {
-    switch (_hint)
-    {
-        case AbstractIndexWidget::DisplayDirectValue:
-        case AbstractIndexWidget::DisplayHexa:
-            if (_maxValue.isValid() && value.toInt() > _maxValue.toInt())
-            {
-                return BoundTooHigh;
-            }
-            if (_minValue.isValid() && value.toInt() < _minValue.toInt())
-            {
-                return BoundTooLow;
-            }
-            break;
+    QVariant minType = -32768;
+    QVariant maxType = 32767;
 
-        case AbstractIndexWidget::DisplayQ15_16:
-        case AbstractIndexWidget::DisplayQ1_15:
-        case AbstractIndexWidget::DisplayFloat:
-            if (_maxValue.isValid() && value.toDouble() > _maxValue.toDouble())
-            {
-                return BoundTooHigh;
-            }
-            if (_minValue.isValid() && value.toDouble() < _minValue.toDouble())
-            {
-                return BoundTooLow;
-            }
-            break;
+    QVariant min = (_minValue.isValid()) ? _minValue : minType;
+    QVariant max = (_minValue.isValid()) ? _maxValue : maxType;
+
+    if (value.toDouble() > max.toDouble())
+    {
+        return BoundTooHigh;
+    }
+    if (value.toDouble() < min.toDouble())
+    {
+        return BoundTooLow;
     }
 
     return BoundOK;
@@ -372,13 +359,13 @@ void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest 
     _lastValue = nodeInterrest()->nodeOd()->value(objId);
     if (flags & SDO::Error)
     {
-        if (_pendingValue.isValid() && (flags & SDO::Write)) // we request a write value that cause an error
+        if (_pendingValue.isValid() && (flags & SDO::Write))  // we request a write value that cause an error
         {
             setDisplayValue(pValue(_pendingValue, _hint), DisplayAttribute::Error);
             _pendingValue = QVariant();
             return;
         }
-        else if (flags & SDO::Read) // any read cause an error
+        else if (flags & SDO::Read)  // any read cause an error
         {
             if (isEditing() && !_requestRead)
             {
@@ -388,7 +375,7 @@ void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest 
             _requestRead = false;
             return;
         }
-        else // any other write request failed
+        else  // any other write request failed
         {
             return;
         }

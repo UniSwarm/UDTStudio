@@ -64,39 +64,39 @@ bool NodeOdFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex 
     bool pdoOk = false;
     switch (_pdoFilter)
     {
-    case NodeOdFilterProxyModel::PDOFILTER_ALL:
-        pdoOk = true;
-        break;
+        case NodeOdFilterProxyModel::PDOFILTER_ALL:
+            pdoOk = true;
+            break;
 
-    case NodeOdFilterProxyModel::PDOFILTER_PDO:
-        for (NodeSubIndex *subIndex : nodeIndex->subIndexes())
-        {
-            if (subIndex->hasRPDOAccess() || subIndex->hasTPDOAccess())
+        case NodeOdFilterProxyModel::PDOFILTER_PDO:
+            for (NodeSubIndex *subIndex : nodeIndex->subIndexes())
             {
-                pdoOk = true;
+                if (subIndex->hasRPDOAccess() || subIndex->hasTPDOAccess())
+                {
+                    pdoOk = true;
+                }
             }
-        }
-        break;
+            break;
 
-    case NodeOdFilterProxyModel::PDOFILTER_RPDO:
-        for (NodeSubIndex *subIndex : nodeIndex->subIndexes())
-        {
-            if (subIndex->hasRPDOAccess())
+        case NodeOdFilterProxyModel::PDOFILTER_RPDO:
+            for (NodeSubIndex *subIndex : nodeIndex->subIndexes())
             {
-                pdoOk = true;
+                if (subIndex->hasRPDOAccess())
+                {
+                    pdoOk = true;
+                }
             }
-        }
-        break;
+            break;
 
-    case NodeOdFilterProxyModel::PDOFILTER_TPDO:
-        for (NodeSubIndex *subIndex : nodeIndex->subIndexes())
-        {
-            if (subIndex->hasTPDOAccess())
+        case NodeOdFilterProxyModel::PDOFILTER_TPDO:
+            for (NodeSubIndex *subIndex : nodeIndex->subIndexes())
             {
-                pdoOk = true;
+                if (subIndex->hasTPDOAccess())
+                {
+                    pdoOk = true;
+                }
             }
-        }
-        break;
+            break;
     }
     if (!pdoOk)
     {

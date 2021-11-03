@@ -55,4 +55,4 @@ public:
     StepEnabled stepEnabled() const override;
 };
 
-#endif // INDEXSPINBOX_H
+#endif  // INDEXSPINBOX_H

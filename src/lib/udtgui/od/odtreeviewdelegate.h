@@ -36,4 +36,4 @@ public:
     virtual void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
 };
 
-#endif // ODTREEVIEWDELEGATE_H
+#endif  // ODTREEVIEWDELEGATE_H

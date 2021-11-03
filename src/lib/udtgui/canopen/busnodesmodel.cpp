@@ -36,10 +36,12 @@ void BusNodesModel::setCanOpen(CanOpen *canOpen)
         connect(_canOpen, &CanOpen::busAboutToBeAdded, this, &BusNodesModel::prepareAddBus);
         connect(_canOpen, &CanOpen::busAdded, this, &BusNodesModel::addBus);
         connect(_canOpen, &CanOpen::busAboutToBeRemoved, this, &BusNodesModel::removeBus);
-        connect(_canOpen, &CanOpen::busRemoved, [=] ()
-        {
-            endRemoveRows();
-        });
+        connect(_canOpen,
+                &CanOpen::busRemoved,
+                [=]()
+                {
+                    endRemoveRows();
+                });
     }
     emit layoutChanged();
 }
@@ -85,30 +87,42 @@ void BusNodesModel::addBus(quint8 busId)
     {
         return;
     }
-    connect(bus, &CanOpenBus::nodeAboutToBeAdded, [=] (int nodeId)
-    {
-        prepareAddNode(bus, nodeId);
-    });
-    connect(bus, &CanOpenBus::nodeAdded, [=] (int nodeId)
-    {
-        addNode(bus, nodeId);
-    });
-    connect(bus, &CanOpenBus::nodeAboutToBeRemoved, [=] (int nodeId)
-    {
-        removeNode(bus, nodeId);
-    });
-    connect(bus, &CanOpenBus::nodeRemoved, [=] ()
-    {
-        endRemoveRows();
-    });
-    connect(bus, &CanOpenBus::busNameChanged, [=] ()
-    {
-        updateBus(bus, Name);
-    });
-    connect(bus, &CanOpenBus::connectedChanged, [=] ()
-    {
-        updateBus(bus, Status);
-    });
+    connect(bus,
+            &CanOpenBus::nodeAboutToBeAdded,
+            [=](int nodeId)
+            {
+                prepareAddNode(bus, nodeId);
+            });
+    connect(bus,
+            &CanOpenBus::nodeAdded,
+            [=](int nodeId)
+            {
+                addNode(bus, nodeId);
+            });
+    connect(bus,
+            &CanOpenBus::nodeAboutToBeRemoved,
+            [=](int nodeId)
+            {
+                removeNode(bus, nodeId);
+            });
+    connect(bus,
+            &CanOpenBus::nodeRemoved,
+            [=]()
+            {
+                endRemoveRows();
+            });
+    connect(bus,
+            &CanOpenBus::busNameChanged,
+            [=]()
+            {
+                updateBus(bus, Name);
+            });
+    connect(bus,
+            &CanOpenBus::connectedChanged,
+            [=]()
+            {
+                updateBus(bus, Status);
+            });
 }
 
 void BusNodesModel::removeBus(quint8 busId)
@@ -150,14 +164,18 @@ void BusNodesModel::addNode(CanOpenBus *bus, quint8 nodeId)
         return;
     }
 
-    connect(node, &Node::nameChanged, [=] ()
-    {
-        updateNode(node, Name);
-    });
-    connect(node, &Node::statusChanged, [=] ()
-    {
-        updateNode(node, Status);
-    });
+    connect(node,
+            &Node::nameChanged,
+            [=]()
+            {
+                updateNode(node, Name);
+            });
+    connect(node,
+            &Node::statusChanged,
+            [=]()
+            {
+                updateNode(node, Status);
+            });
 }
 
 void BusNodesModel::removeNode(CanOpenBus *bus, quint8 nodeId)
@@ -197,17 +215,17 @@ QVariant BusNodesModel::headerData(int section, Qt::Orientation orientation, int
 
     switch (role)
     {
-    case Qt::DisplayRole:
-        switch (section)
-        {
-        case NodeId:
-            return QVariant(tr("Id"));
-        case Name:
-            return QVariant(tr("Name"));
-        case Status:
-            return QVariant(tr("Status"));
-        }
-        break;
+        case Qt::DisplayRole:
+            switch (section)
+            {
+                case NodeId:
+                    return QVariant(tr("Id"));
+                case Name:
+                    return QVariant(tr("Name"));
+                case Status:
+                    return QVariant(tr("Status"));
+            }
+            break;
     }
     return QVariant();
 }
@@ -224,32 +242,32 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
     {
         switch (role)
         {
-        case Qt::DisplayRole:
-            switch (index.column())
-            {
-            case NodeId:
-                return QVariant(index.row());
-            case Name:
-                return QVariant(bus->busName());
-            case Status:
-                return QVariant(bus->isConnected() ? tr("connected") : tr("unconnected"));
-            default:
+            case Qt::DisplayRole:
+                switch (index.column())
+                {
+                    case NodeId:
+                        return QVariant(index.row());
+                    case Name:
+                        return QVariant(bus->busName());
+                    case Status:
+                        return QVariant(bus->isConnected() ? tr("connected") : tr("unconnected"));
+                    default:
+                        return QVariant();
+                }
+
+            case Qt::DecorationRole:
+                if (index.column() == NodeId)
+                {
+                    return QVariant(QIcon(":/uBoards/connexion-usb.png"));
+                }
                 return QVariant();
-            }
 
-        case Qt::DecorationRole:
-            if (index.column() == NodeId)
-            {
-                return QVariant(QIcon(":/uBoards/connexion-usb.png"));
-            }
-            return QVariant();
-
-        case Qt::TextAlignmentRole:
-            if (index.column() == NodeId)
-            {
-                return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
-            }
-            return QVariant();
+            case Qt::TextAlignmentRole:
+                if (index.column() == NodeId)
+                {
+                    return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
+                }
+                return QVariant();
         }
     }
 
@@ -258,41 +276,41 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
     {
         switch (role)
         {
-        case Qt::DisplayRole:
-            switch (index.column())
-            {
-            case NodeId:
-                return QVariant(node->nodeId());
-            case Name:
-                return QVariant(node->name());
-            case Status:
-                return QVariant(node->statusStr());
-            default:
-                return QVariant();
-            }
-
-        case Qt::DecorationRole:
-            if (index.column() == NodeId)
-            {
-                if (node->manufacturerId() == 0x04A2) // UniSwarm
+            case Qt::DisplayRole:
+                switch (index.column())
                 {
-                    switch (node->profileNumber())
+                    case NodeId:
+                        return QVariant(node->nodeId());
+                    case Name:
+                        return QVariant(node->name());
+                    case Status:
+                        return QVariant(node->statusStr());
+                    default:
+                        return QVariant();
+                }
+
+            case Qt::DecorationRole:
+                if (index.column() == NodeId)
+                {
+                    if (node->manufacturerId() == 0x04A2)  // UniSwarm
                     {
-                    case 401:
-                        return QVariant(QIcon(":/uBoards/uio.png"));
-                    case 402:
-                        return QVariant(QIcon(":/uBoards/umc.png"));
+                        switch (node->profileNumber())
+                        {
+                            case 401:
+                                return QVariant(QIcon(":/uBoards/uio.png"));
+                            case 402:
+                                return QVariant(QIcon(":/uBoards/umc.png"));
+                        }
                     }
                 }
-            }
-            return QVariant();
+                return QVariant();
 
-        case Qt::TextAlignmentRole:
-            if (index.column() == NodeId)
-            {
-                return QVariant(Qt::AlignRight | Qt::AlignVCenter);
-            }
-            return QVariant();
+            case Qt::TextAlignmentRole:
+                if (index.column() == NodeId)
+                {
+                    return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+                }
+                return QVariant();
         }
     }
     return QVariant();

@@ -72,4 +72,4 @@ private:
     CanOpen *_canOpen;
 };
 
-#endif // BUSNODESMODEL_H
+#endif  // BUSNODESMODEL_H

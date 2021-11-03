@@ -42,4 +42,4 @@ protected:
     void nextCheckState() override;
 };
 
-#endif // INDEXCHECKBOX_H
+#endif  // INDEXCHECKBOX_H

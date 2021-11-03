@@ -73,4 +73,4 @@ protected slots:
 
 #define dataLoggers() (DataLoggerSingleton::instance())
 
-#endif // DATALOGGERSINGLETON_H
+#endif  // DATALOGGERSINGLETON_H

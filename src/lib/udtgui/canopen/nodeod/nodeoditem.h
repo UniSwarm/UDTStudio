@@ -81,4 +81,4 @@ protected:
     QVariant formatValue(NodeSubIndex *subIndex, ViewType viewType) const;
 };
 
-#endif // NODEODITEM_H
+#endif  // NODEODITEM_H

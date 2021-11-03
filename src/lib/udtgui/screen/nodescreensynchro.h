@@ -74,4 +74,4 @@ public:
     void setNodeInternal(Node *node, uint8_t axis) override;
 };
 
-#endif // NODESCREENSYNCHRO_H
+#endif  // NODESCREENSYNCHRO_H

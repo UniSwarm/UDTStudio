@@ -93,4 +93,4 @@ private:
     bool _editable;
 };
 
-#endif // NODEODITEMMODEL_H
+#endif  // NODEODITEMMODEL_H

@@ -67,19 +67,19 @@ QVariant ODItemModel::headerData(int section, Qt::Orientation orientation, int r
     }
     switch (role)
     {
-    case Qt::DisplayRole:
-        switch (section)
-        {
-        case OdIndex:
-            return QVariant(tr("Index"));
-        case Name:
-            return QVariant(tr("Name"));
-        case Type:
-            return QVariant(tr("Type"));
-        case Value:
-            return QVariant(tr("Value"));
-        }
-        break;
+        case Qt::DisplayRole:
+            switch (section)
+            {
+                case OdIndex:
+                    return QVariant(tr("Index"));
+                case Name:
+                    return QVariant(tr("Name"));
+                case Type:
+                    return QVariant(tr("Type"));
+                case Value:
+                    return QVariant(tr("Value"));
+            }
+            break;
     }
     return QVariant();
 }

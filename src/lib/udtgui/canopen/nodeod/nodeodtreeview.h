@@ -68,4 +68,4 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
-#endif // NODEODTREEVIEW_H
+#endif  // NODEODTREEVIEW_H

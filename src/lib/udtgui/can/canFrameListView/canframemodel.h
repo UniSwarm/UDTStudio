@@ -71,4 +71,4 @@ private:
     CanOpenBus *_bus;
 };
 
-#endif // CANFRAMEMODEL_H
+#endif  // CANFRAMEMODEL_H

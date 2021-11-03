@@ -88,19 +88,19 @@ QVariant CanFrameModel::headerData(int section, Qt::Orientation orientation, int
     }
     switch (role)
     {
-    case Qt::DisplayRole:
-        switch (section)
-        {
-        case Time:
-            return QVariant(tr("Time"));
-        case CanId:
-            return QVariant(tr("CanId"));
-        case Type:
-            return QVariant(tr("Type"));
-        case DataByte:
-            return QVariant(tr("DataByte"));
-        }
-        break;
+        case Qt::DisplayRole:
+            switch (section)
+            {
+                case Time:
+                    return QVariant(tr("Time"));
+                case CanId:
+                    return QVariant(tr("CanId"));
+                case Type:
+                    return QVariant(tr("Type"));
+                case DataByte:
+                    return QVariant(tr("DataByte"));
+            }
+            break;
     }
     return QVariant();
 }
@@ -132,73 +132,74 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
 
     switch (role)
     {
-    case Qt::DisplayRole:
-        switch (index.column())
-        {
-        case Time:
-            return QVariant(QString("%1.%2").arg(canFrame.timeStamp().seconds() - _startTime).arg(QString::number(canFrame.timeStamp().microSeconds() / 1000).rightJustified(3, '0')));
-
-        case CanId:
-            return QVariant(QString("0x%1 (%2)").arg(QString::number(canFrame.frameId(), 16)).arg(canFrame.frameId()));
-
-        case Type:
-            switch (canFrame.frameType())
+        case Qt::DisplayRole:
+            switch (index.column())
             {
-            case QCanBusFrame::UnknownFrame:
-                return QVariant(tr("unk"));
-            case QCanBusFrame::DataFrame:
-                return QVariant(tr("Dat(%1)").arg(canFrame.payload().count()));
-            case QCanBusFrame::ErrorFrame:
-                return QVariant(tr("Err"));
-            case QCanBusFrame::RemoteRequestFrame:
-                return QVariant(tr("RTR"));
-            case QCanBusFrame::InvalidFrame:
-                return QVariant(tr("NV"));
+                case Time:
+                    return QVariant(
+                        QString("%1.%2").arg(canFrame.timeStamp().seconds() - _startTime).arg(QString::number(canFrame.timeStamp().microSeconds() / 1000).rightJustified(3, '0')));
+
+                case CanId:
+                    return QVariant(QString("0x%1 (%2)").arg(QString::number(canFrame.frameId(), 16)).arg(canFrame.frameId()));
+
+                case Type:
+                    switch (canFrame.frameType())
+                    {
+                        case QCanBusFrame::UnknownFrame:
+                            return QVariant(tr("unk"));
+                        case QCanBusFrame::DataFrame:
+                            return QVariant(tr("Dat(%1)").arg(canFrame.payload().count()));
+                        case QCanBusFrame::ErrorFrame:
+                            return QVariant(tr("Err"));
+                        case QCanBusFrame::RemoteRequestFrame:
+                            return QVariant(tr("RTR"));
+                        case QCanBusFrame::InvalidFrame:
+                            return QVariant(tr("NV"));
+                    }
+                    return QVariant();
+
+                case DataByte:
+                    return QVariant(canFrame.payload().toHex(' ').toUpper());
+
+                default:
+                    return QVariant();
             }
-            return QVariant();
 
-        case DataByte:
-            return QVariant(canFrame.payload().toHex(' ').toUpper());
+        case Qt::TextAlignmentRole:
+            switch (index.column())
+            {
+                case Time:
+                    return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 
-        default:
-            return QVariant();
-        }
+                case Type:
+                    return QVariant(Qt::AlignHCenter | Qt::AlignVCenter);
 
-    case Qt::TextAlignmentRole:
-        switch (index.column())
-        {
-        case Time:
-            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+                default:
+                    return QVariant();
+            }
 
-        case Type:
-            return QVariant(Qt::AlignHCenter | Qt::AlignVCenter);
+        case Qt::FontRole:
+            switch (index.column())
+            {
+                case DataByte:
+                {
+                    QFont fontMono = QApplication::font();
+                    fontMono.setStyleHint(QFont::Monospace);
+                    return QVariant(fontMono);
+                }
+                default:
+                    return QVariant();
+            }
 
-        default:
-            return QVariant();
-        }
-
-    case Qt::FontRole:
-        switch (index.column())
-        {
-        case DataByte:
-        {
-            QFont fontMono = QApplication::font();
-            fontMono.setStyleHint(QFont::Monospace);
-            return QVariant(fontMono);
-        }
-        default:
-            return QVariant();
-        }
-
-    case Qt::BackgroundRole:
-        if (canFrame.hasLocalEcho())
-        {
-            return QVariant();
-        }
-        else
-        {
-            return QVariant(QColor(Qt::lightGray));
-        }
+        case Qt::BackgroundRole:
+            if (canFrame.hasLocalEcho())
+            {
+                return QVariant();
+            }
+            else
+            {
+                return QVariant(QColor(Qt::lightGray));
+            }
     }
     return QVariant();
 }

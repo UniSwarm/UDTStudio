@@ -116,7 +116,7 @@ void NodeScreenOD::statusNodeChanged()
 {
     if (_node)
     {
-        if (_node->status() == Node::STARTED ||  _node->status() == Node::STOPPED)
+        if (_node->status() == Node::STARTED || _node->status() == Node::STOPPED)
         {
             _storeRestoreGroupBox->setEnabled(false);
         }

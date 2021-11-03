@@ -52,4 +52,4 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 };
 
-#endif // INDEXLCDNUMBER_H
+#endif  // INDEXLCDNUMBER_H

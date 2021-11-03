@@ -39,7 +39,7 @@ NodeScreenHome::NodeScreenHome()
 
 void NodeScreenHome::readAll()
 {
-    for (AbstractIndexWidget *indexWidget : _indexWidgets)
+    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
     {
         indexWidget->readObject();
     }
@@ -125,7 +125,12 @@ QWidget *NodeScreenHome::createSumaryWidget()
     QVBoxLayout *buttonlayout = new QVBoxLayout();
     QPushButton *goFirmwareButton = new QPushButton(tr("Update firmware"));
     goFirmwareButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
-    connect(goFirmwareButton, &QPushButton::released, [=]() { updateFirmware(); });
+    connect(goFirmwareButton,
+            &QPushButton::released,
+            [=]()
+            {
+                updateFirmware();
+            });
     buttonlayout->addWidget(goFirmwareButton);
     buttonlayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
     hlayout->addItem(buttonlayout);
@@ -185,7 +190,12 @@ QWidget *NodeScreenHome::createOdWidget()
     QVBoxLayout *buttonlayout = new QVBoxLayout();
     QPushButton *goODButton = new QPushButton(tr("Go to OD tab"));
     goODButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
-    connect(goODButton, &QPushButton::released, [=]() { screenWidget()->setActiveTab("od"); });
+    connect(goODButton,
+            &QPushButton::released,
+            [=]()
+            {
+                screenWidget()->setActiveTab("od");
+            });
     buttonlayout->addWidget(goODButton);
     buttonlayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
     hlayout->addItem(buttonlayout);
@@ -199,17 +209,17 @@ void NodeScreenHome::updateInfos(Node *node)
     if (node)
     {
         _summaryProfileLabel->setText(QString("DS%1").arg(node->profileNumber()));
-        if (node->manufacturerId() == 0x04A2) // UniSwarm
+        if (node->manufacturerId() == 0x04A2)  // UniSwarm
         {
             switch (node->profileNumber())
             {
-            case 401:
-                _summaryIconLabel->setPixmap(QPixmap(":/uBoards/uio.png"));
-                break;
+                case 401:
+                    _summaryIconLabel->setPixmap(QPixmap(":/uBoards/uio.png"));
+                    break;
 
-            case 402:
-                _summaryIconLabel->setPixmap(QPixmap(":/uBoards/umc.png"));
-                break;
+                case 402:
+                    _summaryIconLabel->setPixmap(QPixmap(":/uBoards/umc.png"));
+                    break;
             }
         }
         _odEdsFileLabel->setText(node->edsFileName());
@@ -253,9 +263,11 @@ void NodeScreenHome::setNodeInternal(Node *node, uint8_t axis)
 
     if (node)
     {
-        connect(node, &Node::edsFileChanged, [=]()
-        {
-            updateInfos(node);
-        });
+        connect(node,
+                &Node::edsFileChanged,
+                [=]()
+                {
+                    updateInfos(node);
+                });
     }
 }

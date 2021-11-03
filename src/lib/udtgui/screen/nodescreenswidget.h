@@ -56,4 +56,4 @@ protected:
     QMap<Node *, NodeScreens> _nodesMap;
 };
 
-#endif // NODESCREENS_H
+#endif  // NODESCREENS_H

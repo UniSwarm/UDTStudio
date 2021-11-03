@@ -53,4 +53,4 @@ public:
     void setNodeInternal(Node *node, uint8_t axis = 0) override;
 };
 
-#endif // NODESCREENOD_H
+#endif  // NODESCREENOD_H

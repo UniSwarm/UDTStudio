@@ -56,7 +56,7 @@ protected:
 
     QList<AbstractIndexWidget *> _indexWidgets;
 
-    void updateInfos();
+    void updateInfos(Node *node);
 
     // NodeScreen interface
 public:
@@ -64,4 +64,4 @@ public:
     void setNodeInternal(Node *node, uint8_t axis = 0) override;
 };
 
-#endif // NODESCREENHOME_H
+#endif  // NODESCREENHOME_H

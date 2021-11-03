@@ -49,7 +49,7 @@ public:
 
     P401InputWidget *inputWidget() const;
 
-  public slots:
+public slots:
     void setNode(Node *node);
     void setSettings(bool checked);
 
@@ -71,4 +71,4 @@ private:
     void createWidgets();
 };
 
-#endif // P401CHANNELWIDGET_H
+#endif  // P401CHANNELWIDGET_H

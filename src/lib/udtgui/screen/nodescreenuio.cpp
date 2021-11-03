@@ -82,7 +82,12 @@ void NodeScreenUio::createWidgets()
     _logTimerSpinBox->setValue(100);
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
-    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
+    connect(_logTimerSpinBox,
+            QOverload<int>::of(&QSpinBox::valueChanged),
+            [=](int i)
+            {
+                setLogTimer(i);
+            });
 
     // read all action
     QAction *readAllObjectAction = toolBar->addAction(tr("Read all objects"));

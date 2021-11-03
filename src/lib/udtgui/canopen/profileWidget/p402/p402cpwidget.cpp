@@ -27,7 +27,8 @@
 #include "profile/p402/nodeprofile402.h"
 #include "services/services.h"
 
-P402CpWidget::P402CpWidget(QWidget *parent) : P402ModeWidget(parent)
+P402CpWidget::P402CpWidget(QWidget *parent)
+    : P402ModeWidget(parent)
 {
     createWidgets();
     _nodeProfile402 = nullptr;

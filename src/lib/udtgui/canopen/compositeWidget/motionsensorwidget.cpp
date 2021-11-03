@@ -34,7 +34,8 @@
 #include <QSplitter>
 #include <QWidget>
 
-MotionSensorWidget::MotionSensorWidget(QWidget *parent) : QWidget(parent)
+MotionSensorWidget::MotionSensorWidget(QWidget *parent)
+    : QWidget(parent)
 {
     _nodeProfile402 = nullptr;
     _dataLogger = new DataLogger();
@@ -92,7 +93,7 @@ void MotionSensorWidget::setNode(Node *node, uint8_t axis)
     }
     setIMode();
 
-    for (AbstractIndexWidget *indexWidget : _indexWidgets)
+    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
     {
         indexWidget->setNode(node);
     }
@@ -262,7 +263,12 @@ QToolBar *MotionSensorWidget::createToolBarWidgets()
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
     toolBar->addWidget(_logTimerSpinBox);
-    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
+    connect(_logTimerSpinBox,
+            QOverload<int>::of(&QSpinBox::valueChanged),
+            [=](int i)
+            {
+                setLogTimer(i);
+            });
 
     // clear
     QAction *action;
@@ -545,7 +551,7 @@ void MotionSensorWidget::stateChanged()
 
 void MotionSensorWidget::readAllObject()
 {
-    for (AbstractIndexWidget *indexWidget : _indexWidgets)
+    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
     {
         indexWidget->readObject();
     }
@@ -566,12 +572,12 @@ void MotionSensorWidget::updateSensorParams(int index)
 
     switch (_sensorSelectComboBox->currentData().toUInt())
     {
-        case 0x2300: // VELOCITY_FROM_POSITION
+        case 0x2300:  // VELOCITY_FROM_POSITION
             _sensorParamLabels.at(0)->setText(tr("Window size:"));
             _sensorParam0SpinBox->setEnabled(true);
             break;
 
-        case 0x3101: // QEI_CH1
+        case 0x3101:  // QEI_CH1
             _sensorParamLabels.at(0)->setText(tr("Filter divider:"));
             _sensorParam0SpinBox->setEnabled(true);
             break;
@@ -593,7 +599,7 @@ void MotionSensorWidget::updateFilterParams(int index)
 
     switch (_filterSelectComboBox->currentData().toUInt())
     {
-        case 0x2000: // AVERAGING
+        case 0x2000:  // AVERAGING
             _filterParamLabels.at(0)->setText(tr("Sample count:"));
             _filterParam0SpinBox->setEnabled(true);
             break;

@@ -31,7 +31,7 @@ namespace QtCharts
 {
 class QDateTimeAxis;
 class QValueAxis;
-} // namespace QtCharts
+}  // namespace QtCharts
 
 class UDTGUI_EXPORT DataLoggerChartsWidget : public QtCharts::QChartView
 {
@@ -101,4 +101,4 @@ protected:
     void dragMoveEvent(QDragMoveEvent *event) override;
 };
 
-#endif // DATALOGGERCHARTSWIDGET_H
+#endif  // DATALOGGERCHARTSWIDGET_H

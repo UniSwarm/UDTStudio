@@ -66,4 +66,4 @@ private:
     bool _editable;
 };
 
-#endif // ODITEMMODEL_H
+#endif  // ODITEMMODEL_H

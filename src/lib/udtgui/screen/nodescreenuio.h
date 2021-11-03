@@ -28,7 +28,7 @@
 
 class P401Widget;
 
-class UDTGUI_EXPORT NodeScreenUio: public NodeScreen
+class UDTGUI_EXPORT NodeScreenUio : public NodeScreen
 {
     Q_OBJECT
 public:
@@ -48,7 +48,7 @@ protected:
     QAction *_startStopAction;
     QAction *_option402Action;
 
-    void createWidgets();    
+    void createWidgets();
 
     // NodeScreen interface
 public:
@@ -57,4 +57,4 @@ public:
     void setNodeInternal(Node *node, uint8_t axis) override;
 };
 
-#endif // NODESCREENUIO_H
+#endif  // NODESCREENUIO_H

@@ -59,4 +59,4 @@ protected:
     CanOpen *_canOpen;
 };
 
-#endif // BUSNODESMANAGERVIEW_H
+#endif  // BUSNODESMANAGERVIEW_H

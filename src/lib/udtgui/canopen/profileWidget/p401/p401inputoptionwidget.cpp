@@ -18,8 +18,8 @@
 
 #include "p401inputoptionwidget.h"
 
-#include "indexdb401.h"
 #include "canopen/indexWidget/indexspinbox.h"
+#include "indexdb401.h"
 
 #include <QFormLayout>
 #include <QLabel>

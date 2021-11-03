@@ -48,4 +48,4 @@ protected:
     QWidget *_widget;
 };
 
-#endif // PDOMAPPINGPAINTER_H
+#endif  // PDOMAPPINGPAINTER_H

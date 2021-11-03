@@ -18,12 +18,12 @@
 
 #include "p401widget.h"
 
+#include "canopen/datalogger/dataloggerwidget.h"
+#include "canopen/indexWidget/indexcombobox.h"
 #include "node.h"
 #include "p401channelwidget.h"
 #include "p401inputwidget.h"
 #include "p401outputwidget.h"
-#include "canopen/indexWidget/indexcombobox.h"
-#include "canopen/datalogger/dataloggerwidget.h"
 
 #include <QFormLayout>
 #include <QFrame>
@@ -47,7 +47,7 @@ Node *P401Widget::node() const
 
 void P401Widget::readAllObject()
 {
-    for (P401ChannelWidget *p401ChannelWidget : _p401ChannelWidgets)
+    for (P401ChannelWidget *p401ChannelWidget : qAsConst(_p401ChannelWidgets))
     {
         p401ChannelWidget->readAllObject();
     }
@@ -55,7 +55,7 @@ void P401Widget::readAllObject()
 
 void P401Widget::readInputObject()
 {
-    for (P401ChannelWidget *p401ChannelWidget : _p401ChannelWidgets)
+    for (P401ChannelWidget *p401ChannelWidget : qAsConst(_p401ChannelWidgets))
     {
         p401ChannelWidget->readInputObject();
     }
@@ -66,7 +66,7 @@ void P401Widget::dataLogger()
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
 
-    for (P401ChannelWidget *p401ChannelWidget : _p401ChannelWidgets)
+    for (P401ChannelWidget *p401ChannelWidget : qAsConst(_p401ChannelWidgets))
     {
         dataLogger->addData(p401ChannelWidget->inputWidget()->analogObjectId());
     }
@@ -92,7 +92,7 @@ void P401Widget::setNode(Node *node)
     }
     _node = node;
 
-    for (P401ChannelWidget *p401ChannelWidget : _p401ChannelWidgets)
+    for (P401ChannelWidget *p401ChannelWidget : qAsConst(_p401ChannelWidgets))
     {
         p401ChannelWidget->setNode(_node);
     }

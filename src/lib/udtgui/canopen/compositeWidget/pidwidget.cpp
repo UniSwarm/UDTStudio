@@ -33,7 +33,8 @@
 #include <QSplitter>
 #include <QWidget>
 
-PidWidget::PidWidget(QWidget *parent) : QWidget(parent)
+PidWidget::PidWidget(QWidget *parent)
+    : QWidget(parent)
 {
     _nodeProfile402 = nullptr;
     createWidgets();
@@ -89,7 +90,7 @@ void PidWidget::setNode(Node *node, uint8_t axis)
     connect(node, &Node::statusChanged, this, &PidWidget::statusNodeChanged);
     setIMode();
 
-    for (AbstractIndexWidget *indexWidget : _indexWidgets)
+    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
     {
         indexWidget->setNode(node);
     }
@@ -215,7 +216,7 @@ void PidWidget::setIMode()
 void PidWidget::screenshotSave()
 {
     QPixmap pixmap = _dataLoggerWidget->grab();
-    QString file = QString("%1_%2.png").arg(title()).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz"));
+    QString file = QString("%1_%2.png").arg(title(), QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz"));
     pixmap.save(file, "PNG");
 }
 
@@ -260,9 +261,7 @@ void PidWidget::changeMode402()
 
         case MODE_PID_POSITION:
             _nodeProfile402->setDefaultValueOfMode();
-            if (_nodeProfile402->actualMode() != NodeProfile402::PP
-                || _nodeProfile402->actualMode() != NodeProfile402::IP
-                || _nodeProfile402->actualMode() != NodeProfile402::CP)
+            if (_nodeProfile402->actualMode() != NodeProfile402::PP || _nodeProfile402->actualMode() != NodeProfile402::IP || _nodeProfile402->actualMode() != NodeProfile402::CP)
             {
                 NodeProfile402::OperationMode mode = static_cast<NodeProfile402::OperationMode>(_modeComboBox->currentData().toInt());
                 _nodeProfile402->setMode(mode);
@@ -450,7 +449,7 @@ void PidWidget::readStatus()
 
 void PidWidget::readAllObject()
 {
-    for (AbstractIndexWidget *indexWidget : _indexWidgets)
+    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
     {
         indexWidget->readObject();
     }
@@ -518,7 +517,12 @@ QToolBar *PidWidget::createToolBarWidgets()
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
     toolBar->addWidget(_logTimerSpinBox);
-    connect(_logTimerSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int i) { setLogTimer(i); });
+    connect(_logTimerSpinBox,
+            QOverload<int>::of(&QSpinBox::valueChanged),
+            [=](int i)
+            {
+                setLogTimer(i);
+            });
 
     // clear
     QAction *action;
@@ -551,7 +555,7 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
 
     _iSpinBox = new IndexSpinBox();
     _iSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&I:"), _iSpinBox);    
+    formLayout->addRow(tr("&I:"), _iSpinBox);
     _indexWidgets.append(_iSpinBox);
 
     _dSpinBox = new IndexSpinBox();
@@ -647,7 +651,7 @@ QGroupBox *PidWidget::createPIDTestWidgets()
     _windowFirstTargetSpinBox = new QSpinBox();
     _windowFirstTargetSpinBox->setRange(10, 5000);
     _windowFirstTargetSpinBox->setValue(3000);
-    _windowFirstTargetSpinBox->setSuffix( " ms");
+    _windowFirstTargetSpinBox->setSuffix(" ms");
     firstTargetLayout->addWidget(_firstTargetSpinBox);
     firstTargetLayout->addWidget(_windowFirstTargetSpinBox);
     formLayout->addRow(tr("First Target:"), firstTargetLayout);

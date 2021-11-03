@@ -19,13 +19,13 @@
 #include "nodemanagerwidget.h"
 
 #include <QDebug>
-#include <QFileInfo>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QFormLayout>
 
 #include "canopenbus.h"
-#include "services/services.h"
 #include "indexdb.h"
+#include "services/services.h"
 
 #include "canopen/bootloaderWidget/bootloaderwidget.h"
 
@@ -264,7 +264,12 @@ void NodeManagerWidget::createWidgets()
     _actionLoadEds = new QAction(tr("Load eds"));
     _actionLoadEds->setIcon(QIcon(":/icons/img/icons8-import-file.png"));
     _actionLoadEds->setStatusTip(tr("Load an eds file as object dictionary description"));
-    connect(_actionLoadEds, &QAction::triggered,  [=](){loadEds();});
+    connect(_actionLoadEds,
+            &QAction::triggered,
+            [=]()
+            {
+                loadEds();
+            });
 
     _actionReLoadEds = new QAction(tr("Reload eds"));
     _actionReLoadEds->setIcon(QIcon(":/icons/img/icons8-restore-page.png"));

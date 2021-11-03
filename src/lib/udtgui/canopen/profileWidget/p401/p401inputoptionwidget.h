@@ -46,4 +46,4 @@ private:
     void createWidgets();
 };
 
-#endif // P401INPUTOPTIONWIDGET_H
+#endif  // P401INPUTOPTIONWIDGET_H

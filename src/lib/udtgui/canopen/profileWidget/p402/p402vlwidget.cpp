@@ -28,7 +28,8 @@
 
 #include <QPushButton>
 
-P402VlWidget::P402VlWidget(QWidget *parent) : P402ModeWidget(parent)
+P402VlWidget::P402VlWidget(QWidget *parent)
+    : P402ModeWidget(parent)
 {
     createWidgets();
     _nodeProfile402 = nullptr;

@@ -52,6 +52,7 @@ private slots:
     void analogSliderChanged();
     void analogSpinboxFinished();
     void digitalPushButtonClicked(bool clicked);
+
 private:
     Node *_node;
     uint8_t _channel;
@@ -65,7 +66,7 @@ private:
 
     QSpinBox *_analogSpinBox;
     QSlider *_analogSlider;
-    QCheckBox *_typeCheckBox;    
+    QCheckBox *_typeCheckBox;
     QPushButton *_setZeroButton;
     QWidget *_analogWidget;
 
@@ -86,4 +87,4 @@ protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // P401OUTPUTWIDGET_H
+#endif  // P401OUTPUTWIDGET_H

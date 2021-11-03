@@ -46,7 +46,7 @@ public:
 
     const NodeObjectId &analogObjectId() const;
 
-  public slots:
+public slots:
     void setNode(Node *node);
 
 private:
@@ -67,4 +67,4 @@ protected:
     void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
-#endif // P401INPUTWIDGET_H
+#endif  // P401INPUTWIDGET_H

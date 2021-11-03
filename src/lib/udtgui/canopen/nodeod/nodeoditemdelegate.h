@@ -37,4 +37,4 @@ public:
     void setEditorData(QWidget *editor, const QModelIndex &index) const override;
 };
 
-#endif // NODEODITEMDELEGATE_H
+#endif  // NODEODITEMDELEGATE_H

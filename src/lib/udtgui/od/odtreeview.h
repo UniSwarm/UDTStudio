@@ -45,4 +45,4 @@ protected:
     QSortFilterProxyModel *_odModelSorter;
 };
 
-#endif // ODTREEVIEW_H
+#endif  // ODTREEVIEW_H
