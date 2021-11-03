@@ -6,6 +6,10 @@ DESTDIR = "$$PWD/../../../bin"
 
 DEFINES += OD_EXPORT_LIB
 
+CONFIG(release, debug|release) {
+    CONFIG += optimize_full
+}
+
 HEADERS += \
     $$PWD/model/index.h \
     $$PWD/model/subindex.h \

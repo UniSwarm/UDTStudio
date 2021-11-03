@@ -7,7 +7,9 @@ DESTDIR = "$$PWD/../../../bin"
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += CANOPEN_EXPORT_LIB
 
-CONFIG += c++11
+CONFIG(release, debug|release) {
+    CONFIG += optimize_full
+}
 
 SOURCES += \
     $$PWD/canopen.cpp \

@@ -6,6 +6,10 @@ DESTDIR = "$$PWD/../../../bin"
 
 DEFINES += UDTGUI_EXPORT_LIB
 
+CONFIG(release, debug|release) {
+    CONFIG += optimize_full
+}
+
 HEADERS += \
     $$PWD/udtgui_global.h \
     $$PWD/od/oditem.h \

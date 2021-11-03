@@ -4,7 +4,9 @@ TARGET = udtstudio
 TEMPLATE = app
 DESTDIR = "$$PWD/../../bin"
 
-CONFIG += c++11
+CONFIG(release, debug|release) {
+    CONFIG += optimize_full
+}
 
 SOURCES += \
     $$PWD/main.cpp \
