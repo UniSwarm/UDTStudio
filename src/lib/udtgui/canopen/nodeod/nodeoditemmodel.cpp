@@ -119,12 +119,19 @@ void NodeOdItemModel::setNode(Node *node)
 
     _node = node;
     setNodeInterrest(_node);
+
     if (_node)
     {
         _root = new NodeOdItem(node->nodeOd());
         connect(_node, &QObject::destroyed, [=] ()
         {
             setNode(nullptr);
+        });
+        connect(_node, &Node::edsFileChanged, [=] ()
+        {
+            Node *newNode = node;
+            setNode(nullptr);
+            setNode(newNode);
         });
     }
     else
