@@ -37,7 +37,7 @@ public:
 
     void setUfw(UfwModel *ufwModel);
 
-    int update();
+    void update(void);
 
     int status();
 
@@ -56,7 +56,7 @@ private:
     QList<QByteArray> _byteArrayList;
     void process();
     uint32_t sumByte(const QByteArray &prog);
-    uint32_t removeByte(QByteArray &prog);
+    void removeByte(QByteArray &prog);
 
     // NodeOdSubscriber interface
 protected:

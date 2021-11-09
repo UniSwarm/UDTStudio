@@ -43,18 +43,18 @@ void UfwUpdate::setUfw(UfwModel *ufwModel)
     _ufwModel = ufwModel;
 }
 
-int UfwUpdate::update()
+void UfwUpdate::update()
 {
     if (!_ufwModel)
     {
         emit finished(false);
-        return -1;
+        return;
     }
 
     if (_ufwModel->prog().size() == 0)
     {
         emit finished(false);
-        return -1;
+        return;
     }
 
     char buffer[4];
@@ -83,8 +83,6 @@ int UfwUpdate::update()
     _indexList = _byteArrayList.size();
 
     process();
-
-    return 0;
 }
 
 uint8_t UfwUpdate::checksum() const
@@ -118,7 +116,7 @@ uint32_t UfwUpdate::sumByte(const QByteArray &prog)
     return checksum;
 }
 
-uint32_t UfwUpdate::removeByte(QByteArray &prog)
+void UfwUpdate::removeByte(QByteArray &prog)
 {
     char str[8] = {static_cast<char>(0xFF),
                    static_cast<char>(0xFF),
@@ -134,14 +132,13 @@ uint32_t UfwUpdate::removeByte(QByteArray &prog)
     {
         prog.remove(j, 8);
     }
-    return 0;
 }
 
 void UfwUpdate::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
     if (objId.index() == _programDataObjectId.index())
     {
-        if (flags == (SDO::FlagsRequest::Error))
+        if ((flags & SDO::FlagsRequest::Error) == SDO::FlagsRequest::Error)
         {
             emit finished(false);
             _indexList = 0;
