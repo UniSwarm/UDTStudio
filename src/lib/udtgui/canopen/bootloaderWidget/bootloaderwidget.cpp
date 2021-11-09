@@ -107,7 +107,7 @@ void BootloaderWidget::updateStatus()
     else
     {
         _statusLabel->setStyleSheet("QLabel { color : red;font-weight: bold; }");
-        _statusLabel->setText(_node->bootloader()->statusStr(status));
+        _statusLabel->setText(_node->bootloader()->statusStr(status) + " (0x" +QString::number(_node->bootloader()->error(), 16) + ")");
     }
 
     if (status == Bootloader::Status::STATUS_FILE_ANALYZED_OK)
@@ -120,16 +120,23 @@ void BootloaderWidget::updateStatus()
     if (status > Bootloader::Status::STATUS_CHECK_FILE_AND_DEVICE)
     {
         _updateButton->setEnabled(false);
+        _openButton->setEnabled(false);
     }
     else
     {
         _updateButton->setEnabled(true);
+        _openButton->setEnabled(true);
     }
 }
 
 void BootloaderWidget::openFile()
 {
-    _fileName = QFileDialog::getOpenFileName(this, tr("Open ufw"), "", tr("Image File (*.ufw)"));
+    _fileName = QFileDialog::getOpenFileName(this, tr("Open firmware"), "", tr("Firmware File (*.ufw)"));
+    if (_fileName.isEmpty())
+    {
+        return;
+    }
+
     _fileUfwLabel->setText(_fileName);
     bool ok = _node->bootloader()->openUfw(_fileName);
     _updateButton->setEnabled(ok);
@@ -226,10 +233,10 @@ QGroupBox *BootloaderWidget::informationFileWidget()
 
     QFormLayout *fileLayout = new QFormLayout();
 
-    QPushButton *openButton = new QPushButton(tr("Open firmware"));
-    connect(openButton, &QPushButton::clicked, this, &BootloaderWidget::openFile);
+    _openButton = new QPushButton(tr("Open firmware"));
+    connect(_openButton, &QPushButton::clicked, this, &BootloaderWidget::openFile);
 
-    fileLayout->addRow(openButton);
+    fileLayout->addRow(_openButton);
 
     _fileUfwLabel = new QLabel();
     _fileUfwLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);

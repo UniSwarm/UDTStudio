@@ -28,6 +28,8 @@
 
 #include "canopen/indexWidget/abstractindexwidget.h"
 
+#define DEBUG_BOOT
+
 class Node;
 class Bootloader;
 class IndexLabel;
@@ -73,6 +75,7 @@ private:
     // Create widgets
     void createWidgets();
 
+    QPushButton *_openButton;
     QLabel *_fileUfwLabel;
     QLabel *_deviceTypeUfwLabel;
     QLabel *_versionSoftwareUfwLabel;
