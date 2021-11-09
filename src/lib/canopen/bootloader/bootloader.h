@@ -58,6 +58,7 @@ public:
     };
     Status status() const;
     QString statusStr(Status status) const;
+    quint32 error(void) const;
 
     bool openUfw(const QString &fileName);
 
@@ -76,9 +77,6 @@ public slots:
     void sendKey();
 
 signals:
-    void parserUfwFinished();
-    void finished(bool ok);
-    void status(QString string);
     void statusEvent();
 
 private slots:
@@ -89,9 +87,9 @@ private slots:
 private:
     Node *_node;
 
-    bool sendObject;
     Status _status;
     void setStatus(Status status);
+    quint32 _error;
 
     enum StatusProgram
     {
