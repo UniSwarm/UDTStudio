@@ -1025,10 +1025,13 @@ void SDO::endRequest()
  */
 void SDO::nextRequest()
 {
+    if (_status != SDO_STATE_FREE)
+    {
+        return;
+    }
+
     if (!_requestQueue.isEmpty())
     {
-        if (_status == SDO_STATE_FREE)
-        {
             _requestCurrent = _requestQueue.dequeue();
             if (_requestCurrent->state == STATE_UPLOAD)
             {
@@ -1040,7 +1043,6 @@ void SDO::nextRequest()
                 _status = SDO_STATE_NOT_FREE;
                 downloadDispatcher();
             }
-        }
     }
     else
     {
