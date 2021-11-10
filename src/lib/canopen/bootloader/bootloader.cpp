@@ -28,7 +28,6 @@
 #include <QFile>
 
 #define TIMER_READ_STATUS_DISPLAY 500
-#define ATTEMPT_MAX_ERROR         3
 
 #define PROGRAM_CONTROL_STOP              0x00
 #define PROGRAM_CONTROL_START             0x01
@@ -66,6 +65,12 @@ Bootloader::Bootloader(Node *node)
     registerObjId({0x1F51, 1});
 
     _statusProgram = NONE;
+}
+
+Bootloader::~Bootloader()
+{
+    delete _ufwUpdate;
+    delete _ufwParser;
 }
 
 Node *Bootloader::node() const

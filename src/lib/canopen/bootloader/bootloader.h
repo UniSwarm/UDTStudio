@@ -36,6 +36,7 @@ class CANOPEN_EXPORT Bootloader : public QObject, public NodeOdSubscriber
     Q_OBJECT
 public:
     Bootloader(Node *node);
+    ~Bootloader();
 
     Node *node() const;
 
