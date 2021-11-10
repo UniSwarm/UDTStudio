@@ -1055,7 +1055,7 @@ void SDO::nextRequest()
  */
 void SDO::timeout()
 {
-    uint32_t error = 0x05040000;
+    uint32_t error = CO_SDO_ABORT_CODE_TIMED_OUT;
     sendSdoRequest(CCS::SDO_CCS_CLIENT_ABORT, _requestCurrent->index, _requestCurrent->subIndex, error);
     setErrorToObject(static_cast<SDOAbortCodes>(error));
 }
@@ -1091,7 +1091,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex)
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timeoutTimer->start(_requestTimeout);
+    _timeoutTimer->start(TIMEOUT_SDO);
     return bus()->writeFrame(frame);
 }
 
@@ -1122,7 +1122,7 @@ bool SDO::sendSdoRequest(quint8 cmd)
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timeoutTimer->start(_requestTimeout);
+    _timeoutTimer->start(TIMEOUT_SDO);
     return bus()->writeFrame(frame);
 }
 
@@ -1159,7 +1159,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QByte
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timeoutTimer->start(_requestTimeout);
+    _timeoutTimer->start(TIMEOUT_SDO);
     return bus()->writeFrame(frame);
 }
 
@@ -1189,7 +1189,7 @@ bool SDO::sendSdoRequest(quint8 cmd, const QByteArray &data)
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
-    _timeoutTimer->start(_requestTimeout);
+    _timeoutTimer->start(TIMEOUT_SDO);
     return bus()->writeFrame(frame);
 }
 
@@ -1222,7 +1222,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 &crc)
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timeoutTimer->start(_requestTimeout);
+    _timeoutTimer->start(TIMEOUT_SDO);
     return bus()->writeFrame(frame);
 }
 
@@ -1261,7 +1261,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blks
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timeoutTimer->start(_requestTimeout);
+    _timeoutTimer->start(TIMEOUT_SDO);
     return bus()->writeFrame(frame);
 }
 
@@ -1319,7 +1319,7 @@ bool SDO::sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segD
 
     if (moreSegments == false)
     {
-        _timeoutTimer->start(_requestTimeout);
+        _timeoutTimer->start(TIMEOUT_SDO);
         seqno |= 0x80;
         request << static_cast<quint8>(seqno);
     }
@@ -1367,7 +1367,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint32 err
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timeoutTimer->start(_requestTimeout);
+    _timeoutTimer->start(TIMEOUT_SDO);
     return bus()->writeFrame(frame);
 }
 

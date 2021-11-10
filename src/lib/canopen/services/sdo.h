@@ -33,7 +33,7 @@ class CANOPEN_EXPORT SDO : public Service
     Q_OBJECT
 public:
     SDO(Node *node);
-    ~SDO();
+    ~SDO() override;
 
     QString type() const override;
 
