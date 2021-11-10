@@ -89,6 +89,7 @@ private:
 
     Status _status;
     void setStatus(Status status);
+
     quint32 _error;
 
     enum StatusProgram
@@ -99,7 +100,6 @@ private:
         NO_PROGRAM
     };
     StatusProgram _statusProgram;
-    uint8_t _counterError;
 
     NodeObjectId _bootloaderKeyObjectId;
     NodeObjectId _bootloaderChecksumObjectId;

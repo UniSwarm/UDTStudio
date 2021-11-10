@@ -61,7 +61,6 @@ Bootloader::Bootloader(Node *node)
     _programControlObjectId = IndexDb::getObjectId(IndexDb::OD_PROGRAM_CONTROL_1);
 
     setNodeInterrest(_node);
-    registerObjId({0x1000, 0});
     registerObjId({0x2050, 1});
     registerObjId({0x2050, 3});
     registerObjId({0x1F51, 1});
@@ -168,7 +167,6 @@ void Bootloader::startUpdate()
 
     setStatus(STATUS_CHECK_FILE_AND_DEVICE);
     _state = STATE_CHECK_MODE;
-    _counterError = ATTEMPT_MAX_ERROR;
     _node->nodeOd()->createBootloaderObjects();
     readStatusProgram();
 }
@@ -308,38 +306,30 @@ void Bootloader::process()
             break;
         }
         case STATE_STOP_PROGRAM:
-        {
             setStatus(STATUS_DEVICE_CLEAR_IN_PROGRESS);
             sendKey();
             clearProgram();
             break;
-        }
 
         case STATE_CLEAR_PROGRAM:
-        {
             setStatus(STATUS_DEVICE_CLEAR_IN_PROGRESS);
             sendKey();
             clearProgram();
             break;
-        }
 
         case STATE_UPDATE_PROGRAM:
-        {
             updateStartProgram();
             setStatus(STATUS_DEVICE_UPDATE_IN_PROGRESS);
             updateProgram();
             break;
-        }
 
         case STATE_UPLOADED_PROGRAM_FINISHED:
-        {
             setStatus(STATUS_CHECKING_UPDATE);
             _node->writeObject(_bootloaderChecksumObjectId, _ufwUpdate->checksum());
             updateFinishedProgram();
             _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusBootloader()));
             _state = STATE_CHECK;
             break;
-        }
 
         case STATE_CHECK:
             break;
@@ -359,14 +349,6 @@ void Bootloader::process()
 
 void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if ((objId.index() == 0x1000) && objId.subIndex() == 0)
-    {
-        uint32_t type = static_cast<uint32_t>(_node->nodeOd()->value(0x1000, 0).toUInt());
-        if (type == 0x12D)
-        {
-            _node->nodeOd()->createBootloaderObjects();
-        }
-    }
     if ((objId.index() == _programControlObjectId.index()) && objId.subIndex() == 1)
     {
         if (_state == STATE_FREE)
