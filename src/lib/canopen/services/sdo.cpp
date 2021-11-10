@@ -24,7 +24,9 @@
 #include <QDebug>
 #include <QThread>
 
-#define ATTEMPT_ERROR_MAX 3
+#define ATTEMPT_ERROR_MAX       3
+#define TIME_BLOCK_DOWNALOAD    1
+#define TIMEOUT_SDO        1800
 
 SDO::SDO(Node *node)
     : Service(node)
@@ -35,9 +37,11 @@ SDO::SDO(Node *node)
     _cobIds.append(_cobIdClientToServer + _nodeId);
     _cobIds.append(_cobIdServerToClient + _nodeId);
 
-    _requestTimeout = 1800;
     _timeoutTimer = new QTimer(this);
     connect(_timeoutTimer, &QTimer::timeout, this, &SDO::timeout);
+
+    _subBlockDownloadTimer = new QTimer(this);
+    connect(_subBlockDownloadTimer, &QTimer::timeout, this, &SDO::sdoBlockDownloadSubBlock);
 
     _status = SDO_STATE_FREE;
     _requestCurrent = nullptr;
@@ -847,7 +851,9 @@ bool SDO::sdoBlockDownload(const QCanBusFrame &frame)
             }
 
             _requestCurrent->state = STATE_BLOCK_DOWNLOAD;
-            sdoBlockDownloadSubBlock();
+            _requestCurrent->seqno = 1;
+            _subBlockDownloadTimer->start(TIME_BLOCK_DOWNALOAD);
+            _timeoutTimer->stop();
         }
     }
     else if (ss == SS::SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_RESP)
@@ -882,7 +888,9 @@ bool SDO::sdoBlockDownload(const QCanBusFrame &frame)
 
         if (_requestCurrent->state == STATE_BLOCK_DOWNLOAD)
         {
-            sdoBlockDownloadSubBlock();
+            _requestCurrent->seqno = 1;
+            _subBlockDownloadTimer->start(TIME_BLOCK_DOWNALOAD);
+            _timeoutTimer->stop();
         }
         else if (_requestCurrent->state == STATE_BLOCK_DOWNLOAD_END)
         {
@@ -906,8 +914,13 @@ void SDO::sdoBlockDownloadSubBlock()
     quint32 seek = 0;
     QByteArray buffer;
 
-    _requestCurrent->seqno = 1;
-    while (_requestCurrent->seqno <= _requestCurrent->blksize)
+    if (!_requestCurrent)
+    {
+        _subBlockDownloadTimer->stop();
+        return;
+    }
+
+    if (_requestCurrent->seqno <= _requestCurrent->blksize)
     {
         seek = _requestCurrent->size - _requestCurrent->stay;
         buffer.clear();
@@ -916,8 +929,6 @@ void SDO::sdoBlockDownloadSubBlock()
         sendSdoRequest(true, _requestCurrent->seqno, buffer);
         _requestCurrent->stay -= SDO_SG_SIZE;
         _requestCurrent->seqno++;
-
-        QThread::usleep(1000);
 
         if (_requestCurrent->stay <= SDO_SG_SIZE)
         {
@@ -928,13 +939,16 @@ void SDO::sdoBlockDownloadSubBlock()
             sendSdoRequest(false, _requestCurrent->seqno, buffer);
             _requestCurrent->state = STATE_BLOCK_DOWNLOAD_END;
             _requestCurrent->seqno++;
-            QThread::usleep(1000);
+            _subBlockDownloadTimer->stop();
             return;
         }
     }
-    _requestCurrent->state = STATE_BLOCK_DOWNLOAD;
-    _timeoutTimer->start(_requestTimeout);
-    return;
+    else
+    {
+        _subBlockDownloadTimer->stop();
+        _requestCurrent->state = STATE_BLOCK_DOWNLOAD;
+        _timeoutTimer->start(TIMEOUT_SDO);
+    }
 }
 
 /**

@@ -177,9 +177,10 @@ private:
     void endRequest();
     void nextRequest();
 
-    int _requestTimeout;
     QTimer *_timeoutTimer;
     void timeout();
+
+    QTimer *_subBlockDownloadTimer;
 
     quint16 indexFromFrame(const QCanBusFrame &frame);
     quint8 subIndexFromFrame(const QCanBusFrame &frame);
