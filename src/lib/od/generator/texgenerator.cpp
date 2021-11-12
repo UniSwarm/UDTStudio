@@ -741,20 +741,12 @@ void TexGenerator::writeLimit(const SubIndex *subIndex, QTextStream *out)
 {
     if (subIndex->hasLowLimit())
     {
-        *out << subIndex->lowLimit().toString() << "";
+        *out << subIndex->lowLimit().toString() << " ";
     }
-    else
-    {
-        *out << "";
-    }
-    *out << ";";
+    *out << "-";
     if (subIndex->hasHighLimit())
     {
-        *out << subIndex->highLimit().toString() << "";
-    }
-    else
-    {
-        *out << "";
+        *out << " " << subIndex->highLimit().toString();
     }
 }
 
