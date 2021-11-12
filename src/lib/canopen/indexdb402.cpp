@@ -341,12 +341,14 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
 
         case OD_MS_DRIVER_TEMPERATURE:
             return NodeObjectId(static_cast<quint16>((0x2801 + axisDecal)), static_cast<quint8>(opt2 + 1));
-        case OD_MS_BACK_EMF:
+        case OD_MS_CURRENT_HL:
             return NodeObjectId(static_cast<quint16>((0x2802 + axisDecal)), static_cast<quint8>(opt2 + 1));
-        case OD_MS_CURRENT:
+        case OD_MS_CURRENT_LL:
             return NodeObjectId(static_cast<quint16>((0x2803 + axisDecal)), static_cast<quint8>(opt2 + 1));
         case OD_MS_PWM:
             return NodeObjectId(static_cast<quint16>((0x2804 + axisDecal)), static_cast<quint8>(opt2 + 1));
+        case OD_MS_BACK_EMF:
+            return NodeObjectId(static_cast<quint16>((0x2805 + axisDecal)), static_cast<quint8>(opt2 + 1));
 
         case OD_MS_DRIVER_TEMPERATURE_CONFIG_PROTECTION_SCHMITT_TRIGGERS_LOW:
             return NodeObjectId(static_cast<quint16>(0x2810), 0x1);
