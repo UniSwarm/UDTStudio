@@ -7,17 +7,17 @@ EDSVersion=4.0
 FileName=umckin1.eds
 FileRevision=1
 FileVersion=1
-ModificationDate=08-19-2021
-ModificationTime=03:26PM
+ModificationDate=11-12-2021
+ModificationTime=10:16AM
 ModifiedBy=UniSwarm SASU
 
 [DeviceInfo]
-BaudRate_10=0
-BaudRate_20=0
-BaudRate_50=0
-BaudRate_125=0
-BaudRate_250=0
-BaudRate_500=0
+BaudRate_10=1
+BaudRate_20=1
+BaudRate_50=1
+BaudRate_125=1
+BaudRate_250=1
+BaudRate_500=1
 BaudRate_800=0
 BaudRate_1000=1
 CompactPDO=55
@@ -116,7 +116,7 @@ DefaultValue=0
 PDOMapping=0
 
 [OptionalObjects]
-SupportedObjects=133
+SupportedObjects=132
 1=0x1003
 2=0x1005
 3=0x1008
@@ -147,109 +147,108 @@ SupportedObjects=133
 28=0x1A01
 29=0x1A02
 30=0x1A03
-31=0x1F50
-32=0x1F51
-33=0x1F55
-34=0x1F56
-35=0x1F57
-36=0x6007
-37=0x6040
-38=0x6041
-39=0x6042
-40=0x6043
-41=0x6044
-42=0x6046
-43=0x6048
-44=0x6049
-45=0x604A
-46=0x604B
-47=0x604C
-48=0x605A
-49=0x605B
-50=0x605C
-51=0x605D
-52=0x605E
-53=0x6060
-54=0x6061
-55=0x6062
-56=0x6063
-57=0x6064
-58=0x6065
-59=0x6066
-60=0x6067
-61=0x6068
-62=0x6069
-63=0x606A
-64=0x606B
-65=0x606C
-66=0x606D
-67=0x606E
-68=0x606F
-69=0x6070
-70=0x6071
-71=0x6072
-72=0x6073
-73=0x6074
-74=0x6075
-75=0x6076
-76=0x6077
-77=0x6078
-78=0x6079
-79=0x607A
-80=0x607B
-81=0x607C
-82=0x607D
-83=0x607E
-84=0x607F
-85=0x6080
-86=0x6081
-87=0x6082
-88=0x6083
-89=0x6084
-90=0x6085
-91=0x6086
-92=0x6087
-93=0x6088
-94=0x608F
-95=0x6090
-96=0x6091
-97=0x6092
-98=0x6098
-99=0x6099
-100=0x609A
-101=0x60A3
-102=0x60A4
-103=0x60B0
-104=0x60B1
-105=0x60B2
-106=0x60B8
-107=0x60B9
-108=0x60BA
-109=0x60BB
-110=0x60BC
-111=0x60BD
-112=0x60C0
-113=0x60C1
-114=0x60C2
-115=0x60C4
-116=0x60C5
-117=0x60C6
-118=0x60F2
-119=0x60F4
-120=0x60F8
-121=0x60FA
-122=0x60FD
-123=0x60FE
-124=0x60FF
-125=0x6403
-126=0x6404
-127=0x6405
-128=0x6407
-129=0x6502
-130=0x6503
-131=0x6505
-132=0x67FE
-133=0x67FF
+31=0x1F51
+32=0x1F55
+33=0x1F56
+34=0x1F57
+35=0x6007
+36=0x6040
+37=0x6041
+38=0x6042
+39=0x6043
+40=0x6044
+41=0x6046
+42=0x6048
+43=0x6049
+44=0x604A
+45=0x604B
+46=0x604C
+47=0x605A
+48=0x605B
+49=0x605C
+50=0x605D
+51=0x605E
+52=0x6060
+53=0x6061
+54=0x6062
+55=0x6063
+56=0x6064
+57=0x6065
+58=0x6066
+59=0x6067
+60=0x6068
+61=0x6069
+62=0x606A
+63=0x606B
+64=0x606C
+65=0x606D
+66=0x606E
+67=0x606F
+68=0x6070
+69=0x6071
+70=0x6072
+71=0x6073
+72=0x6074
+73=0x6075
+74=0x6076
+75=0x6077
+76=0x6078
+77=0x6079
+78=0x607A
+79=0x607B
+80=0x607C
+81=0x607D
+82=0x607E
+83=0x607F
+84=0x6080
+85=0x6081
+86=0x6082
+87=0x6083
+88=0x6084
+89=0x6085
+90=0x6086
+91=0x6087
+92=0x6088
+93=0x608F
+94=0x6090
+95=0x6091
+96=0x6092
+97=0x6098
+98=0x6099
+99=0x609A
+100=0x60A3
+101=0x60A4
+102=0x60B0
+103=0x60B1
+104=0x60B2
+105=0x60B8
+106=0x60B9
+107=0x60BA
+108=0x60BB
+109=0x60BC
+110=0x60BD
+111=0x60C0
+112=0x60C1
+113=0x60C2
+114=0x60C4
+115=0x60C5
+116=0x60C6
+117=0x60F2
+118=0x60F4
+119=0x60F8
+120=0x60FA
+121=0x60FD
+122=0x60FE
+123=0x60FF
+124=0x6403
+125=0x6404
+126=0x6405
+127=0x6407
+128=0x6502
+129=0x6503
+130=0x6505
+131=0x67FE
+132=0x67FF
 
 [1003]
 ParameterName=Predefined Error Field
@@ -454,9 +453,9 @@ DefaultValue=$NODEID+0x00000080
 PDOMapping=0
 
 [1016]
-ParameterName=Consumer Heartbeat Time
+ParameterName=Consumer Heartbeat
 ObjectType=0x8
-SubNumber=2
+SubNumber=11
 
 [1016sub0]
 ParameterName=Number of Entries
@@ -467,7 +466,97 @@ DefaultValue=1
 PDOMapping=0
 
 [1016sub1]
-ParameterName=Consumer Heartbeat Time
+ParameterName=Consumer 01
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub2]
+ParameterName=Consumer 02
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub3]
+ParameterName=Consumer 03
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub4]
+ParameterName=Consumer 04
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub5]
+ParameterName=Consumer 05
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub6]
+ParameterName=Consumer 06
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub7]
+ParameterName=Consumer 07
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub8]
+ParameterName=Consumer 08
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub9]
+ParameterName=Consumer 09
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016subA]
+ParameterName=Consumer 10
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -543,7 +632,7 @@ PDOMapping=0
 [1400]
 ParameterName=RPDO Parameter 1
 ObjectType=0x9
-SubNumber=4
+SubNumber=5
 
 [1400sub0]
 ParameterName=Number of entries
@@ -581,10 +670,18 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
+[1400sub5]
+ParameterName=Event timer
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
 [1401]
 ParameterName=RPDO Parameter 2
 ObjectType=0x9
-SubNumber=4
+SubNumber=5
 
 [1401sub0]
 ParameterName=Number of entries
@@ -601,7 +698,7 @@ ParameterName=COB ID
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=$NODEID+0x80000300
+DefaultValue=$NODEID+0x00000300
 PDOMapping=0
 LowLimit=0x00000080
 HighLimit=0xFFFFFFFF
@@ -622,10 +719,18 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
+[1401sub5]
+ParameterName=Event timer
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
 [1402]
 ParameterName=RPDO Parameter 3
 ObjectType=0x9
-SubNumber=4
+SubNumber=5
 
 [1402sub0]
 ParameterName=Number of entries
@@ -663,10 +768,18 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
+[1402sub5]
+ParameterName=Event timer
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
 [1403]
 ParameterName=RPDO Parameter 4
 ObjectType=0x9
-SubNumber=4
+SubNumber=5
 
 [1403sub0]
 ParameterName=Number of entries
@@ -704,6 +817,14 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
+[1403sub5]
+ParameterName=Event timer
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
 [1600]
 ParameterName=RPDO Mapping 1
 ObjectType=0x9
@@ -714,7 +835,7 @@ ParameterName=Number of entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=2
+DefaultValue=3
 PDOMapping=0
 LowLimit=0
 HighLimit=8
@@ -740,7 +861,7 @@ ParameterName=PDO Mapping Entry_3
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=0
+DefaultValue=0x60600008
 PDOMapping=0
 
 [1600sub4]
@@ -793,7 +914,7 @@ ParameterName=Number of entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=3
+DefaultValue=2
 PDOMapping=0
 LowLimit=0
 HighLimit=8
@@ -819,7 +940,7 @@ ParameterName=PDO Mapping Entry_3
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x60600008
+DefaultValue=0
 PDOMapping=0
 
 [1601sub4]
@@ -1023,7 +1144,7 @@ PDOMapping=0
 [1800]
 ParameterName=TPDO Parameter 1
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [1800sub0]
 ParameterName=Number of entries
@@ -1061,6 +1182,14 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
+[1800sub5]
+ParameterName=Event timer
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
 [1800sub6]
 ParameterName=SYNC start value
 ObjectType=0x7
@@ -1072,7 +1201,7 @@ PDOMapping=0
 [1801]
 ParameterName=TPDO Parameter 2
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [1801sub0]
 ParameterName=Number of entries
@@ -1089,7 +1218,7 @@ ParameterName=COB ID
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=$NODEID+0x80000280
+DefaultValue=$NODEID+0x00000280
 PDOMapping=0
 LowLimit=0x00000080
 HighLimit=0xFFFFFFFF
@@ -1110,6 +1239,14 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
+[1801sub5]
+ParameterName=Event timer
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
 [1801sub6]
 ParameterName=SYNC start value
 ObjectType=0x7
@@ -1121,7 +1258,7 @@ PDOMapping=0
 [1802]
 ParameterName=TPDO Parameter 3
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [1802sub0]
 ParameterName=Number of entries
@@ -1159,6 +1296,14 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
+[1802sub5]
+ParameterName=Event timer
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
 [1802sub6]
 ParameterName=SYNC start value
 ObjectType=0x7
@@ -1170,7 +1315,7 @@ PDOMapping=0
 [1803]
 ParameterName=TPDO Parameter 4
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [1803sub0]
 ParameterName=Number of entries
@@ -1208,6 +1353,14 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
+[1803sub5]
+ParameterName=Event timer
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
 [1803sub6]
 ParameterName=SYNC start value
 ObjectType=0x7
@@ -1226,7 +1379,7 @@ ParameterName=Number of entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=2
+DefaultValue=3
 PDOMapping=0
 LowLimit=0
 HighLimit=8
@@ -1252,7 +1405,7 @@ ParameterName=PDO Mapping Entry_3
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x40060308
+DefaultValue=0x60610008
 PDOMapping=0
 
 [1A00sub4]
@@ -1305,7 +1458,7 @@ ParameterName=Number of entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=3
+DefaultValue=2
 PDOMapping=0
 LowLimit=0
 HighLimit=8
@@ -1315,7 +1468,7 @@ ParameterName=PDO Mapping Entry_1
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x60440010
+DefaultValue=0x40220320
 PDOMapping=0
 
 [1A01sub2]
@@ -1323,7 +1476,7 @@ ParameterName=PDO Mapping Entry_2
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x60770010
+DefaultValue=0x40420320
 PDOMapping=0
 
 [1A01sub3]
@@ -1331,7 +1484,7 @@ ParameterName=PDO Mapping Entry_3
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x60610008
+DefaultValue=0
 PDOMapping=0
 
 [1A01sub4]
@@ -1402,7 +1555,7 @@ ParameterName=PDO Mapping Entry_2
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=1073807632
+DefaultValue=0x28010110
 PDOMapping=0
 
 [1A02sub3]
@@ -1410,7 +1563,7 @@ ParameterName=PDO Mapping Entry_3
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=1073807888
+DefaultValue=0x28010210
 PDOMapping=0
 
 [1A02sub4]
@@ -1530,26 +1683,6 @@ ObjectType=0x7
 DataType=0x0007
 AccessType=rw
 DefaultValue=0
-PDOMapping=0
-
-[1F50]
-ParameterName=Program data
-ObjectType=0x8
-SubNumber=2
-
-[1F50sub0]
-ParameterName=Number of Entries
-ObjectType=0x7
-DataType=0x0005
-AccessType=ro
-DefaultValue=1
-PDOMapping=0
-
-[1F50sub1]
-ParameterName=Program_1
-ObjectType=0x7
-DataType=0x000F
-AccessType=rw
 PDOMapping=0
 
 [1F51]
@@ -1976,7 +2109,7 @@ ParameterName=a1_pc_Following_error_window
 ObjectType=0x7
 DataType=0x0007
 AccessType=rww
-DefaultValue=0
+DefaultValue=32767
 PDOMapping=1
 
 [6066]
@@ -1992,7 +2125,7 @@ ParameterName=a1_pc_Position_window
 ObjectType=0x7
 DataType=0x0007
 AccessType=rww
-DefaultValue=0
+DefaultValue=3276
 PDOMapping=1
 
 [6068]
@@ -2860,7 +2993,7 @@ ParameterName=a1_Supported_drive_modes
 ObjectType=0x7
 DataType=0x0007
 AccessType=ro
-DefaultValue=65611
+DefaultValue=1114187
 PDOMapping=0
 LowLimit=0
 HighLimit=0xFFFFFFFF
@@ -2897,7 +3030,7 @@ AccessType=ro
 PDOMapping=0
 
 [ManufacturerObjects]
-SupportedObjects=44
+SupportedObjects=50
 1=0x2000
 2=0x2001
 3=0x2002
@@ -2910,38 +3043,44 @@ SupportedObjects=44
 10=0x2024
 11=0x2025
 12=0x2040
-13=0x2801
-14=0x2802
-15=0x2803
-16=0x2804
-17=0x4000
-18=0x4006
-19=0x4007
-20=0x4020
-21=0x4021
-22=0x4022
-23=0x4023
-24=0x4024
-25=0x4025
-26=0x4040
-27=0x4041
-28=0x4042
-29=0x4043
-30=0x4044
-31=0x4045
-32=0x4060
-33=0x4061
-34=0x4062
-35=0x4063
-36=0x4064
-37=0x4065
-38=0x4080
-39=0x4081
-40=0x4082
-41=0x41FA
-42=0x41FB
-43=0x41FC
-44=0x41FD
+13=0x2050
+14=0x2801
+15=0x2802
+16=0x2803
+17=0x2804
+18=0x2805
+19=0x2810
+20=0x2A00
+21=0x2A01
+22=0x4000
+23=0x4006
+24=0x4007
+25=0x4020
+26=0x4021
+27=0x4022
+28=0x4023
+29=0x4024
+30=0x4025
+31=0x4040
+32=0x4041
+33=0x4042
+34=0x4043
+35=0x4044
+36=0x4045
+37=0x4060
+38=0x4061
+39=0x4062
+40=0x4063
+41=0x4064
+42=0x4065
+43=0x4081
+44=0x4082
+45=0x4083
+46=0x41F0
+47=0x41FA
+48=0x41FB
+49=0x41FC
+50=0x41FD
 
 [2000]
 ParameterName=Board_voltage
@@ -2968,7 +3107,7 @@ ParameterName=Manufacture_date
 ObjectType=0x7
 DataType=0x0009
 AccessType=ro
-DefaultValue="XXX/XX/XX"
+DefaultValue="XX/XX/XX"
 PDOMapping=0
 
 [2002]
@@ -2976,7 +3115,7 @@ ParameterName=Calibration_date
 ObjectType=0x7
 DataType=0x0009
 AccessType=ro
-DefaultValue="XXX/XX/XX"
+DefaultValue="XX/XX/XX"
 PDOMapping=0
 
 [2003]
@@ -3116,7 +3255,7 @@ AccessType=ro
 PDOMapping=0
 
 [2040]
-ParameterName=Comunication_config
+ParameterName=Communication_config
 ObjectType=0x8
 SubNumber=3
 
@@ -3142,6 +3281,40 @@ ObjectType=0x7
 DataType=0x0005
 AccessType=rw
 DefaultValue=0
+PDOMapping=0
+
+[2050]
+ParameterName=Bootloader
+ObjectType=0x8
+SubNumber=4
+
+[2050sub0]
+ParameterName=Number of Entries
+ObjectType=0x7
+DataType=0x0005
+AccessType=ro
+DefaultValue=3
+PDOMapping=0
+
+[2050sub1]
+ParameterName=Key
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+PDOMapping=0
+
+[2050sub2]
+ParameterName=Checksum
+ObjectType=0x7
+DataType=0x0005
+AccessType=rw
+PDOMapping=0
+
+[2050sub3]
+ParameterName=Status
+ObjectType=0x7
+DataType=0x0005
+AccessType=
 PDOMapping=0
 
 [2801]
@@ -3172,68 +3345,82 @@ AccessType=ro
 PDOMapping=1
 
 [2802]
-ParameterName=Back_EMF
+ParameterName=Currents_HL
 ObjectType=0x8
-SubNumber=4
+SubNumber=5
 
 [2802sub0]
 ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=3
+DefaultValue=4
 PDOMapping=0
 
 [2802sub1]
-ParameterName=Back_EMF_A
+ParameterName=Current_HL_A
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
 [2802sub2]
-ParameterName=Back_EMF_B
+ParameterName=Current_HL_B
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
 [2802sub3]
-ParameterName=Back_EMF_C
+ParameterName=Current_HL_C
+ObjectType=0x7
+DataType=0x0003
+AccessType=ro
+PDOMapping=1
+
+[2802sub4]
+ParameterName=Current_HL_D
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
 [2803]
-ParameterName=Current
+ParameterName=Currents_LL
 ObjectType=0x8
-SubNumber=4
+SubNumber=5
 
 [2803sub0]
 ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=3
+DefaultValue=4
 PDOMapping=0
 
 [2803sub1]
-ParameterName=Current_A
+ParameterName=Current_LL_A
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
 [2803sub2]
-ParameterName=Current_B
+ParameterName=Current_LL_B
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
 [2803sub3]
-ParameterName=Current_C
+ParameterName=Current_LL_C
+ObjectType=0x7
+DataType=0x0003
+AccessType=ro
+PDOMapping=1
+
+[2803sub4]
+ParameterName=Current_LL_D
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
@@ -3242,14 +3429,14 @@ PDOMapping=1
 [2804]
 ParameterName=PWM
 ObjectType=0x8
-SubNumber=4
+SubNumber=5
 
 [2804sub0]
 ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=3
+DefaultValue=4
 PDOMapping=0
 
 [2804sub1]
@@ -3273,8 +3460,172 @@ DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
+[2804sub4]
+ParameterName=PWM_D
+ObjectType=0x7
+DataType=0x0003
+AccessType=ro
+PDOMapping=1
+
+[2805]
+ParameterName=Back_EMF
+ObjectType=0x8
+SubNumber=5
+
+[2805sub0]
+ParameterName=Number of Entries
+ObjectType=0x7
+DataType=0x0005
+AccessType=ro
+DefaultValue=4
+PDOMapping=0
+
+[2805sub1]
+ParameterName=Back_EMF_A
+ObjectType=0x7
+DataType=0x0003
+AccessType=ro
+PDOMapping=1
+
+[2805sub2]
+ParameterName=Back_EMF_B
+ObjectType=0x7
+DataType=0x0003
+AccessType=ro
+PDOMapping=1
+
+[2805sub3]
+ParameterName=Back_EMF_C
+ObjectType=0x7
+DataType=0x0003
+AccessType=ro
+PDOMapping=1
+
+[2805sub4]
+ParameterName=Back_EMF_D
+ObjectType=0x7
+DataType=0x0003
+AccessType=ro
+PDOMapping=1
+
+[2810]
+ParameterName=Driver_temperature_config
+ObjectType=0x9
+SubNumber=3
+
+[2810sub0]
+ParameterName=Number of Entries
+ObjectType=0x7
+DataType=0x0005
+AccessType=ro
+DefaultValue=3
+PDOMapping=0
+
+[2810sub1]
+ParameterName=Protection_schmitt_triggers_low
+ObjectType=0x7
+DataType=0x0003
+AccessType=rw
+DefaultValue=750
+PDOMapping=0
+
+[2810sub2]
+ParameterName=Protection_schmitt_triggers_high
+ObjectType=0x7
+DataType=0x0003
+AccessType=rw
+DefaultValue=800
+PDOMapping=0
+
+[2A00]
+ParameterName=S12_Synchro_status
+ObjectType=0x9
+SubNumber=4
+
+[2A00sub0]
+ParameterName=Number of Entries
+ObjectType=0x7
+DataType=0x0005
+AccessType=ro
+DefaultValue=3
+PDOMapping=0
+
+[2A00sub1]
+ParameterName=Flag
+ObjectType=0x7
+DataType=0x0003
+AccessType=ro
+PDOMapping=1
+
+[2A00sub2]
+ParameterName=Error
+ObjectType=0x7
+DataType=0x0004
+AccessType=ro
+PDOMapping=1
+
+[2A00sub3]
+ParameterName=Corrector
+ObjectType=0x7
+DataType=0x0004
+AccessType=ro
+PDOMapping=1
+
+[2A01]
+ParameterName=S12_Synchro_config
+ObjectType=0x9
+SubNumber=6
+
+[2A01sub0]
+ParameterName=Number of Entries
+ObjectType=0x7
+DataType=0x0005
+AccessType=ro
+DefaultValue=5
+PDOMapping=0
+
+[2A01sub1]
+ParameterName=Mode_Synchro
+ObjectType=0x7
+DataType=0x0005
+AccessType=rww
+DefaultValue=0
+PDOMapping=1
+
+[2A01sub2]
+ParameterName=Max_diff
+ObjectType=0x7
+DataType=0x0004
+AccessType=rw
+DefaultValue=0x00500000
+PDOMapping=0
+
+[2A01sub3]
+ParameterName=Coeff
+ObjectType=0x7
+DataType=0x0004
+AccessType=rw
+DefaultValue=0x00800000
+PDOMapping=0
+
+[2A01sub4]
+ParameterName=Window
+ObjectType=0x7
+DataType=0x0004
+AccessType=rw
+DefaultValue=0x00020000
+PDOMapping=0
+
+[2A01sub5]
+ParameterName=Offset
+ObjectType=0x7
+DataType=0x0004
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
 [4000]
-ParameterName=a1_Motor_temperature
+ParameterName=a1_Motion_status
 ObjectType=0x8
 SubNumber=2
 
@@ -3287,23 +3638,23 @@ DefaultValue=1
 PDOMapping=0
 
 [4000sub1]
-ParameterName=Motor_temperature_motor_1
+ParameterName=Error
 ObjectType=0x7
-DataType=0x0003
+DataType=0x0006
 AccessType=ro
 PDOMapping=1
 
 [4006]
 ParameterName=a1_Motor_status
 ObjectType=0x9
-SubNumber=5
+SubNumber=7
 
 [4006sub0]
 ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=4
+DefaultValue=6
 PDOMapping=0
 
 [4006sub1]
@@ -3334,6 +3685,20 @@ DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
+[4006sub5]
+ParameterName=Error
+ObjectType=0x7
+DataType=0x0006
+AccessType=ro
+PDOMapping=1
+
+[4006sub6]
+ParameterName=Temperature
+ObjectType=0x7
+DataType=0x0003
+AccessType=ro
+PDOMapping=1
+
 [4007]
 ParameterName=a1_Motor_config
 ObjectType=0x9
@@ -3348,7 +3713,7 @@ DefaultValue=7
 PDOMapping=0
 
 [4007sub1]
-ParameterName=Motor_type
+ParameterName=Type
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -3396,7 +3761,7 @@ DefaultValue=0
 PDOMapping=0
 
 [4007sub7]
-ParameterName=Motor_flags
+ParameterName=Flags
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -3535,14 +3900,14 @@ DefaultValue=3
 PDOMapping=0
 
 [4022sub1]
-ParameterName=RawData
+ParameterName=Raw_Data
 ObjectType=0x7
 DataType=0x0004
 AccessType=ro
 PDOMapping=1
 
 [4022sub2]
-ParameterName=Flag
+ParameterName=Flags
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
@@ -3573,7 +3938,7 @@ ParameterName=Sensor_select
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=4352
 PDOMapping=0
 
 [4023sub2]
@@ -3589,7 +3954,7 @@ ParameterName=Sensor_flags
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=32
 PDOMapping=0
 
 [4023sub4]
@@ -3869,7 +4234,7 @@ ParameterName=PID_flags
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=0x0100
 PDOMapping=0
 
 [4042]
@@ -3886,14 +4251,14 @@ DefaultValue=3
 PDOMapping=0
 
 [4042sub1]
-ParameterName=RawData
+ParameterName=Raw_Data
 ObjectType=0x7
 DataType=0x0004
 AccessType=ro
 PDOMapping=1
 
 [4042sub2]
-ParameterName=Flag
+ParameterName=Flags
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
@@ -4001,7 +4366,7 @@ ParameterName=Param_0
 ObjectType=0x7
 DataType=0x0004
 AccessType=rw
-DefaultValue=0
+DefaultValue=524288
 PDOMapping=0
 
 [4044sub3]
@@ -4237,14 +4602,14 @@ DefaultValue=3
 PDOMapping=0
 
 [4062sub1]
-ParameterName=RawData
+ParameterName=Raw_Data
 ObjectType=0x7
 DataType=0x0004
 AccessType=ro
 PDOMapping=1
 
 [4062sub2]
-ParameterName=Flag
+ParameterName=Flags
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
@@ -4453,36 +4818,7 @@ ParameterName=Threshold_mode
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=2
-PDOMapping=0
-
-[4080]
-ParameterName=a1_Driver_temperature_config
-ObjectType=0x9
-SubNumber=3
-
-[4080sub0]
-ParameterName=Number of Entries
-ObjectType=0x7
-DataType=0x0005
-AccessType=ro
-DefaultValue=3
-PDOMapping=0
-
-[4080sub1]
-ParameterName=Protection_schmitt_triggers_high
-ObjectType=0x7
-DataType=0x0003
-AccessType=rw
-DefaultValue=1
-PDOMapping=0
-
-[4080sub2]
-ParameterName=Protection_schmitt_triggers_low
-ObjectType=0x7
-DataType=0x0003
-AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [4081]
@@ -4515,7 +4851,7 @@ DefaultValue=1
 PDOMapping=0
 
 [4081sub3]
-ParameterName=Protection_schmitt_triggers_high
+ParameterName=Protection_schmitt_triggers_low
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
@@ -4523,7 +4859,7 @@ DefaultValue=1
 PDOMapping=0
 
 [4081sub4]
-ParameterName=Protection_schmitt_triggers_low
+ParameterName=Protection_schmitt_triggers_high
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
@@ -4558,6 +4894,75 @@ DataType=0x0004
 AccessType=rw
 DefaultValue=1
 PDOMapping=0
+
+[4083]
+ParameterName=a1_Limit_switches_config
+ObjectType=0x9
+SubNumber=7
+
+[4083sub0]
+ParameterName=Number of Entries
+ObjectType=0x7
+DataType=0x0005
+AccessType=ro
+DefaultValue=6
+PDOMapping=0
+
+[4083sub1]
+ParameterName=Limit_low_input_select
+ObjectType=0x7
+DataType=0x0005
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
+[4083sub2]
+ParameterName=Limit_low_config_flags
+ObjectType=0x7
+DataType=0x0005
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
+[4083sub3]
+ParameterName=Limit_high_input_select
+ObjectType=0x7
+DataType=0x0005
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
+[4083sub4]
+ParameterName=Limit_high_config_flags
+ObjectType=0x7
+DataType=0x0005
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
+[4083sub5]
+ParameterName=Home_input_select
+ObjectType=0x7
+DataType=0x0005
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
+[4083sub6]
+ParameterName=Home_config_flags
+ObjectType=0x7
+DataType=0x0005
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
+[41F0]
+ParameterName=a1_cp_Target
+ObjectType=0x7
+DataType=0x0004
+AccessType=rww
+DefaultValue=0
+PDOMapping=1
 
 [41FA]
 ParameterName=a1_dty_Target

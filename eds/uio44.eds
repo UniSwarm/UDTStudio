@@ -309,14 +309,14 @@ HighLimit=255
 [1010]
 ParameterName=Store Parameters
 ObjectType=0x8
-SubNumber=10
+SubNumber=5
 
 [1010sub0]
 ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=9
+DefaultValue=4
 PDOMapping=0
 
 [1010sub1]
@@ -324,7 +324,7 @@ ParameterName=Save all Parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1010sub2]
@@ -332,15 +332,15 @@ ParameterName=Save Communication Parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1010sub3]
-ParameterName=Save Application Parameters
+ParameterName=Save Standardized Parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1010sub4]
@@ -348,47 +348,7 @@ ParameterName=Save Manufacturer Parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=1
-PDOMapping=0
-
-[1010sub5]
-ParameterName=Save Flash Page 2
-ObjectType=0x7
-DataType=0x0007
-AccessType=rw
-DefaultValue=1
-PDOMapping=0
-
-[1010sub6]
-ParameterName=Save Flash Page 3
-ObjectType=0x7
-DataType=0x0007
-AccessType=rw
-DefaultValue=1
-PDOMapping=0
-
-[1010sub7]
-ParameterName=Save Flash Page 4
-ObjectType=0x7
-DataType=0x0007
-AccessType=rw
-DefaultValue=1
-PDOMapping=0
-
-[1010sub8]
-ParameterName=Save all Flash Pages
-ObjectType=0x7
-DataType=0x0007
-AccessType=rw
-DefaultValue=1
-PDOMapping=0
-
-[1010sub9]
-ParameterName=Save Factory Configuration
-ObjectType=0x7
-DataType=0x0007
-AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1011]
@@ -401,7 +361,7 @@ ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=6
+DefaultValue=8
 PDOMapping=0
 
 [1011sub1]
@@ -409,7 +369,7 @@ ParameterName=Restore all Factory Parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1011sub2]
@@ -417,15 +377,15 @@ ParameterName=Restore Factory Communication Parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1011sub3]
-ParameterName=Restore Factory Application Parameters
+ParameterName=Restore Factory Standardized Parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1011sub4]
@@ -433,7 +393,7 @@ ParameterName=Restore Factory Manufacturer Parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=1
+DefaultValue=0
 PDOMapping=0
 
 [1011sub5]
@@ -453,13 +413,12 @@ DefaultValue=1
 PDOMapping=0
 
 [1011sub7]
-ParameterName=Restore saved Application Parameters
+ParameterName=Restore saved Standardized Parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
 DefaultValue=1
 PDOMapping=0
-ObjFlags=0x1
 
 [1011sub8]
 ParameterName=Restore saved Manufacturer Parameters
@@ -468,7 +427,6 @@ DataType=0x0007
 AccessType=rw
 DefaultValue=1
 PDOMapping=0
-ObjFlags=0x1
 
 [1014]
 ParameterName=COB ID EMCY
@@ -481,9 +439,9 @@ LowLimit=0x00000080
 HighLimit=0x00000100
 
 [1016]
-ParameterName=Consumer Heartbeat Time
+ParameterName=Consumer Heartbeat
 ObjectType=0x8
-SubNumber=2
+SubNumber=11
 
 [1016sub0]
 ParameterName=Number of Entries
@@ -494,7 +452,97 @@ DefaultValue=1
 PDOMapping=0
 
 [1016sub1]
-ParameterName=Consumer Heartbeat Time
+ParameterName=Consumer 01
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub2]
+ParameterName=Consumer 02
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub3]
+ParameterName=Consumer 03
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub4]
+ParameterName=Consumer 04
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub5]
+ParameterName=Consumer 05
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub6]
+ParameterName=Consumer 06
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub7]
+ParameterName=Consumer 07
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub8]
+ParameterName=Consumer 08
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub9]
+ParameterName=Consumer 09
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016subA]
+ParameterName=Consumer 10
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -577,10 +625,10 @@ ParameterName=Number of entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=5
+DefaultValue=3
 PDOMapping=0
 LowLimit=0x02
-HighLimit=0x05
+HighLimit=0x03
 
 [1400sub1]
 ParameterName=COB ID
@@ -589,8 +637,8 @@ DataType=0x0007
 AccessType=rw
 DefaultValue=$NODEID+0x00000200
 PDOMapping=0
-LowLimit=0xFFFFFFFF
-HighLimit=0x00000100
+LowLimit=0x00000080
+HighLimit=0xFFFFFFFF
 
 [1400sub2]
 ParameterName=Transmission Type
@@ -609,7 +657,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1400sub5]
-ParameterName=Event Timer
+ParameterName=Event timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -626,10 +674,10 @@ ParameterName=Number of entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=5
+DefaultValue=3
 PDOMapping=0
 LowLimit=0x02
-HighLimit=0x05
+HighLimit=0x03
 
 [1401sub1]
 ParameterName=COB ID
@@ -638,14 +686,15 @@ DataType=0x0007
 AccessType=rw
 DefaultValue=$NODEID+0x00000300
 PDOMapping=0
-LowLimit=0xFFFFFFFF
-HighLimit=0x00000100
+LowLimit=0x00000080
+HighLimit=0xFFFFFFFF
 
 [1401sub2]
 ParameterName=Transmission Type
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
+DefaultValue=0
 PDOMapping=0
 
 [1401sub3]
@@ -657,7 +706,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1401sub5]
-ParameterName=Event Timer
+ParameterName=Event timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -674,10 +723,10 @@ ParameterName=Number of entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=5
+DefaultValue=3
 PDOMapping=0
 LowLimit=0x02
-HighLimit=0x05
+HighLimit=0x03
 
 [1402sub1]
 ParameterName=COB ID
@@ -686,8 +735,8 @@ DataType=0x0007
 AccessType=rw
 DefaultValue=$NODEID+0x00000400
 PDOMapping=0
-LowLimit=0xFFFFFFFF
-HighLimit=0x00000100
+LowLimit=0x00000080
+HighLimit=0xFFFFFFFF
 
 [1402sub2]
 ParameterName=Transmission Type
@@ -706,7 +755,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1402sub5]
-ParameterName=Event Timer
+ParameterName=Event timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -723,10 +772,10 @@ ParameterName=Number of entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=5
+DefaultValue=3
 PDOMapping=0
 LowLimit=0x02
-HighLimit=0x05
+HighLimit=0x03
 
 [1403sub1]
 ParameterName=COB ID
@@ -735,8 +784,8 @@ DataType=0x0007
 AccessType=rw
 DefaultValue=$NODEID+0x00000500
 PDOMapping=0
-LowLimit=0xFFFFFFFF
-HighLimit=0x00000100
+LowLimit=0x00000080
+HighLimit=0xFFFFFFFF
 
 [1403sub2]
 ParameterName=Transmission Type
@@ -755,7 +804,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1403sub5]
-ParameterName=Event Timer
+ParameterName=Event timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -772,7 +821,7 @@ ParameterName=Number of entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=0
+DefaultValue=4
 PDOMapping=0
 LowLimit=0
 HighLimit=8
@@ -1092,8 +1141,8 @@ DataType=0x0007
 AccessType=rw
 DefaultValue=$NODEID+0x00000180
 PDOMapping=0
-LowLimit=0xFFFFFFFF
-HighLimit=0x00000100
+LowLimit=0x00000080
+HighLimit=0xFFFFFFFF
 
 [1800sub2]
 ParameterName=Transmission Type
@@ -1112,7 +1161,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1800sub5]
-ParameterName=Event Timer
+ParameterName=Event timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -1149,8 +1198,8 @@ DataType=0x0007
 AccessType=rw
 DefaultValue=$NODEID+0x00000280
 PDOMapping=0
-LowLimit=0xFFFFFFFF
-HighLimit=0x00000100
+LowLimit=0x00000080
+HighLimit=0xFFFFFFFF
 
 [1801sub2]
 ParameterName=Transmission Type
@@ -1169,7 +1218,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1801sub5]
-ParameterName=Event Timer
+ParameterName=Event timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -1206,8 +1255,8 @@ DataType=0x0007
 AccessType=rw
 DefaultValue=$NODEID+0x00000380
 PDOMapping=0
-LowLimit=0xFFFFFFFF
-HighLimit=0x00000100
+LowLimit=0x00000080
+HighLimit=0xFFFFFFFF
 
 [1802sub2]
 ParameterName=Transmission Type
@@ -1226,7 +1275,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1802sub5]
-ParameterName=Event Timer
+ParameterName=Event timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -1263,8 +1312,8 @@ DataType=0x0007
 AccessType=rw
 DefaultValue=$NODEID+0x00000480
 PDOMapping=0
-LowLimit=0xFFFFFFFF
-HighLimit=0x00000100
+LowLimit=0x00000080
+HighLimit=0xFFFFFFFF
 
 [1803sub2]
 ParameterName=Transmission Type
@@ -1283,7 +1332,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1803sub5]
-ParameterName=Event Timer
+ParameterName=Event timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -1308,7 +1357,7 @@ ParameterName=Number of entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=2
+DefaultValue=4
 PDOMapping=0
 LowLimit=0
 HighLimit=8
@@ -1318,7 +1367,7 @@ ParameterName=PDO Mapping Entry_1
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=0
+DefaultValue=0x64010110
 PDOMapping=0
 
 [1A00sub2]
@@ -1326,7 +1375,7 @@ ParameterName=PDO Mapping Entry_2
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=0
+DefaultValue=0x64010210
 PDOMapping=0
 
 [1A00sub3]
@@ -1334,7 +1383,7 @@ ParameterName=PDO Mapping Entry_3
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=0
+DefaultValue=0x64010310
 PDOMapping=0
 
 [1A00sub4]
@@ -1342,7 +1391,7 @@ ParameterName=PDO Mapping Entry_4
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
-DefaultValue=0
+DefaultValue=0x64010410
 PDOMapping=0
 
 [1A00sub5]
@@ -1387,7 +1436,7 @@ ParameterName=Number of entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=3
+DefaultValue=0
 PDOMapping=0
 LowLimit=0
 HighLimit=8
@@ -1614,124 +1663,31 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
-[1F50]
-ParameterName=Program data
-ObjectType=0x8
-SubNumber=2
-
-[1F50sub0]
-ParameterName=Highest sub-index supported
-ObjectType=0x7
-DataType=0x0005
-AccessType=ro
-DefaultValue=0x01
-PDOMapping=0
-ObjFlags=0x1
-
-[1F50sub1]
-ParameterName=Program number 1
-ObjectType=0x7
-DataType=0x000F
-AccessType=rw
-PDOMapping=0
-ObjFlags=0x1
-
 [1F51]
 ParameterName=Program control
 ObjectType=0x8
 SubNumber=2
 
 [1F51sub0]
-ParameterName=Highest sub-index supported
+ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=0x01
+DefaultValue=1
 PDOMapping=0
-ObjFlags=0x1
 
 [1F51sub1]
-ParameterName=Program number 1
+ParameterName=Program_1
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=0x00
+DefaultValue=0
 PDOMapping=0
-ObjFlags=0x1
-
-[1F55]
-ParameterName=Expected program software identification
-ObjectType=0x8
-SubNumber=2
-
-[1F55sub0]
-ParameterName=Highest sub-index supported
-ObjectType=0x7
-DataType=0x0005
-AccessType=ro
-DefaultValue=0x01
-PDOMapping=0
-ObjFlags=0x1
-
-[1F55sub1]
-ParameterName=Program number 1
-ObjectType=0x7
-DataType=0x0007
-AccessType=rw
-DefaultValue=0x00000000
-PDOMapping=0
-ObjFlags=0x1
-
-[1F56]
-ParameterName=Program software identification
-ObjectType=0x8
-SubNumber=2
-
-[1F56sub0]
-ParameterName=Highest sub-index supported
-ObjectType=0x7
-DataType=0x0005
-AccessType=ro
-DefaultValue=0x01
-PDOMapping=0
-ObjFlags=0x1
-
-[1F56sub1]
-ParameterName=Program number 1
-ObjectType=0x7
-DataType=0x0007
-AccessType=ro
-DefaultValue=0x00000000
-PDOMapping=0
-ObjFlags=0x1
-
-[1F57]
-ParameterName=Flash status identification
-ObjectType=0x8
-SubNumber=2
-
-[1F57sub0]
-ParameterName=Highest sub-index supported
-ObjectType=0x7
-DataType=0x0005
-AccessType=ro
-DefaultValue=0x01
-PDOMapping=0
-ObjFlags=0x1
-
-[1F57sub1]
-ParameterName=Program number 1
-ObjectType=0x7
-DataType=0x0007
-AccessType=ro
-DefaultValue=0x00000000
-PDOMapping=0
-ObjFlags=0x1
 
 [6000]
-ParameterName=Read input 8 bit
+ParameterName=di_Values_8bits
 ObjectType=0x8
-SubNumber=3
+SubNumber=2
 
 [6000sub0]
 ParameterName=Number of Elements
@@ -5222,7 +5178,7 @@ ParameterName=Firmware_build_date
 ObjectType=0x7
 DataType=0x0009
 AccessType=ro
-DefaultValue="XXX/XX/XX"
+DefaultValue="__TIMESTAMP__"
 PDOMapping=0
 
 [2004]
@@ -5354,7 +5310,7 @@ AccessType=ro
 PDOMapping=0
 
 [2040]
-ParameterName=Comunication_config
+ParameterName=Communication_config
 ObjectType=0x8
 SubNumber=3
 
@@ -5371,7 +5327,7 @@ ParameterName=Node_ID
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=1
+DefaultValue=$NODEID
 PDOMapping=0
 
 [2040sub2]

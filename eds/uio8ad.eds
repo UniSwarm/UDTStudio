@@ -1,23 +1,23 @@
 [FileInfo]
 CreatedBy=UniSwarm SASU
-CreationDate=12-03-2019
-CreationTime=01:52PM
+CreationDate=09-01-2020
+CreationTime=03:32PM
 Description=UIO8AD GPIO controller
 EDSVersion=4.0
 FileName=uio8ad.eds
 FileRevision=1
 FileVersion=1
-ModificationDate=08-25-2021
-ModificationTime=04:08PM
+ModificationDate=11-08-2021
+ModificationTime=11:13AM
 ModifiedBy=UniSwarm SASU
 
 [DeviceInfo]
-BaudRate_10=0
-BaudRate_20=0
-BaudRate_50=0
-BaudRate_125=0
-BaudRate_250=0
-BaudRate_500=0
+BaudRate_10=1
+BaudRate_20=1
+BaudRate_50=1
+BaudRate_125=1
+BaudRate_250=1
+BaudRate_500=1
 BaudRate_800=0
 BaudRate_1000=1
 DynamicChannelsSupported=0
@@ -391,9 +391,9 @@ LowLimit=0x00000080
 HighLimit=0x00000100
 
 [1016]
-ParameterName=Consumer Heartbeat Time
+ParameterName=Consumer Heartbeat
 ObjectType=0x8
-SubNumber=2
+SubNumber=11
 
 [1016sub0]
 ParameterName=Number of Entries
@@ -404,7 +404,97 @@ DefaultValue=1
 PDOMapping=0
 
 [1016sub1]
-ParameterName=Consumer Heartbeat Time
+ParameterName=Consumer 01
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub2]
+ParameterName=Consumer 02
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub3]
+ParameterName=Consumer 03
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub4]
+ParameterName=Consumer 04
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub5]
+ParameterName=Consumer 05
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub6]
+ParameterName=Consumer 06
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub7]
+ParameterName=Consumer 07
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub8]
+ParameterName=Consumer 08
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016sub9]
+ParameterName=Consumer 09
+ObjectType=0x7
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+LowLimit=0x0
+HighLimit=0x007FFFFF
+
+[1016subA]
+ParameterName=Consumer 10
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -480,7 +570,7 @@ PDOMapping=0
 [1400]
 ParameterName=RPDO Parameter 1
 ObjectType=0x9
-SubNumber=4
+SubNumber=5
 
 [1400sub0]
 ParameterName=Number of entries
@@ -518,10 +608,18 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
+[1400sub5]
+ParameterName=Event timer
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
 [1401]
 ParameterName=RPDO Parameter 2
 ObjectType=0x9
-SubNumber=4
+SubNumber=5
 
 [1401sub0]
 ParameterName=Number of entries
@@ -559,10 +657,18 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
+[1401sub5]
+ParameterName=Event timer
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
 [1402]
 ParameterName=RPDO Parameter 3
 ObjectType=0x9
-SubNumber=4
+SubNumber=5
 
 [1402sub0]
 ParameterName=Number of entries
@@ -600,10 +706,18 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
+[1402sub5]
+ParameterName=Event timer
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
 [1403]
 ParameterName=RPDO Parameter 4
 ObjectType=0x9
-SubNumber=4
+SubNumber=5
 
 [1403sub0]
 ParameterName=Number of entries
@@ -635,6 +749,14 @@ PDOMapping=0
 
 [1403sub3]
 ParameterName=Inhibit Time
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
+[1403sub5]
+ParameterName=Event timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -960,7 +1082,7 @@ PDOMapping=0
 [1800]
 ParameterName=TPDO Parameter 1
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [1800sub0]
 ParameterName=Number of entries
@@ -998,6 +1120,14 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
+[1800sub5]
+ParameterName=Event timer
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
 [1800sub6]
 ParameterName=SYNC start value
 ObjectType=0x7
@@ -1009,7 +1139,7 @@ PDOMapping=0
 [1801]
 ParameterName=TPDO Parameter 2
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [1801sub0]
 ParameterName=Number of entries
@@ -1047,6 +1177,14 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
+[1801sub5]
+ParameterName=Event timer
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
 [1801sub6]
 ParameterName=SYNC start value
 ObjectType=0x7
@@ -1058,7 +1196,7 @@ PDOMapping=0
 [1802]
 ParameterName=TPDO Parameter 3
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [1802sub0]
 ParameterName=Number of entries
@@ -1096,6 +1234,14 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
+[1802sub5]
+ParameterName=Event timer
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
 [1802sub6]
 ParameterName=SYNC start value
 ObjectType=0x7
@@ -1107,7 +1253,7 @@ PDOMapping=0
 [1803]
 ParameterName=TPDO Parameter 4
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [1803sub0]
 ParameterName=Number of entries
@@ -1139,6 +1285,14 @@ PDOMapping=0
 
 [1803sub3]
 ParameterName=Inhibit Time
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
+[1803sub5]
+ParameterName=Event timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -3316,7 +3470,7 @@ ParameterName=Channel_00
 ObjectType=0x7
 DataType=0x0008
 AccessType=rw
-DefaultValue=1.0
+DefaultValue=1
 PDOMapping=0
 
 [642Fsub2]
@@ -3324,7 +3478,7 @@ ParameterName=Channel_01
 ObjectType=0x7
 DataType=0x0008
 AccessType=rw
-DefaultValue=1.0
+DefaultValue=1
 PDOMapping=0
 
 [642Fsub3]
@@ -3332,7 +3486,7 @@ ParameterName=Channel_02
 ObjectType=0x7
 DataType=0x0008
 AccessType=rw
-DefaultValue=1.0
+DefaultValue=1
 PDOMapping=0
 
 [642Fsub4]
@@ -3340,7 +3494,7 @@ ParameterName=Channel_03
 ObjectType=0x7
 DataType=0x0008
 AccessType=rw
-DefaultValue=1.0
+DefaultValue=1
 PDOMapping=0
 
 [642Fsub5]
@@ -3348,7 +3502,7 @@ ParameterName=Channel_04
 ObjectType=0x7
 DataType=0x0008
 AccessType=rw
-DefaultValue=1.0
+DefaultValue=1
 PDOMapping=0
 
 [642Fsub6]
@@ -3356,7 +3510,7 @@ ParameterName=Channel_05
 ObjectType=0x7
 DataType=0x0008
 AccessType=rw
-DefaultValue=1.0
+DefaultValue=1
 PDOMapping=0
 
 [642Fsub7]
@@ -3364,7 +3518,7 @@ ParameterName=Channel_06
 ObjectType=0x7
 DataType=0x0008
 AccessType=rw
-DefaultValue=1.0
+DefaultValue=1
 PDOMapping=0
 
 [642Fsub8]
@@ -3372,7 +3526,7 @@ ParameterName=Channel_07
 ObjectType=0x7
 DataType=0x0008
 AccessType=rw
-DefaultValue=1.0
+DefaultValue=1
 PDOMapping=0
 
 [6430]
@@ -3803,7 +3957,7 @@ AccessType=ro
 PDOMapping=0
 
 [2040]
-ParameterName=Comunication_config
+ParameterName=Communication_config
 ObjectType=0x8
 SubNumber=3
 
@@ -3832,7 +3986,7 @@ PDOMapping=0
 
 [2050]
 ParameterName=Bootloader
-ObjectType=0x9
+ObjectType=0x8
 SubNumber=4
 
 [2050sub0]
@@ -3855,14 +4009,13 @@ ParameterName=Checksum
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=0
 PDOMapping=0
 
 [2050sub3]
 ParameterName=Status
 ObjectType=0x7
 DataType=0x0005
-AccessType=ro
+AccessType=
 PDOMapping=0
 
 [4000]
@@ -4480,3 +4633,4 @@ DataType=0x0005
 AccessType=rw
 DefaultValue=0
 PDOMapping=0
+
