@@ -34,4 +34,4 @@ public:
     virtual void write(DeviceDescription *deviceDescription, const QString &filePath, uint8_t nodeId) const = 0;
 };
 
-#endif // DEVICECONFIGURATIONWRITER_H
+#endif  // DEVICECONFIGURATIONWRITER_H

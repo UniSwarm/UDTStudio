@@ -67,4 +67,4 @@ private:
     QSet<QString> _typeSetTable;
 };
 
-#endif // CGENERATOR_H
+#endif  // CGENERATOR_H

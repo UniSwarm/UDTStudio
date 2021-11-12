@@ -32,4 +32,4 @@ public:
     DeviceConfiguration *parse(const QString &path) const;
 };
 
-#endif // DCFPARSER_H
+#endif  // DCFPARSER_H

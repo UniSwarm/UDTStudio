@@ -204,20 +204,20 @@ QString Index::objectTypeStr(const uint8_t &objectType)
 {
     switch (objectType)
     {
-    case OBJECT_NULL:
-        return QString("NULL");
-    case OBJECT_DOMAIN:
-        return QString("DOMAIN");
-    case DEFTYPE:
-        return QString("DEFTYPE");
-    case DEFSTRUCT:
-        return QString("DEFSTRUCT");
-    case VAR:
-        return QString("VAR");
-    case ARRAY:
-        return QString("ARRAY");
-    case RECORD:
-        return QString("RECORD");
+        case OBJECT_NULL:
+            return QString("NULL");
+        case OBJECT_DOMAIN:
+            return QString("DOMAIN");
+        case DEFTYPE:
+            return QString("DEFTYPE");
+        case DEFSTRUCT:
+            return QString("DEFSTRUCT");
+        case VAR:
+            return QString("VAR");
+        case ARRAY:
+            return QString("ARRAY");
+        case RECORD:
+            return QString("RECORD");
     }
     return QString();
 }

@@ -280,32 +280,32 @@ QVariant DeviceIniParser::readData(bool *nodeId, bool *isHexValue) const
     bool ok;
     switch (dataType)
     {
-    case SubIndex::BOOLEAN:
-    case SubIndex::INTEGER8:
-    case SubIndex::INTEGER16:
-    case SubIndex::INTEGER32:
-        return QVariant(stringValue.toInt(&ok, base));
+        case SubIndex::BOOLEAN:
+        case SubIndex::INTEGER8:
+        case SubIndex::INTEGER16:
+        case SubIndex::INTEGER32:
+            return QVariant(stringValue.toInt(&ok, base));
 
-    case SubIndex::INTEGER64:
-        return QVariant(stringValue.toLongLong(&ok, base));
+        case SubIndex::INTEGER64:
+            return QVariant(stringValue.toLongLong(&ok, base));
 
-    case SubIndex::UNSIGNED8:
-    case SubIndex::UNSIGNED16:
-    case SubIndex::UNSIGNED32:
-        return QVariant(stringValue.toUInt(&ok, base));
+        case SubIndex::UNSIGNED8:
+        case SubIndex::UNSIGNED16:
+        case SubIndex::UNSIGNED32:
+            return QVariant(stringValue.toUInt(&ok, base));
 
-    case SubIndex::UNSIGNED64:
-        return QVariant(stringValue.toULongLong(&ok, base));
+        case SubIndex::UNSIGNED64:
+            return QVariant(stringValue.toULongLong(&ok, base));
 
-    case SubIndex::REAL32:
-        return QVariant(stringValue.toFloat());
+        case SubIndex::REAL32:
+            return QVariant(stringValue.toFloat());
 
-    case SubIndex::REAL64:
-        return QVariant(stringValue.toDouble());
+        case SubIndex::REAL64:
+            return QVariant(stringValue.toDouble());
 
-    case SubIndex::VISIBLE_STRING:
-    case SubIndex::OCTET_STRING:
-        return QVariant(stringValue);
+        case SubIndex::VISIBLE_STRING:
+        case SubIndex::OCTET_STRING:
+            return QVariant(stringValue);
     }
 
     return QVariant();

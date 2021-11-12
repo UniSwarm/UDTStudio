@@ -52,4 +52,4 @@ private:
     void writeLimit(const SubIndex *subIndex, QTextStream *out);
 };
 
-#endif // TEXGENERATOR_H
+#endif  // TEXGENERATOR_H

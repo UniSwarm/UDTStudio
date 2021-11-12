@@ -36,4 +36,4 @@ protected:
     QString indexStr(Index *index);
 };
 
-#endif // ODMERGER_H
+#endif  // ODMERGER_H

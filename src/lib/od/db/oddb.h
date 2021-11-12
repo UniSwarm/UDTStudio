@@ -63,4 +63,4 @@ private:
     static OdDb *_instance;
 };
 
-#endif // ODDB_H
+#endif  // ODDB_H

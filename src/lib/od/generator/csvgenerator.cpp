@@ -17,6 +17,7 @@
  **/
 
 #include "csvgenerator.h"
+
 #include <QFileInfo>
 
 /**
@@ -126,17 +127,17 @@ void CsvGenerator::writeListIndex(const QList<Index *> indexes, QTextStream *out
     {
         switch (index->objectType())
         {
-        case Index::Object::VAR:
-            writeIndex(index, out);
-            break;
+            case Index::Object::VAR:
+                writeIndex(index, out);
+                break;
 
-        case Index::Object::RECORD:
-            writeRecord(index, out);
-            break;
+            case Index::Object::RECORD:
+                writeRecord(index, out);
+                break;
 
-        case Index::Object::ARRAY:
-            writeArray(index, out);
-            break;
+            case Index::Object::ARRAY:
+                writeArray(index, out);
+                break;
         }
     }
 }
@@ -157,16 +158,16 @@ void CsvGenerator::writeIndex(Index *index, QTextStream *out)
 
     int base = 16;
 
-    *out << QString::number(index->index(), base).toUpper() << ","; // index
-    *out << ","; // subNumber
-    *out << "0,"; // subIndex
+    *out << QString::number(index->index(), base).toUpper() << ",";  // index
+    *out << ",";                                                     // subNumber
+    *out << "0,";                                                    // subIndex
     QString name = index->name();
-    *out << name.replace("_", " ") << ","; // Name
-    *out << index->objectTypeStr(index->objectType()) << ","; // objectType
-    *out << subIndex->dataTypeStr(subIndex->dataType()) << ","; // dataType
-    *out << accessToString(subIndex->accessType()) << ","; // accessType
-    *out << pdoToString(subIndex->accessType()) << ","; // pdoMapping
-    *out << subIndex->value().toString() << ","; // defaultValue
+    *out << name.replace("_", " ") << ",";                       // Name
+    *out << index->objectTypeStr(index->objectType()) << ",";    // objectType
+    *out << subIndex->dataTypeStr(subIndex->dataType()) << ",";  // dataType
+    *out << accessToString(subIndex->accessType()) << ",";       // accessType
+    *out << pdoToString(subIndex->accessType()) << ",";          // pdoMapping
+    *out << subIndex->value().toString() << ",";                 // defaultValue
 
     writeLimit(subIndex, out);
     *out << "\n";
@@ -180,27 +181,27 @@ void CsvGenerator::writeRecord(Index *index, QTextStream *out)
 {
     int base = 16;
 
-    *out << QString::number(index->index(), base).toUpper() << ","; // index
-    *out << index->subIndexesCount() << ","; // subNumber
-    *out << ","; // subIndex
+    *out << QString::number(index->index(), base).toUpper() << ",";  // index
+    *out << index->subIndexesCount() << ",";                         // subNumber
+    *out << ",";                                                     // subIndex
     QString name = index->name();
-    *out << name.replace("_", " ") << ","; // Name
-    *out << index->objectTypeStr(index->objectType()) << ","; // objectType
-    *out << ",,,,,,"; // dataType,accessType,pdoMapping,defaultValue,lowLimit,highLimit
+    *out << name.replace("_", " ") << ",";                     // Name
+    *out << index->objectTypeStr(index->objectType()) << ",";  // objectType
+    *out << ",,,,,,";                                          // dataType,accessType,pdoMapping,defaultValue,lowLimit,highLimit
     *out << "\n";
 
     for (SubIndex *subIndex : index->subIndexes())
     {
-        *out << QString::number(index->index(), base).toUpper() << ","; // index
-        *out << ","; // subNumber
-        *out << subIndex->subIndex() << ","; // subIndex
+        *out << QString::number(index->index(), base).toUpper() << ",";  // index
+        *out << ",";                                                     // subNumber
+        *out << subIndex->subIndex() << ",";                             // subIndex
         QString name = subIndex->name();
-        *out << name.replace("_", " ") << ","; // Name
-        *out << index->objectTypeStr(Index::Object::VAR) << ","; // objectType
-        *out << subIndex->dataTypeStr(subIndex->dataType()) << ","; // dataType
-        *out << accessToString(subIndex->accessType()) << ","; // accessType
-        *out << pdoToString(subIndex->accessType()) << ","; // pdoMapping
-        *out << subIndex->value().toString() << ","; // defaultValue
+        *out << name.replace("_", " ") << ",";                       // Name
+        *out << index->objectTypeStr(Index::Object::VAR) << ",";     // objectType
+        *out << subIndex->dataTypeStr(subIndex->dataType()) << ",";  // dataType
+        *out << accessToString(subIndex->accessType()) << ",";       // accessType
+        *out << pdoToString(subIndex->accessType()) << ",";          // pdoMapping
+        *out << subIndex->value().toString() << ",";                 // defaultValue
 
         writeLimit(subIndex, out);
         *out << "\n";
@@ -250,23 +251,23 @@ QString CsvGenerator::accessToString(int access)
 {
     switch (access)
     {
-    case SubIndex::READ:
-    case SubIndex::READ + SubIndex::TPDO:
-        return QString("ro");
+        case SubIndex::READ:
+        case SubIndex::READ + SubIndex::TPDO:
+            return QString("ro");
 
-    case SubIndex::WRITE:
-    case SubIndex::WRITE + SubIndex::RPDO:
-        return QString("wo");
+        case SubIndex::WRITE:
+        case SubIndex::WRITE + SubIndex::RPDO:
+            return QString("wo");
 
-    case SubIndex::READ + SubIndex::WRITE:
-    case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO + SubIndex::RPDO:
-        return QString("rw");
+        case SubIndex::READ + SubIndex::WRITE:
+        case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO + SubIndex::RPDO:
+            return QString("rw");
 
-    case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO:
-        return QString("rwr");
+        case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO:
+            return QString("rwr");
 
-    case SubIndex::READ + SubIndex::WRITE + SubIndex::RPDO:
-        return QString("rww");
+        case SubIndex::READ + SubIndex::WRITE + SubIndex::RPDO:
+            return QString("rww");
     }
 
     return "";

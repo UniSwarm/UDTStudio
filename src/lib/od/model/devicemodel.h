@@ -76,4 +76,4 @@ private:
     QMap<uint16_t, Index *> _indexes;
 };
 
-#endif // DEVICEMODEL_H
+#endif  // DEVICEMODEL_H

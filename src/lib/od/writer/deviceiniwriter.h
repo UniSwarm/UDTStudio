@@ -58,4 +58,4 @@ private:
     bool _isDescription;
 };
 
-#endif // DEVICEINIWRITER_H
+#endif  // DEVICEINIWRITER_H

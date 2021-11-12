@@ -32,4 +32,4 @@ public:
     virtual void write(const DeviceDescription *deviceDescription, const QString &filePath) const = 0;
 };
 
-#endif // DEVICEDESCRIPTIONWRITER_H
+#endif  // DEVICEDESCRIPTIONWRITER_H

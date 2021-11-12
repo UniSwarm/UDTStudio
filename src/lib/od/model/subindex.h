@@ -124,4 +124,4 @@ protected:
     bool _isHexVal;
 };
 
-#endif // SUBINDEX_H
+#endif  // SUBINDEX_H

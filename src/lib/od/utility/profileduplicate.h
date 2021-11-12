@@ -31,4 +31,4 @@ public:
     void duplicate(DeviceDescription *deviceDescription, const uint8_t number = 1);
 };
 
-#endif // PROFILEDUPLICATE_H
+#endif  // PROFILEDUPLICATE_H

@@ -50,4 +50,4 @@ private:
     void writeLimit(const SubIndex *subIndex, QTextStream *out);
 };
 
-#endif // CSVGENERATOR_H
+#endif  // CSVGENERATOR_H

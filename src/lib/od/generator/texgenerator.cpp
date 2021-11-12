@@ -17,6 +17,7 @@
  **/
 
 #include "texgenerator.h"
+
 #include <QFileInfo>
 
 /**
@@ -56,22 +57,22 @@ bool TexGenerator::generate(DeviceDescription *deviceDescription, const QString 
 {
     QString filePathBaseName = QFileInfo(filePath).path() + "/" + QFileInfo(filePath).baseName();
     QString outCom = filePathBaseName + "Communication." + QFileInfo(filePath).suffix();
-    QFile TexComFile(outCom);
-    if (!TexComFile.open(QIODevice::WriteOnly))
+    QFile texComFile(outCom);
+    if (!texComFile.open(QIODevice::WriteOnly))
     {
         return false;
     }
 
     QString outManu = filePathBaseName + "Manufacturer." + QFileInfo(filePath).suffix();
-    QFile TexManuFile(outManu);
-    if (!TexManuFile.open(QIODevice::WriteOnly))
+    QFile texManuFile(outManu);
+    if (!texManuFile.open(QIODevice::WriteOnly))
     {
         return false;
     }
 
     QString outStandard = filePathBaseName + "Standardized." + QFileInfo(filePath).suffix();
-    QFile TexStandardFile(outStandard);
-    if (!TexStandardFile.open(QIODevice::WriteOnly))
+    QFile texStandardFile(outStandard);
+    if (!texStandardFile.open(QIODevice::WriteOnly))
     {
         return false;
     }
@@ -98,11 +99,11 @@ bool TexGenerator::generate(DeviceDescription *deviceDescription, const QString 
         }
     }
 
-    QTextStream out(&TexComFile);
+    QTextStream out(&texComFile);
     writeListIndexComm(communication, &out);
-    TexComFile.close();
+    texComFile.close();
 
-    out.setDevice(&TexManuFile);
+    out.setDevice(&texManuFile);
 
     if (deviceDescription->index(0x1000)->subIndex(0)->value().toUInt() == 402)
     {
@@ -113,11 +114,11 @@ bool TexGenerator::generate(DeviceDescription *deviceDescription, const QString 
         writeListIndex(manufacturers, &out);
     }
 
-    TexManuFile.close();
+    texManuFile.close();
 
-    out.setDevice(&TexStandardFile);
+    out.setDevice(&texStandardFile);
     writeListIndex(standardized, &out);
-    TexStandardFile.close();
+    texStandardFile.close();
 
     return true;
 }
@@ -132,17 +133,17 @@ void TexGenerator::writeListIndex(const QList<Index *> indexes, QTextStream *out
     {
         switch (index->objectType())
         {
-        case Index::Object::VAR:
-            writeIndex(index, out, false);
-            break;
+            case Index::Object::VAR:
+                writeIndex(index, out, false);
+                break;
 
-        case Index::Object::RECORD:
-            writeRecord(index, out, false);
-            break;
+            case Index::Object::RECORD:
+                writeRecord(index, out, false);
+                break;
 
-        case Index::Object::ARRAY:
-            writeArray(index, out, false);
-            break;
+            case Index::Object::ARRAY:
+                writeArray(index, out, false);
+                break;
         }
     }
 }
@@ -156,17 +157,17 @@ void TexGenerator::writeListIndexComm(const QList<Index *> indexes, QTextStream 
         {
             switch (index->objectType())
             {
-            case Index::Object::VAR:
-                writeIndex(index, out, false);
-                break;
+                case Index::Object::VAR:
+                    writeIndex(index, out, false);
+                    break;
 
-            case Index::Object::RECORD:
-                writeRecord(index, out, false);
-                break;
+                case Index::Object::RECORD:
+                    writeRecord(index, out, false);
+                    break;
 
-            case Index::Object::ARRAY:
-                writeArray(index, out, false);
-                break;
+                case Index::Object::ARRAY:
+                    writeArray(index, out, false);
+                    break;
             }
         }
     }
@@ -185,30 +186,30 @@ void TexGenerator::writeListIndexComm(const QList<Index *> indexes, QTextStream 
     for (Index *index : indexes)
     {
         uint16_t numIndex = index->index();
-         if (numIndex >= 0x1400 && numIndex < 0x1A04)
-         {
-             if (numIndex == 0x1400 || numIndex == 0x1600 || numIndex == 0x1800 || numIndex == 0x1A00)
-             {
-                 switch (index->objectType())
-                 {
-                 case Index::Object::VAR:
-                     writeIndex(index, out, true);
-                     break;
+        if (numIndex >= 0x1400 && numIndex < 0x1A04)
+        {
+            if (numIndex == 0x1400 || numIndex == 0x1600 || numIndex == 0x1800 || numIndex == 0x1A00)
+            {
+                switch (index->objectType())
+                {
+                    case Index::Object::VAR:
+                        writeIndex(index, out, true);
+                        break;
 
-                 case Index::Object::RECORD:
-                     writeRecord(index, out, true);
-                     break;
+                    case Index::Object::RECORD:
+                        writeRecord(index, out, true);
+                        break;
 
-                 case Index::Object::ARRAY:
-                     writeArray(index, out, true);
-                     break;
-                 }
-             }
-             else
-             {
-                 writeIndex(index, out, true);
-             }
-         }
+                    case Index::Object::ARRAY:
+                        writeArray(index, out, true);
+                        break;
+                }
+            }
+            else
+            {
+                writeIndex(index, out, true);
+            }
+        }
     }
 }
 
@@ -221,17 +222,17 @@ void TexGenerator::writeListIndexManufacturer402(const QList<Index *> indexes, Q
         {
             switch (index->objectType())
             {
-            case Index::Object::VAR:
-                writeIndex(index, out, false);
-                break;
+                case Index::Object::VAR:
+                    writeIndex(index, out, false);
+                    break;
 
-            case Index::Object::RECORD:
-                writeRecord(index, out, false);
-                break;
+                case Index::Object::RECORD:
+                    writeRecord(index, out, false);
+                    break;
 
-            case Index::Object::ARRAY:
-                writeArray(index, out, false);
-                break;
+                case Index::Object::ARRAY:
+                    writeArray(index, out, false);
+                    break;
             }
         }
     }
@@ -248,22 +249,21 @@ void TexGenerator::writeListIndexManufacturer402(const QList<Index *> indexes, Q
     for (Index *index : indexes)
     {
         uint16_t numIndex = index->index();
-        if ((numIndex >= 0x4000 && numIndex < 0x4040)
-            || (numIndex >= 0x4080 && numIndex < 0x40FF))
+        if ((numIndex >= 0x4000 && numIndex < 0x4040) || (numIndex >= 0x4080 && numIndex < 0x40FF))
         {
             switch (index->objectType())
             {
-            case Index::Object::VAR:
-                writeIndex(index, out, true);
-                break;
+                case Index::Object::VAR:
+                    writeIndex(index, out, true);
+                    break;
 
-            case Index::Object::RECORD:
-                writeRecord(index, out, true);
-                break;
+                case Index::Object::RECORD:
+                    writeRecord(index, out, true);
+                    break;
 
-            case Index::Object::ARRAY:
-                writeArray(index, out, true);
-                break;
+                case Index::Object::ARRAY:
+                    writeArray(index, out, true);
+                    break;
             }
         }
         else if (numIndex >= 0x4040 && numIndex < 0x4080)
@@ -278,17 +278,17 @@ void TexGenerator::writeListIndexManufacturer402(const QList<Index *> indexes, Q
         {
             switch (index->objectType())
             {
-            case Index::Object::VAR:
-                writeIndex(index, out, false);
-                break;
+                case Index::Object::VAR:
+                    writeIndex(index, out, false);
+                    break;
 
-            case Index::Object::RECORD:
-                writeRecord(index, out, false);
-                break;
+                case Index::Object::RECORD:
+                    writeRecord(index, out, false);
+                    break;
 
-            case Index::Object::ARRAY:
-                writeArray(index, out, false);
-                break;
+                case Index::Object::ARRAY:
+                    writeArray(index, out, false);
+                    break;
             }
         }
     }
@@ -351,13 +351,13 @@ void TexGenerator::writeIndex(Index *index, QTextStream *out, bool generic)
     nameObject.replace("8", "I");
     nameObject.replace("9", "J");
 
-//    QString nameFull = index->name();
-//    nameFull.replace("_", "\\_");
-//    if (generic)
-//    {
-//        nameObject.append("X");
-//        nameFull.replace("a1", "a@");
-//    }
+    //    QString nameFull = index->name();
+    //    nameFull.replace("_", "\\_");
+    //    if (generic)
+    //    {
+    //        nameObject.append("X");
+    //        nameFull.replace("a1", "a@");
+    //    }
 
     QString nameCommand = nameObject;
     nameCommand.prepend("\\name");
@@ -507,13 +507,13 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
     nameObject.replace("8", "I");
     nameObject.replace("9", "J");
 
-//    QString nameFull = index->name();
-//    nameFull.replace("_", "\\_");
-//    if (generic)
-//    {
-//        nameObject.append("X");
-//        nameFull.replace("a1", "a@");
-//    }
+    //    QString nameFull = index->name();
+    //    nameFull.replace("_", "\\_");
+    //    if (generic)
+    //    {
+    //        nameObject.append("X");
+    //        nameFull.replace("a1", "a@");
+    //    }
 
     QString nameCommand = nameObject;
     nameCommand.prepend("\\name");
@@ -590,11 +590,13 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
         {
             if (index->index() >= 0x1400 && index->index() < 0x1A04)
             {
-                *out << "% " << QString::number(index->index(), base).toUpper().replace(3, 1, "n") << "." << QString::number(subIndex->subIndex(), base).toUpper() << " " << nameSubObject;
+                *out << "% " << QString::number(index->index(), base).toUpper().replace(3, 1, "n") << "." << QString::number(subIndex->subIndex(), base).toUpper() << " "
+                     << nameSubObject;
             }
             else
             {
-                *out << "% " << QString::number(index->index(), base).toUpper().replace(1, 1, "n") << "." << QString::number(subIndex->subIndex(), base).toUpper() << " " << nameSubObject;
+                *out << "% " << QString::number(index->index(), base).toUpper().replace(1, 1, "n") << "." << QString::number(subIndex->subIndex(), base).toUpper() << " "
+                     << nameSubObject;
             }
         }
         else
@@ -759,23 +761,23 @@ QString TexGenerator::accessToString(int access)
 {
     switch (access)
     {
-    case SubIndex::READ:
-    case SubIndex::READ + SubIndex::TPDO:
-        return QString("RO");
+        case SubIndex::READ:
+        case SubIndex::READ + SubIndex::TPDO:
+            return QString("RO");
 
-    case SubIndex::WRITE:
-    case SubIndex::WRITE + SubIndex::RPDO:
-        return QString("WO");
+        case SubIndex::WRITE:
+        case SubIndex::WRITE + SubIndex::RPDO:
+            return QString("WO");
 
-    case SubIndex::READ + SubIndex::WRITE:
-    case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO + SubIndex::RPDO:
-        return QString("RW");
+        case SubIndex::READ + SubIndex::WRITE:
+        case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO + SubIndex::RPDO:
+            return QString("RW");
 
-    case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO:
-        return QString("RW");
+        case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO:
+            return QString("RW");
 
-    case SubIndex::READ + SubIndex::WRITE + SubIndex::RPDO:
-        return QString("RW");
+        case SubIndex::READ + SubIndex::WRITE + SubIndex::RPDO:
+            return QString("RW");
     }
 
     return "";

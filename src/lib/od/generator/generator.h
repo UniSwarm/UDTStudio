@@ -38,4 +38,4 @@ public:
     static Generator *getGenerator(const QString &type);
 };
 
-#endif // GENERATOR_H
+#endif  // GENERATOR_H

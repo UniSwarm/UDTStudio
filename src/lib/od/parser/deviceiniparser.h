@@ -52,4 +52,4 @@ public:
     QSettings *_file;
 };
 
-#endif // DEVICEINIPARSER_H
+#endif  // DEVICEINIPARSER_H

@@ -32,4 +32,4 @@ public:
     void write(const DeviceDescription *deviceDescription, const QString &filePath) const;
 };
 
-#endif // EDSWRITER_H
+#endif  // EDSWRITER_H

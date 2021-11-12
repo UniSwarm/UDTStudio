@@ -47,7 +47,7 @@ public:
     SubIndex *subIndex(QString nameSubIndex) const;
     void addSubIndex(SubIndex *subIndex);
     int subIndexesCount();
-    bool subIndexExist(uint8_t subIndex);    
+    bool subIndexExist(uint8_t subIndex);
     bool subIndexExist(QString nameSubIndex);
 
     // =========== Object type ====================
@@ -76,4 +76,4 @@ private:
     QMap<uint8_t, SubIndex *> _subIndexes;
 };
 
-#endif // INDEX_H
+#endif  // INDEX_H

@@ -39,4 +39,4 @@ public:
     void write(DeviceDescription *deviceDescription, const QString &filePath, uint8_t nodeId) const;
 };
 
-#endif // DCFWRITER_H
+#endif  // DCFWRITER_H

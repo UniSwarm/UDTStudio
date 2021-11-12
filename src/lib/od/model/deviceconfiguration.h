@@ -51,4 +51,4 @@ private:
     QMap<QString, QString> _deviceComissionings;
 };
 
-#endif // DEVICECONFIGURATION_H
+#endif  // DEVICECONFIGURATION_H

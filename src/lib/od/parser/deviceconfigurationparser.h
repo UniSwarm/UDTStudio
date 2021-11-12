@@ -32,4 +32,4 @@ public:
     virtual DeviceConfiguration *parse(const QString &path) const = 0;
 };
 
-#endif // DEVICECONFIGURATIONPARSER_H
+#endif  // DEVICECONFIGURATIONPARSER_H

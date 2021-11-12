@@ -32,4 +32,4 @@ public:
     DeviceDescription *parse(const QString &path) const;
 };
 
-#endif // EDSPARSER_H
+#endif  // EDSPARSER_H

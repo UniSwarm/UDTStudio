@@ -242,58 +242,58 @@ QString SubIndex::dataTypeStr(const DataType dataType)
 {
     switch (dataType)
     {
-    case INVALID:
-        return QString("INVALID");
-    case BOOLEAN:
-        return QString("BOOLEAN");
-    case INTEGER8:
-        return QString("INT8");
-    case INTEGER16:
-        return QString("INT16");
-    case INTEGER32:
-        return QString("INT32");
-    case UNSIGNED8:
-        return QString("UINT8");
-    case UNSIGNED16:
-        return QString("UINT16");
-    case UNSIGNED32:
-        return QString("UINT32");
-    case REAL32:
-        return QString("REAL32");
-    case VISIBLE_STRING:
-        return QString("VSTRING");
-    case OCTET_STRING:
-        return QString("OSTRING");
-    case UNICODE_STRING:
-        return QString("USTRING");
-    case TIME_OF_DAY:
-        return QString("DAYTIME");
-    case TIME_DIFFERENCE:
-        return QString("TIMEDIFF");
-    case DDOMAIN:
-        return QString("DOMAIN");
-    case INTEGER24:
-        return QString("INT24");
-    case REAL64:
-        return QString("REAL64");
-    case INTEGER40:
-        return QString("INT40");
-    case INTEGER48:
-        return QString("INT48");
-    case INTEGER56:
-        return QString("INT56");
-    case INTEGER64:
-        return QString("INT64");
-    case UNSIGNED24:
-        return QString("UINT24");
-    case UNSIGNED40:
-        return QString("UINT40");
-    case UNSIGNED48:
-        return QString("UINT48");
-    case UNSIGNED56:
-        return QString("UINT56");
-    case UNSIGNED64:
-        return QString("UINT64");
+        case INVALID:
+            return QString("INVALID");
+        case BOOLEAN:
+            return QString("BOOLEAN");
+        case INTEGER8:
+            return QString("INT8");
+        case INTEGER16:
+            return QString("INT16");
+        case INTEGER32:
+            return QString("INT32");
+        case UNSIGNED8:
+            return QString("UINT8");
+        case UNSIGNED16:
+            return QString("UINT16");
+        case UNSIGNED32:
+            return QString("UINT32");
+        case REAL32:
+            return QString("REAL32");
+        case VISIBLE_STRING:
+            return QString("VSTRING");
+        case OCTET_STRING:
+            return QString("OSTRING");
+        case UNICODE_STRING:
+            return QString("USTRING");
+        case TIME_OF_DAY:
+            return QString("DAYTIME");
+        case TIME_DIFFERENCE:
+            return QString("TIMEDIFF");
+        case DDOMAIN:
+            return QString("DOMAIN");
+        case INTEGER24:
+            return QString("INT24");
+        case REAL64:
+            return QString("REAL64");
+        case INTEGER40:
+            return QString("INT40");
+        case INTEGER48:
+            return QString("INT48");
+        case INTEGER56:
+            return QString("INT56");
+        case INTEGER64:
+            return QString("INT64");
+        case UNSIGNED24:
+            return QString("UINT24");
+        case UNSIGNED40:
+            return QString("UINT40");
+        case UNSIGNED48:
+            return QString("UINT48");
+        case UNSIGNED56:
+            return QString("UINT56");
+        case UNSIGNED64:
+            return QString("UINT64");
     }
     return QString();
 }
@@ -306,57 +306,57 @@ int SubIndex::length() const
 {
     switch (_dataType)
     {
-    case SubIndex::INVALID:
-        return 0;
+        case SubIndex::INVALID:
+            return 0;
 
-    case SubIndex::VISIBLE_STRING:
-    case SubIndex::OCTET_STRING:
-    case SubIndex::UNICODE_STRING:
-        break;
+        case SubIndex::VISIBLE_STRING:
+        case SubIndex::OCTET_STRING:
+        case SubIndex::UNICODE_STRING:
+            break;
 
-    case SubIndex::TIME_OF_DAY:
-        break;
+        case SubIndex::TIME_OF_DAY:
+            break;
 
-    case SubIndex::TIME_DIFFERENCE:
-        break;
+        case SubIndex::TIME_DIFFERENCE:
+            break;
 
-    case SubIndex::DDOMAIN:
-        break;
+        case SubIndex::DDOMAIN:
+            break;
 
-    case SubIndex::BOOLEAN:
-    case SubIndex::UNSIGNED8:
-    case SubIndex::INTEGER8:
-        return 1;
+        case SubIndex::BOOLEAN:
+        case SubIndex::UNSIGNED8:
+        case SubIndex::INTEGER8:
+            return 1;
 
-    case SubIndex::UNSIGNED16:
-    case SubIndex::INTEGER16:
-        return 2;
+        case SubIndex::UNSIGNED16:
+        case SubIndex::INTEGER16:
+            return 2;
 
-    case SubIndex::UNSIGNED24:
-    case SubIndex::INTEGER24:
-        return 3;
+        case SubIndex::UNSIGNED24:
+        case SubIndex::INTEGER24:
+            return 3;
 
-    case SubIndex::UNSIGNED32:
-    case SubIndex::INTEGER32:
-    case SubIndex::REAL32:
-        return 4;
+        case SubIndex::UNSIGNED32:
+        case SubIndex::INTEGER32:
+        case SubIndex::REAL32:
+            return 4;
 
-    case SubIndex::UNSIGNED40:
-    case SubIndex::INTEGER40:
-        return 5;
+        case SubIndex::UNSIGNED40:
+        case SubIndex::INTEGER40:
+            return 5;
 
-    case SubIndex::UNSIGNED48:
-    case SubIndex::INTEGER48:
-        return 6;
+        case SubIndex::UNSIGNED48:
+        case SubIndex::INTEGER48:
+            return 6;
 
-    case SubIndex::UNSIGNED56:
-    case SubIndex::INTEGER56:
-        return 7;
+        case SubIndex::UNSIGNED56:
+        case SubIndex::INTEGER56:
+            return 7;
 
-    case SubIndex::UNSIGNED64:
-    case SubIndex::INTEGER64:
-    case SubIndex::REAL64:
-        return 8;
+        case SubIndex::UNSIGNED64:
+        case SubIndex::INTEGER64:
+        case SubIndex::REAL64:
+            return 8;
     }
     return 0;
 }

@@ -32,7 +32,6 @@ HEADERS += \
     $$PWD/parser/devicedescriptionparser.h \
     $$PWD/parser/edsparser.h \
     $$PWD/db/oddb.h \
-    $$PWD/db/odindexdb.h \
     $$PWD/utility/profileduplicate.h \
     $$PWD/utility/configurationapply.h \
     $$PWD/utility/odmerger.h
@@ -58,7 +57,6 @@ SOURCES += \
     $$PWD/parser/devicedescriptionparser.cpp \
     $$PWD/parser/edsparser.cpp \
     $$PWD/db/oddb.cpp \
-    $$PWD/db/odindexdb.cpp \
     $$PWD/utility/profileduplicate.cpp \
     $$PWD/utility/configurationapply.cpp \
     $$PWD/utility/odmerger.cpp

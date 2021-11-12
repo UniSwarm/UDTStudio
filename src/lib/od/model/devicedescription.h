@@ -40,4 +40,4 @@ private:
     QMap<QString, QString> _deviceInfos;
 };
 
-#endif // DEVICEDESCRIPTION_H
+#endif  // DEVICEDESCRIPTION_H

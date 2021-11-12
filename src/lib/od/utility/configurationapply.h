@@ -35,4 +35,4 @@ private:
     QVariant readData(SubIndex::DataType dataType, QString stringValue) const;
 };
 
-#endif // CONFIGURATIONAPPLY_H
+#endif  // CONFIGURATIONAPPLY_H

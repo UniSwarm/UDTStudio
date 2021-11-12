@@ -184,17 +184,17 @@ void DeviceIniWriter::writeListIndex(const QList<Index *> indexes) const
     {
         switch (index->objectType())
         {
-        case Index::Object::VAR:
-            writeIndex(index);
-            break;
+            case Index::Object::VAR:
+                writeIndex(index);
+                break;
 
-        case Index::Object::RECORD:
-            writeRecord(index);
-            break;
+            case Index::Object::RECORD:
+                writeRecord(index);
+                break;
 
-        case Index::Object::ARRAY:
-            writeArray(index);
-            break;
+            case Index::Object::ARRAY:
+                writeArray(index);
+                break;
         }
     }
 }
@@ -305,7 +305,12 @@ void DeviceIniWriter::writeStringMap(const QMap<QString, QString> &map) const
     QCollator collator;
     collator.setNumericMode(true);
 
-    std::sort(keys.begin(), keys.end(), [&collator](const QString &file1, const QString &file2) { return collator.compare(file1, file2) < 0; });
+    std::sort(keys.begin(),
+              keys.end(),
+              [&collator](const QString &file1, const QString &file2)
+              {
+                  return collator.compare(file1, file2) < 0;
+              });
 
     for (const QString &key : qAsConst(keys))
     {
@@ -325,16 +330,16 @@ QString DeviceIniWriter::valueToString(int value, int base, int width) const
 {
     switch (base)
     {
-    case 10:
-        return QString::number(value);
+        case 10:
+            return QString::number(value);
 
-    case 16:
-        QString v = QString::number(value, base).rightJustified(width, '0').toUpper();
-        if (width > 0)
-        {
-            v = v.right(width);
-        }
-        return "0x" + v;
+        case 16:
+            QString v = QString::number(value, base).rightJustified(width, '0').toUpper();
+            if (width > 0)
+            {
+                v = v.right(width);
+            }
+            return "0x" + v;
     }
 
     return QString("");
@@ -349,26 +354,26 @@ QString DeviceIniWriter::accessToString(int access) const
 {
     switch (access)
     {
-    case SubIndex::READ:
-    case SubIndex::READ + SubIndex::TPDO:
-        return QString("ro");
+        case SubIndex::READ:
+        case SubIndex::READ + SubIndex::TPDO:
+            return QString("ro");
 
-    case SubIndex::READ + SubIndex::CONST:
-        return QString("const");
+        case SubIndex::READ + SubIndex::CONST:
+            return QString("const");
 
-    case SubIndex::WRITE:
-    case SubIndex::WRITE + SubIndex::RPDO:
-        return QString("ro");
+        case SubIndex::WRITE:
+        case SubIndex::WRITE + SubIndex::RPDO:
+            return QString("ro");
 
-    case SubIndex::READ + SubIndex::WRITE:
-    case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO + SubIndex::RPDO:
-        return QString("rw");
+        case SubIndex::READ + SubIndex::WRITE:
+        case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO + SubIndex::RPDO:
+            return QString("rw");
 
-    case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO:
-        return QString("rwr");
+        case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO:
+            return QString("rwr");
 
-    case SubIndex::READ + SubIndex::WRITE + SubIndex::RPDO:
-        return QString("rww");
+        case SubIndex::READ + SubIndex::WRITE + SubIndex::RPDO:
+            return QString("rww");
     }
 
     return "";
