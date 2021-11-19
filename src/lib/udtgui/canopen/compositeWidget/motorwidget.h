@@ -74,7 +74,7 @@ protected:
     // Motor Status
     IndexLabel *_hallRawValueLabel;
     IndexLabel *_hallPhaseLabel;
-    IndexLabel *_bridgePweredPhaseLabel;
+    IndexLabel *_electricalAngleLabel;
     IndexLabel *_bridgeCommandLabel;
     IndexLabel *_bridgeTemp1Label;
     IndexLabel *_bridgeTemp2Label;
