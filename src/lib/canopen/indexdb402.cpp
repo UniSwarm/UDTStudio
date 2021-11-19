@@ -355,14 +355,16 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         case OD_MS_DRIVER_TEMPERATURE_CONFIG_PROTECTION_SCHMITT_TRIGGERS_HIGH:
             return NodeObjectId(static_cast<quint16>(0x2810), 0x2);
 
+        // ax_Motion_status
         case OD_MS_MOTION_STATUS_ERROR:
-            return {static_cast<quint16>(0x4000), 0x1};
+            return {static_cast<quint16>(0x4000 + axisDecal), 0x1};
 
-        case OD_MS_MOTOR_STATUS_HALL_RAW_VALUE:
+        // ax_Motor_status
+        case OD_MS_MOTOR_STATUS_TORQUE:
             return {static_cast<quint16>((0x4006 + axisDecal)), 0x1};
-        case OD_MS_MOTOR_STATUS_HALL_PHASE:
+        case OD_MS_MOTOR_STATUS_VELOCITY:
             return {static_cast<quint16>((0x4006 + axisDecal)), 0x2};
-        case OD_MS_MOTOR_STATUS_POWERED_PHASE:
+        case OD_MS_MOTOR_STATUS_POSITION:
             return {static_cast<quint16>((0x4006 + axisDecal)), 0x3};
         case OD_MS_MOTOR_STATUS_COMMAND:
             return {static_cast<quint16>((0x4006 + axisDecal)), 0x4};
@@ -371,23 +373,40 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         case OD_MS_MOTOR_STATUS_TEMP:
             return {static_cast<quint16>((0x4006 + axisDecal)), 0x6};
 
-        case OD_MS_MOTOR_CONF_TYPE:
+        // ax_Motor_config
+        case OD_MS_MOTOR_CONFIG_TYPE:
             return {static_cast<quint16>((0x4007 + axisDecal)), 0x1};
-        case OD_MS_MOTOR_CONF_PEAK_CURRENT:
+        case OD_MS_MOTOR_CONFIG_PEAK_CURRENT:
             return {static_cast<quint16>((0x4007 + axisDecal)), 0x2};
-        case OD_MS_MOTOR_CONF_POLE_PAIR:
+        case OD_MS_MOTOR_CONFIG_BURST_CURRENT:
             return {static_cast<quint16>((0x4007 + axisDecal)), 0x3};
-        case OD_MS_MOTOR_CONF_MAX_VELOCITY:
+        case OD_MS_MOTOR_CONFIG_BURST_DURATION:
             return {static_cast<quint16>((0x4007 + axisDecal)), 0x4};
-        case OD_MS_MOTOR_CONF_VELOCITY_CONSTANT:
+        case OD_MS_MOTOR_CONFIG_SUSTAINED_CURRENT:
             return {static_cast<quint16>((0x4007 + axisDecal)), 0x5};
-        case OD_MS_MOTOR_CONF_CURRENT_CONSTANT:
+        case OD_MS_MOTOR_CONFIG_CURRENT_CONSTANT:
             return {static_cast<quint16>((0x4007 + axisDecal)), 0x6};
-        case OD_MS_MOTOR_CONF_CONFIG_BIT:
+        case OD_MS_MOTOR_CONFIG_MAX_VELOCITY:
             return {static_cast<quint16>((0x4007 + axisDecal)), 0x7};
+        case OD_MS_MOTOR_CONFIG_VELOCITY_CONSTANT:
+            return {static_cast<quint16>((0x4007 + axisDecal)), 0x8};
+        case OD_MS_MOTOR_CONFIG_FLAGS:
+            return {static_cast<quint16>((0x4007 + axisDecal)), 0x9};
+
+        // ax_BLDC_status
+        case OD_MS_BLDC_STATUS_HALL_RAW:
+            return {static_cast<quint16>((0x4008 + axisDecal)), 0x1};
+        case OD_MS_BLDC_STATUS_HALL_PHASE:
+            return {static_cast<quint16>((0x4008 + axisDecal)), 0x2};
+        case OD_MS_BLDC_STATUS_ELECTRICAL_ANGLE:
+            return {static_cast<quint16>((0x4008 + axisDecal)), 0x3};
+
+        // ax_BLDC_config
+        case OD_MS_BLDC_CONFIG_POLE_PAIR:
+            return {static_cast<quint16>((0x4009 + axisDecal)), 0x1};
 
         // RANGE CONTROL LOOP TORQUE
-        // a1_Torque_status_PID
+        // ax_NNN_status_PID
         case OD_PID_INPUT:
             return {static_cast<quint16>((0x4020 + axisDecal + modeDecal)), 0x1};
         case OD_PID_ERROR:
@@ -396,7 +415,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
             return {static_cast<quint16>((0x4020 + axisDecal + modeDecal)), 0x3};
         case OD_PID_OUTPUT:
             return {static_cast<quint16>((0x4020 + axisDecal + modeDecal)), 0x4};
-        // a1_Torque_config_PID
+
+        // ax_NNN_config_PID
         case OD_PID_P:
             return {static_cast<quint16>((0x4021 + axisDecal + modeDecal)), 0x1};
         case OD_PID_I:
@@ -414,7 +434,7 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         case OD_PID_CONFIGBIT:
             return {static_cast<quint16>((0x4021 + axisDecal + modeDecal)), 0x8};
 
-        // a1_Torque_sensor_status
+        // ax_NNN_sensor_status
         case OD_SENSOR_STATUS_RAW_DATA:
             return {static_cast<quint16>((0x4022 + axisDecal + modeDecal)), 0x1};
         case OD_SENSOR_STATUS_FLAGS:
@@ -422,7 +442,7 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         case OD_SENSOR_STATUS_VALUE:
             return {static_cast<quint16>((0x4022 + axisDecal + modeDecal)), 0x3};
 
-        // a1_Torque_sensor_config
+        // ax_NNN_sensor_config
         case OD_SENSOR_SELECT:
             return {static_cast<quint16>((0x4023 + axisDecal + modeDecal)), 0x1};
         case OD_SENSOR_FREQUENCY_DIVIDER:
@@ -438,7 +458,7 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         case OD_SENSOR_PARAM_3:
             return {static_cast<quint16>((0x4023 + axisDecal + modeDecal)), 0x7};
 
-        // a1_Torque_sensor_filter
+        // ax_NNN_sensor_filter
         case OD_SENSOR_FILTER_SELECT:
             return {static_cast<quint16>((0x4024 + axisDecal + modeDecal)), 0x1};
         case OD_SENSOR_FILTER_PARAM_0:
@@ -450,7 +470,7 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         case OD_SENSOR_FILTER_PARAM_3:
             return {static_cast<quint16>((0x4024 + axisDecal + modeDecal)), 0x5};
 
-        // a1_Torque_sensor_conditioning
+        // ax_NNN_sensor_conditioning
         case OD_SENSOR_PRE_OFFSET:
             return {static_cast<quint16>((0x4025 + axisDecal + modeDecal)), 0x1};
         case OD_SENSOR_SCALE:

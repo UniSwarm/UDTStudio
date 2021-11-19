@@ -67,15 +67,15 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
         connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &MotorWidget::stateChanged);
     }
 
-    _motorTypeComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_TYPE, _axis));
-    _peakCurrentSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_PEAK_CURRENT, _axis));
-    _polePairSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_POLE_PAIR, _axis));
-    _maxVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_MAX_VELOCITY, _axis));
-    _velocityConstantSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_VELOCITY_CONSTANT, _axis));
-    _currentConstantSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_CURRENT_CONSTANT, _axis));
+    _motorTypeComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_TYPE, _axis));
+    _peakCurrentSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_PEAK_CURRENT, _axis));
+    _polePairSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_CONFIG_POLE_PAIR, _axis));
+    _maxVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_MAX_VELOCITY, _axis));
+    _velocityConstantSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_VELOCITY_CONSTANT, _axis));
+    _currentConstantSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_CURRENT_CONSTANT, _axis));
     _brakeBypassCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_DIGITAL_OUTPUTS_PHYSICAL_OUTPUTS, _axis));
-    _reverseMotorPolarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_CONFIG_BIT, _axis));
-    _reverseHallPolarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONF_CONFIG_BIT, _axis));
+    _reverseMotorPolarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_FLAGS, _axis));
+    _reverseHallPolarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_FLAGS, _axis));
     _motorTypeComboBox->setNode(node);
     _peakCurrentSpinBox->setNode(node);
     _polePairSpinBox->setNode(node);
@@ -86,15 +86,15 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _reverseMotorPolarityCheckBox->setNode(node);
     _reverseHallPolarityCheckBox->setNode(node);
 
-    _hallRawValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_HALL_RAW_VALUE, _axis));
-    _hallPhaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_HALL_PHASE, _axis));
-    _bridgePweredPhaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_POWERED_PHASE, _axis));
+    _hallRawValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_STATUS_HALL_RAW, _axis));
+    _hallPhaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_STATUS_HALL_PHASE, _axis));
+    _electricalAngleLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_STATUS_ELECTRICAL_ANGLE, _axis));
     _bridgeCommandLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_COMMAND, _axis));
     _bridgeTemp1Label->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_DRIVER_TEMPERATURE, _axis, 0));
     _bridgeTemp2Label->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_DRIVER_TEMPERATURE, _axis, 1));
     _hallRawValueLabel->setNode(node);
     _hallPhaseLabel->setNode(node);
-    _bridgePweredPhaseLabel->setNode(node);
+    _electricalAngleLabel->setNode(node);
     _bridgeCommandLabel->setNode(node);
     _bridgeTemp1Label->setNode(node);
     _bridgeTemp2Label->setNode(node);
@@ -255,9 +255,9 @@ QGroupBox *MotorWidget::motorStatusWidgets()
     statusLayout->addRow(tr("&Hall phase:"), _hallPhaseLabel);
     _indexWidgets.append(_hallPhaseLabel);
 
-    _bridgePweredPhaseLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Powered phase:"), _bridgePweredPhaseLabel);
-    _indexWidgets.append(_bridgePweredPhaseLabel);
+    _electricalAngleLabel = new IndexLabel();
+    statusLayout->addRow(tr("&Electrical angle:"), _electricalAngleLabel);
+    _indexWidgets.append(_electricalAngleLabel);
 
     _bridgeCommandLabel = new IndexLabel();
     statusLayout->addRow(tr("&Command:"), _bridgeCommandLabel);

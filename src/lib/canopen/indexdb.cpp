@@ -188,6 +188,13 @@ bool IndexDb::isQ1516(const NodeObjectId &objId, quint16 profileNumber)
                 return true;
             }
         }
+        if ((objId.index() & (quint16)0xF1FF) == 0x4007)
+        {
+            if (objId.subIndex() == 6 || objId.subIndex() == 8)
+            {
+                return true;
+            }
+        }
         if ((objId.index() & (quint16)0xF1FF) == 0x4020 || (objId.index() & (quint16)0xF1FF) == 0x4040 || (objId.index() & (quint16)0xF1FF) == 0x4060)
         {
             if (objId.subIndex() >= 1 && objId.subIndex() <= 4)
