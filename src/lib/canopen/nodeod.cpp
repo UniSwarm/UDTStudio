@@ -66,8 +66,11 @@ void NodeOd::resetAllObjects()
 
 bool NodeOd::loadEds(const QString &fileName)
 {
+    QString mfileName(fileName);
+    mfileName = QFileInfo(mfileName).canonicalFilePath();
+
     EdsParser parser;
-    DeviceDescription *deviceDescription = parser.parse(fileName);
+    DeviceDescription *deviceDescription = parser.parse(mfileName);
     if (!deviceDescription)
     {
         return false;
@@ -75,7 +78,7 @@ bool NodeOd::loadEds(const QString &fileName)
     _edsFileInfos = deviceDescription->fileInfos();
 
     DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, _node->nodeId());
-    _edsFileName = fileName;
+    _edsFileName = mfileName;
 
     for (Index *odIndex : deviceConfiguration->indexes())
     {
