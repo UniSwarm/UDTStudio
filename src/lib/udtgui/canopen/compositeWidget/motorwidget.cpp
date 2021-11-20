@@ -131,29 +131,33 @@ void MotorWidget::readAllObject()
 
 void MotorWidget::createWidgets()
 {
-    QWidget *motionSensorWidget = new QWidget(this);
-    QVBoxLayout *actionLayout = new QVBoxLayout(motionSensorWidget);
+    QWidget *motorWidget = new QWidget(this);
+    QVBoxLayout *actionLayout = new QVBoxLayout(motorWidget);
     actionLayout->setContentsMargins(0, 0, 0, 0);
     actionLayout->setSpacing(0);
 
-    actionLayout->addWidget(informationWidgets());
-    _motorConfigGroupBox = motorConfigWidgets();
-    actionLayout->addWidget(_motorConfigGroupBox);
-    actionLayout->addWidget(motorStatusWidgets());
+    actionLayout->addWidget(createInformationWidgets());
 
-    QScrollArea *motionSensorScrollArea = new QScrollArea;
-    motionSensorScrollArea->setWidget(motionSensorWidget);
-    motionSensorScrollArea->setWidgetResizable(true);
+    _motorConfigGroupBox = createMotorConfigWidgets();
+    actionLayout->addWidget(_motorConfigGroupBox);
+    actionLayout->addWidget(createMotorStatusWidgets());
+    _bldcConfigGroupBox = createBldcConfigWidgets();
+    actionLayout->addWidget(_bldcConfigGroupBox);
+    actionLayout->addWidget(createBldcStatusWidgets());
+
+    QScrollArea *motorScrollArea = new QScrollArea;
+    motorScrollArea->setWidget(motorWidget);
+    motorScrollArea->setWidgetResizable(true);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->setContentsMargins(2, 2, 2, 2);
     vBoxLayout->setSpacing(0);
-    vBoxLayout->addWidget(toolBarWidgets());
-    vBoxLayout->addWidget(motionSensorScrollArea);
+    vBoxLayout->addWidget(createToolBarWidgets());
+    vBoxLayout->addWidget(motorScrollArea);
     setLayout(vBoxLayout);
 }
 
-QToolBar *MotorWidget::toolBarWidgets()
+QToolBar *MotorWidget::createToolBarWidgets()
 {
     // toolbar
     QToolBar *toolBar = new QToolBar(tr("Data logger commands"));
@@ -168,7 +172,7 @@ QToolBar *MotorWidget::toolBarWidgets()
     return toolBar;
 }
 
-QGroupBox *MotorWidget::informationWidgets()
+QGroupBox *MotorWidget::createInformationWidgets()
 {
     QGroupBox *informationGroupBox = new QGroupBox(tr("Information"));
     informationGroupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -186,9 +190,9 @@ QGroupBox *MotorWidget::informationWidgets()
     return informationGroupBox;
 }
 
-QGroupBox *MotorWidget::motorConfigWidgets()
+QGroupBox *MotorWidget::createMotorConfigWidgets()
 {
-    QGroupBox *_motorConfigGroupBox = new QGroupBox(tr("Motor config"));
+    QGroupBox *motorConfigGroupBox = new QGroupBox(tr("Motor config"));
     QFormLayout *configLayout = new QFormLayout();
 
     _motorTypeComboBox = new IndexComboBox();
@@ -203,28 +207,28 @@ QGroupBox *MotorWidget::motorConfigWidgets()
     _indexWidgets.append(_motorTypeComboBox);
 
     _peakCurrentSpinBox = new IndexSpinBox();
+    _peakCurrentSpinBox->setUnit(" A");
     configLayout->addRow(tr("P&eak current:"), _peakCurrentSpinBox);
     _indexWidgets.append(_peakCurrentSpinBox);
 
-    _polePairSpinBox = new IndexSpinBox();
-    configLayout->addRow(tr("P&ole pair:"), _polePairSpinBox);
-    _indexWidgets.append(_polePairSpinBox);
-
     _maxVelocitySpinBox = new IndexSpinBox();
+    _maxVelocitySpinBox->setUnit(" rpm");
     configLayout->addRow(tr("M&ax velocity:"), _maxVelocitySpinBox);
     _indexWidgets.append(_maxVelocitySpinBox);
 
     _velocityConstantSpinBox = new IndexSpinBox();
+    _velocityConstantSpinBox->setUnit(" V/rpm");
     configLayout->addRow(tr("Ve&locity constant:"), _velocityConstantSpinBox);
     _indexWidgets.append(_velocityConstantSpinBox);
 
     _currentConstantSpinBox = new IndexSpinBox();
+    _currentConstantSpinBox->setUnit(" Nm/A");
     configLayout->addRow(tr("C&urrent constant:"), _currentConstantSpinBox);
     _indexWidgets.append(_currentConstantSpinBox);
 
     _brakeBypassCheckBox = new IndexCheckBox();
     _brakeBypassCheckBox->setBitMask(1);
-    configLayout->addRow(tr("&Break:"), _brakeBypassCheckBox);
+    configLayout->addRow(tr("&Break overwrite:"), _brakeBypassCheckBox);
     _indexWidgets.append(_brakeBypassCheckBox);
 
     _reverseMotorPolarityCheckBox = new IndexCheckBox();
@@ -232,32 +236,14 @@ QGroupBox *MotorWidget::motorConfigWidgets()
     configLayout->addRow(tr("&Reverse motor polarity:"), _reverseMotorPolarityCheckBox);
     _indexWidgets.append(_reverseMotorPolarityCheckBox);
 
-    _reverseHallPolarityCheckBox = new IndexCheckBox();
-    _reverseHallPolarityCheckBox->setBitMask(2);
-    configLayout->addRow(tr("&Reverse hall polarity:"), _reverseHallPolarityCheckBox);
-    _indexWidgets.append(_reverseHallPolarityCheckBox);
-
-    _motorConfigGroupBox->setLayout(configLayout);
-
-    return _motorConfigGroupBox;
+    motorConfigGroupBox->setLayout(configLayout);
+    return motorConfigGroupBox;
 }
 
-QGroupBox *MotorWidget::motorStatusWidgets()
+QGroupBox *MotorWidget::createMotorStatusWidgets()
 {
     QGroupBox *statusGroupBox = new QGroupBox(tr("Motor status"));
     QFormLayout *statusLayout = new QFormLayout();
-
-    _hallRawValueLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Hall raw:"), _hallRawValueLabel);
-    _indexWidgets.append(_hallRawValueLabel);
-
-    _hallPhaseLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Hall phase:"), _hallPhaseLabel);
-    _indexWidgets.append(_hallPhaseLabel);
-
-    _electricalAngleLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Electrical angle:"), _electricalAngleLabel);
-    _indexWidgets.append(_electricalAngleLabel);
 
     _bridgeCommandLabel = new IndexLabel();
     statusLayout->addRow(tr("&Command:"), _bridgeCommandLabel);
@@ -274,6 +260,46 @@ QGroupBox *MotorWidget::motorStatusWidgets()
     _bridgeTemp2Label->setScale(1.0 / 10.0);
     _bridgeTemp2Label->setUnit(" °C");
     _indexWidgets.append(_bridgeTemp2Label);
+
+    statusGroupBox->setLayout(statusLayout);
+    return statusGroupBox;
+}
+
+QGroupBox *MotorWidget::createBldcConfigWidgets()
+{
+    QGroupBox *configGroupBox = new QGroupBox(tr("BLDC config"));
+    QFormLayout *configLayout = new QFormLayout();
+
+    _polePairSpinBox = new IndexSpinBox();
+    configLayout->addRow(tr("P&ole pair:"), _polePairSpinBox);
+    _indexWidgets.append(_polePairSpinBox);
+
+    _reverseHallPolarityCheckBox = new IndexCheckBox();
+    _reverseHallPolarityCheckBox->setBitMask(2);
+    configLayout->addRow(tr("&Reverse hall polarity:"), _reverseHallPolarityCheckBox);
+    _indexWidgets.append(_reverseHallPolarityCheckBox);
+
+    configGroupBox->setLayout(configLayout);
+    return configGroupBox;
+}
+
+QGroupBox *MotorWidget::createBldcStatusWidgets()
+{
+    QGroupBox *statusGroupBox = new QGroupBox(tr("BLDC status"));
+    QFormLayout *statusLayout = new QFormLayout();
+
+    _hallRawValueLabel = new IndexLabel();
+    statusLayout->addRow(tr("&Hall raw:"), _hallRawValueLabel);
+    _indexWidgets.append(_hallRawValueLabel);
+
+    _hallPhaseLabel = new IndexLabel();
+    statusLayout->addRow(tr("&Hall phase:"), _hallPhaseLabel);
+    _indexWidgets.append(_hallPhaseLabel);
+
+    _electricalAngleLabel = new IndexLabel();
+    statusLayout->addRow(tr("&Electrical angle:"), _electricalAngleLabel);
+    _electricalAngleLabel->setUnit("°");
+    _indexWidgets.append(_electricalAngleLabel);
 
     statusGroupBox->setLayout(statusLayout);
     return statusGroupBox;

@@ -60,10 +60,10 @@ protected:
     QPushButton *_enableButton;
 
     // Motor Config
+    QGroupBox *createMotorConfigWidgets();
     QGroupBox *_motorConfigGroupBox;
     IndexComboBox *_motorTypeComboBox;
     IndexSpinBox *_peakCurrentSpinBox;
-    IndexSpinBox *_polePairSpinBox;
     IndexSpinBox *_maxVelocitySpinBox;
     IndexSpinBox *_velocityConstantSpinBox;
     IndexSpinBox *_currentConstantSpinBox;
@@ -72,12 +72,21 @@ protected:
     IndexCheckBox *_reverseHallPolarityCheckBox;
 
     // Motor Status
-    IndexLabel *_hallRawValueLabel;
-    IndexLabel *_hallPhaseLabel;
-    IndexLabel *_electricalAngleLabel;
+    QGroupBox *createMotorStatusWidgets();
     IndexLabel *_bridgeCommandLabel;
     IndexLabel *_bridgeTemp1Label;
     IndexLabel *_bridgeTemp2Label;
+
+    // BLDC Config
+    QGroupBox *createBldcConfigWidgets();
+    QGroupBox *_bldcConfigGroupBox;
+    IndexSpinBox *_polePairSpinBox;
+
+    // BLDC Status
+    QGroupBox *createBldcStatusWidgets();
+    IndexLabel *_hallRawValueLabel;
+    IndexLabel *_hallPhaseLabel;
+    IndexLabel *_electricalAngleLabel;
 
     void statusNodeChanged(Node::Status status);
     void stateChanged();
@@ -85,10 +94,8 @@ protected:
 
     // Creation widgets
     void createWidgets();
-    QToolBar *toolBarWidgets();
-    QGroupBox *informationWidgets();
-    QGroupBox *motorConfigWidgets();
-    QGroupBox *motorStatusWidgets();
+    QToolBar *createToolBarWidgets();
+    QGroupBox *createInformationWidgets();
 
     void goEnableButton();
 
