@@ -64,6 +64,10 @@ protected:
     QGroupBox *_motorConfigGroupBox;
     IndexComboBox *_motorTypeComboBox;
     IndexSpinBox *_peakCurrentSpinBox;
+    IndexSpinBox *_burstCurrentSpinBox;
+    IndexSpinBox *_burstDurationSpinBox;
+    IndexSpinBox *_sustainedCurrentSpinBox;
+
     IndexSpinBox *_maxVelocitySpinBox;
     IndexSpinBox *_velocityConstantSpinBox;
     IndexSpinBox *_currentConstantSpinBox;
@@ -74,6 +78,10 @@ protected:
     // Motor Status
     QGroupBox *createMotorStatusWidgets();
     IndexLabel *_bridgeCommandLabel;
+    IndexLabel *_motorCurrentLabel;
+    IndexLabel *_motorTorqueLabel;
+    IndexLabel *_motorVelocityLabel;
+    IndexLabel *_motorPositionLabel;
     IndexLabel *_bridgeTemp1Label;
     IndexLabel *_bridgeTemp2Label;
 

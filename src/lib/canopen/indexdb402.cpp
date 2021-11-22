@@ -360,18 +360,20 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
             return {static_cast<quint16>(0x4000 + axisDecal), 0x1};
 
         // ax_Motor_status
-        case OD_MS_MOTOR_STATUS_TORQUE:
-            return {static_cast<quint16>((0x4006 + axisDecal)), 0x1};
-        case OD_MS_MOTOR_STATUS_VELOCITY:
-            return {static_cast<quint16>((0x4006 + axisDecal)), 0x2};
-        case OD_MS_MOTOR_STATUS_POSITION:
-            return {static_cast<quint16>((0x4006 + axisDecal)), 0x3};
         case OD_MS_MOTOR_STATUS_COMMAND:
+            return {static_cast<quint16>((0x4006 + axisDecal)), 0x1};
+        case OD_MS_MOTOR_STATUS_CURRENT:
+            return {static_cast<quint16>((0x4006 + axisDecal)), 0x2};
+        case OD_MS_MOTOR_STATUS_TORQUE:
+            return {static_cast<quint16>((0x4006 + axisDecal)), 0x3};
+        case OD_MS_MOTOR_STATUS_VELOCITY:
             return {static_cast<quint16>((0x4006 + axisDecal)), 0x4};
-        case OD_MS_MOTOR_STATUS_ERROR:
+        case OD_MS_MOTOR_STATUS_POSITION:
             return {static_cast<quint16>((0x4006 + axisDecal)), 0x5};
-        case OD_MS_MOTOR_STATUS_TEMP:
+        case OD_MS_MOTOR_STATUS_ERROR:
             return {static_cast<quint16>((0x4006 + axisDecal)), 0x6};
+        case OD_MS_MOTOR_STATUS_TEMP:
+            return {static_cast<quint16>((0x4006 + axisDecal)), 0x7};
 
         // ax_Motor_config
         case OD_MS_MOTOR_CONFIG_TYPE:
