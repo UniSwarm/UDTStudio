@@ -27,6 +27,7 @@
 
 #include <QDebug>
 #include <QFile>
+#include <QFileInfo>
 
 NodeOd::NodeOd(Node *node)
     : _node(node)
