@@ -305,6 +305,7 @@ QVariant DeviceIniParser::readData(bool *nodeId, bool *isHexValue) const
 
         case SubIndex::VISIBLE_STRING:
         case SubIndex::OCTET_STRING:
+        case SubIndex::UNICODE_STRING:
             return QVariant(stringValue);
     }
 
