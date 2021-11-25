@@ -168,7 +168,7 @@ QString AbstractIndexWidget::pstringValue(const QVariant &value, const AbstractI
         case AbstractIndexWidget::DisplayDirectValue:
             if (value.userType() != QMetaType::QString && value.userType() != QMetaType::QByteArray)
             {
-                str = QString::number(value.toInt());
+                str = QString::number(value.toDouble());
             }
             else
             {
