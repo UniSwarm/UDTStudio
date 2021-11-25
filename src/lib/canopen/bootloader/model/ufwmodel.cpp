@@ -23,6 +23,10 @@ UfwModel::UfwModel()
     _device = 0;
 }
 
+UfwModel::~UfwModel()
+{
+}
+
 uint16_t UfwModel::deviceType() const
 {
     return _device;

@@ -29,6 +29,7 @@ class CANOPEN_EXPORT UfwModel
 {
 public:
     UfwModel();
+    ~UfwModel();
 
     struct Segment
     {
