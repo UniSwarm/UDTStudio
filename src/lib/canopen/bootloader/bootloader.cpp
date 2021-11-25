@@ -64,13 +64,13 @@ Bootloader::Bootloader(Node *node)
     registerObjId({0x2050, 3});
     registerObjId({0x1F51, 1});
 
+    _state = STATE_FREE;
     _statusProgram = NONE;
 }
 
 Bootloader::~Bootloader()
 {
     delete _ufwUpdate;
-    delete _ufwParser;
 }
 
 Node *Bootloader::node() const
@@ -354,13 +354,13 @@ void Bootloader::process()
 
 void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (_state == STATE_FREE)
+    {
+        return;
+    }
+
     if ((objId.index() == _programControlObjectId.index()) && objId.subIndex() == 1)
     {
-        if (_state == STATE_FREE)
-        {
-            return;
-        }
-
         if (flags == SDO::FlagsRequest::Read)
         {
             uint8_t program = static_cast<uint8_t>(_node->nodeOd()->value(_programControlObjectId).toUInt());
