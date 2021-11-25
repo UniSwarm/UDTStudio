@@ -136,6 +136,11 @@ void UfwUpdate::removeByte(QByteArray &prog)
 
 void UfwUpdate::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (_byteArrayList.isEmpty())
+    {
+        return;
+    }
+
     if (objId.index() == _programDataObjectId.index())
     {
         if ((flags & SDO::FlagsRequest::Error) == SDO::FlagsRequest::Error)
