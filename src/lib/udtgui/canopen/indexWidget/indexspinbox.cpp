@@ -87,17 +87,23 @@ QVariant IndexSpinBox::textEditValue() const
     bool ok = false;
     QVariant value;
 
+    QString textValue = text();
+    if (textValue.endsWith(_unit))
+    {
+        textValue.chop(_unit.length());
+    }
+
     switch (_hint)
     {
-        case AbstractIndexWidget::DisplayDirectValue:
         case AbstractIndexWidget::DisplayHexa:
-            value = QVariant(text().toInt(&ok, 0));
+            value = QVariant(textValue.toInt(&ok, 0));
             break;
 
+        case AbstractIndexWidget::DisplayDirectValue:
         case AbstractIndexWidget::DisplayQ15_16:
         case AbstractIndexWidget::DisplayQ1_15:
         case AbstractIndexWidget::DisplayFloat:
-            value = QVariant(text().toDouble(&ok));
+            value = QVariant(textValue.toDouble(&ok));
             break;
     }
 
