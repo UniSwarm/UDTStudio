@@ -18,6 +18,10 @@
 
 #include "indexcombobox.h"
 
+#include <QApplication>
+#include <QMainWindow>
+#include <QStatusBar>
+
 IndexComboBox::IndexComboBox(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
@@ -26,6 +30,13 @@ IndexComboBox::IndexComboBox(const NodeObjectId &objId)
             [=](int index)
             {
                 setInternalIndex(index);
+            });
+
+    connect(this,
+            QOverload<int>::of(&QComboBox::highlighted),
+            [=](int index)
+            {
+                displayStatus(itemData(index, Qt::StatusTipRole).toString());
             });
 }
 
@@ -75,4 +86,48 @@ void IndexComboBox::setInternalIndex(int index)
     {
         requestWriteValue(itemData(index));
     }
+}
+
+QMainWindow *IndexComboBox::getMainWindow() const
+{
+    for (QWidget *w : QApplication::topLevelWidgets())
+    {
+        if (QMainWindow *mainWindow = qobject_cast<QMainWindow *>(w))
+        {
+            return mainWindow;
+        }
+    }
+    return nullptr;
+}
+
+void IndexComboBox::displayStatus(const QString &message)
+{
+    QMainWindow *mainWindow = getMainWindow();
+    if (!mainWindow)
+    {
+        return;
+    }
+    mainWindow->statusBar()->showMessage(message);
+}
+
+void IndexComboBox::clearStatus()
+{
+    QMainWindow *mainWindow = getMainWindow();
+    if (!mainWindow)
+    {
+        return;
+    }
+    mainWindow->statusBar()->clearMessage();
+}
+
+void IndexComboBox::focusInEvent(QFocusEvent *event)
+{
+    QComboBox::focusInEvent(event);
+    displayStatus(itemData(currentIndex(), Qt::StatusTipRole).toString());
+}
+
+void IndexComboBox::focusOutEvent(QFocusEvent *event)
+{
+    QComboBox::focusOutEvent(event);
+    clearStatus();
 }

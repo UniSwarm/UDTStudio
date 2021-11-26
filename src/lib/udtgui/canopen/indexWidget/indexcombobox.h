@@ -22,8 +22,9 @@
 #include "../../udtgui_global.h"
 
 #include "abstractindexwidget.h"
-
 #include <QComboBox>
+
+class QMainWindow;
 
 class UDTGUI_EXPORT IndexComboBox : public QComboBox, public AbstractIndexWidget
 {
@@ -31,16 +32,24 @@ class UDTGUI_EXPORT IndexComboBox : public QComboBox, public AbstractIndexWidget
 public:
     IndexComboBox(const NodeObjectId &objId = NodeObjectId());
 
+protected:
+    void setInternalIndex(int index);
+    bool _internalUpdate;
+
+    QMainWindow *getMainWindow() const;
+    void displayStatus(const QString &message);
+    void clearStatus();
+
     // AbstractIndexWidget interface
 protected:
     void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
     bool isEditing() const override;
-
-    // AbstractIndexWidget interface
-protected:
     void updateObjId() override;
-    void setInternalIndex(int index);
-    bool _internalUpdate;
+
+    // QWidget interface
+protected:
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
 };
 
 #endif  // INDEXCOMBOBOX_H
