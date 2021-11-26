@@ -220,7 +220,7 @@ QGroupBox *MotorWidget::createMotorConfigWidgets()
     _motorTypeComboBox->insertSeparator(_motorTypeComboBox->count());
     _motorTypeComboBox->addItem(tr("DC motor"), QVariant(static_cast<uint16_t>(0x0101)));
     _motorTypeComboBox->insertSeparator(_motorTypeComboBox->count());
-    _motorTypeComboBox->addItem(tr("BLDC trapezoidal"), QVariant(static_cast<uint16_t>(0x0201)));
+    _motorTypeComboBox->addItem(tr("BLDC trapezoida with halll"), QVariant(static_cast<uint16_t>(0x0201)));
     _motorTypeComboBox->addItem(tr("BLDC sinusoidal with hall"), QVariant(static_cast<uint16_t>(0x0202)));
     _motorTypeComboBox->addItem(tr("BLDC sinusoidal with incremental encoder"), QVariant(static_cast<uint16_t>(0x0203)));
     configLayout->addRow(tr("&Motor type:"), _motorTypeComboBox);
@@ -232,7 +232,9 @@ QGroupBox *MotorWidget::createMotorConfigWidgets()
     configLayout->addRow(frame);
 
     _peakCurrentSpinBox = new IndexSpinBox();
+    _peakCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayFloat);
     _peakCurrentSpinBox->setUnit(" A");
+    _peakCurrentSpinBox->setScale(1.0 / 100);
     configLayout->addRow(tr("P&eak current:"), _peakCurrentSpinBox);
     _indexWidgets.append(_peakCurrentSpinBox);
 
@@ -240,7 +242,9 @@ QGroupBox *MotorWidget::createMotorConfigWidgets()
     burstCurrentLayout->setSpacing(0);
 
     _burstCurrentSpinBox = new IndexSpinBox();
+    _burstCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayFloat);
     _burstCurrentSpinBox->setUnit(" A");
+    _burstCurrentSpinBox->setScale(1.0 / 100);
     burstCurrentLayout->addWidget(_burstCurrentSpinBox);
     _indexWidgets.append(_burstCurrentSpinBox);
 
@@ -257,7 +261,9 @@ QGroupBox *MotorWidget::createMotorConfigWidgets()
     _indexWidgets.append(_burstDurationSpinBox);
 
     _sustainedCurrentSpinBox = new IndexSpinBox();
+    _sustainedCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayFloat);
     _sustainedCurrentSpinBox->setUnit(" A");
+    _sustainedCurrentSpinBox->setScale(1.0 / 100);
     configLayout->addRow(tr("Sustained current:"), _sustainedCurrentSpinBox);
     _indexWidgets.append(_sustainedCurrentSpinBox);
 
@@ -314,9 +320,10 @@ QGroupBox *MotorWidget::createMotorStatusWidgets()
     _indexWidgets.append(_bridgeCommandLabel);
 
     _motorCurrentLabel = new IndexLabel();
+    _motorCurrentLabel->setDisplayHint(AbstractIndexWidget::DisplayFloat);
     _motorCurrentLabel->setScale(1.0 / 100.0);
     _motorCurrentLabel->setUnit(" A");
-    statusLayout->addRow(tr("&Curent"), _motorCurrentLabel);
+    statusLayout->addRow(tr("&Current"), _motorCurrentLabel);
     _indexWidgets.append(_motorCurrentLabel);
 
     _motorTorqueLabel = new IndexLabel();
