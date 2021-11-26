@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
             QToolBar {border-bottom: none; border-radius: 4px;} \
             QSplitter::handle:horizontal {width: 2px;} \
             QSplitter::handle:vertical {height: 2px;} \
+            QGroupBox {padding: 4px 0px 0px 0px;} \
         ");
     }
     w.show();
