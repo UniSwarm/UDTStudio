@@ -214,13 +214,15 @@ QGroupBox *MotorWidget::createMotorConfigWidgets()
 {
     QGroupBox *motorConfigGroupBox = new QGroupBox(tr("Motor config"));
     QFormLayout *configLayout = new QFormLayout();
+    configLayout->setVerticalSpacing(3);
+    configLayout->setHorizontalSpacing(3);
 
     _motorTypeComboBox = new IndexComboBox();
     _motorTypeComboBox->addItem(tr("No motor"), QVariant(static_cast<uint16_t>(0x0000)));
     _motorTypeComboBox->insertSeparator(_motorTypeComboBox->count());
     _motorTypeComboBox->addItem(tr("DC motor"), QVariant(static_cast<uint16_t>(0x0101)));
     _motorTypeComboBox->insertSeparator(_motorTypeComboBox->count());
-    _motorTypeComboBox->addItem(tr("BLDC trapezoida with halll"), QVariant(static_cast<uint16_t>(0x0201)));
+    _motorTypeComboBox->addItem(tr("BLDC trapezoidal with hall"), QVariant(static_cast<uint16_t>(0x0201)));
     _motorTypeComboBox->addItem(tr("BLDC sinusoidal with hall"), QVariant(static_cast<uint16_t>(0x0202)));
     _motorTypeComboBox->addItem(tr("BLDC sinusoidal with incremental encoder"), QVariant(static_cast<uint16_t>(0x0203)));
     configLayout->addRow(tr("&Motor type:"), _motorTypeComboBox);
@@ -312,6 +314,8 @@ QGroupBox *MotorWidget::createMotorStatusWidgets()
 {
     QGroupBox *statusGroupBox = new QGroupBox(tr("Motor status"));
     QFormLayout *statusLayout = new QFormLayout();
+    statusLayout->setVerticalSpacing(3);
+    statusLayout->setHorizontalSpacing(3);
 
     _bridgeCommandLabel = new IndexLabel();
     statusLayout->addRow(tr("&Command duty cycle:"), _bridgeCommandLabel);
@@ -364,6 +368,8 @@ QGroupBox *MotorWidget::createBldcConfigWidgets()
 {
     QGroupBox *configGroupBox = new QGroupBox(tr("BLDC config"));
     QFormLayout *configLayout = new QFormLayout();
+    configLayout->setVerticalSpacing(3);
+    configLayout->setHorizontalSpacing(3);
 
     _polePairSpinBox = new IndexSpinBox();
     configLayout->addRow(tr("P&ole pair:"), _polePairSpinBox);
@@ -382,6 +388,8 @@ QGroupBox *MotorWidget::createBldcStatusWidgets()
 {
     QGroupBox *statusGroupBox = new QGroupBox(tr("BLDC status"));
     QFormLayout *statusLayout = new QFormLayout();
+    statusLayout->setVerticalSpacing(3);
+    statusLayout->setHorizontalSpacing(3);
 
     _hallRawValueLabel = new IndexLabel();
     statusLayout->addRow(tr("&Hall raw:"), _hallRawValueLabel);

@@ -547,6 +547,8 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("PID"));
     QFormLayout *formLayout = new QFormLayout();
+    formLayout->setVerticalSpacing(3);
+    formLayout->setHorizontalSpacing(3);
 
     _pSpinBox = new IndexSpinBox();
     _pSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
@@ -563,6 +565,8 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
     formLayout->addRow(tr("&D:"), _dSpinBox);
     _indexWidgets.append(_dSpinBox);
 
+    formLayout->addItem(new QSpacerItem(0, 6));
+
     QLayout *minMaxlayout = new QHBoxLayout();
     minMaxlayout->setSpacing(0);
     _minSpinBox = new IndexSpinBox();
@@ -571,6 +575,7 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
     _indexWidgets.append(_minSpinBox);
 
     QLabel *errorRangeSepLabel = new QLabel(tr("-"));
+    errorRangeSepLabel->setIndent(2);
     errorRangeSepLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     minMaxlayout->addWidget(errorRangeSepLabel);
     _maxSpinBox = new IndexSpinBox();
@@ -590,7 +595,7 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
 
     _freqDividerSpinBox = new IndexSpinBox();
     _freqDividerSpinBox->setRangeValue(1, 1000);
-    formLayout->addRow(tr("&Frequency divider:"), _freqDividerSpinBox);
+    formLayout->addRow(tr("&Subsampling:"), _freqDividerSpinBox);
     _indexWidgets.append(_freqDividerSpinBox);
 
     _antiReverseCheckBox = new IndexCheckBox();
@@ -611,6 +616,8 @@ QGroupBox *PidWidget::createPIDStatusWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("PID status"));
     QFormLayout *formLayout = new QFormLayout();
+    formLayout->setVerticalSpacing(3);
+    formLayout->setHorizontalSpacing(3);
 
     _inputLabel = new IndexLabel();
     _inputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
@@ -640,29 +647,33 @@ QGroupBox *PidWidget::createPIDTestWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("PID test"));
     QFormLayout *formLayout = new QFormLayout();
+    formLayout->setVerticalSpacing(3);
+    formLayout->setHorizontalSpacing(3);
 
     _modeComboBox = new QComboBox();
     formLayout->addRow(new QLabel(tr("Mode:")), _modeComboBox);
 
     QHBoxLayout *firstTargetLayout = new QHBoxLayout();
+    firstTargetLayout->setSpacing(3);
     _firstTargetSpinBox = new QSpinBox();
-    _firstTargetSpinBox->setValue(200);
     _firstTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
+    _firstTargetSpinBox->setValue(50);
     _windowFirstTargetSpinBox = new QSpinBox();
     _windowFirstTargetSpinBox->setRange(10, 5000);
-    _windowFirstTargetSpinBox->setValue(3000);
+    _windowFirstTargetSpinBox->setValue(2000);
     _windowFirstTargetSpinBox->setSuffix(" ms");
     firstTargetLayout->addWidget(_firstTargetSpinBox);
     firstTargetLayout->addWidget(_windowFirstTargetSpinBox);
     formLayout->addRow(tr("First Target:"), firstTargetLayout);
 
     QHBoxLayout *secondTargetLayout = new QHBoxLayout();
+    secondTargetLayout->setSpacing(3);
     _secondTargetSpinBox = new QSpinBox();
-    _secondTargetSpinBox->setValue(100);
     _secondTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
+    _secondTargetSpinBox->setValue(50);
     _windowSecondTargetSpinBox = new QSpinBox();
     _windowSecondTargetSpinBox->setRange(10, 5000);
-    _windowSecondTargetSpinBox->setValue(3000);
+    _windowSecondTargetSpinBox->setValue(2000);
     _windowSecondTargetSpinBox->setSuffix(" ms");
     secondTargetLayout->addWidget(_secondTargetSpinBox);
     secondTargetLayout->addWidget(_windowSecondTargetSpinBox);

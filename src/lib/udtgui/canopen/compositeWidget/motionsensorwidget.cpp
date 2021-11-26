@@ -323,6 +323,7 @@ QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
     QGroupBox *groupBox = new QGroupBox(tr("Sensor config"));
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setVerticalSpacing(3);
+    formLayout->setHorizontalSpacing(3);
 
     _sensorSelectComboBox = new IndexComboBox();
     _sensorSelectComboBox->addItem(tr("OFF"), QVariant(static_cast<uint16_t>(0x0000)));
@@ -417,6 +418,7 @@ QGroupBox *MotionSensorWidget::createSensorFilterWidgets()
     QGroupBox *groupBox = new QGroupBox(tr("Sensor filter"));
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setVerticalSpacing(3);
+    formLayout->setHorizontalSpacing(3);
 
     _filterSelectComboBox = new IndexComboBox();
     _filterSelectComboBox->addItem(tr("OFF"), QVariant(static_cast<uint16_t>(0x0000)));
@@ -467,6 +469,7 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
     QGroupBox *groupBox = new QGroupBox(tr("Sensor conditioning"));
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setVerticalSpacing(3);
+    formLayout->setHorizontalSpacing(3);
 
     _preOffsetSpinBox = new IndexSpinBox();
     _preOffsetSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
@@ -552,6 +555,7 @@ QGroupBox *MotionSensorWidget::createSensorStatusWidgets()
     QGroupBox *groupBox = new QGroupBox(tr("Sensor status"));
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setVerticalSpacing(3);
+    formLayout->setHorizontalSpacing(3);
 
     _rawDataValueLabel = new IndexLabel();
     _rawDataValueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
