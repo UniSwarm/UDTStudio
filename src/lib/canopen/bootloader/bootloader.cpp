@@ -63,6 +63,7 @@ Bootloader::Bootloader(Node *node)
     registerObjId({0x2050, 1});
     registerObjId({0x2050, 3});
     registerObjId({0x1F51, 1});
+    registerObjId({0x1000, 0});
 
     _state = STATE_FREE;
     _statusProgram = NONE;
@@ -354,6 +355,15 @@ void Bootloader::process()
 
 void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
+    if (objId.index() == 0x1000)
+    {
+        uint32_t value = static_cast<uint32_t>(_node->nodeOd()->value(0x1000, 0).toUInt());
+        if (value == 301)
+        {
+            _node->nodeOd()->createBootloaderObjects();
+        }
+    }
+
     if (_state == STATE_FREE)
     {
         return;
