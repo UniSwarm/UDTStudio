@@ -168,7 +168,7 @@ QString AbstractIndexWidget::pstringValue(const QVariant &value, const AbstractI
         case AbstractIndexWidget::DisplayDirectValue:
             if (value.userType() != QMetaType::QString && value.userType() != QMetaType::QByteArray)
             {
-                str = QString::number(value.toDouble());
+                str = QString::number(value.toInt());
             }
             else
             {
@@ -183,7 +183,11 @@ QString AbstractIndexWidget::pstringValue(const QVariant &value, const AbstractI
         case AbstractIndexWidget::DisplayQ1_15:
         case AbstractIndexWidget::DisplayQ15_16:
         case AbstractIndexWidget::DisplayFloat:
-            str = QString::number(value.toDouble(), 'g', 6);
+            str = QString::number(value.toDouble(), 'g', 10);
+            if (!str.contains('.'))
+            {
+                str.append(".0");
+            }
             break;
     }
 
