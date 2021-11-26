@@ -572,6 +572,14 @@ void NodeOd::createBootloaderObjects()
     version->subIndex(0)->setName("Manufacturer Software Version");
     addIndex(version);
 
+    NodeIndex *versionHard = new NodeIndex(0x100A);
+    versionHard->setName("Manufacturer Hardware Version");
+    versionHard->setObjectType(NodeIndex::VAR);
+    versionHard->addSubIndex(new NodeSubIndex(0));
+    versionHard->subIndex(0)->setDataType(NodeSubIndex::VISIBLE_STRING);
+    versionHard->subIndex(0)->setName("Manufacturer Hardware Version");
+    addIndex(versionHard);
+
     NodeIndex *program = new NodeIndex(0x1F50);
     program->setName("Program");
     program->setObjectType(NodeIndex::RECORD);
