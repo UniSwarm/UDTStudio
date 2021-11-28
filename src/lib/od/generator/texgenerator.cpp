@@ -20,11 +20,14 @@
 
 #include <QFileInfo>
 
+#include "db/odindexdb.h"
+
 /**
  * @brief default constructor
  */
 TexGenerator::TexGenerator()
 {
+    _profile = 0;
 }
 
 /**
@@ -55,6 +58,8 @@ bool TexGenerator::generate(DeviceConfiguration *deviceConfiguration, const QStr
  */
 bool TexGenerator::generate(DeviceDescription *deviceDescription, const QString &filePath)
 {
+    _profile = deviceDescription->index(0x1000)->subIndex(0)->value().toUInt();
+
     QString filePathBaseName = QFileInfo(filePath).path() + "/" + QFileInfo(filePath).baseName();
     QString outCom = filePathBaseName + "Communication." + QFileInfo(filePath).suffix();
     QFile texComFile(outCom);
@@ -105,7 +110,7 @@ bool TexGenerator::generate(DeviceDescription *deviceDescription, const QString 
 
     out.setDevice(&texManuFile);
 
-    if (deviceDescription->index(0x1000)->subIndex(0)->value().toUInt() == 402)
+    if (_profile == 402)
     {
         writeListIndexManufacturer402(manufacturers, &out);
     }
@@ -238,14 +243,6 @@ void TexGenerator::writeListIndexManufacturer402(const QList<Index *> indexes, Q
     }
 
     // Write only Object master without subindex
-    for (Index *index : indexes)
-    {
-        uint16_t numIndex = index->index();
-        if (numIndex >= 0x4000 && numIndex < 0x40FF)
-        {
-            writeIndex(index, out, false);
-        }
-    }
     for (Index *index : indexes)
     {
         uint16_t numIndex = index->index();
@@ -433,11 +430,11 @@ void TexGenerator::writeIndex(Index *index, QTextStream *out, bool generic)
     *out << "{" << subIndexCommand << "}";
     *out << "{" << nameCommand << "}%";
     *out << "\n";
-    *out << "{" << subIndex->dataTypeStr(subIndex->dataType()) << "}";
-    *out << "{" << accessToString(subIndex->accessType());
-    if (pdoToString(subIndex->accessType()) != "")
+    *out << "{" << dataTypeStr(subIndex) << "}";
+    *out << "{" << accessStr(subIndex->accessType());
+    if (pdoAccessStr(subIndex->accessType()) != "")
     {
-        *out << "," << pdoToString(subIndex->accessType()) << "}";
+        *out << "," << pdoAccessStr(subIndex->accessType()) << "}";
     }
     else
     {
@@ -699,11 +696,11 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
         *out << "{" << subIndexSubCommand << "}";
         *out << "{" << nameSubCommand << "}%";
         *out << "\n";
-        *out << "{" << subIndex->dataTypeStr(subIndex->dataType()) << "}";
-        *out << "{" << accessToString(subIndex->accessType());
-        if (pdoToString(subIndex->accessType()) != "")
+        *out << "{" << dataTypeStr(subIndex) << "}";
+        *out << "{" << accessStr(subIndex->accessType());
+        if (pdoAccessStr(subIndex->accessType()) != "")
         {
-            *out << "," << pdoToString(subIndex->accessType()) << "}";
+            *out << "," << pdoAccessStr(subIndex->accessType()) << "}";
         }
         else
         {
@@ -752,12 +749,21 @@ void TexGenerator::writeLimit(const SubIndex *subIndex, QTextStream *out)
     }
 }
 
+QString TexGenerator::dataTypeStr(SubIndex *subIndex) const
+{
+    if (ODIndexDb::isQ1516(subIndex->index()->index(), subIndex->subIndex(), _profile))
+    {
+        return "Q15.16";
+    }
+    return SubIndex::dataTypeStr(subIndex->dataType());
+}
+
 /**
  * @brief returns an access code to his corresponding string format
  * @param access code
  * @return formated string
  */
-QString TexGenerator::accessToString(int access)
+QString TexGenerator::accessStr(int access) const
 {
     switch (access)
     {
@@ -788,7 +794,7 @@ QString TexGenerator::accessToString(int access)
  * @param 8 bits access type code
  * @return 1 or 0 as a string
  */
-QString TexGenerator::pdoToString(uint8_t accessType)
+QString TexGenerator::pdoAccessStr(uint8_t accessType) const
 {
     if ((accessType & SubIndex::TPDO) == SubIndex::TPDO)
     {

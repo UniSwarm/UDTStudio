@@ -40,8 +40,6 @@ public:
     bool generate(DeviceDescription *deviceDescription, const QString &filePath);
 
 private:
-    static QString accessToString(int access);
-    static QString pdoToString(uint8_t accessType);
 
     void writeListIndex(const QList<Index *> indexes, QTextStream *out);
     void writeListIndexComm(const QList<Index *> indexes, QTextStream *out);
@@ -50,6 +48,12 @@ private:
     void writeRecord(Index *index, QTextStream *out, bool generic);
     void writeArray(Index *index, QTextStream *out, bool generic);
     void writeLimit(const SubIndex *subIndex, QTextStream *out);
+
+    QString dataTypeStr(SubIndex *subIndex) const;
+    QString accessStr(int access) const;
+    QString pdoAccessStr(uint8_t accessType) const;
+
+    int _profile;
 };
 
 #endif  // TEXGENERATOR_H
