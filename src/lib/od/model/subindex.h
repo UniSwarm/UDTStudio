@@ -25,6 +25,8 @@
 #include <QString>
 #include <QVariant>
 
+class Index;
+
 class OD_EXPORT SubIndex
 {
 public:
@@ -107,7 +109,12 @@ public:
     uint32_t objFlags() const;
     void setObjFlags(const uint32_t &objFlags);
 
+    Index *index() const;
+
 protected:
+    friend class Index;
+    Index *_index;
+
     AccessType _accessType;
     uint8_t _subIndex;
     QString _name;

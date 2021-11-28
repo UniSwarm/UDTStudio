@@ -24,6 +24,7 @@
  */
 SubIndex::SubIndex(const uint8_t subIndex)
 {
+    _index = nullptr;
     _subIndex = subIndex;
     _accessType = NONE;
     _hasNodeId = false;
@@ -38,6 +39,8 @@ SubIndex::SubIndex(const uint8_t subIndex)
  */
 SubIndex::SubIndex(const SubIndex &other)
 {
+    _index = nullptr;
+
     _accessType = other.accessType();
     _subIndex = other.subIndex();
     _name = other.name();
@@ -369,4 +372,9 @@ uint32_t SubIndex::objFlags() const
 void SubIndex::setObjFlags(const uint32_t &objFlags)
 {
     _objFlags = objFlags;
+}
+
+Index *SubIndex::index() const
+{
+    return _index;
 }

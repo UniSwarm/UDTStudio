@@ -135,6 +135,7 @@ SubIndex *Index::subIndex(QString nameSubIndex) const
 void Index::addSubIndex(SubIndex *subIndex)
 {
     _subIndexes.insert(subIndex->subIndex(), subIndex);
+    subIndex->_index = this;
 }
 
 /**
