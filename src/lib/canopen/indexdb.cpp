@@ -20,6 +20,8 @@
 
 #include "../canopen/nodeobjectid.h"
 
+#include "db/odindexdb.h"
+
 NodeObjectId IndexDb::getObjectId(IndexDb::OdObject object, uint opt, uint optMappingEntry)
 {
     quint16 index = 0;
@@ -168,75 +170,5 @@ NodeObjectId IndexDb::getObjectId(IndexDb::OdObject object, uint opt, uint optMa
 
 bool IndexDb::isQ1516(const NodeObjectId &objId, quint16 profileNumber)
 {
-    if (objId.index() < 0x2000 || objId.index() >= 0x6000)
-    {
-        return false;
-    }
-    if (profileNumber == 402)
-    {
-        if (objId.index() == 0x2A00)
-        {
-            if (objId.subIndex() == 2 || objId.subIndex() == 3)
-            {
-                return true;
-            }
-        }
-        if (objId.index() == 0x2A01)
-        {
-            if (objId.subIndex() >= 2 && objId.subIndex() <= 5)
-            {
-                return true;
-            }
-        }
-        if ((objId.index() & (quint16)0xF1FF) == 0x4006)
-        {
-            if (objId.subIndex() == 3 || objId.subIndex() == 4 || objId.subIndex() == 5)
-            {
-                return true;
-            }
-        }
-        if ((objId.index() & (quint16)0xF1FF) == 0x4007)
-        {
-            if (objId.subIndex() == 6 || objId.subIndex() == 8)
-            {
-                return true;
-            }
-        }
-        if ((objId.index() & (quint16)0xF1FF) == 0x4020 || (objId.index() & (quint16)0xF1FF) == 0x4040 || (objId.index() & (quint16)0xF1FF) == 0x4060)
-        {
-            if (objId.subIndex() >= 1 && objId.subIndex() <= 4)
-            {
-                return true;
-            }
-        }
-        if ((objId.index() & (quint16)0xF1FF) == 0x4021 || (objId.index() & (quint16)0xF1FF) == 0x4041 || (objId.index() & (quint16)0xF1FF) == 0x4061)
-        {
-            if (objId.subIndex() >= 1 && objId.subIndex() <= 6)
-            {
-                return true;
-            }
-        }
-        if ((objId.index() & (quint16)0xF1FF) == 0x4022 || (objId.index() & (quint16)0xF1FF) == 0x4042 || (objId.index() & (quint16)0xF1FF) == 0x4062)
-        {
-            if (objId.subIndex() == 1 || objId.subIndex() == 3)
-            {
-                return true;
-            }
-        }
-        if ((objId.index() & (quint16)0xF1FF) == 0x4024 || (objId.index() & (quint16)0xF1FF) == 0x4044 || (objId.index() & (quint16)0xF1FF) == 0x4064)
-        {
-            if (objId.subIndex() >= 2 && objId.subIndex() <= 5)
-            {
-                return true;
-            }
-        }
-        if ((objId.index() & (quint16)0xF1FF) == 0x4025 || (objId.index() & (quint16)0xF1FF) == 0x4045 || (objId.index() & (quint16)0xF1FF) == 0x4065)
-        {
-            if (objId.subIndex() >= 1 && objId.subIndex() <= 7)
-            {
-                return true;
-            }
-        }
-    }
-    return false;
+    return ODIndexDb::isQ1516(objId.index(), objId.index(), profileNumber);
 }
