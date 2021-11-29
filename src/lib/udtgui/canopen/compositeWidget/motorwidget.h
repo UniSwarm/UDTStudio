@@ -37,6 +37,7 @@ class IndexSpinBox;
 class IndexLabel;
 class IndexComboBox;
 class IndexCheckBox;
+class IndexBar;
 
 class UDTGUI_EXPORT MotorWidget : public QWidget
 {
@@ -77,7 +78,7 @@ protected:
 
     // Motor Status
     QGroupBox *createMotorStatusWidgets();
-    IndexLabel *_bridgeCommandLabel;
+    IndexBar *_bridgeCommandBar;
     IndexLabel *_motorCurrentLabel;
     IndexLabel *_motorTorqueLabel;
     IndexLabel *_motorVelocityLabel;

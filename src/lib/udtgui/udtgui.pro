@@ -40,6 +40,7 @@ HEADERS += \
     $$PWD/canopen/pdo/pdomappingview.h \
     $$PWD/canopen/pdo/pdomappingwidget.h \
     $$PWD/canopen/indexWidget/abstractindexwidget.h \
+    $$PWD/canopen/indexWidget/indexbar.h \
     $$PWD/canopen/indexWidget/indexcheckbox.h \
     $$PWD/canopen/indexWidget/indexcombobox.h \
     $$PWD/canopen/indexWidget/indexlabel.h \
@@ -102,6 +103,7 @@ SOURCES += \
     $$PWD/canopen/pdo/pdomappingview.cpp \
     $$PWD/canopen/pdo/pdomappingwidget.cpp \
     $$PWD/canopen/indexWidget/abstractindexwidget.cpp \
+    $$PWD/canopen/indexWidget/indexbar.cpp \
     $$PWD/canopen/indexWidget/indexcheckbox.cpp \
     $$PWD/canopen/indexWidget/indexcombobox.cpp \
     $$PWD/canopen/indexWidget/indexlabel.cpp \

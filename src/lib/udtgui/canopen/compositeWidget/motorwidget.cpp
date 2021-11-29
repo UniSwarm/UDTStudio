@@ -18,6 +18,7 @@
 
 #include "motorwidget.h"
 
+#include "canopen/indexWidget/indexbar.h"
 #include "canopen/indexWidget/indexcheckbox.h"
 #include "canopen/indexWidget/indexcombobox.h"
 #include "canopen/indexWidget/indexlabel.h"
@@ -94,12 +95,12 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _bridgeTemp2Label->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_DRIVER_TEMPERATURE, _axis, 1));
     _bridgeTemp1Label->setNode(node);
     _bridgeTemp2Label->setNode(node);
-    _bridgeCommandLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_COMMAND, _axis));
+    _bridgeCommandBar->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_COMMAND, _axis));
     _motorCurrentLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_CURRENT, _axis));
     _motorTorqueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_TORQUE, _axis));
     _motorVelocityLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_VELOCITY, _axis));
     _motorPositionLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_POSITION, _axis));
-    _bridgeCommandLabel->setNode(node);
+    _bridgeCommandBar->setNode(node);
     _motorCurrentLabel->setNode(node);
     _motorTorqueLabel->setNode(node);
     _motorVelocityLabel->setNode(node);
@@ -317,11 +318,12 @@ QGroupBox *MotorWidget::createMotorStatusWidgets()
     statusLayout->setVerticalSpacing(3);
     statusLayout->setHorizontalSpacing(3);
 
-    _bridgeCommandLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Command duty cycle:"), _bridgeCommandLabel);
-    _bridgeCommandLabel->setUnit("%");
-    _bridgeCommandLabel->setScale(100.0/32768.0);
-    _indexWidgets.append(_bridgeCommandLabel);
+    _bridgeCommandBar = new IndexBar();
+    statusLayout->addRow(tr("Command duty cycle:"), _bridgeCommandBar);
+    _bridgeCommandBar->setUnit("%");
+    _bridgeCommandBar->setScale(100.0/32768.0);
+    _bridgeCommandBar->setRange(-100, 100);
+    _indexWidgets.append(_bridgeCommandBar);
 
     _motorCurrentLabel = new IndexLabel();
     _motorCurrentLabel->setDisplayHint(AbstractIndexWidget::DisplayFloat);
