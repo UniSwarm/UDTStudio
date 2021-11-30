@@ -28,7 +28,7 @@
 
 #include "canopen/indexWidget/abstractindexwidget.h"
 
-#define DEBUG_BOOT
+// #define DEBUG_BOOT
 
 class Node;
 class Bootloader;
