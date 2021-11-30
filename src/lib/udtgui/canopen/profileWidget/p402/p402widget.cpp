@@ -34,6 +34,7 @@
 #include <QPushButton>
 #include <QScrollBar>
 #include <QSplitter>
+#include <QStandardItemModel>
 
 #include "canopen/datalogger/dataloggerwidget.h"
 
@@ -415,27 +416,52 @@ void P402Widget::setEvent(quint8 event)
 void P402Widget::updateModeComboBox()
 {
     _modeComboBox->clear();
-    for (NodeProfile402::OperationMode mode : _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_OTHER))
-    {
-        _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
-    }
-    _modeComboBox->insertSeparator(_modeComboBox->count());
 
-    for (NodeProfile402::OperationMode mode : _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_TORQUE))
+    QList<NodeProfile402::OperationMode> otherSupportedModes = _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_OTHER);
+    if (!otherSupportedModes.isEmpty())
     {
-        _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
+        _modeComboBox->addItem(tr("OTHER"));
+        dynamic_cast<QStandardItemModel *>(_modeComboBox->model())->item(_modeComboBox->count() - 1)->setEnabled(false);
+        for (NodeProfile402::OperationMode mode : otherSupportedModes)
+        {
+            _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
+        }
+        _modeComboBox->insertSeparator(_modeComboBox->count());
     }
-    _modeComboBox->insertSeparator(_modeComboBox->count());
 
-    for (NodeProfile402::OperationMode mode : _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_VELOCITY))
+    QList<NodeProfile402::OperationMode> torqueSupportedModes = _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_TORQUE);
+    if (!torqueSupportedModes.isEmpty())
     {
-        _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
+        _modeComboBox->addItem(tr("TORQUE"));
+        dynamic_cast<QStandardItemModel *>(_modeComboBox->model())->item(_modeComboBox->count() - 1)->setEnabled(false);
+        for (NodeProfile402::OperationMode mode : torqueSupportedModes)
+        {
+            _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
+        }
+        _modeComboBox->insertSeparator(_modeComboBox->count());
     }
-    _modeComboBox->insertSeparator(_modeComboBox->count());
 
-    for (NodeProfile402::OperationMode mode : _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_POSITION))
+    QList<NodeProfile402::OperationMode> velocitySupportedModes = _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_VELOCITY);
+    if (!velocitySupportedModes.isEmpty())
     {
-        _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
+        _modeComboBox->addItem(tr("VELOCITY"));
+        dynamic_cast<QStandardItemModel *>(_modeComboBox->model())->item(_modeComboBox->count() - 1)->setEnabled(false);
+        for (NodeProfile402::OperationMode mode : velocitySupportedModes)
+        {
+            _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
+        }
+        _modeComboBox->insertSeparator(_modeComboBox->count());
+    }
+
+    QList<NodeProfile402::OperationMode> positionSupportedModes = _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_POSITION);
+    if (!positionSupportedModes.isEmpty())
+    {
+        _modeComboBox->addItem(tr("POSITION"));
+        dynamic_cast<QStandardItemModel *>(_modeComboBox->model())->item(_modeComboBox->count() - 1)->setEnabled(false);
+        for (NodeProfile402::OperationMode mode : positionSupportedModes)
+        {
+            _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
+        }
     }
 }
 
