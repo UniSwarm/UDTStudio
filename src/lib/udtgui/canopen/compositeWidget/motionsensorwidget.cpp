@@ -161,6 +161,7 @@ void MotionSensorWidget::setIMode()
             odMode402 = IndexDb402::MODE402_POSITION;
             break;
     }
+    fillSensorSelect();
 
     // Config
     _sensorSelectComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_SELECT, _axis, odMode402));
@@ -204,6 +205,67 @@ void MotionSensorWidget::setIMode()
     _dataLogger->removeAllData();
     _dataLogger->addData(rawDataValueLabel_ObjId);
     _dataLogger->addData(valueLabel_ObjId);
+}
+
+void MotionSensorWidget::fillSensorSelect()
+{
+    _sensorSelectComboBox->clear();
+
+    _sensorSelectComboBox->addItem(tr("OFF"), QVariant(static_cast<uint16_t>(0x0000)));
+    _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("No source sensor selected"), Qt::StatusTipRole);
+    _sensorSelectComboBox->insertSeparator(_sensorSelectComboBox->count());
+
+    _sensorSelectComboBox->addItem(tr("Motor data"));
+    dynamic_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
+    if (_mode == MODE_SENSOR_TORQUE)
+    {
+        _sensorSelectComboBox->addItem(tr("Motor torque"), QVariant(static_cast<uint16_t>(0x1100)));
+        _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Torque computed from motor current and Ki constant"), Qt::StatusTipRole);
+    }
+    if (_mode == MODE_SENSOR_VELOCITY)
+    {
+        _sensorSelectComboBox->addItem(tr("Motor velocity"), QVariant(static_cast<uint16_t>(0x1200)));
+        _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Velocity computed from motor bach EMF or hall sensor"), Qt::StatusTipRole);
+    }
+    if (_mode == MODE_SENSOR_POSITION)
+    {
+        _sensorSelectComboBox->addItem(tr("Motor position"), QVariant(static_cast<uint16_t>(0x1300)));
+        _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Position computed from motor hall"), Qt::StatusTipRole);
+    }
+    _sensorSelectComboBox->insertSeparator(_sensorSelectComboBox->count());
+
+    if (_mode == MODE_SENSOR_VELOCITY)
+    {
+        _sensorSelectComboBox->addItem(tr("From another sensor"));
+        dynamic_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
+        // _sensorSelectComboBox->addItem(tr("Position from velocity"), QVariant(static_cast<uint16_t>(0x2200)));
+        // _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Velocity derived from the position sensor"), Qt::StatusTipRole);
+        _sensorSelectComboBox->addItem(tr("Velocity from position"), QVariant(static_cast<uint16_t>(0x2300)));
+        _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Integrated position from the velocity sensor"), Qt::StatusTipRole);
+        _sensorSelectComboBox->insertSeparator(_sensorSelectComboBox->count());
+    }
+
+    if (_mode == MODE_SENSOR_POSITION)
+    {
+        _sensorSelectComboBox->addItem(tr("Encoders"));
+        dynamic_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
+        _sensorSelectComboBox->addItem(tr("QEI CH1"), QVariant(static_cast<uint16_t>(0x3101)));
+        _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Quadrature incremental encoder channel 1"), Qt::StatusTipRole);
+        _sensorSelectComboBox->addItem(tr("QEI CH2"), QVariant(static_cast<uint16_t>(0x3102)));
+        _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Quadrature incremental encoder channel 2"), Qt::StatusTipRole);
+        _sensorSelectComboBox->addItem(tr("SSI CH1"), QVariant(static_cast<uint16_t>(0x3201)));
+        _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("SSI absolute encoder channel 1"), Qt::StatusTipRole);
+        _sensorSelectComboBox->addItem(tr("SSI CH2"), QVariant(static_cast<uint16_t>(0x3202)));
+        _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("SSI absolute encoder channel 2"), Qt::StatusTipRole);
+        _sensorSelectComboBox->insertSeparator(_sensorSelectComboBox->count());
+    }
+
+    _sensorSelectComboBox->addItem(tr("Analog inputs"));
+    dynamic_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
+    _sensorSelectComboBox->addItem(tr("AN1"), QVariant(static_cast<uint16_t>(0x4001)));
+    _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Analog input channel 1"), Qt::StatusTipRole);
+    _sensorSelectComboBox->addItem(tr("AN2"), QVariant(static_cast<uint16_t>(0x4002)));
+    _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Analog input channel 2"), Qt::StatusTipRole);
 }
 
 void MotionSensorWidget::createWidgets()
@@ -326,47 +388,6 @@ QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
     formLayout->setHorizontalSpacing(3);
 
     _sensorSelectComboBox = new IndexComboBox();
-    _sensorSelectComboBox->addItem(tr("OFF"), QVariant(static_cast<uint16_t>(0x0000)));
-    _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("No source sensor selected"), Qt::StatusTipRole);
-    _sensorSelectComboBox->insertSeparator(_sensorSelectComboBox->count());
-
-    _sensorSelectComboBox->insertSeparator(_sensorSelectComboBox->count());
-    _sensorSelectComboBox->addItem(tr("Motor data"));
-    dynamic_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
-    _sensorSelectComboBox->addItem(tr("Motor torque"), QVariant(static_cast<uint16_t>(0x1100)));
-    _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Torque computed from motor current and Ki constant"), Qt::StatusTipRole);
-    _sensorSelectComboBox->addItem(tr("Motor velocity"), QVariant(static_cast<uint16_t>(0x1200)));
-    _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Velocity computed from motor bach EMF or hall sensor"), Qt::StatusTipRole);
-    _sensorSelectComboBox->addItem(tr("Motor position"), QVariant(static_cast<uint16_t>(0x1300)));
-    _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Position computed from motor hall"), Qt::StatusTipRole);
-    _sensorSelectComboBox->insertSeparator(_sensorSelectComboBox->count());
-
-    _sensorSelectComboBox->addItem(tr("From another sensor"));
-    dynamic_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
-    _sensorSelectComboBox->addItem(tr("Position from velocity"), QVariant(static_cast<uint16_t>(0x2200)));
-    _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Velocity derived from the position sensor"), Qt::StatusTipRole);
-    _sensorSelectComboBox->addItem(tr("Velocity from position"), QVariant(static_cast<uint16_t>(0x2300)));
-    _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Integrated position from the velocity sensor"), Qt::StatusTipRole);
-    _sensorSelectComboBox->insertSeparator(_sensorSelectComboBox->count());
-
-    _sensorSelectComboBox->addItem(tr("Encoders"));
-    dynamic_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
-    _sensorSelectComboBox->addItem(tr("QEI CH1"), QVariant(static_cast<uint16_t>(0x3101)));
-    _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Quadrature incremental encoder channel 1"), Qt::StatusTipRole);
-    _sensorSelectComboBox->addItem(tr("QEI CH2"), QVariant(static_cast<uint16_t>(0x3102)));
-    _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Quadrature incremental encoder channel 2"), Qt::StatusTipRole);
-    _sensorSelectComboBox->addItem(tr("SSI CH1"), QVariant(static_cast<uint16_t>(0x3201)));
-    _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("SSI absolute encoder channel 1"), Qt::StatusTipRole);
-    _sensorSelectComboBox->addItem(tr("SSI CH2"), QVariant(static_cast<uint16_t>(0x3202)));
-    _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("SSI absolute encoder channel 2"), Qt::StatusTipRole);
-    _sensorSelectComboBox->insertSeparator(_sensorSelectComboBox->count());
-
-    _sensorSelectComboBox->addItem(tr("Analog inputs"));
-    dynamic_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
-    _sensorSelectComboBox->addItem(tr("AN1"), QVariant(static_cast<uint16_t>(0x4001)));
-    _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Analog input channel 1"), Qt::StatusTipRole);
-    _sensorSelectComboBox->addItem(tr("AN2"), QVariant(static_cast<uint16_t>(0x4002)));
-    _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Analog input channel 2"), Qt::StatusTipRole);
     formLayout->addRow(tr("&Sensor select:"), _sensorSelectComboBox);
     connect(_sensorSelectComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &MotionSensorWidget::updateSensorParams);
     _indexWidgets.append(_sensorSelectComboBox);
@@ -422,7 +443,7 @@ QGroupBox *MotionSensorWidget::createSensorFilterWidgets()
 
     _filterSelectComboBox = new IndexComboBox();
     _filterSelectComboBox->addItem(tr("OFF"), QVariant(static_cast<uint16_t>(0x0000)));
-    _filterSelectComboBox->setItemData(_filterSelectComboBox->count() - 1, tr("No filter active, direct value"), Qt::StatusTipRole);
+    _filterSelectComboBox->setItemData(_filterSelectComboBox->count() - 1, tr("No filter active, direct raw value"), Qt::StatusTipRole);
     _filterSelectComboBox->addItem(tr("Low pass"), QVariant(static_cast<uint16_t>(0x1000)));
     _filterSelectComboBox->setItemData(_filterSelectComboBox->count() - 1, tr("Low pass filter"), Qt::StatusTipRole);
     _filterSelectComboBox->addItem(tr("Averaging"), QVariant(static_cast<uint16_t>(0x2000)));

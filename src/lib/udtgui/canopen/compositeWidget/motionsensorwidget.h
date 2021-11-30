@@ -94,6 +94,7 @@ protected:
     State _state;
 
     void setIMode();
+    void fillSensorSelect();
 
     // Creation widgets
     void createWidgets();
