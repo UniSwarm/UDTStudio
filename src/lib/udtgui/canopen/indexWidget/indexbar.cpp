@@ -19,6 +19,9 @@
 #include "indexbar.h"
 
 #include <QDebug>
+#include <QStyleOptionProgressBar>
+#include <QStylePainter>
+#include <QStyle>
 
 IndexBar::IndexBar(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
@@ -54,6 +57,45 @@ void IndexBar::updateObjId()
     setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
 }
 
+void IndexBar::paintEvent(QPaintEvent *event)
+{
+    Q_UNUSED(event)
+
+    QStylePainter paint(this);
+    QStyleOptionProgressBar opt;
+    initStyleOption(&opt);
+
+    opt.rect = paint.style()->subElementRect(QStyle::SE_ProgressBarGroove, &opt, this);
+    paint.drawControl(QStyle::CE_ProgressBarGroove, opt);
+
+    opt.rect = paint.style()->subElementRect(QStyle::SE_ProgressBarContents, &opt, this);
+    QRect oldContentRect = opt.rect;
+    double offsetScale;
+    int range = (opt.maximum - opt.minimum);
+    if (opt.minimum < 0)
+    {
+        offsetScale = -1.0 / (static_cast<double>(range) / opt.minimum);
+    }
+    if (QProgressBar::value() >= 0)
+    {
+        opt.minimum = 0;
+        opt.invertedAppearance = false;
+        opt.rect.adjust(opt.rect.width() * offsetScale, 0, 0, 0);
+    }
+    else
+    {
+        opt.maximum = 0;
+        opt.progress = opt.minimum - opt.progress;
+        opt.invertedAppearance = true;
+        opt.rect.adjust(0, 0, -opt.rect.width() * (1.0 - offsetScale), 0);
+    }
+    paint.drawControl(QStyle::CE_ProgressBarContents, opt);
+
+    opt.rect = oldContentRect;
+    opt.rect = paint.style()->subElementRect(QStyle::SE_ProgressBarLabel, &opt, this);
+    paint.drawControl(QStyle::CE_ProgressBarLabel, opt);
+}
+
 void IndexBar::mouseDoubleClickEvent(QMouseEvent *event)
 {
     Q_UNUSED(event)
@@ -62,5 +104,5 @@ void IndexBar::mouseDoubleClickEvent(QMouseEvent *event)
 
 QString IndexBar::text() const
 {
-    return QString("%1 %").arg(AbstractIndexWidget::value().toDouble());
+    return QString("%1%2").arg(AbstractIndexWidget::value().toDouble(), 0, 'g', 2).arg(_unit);
 }

@@ -38,6 +38,7 @@ protected:
 
     // QWidget interface
 protected:
+    void paintEvent(QPaintEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
     // QProgressBar interface
