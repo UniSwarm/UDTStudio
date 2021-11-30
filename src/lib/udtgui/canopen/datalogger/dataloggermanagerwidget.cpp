@@ -208,7 +208,7 @@ void DataLoggerManagerWidget::createWidgets()
     _toolBar->addSeparator();
 
     // rolling
-    _rollAction = _toolBar->addAction(tr("Cross"));
+    _rollAction = _toolBar->addAction(tr("Rolling mode"));
     _rollAction->setCheckable(true);
     _rollAction->setEnabled(true);
     _rollAction->setIcon(QIcon(":/icons/img/icons8-video-trimming.png"));

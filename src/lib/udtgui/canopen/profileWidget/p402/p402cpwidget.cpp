@@ -301,7 +301,7 @@ QGroupBox *P402CpWidget::controlWordWidgets()
 
 QHBoxLayout *P402CpWidget::buttonWidgets()
 {
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
+    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402CpWidget::dataLogger);
 
     QPushButton *mappingPdoPushButton = new QPushButton(tr("Map CP to PDOs"));

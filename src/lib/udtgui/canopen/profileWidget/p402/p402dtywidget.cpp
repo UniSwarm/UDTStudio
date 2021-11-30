@@ -154,7 +154,7 @@ void P402DtyWidget::mapDefaultObjects()
 
 void P402DtyWidget::createWidgets()
 {
-    QGroupBox *modeGroupBox = new QGroupBox(tr("Duty Cycle mode"));
+    QGroupBox *modeGroupBox = new QGroupBox(tr("Duty cycle mode"));
     _modeLayout = new QFormLayout();
 
     targetWidgets();
@@ -239,12 +239,12 @@ void P402DtyWidget::limitWidgets()
 void P402DtyWidget::slopeWidgets()
 {
     _slopeSpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("T&arget slope "), _slopeSpinBox);
+    _modeLayout->addRow(tr("Target &slope "), _slopeSpinBox);
 }
 
 QHBoxLayout *P402DtyWidget::buttonWidgets()
 {
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
+    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402DtyWidget::createDataLogger);
 
     QPushButton *mappingPdoPushButton = new QPushButton(tr("Map DTY to PDOs"));

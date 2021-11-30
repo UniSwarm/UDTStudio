@@ -251,12 +251,12 @@ void P402TqWidget::limitWidgets()
 void P402TqWidget::slopeWidgets()
 {
     _targetSlopeSpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("T&arget slope "), _targetSlopeSpinBox);
+    _modeLayout->addRow(tr("Target &slope "), _targetSlopeSpinBox);
 }
 
 QHBoxLayout *P402TqWidget::buttonWidgets()
 {
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
+    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402TqWidget::createDataLogger);
 
     QPushButton *mappingPdoPushButton = new QPushButton(tr("Map TQ to PDOs"));

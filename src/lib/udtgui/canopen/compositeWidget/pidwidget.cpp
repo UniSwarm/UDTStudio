@@ -583,7 +583,7 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
     minMaxlayout->addWidget(_maxSpinBox);
     _indexWidgets.append(_maxSpinBox);
 
-    QLabel *errorRangeLabel = new QLabel(tr("&Min max:"));
+    QLabel *errorRangeLabel = new QLabel(tr("&Min - max:"));
     errorRangeLabel->setBuddy(errorRangeLabel);
     formLayout->addRow(errorRangeLabel, minMaxlayout);
 
@@ -621,22 +621,22 @@ QGroupBox *PidWidget::createPIDStatusWidgets()
 
     _inputLabel = new IndexLabel();
     _inputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&Input:"), _inputLabel);
+    formLayout->addRow(tr("Input:"), _inputLabel);
     _indexWidgets.append(_inputLabel);
 
     _errorLabel = new IndexLabel();
     _errorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&Error:"), _errorLabel);
+    formLayout->addRow(tr("Error:"), _errorLabel);
     _indexWidgets.append(_errorLabel);
 
     _integratorLabel = new IndexLabel();
     _integratorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&Integrator:"), _integratorLabel);
+    formLayout->addRow(tr("Integrator:"), _integratorLabel);
     _indexWidgets.append(_integratorLabel);
 
     _outputLabel = new IndexLabel();
     _outputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("&Output:"), _outputLabel);
+    formLayout->addRow(tr("Output:"), _outputLabel);
     _indexWidgets.append(_outputLabel);
 
     groupBox->setLayout(formLayout);

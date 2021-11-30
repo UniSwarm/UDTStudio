@@ -40,6 +40,7 @@ const int indentLabel = 18;
 MotionSensorWidget::MotionSensorWidget(QWidget *parent)
     : QWidget(parent)
 {
+    _node = nullptr;
     _nodeProfile402 = nullptr;
     _dataLogger = new DataLogger();
 
@@ -580,7 +581,7 @@ QGroupBox *MotionSensorWidget::createSensorStatusWidgets()
 
     _rawDataValueLabel = new IndexLabel();
     _rawDataValueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    formLayout->addRow(tr("Raw Data:"), _rawDataValueLabel);
+    formLayout->addRow(tr("Raw data:"), _rawDataValueLabel);
     _indexWidgets.append(_rawDataValueLabel);
 
     _flagLabel = new IndexLabel();

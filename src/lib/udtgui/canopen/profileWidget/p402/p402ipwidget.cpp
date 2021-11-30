@@ -461,7 +461,7 @@ void P402IpWidget::homePolarityWidgets()
 
 QGroupBox *P402IpWidget::sinusoidalMotionProfileWidgets()
 {
-    QGroupBox *groupBox = new QGroupBox(tr("Sinusoidal Motion Profile"));
+    QGroupBox *groupBox = new QGroupBox(tr("Sinusoidal motion Profile"));
     QFormLayout *layout = new QFormLayout();
 
     QHBoxLayout *buttonGoStoplayout = new QHBoxLayout();
