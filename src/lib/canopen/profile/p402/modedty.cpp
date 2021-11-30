@@ -21,6 +21,12 @@
 #include "node.h"
 #include "nodeprofile402.h"
 
+enum ControlWordDty : quint16
+{
+    CW_DTY_EnableRamp = 0x10,
+    CW_Mask = 0x70
+};
+
 ModeDty::ModeDty(NodeProfile402 *nodeProfile402)
     : Mode(nodeProfile402)
 {
@@ -36,7 +42,27 @@ ModeDty::ModeDty(NodeProfile402 *nodeProfile402)
     _maxObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
     _mode = NodeProfile402::OperationMode::TQ;
-    _cmdControlWordFlag = 0;
+    _cmdControlWordFlag = CW_DTY_EnableRamp;
+}
+
+void ModeDty::setEnableRamp(bool ok)
+{
+    if (ok)
+    {
+        _cmdControlWordFlag |= CW_DTY_EnableRamp;
+    }
+    else
+    {
+        _cmdControlWordFlag = (_cmdControlWordFlag & ~CW_DTY_EnableRamp);
+    }
+    quint16 cw = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
+    cw = (cw & ~CW_Mask) | _cmdControlWordFlag;
+    _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
+}
+
+bool ModeDty::isEnableRamp() const
+{
+    return (_cmdControlWordFlag & CW_DTY_EnableRamp) >> 4;
 }
 
 const NodeObjectId &ModeDty::targetObjectId() const

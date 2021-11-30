@@ -32,6 +32,9 @@ class CANOPEN_EXPORT ModeDty : public Mode
 public:
     ModeDty(NodeProfile402 *nodeProfile402);
 
+    void setEnableRamp(bool ok);
+    bool isEnableRamp(void) const;
+
     // ObjectID
     const NodeObjectId &targetObjectId() const;
     const NodeObjectId &demandObjectId() const;
