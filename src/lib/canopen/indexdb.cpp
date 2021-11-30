@@ -170,5 +170,5 @@ NodeObjectId IndexDb::getObjectId(IndexDb::OdObject object, uint opt, uint optMa
 
 bool IndexDb::isQ1516(const NodeObjectId &objId, quint16 profileNumber)
 {
-    return ODIndexDb::isQ1516(objId.index(), objId.index(), profileNumber);
+    return ODIndexDb::isQ1516(objId.index(), objId.subIndex(), profileNumber);
 }
