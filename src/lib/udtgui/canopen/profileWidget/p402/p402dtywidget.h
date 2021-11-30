@@ -23,6 +23,7 @@
 
 #include "p402modewidget.h"
 
+#include <QCheckBox>
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QLabel>
@@ -43,6 +44,9 @@ public:
     P402DtyWidget(QWidget *parent = nullptr);
     ~P402DtyWidget() override;
 
+    void setEnableRamp(bool ok);
+    bool isEnableRamp(void) const;
+
 private:
     ModeDty *_modeDty;
 
@@ -59,6 +63,8 @@ private:
     IndexSpinBox *_slopeSpinBox;
     IndexSpinBox *_maxSpinBox;
 
+    QCheckBox *_enableRampCheckBox;
+
     void targetSpinboxFinished();
     void targetSliderChanged();
     void maxSpinboxFinished();
@@ -74,6 +80,7 @@ private:
     void informationWidgets();
     void limitWidgets();
     void slopeWidgets();
+    QGroupBox *controlWordWidgets();
     QHBoxLayout *buttonWidgets();
 
     // NodeOdSubscriber interface

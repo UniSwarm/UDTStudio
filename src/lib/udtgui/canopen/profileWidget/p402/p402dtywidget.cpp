@@ -79,6 +79,8 @@ void P402DtyWidget::setNode(Node *node, uint8_t axis)
         {
             _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
             _modeDty = dynamic_cast<ModeDty *>(_nodeProfile402->mode(NodeProfile402::OperationMode::DTY));
+            connect(_enableRampCheckBox, &QCheckBox::clicked, _modeDty, &ModeDty::setEnableRamp);
+
             _targetObjectId = _modeDty->targetObjectId();
             registerObjId(_targetObjectId);
 
@@ -175,6 +177,7 @@ void P402DtyWidget::createWidgets()
     layout->setContentsMargins(0, 0, 0, 0);
 
     layout->addWidget(modeGroupBox);
+    layout->addWidget(controlWordWidgets());
 
     QScrollArea *scrollArea = new QScrollArea;
     scrollArea->setWidget(widget);
@@ -240,6 +243,19 @@ void P402DtyWidget::slopeWidgets()
 {
     _slopeSpinBox = new IndexSpinBox();
     _modeLayout->addRow(tr("Target &slope "), _slopeSpinBox);
+}
+
+QGroupBox *P402DtyWidget::controlWordWidgets()
+{
+    // Group Box CONTROL WORD
+    QGroupBox *groupBox = new QGroupBox(tr("Control Word:"));
+    QFormLayout *layout = new QFormLayout();
+
+    _enableRampCheckBox = new QCheckBox();
+    layout->addRow(tr("Enable Ramp (bit 4):"), _enableRampCheckBox);
+    groupBox->setLayout(layout);
+
+    return groupBox;
 }
 
 QHBoxLayout *P402DtyWidget::buttonWidgets()
