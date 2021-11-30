@@ -306,7 +306,7 @@ void P402IpWidget::mapDefaultObjects()
 void P402IpWidget::createWidgets()
 {
     // Group Box IP mode
-    QGroupBox *modeGroupBox = new QGroupBox(tr(" Interpolated position mode"));
+    QGroupBox *modeGroupBox = new QGroupBox(tr("Interpolated position mode"));
     _modeLayout = new QFormLayout();
 
     targetWidgets();
@@ -499,7 +499,7 @@ QGroupBox *P402IpWidget::sinusoidalMotionProfileWidgets()
 QGroupBox *P402IpWidget::controlWordWidgets()
 {
     // Group Box Control Word
-    QGroupBox *groupBox = new QGroupBox(tr("Control Word"));
+    QGroupBox *groupBox = new QGroupBox(tr("Control word"));
     QFormLayout *layout = new QFormLayout();
 
     _enableRampCheckBox = new QCheckBox();
@@ -512,7 +512,7 @@ QGroupBox *P402IpWidget::controlWordWidgets()
 
 QHBoxLayout *P402IpWidget::buttonWidgets()
 {
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
+    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402IpWidget::createDataLogger);
 
     QPushButton *mappingPdoPushButton = new QPushButton(tr("Map IP to PDOs"));

@@ -677,7 +677,7 @@ QGroupBox *P402Widget::stateMachineWidgets()
 
 QGroupBox *P402Widget::controlWordWidgets()
 {
-    QGroupBox *groupBox = new QGroupBox(tr("Control Word (0x6n40)"));
+    QGroupBox *groupBox = new QGroupBox(tr("Control word (0x6n40)"));
     QFormLayout *layout = new QFormLayout();
 
     _haltPushButton = new QPushButton(tr("Halt"));

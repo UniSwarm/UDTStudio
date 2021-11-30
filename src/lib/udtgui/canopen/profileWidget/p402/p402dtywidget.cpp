@@ -192,7 +192,7 @@ void P402DtyWidget::targetWidgets()
 {
     _targetSpinBox = new QSpinBox();
     _targetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    _modeLayout->addRow(tr("Target"), _targetSpinBox);
+    _modeLayout->addRow(tr("&Target"), _targetSpinBox);
 
     QLayout *labelSliderLayout = new QHBoxLayout();
 
@@ -239,7 +239,7 @@ void P402DtyWidget::limitWidgets()
 void P402DtyWidget::slopeWidgets()
 {
     _slopeSpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("T&arget Slope "), _slopeSpinBox);
+    _modeLayout->addRow(tr("T&arget slope "), _slopeSpinBox);
 }
 
 QHBoxLayout *P402DtyWidget::buttonWidgets()
@@ -255,7 +255,7 @@ QHBoxLayout *P402DtyWidget::buttonWidgets()
     tqModeLabel = new QLabel();
     tqModePixmap.load(":/diagram/img/diagrams/402TQDiagram.png");
     tqModeLabel->setPixmap(tqModePixmap);
-    QPushButton *imgPushButton = new QPushButton(tr("Diagram TQ mode"));
+    QPushButton *imgPushButton = new QPushButton(tr("Diagram DTY mode"));
     connect(imgPushButton, SIGNAL(clicked()), tqModeLabel, SLOT(show()));
 
     QHBoxLayout *layout = new QHBoxLayout();

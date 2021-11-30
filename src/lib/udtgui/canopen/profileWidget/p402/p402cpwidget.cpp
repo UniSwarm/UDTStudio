@@ -101,7 +101,7 @@ void P402CpWidget::pdoMapping()
 void P402CpWidget::createWidgets()
 {
     // Group Box CP mode
-    QGroupBox *modeGroupBox = new QGroupBox(tr(" Continuous position mode"));
+    QGroupBox *modeGroupBox = new QGroupBox(tr("Continuous position mode"));
     _modeLayout = new QFormLayout();
 
     targetWidgets();
@@ -154,7 +154,7 @@ void P402CpWidget::targetWidgets()
 {
     _positionTargetSpinBox = new QSpinBox();
     _positionTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    _modeLayout->addRow(tr("Position Target:"), _positionTargetSpinBox);
+    _modeLayout->addRow(tr("Position &target:"), _positionTargetSpinBox);
 
     QLayout *labelSliderLayout = new QHBoxLayout();
     _sliderMinLabel = new QLabel("min");
@@ -211,7 +211,7 @@ void P402CpWidget::limitWidgets()
     _positionRangeLimitMaxSpinBox = new IndexSpinBox();
     positionLayout->addWidget(_positionRangeLimitMaxSpinBox);
     label = new QLabel(tr("&Position range limit:"));
-    label->setToolTip(tr("Min, Max"));
+    label->setToolTip(tr("Min, max"));
     label->setBuddy(_positionRangeLimitMinSpinBox);
     _modeLayout->addRow(label, positionLayout);
 
@@ -228,7 +228,7 @@ void P402CpWidget::limitWidgets()
     _softwarePositionLimitMaxSpinBox = new IndexSpinBox();
     softwareLayout->addWidget(_softwarePositionLimitMaxSpinBox);
     label = new QLabel(tr("&Software position limit:"));
-    label->setToolTip(tr("Min, Max"));
+    label->setToolTip(tr("Min, max"));
     label->setBuddy(_softwarePositionLimitMinSpinBox);
 
     _modeLayout->addRow(label, softwareLayout);
@@ -288,11 +288,11 @@ void P402CpWidget::homePolarityWidgets()
 
 QGroupBox *P402CpWidget::controlWordWidgets()
 {
-    QGroupBox *groupBox = new QGroupBox(tr("Control Word"));
+    QGroupBox *groupBox = new QGroupBox(tr("Control word"));
     QFormLayout *layout = new QFormLayout();
 
     _absRelCheckBox = new QCheckBox();
-    layout->addRow(tr("Abs/Rel (bit 6):"), _absRelCheckBox);
+    layout->addRow(tr("Abs / rel (bit 6):"), _absRelCheckBox);
     connect(_absRelCheckBox, &QCheckBox::clicked, this, &P402CpWidget::absRelCheckBoxRampClicked);
 
     groupBox->setLayout(layout);
@@ -312,7 +312,7 @@ QHBoxLayout *P402CpWidget::buttonWidgets()
     ipModeLabel = new QLabel();
     ipModePixmap.load(":/diagram/img/diagrams/402IPDiagram.png");
     ipModeLabel->setPixmap(ipModePixmap);
-    QPushButton *imgPushButton = new QPushButton(tr("Diagram PP mode"));
+    QPushButton *imgPushButton = new QPushButton(tr("Diagram CP mode"));
     connect(imgPushButton, SIGNAL(clicked()), ipModeLabel, SLOT(show()));
 
     QHBoxLayout *layout = new QHBoxLayout();

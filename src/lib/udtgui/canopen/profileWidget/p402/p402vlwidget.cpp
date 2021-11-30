@@ -272,6 +272,12 @@ void P402VlWidget::createWidgets()
     _modeLayout->addRow(frame);
 
     accelDeccelWidgets();
+
+    frame = new QFrame();
+    frame->setFrameStyle(QFrame::HLine);
+    frame->setFrameShadow(QFrame::Sunken);
+    _modeLayout->addRow(frame);
+
     factorWidgets();
 
     modeGroupBox->setLayout(_modeLayout);
@@ -300,7 +306,7 @@ void P402VlWidget::targetWidgets()
 {
     _targetVelocitySpinBox = new QSpinBox();
     _targetVelocitySpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    _modeLayout->addRow(tr("Target velocity:"), _targetVelocitySpinBox);
+    _modeLayout->addRow(tr("&Target velocity:"), _targetVelocitySpinBox);
 
     QLayout *labelSliderLayout = new QHBoxLayout();
     _sliderMinLabel = new QLabel("min");
@@ -357,8 +363,8 @@ void P402VlWidget::limitWidgets()
 
     _maxVelocityMinMaxAmountSpinBox = new IndexSpinBox();
     minMaxAmountlayout->addWidget(_maxVelocityMinMaxAmountSpinBox);
-    label = new QLabel(tr("Min/Max amo&unt:"));
-    label->setToolTip("Min, Max");
+    label = new QLabel(tr("Min / max amo&unt:"));
+    label->setToolTip("Min, max");
     label->setBuddy(_minVelocityMinMaxAmountSpinBox);
 
     _modeLayout->addRow(label, minMaxAmountlayout);
@@ -437,7 +443,7 @@ void P402VlWidget::factorWidgets()
     _setPointFactorDenominatorSpinBox = new IndexSpinBox();
     stPointFactorlayout->addWidget(_setPointFactorDenominatorSpinBox);
     label = new QLabel(tr("&Set-point factor:"));
-    label->setToolTip("&Numerator, Denominator");
+    label->setToolTip("&Numerator, denominator");
     label->setBuddy(_setPointFactorNumeratorSpinBox);
     _modeLayout->addRow(label, stPointFactorlayout);
 
@@ -454,7 +460,7 @@ void P402VlWidget::factorWidgets()
     _dimensionFactorDenominatorSpinBox = new IndexSpinBox();
     dimensionFactorlayout->addWidget(_dimensionFactorDenominatorSpinBox);
     label = new QLabel(tr("D&imension factor:"));
-    label->setToolTip("Numerator, Denominator");
+    label->setToolTip("Numerator, denominator");
     label->setBuddy(_dimensionFactorNumeratorSpinBox);
     _modeLayout->addRow(label, dimensionFactorlayout);
 }
@@ -462,15 +468,15 @@ void P402VlWidget::factorWidgets()
 QGroupBox *P402VlWidget::controlWordWidgets()
 {
     // Group Box CONTROL WORD
-    QGroupBox *groupBox = new QGroupBox(tr("Control Word:"));
+    QGroupBox *groupBox = new QGroupBox(tr("Control word:"));
     QFormLayout *layout = new QFormLayout();
 
     _enableRampCheckBox = new QCheckBox();
-    layout->addRow(tr("Enable Ramp (bit 4):"), _enableRampCheckBox);
+    layout->addRow(tr("Enable ramp (bit 4):"), _enableRampCheckBox);
     connect(_enableRampCheckBox, &QCheckBox::clicked, this, &P402VlWidget::enableRampClicked);
 
     _unlockRampCheckBox = new QCheckBox();
-    layout->addRow(tr("Unlock Ramp (bit 5):"), _unlockRampCheckBox);
+    layout->addRow(tr("Unlock ramp (bit 5):"), _unlockRampCheckBox);
     connect(_unlockRampCheckBox, &QCheckBox::clicked, this, &P402VlWidget::unlockRampClicked);
 
     _referenceRampCheckBox = new QCheckBox();
@@ -483,7 +489,7 @@ QGroupBox *P402VlWidget::controlWordWidgets()
 
 QHBoxLayout *P402VlWidget::buttonWidgets()
 {
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data Logger"));
+    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402VlWidget::createDataLogger);
 
     QPushButton *mappingPdoPushButton = new QPushButton(tr("Map VL to PDOs"));

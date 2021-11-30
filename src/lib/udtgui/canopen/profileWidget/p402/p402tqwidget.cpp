@@ -201,7 +201,7 @@ void P402TqWidget::targetWidgets()
 {
     _targetTorqueSpinBox = new QSpinBox();
     _targetTorqueSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    _modeLayout->addRow(tr("Target torque"), _targetTorqueSpinBox);
+    _modeLayout->addRow(tr("&Target torque"), _targetTorqueSpinBox);
 
     QLayout *labelSliderLayout = new QHBoxLayout();
 
@@ -251,7 +251,7 @@ void P402TqWidget::limitWidgets()
 void P402TqWidget::slopeWidgets()
 {
     _targetSlopeSpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("T&arget Slope "), _targetSlopeSpinBox);
+    _modeLayout->addRow(tr("T&arget slope "), _targetSlopeSpinBox);
 }
 
 QHBoxLayout *P402TqWidget::buttonWidgets()
