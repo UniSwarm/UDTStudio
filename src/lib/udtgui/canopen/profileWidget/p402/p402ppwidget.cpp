@@ -293,24 +293,22 @@ void P402PpWidget::targetWidgets()
 {
     _targetPositionLineEdit = new QLineEdit();
 
-    QHBoxLayout *goOneLayout = new QHBoxLayout();
+    QHBoxLayout *goLayout = new QHBoxLayout();
     _goOneLineEdit = new QLineEdit();
     _goOneLineEdit->setPlaceholderText(tr("Target one"));
+    goLayout->addWidget(_goOneLineEdit);
     _goOnePushButton = new QPushButton(tr("Go one"));
-    goOneLayout->addWidget(_goOneLineEdit);
-    goOneLayout->addWidget(_goOnePushButton);
+    goLayout->addWidget(_goOnePushButton);
 
-    QHBoxLayout *goTwoLayout = new QHBoxLayout();
     _goTwoLineEdit = new QLineEdit();
     _goTwoLineEdit->setPlaceholderText(tr("Target two"));
+    goLayout->addWidget(_goTwoLineEdit);
     _goTwoPushButton = new QPushButton(tr("Go two"));
-    goTwoLayout->addWidget(_goTwoLineEdit);
-    goTwoLayout->addWidget(_goTwoPushButton);
+    goLayout->addWidget(_goTwoPushButton);
 
-    QHBoxLayout *goLayout = new QHBoxLayout();
-    goLayout->addLayout(goOneLayout);
-    goLayout->addLayout(goTwoLayout);
-    _modeLayout->addRow(tr("Position &target:"), goLayout);
+    QLabel *labelPositionTarget = new QLabel(tr("Position &target:"));
+    labelPositionTarget->setBuddy(_goOneLineEdit);
+    _modeLayout->addRow(labelPositionTarget, goLayout);
 
     connect(_goOneLineEdit, &QLineEdit::returnPressed, this, &P402PpWidget::goOneLineEditFinished);
     connect(_goTwoLineEdit, &QLineEdit::returnPressed, this, &P402PpWidget::twoOneLineEditFinished);
