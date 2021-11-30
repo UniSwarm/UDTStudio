@@ -29,11 +29,16 @@
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QScrollArea>
+#include <QStandardItemModel>
 #include <QWidget>
 
 MotorWidget::MotorWidget(QWidget *parent)
     : QWidget(parent)
 {
+    _node = nullptr;
+    _axis = 0;
+    _nodeProfile402 = nullptr;
+
     createWidgets();
 }
 
@@ -181,7 +186,7 @@ void MotorWidget::createWidgets()
 QToolBar *MotorWidget::createToolBarWidgets()
 {
     // toolbar
-    QToolBar *toolBar = new QToolBar(tr("Data logger commands"));
+    QToolBar *toolBar = new QToolBar(tr("Motor commands"));
     toolBar->setIconSize(QSize(20, 20));
 
     // read all action
@@ -221,8 +226,14 @@ QGroupBox *MotorWidget::createMotorConfigWidgets()
     _motorTypeComboBox = new IndexComboBox();
     _motorTypeComboBox->addItem(tr("No motor"), QVariant(static_cast<uint16_t>(0x0000)));
     _motorTypeComboBox->insertSeparator(_motorTypeComboBox->count());
+
+    _motorTypeComboBox->addItem(tr("DC brushed"));
+    dynamic_cast<QStandardItemModel *>(_motorTypeComboBox->model())->item(_motorTypeComboBox->count() - 1)->setEnabled(false);
     _motorTypeComboBox->addItem(tr("DC motor"), QVariant(static_cast<uint16_t>(0x0101)));
     _motorTypeComboBox->insertSeparator(_motorTypeComboBox->count());
+
+    _motorTypeComboBox->addItem(tr("BLDC brushless"));
+    dynamic_cast<QStandardItemModel *>(_motorTypeComboBox->model())->item(_motorTypeComboBox->count() - 1)->setEnabled(false);
     _motorTypeComboBox->addItem(tr("BLDC trapezoidal with hall"), QVariant(static_cast<uint16_t>(0x0201)));
     _motorTypeComboBox->addItem(tr("BLDC sinusoidal with hall"), QVariant(static_cast<uint16_t>(0x0202)));
     _motorTypeComboBox->addItem(tr("BLDC sinusoidal with incremental encoder"), QVariant(static_cast<uint16_t>(0x0203)));
@@ -258,7 +269,7 @@ QGroupBox *MotorWidget::createMotorConfigWidgets()
     _burstDurationSpinBox = new IndexSpinBox();
     _burstDurationSpinBox->setUnit(" ms");
     burstCurrentLayout->addWidget(_burstDurationSpinBox);
-    label = new QLabel(tr("Burst current:"));
+    label = new QLabel(tr("Burst &current:"));
     label->setBuddy(_burstDurationSpinBox);
     configLayout->addRow(label, burstCurrentLayout);
     _indexWidgets.append(_burstDurationSpinBox);
@@ -267,7 +278,7 @@ QGroupBox *MotorWidget::createMotorConfigWidgets()
     _sustainedCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayFloat);
     _sustainedCurrentSpinBox->setUnit(" A");
     _sustainedCurrentSpinBox->setScale(1.0 / 100);
-    configLayout->addRow(tr("Sustained current:"), _sustainedCurrentSpinBox);
+    configLayout->addRow(tr("&Sustained current:"), _sustainedCurrentSpinBox);
     _indexWidgets.append(_sustainedCurrentSpinBox);
 
     _currentConstantSpinBox = new IndexSpinBox();
@@ -299,12 +310,12 @@ QGroupBox *MotorWidget::createMotorConfigWidgets()
 
     _brakeBypassCheckBox = new IndexCheckBox();
     _brakeBypassCheckBox->setBitMask(1);
-    configLayout->addRow(tr("&Break overwrite:"), _brakeBypassCheckBox);
+    configLayout->addRow(tr("&Brake override:"), _brakeBypassCheckBox);
     _indexWidgets.append(_brakeBypassCheckBox);
 
     _reverseMotorPolarityCheckBox = new IndexCheckBox();
     _reverseMotorPolarityCheckBox->setBitMask(1);
-    configLayout->addRow(tr("&Reverse motor polarity:"), _reverseMotorPolarityCheckBox);
+    configLayout->addRow(tr("&Invert motor direction:"), _reverseMotorPolarityCheckBox);
     _indexWidgets.append(_reverseMotorPolarityCheckBox);
 
     motorConfigGroupBox->setLayout(configLayout);
@@ -329,35 +340,35 @@ QGroupBox *MotorWidget::createMotorStatusWidgets()
     _motorCurrentLabel->setDisplayHint(AbstractIndexWidget::DisplayFloat);
     _motorCurrentLabel->setScale(1.0 / 100.0);
     _motorCurrentLabel->setUnit(" A");
-    statusLayout->addRow(tr("&Current"), _motorCurrentLabel);
+    statusLayout->addRow(tr("Current"), _motorCurrentLabel);
     _indexWidgets.append(_motorCurrentLabel);
 
     _motorTorqueLabel = new IndexLabel();
     _motorTorqueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     _motorTorqueLabel->setUnit(" Nm");
-    statusLayout->addRow(tr("&Torque"), _motorTorqueLabel);
+    statusLayout->addRow(tr("Torque"), _motorTorqueLabel);
     _indexWidgets.append(_motorTorqueLabel);
 
     _motorVelocityLabel = new IndexLabel();
     _motorVelocityLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     _motorVelocityLabel->setUnit(" rpm");
-    statusLayout->addRow(tr("&Velocity"), _motorVelocityLabel);
+    statusLayout->addRow(tr("Velocity"), _motorVelocityLabel);
     _indexWidgets.append(_motorVelocityLabel);
 
     _motorPositionLabel = new IndexLabel();
     _motorPositionLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     _motorPositionLabel->setUnit(" tr");
-    statusLayout->addRow(tr("&Position"), _motorPositionLabel);
+    statusLayout->addRow(tr("Position"), _motorPositionLabel);
     _indexWidgets.append(_motorPositionLabel);
 
     _bridgeTemp1Label = new IndexLabel();
-    statusLayout->addRow(tr("&Temperature bridge 1:"), _bridgeTemp1Label);
+    statusLayout->addRow(tr("Temperature bridge 1:"), _bridgeTemp1Label);
     _bridgeTemp1Label->setScale(1.0 / 10.0);
     _bridgeTemp1Label->setUnit(" °C");
     _indexWidgets.append(_bridgeTemp1Label);
 
     _bridgeTemp2Label = new IndexLabel();
-    statusLayout->addRow(tr("&Temperature bridge 2:"), _bridgeTemp2Label);
+    statusLayout->addRow(tr("Temperature bridge 2:"), _bridgeTemp2Label);
     _bridgeTemp2Label->setScale(1.0 / 10.0);
     _bridgeTemp2Label->setUnit(" °C");
     _indexWidgets.append(_bridgeTemp2Label);
@@ -379,7 +390,7 @@ QGroupBox *MotorWidget::createBldcConfigWidgets()
 
     _reverseHallPolarityCheckBox = new IndexCheckBox();
     _reverseHallPolarityCheckBox->setBitMask(2);
-    configLayout->addRow(tr("&Reverse hall polarity:"), _reverseHallPolarityCheckBox);
+    configLayout->addRow(tr("Invert &hall polarity:"), _reverseHallPolarityCheckBox);
     _indexWidgets.append(_reverseHallPolarityCheckBox);
 
     configGroupBox->setLayout(configLayout);
@@ -394,15 +405,15 @@ QGroupBox *MotorWidget::createBldcStatusWidgets()
     statusLayout->setHorizontalSpacing(3);
 
     _hallRawValueLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Hall raw:"), _hallRawValueLabel);
+    statusLayout->addRow(tr("Hall raw:"), _hallRawValueLabel);
     _indexWidgets.append(_hallRawValueLabel);
 
     _hallPhaseLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Hall phase:"), _hallPhaseLabel);
+    statusLayout->addRow(tr("Hall phase:"), _hallPhaseLabel);
     _indexWidgets.append(_hallPhaseLabel);
 
     _electricalAngleLabel = new IndexLabel();
-    statusLayout->addRow(tr("&Electrical angle:"), _electricalAngleLabel);
+    statusLayout->addRow(tr("Electrical angle:"), _electricalAngleLabel);
     _electricalAngleLabel->setUnit("°");
     _indexWidgets.append(_electricalAngleLabel);
 
