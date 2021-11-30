@@ -36,7 +36,7 @@ public:
     virtual void setCwDefaultflag() = 0;
 
     virtual void readRealTimeObjects();
-    virtual void readAllObjects() = 0;
+    virtual void readAllObjects();
     virtual void reset();
 
 protected:

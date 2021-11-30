@@ -23,11 +23,11 @@
 
 enum ControlWordIP : quint16
 {
-    CW_PP_NewSetPoint = 0x10,
-    CW_PP_ChangeSetImmediately = 0x20,
-    CW_PP_AbsRel = 0x40,
-    CW_PP_ChangeOnSetPoint = 0x200,
-    CW_Mask = 0x270
+    CW_PP_NewSetPoint = 0x0010,
+    CW_PP_ChangeSetImmediately = 0x0020,
+    CW_PP_AbsRel = 0x0040,
+    CW_PP_ChangeOnSetPoint = 0x0200,
+    CW_Mask = 0x0270
 };
 
 ModePp::ModePp(NodeProfile402 *nodeProfile402)
@@ -144,6 +144,12 @@ quint16 ModePp::getSpecificCwFlag()
 void ModePp::setCwDefaultflag()
 {
     _cmdControlWordFlag = 0;
+}
+
+void ModePp::readAllObjects()
+{
+    ModePc::readAllObjects();
+    _nodeProfile402->node()->readObject(_targetObjectId);
 }
 
 void ModePp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

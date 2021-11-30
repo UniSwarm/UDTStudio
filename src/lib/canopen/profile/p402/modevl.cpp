@@ -91,7 +91,7 @@ void ModeVl::setEnableRamp(bool ok)
     _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
-bool ModeVl::isEnableRamp(void) const
+bool ModeVl::isEnableRamp() const
 {
     return (_cmdControlWordFlag & CW_VL_EnableRamp) >> 4;
 }
@@ -111,7 +111,7 @@ void ModeVl::setUnlockRamp(bool ok)
     _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
-bool ModeVl::isUnlockRamp(void) const
+bool ModeVl::isUnlockRamp() const
 {
     return (_cmdControlWordFlag & CW_VL_UnlockRamp) >> 5;
 }
@@ -131,7 +131,7 @@ void ModeVl::setReferenceRamp(bool ok)
     _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
-bool ModeVl::isReferenceRamp(void) const
+bool ModeVl::isReferenceRamp() const
 {
     return (_cmdControlWordFlag & CW_VL_ReferenceRamp) >> 6;
 }
@@ -234,8 +234,8 @@ void ModeVl::readRealTimeObjects()
 
 void ModeVl::readAllObjects()
 {
-    _nodeProfile402->node()->readObject(_velocityDemandObjectId);
-    _nodeProfile402->node()->readObject(_velocityActualObjectId);
+    readRealTimeObjects();
+    _nodeProfile402->node()->readObject(_targetObjectId);
     _nodeProfile402->node()->readObject(_minVelocityMinMaxAmountObjectId);
     _nodeProfile402->node()->readObject(_maxVelocityMinMaxAmountObjectId);
     _nodeProfile402->node()->readObject(_accelerationDeltaSpeedObjectId);

@@ -60,6 +60,7 @@ public:
     void setTarget(qint32 target) override;
     quint16 getSpecificCwFlag() override;
     void setCwDefaultflag() override;
+    void readAllObjects() override;
 
     // NodeOdSubscriber interface
 public:

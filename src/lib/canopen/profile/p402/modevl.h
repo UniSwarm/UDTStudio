@@ -33,13 +33,13 @@ public:
     ModeVl(NodeProfile402 *nodeProfile402);
 
     void setEnableRamp(bool ok);
-    bool isEnableRamp(void) const;
+    bool isEnableRamp() const;
 
     void setUnlockRamp(bool ok);
-    bool isUnlockRamp(void) const;
+    bool isUnlockRamp() const;
 
     void setReferenceRamp(bool ok);
-    bool isReferenceRamp(void) const;
+    bool isReferenceRamp() const;
 
     // ObjectID
     const NodeObjectId &targetObjectId() const;

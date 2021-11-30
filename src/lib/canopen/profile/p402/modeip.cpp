@@ -65,7 +65,7 @@ void ModeIp::setEnableRamp(bool ok)
     _nodeProfile402->node()->writeObject(_controlWordObjectId, QVariant(cw));
 }
 
-bool ModeIp::isEnableRamp(void) const
+bool ModeIp::isEnableRamp() const
 {
     return (_cmdControlWordFlag & CW_IP_EnableRamp) >> 4;
 }

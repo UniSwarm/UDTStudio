@@ -25,6 +25,8 @@
 Mode::Mode(NodeProfile402 *nodeProfile402)
     : _nodeProfile402(nodeProfile402)
 {
+    _mode = NodeProfile402::NoMode;
+
     _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, _nodeProfile402->axisId());
     _controlWordObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 }

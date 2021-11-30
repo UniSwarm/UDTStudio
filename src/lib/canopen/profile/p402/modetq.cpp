@@ -92,8 +92,8 @@ void ModeTq::readRealTimeObjects()
 
 void ModeTq::readAllObjects()
 {
-    _nodeProfile402->node()->readObject(_torqueDemandObjectId);
-    _nodeProfile402->node()->readObject(_torqueActualValueObjectId);
+    readRealTimeObjects();
+    _nodeProfile402->node()->readObject(_targetObjectId);
     _nodeProfile402->node()->readObject(_targetSlopeObjectId);
     _nodeProfile402->node()->readObject(_maxTorqueObjectId);
 }

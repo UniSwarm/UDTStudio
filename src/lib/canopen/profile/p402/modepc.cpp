@@ -158,8 +158,7 @@ void ModePc::readRealTimeObjects()
 
 void ModePc::readAllObjects()
 {
-    _nodeProfile402->node()->readObject(_positionDemandValueObjectId);
-    _nodeProfile402->node()->readObject(_positionActualValueObjectId);
+    readRealTimeObjects();
     _nodeProfile402->node()->readObject(_positionRangeLimitMinObjectId);
     _nodeProfile402->node()->readObject(_positionRangeLimitMaxObjectId);
     _nodeProfile402->node()->readObject(_softwarePositionLimitMinObjectId);

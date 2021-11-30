@@ -33,7 +33,7 @@ public:
     ModeIp(NodeProfile402 *nodeProfile402);
 
     void setEnableRamp(bool ok);
-    bool isEnableRamp(void) const;
+    bool isEnableRamp() const;
 
     // ObjectID
     const NodeObjectId &targetObjectId() const;

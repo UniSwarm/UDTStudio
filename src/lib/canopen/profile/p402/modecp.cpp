@@ -30,6 +30,8 @@ enum ControlWordIP : quint16
 ModeCp::ModeCp(NodeProfile402 *nodeProfile402)
     : ModePc(nodeProfile402)
 {
+    _cmdControlWordFlag = 0;
+
     _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_CP_POSITION_TARGET, _nodeProfile402->axisId());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 
@@ -74,4 +76,10 @@ quint16 ModeCp::getSpecificCwFlag()
 void ModeCp::setCwDefaultflag()
 {
     _cmdControlWordFlag = 0;
+}
+
+void ModeCp::readAllObjects()
+{
+    ModePc::readAllObjects();
+    _nodeProfile402->node()->readObject(_targetObjectId);
 }
