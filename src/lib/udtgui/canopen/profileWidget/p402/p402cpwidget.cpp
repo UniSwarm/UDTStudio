@@ -25,7 +25,8 @@
 
 #include "profile/p402/modecp.h"
 #include "profile/p402/nodeprofile402.h"
-#include "services/services.h"
+#include "services/rpdo.h"
+#include "services/tpdo.h"
 
 P402CpWidget::P402CpWidget(QWidget *parent)
     : P402ModeWidget(parent)
@@ -39,19 +40,19 @@ P402CpWidget::~P402CpWidget()
     unRegisterFullOd();
 }
 
-void P402CpWidget::targetPositionSpinboxFinished()
+void P402CpWidget::updateTargetFromSpinbox()
 {
     qint32 value = static_cast<qint16>(_positionTargetSpinBox->value());
     _nodeProfile402->setTarget(value);
 }
 
-void P402CpWidget::targetPositionSliderChanged()
+void P402CpWidget::updateTargetFromSlider()
 {
     qint32 value = static_cast<qint16>(_positionTargetSlider->value());
     _nodeProfile402->setTarget(value);
 }
 
-void P402CpWidget::maxPositionSpinboxFinished()
+void P402CpWidget::updateMaxPosition()
 {
     int max = _nodeProfile402->node()->nodeOd()->value(_positionRangeLimitMaxSpinBox->objId()).toInt();
     _positionTargetSlider->setRange(-max, max);
@@ -64,7 +65,7 @@ void P402CpWidget::setZeroButton()
     _nodeProfile402->setTarget(0);
 }
 
-void P402CpWidget::absRelCheckBoxRampClicked(bool ok)
+void P402CpWidget::sendAbsRel(bool ok)
 {
     if (_nodeProfile402)
     {
@@ -77,25 +78,33 @@ void P402CpWidget::absRelEvent(bool ok)
     _absRelCheckBox->setChecked(ok);
 }
 
-void P402CpWidget::dataLogger()
+void P402CpWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
-    DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
+    DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
+    dataLoggerWidget->setTitle(tr("Node %1 axis %2 DTY").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
+
     dataLogger->addData(_positionDemandValueObjectId);
     dataLogger->addData(_positionTargetObjectId);
-    _dataLoggerWidget->show();
+
+    dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
+    connect(dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
+
+    dataLoggerWidget->show();
+    dataLoggerWidget->raise();
+    dataLoggerWidget->activateWindow();
 }
 
-void P402CpWidget::pdoMapping()
+void P402CpWidget::mapDefaultObjects()
 {
     NodeObjectId controlWordObjectId = _nodeProfile402->controlWordObjectId();
     NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
 
-    QList<NodeObjectId> ipRpdoObjectList = {controlWordObjectId, _positionTargetObjectId};
-    _nodeProfile402->node()->rpdos().at(0)->writeMapping(ipRpdoObjectList);
+    QList<NodeObjectId> cpRpdoObjectList = {controlWordObjectId, _positionTargetObjectId};
+    _nodeProfile402->node()->rpdos().at(0)->writeMapping(cpRpdoObjectList);
 
-    QList<NodeObjectId> ipTpdoObjectList = {statusWordObjectId, _positionDemandValueObjectId};
-    _nodeProfile402->node()->tpdos().at(2)->writeMapping(ipTpdoObjectList);
+    QList<NodeObjectId> cpTpdoObjectList = {statusWordObjectId, _positionDemandValueObjectId};
+    _nodeProfile402->node()->tpdos().at(2)->writeMapping(cpTpdoObjectList);
 }
 
 void P402CpWidget::createWidgets()
@@ -104,30 +113,30 @@ void P402CpWidget::createWidgets()
     QGroupBox *modeGroupBox = new QGroupBox(tr("Continuous position mode"));
     _modeLayout = new QFormLayout();
 
-    targetWidgets();
-    informationWidgets();
-    limitWidgets();
+    createTargetWidgets();
+    createInformationWidgets();
+    createLimitWidgets();
 
     QFrame *frame = new QFrame();
     frame->setFrameStyle(QFrame::HLine);
     frame->setFrameShadow(QFrame::Sunken);
     _modeLayout->addRow(frame);
 
-    velocityWidgets();
+    createVelocityWidgets();
 
     frame = new QFrame();
     frame->setFrameStyle(QFrame::HLine);
     frame->setFrameShadow(QFrame::Sunken);
     _modeLayout->addRow(frame);
 
-    accelDeccelWidgets();
+    createAccelDeccelWidgets();
 
     frame = new QFrame();
     frame->setFrameStyle(QFrame::HLine);
     frame->setFrameShadow(QFrame::Sunken);
     _modeLayout->addRow(frame);
 
-    homePolarityWidgets();
+    createHomePolarityWidgets();
     modeGroupBox->setLayout(_modeLayout);
 
     // Create interface
@@ -136,7 +145,7 @@ void P402CpWidget::createWidgets()
     layout->setContentsMargins(0, 0, 0, 0);
 
     layout->addWidget(modeGroupBox);
-    layout->addWidget(controlWordWidgets());
+    layout->addWidget(createControlWordWidgets());
 
     QScrollArea *scrollArea = new QScrollArea;
     scrollArea->setWidget(widget);
@@ -145,12 +154,12 @@ void P402CpWidget::createWidgets()
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->addWidget(scrollArea);
-    vBoxLayout->addLayout(buttonWidgets());
+    vBoxLayout->addLayout(createButtonWidgets());
     vBoxLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(vBoxLayout);
 }
 
-void P402CpWidget::targetWidgets()
+void P402CpWidget::createTargetWidgets()
 {
     _positionTargetSpinBox = new QSpinBox();
     _positionTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
@@ -170,8 +179,8 @@ void P402CpWidget::targetWidgets()
     _positionTargetSlider->setTickPosition(QSlider::TicksBothSides);
     _modeLayout->addRow(_positionTargetSlider);
 
-    connect(_positionTargetSlider, &QSlider::valueChanged, this, &P402CpWidget::targetPositionSliderChanged);
-    connect(_positionTargetSpinBox, &QSpinBox::editingFinished, this, &P402CpWidget::targetPositionSpinboxFinished);
+    connect(_positionTargetSlider, &QSlider::valueChanged, this, &P402CpWidget::updateTargetFromSlider);
+    connect(_positionTargetSpinBox, &QSpinBox::editingFinished, this, &P402CpWidget::updateTargetFromSpinbox);
 
     QPushButton *setZeroButton = new QPushButton();
     setZeroButton->setText("Set to 0");
@@ -183,7 +192,7 @@ void P402CpWidget::targetWidgets()
     _modeLayout->addRow(setZeroLayout);
 }
 
-void P402CpWidget::informationWidgets()
+void P402CpWidget::createInformationWidgets()
 {
     _infoLabel = new QLabel();
     _infoLabel->setStyleSheet("QLabel { color : red; }");
@@ -196,7 +205,7 @@ void P402CpWidget::informationWidgets()
     _modeLayout->addRow(tr("Position actual value:"), _positionActualValueLabel);
 }
 
-void P402CpWidget::limitWidgets()
+void P402CpWidget::createLimitWidgets()
 {
     // POSITION RANGE LIMIT
     QLayout *positionLayout = new QHBoxLayout();
@@ -234,7 +243,7 @@ void P402CpWidget::limitWidgets()
     _modeLayout->addRow(label, softwareLayout);
 }
 
-void P402CpWidget::velocityWidgets()
+void P402CpWidget::createVelocityWidgets()
 {
     _profileVelocitySpinBox = new IndexSpinBox();
     _modeLayout->addRow(tr("Profile velocity:"), _profileVelocitySpinBox);
@@ -246,7 +255,7 @@ void P402CpWidget::velocityWidgets()
     _modeLayout->addRow(tr("Max motor speed:"), _maxMotorSpeedSpinBox);
 }
 
-void P402CpWidget::accelDeccelWidgets()
+void P402CpWidget::createAccelDeccelWidgets()
 {
     QLabel *label;
     QLayout *accelerationlayout = new QHBoxLayout();
@@ -276,7 +285,7 @@ void P402CpWidget::accelDeccelWidgets()
     _modeLayout->addRow(tr("Quick stop deceleration:"), _quickStopDecelerationSpinBox);
 }
 
-void P402CpWidget::homePolarityWidgets()
+void P402CpWidget::createHomePolarityWidgets()
 {
     _homeOffsetSpinBox = new IndexSpinBox();
     _modeLayout->addRow(tr("Home offset:"), _homeOffsetSpinBox);
@@ -286,34 +295,34 @@ void P402CpWidget::homePolarityWidgets()
     _modeLayout->addRow(tr("Polarity:"), _polarityCheckBox);
 }
 
-QGroupBox *P402CpWidget::controlWordWidgets()
+QGroupBox *P402CpWidget::createControlWordWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Control word"));
     QFormLayout *layout = new QFormLayout();
 
     _absRelCheckBox = new QCheckBox();
     layout->addRow(tr("Abs / rel (bit 6):"), _absRelCheckBox);
-    connect(_absRelCheckBox, &QCheckBox::clicked, this, &P402CpWidget::absRelCheckBoxRampClicked);
+    connect(_absRelCheckBox, &QCheckBox::clicked, this, &P402CpWidget::sendAbsRel);
 
     groupBox->setLayout(layout);
     return groupBox;
 }
 
-QHBoxLayout *P402CpWidget::buttonWidgets()
+QHBoxLayout *P402CpWidget::createButtonWidgets()
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402CpWidget::dataLogger);
+    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402CpWidget::createDataLogger);
 
     QPushButton *mappingPdoPushButton = new QPushButton(tr("Map CP to PDOs"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402CpWidget::pdoMapping);
+    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402CpWidget::mapDefaultObjects);
 
-    QPixmap ipModePixmap;
-    QLabel *ipModeLabel;
-    ipModeLabel = new QLabel();
-    ipModePixmap.load(":/diagram/img/diagrams/402IPDiagram.png");
-    ipModeLabel->setPixmap(ipModePixmap);
+    QPixmap cpModePixmap;
+    QLabel *cpModeLabel;
+    cpModeLabel = new QLabel();
+    cpModePixmap.load(":/diagram/img/diagrams/402IPDiagram.png");
+    cpModeLabel->setPixmap(cpModePixmap);
     QPushButton *imgPushButton = new QPushButton(tr("Diagram CP mode"));
-    connect(imgPushButton, SIGNAL(clicked()), ipModeLabel, SLOT(show()));
+    connect(imgPushButton, &QPushButton::clicked, cpModeLabel, &QLabel::show);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(2, 0, 2, 0);
@@ -350,7 +359,7 @@ void P402CpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     }
     else if (objId == _positionRangeLimitMaxSpinBox->objId())
     {
-        maxPositionSpinboxFinished();
+        updateMaxPosition();
     }
 }
 

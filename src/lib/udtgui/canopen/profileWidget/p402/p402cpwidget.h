@@ -43,7 +43,7 @@ class UDTGUI_EXPORT P402CpWidget : public P402ModeWidget
     Q_OBJECT
 public:
     P402CpWidget(QWidget *parent = nullptr);
-    ~P402CpWidget() override;
+    ~P402CpWidget();
 
 private:
     ModeCp *_modeCp;
@@ -52,58 +52,58 @@ private:
     NodeObjectId _positionDemandValueObjectId;
     NodeObjectId _positionActualValueObjectId;
 
+    void updateTargetFromSpinbox();
+    void updateTargetFromSlider();
+    void updateMaxPosition();
+    void setZeroButton();
+
+    void sendAbsRel(bool ok);
+    void absRelEvent(bool ok);
+
+    void createDataLogger();
+    void mapDefaultObjects();
+
+    // Create widgets
+    QFormLayout *_modeLayout;
+    void createWidgets();
+
+    void createTargetWidgets();
     QSpinBox *_positionTargetSpinBox;
     QSlider *_positionTargetSlider;
     QLabel *_sliderMinLabel;
     QLabel *_sliderMaxLabel;
 
+    void createInformationWidgets();
     QLabel *_infoLabel;
-
     IndexLabel *_positionDemandValueLabel;
     IndexLabel *_positionActualValueLabel;
 
+    void createLimitWidgets();
     IndexSpinBox *_positionRangeLimitMinSpinBox;
     IndexSpinBox *_positionRangeLimitMaxSpinBox;
     IndexSpinBox *_softwarePositionLimitMinSpinBox;
     IndexSpinBox *_softwarePositionLimitMaxSpinBox;
 
+    void createVelocityWidgets();
     IndexSpinBox *_profileVelocitySpinBox;
     IndexSpinBox *_maxProfileVelocitySpinBox;
     IndexSpinBox *_maxMotorSpeedSpinBox;
 
+    void createAccelDeccelWidgets();
     IndexSpinBox *_profileAccelerationSpinBox;
     IndexSpinBox *_maxAccelerationSpinBox;
     IndexSpinBox *_profileDecelerationSpinBox;
     IndexSpinBox *_maxDecelerationSpinBox;
     IndexSpinBox *_quickStopDecelerationSpinBox;
 
+    void createHomePolarityWidgets();
     IndexSpinBox *_homeOffsetSpinBox;
     IndexCheckBox *_polarityCheckBox;
 
+    QGroupBox *createControlWordWidgets();
     QCheckBox *_absRelCheckBox;
 
-    void targetPositionSpinboxFinished();
-    void targetPositionSliderChanged();
-    void maxPositionSpinboxFinished();
-    void setZeroButton();
-
-    void absRelCheckBoxRampClicked(bool ok);
-    void absRelEvent(bool ok);
-
-    void dataLogger();
-    void pdoMapping();
-
-    // Create widgets
-    QFormLayout *_modeLayout;
-    void createWidgets();
-    void targetWidgets();
-    void informationWidgets();
-    void limitWidgets();
-    void velocityWidgets();
-    void accelDeccelWidgets();
-    void homePolarityWidgets();
-    QGroupBox *controlWordWidgets();
-    QHBoxLayout *buttonWidgets();
+    QHBoxLayout *createButtonWidgets();
 
     // NodeOdSubscriber interface
 protected:
