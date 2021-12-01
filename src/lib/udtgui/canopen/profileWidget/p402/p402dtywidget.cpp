@@ -248,11 +248,12 @@ void P402DtyWidget::slopeWidgets()
 QGroupBox *P402DtyWidget::controlWordWidgets()
 {
     // Group Box CONTROL WORD
-    QGroupBox *groupBox = new QGroupBox(tr("Control Word:"));
+    QGroupBox *groupBox = new QGroupBox(tr("Control word:"));
     QFormLayout *layout = new QFormLayout();
 
     _enableRampCheckBox = new QCheckBox();
-    layout->addRow(tr("Enable Ramp (bit 4):"), _enableRampCheckBox);
+    _enableRampCheckBox->setChecked(true);
+    layout->addRow(tr("Enable ramp (bit 4):"), _enableRampCheckBox);
     groupBox->setLayout(layout);
 
     return groupBox;
