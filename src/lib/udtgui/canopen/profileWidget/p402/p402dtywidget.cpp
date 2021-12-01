@@ -22,11 +22,10 @@
 #include "canopen/indexWidget/indexlabel.h"
 #include "canopen/indexWidget/indexspinbox.h"
 
-#include "node.h"
-#include "profile/p402/nodeprofile402.h"
-#include "services/services.h"
-
 #include "profile/p402/modedty.h"
+#include "profile/p402/nodeprofile402.h"
+#include "services/rpdo.h"
+#include "services/tpdo.h"
 
 #include <QPushButton>
 
@@ -44,14 +43,12 @@ P402DtyWidget::~P402DtyWidget()
 
 void P402DtyWidget::readRealTimeObjects()
 {
-    _demandLabel->readObject();
+    _nodeProfile402->readRealTimeObjects();
 }
 
 void P402DtyWidget::readAllObjects()
 {
-    _demandLabel->readObject();
-    _slopeSpinBox->readObject();
-    _maxSpinBox->readObject();
+    _nodeProfile402->readAllObjects();
 }
 
 void P402DtyWidget::reset()
@@ -97,23 +94,23 @@ void P402DtyWidget::setNode(Node *node, uint8_t axis)
             _sliderMaxLabel->setNum(max);
         }
 
-        connect(_maxSpinBox, &QSpinBox::editingFinished, this, &P402DtyWidget::maxSpinboxFinished);
+        connect(_maxSpinBox, &QSpinBox::editingFinished, this, &P402DtyWidget::updateMaxDty);
     }
 }
 
-void P402DtyWidget::targetSpinboxFinished()
+void P402DtyWidget::updateFromSpinbox()
 {
     qint16 value = static_cast<qint16>(_targetSpinBox->value());
     _modeDty->setTarget(value);
 }
 
-void P402DtyWidget::targetSliderChanged()
+void P402DtyWidget::updateTargetFromSlider()
 {
     qint16 value = static_cast<qint16>(_targetSlider->value());
     _modeDty->setTarget(value);
 }
 
-void P402DtyWidget::maxSpinboxFinished()
+void P402DtyWidget::updateMaxDty()
 {
     int max = _nodeProfile402->node()->nodeOd()->value(_maxSpinBox->objId()).toInt();
     _targetSlider->setRange(-max, max);
@@ -129,29 +126,29 @@ void P402DtyWidget::setZeroButton()
 void P402DtyWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
-    DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    _dataLoggerWidget->setTitle(tr("Node %1 axis %2 DTY").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
+    DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
+    dataLoggerWidget->setTitle(tr("Node %1 axis %2 DTY").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
 
     dataLogger->addData(_targetObjectId);
     dataLogger->addData(_demandObjectId);
 
-    _dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
-    connect(_dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
+    dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
+    connect(dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
 
-    _dataLoggerWidget->show();
-    _dataLoggerWidget->raise();
-    _dataLoggerWidget->activateWindow();
+    dataLoggerWidget->show();
+    dataLoggerWidget->raise();
+    dataLoggerWidget->activateWindow();
 }
 
 void P402DtyWidget::mapDefaultObjects()
 {
     NodeObjectId controlWordObjectId = _nodeProfile402->controlWordObjectId();
-    QList<NodeObjectId> tqRpdoObjectList = {controlWordObjectId, _targetObjectId};
-    _nodeProfile402->node()->rpdos().at(0)->writeMapping(tqRpdoObjectList);
+    QList<NodeObjectId> dtyRpdoObjectList = {controlWordObjectId, _targetObjectId};
+    _nodeProfile402->node()->rpdos().at(0)->writeMapping(dtyRpdoObjectList);
 
     NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
-    QList<NodeObjectId> tqTpdoObjectList = {statusWordObjectId, _demandObjectId};
-    _nodeProfile402->node()->tpdos().at(0)->writeMapping(tqTpdoObjectList);
+    QList<NodeObjectId> dtyTpdoObjectList = {statusWordObjectId, _demandObjectId};
+    _nodeProfile402->node()->tpdos().at(0)->writeMapping(dtyTpdoObjectList);
 }
 
 void P402DtyWidget::createWidgets()
@@ -159,16 +156,16 @@ void P402DtyWidget::createWidgets()
     QGroupBox *modeGroupBox = new QGroupBox(tr("Duty cycle mode"));
     _modeLayout = new QFormLayout();
 
-    targetWidgets();
-    informationWidgets();
-    limitWidgets();
+    createTargetWidgets();
+    createDemandWidgets();
+    createLimitWidgets();
 
     QFrame *frame = new QFrame();
     frame->setFrameStyle(QFrame::HLine);
     frame->setFrameShadow(QFrame::Sunken);
     _modeLayout->addRow(frame);
 
-    slopeWidgets();
+    createSlopeWidgets();
 
     modeGroupBox->setLayout(_modeLayout);
 
@@ -177,7 +174,7 @@ void P402DtyWidget::createWidgets()
     layout->setContentsMargins(0, 0, 0, 0);
 
     layout->addWidget(modeGroupBox);
-    layout->addWidget(controlWordWidgets());
+    layout->addWidget(createControlWordWidgets());
 
     QScrollArea *scrollArea = new QScrollArea;
     scrollArea->setWidget(widget);
@@ -186,12 +183,12 @@ void P402DtyWidget::createWidgets()
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->addWidget(scrollArea);
-    vBoxLayout->addLayout(buttonWidgets());
+    vBoxLayout->addLayout(createButtonWidgets());
     vBoxLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(vBoxLayout);
 }
 
-void P402DtyWidget::targetWidgets()
+void P402DtyWidget::createTargetWidgets()
 {
     _targetSpinBox = new QSpinBox();
     _targetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
@@ -213,8 +210,8 @@ void P402DtyWidget::targetWidgets()
     _targetSlider->setTickPosition(QSlider::TicksBelow);
     _modeLayout->addRow(_targetSlider);
 
-    connect(_targetSlider, &QSlider::valueChanged, this, &P402DtyWidget::targetSliderChanged);
-    connect(_targetSpinBox, &QSpinBox::editingFinished, this, &P402DtyWidget::targetSpinboxFinished);
+    connect(_targetSlider, &QSlider::valueChanged, this, &P402DtyWidget::updateTargetFromSlider);
+    connect(_targetSpinBox, &QSpinBox::editingFinished, this, &P402DtyWidget::updateFromSpinbox);
 
     QPushButton *setZeroButton = new QPushButton();
     setZeroButton->setText("Set to 0");
@@ -227,25 +224,25 @@ void P402DtyWidget::targetWidgets()
     _modeLayout->addRow(setZeroLayout);
 }
 
-void P402DtyWidget::informationWidgets()
+void P402DtyWidget::createDemandWidgets()
 {
     _demandLabel = new IndexLabel();
     _modeLayout->addRow(tr("Demand:"), _demandLabel);
 }
 
-void P402DtyWidget::limitWidgets()
+void P402DtyWidget::createLimitWidgets()
 {
     _maxSpinBox = new IndexSpinBox();
     _modeLayout->addRow(tr("Ma&x "), _maxSpinBox);
 }
 
-void P402DtyWidget::slopeWidgets()
+void P402DtyWidget::createSlopeWidgets()
 {
     _slopeSpinBox = new IndexSpinBox();
     _modeLayout->addRow(tr("Target &slope "), _slopeSpinBox);
 }
 
-QGroupBox *P402DtyWidget::controlWordWidgets()
+QGroupBox *P402DtyWidget::createControlWordWidgets()
 {
     // Group Box CONTROL WORD
     QGroupBox *groupBox = new QGroupBox(tr("Control word:"));
@@ -259,7 +256,7 @@ QGroupBox *P402DtyWidget::controlWordWidgets()
     return groupBox;
 }
 
-QHBoxLayout *P402DtyWidget::buttonWidgets()
+QHBoxLayout *P402DtyWidget::createButtonWidgets()
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402DtyWidget::createDataLogger);
@@ -267,13 +264,13 @@ QHBoxLayout *P402DtyWidget::buttonWidgets()
     QPushButton *mappingPdoPushButton = new QPushButton(tr("Map DTY to PDOs"));
     connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402DtyWidget::mapDefaultObjects);
 
-    QPixmap tqModePixmap;
-    QLabel *tqModeLabel;
-    tqModeLabel = new QLabel();
-    tqModePixmap.load(":/diagram/img/diagrams/402TQDiagram.png");
-    tqModeLabel->setPixmap(tqModePixmap);
+    QPixmap dtyModePixmap;
+    QLabel *dtyModeLabel;
+    dtyModeLabel = new QLabel();
+    dtyModePixmap.load(":/diagram/img/diagrams/402TQDiagram.png");
+    dtyModeLabel->setPixmap(dtyModePixmap);
     QPushButton *imgPushButton = new QPushButton(tr("Diagram DTY mode"));
-    connect(imgPushButton, SIGNAL(clicked()), tqModeLabel, SLOT(show()));
+    connect(imgPushButton, &QPushButton::clicked, dtyModeLabel, &QLabel::show);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(2, 0, 2, 0);

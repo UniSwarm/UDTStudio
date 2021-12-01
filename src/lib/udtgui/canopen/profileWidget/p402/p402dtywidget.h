@@ -53,35 +53,38 @@ private:
     NodeObjectId _demandObjectId;
     NodeObjectId _targetObjectId;
 
-    QSpinBox *_targetSpinBox;
-    QSlider *_targetSlider;
-    QLabel *_sliderMinLabel;
-    QLabel *_sliderMaxLabel;
-
-    IndexLabel *_demandLabel;
-
-    IndexSpinBox *_slopeSpinBox;
-    IndexSpinBox *_maxSpinBox;
-
-    QCheckBox *_enableRampCheckBox;
-
-    void targetSpinboxFinished();
-    void targetSliderChanged();
-    void maxSpinboxFinished();
+    void updateFromSpinbox();
+    void updateTargetFromSlider();
+    void updateMaxDty();
 
     void setZeroButton();
+
     void createDataLogger();
     void mapDefaultObjects();
 
     // Create widgets
     QFormLayout *_modeLayout;
     void createWidgets();
-    void targetWidgets();
-    void informationWidgets();
-    void limitWidgets();
-    void slopeWidgets();
-    QGroupBox *controlWordWidgets();
-    QHBoxLayout *buttonWidgets();
+
+    void createTargetWidgets();
+    QSpinBox *_targetSpinBox;
+    QSlider *_targetSlider;
+    QLabel *_sliderMinLabel;
+    QLabel *_sliderMaxLabel;
+
+    void createDemandWidgets();
+    IndexLabel *_demandLabel;
+
+    void createLimitWidgets();
+    IndexSpinBox *_maxSpinBox;
+
+    void createSlopeWidgets();
+    IndexSpinBox *_slopeSpinBox;
+
+    QGroupBox *createControlWordWidgets();
+    QCheckBox *_enableRampCheckBox;
+
+    QHBoxLayout *createButtonWidgets();
 
     // NodeOdSubscriber interface
 protected:
