@@ -40,16 +40,18 @@ protected:
     void displayStatus(const QString &message);
     void clearStatus();
 
+    // QWidget interface
+protected:
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+
     // AbstractIndexWidget interface
 protected:
     void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
     bool isEditing() const override;
     void updateObjId() override;
-
-    // QWidget interface
-protected:
-    void focusInEvent(QFocusEvent *event) override;
-    void focusOutEvent(QFocusEvent *event) override;
 };
 
 #endif  // INDEXCOMBOBOX_H

@@ -23,6 +23,8 @@
 IndexLCDNumber::IndexLCDNumber(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
+    _widget = this;
+
     QHBoxLayout *hlayout = new QHBoxLayout();
     hlayout->setContentsMargins(0, 0, 0, 0);
     hlayout->setSpacing(0);
@@ -86,4 +88,16 @@ void IndexLCDNumber::mouseDoubleClickEvent(QMouseEvent *event)
 {
     Q_UNUSED(event)
     requestReadValue();
+}
+
+void IndexLCDNumber::mousePressEvent(QMouseEvent *event)
+{
+    QWidget::mousePressEvent(event);
+    indexWidgetMouseClick(event);
+}
+
+void IndexLCDNumber::mouseMoveEvent(QMouseEvent *event)
+{
+    QWidget::mouseMoveEvent(event);
+    indexWidgetMouseMove(event);
 }

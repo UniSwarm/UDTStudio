@@ -22,6 +22,12 @@
 
 #include <QDebug>
 
+#include <QApplication>
+#include <QDrag>
+#include <QMimeData>
+#include <QMouseEvent>
+#include <QWidget>
+
 AbstractIndexWidget::AbstractIndexWidget(const NodeObjectId &objId)
 {
     setObjId(objId);
@@ -32,6 +38,8 @@ AbstractIndexWidget::AbstractIndexWidget(const NodeObjectId &objId)
     _scale = 1.0;
 
     _requestRead = false;
+
+    _widget = nullptr;
 }
 
 Node *AbstractIndexWidget::node() const
@@ -217,6 +225,35 @@ AbstractIndexWidget::Bound AbstractIndexWidget::inBound(const QVariant &value)
     }
 
     return BoundOK;
+}
+
+void AbstractIndexWidget::indexWidgetMouseClick(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        _dragStartPosition = event->pos();
+    }
+}
+
+void AbstractIndexWidget::indexWidgetMouseMove(QMouseEvent *event)
+{
+    if (!(event->buttons() & Qt::LeftButton))
+    {
+        return;
+    }
+    if ((event->pos() - _dragStartPosition).manhattanLength() < QApplication::startDragDistance())
+    {
+        return;
+    }
+    QDrag *drag = new QDrag(_widget);
+    QMimeData *mimeData = new QMimeData();
+
+    QByteArray encodedData;
+    encodedData.append(objId().mimeData().toUtf8());
+    mimeData->setData("index/subindex", encodedData);
+    drag->setMimeData(mimeData);
+
+    drag->exec();
 }
 
 const QVariant &AbstractIndexWidget::minValue() const

@@ -26,7 +26,7 @@
 IndexBar::IndexBar(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
-
+    _widget = this;
 }
 
 void IndexBar::setDisplayValue(const QVariant &value, DisplayAttribute flags)
@@ -105,4 +105,16 @@ void IndexBar::mouseDoubleClickEvent(QMouseEvent *event)
 QString IndexBar::text() const
 {
     return QString("%1%2").arg(AbstractIndexWidget::value().toDouble(), 0, 'g', 2).arg(_unit);
+}
+
+void IndexBar::mousePressEvent(QMouseEvent *event)
+{
+    QProgressBar::mousePressEvent(event);
+    indexWidgetMouseClick(event);
+}
+
+void IndexBar::mouseMoveEvent(QMouseEvent *event)
+{
+    QProgressBar::mouseMoveEvent(event);
+    indexWidgetMouseMove(event);
 }

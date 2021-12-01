@@ -37,6 +37,11 @@ protected:
     bool isEditing() const override;
     void updateObjId() override;
 
+    // QWidget interface
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+
     // QAbstractButton interface
 protected:
     void nextCheckState() override;

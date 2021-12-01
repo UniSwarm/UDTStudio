@@ -30,24 +30,23 @@ class UDTGUI_EXPORT IndexSpinBox : public QAbstractSpinBox, public AbstractIndex
 public:
     IndexSpinBox(const NodeObjectId &objId = NodeObjectId());
 
-    // AbstractIndexWidget interface
-public:
-    void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
-    bool isEditing() const override;
-
-    // AbstractIndexWidget interface
-protected:
-    void updateHint() override;
-    void updateObjId() override;
-
 protected:
     void setTextEditValue(const QVariant &value);
     QVariant textEditValue() const;
+
+    // AbstractIndexWidget interface
+protected:
+    void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
+    bool isEditing() const override;
+    void updateHint() override;
+    void updateObjId() override;
 
     // QWidget interface
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void focusOutEvent(QFocusEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
 
     // QAbstractSpinBox interface
 public:

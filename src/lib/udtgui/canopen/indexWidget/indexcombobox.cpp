@@ -25,11 +25,14 @@
 IndexComboBox::IndexComboBox(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
+    _widget = this;
+
     connect(this,
             QOverload<int>::of(&QComboBox::currentIndexChanged),
             [=](int index)
             {
                 setInternalIndex(index);
+                displayStatus(itemData(index, Qt::StatusTipRole).toString());
             });
 
     connect(this,
@@ -130,4 +133,16 @@ void IndexComboBox::focusOutEvent(QFocusEvent *event)
 {
     QComboBox::focusOutEvent(event);
     clearStatus();
+}
+
+void IndexComboBox::mousePressEvent(QMouseEvent *event)
+{
+    QComboBox::mousePressEvent(event);
+    indexWidgetMouseClick(event);
+}
+
+void IndexComboBox::mouseMoveEvent(QMouseEvent *event)
+{
+    QComboBox::mouseMoveEvent(event);
+    indexWidgetMouseMove(event);
 }

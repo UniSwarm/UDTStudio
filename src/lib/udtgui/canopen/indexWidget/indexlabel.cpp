@@ -21,6 +21,7 @@
 IndexLabel::IndexLabel(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
+    _widget = this;
 }
 
 void IndexLabel::setDisplayValue(const QVariant &value, AbstractIndexWidget::DisplayAttribute flags)
@@ -55,4 +56,16 @@ void IndexLabel::mouseDoubleClickEvent(QMouseEvent *event)
 {
     Q_UNUSED(event)
     requestReadValue();
+}
+
+void IndexLabel::mousePressEvent(QMouseEvent *event)
+{
+    QLabel::mousePressEvent(event);
+    indexWidgetMouseClick(event);
+}
+
+void IndexLabel::mouseMoveEvent(QMouseEvent *event)
+{
+    QLabel::mouseMoveEvent(event);
+    indexWidgetMouseMove(event);
 }

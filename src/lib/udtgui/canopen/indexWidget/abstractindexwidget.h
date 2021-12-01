@@ -23,6 +23,11 @@
 
 #include "nodeodsubscriber.h"
 
+#include <QPoint>
+
+class QWidget;
+class QMouseEvent;
+
 class UDTGUI_EXPORT AbstractIndexWidget : public NodeOdSubscriber
 {
 public:
@@ -112,6 +117,11 @@ protected:
     QVariant _minValue;
     QVariant _maxValue;
     QString _unit;
+
+    QWidget *_widget;
+    QPoint _dragStartPosition;
+    void indexWidgetMouseClick(QMouseEvent *event);
+    void indexWidgetMouseMove(QMouseEvent *event);
 
     // NodeOdSubscriber interface
 protected:

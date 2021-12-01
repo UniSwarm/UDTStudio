@@ -34,14 +34,13 @@ public:
 protected:
     void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
     bool isEditing() const override;
-
-    // AbstractIndexWidget interface
-protected:
     void updateObjId() override;
 
     // QWidget interface
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
 };
 
 #endif  // INDEXLABEL_H

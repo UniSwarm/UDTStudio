@@ -22,6 +22,8 @@ IndexCheckBox::IndexCheckBox(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
     setText(tr("Enabled"));
+
+    _widget = this;
 }
 
 void IndexCheckBox::setDisplayValue(const QVariant &value, AbstractIndexWidget::DisplayAttribute flags)
@@ -66,4 +68,16 @@ void IndexCheckBox::nextCheckState()
         newValue = oldValue & ~_bitMask;
     }
     requestWriteValue(QVariant(static_cast<qlonglong>(newValue)));
+}
+
+void IndexCheckBox::mousePressEvent(QMouseEvent *event)
+{
+    QCheckBox::mousePressEvent(event);
+    indexWidgetMouseClick(event);
+}
+
+void IndexCheckBox::mouseMoveEvent(QMouseEvent *event)
+{
+    QCheckBox::mouseMoveEvent(event);
+    indexWidgetMouseMove(event);
 }

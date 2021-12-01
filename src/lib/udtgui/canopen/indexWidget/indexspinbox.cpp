@@ -26,6 +26,8 @@
 IndexSpinBox::IndexSpinBox(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
+    _widget = this;
+
     updateHint();
 }
 
@@ -205,4 +207,16 @@ void IndexSpinBox::updateHint()
 void IndexSpinBox::updateObjId()
 {
     setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
+}
+
+void IndexSpinBox::mousePressEvent(QMouseEvent *event)
+{
+    QAbstractSpinBox::mousePressEvent(event);
+    indexWidgetMouseClick(event);
+}
+
+void IndexSpinBox::mouseMoveEvent(QMouseEvent *event)
+{
+    QAbstractSpinBox::mouseMoveEvent(event);
+    indexWidgetMouseMove(event);
 }
