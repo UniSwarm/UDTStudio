@@ -42,11 +42,6 @@ P402IpWidget::P402IpWidget(QWidget *parent)
     createWidgets();
 }
 
-P402IpWidget::~P402IpWidget()
-{
-    unRegisterFullOd();
-}
-
 void P402IpWidget::readRealTimeObjects()
 {
     if (_nodeProfile402)

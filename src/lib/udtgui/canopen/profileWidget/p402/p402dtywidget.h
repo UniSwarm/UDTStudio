@@ -42,7 +42,6 @@ class UDTGUI_EXPORT P402DtyWidget : public P402ModeWidget
     Q_OBJECT
 public:
     P402DtyWidget(QWidget *parent = nullptr);
-    ~P402DtyWidget() override;
 
     void setEnableRamp(bool ok);
     bool isEnableRamp(void) const;

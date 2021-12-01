@@ -33,11 +33,6 @@ P402OptionWidget::P402OptionWidget(QWidget *parent)
     createWidgets();
 }
 
-P402OptionWidget::~P402OptionWidget()
-{
-    unRegisterFullOd();
-}
-
 void P402OptionWidget::readAllObjects()
 {
     if (_nodeProfile402)

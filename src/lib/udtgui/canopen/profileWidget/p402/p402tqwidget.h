@@ -40,7 +40,6 @@ class UDTGUI_EXPORT P402TqWidget : public P402ModeWidget
     Q_OBJECT
 public:
     P402TqWidget(QWidget *parent = nullptr);
-    ~P402TqWidget() override;
 
 private:
     ModeTq *_modeTq;
@@ -51,39 +50,43 @@ private:
     NodeObjectId _currentActualValueObjectId;
     NodeObjectId _dcLinkVoltageObjectId;
 
-    QSpinBox *_targetTorqueSpinBox;
-    QSlider *_targetTorqueSlider;
-    QLabel *_sliderMinLabel;
-    QLabel *_sliderMaxLabel;
-
-    IndexLabel *_torqueDemandLabel;
-    IndexLabel *_torqueActualValueLabel;
-    // IndexLabel *_currentActualValueLabel;
-
-    IndexSpinBox *_targetSlopeSpinBox;
-    // IndexSpinBox *_torqueProfileTypeSpinBox;
-    IndexSpinBox *_maxTorqueSpinBox;
-    // IndexSpinBox *_maxCurrentSpinBox;
-    // IndexSpinBox *_motorRatedTorqueSpinBox;
-    // IndexSpinBox *_motorRatedCurrentSpinBox;
-    // IndexLabel *_dcLinkVoltageLabel;
-
     void targetTorqueSpinboxFinished();
     void targetTorqueSliderChanged();
     void maxTorqueSpinboxFinished();
 
     void setZeroButton();
+
     void createDataLogger();
     void mapDefaultObjects();
 
     // Create widgets
-    QFormLayout *_modeLayout;
     void createWidgets();
-    void targetWidgets();
-    void informationWidgets();
-    void limitWidgets();
-    void slopeWidgets();
-    QHBoxLayout *buttonWidgets();
+    QFormLayout *_modeLayout;
+
+    void createTargetWidgets();
+    QSpinBox *_targetTorqueSpinBox;
+    QSlider *_targetTorqueSlider;
+    QLabel *_sliderMinLabel;
+    QLabel *_sliderMaxLabel;
+
+    void createInformationWidgets();
+    IndexLabel *_torqueDemandLabel;
+    IndexLabel *_torqueActualValueLabel;
+    // IndexLabel *_currentActualValueLabel;
+
+    void createLimitWidgets();
+    IndexSpinBox *_maxTorqueSpinBox;
+
+    // IndexSpinBox *_torqueProfileTypeSpinBox;
+    // IndexSpinBox *_maxCurrentSpinBox;
+    // IndexSpinBox *_motorRatedTorqueSpinBox;
+    // IndexSpinBox *_motorRatedCurrentSpinBox;
+    // IndexLabel *_dcLinkVoltageLabel;
+
+    void createSlopeWidgets();
+    IndexSpinBox *_targetSlopeSpinBox;
+
+    QHBoxLayout *createButtonWidgets();
 
     // NodeOdSubscriber interface
 protected:

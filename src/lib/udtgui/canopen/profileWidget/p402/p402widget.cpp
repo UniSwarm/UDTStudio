@@ -18,8 +18,8 @@
 
 #include "p402widget.h"
 
+#include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/indexWidget/indexlabel.h"
-#include "services/services.h"
 
 #include "p402cpwidget.h"
 #include "p402dtywidget.h"
@@ -36,30 +36,14 @@
 #include <QSplitter>
 #include <QStandardItemModel>
 
-#include "canopen/datalogger/dataloggerwidget.h"
-
 P402Widget::P402Widget(Node *node, uint8_t axis, QWidget *parent)
     : QWidget(parent)
-    , _node(node)
-    , _axis(axis)
+    , _node(nullptr)
+    , _axis(0)
 {
     createWidgets();
 
-    if (!_node)
-    {
-        return;
-    }
-
-    if ((node->profileNumber()) != 0x192)
-    {
-        return;
-    }
-
     setNode(node, axis);
-}
-
-P402Widget::~P402Widget()
-{
 }
 
 Node *P402Widget::node() const
@@ -69,7 +53,7 @@ Node *P402Widget::node() const
 
 QString P402Widget::title() const
 {
-    return QString("Motion Control");
+    return QString("Motion control");
 }
 
 void P402Widget::setNode(Node *node, uint8_t axis)
@@ -80,7 +64,7 @@ void P402Widget::setNode(Node *node, uint8_t axis)
     }
     _node = node;
 
-    if ((node->profileNumber() != 0x192) || node->profiles().isEmpty())
+    if ((node->profileNumber() != 402) || node->profiles().isEmpty())
     {
         return;
     }
@@ -346,71 +330,63 @@ void P402Widget::readAllObjects()
 
 void P402Widget::setEvent(quint8 event)
 {
-    _informationLabel->setText(tr("False"));
-    _warningLabel->setText(tr("False"));
-
-    QString text;
+    QString informationText;
     if (event & NodeProfile402::VoltageEnabled)
     {
-        text = _nodeProfile402->event402Str(NodeProfile402::VoltageEnabled);
+        informationText = _nodeProfile402->event402Str(NodeProfile402::VoltageEnabled);
     }
-
     if (event & NodeProfile402::Remote)
     {
-        if (!text.isEmpty())
+        if (!informationText.isEmpty())
         {
-            text.append(",\n");
+            informationText.append(",\n");
         }
-        text.append(_nodeProfile402->event402Str(NodeProfile402::Remote));
+        informationText.append(_nodeProfile402->event402Str(NodeProfile402::Remote));
     }
     if (event & NodeProfile402::TargetReached)
     {
-        if (!text.isEmpty())
+        if (!informationText.isEmpty())
         {
-            text.append(",\n");
+            informationText.append(",\n");
         }
-        text.append(_nodeProfile402->event402Str(NodeProfile402::TargetReached));
+        informationText.append(_nodeProfile402->event402Str(NodeProfile402::TargetReached));
     }
     if (event & NodeProfile402::ModeSpecific)
     {
-        if (!text.isEmpty())
+        if (!informationText.isEmpty())
         {
-            text.append(",\n");
+            informationText.append(",\n");
         }
-        text.append(_nodeProfile402->event402Str(NodeProfile402::ModeSpecific));
+        informationText.append(_nodeProfile402->event402Str(NodeProfile402::ModeSpecific));
     }
+    _informationLabel->setText(informationText);
 
-    _informationLabel->clear();
-    _informationLabel->setText(text);
-
-    text.clear();
+    QString warningText;
     if (event & NodeProfile402::InternalLimitActive)
     {
-        text.append(_nodeProfile402->event402Str(NodeProfile402::InternalLimitActive));
+        warningText.append(_nodeProfile402->event402Str(NodeProfile402::InternalLimitActive));
     }
-
     if (event & NodeProfile402::Warning)
     {
-        if (!text.isEmpty())
+        if (!warningText.isEmpty())
         {
-            text.append(",\n");
+            warningText.append(",\n");
         }
-        text.append(_nodeProfile402->event402Str(NodeProfile402::Warning));
+        warningText.append(_nodeProfile402->event402Str(NodeProfile402::Warning));
     }
     quint16 mode = static_cast<quint16>(_nodeProfile402->actualMode());
     if (mode == 7)
     {
         if (event & NodeProfile402::FollowingError)
         {
-            if (!text.isEmpty())
+            if (!warningText.isEmpty())
             {
-                text.append(",\n");
+                warningText.append(",\n");
             }
-            text.append(_nodeProfile402->event402Str(NodeProfile402::FollowingError));
+            warningText.append(_nodeProfile402->event402Str(NodeProfile402::FollowingError));
         }
     }
-    _warningLabel->clear();
-    _warningLabel->setText(text);
+    _warningLabel->setText(warningText);
 }
 
 void P402Widget::updateModeComboBox()
@@ -528,13 +504,13 @@ void P402Widget::createWidgets()
     controlLayout->setContentsMargins(0, 0, 4, 0);
     controlLayout->setSpacing(0);
 
-    _modeGroupBox = modeWidgets();
+    _modeGroupBox = createModeWidgets();
     controlLayout->addWidget(_modeGroupBox);
-    _stateMachineGroupBox = stateMachineWidgets();
+    _stateMachineGroupBox = createStateMachineWidgets();
     controlLayout->addWidget(_stateMachineGroupBox);
-    _controlWordGroupBox = controlWordWidgets();
+    _controlWordGroupBox = createControlWordWidgets();
     controlLayout->addWidget(_controlWordGroupBox);
-    _statusWordGroupBox = statusWordWidgets();
+    _statusWordGroupBox = createStatusWordWidgets();
     controlLayout->addWidget(_statusWordGroupBox);
 
     QScrollArea *scrollArea = new QScrollArea();
@@ -556,12 +532,12 @@ void P402Widget::createWidgets()
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->setContentsMargins(2, 2, 2, 2);
     vBoxLayout->setSpacing(2);
-    vBoxLayout->addWidget(toolBarWidgets());
+    vBoxLayout->addWidget(createToolBarWidgets());
     vBoxLayout->addLayout(hBoxLayout);
     setLayout(vBoxLayout);
 }
 
-QToolBar *P402Widget::toolBarWidgets()
+QToolBar *P402Widget::createToolBarWidgets()
 {
     QToolBar *toolBar = new QToolBar(tr("Axis commands"));
     toolBar->setIconSize(QSize(20, 20));
@@ -608,7 +584,7 @@ QToolBar *P402Widget::toolBarWidgets()
     return toolBar;
 }
 
-QGroupBox *P402Widget::modeWidgets()
+QGroupBox *P402Widget::createModeWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Mode"));
     QFormLayout *layout = new QFormLayout();
@@ -624,7 +600,7 @@ QGroupBox *P402Widget::modeWidgets()
     return groupBox;
 }
 
-QGroupBox *P402Widget::stateMachineWidgets()
+QGroupBox *P402Widget::createStateMachineWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("State Machine"));
     QFormLayout *layout = new QFormLayout();
@@ -701,7 +677,7 @@ QGroupBox *P402Widget::stateMachineWidgets()
     return groupBox;
 }
 
-QGroupBox *P402Widget::controlWordWidgets()
+QGroupBox *P402Widget::createControlWordWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Control word (0x6n40)"));
     QFormLayout *layout = new QFormLayout();
@@ -725,7 +701,7 @@ QGroupBox *P402Widget::controlWordWidgets()
     return groupBox;
 }
 
-QGroupBox *P402Widget::statusWordWidgets()
+QGroupBox *P402Widget::createStatusWordWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Status Word (0x6n41)"));
     QFormLayout *layout = new QFormLayout();

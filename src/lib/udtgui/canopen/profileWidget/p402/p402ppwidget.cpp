@@ -21,10 +21,11 @@
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/indexWidget/indexcheckbox.h"
 #include "canopen/indexWidget/indexspinbox.h"
-#include "services/services.h"
 
 #include "profile/p402/modepp.h"
 #include "profile/p402/nodeprofile402.h"
+#include "services/rpdo.h"
+#include "services/tpdo.h"
 
 #include <QString>
 #include <QStringList>
@@ -37,11 +38,6 @@ P402PpWidget::P402PpWidget(QWidget *parent)
 {
     createWidgets();
     _nodeProfile402 = nullptr;
-}
-
-P402PpWidget::~P402PpWidget()
-{
-    unRegisterFullOd();
 }
 
 void P402PpWidget::readRealTimeObjects()
@@ -212,29 +208,29 @@ void P402PpWidget::updateInformationLabel()
 void P402PpWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
-    DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    _dataLoggerWidget->setTitle(tr("Node %1 axis %2 PP").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
+    DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
+    dataLoggerWidget->setTitle(tr("Node %1 axis %2 PP").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
 
     dataLogger->addData(_positionDemandValueObjectId);
     dataLogger->addData(_positionTargetObjectId);
 
-    _dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
-    connect(_dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
+    dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
+    connect(dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
 
-    _dataLoggerWidget->show();
-    _dataLoggerWidget->raise();
-    _dataLoggerWidget->activateWindow();
+    dataLoggerWidget->show();
+    dataLoggerWidget->raise();
+    dataLoggerWidget->activateWindow();
 }
 
 void P402PpWidget::mapDefaultObjects()
 {
     NodeObjectId controlWordObjectId = _nodeProfile402->controlWordObjectId();
-    QList<NodeObjectId> ipRpdoObjectList = {controlWordObjectId, _positionTargetObjectId};
-    _nodeProfile402->node()->rpdos().at(0)->writeMapping(ipRpdoObjectList);
+    QList<NodeObjectId> ppRpdoObjectList = {controlWordObjectId, _positionTargetObjectId};
+    _nodeProfile402->node()->rpdos().at(0)->writeMapping(ppRpdoObjectList);
 
     NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
-    QList<NodeObjectId> ipTpdoObjectList = {statusWordObjectId, _positionDemandValueObjectId};
-    _nodeProfile402->node()->tpdos().at(0)->writeMapping(ipTpdoObjectList);
+    QList<NodeObjectId> ppTpdoObjectList = {statusWordObjectId, _positionDemandValueObjectId};
+    _nodeProfile402->node()->tpdos().at(0)->writeMapping(ppTpdoObjectList);
 }
 
 void P402PpWidget::createWidgets()
@@ -243,30 +239,30 @@ void P402PpWidget::createWidgets()
     QGroupBox *modeGroupBox = new QGroupBox(tr("Profile position mode"));
     _modeLayout = new QFormLayout();
 
-    targetWidgets();
-    informationWidgets();
-    limitWidgets();
+    createTargetWidgets();
+    createInformationWidgets();
+    createLimitWidgets();
 
     QFrame *frame = new QFrame();
     frame->setFrameStyle(QFrame::HLine);
     frame->setFrameShadow(QFrame::Sunken);
     _modeLayout->addRow(frame);
 
-    velocityWidgets();
+    createVelocityWidgets();
 
     frame = new QFrame();
     frame->setFrameStyle(QFrame::HLine);
     frame->setFrameShadow(QFrame::Sunken);
     _modeLayout->addRow(frame);
 
-    accelDeccelWidgets();
+    createAccelDeccelWidgets();
 
     frame = new QFrame();
     frame->setFrameStyle(QFrame::HLine);
     frame->setFrameShadow(QFrame::Sunken);
     _modeLayout->addRow(frame);
 
-    homePolarityWidgets();
+    createHomePolarityWidgets();
     modeGroupBox->setLayout(_modeLayout);
 
     // Create interface
@@ -275,7 +271,7 @@ void P402PpWidget::createWidgets()
     layout->setContentsMargins(0, 0, 0, 0);
 
     layout->addWidget(modeGroupBox);
-    layout->addWidget(controlWordWidgets());
+    layout->addWidget(createControlWordWidgets());
 
     QScrollArea *scrollArea = new QScrollArea;
     scrollArea->setWidget(widget);
@@ -284,12 +280,12 @@ void P402PpWidget::createWidgets()
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->addWidget(scrollArea);
-    vBoxLayout->addLayout(buttonWidgets());
+    vBoxLayout->addLayout(createButtonWidgets());
     vBoxLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(vBoxLayout);
 }
 
-void P402PpWidget::targetWidgets()
+void P402PpWidget::createTargetWidgets()
 {
     _targetPositionLineEdit = new QLineEdit();
 
@@ -298,25 +294,24 @@ void P402PpWidget::targetWidgets()
     _goOneLineEdit->setPlaceholderText(tr("Target one"));
     goLayout->addWidget(_goOneLineEdit);
     _goOnePushButton = new QPushButton(tr("Go one"));
+    connect(_goOneLineEdit, &QLineEdit::returnPressed, this, &P402PpWidget::goOneLineEditFinished);
+    connect(_goOnePushButton, &QPushButton::clicked, this, &P402PpWidget::goOneLineEditFinished);
     goLayout->addWidget(_goOnePushButton);
 
     _goTwoLineEdit = new QLineEdit();
     _goTwoLineEdit->setPlaceholderText(tr("Target two"));
     goLayout->addWidget(_goTwoLineEdit);
     _goTwoPushButton = new QPushButton(tr("Go two"));
+    connect(_goTwoLineEdit, &QLineEdit::returnPressed, this, &P402PpWidget::twoOneLineEditFinished);
+    connect(_goTwoPushButton, &QPushButton::clicked, this, &P402PpWidget::twoOneLineEditFinished);
     goLayout->addWidget(_goTwoPushButton);
 
     QLabel *labelPositionTarget = new QLabel(tr("Position &target:"));
     labelPositionTarget->setBuddy(_goOneLineEdit);
     _modeLayout->addRow(labelPositionTarget, goLayout);
-
-    connect(_goOneLineEdit, &QLineEdit::returnPressed, this, &P402PpWidget::goOneLineEditFinished);
-    connect(_goTwoLineEdit, &QLineEdit::returnPressed, this, &P402PpWidget::twoOneLineEditFinished);
-    connect(_goOnePushButton, &QPushButton::clicked, this, &P402PpWidget::goOneLineEditFinished);
-    connect(_goTwoPushButton, &QPushButton::clicked, this, &P402PpWidget::twoOneLineEditFinished);
 }
 
-void P402PpWidget::informationWidgets()
+void P402PpWidget::createInformationWidgets()
 {
     _infoLabel = new QLabel();
     _infoLabel->setStyleSheet("QLabel { color : red; }");
@@ -329,7 +324,7 @@ void P402PpWidget::informationWidgets()
     _modeLayout->addRow(tr("Position actual value:"), _positionActualValueLabel);
 }
 
-void P402PpWidget::limitWidgets()
+void P402PpWidget::createLimitWidgets()
 {
     // POSITION RANGE LIMIT
     QLayout *positionLayout = new QHBoxLayout();
@@ -367,7 +362,7 @@ void P402PpWidget::limitWidgets()
     _modeLayout->addRow(label, softwareLayout);
 }
 
-void P402PpWidget::velocityWidgets()
+void P402PpWidget::createVelocityWidgets()
 {
     // Add Profile velocity (0x6081) and Max motor speed (0x6080)
     _profileVelocitySpinBox = new IndexSpinBox();
@@ -384,7 +379,7 @@ void P402PpWidget::velocityWidgets()
     _modeLayout->addRow(tr("Max motor speed:"), _maxMotorSpeedSpinBox);
 }
 
-void P402PpWidget::accelDeccelWidgets()
+void P402PpWidget::createAccelDeccelWidgets()
 {
     QLabel *label;
 
@@ -421,7 +416,7 @@ void P402PpWidget::accelDeccelWidgets()
     _modeLayout->addRow(tr("Quick stop deceleration:"), _quickStopDecelerationSpinBox);
 }
 
-void P402PpWidget::homePolarityWidgets()
+void P402PpWidget::createHomePolarityWidgets()
 {
     _homeOffsetSpinBox = new IndexSpinBox();
     _modeLayout->addRow(tr("Home offset:"), _homeOffsetSpinBox);
@@ -431,7 +426,7 @@ void P402PpWidget::homePolarityWidgets()
     _modeLayout->addRow(tr("Polarity:"), _polarityCheckBox);
 }
 
-QGroupBox *P402PpWidget::controlWordWidgets()
+QGroupBox *P402PpWidget::createControlWordWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Control word"));
     QFormLayout *layout = new QFormLayout();
@@ -448,7 +443,7 @@ QGroupBox *P402PpWidget::controlWordWidgets()
     return groupBox;
 }
 
-QHBoxLayout *P402PpWidget::buttonWidgets()
+QHBoxLayout *P402PpWidget::createButtonWidgets()
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402PpWidget::createDataLogger);
@@ -456,13 +451,13 @@ QHBoxLayout *P402PpWidget::buttonWidgets()
     QPushButton *mappingPdoPushButton = new QPushButton(tr("Map PP to PDOs"));
     connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402PpWidget::mapDefaultObjects);
 
-    QPixmap ipModePixmap;
-    QLabel *ipModeLabel;
-    ipModeLabel = new QLabel();
-    ipModePixmap.load(":/diagram/img/diagrams/402PPDiagram.png");
-    ipModeLabel->setPixmap(ipModePixmap);
+    QPixmap ppModePixmap;
+    QLabel *ppModeLabel;
+    ppModeLabel = new QLabel();
+    ppModePixmap.load(":/diagram/img/diagrams/402PPDiagram.png");
+    ppModeLabel->setPixmap(ppModePixmap);
     QPushButton *imgPushButton = new QPushButton(tr("Diagram PP mode"));
-    connect(imgPushButton, SIGNAL(clicked()), ipModeLabel, SLOT(show()));
+    connect(imgPushButton, &QPushButton::clicked, ppModeLabel, &QLabel::show);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(2, 0, 2, 0);

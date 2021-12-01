@@ -22,10 +22,9 @@
 #include "../../../udtgui_global.h"
 
 #include "nodeodsubscriber.h"
+#include <QWidget>
 
 #include "profile/p402/nodeprofile402.h"
-
-#include <QWidget>
 
 class UDTGUI_EXPORT P402ModeWidget : public QWidget, public NodeOdSubscriber
 {

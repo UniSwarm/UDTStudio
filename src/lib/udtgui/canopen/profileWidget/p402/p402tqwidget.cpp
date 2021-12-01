@@ -21,10 +21,11 @@
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/indexWidget/indexlabel.h"
 #include "canopen/indexWidget/indexspinbox.h"
-#include "services/services.h"
 
 #include "profile/p402/modetq.h"
 #include "profile/p402/nodeprofile402.h"
+#include "services/rpdo.h"
+#include "services/tpdo.h"
 
 #include <QPushButton>
 
@@ -33,11 +34,6 @@ P402TqWidget::P402TqWidget(QWidget *parent)
 {
     createWidgets();
     _nodeProfile402 = nullptr;
-}
-
-P402TqWidget::~P402TqWidget()
-{
-    unRegisterFullOd();
 }
 
 void P402TqWidget::readRealTimeObjects()
@@ -133,19 +129,19 @@ void P402TqWidget::setZeroButton()
 void P402TqWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
-    DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    _dataLoggerWidget->setTitle(tr("Node %1 axis %2 TQ").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
+    DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
+    dataLoggerWidget->setTitle(tr("Node %1 axis %2 TQ").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
 
     dataLogger->addData(_torqueActualValueObjectId);
     dataLogger->addData(_torqueTargetObjectId);
     dataLogger->addData(_torqueDemandObjectId);
 
-    _dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
-    connect(_dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
+    dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
+    connect(dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
 
-    _dataLoggerWidget->show();
-    _dataLoggerWidget->raise();
-    _dataLoggerWidget->activateWindow();
+    dataLoggerWidget->show();
+    dataLoggerWidget->raise();
+    dataLoggerWidget->activateWindow();
 }
 
 void P402TqWidget::mapDefaultObjects()
@@ -165,16 +161,16 @@ void P402TqWidget::createWidgets()
     QGroupBox *modeGroupBox = new QGroupBox(tr("Torque mode"));
     _modeLayout = new QFormLayout();
 
-    targetWidgets();
-    informationWidgets();
-    limitWidgets();
+    createTargetWidgets();
+    createInformationWidgets();
+    createLimitWidgets();
 
     QFrame *frame = new QFrame();
     frame->setFrameStyle(QFrame::HLine);
     frame->setFrameShadow(QFrame::Sunken);
     _modeLayout->addRow(frame);
 
-    slopeWidgets();
+    createSlopeWidgets();
 
     modeGroupBox->setLayout(_modeLayout);
 
@@ -192,12 +188,12 @@ void P402TqWidget::createWidgets()
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->addWidget(scrollArea);
-    vBoxLayout->addLayout(buttonWidgets());
+    vBoxLayout->addLayout(createButtonWidgets());
     vBoxLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(vBoxLayout);
 }
 
-void P402TqWidget::targetWidgets()
+void P402TqWidget::createTargetWidgets()
 {
     _targetTorqueSpinBox = new QSpinBox();
     _targetTorqueSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
@@ -233,7 +229,7 @@ void P402TqWidget::targetWidgets()
     _modeLayout->addRow(setZeroLayout);
 }
 
-void P402TqWidget::informationWidgets()
+void P402TqWidget::createInformationWidgets()
 {
     _torqueDemandLabel = new IndexLabel();
     _modeLayout->addRow(tr("Torque demand:"), _torqueDemandLabel);
@@ -242,19 +238,19 @@ void P402TqWidget::informationWidgets()
     _modeLayout->addRow(tr("Torque actual value:"), _torqueActualValueLabel);
 }
 
-void P402TqWidget::limitWidgets()
+void P402TqWidget::createLimitWidgets()
 {
     _maxTorqueSpinBox = new IndexSpinBox();
     _modeLayout->addRow(tr("Ma&x torque "), _maxTorqueSpinBox);
 }
 
-void P402TqWidget::slopeWidgets()
+void P402TqWidget::createSlopeWidgets()
 {
     _targetSlopeSpinBox = new IndexSpinBox();
     _modeLayout->addRow(tr("Target &slope "), _targetSlopeSpinBox);
 }
 
-QHBoxLayout *P402TqWidget::buttonWidgets()
+QHBoxLayout *P402TqWidget::createButtonWidgets()
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402TqWidget::createDataLogger);
@@ -268,7 +264,7 @@ QHBoxLayout *P402TqWidget::buttonWidgets()
     tqModePixmap.load(":/diagram/img/diagrams/402TQDiagram.png");
     tqModeLabel->setPixmap(tqModePixmap);
     QPushButton *imgPushButton = new QPushButton(tr("Diagram TQ mode"));
-    connect(imgPushButton, SIGNAL(clicked()), tqModeLabel, SLOT(show()));
+    connect(imgPushButton, &QPushButton::clicked, tqModeLabel, &QLabel::show);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(2, 0, 2, 0);

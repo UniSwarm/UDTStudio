@@ -36,11 +36,6 @@ P402DtyWidget::P402DtyWidget(QWidget *parent)
     _nodeProfile402 = nullptr;
 }
 
-P402DtyWidget::~P402DtyWidget()
-{
-    unRegisterFullOd();
-}
-
 void P402DtyWidget::readRealTimeObjects()
 {
     _nodeProfile402->readRealTimeObjects();

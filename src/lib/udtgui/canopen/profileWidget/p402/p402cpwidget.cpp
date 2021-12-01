@@ -35,11 +35,6 @@ P402CpWidget::P402CpWidget(QWidget *parent)
     _nodeProfile402 = nullptr;
 }
 
-P402CpWidget::~P402CpWidget()
-{
-    unRegisterFullOd();
-}
-
 void P402CpWidget::updateTargetFromSpinbox()
 {
     qint32 value = static_cast<qint16>(_positionTargetSpinBox->value());

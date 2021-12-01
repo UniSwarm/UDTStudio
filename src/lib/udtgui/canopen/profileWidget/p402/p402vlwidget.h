@@ -40,7 +40,6 @@ class UDTGUI_EXPORT P402VlWidget : public P402ModeWidget
     Q_OBJECT
 public:
     P402VlWidget(QWidget *parent = nullptr);
-    ~P402VlWidget() override;
 
 private:
     ModeVl *_modeVl;
@@ -49,32 +48,6 @@ private:
     NodeObjectId _velocityDemandObjectId;
     NodeObjectId _velocityActualObjectId;
     NodeObjectId _maxVelocityMinMaxAmountObjectId;
-
-    QSpinBox *_targetVelocitySpinBox;
-    QSlider *_targetVelocitySlider;
-    QLabel *_sliderMinLabel;
-    QLabel *_sliderMaxLabel;
-    QLabel *_infoLabel;
-
-    IndexLabel *_velocityDemandLabel;
-    IndexLabel *_velocityActualLabel;
-
-    IndexSpinBox *_minVelocityMinMaxAmountSpinBox;
-    IndexSpinBox *_maxVelocityMinMaxAmountSpinBox;
-    IndexSpinBox *_accelerationDeltaSpeedSpinBox;
-    IndexSpinBox *_accelerationDeltaTimeSpinBox;
-    IndexSpinBox *_decelerationDeltaSpeedSpinBox;
-    IndexSpinBox *_decelerationDeltaTimeSpinBox;
-    IndexSpinBox *_quickStopDeltaSpeedSpinBox;
-    IndexSpinBox *_quickStopDeltaTimeSpinBox;
-    IndexSpinBox *_setPointFactorNumeratorSpinBox;
-    IndexSpinBox *_setPointFactorDenominatorSpinBox;
-    IndexSpinBox *_dimensionFactorNumeratorSpinBox;
-    IndexSpinBox *_dimensionFactorDenominatorSpinBox;
-
-    QCheckBox *_enableRampCheckBox;
-    QCheckBox *_unlockRampCheckBox;
-    QCheckBox *_referenceRampCheckBox;
 
     void targetVelocitySpinboxFinished();
     void targetVelocitySliderChanged();
@@ -95,15 +68,44 @@ private:
     void mapDefaultObjects();
 
     // Create widgets
-    QFormLayout *_modeLayout;
     void createWidgets();
-    void targetWidgets();
-    void informationWidgets();
-    void limitWidgets();
-    void accelDeccelWidgets();
-    void factorWidgets();
-    QGroupBox *controlWordWidgets();
-    QHBoxLayout *buttonWidgets();
+    QFormLayout *_modeLayout;
+
+    void createTargetWidgets();
+    QSpinBox *_targetVelocitySpinBox;
+    QSlider *_targetVelocitySlider;
+    QLabel *_sliderMinLabel;
+    QLabel *_sliderMaxLabel;
+
+    void createInformationWidgets();
+    QLabel *_infoLabel;
+    IndexLabel *_velocityDemandLabel;
+    IndexLabel *_velocityActualLabel;
+
+    void createLimitWidgets();
+    IndexSpinBox *_minVelocityMinMaxAmountSpinBox;
+    IndexSpinBox *_maxVelocityMinMaxAmountSpinBox;
+
+    void createAccelDeccelWidgets();
+    IndexSpinBox *_accelerationDeltaSpeedSpinBox;
+    IndexSpinBox *_accelerationDeltaTimeSpinBox;
+    IndexSpinBox *_decelerationDeltaSpeedSpinBox;
+    IndexSpinBox *_decelerationDeltaTimeSpinBox;
+    IndexSpinBox *_quickStopDeltaSpeedSpinBox;
+    IndexSpinBox *_quickStopDeltaTimeSpinBox;
+
+    void createFactorWidgets();
+    IndexSpinBox *_setPointFactorNumeratorSpinBox;
+    IndexSpinBox *_setPointFactorDenominatorSpinBox;
+    IndexSpinBox *_dimensionFactorNumeratorSpinBox;
+    IndexSpinBox *_dimensionFactorDenominatorSpinBox;
+
+    QGroupBox *createControlWordWidgets();
+    QCheckBox *_enableRampCheckBox;
+    QCheckBox *_unlockRampCheckBox;
+    QCheckBox *_referenceRampCheckBox;
+
+    QHBoxLayout *createButtonWidgets();
 
     // NodeOdSubscriber interface
 protected:

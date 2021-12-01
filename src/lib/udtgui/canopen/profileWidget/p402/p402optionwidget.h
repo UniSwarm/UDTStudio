@@ -34,16 +34,8 @@ class UDTGUI_EXPORT P402OptionWidget : public P402ModeWidget
     Q_OBJECT
 public:
     P402OptionWidget(QWidget *parent = nullptr);
-    ~P402OptionWidget() override;
 
 private:
-    QButtonGroup *_abortConnectionOptionGroup;
-    QButtonGroup *_quickStopOptionGroup;
-    QButtonGroup *_shutdownOptionGroup;
-    QButtonGroup *_disableOptionGroup;
-    QButtonGroup *_haltOptionGroup;
-    QButtonGroup *_faultReactionOptionGroup;
-
     void abortConnectionOptionClicked(int id);
     void quickStopOptionClicked(int id);
     void shutdownOptionClicked(int id);
@@ -53,12 +45,24 @@ private:
 
     // Create widgets
     void createWidgets();
+
     QGroupBox *abortConnectionWidgets();
+    QButtonGroup *_abortConnectionOptionGroup;
+
     QGroupBox *quickStopWidgets();
+    QButtonGroup *_quickStopOptionGroup;
+
     QGroupBox *shutdownWidgets();
+    QButtonGroup *_shutdownOptionGroup;
+
     QGroupBox *disableWidgets();
+    QButtonGroup *_disableOptionGroup;
+
     QGroupBox *haltWidgets();
+    QButtonGroup *_haltOptionGroup;
+
     QGroupBox *faultReactionWidgets();
+    QButtonGroup *_faultReactionOptionGroup;
 
     // NodeOdSubscriber interface
 protected:

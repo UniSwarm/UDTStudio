@@ -21,10 +21,11 @@
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/indexWidget/indexlabel.h"
 #include "canopen/indexWidget/indexspinbox.h"
-#include "services/services.h"
 
 #include "profile/p402/modevl.h"
 #include "profile/p402/nodeprofile402.h"
+#include "services/rpdo.h"
+#include "services/tpdo.h"
 
 #include <QPushButton>
 
@@ -33,11 +34,6 @@ P402VlWidget::P402VlWidget(QWidget *parent)
 {
     createWidgets();
     _nodeProfile402 = nullptr;
-}
-
-P402VlWidget::~P402VlWidget()
-{
-    unRegisterFullOd();
 }
 
 void P402VlWidget::readRealTimeObjects()
@@ -230,19 +226,19 @@ void P402VlWidget::updateInformationLabel()
 void P402VlWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
-    DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    _dataLoggerWidget->setTitle(tr("Node %1 axis %2 VL").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
+    DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
+    dataLoggerWidget->setTitle(tr("Node %1 axis %2 VL").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
 
     dataLogger->addData(_velocityActualObjectId);
     dataLogger->addData(_velocityTargetObjectId);
     dataLogger->addData(_velocityDemandObjectId);
 
-    _dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
-    connect(_dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
+    dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
+    connect(dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
 
-    _dataLoggerWidget->show();
-    _dataLoggerWidget->raise();
-    _dataLoggerWidget->activateWindow();
+    dataLoggerWidget->show();
+    dataLoggerWidget->raise();
+    dataLoggerWidget->activateWindow();
 }
 
 void P402VlWidget::mapDefaultObjects()
@@ -262,23 +258,23 @@ void P402VlWidget::createWidgets()
     QGroupBox *modeGroupBox = new QGroupBox(tr("Velocity mode"));
     _modeLayout = new QFormLayout();
 
-    targetWidgets();
-    informationWidgets();
-    limitWidgets();
+    createTargetWidgets();
+    createInformationWidgets();
+    createLimitWidgets();
 
     QFrame *frame = new QFrame();
     frame->setFrameStyle(QFrame::HLine);
     frame->setFrameShadow(QFrame::Sunken);
     _modeLayout->addRow(frame);
 
-    accelDeccelWidgets();
+    createAccelDeccelWidgets();
 
     frame = new QFrame();
     frame->setFrameStyle(QFrame::HLine);
     frame->setFrameShadow(QFrame::Sunken);
     _modeLayout->addRow(frame);
 
-    factorWidgets();
+    createFactorWidgets();
 
     modeGroupBox->setLayout(_modeLayout);
 
@@ -288,7 +284,7 @@ void P402VlWidget::createWidgets()
     layout->setContentsMargins(0, 0, 0, 0);
 
     layout->addWidget(modeGroupBox);
-    layout->addWidget(controlWordWidgets());
+    layout->addWidget(createControlWordWidgets());
 
     QScrollArea *scrollArea = new QScrollArea;
     scrollArea->setWidget(widget);
@@ -297,12 +293,12 @@ void P402VlWidget::createWidgets()
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->addWidget(scrollArea);
-    vBoxLayout->addLayout(buttonWidgets());
+    vBoxLayout->addLayout(createButtonWidgets());
     vBoxLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(vBoxLayout);
 }
 
-void P402VlWidget::targetWidgets()
+void P402VlWidget::createTargetWidgets()
 {
     _targetVelocitySpinBox = new QSpinBox();
     _targetVelocitySpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
@@ -335,7 +331,7 @@ void P402VlWidget::targetWidgets()
     _modeLayout->addRow(setZeroLayout);
 }
 
-void P402VlWidget::informationWidgets()
+void P402VlWidget::createInformationWidgets()
 {
     _infoLabel = new QLabel();
     _infoLabel->setStyleSheet("QLabel { color : red; }");
@@ -348,7 +344,7 @@ void P402VlWidget::informationWidgets()
     _modeLayout->addRow(tr("Velocity actual value "), _velocityActualLabel);
 }
 
-void P402VlWidget::limitWidgets()
+void P402VlWidget::createLimitWidgets()
 {
     QLabel *label;
     QLayout *minMaxAmountlayout = new QHBoxLayout();
@@ -370,7 +366,7 @@ void P402VlWidget::limitWidgets()
     _modeLayout->addRow(label, minMaxAmountlayout);
 }
 
-void P402VlWidget::accelDeccelWidgets()
+void P402VlWidget::createAccelDeccelWidgets()
 {
     QLabel *label;
 
@@ -426,7 +422,7 @@ void P402VlWidget::accelDeccelWidgets()
     _modeLayout->addRow(label, quickStoplayout);
 }
 
-void P402VlWidget::factorWidgets()
+void P402VlWidget::createFactorWidgets()
 {
     QLabel *label;
 
@@ -465,7 +461,7 @@ void P402VlWidget::factorWidgets()
     _modeLayout->addRow(label, dimensionFactorlayout);
 }
 
-QGroupBox *P402VlWidget::controlWordWidgets()
+QGroupBox *P402VlWidget::createControlWordWidgets()
 {
     // Group Box CONTROL WORD
     QGroupBox *groupBox = new QGroupBox(tr("Control word:"));
@@ -487,7 +483,7 @@ QGroupBox *P402VlWidget::controlWordWidgets()
     return groupBox;
 }
 
-QHBoxLayout *P402VlWidget::buttonWidgets()
+QHBoxLayout *P402VlWidget::createButtonWidgets()
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402VlWidget::createDataLogger);
@@ -495,13 +491,13 @@ QHBoxLayout *P402VlWidget::buttonWidgets()
     QPushButton *mappingPdoPushButton = new QPushButton(tr("Map VL to PDOs"));
     connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402VlWidget::mapDefaultObjects);
 
-    QPixmap modePixmap;
+    QPixmap vlModePixmap;
     QLabel *vlModeLabel;
     vlModeLabel = new QLabel();
-    modePixmap.load(":/diagram/img/diagrams/402VLDiagram.png");
-    vlModeLabel->setPixmap(modePixmap);
+    vlModePixmap.load(":/diagram/img/diagrams/402VLDiagram.png");
+    vlModeLabel->setPixmap(vlModePixmap);
     QPushButton *imgPushButton = new QPushButton(tr("Diagram VL mode"));
-    connect(imgPushButton, SIGNAL(clicked()), vlModeLabel, SLOT(show()));
+    connect(imgPushButton, &QPushButton::clicked, vlModeLabel, &QLabel::show);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(2, 0, 2, 0);

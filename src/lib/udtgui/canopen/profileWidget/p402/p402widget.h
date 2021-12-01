@@ -43,7 +43,6 @@ class UDTGUI_EXPORT P402Widget : public QWidget
     Q_OBJECT
 public:
     P402Widget(Node *node = nullptr, uint8_t axis = 0, QWidget *parent = nullptr);
-    ~P402Widget() override;
 
     Node *node() const;
 
@@ -74,42 +73,38 @@ protected slots:
 
 private:
     Node *_node;
+    NodeProfile402 *_nodeProfile402;
     uint8_t _axis;
 
     QMap<NodeProfile402::OperationMode, P402ModeWidget *> _modes;
 
     NodeObjectId _controlWordObjectId;
     NodeObjectId _statusWordObjectId;
-    NodeProfile402 *_nodeProfile402;
 
     // Create widgets
     void createWidgets();
-    QToolBar *toolBarWidgets();
-    QGroupBox *modeWidgets();
-    QGroupBox *stateMachineWidgets();
-    QGroupBox *controlWordWidgets();
-    QGroupBox *statusWordWidgets();
-
     QStackedWidget *_stackedWidget;
 
-    // Logger timer
+    QToolBar *createToolBarWidgets();
     QSpinBox *_logTimerSpinBox;
-
-    // Toolbar action
     QAction *_startStopAction;
     QAction *_option402Action;
 
+    QGroupBox *createModeWidgets();
     QGroupBox *_modeGroupBox;
     QComboBox *_modeComboBox;
     QLabel *_modeLabel;
 
+    QGroupBox *createStateMachineWidgets();
     QGroupBox *_stateMachineGroupBox;
     QButtonGroup *_stateMachineButtonGroup;
 
+    QGroupBox *createControlWordWidgets();
     QGroupBox *_controlWordGroupBox;
     QPushButton *_haltPushButton;
     IndexLabel *_controlWordLabel;
 
+    QGroupBox *createStatusWordWidgets();
     QGroupBox *_statusWordGroupBox;
     IndexLabel *_statusWordLabel;
     QLabel *_statusWordStateLabel;
@@ -117,4 +112,4 @@ private:
     QLabel *_warningLabel;
 };
 
-#endif  // P402Widget_H
+#endif  // P402WIDGET_H

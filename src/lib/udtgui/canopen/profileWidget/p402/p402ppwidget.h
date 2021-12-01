@@ -42,7 +42,6 @@ class UDTGUI_EXPORT P402PpWidget : public P402ModeWidget
     Q_OBJECT
 public:
     P402PpWidget(QWidget *parent = nullptr);
-    ~P402PpWidget() override;
 
 private:
     ModePp *_modePp;
@@ -53,45 +52,6 @@ private:
 
     int _iteratorForSendDataRecord;
     QStringList _listDataRecord;
-
-    QCheckBox *_changeSetImmediatelyPointCheckBox;
-    QCheckBox *_absRelCheckBox;
-
-    QLineEdit *_targetPositionLineEdit;
-    QLineEdit *_goOneLineEdit;
-    QLineEdit *_goTwoLineEdit;
-    QPushButton *_goOnePushButton;
-    QPushButton *_goTwoPushButton;
-
-    QLabel *_infoLabel;
-
-    IndexLabel *_positionDemandValueLabel;
-    IndexLabel *_positionActualValueLabel;
-
-    IndexSpinBox *_positionRangeLimitMinSpinBox;
-    IndexSpinBox *_positionRangeLimitMaxSpinBox;
-    IndexSpinBox *_softwarePositionLimitMinSpinBox;
-    IndexSpinBox *_softwarePositionLimitMaxSpinBox;
-    IndexSpinBox *_homeOffsetSpinBox;
-    IndexCheckBox *_polarityCheckBox;
-    IndexSpinBox *_profileVelocitySpinBox;
-    IndexSpinBox *_endVelocitySpinBox;
-    IndexSpinBox *_maxProfileVelocitySpinBox;
-    IndexSpinBox *_maxMotorSpeedSpinBox;
-    IndexSpinBox *_profileAccelerationSpinBox;
-    IndexSpinBox *_maxAccelerationSpinBox;
-    IndexSpinBox *_profileDecelerationSpinBox;
-    IndexSpinBox *_maxDecelerationSpinBox;
-    IndexSpinBox *_quickStopDecelerationSpinBox;
-
-    QSpinBox *_targetPositionSpinBox;
-    QCheckBox *_relativeTargetpositionSpinBox;
-    QSpinBox *_durationSpinBox;
-    QPushButton *_goTargetPushButton;
-    QPushButton *_stopTargetPushButton;
-
-    QVector<int> _pointSinusoidalVector;
-    QTimer _sendPointSinusoidalTimer;
 
     void targetPositionLineEditFinished();
     void goOneLineEditFinished();
@@ -113,16 +73,49 @@ private:
     void mapDefaultObjects();
 
     // Create widgets
-    QFormLayout *_modeLayout;
     void createWidgets();
-    void targetWidgets();
-    void informationWidgets();
-    void limitWidgets();
-    void velocityWidgets();
-    void accelDeccelWidgets();
-    void homePolarityWidgets();
-    QGroupBox *controlWordWidgets();
-    QHBoxLayout *buttonWidgets();
+    QFormLayout *_modeLayout;
+
+    void createTargetWidgets();
+    QLineEdit *_targetPositionLineEdit;
+    QLineEdit *_goOneLineEdit;
+    QLineEdit *_goTwoLineEdit;
+    QPushButton *_goOnePushButton;
+    QPushButton *_goTwoPushButton;
+
+    void createInformationWidgets();
+    QLabel *_infoLabel;
+    IndexLabel *_positionDemandValueLabel;
+    IndexLabel *_positionActualValueLabel;
+
+    void createLimitWidgets();
+    IndexSpinBox *_positionRangeLimitMinSpinBox;
+    IndexSpinBox *_positionRangeLimitMaxSpinBox;
+    IndexSpinBox *_softwarePositionLimitMinSpinBox;
+    IndexSpinBox *_softwarePositionLimitMaxSpinBox;
+
+    void createVelocityWidgets();
+    IndexSpinBox *_profileVelocitySpinBox;
+    IndexSpinBox *_endVelocitySpinBox;
+    IndexSpinBox *_maxProfileVelocitySpinBox;
+    IndexSpinBox *_maxMotorSpeedSpinBox;
+
+    void createAccelDeccelWidgets();
+    IndexSpinBox *_profileAccelerationSpinBox;
+    IndexSpinBox *_maxAccelerationSpinBox;
+    IndexSpinBox *_profileDecelerationSpinBox;
+    IndexSpinBox *_maxDecelerationSpinBox;
+    IndexSpinBox *_quickStopDecelerationSpinBox;
+
+    void createHomePolarityWidgets();
+    IndexSpinBox *_homeOffsetSpinBox;
+    IndexCheckBox *_polarityCheckBox;
+
+    QGroupBox *createControlWordWidgets();
+    QCheckBox *_changeSetImmediatelyPointCheckBox;
+    QCheckBox *_absRelCheckBox;
+
+    QHBoxLayout *createButtonWidgets();
 
     // NodeOdSubscriber interface
 protected:

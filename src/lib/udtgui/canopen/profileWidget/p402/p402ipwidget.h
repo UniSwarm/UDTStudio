@@ -42,7 +42,6 @@ class UDTGUI_EXPORT P402IpWidget : public P402ModeWidget
     Q_OBJECT
 public:
     P402IpWidget(QWidget *parent = nullptr);
-    ~P402IpWidget();
 
 private:
     ModeIp *_modeIp;
