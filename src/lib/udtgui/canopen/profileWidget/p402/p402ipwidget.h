@@ -42,7 +42,7 @@ class UDTGUI_EXPORT P402IpWidget : public P402ModeWidget
     Q_OBJECT
 public:
     P402IpWidget(QWidget *parent = nullptr);
-    ~P402IpWidget() override;
+    ~P402IpWidget();
 
 private:
     ModeIp *_modeIp;
@@ -56,36 +56,6 @@ private:
 
     int _iteratorForSendDataRecord;
     QStringList _listDataRecord;
-
-    QLineEdit *_dataRecordLineEdit;
-    QLabel *_infoLabel;
-
-    IndexLabel *_positionDemandValueLabel;
-    IndexLabel *_positionAcualValueLabel;
-
-    IndexSpinBox *_timePeriodUnitSpinBox;
-    IndexSpinBox *_timePeriodIndexSpinBox;
-
-    QPushButton *_clearBufferPushButton;
-
-    IndexSpinBox *_positionRangeLimitMinSpinBox;
-    IndexSpinBox *_positionRangeLimitMaxSpinBox;
-    IndexSpinBox *_softwarePositionLimitMinSpinBox;
-    IndexSpinBox *_softwarePositionLimitMaxSpinBox;
-
-    IndexSpinBox *_maxProfileVelocitySpinBox;
-    IndexSpinBox *_maxMotorSpeedSpinBox;
-
-    IndexSpinBox *_homeOffsetSpinBox;
-    IndexCheckBox *_polarityCheckBox;
-
-    QCheckBox *_enableRampCheckBox;
-
-    QSpinBox *_targetPositionSpinBox;
-    QCheckBox *_relativeTargetpositionSpinBox;
-    QSpinBox *_durationSpinBox;
-    QPushButton *_goTargetPushButton;
-    QPushButton *_stopTargetPushButton;
 
     QVector<int> _pointSinusoidalVector;
     QTimer _sendPointSinusoidalTimer;
@@ -110,16 +80,45 @@ private:
     void mapDefaultObjects();
 
     // Create widgets
-    QFormLayout *_modeLayout;
     void createWidgets();
-    void targetWidgets();
-    void informationWidgets();
-    void limitWidgets();
-    void slopeWidgets();
-    void homePolarityWidgets();
-    QGroupBox *sinusoidalMotionProfileWidgets();
-    QGroupBox *controlWordWidgets();
-    QHBoxLayout *buttonWidgets();
+    QFormLayout *_modeLayout;
+
+    void createTargetWidgets();
+    QLineEdit *_dataRecordLineEdit;
+    QPushButton *_clearBufferPushButton;
+
+    void createInformationWidgets();
+    IndexLabel *_positionDemandValueLabel;
+    IndexLabel *_positionAcualValueLabel;
+    QLabel *_infoLabel;
+
+    void createLimitWidgets();
+    IndexSpinBox *_positionRangeLimitMinSpinBox;
+    IndexSpinBox *_positionRangeLimitMaxSpinBox;
+    IndexSpinBox *_softwarePositionLimitMinSpinBox;
+    IndexSpinBox *_softwarePositionLimitMaxSpinBox;
+    IndexSpinBox *_maxProfileVelocitySpinBox;
+    IndexSpinBox *_maxMotorSpeedSpinBox;
+
+    void createSlopeWidgets();
+    IndexSpinBox *_timePeriodUnitSpinBox;
+    IndexSpinBox *_timePeriodIndexSpinBox;
+
+    void createHomePolarityWidgets();
+    IndexSpinBox *_homeOffsetSpinBox;
+    IndexCheckBox *_polarityCheckBox;
+
+    QGroupBox *createSinusoidalMotionProfileWidgets();
+    QSpinBox *_targetPositionSpinBox;
+    QCheckBox *_relativeTargetpositionSpinBox;
+    QSpinBox *_durationSpinBox;
+    QPushButton *_goTargetPushButton;
+    QPushButton *_stopTargetPushButton;
+
+    QGroupBox *createControlWordWidgets();
+    QCheckBox *_enableRampCheckBox;
+
+    QHBoxLayout *createButtonWidgets();
 
     // P402Mode interface
 public:

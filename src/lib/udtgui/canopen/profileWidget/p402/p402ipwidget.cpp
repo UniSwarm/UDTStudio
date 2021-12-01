@@ -24,16 +24,16 @@
 #include "canopen/indexWidget/indexspinbox.h"
 
 #include "canopenbus.h"
-#include "services/services.h"
-
 #include "profile/p402/modeip.h"
 #include "profile/p402/nodeprofile402.h"
+#include "services/rpdo.h"
+#include "services/tpdo.h"
 
 #include <QString>
 #include <QStringList>
 #include <QtMath>
 
-#include <canopen/indexWidget/indexcheckbox.h>
+#include "canopen/indexWidget/indexcheckbox.h"
 
 P402IpWidget::P402IpWidget(QWidget *parent)
     : P402ModeWidget(parent)
@@ -278,18 +278,18 @@ void P402IpWidget::updateInformationLabel()
 void P402IpWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
-    DataLoggerWidget *_dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    _dataLoggerWidget->setTitle(tr("Node %1 axis %2 IP").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
+    DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
+    dataLoggerWidget->setTitle(tr("Node %1 axis %2 IP").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
 
     dataLogger->addData(_positionDemandValueObjectId);
     dataLogger->addData(_positionActualValueObjectId);
 
-    _dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
-    connect(_dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
+    dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
+    connect(dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
 
-    _dataLoggerWidget->show();
-    _dataLoggerWidget->raise();
-    _dataLoggerWidget->activateWindow();
+    dataLoggerWidget->show();
+    dataLoggerWidget->raise();
+    dataLoggerWidget->activateWindow();
 }
 
 void P402IpWidget::mapDefaultObjects()
@@ -309,23 +309,23 @@ void P402IpWidget::createWidgets()
     QGroupBox *modeGroupBox = new QGroupBox(tr("Interpolated position mode"));
     _modeLayout = new QFormLayout();
 
-    targetWidgets();
-    informationWidgets();
-    limitWidgets();
+    createTargetWidgets();
+    createInformationWidgets();
+    createLimitWidgets();
 
     QFrame *frame = new QFrame();
     frame->setFrameStyle(QFrame::HLine);
     frame->setFrameShadow(QFrame::Sunken);
     _modeLayout->addRow(frame);
 
-    slopeWidgets();
+    createSlopeWidgets();
 
     frame = new QFrame();
     frame->setFrameStyle(QFrame::HLine);
     frame->setFrameShadow(QFrame::Sunken);
     _modeLayout->addRow(frame);
 
-    homePolarityWidgets();
+    createHomePolarityWidgets();
 
     modeGroupBox->setLayout(_modeLayout);
 
@@ -335,8 +335,8 @@ void P402IpWidget::createWidgets()
     layout->setContentsMargins(0, 0, 0, 0);
 
     layout->addWidget(modeGroupBox);
-    layout->addWidget(sinusoidalMotionProfileWidgets());
-    layout->addWidget(controlWordWidgets());
+    layout->addWidget(createSinusoidalMotionProfileWidgets());
+    layout->addWidget(createControlWordWidgets());
 
     QScrollArea *scrollArea = new QScrollArea;
     scrollArea->setWidget(widget);
@@ -345,12 +345,12 @@ void P402IpWidget::createWidgets()
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->addWidget(scrollArea);
-    vBoxLayout->addLayout(buttonWidgets());
+    vBoxLayout->addLayout(createButtonWidgets());
     vBoxLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(vBoxLayout);
 }
 
-void P402IpWidget::targetWidgets()
+void P402IpWidget::createTargetWidgets()
 {
     QLayout *dataRecordlayout = new QHBoxLayout();
     _dataRecordLineEdit = new QLineEdit();
@@ -365,7 +365,7 @@ void P402IpWidget::targetWidgets()
     _modeLayout->addRow(tr("Data record "), dataRecordlayout);
 }
 
-void P402IpWidget::informationWidgets()
+void P402IpWidget::createInformationWidgets()
 {
     _infoLabel = new QLabel();
     _infoLabel->setStyleSheet("QLabel { color : red; }");
@@ -378,7 +378,7 @@ void P402IpWidget::informationWidgets()
     _modeLayout->addRow(tr("Position actual value:"), _positionAcualValueLabel);
 }
 
-void P402IpWidget::limitWidgets()
+void P402IpWidget::createLimitWidgets()
 {
     // POSITION RANGE LIMIT
     QLayout *positionLayout = new QHBoxLayout();
@@ -424,7 +424,7 @@ void P402IpWidget::limitWidgets()
     _modeLayout->addRow(tr("Max motor speed:"), _maxMotorSpeedSpinBox);
 }
 
-void P402IpWidget::slopeWidgets()
+void P402IpWidget::createSlopeWidgets()
 {
     QLayout *ipTimePeriodlayout = new QHBoxLayout();
     ipTimePeriodlayout->setSpacing(0);
@@ -447,7 +447,7 @@ void P402IpWidget::slopeWidgets()
     _modeLayout->addRow(label, ipTimePeriodlayout);
 }
 
-void P402IpWidget::homePolarityWidgets()
+void P402IpWidget::createHomePolarityWidgets()
 {
     // Home offset (0x607C)
     _homeOffsetSpinBox = new IndexSpinBox();
@@ -459,7 +459,7 @@ void P402IpWidget::homePolarityWidgets()
     _modeLayout->addRow(tr("Polarity:"), _polarityCheckBox);
 }
 
-QGroupBox *P402IpWidget::sinusoidalMotionProfileWidgets()
+QGroupBox *P402IpWidget::createSinusoidalMotionProfileWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Sinusoidal motion Profile"));
     QFormLayout *layout = new QFormLayout();
@@ -496,7 +496,7 @@ QGroupBox *P402IpWidget::sinusoidalMotionProfileWidgets()
     return groupBox;
 }
 
-QGroupBox *P402IpWidget::controlWordWidgets()
+QGroupBox *P402IpWidget::createControlWordWidgets()
 {
     // Group Box Control Word
     QGroupBox *groupBox = new QGroupBox(tr("Control word"));
@@ -510,7 +510,7 @@ QGroupBox *P402IpWidget::controlWordWidgets()
     return groupBox;
 }
 
-QHBoxLayout *P402IpWidget::buttonWidgets()
+QHBoxLayout *P402IpWidget::createButtonWidgets()
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402IpWidget::createDataLogger);
@@ -524,7 +524,7 @@ QHBoxLayout *P402IpWidget::buttonWidgets()
     ipModePixmap.load(":/diagram/img/diagrams/402IPDiagram.png");
     ipModeLabel->setPixmap(ipModePixmap);
     QPushButton *imgPushButton = new QPushButton(tr("Diagram IP mode"));
-    connect(imgPushButton, SIGNAL(clicked()), ipModeLabel, SLOT(show()));
+    connect(imgPushButton, &QPushButton::clicked, ipModeLabel, &QLabel::show);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(2, 0, 2, 0);
