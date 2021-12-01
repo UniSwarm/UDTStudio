@@ -25,6 +25,7 @@
 
 #include <QPoint>
 
+class QMainWindow;
 class QWidget;
 class QMouseEvent;
 
@@ -119,9 +120,16 @@ protected:
     QString _unit;
 
     QWidget *_widget;
+
+    // drag and drop support
     QPoint _dragStartPosition;
     void indexWidgetMouseClick(QMouseEvent *event);
     void indexWidgetMouseMove(QMouseEvent *event);
+
+    // status tips support
+    QMainWindow *getMainWindow() const;
+    void displayStatus(const QString &message);
+    void clearStatus();
 
     // NodeOdSubscriber interface
 protected:

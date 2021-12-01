@@ -20,12 +20,12 @@
 
 #include "node.h"
 
-#include <QDebug>
-
 #include <QApplication>
 #include <QDrag>
+#include <QMainWindow>
 #include <QMimeData>
 #include <QMouseEvent>
+#include <QStatusBar>
 #include <QWidget>
 
 AbstractIndexWidget::AbstractIndexWidget(const NodeObjectId &objId)
@@ -209,6 +209,7 @@ QString AbstractIndexWidget::pstringValue(const QVariant &value, const AbstractI
 
 AbstractIndexWidget::Bound AbstractIndexWidget::inBound(const QVariant &value)
 {
+    // TODO fixme
     QVariant minType = -32768;
     QVariant maxType = 32767;
 
@@ -388,6 +389,38 @@ void AbstractIndexWidget::setObjId(const NodeObjectId &objId)
         return;
     }
     updateObjId();
+}
+
+QMainWindow *AbstractIndexWidget::getMainWindow() const
+{
+    for (QWidget *w : QApplication::topLevelWidgets())
+    {
+        if (QMainWindow *mainWindow = qobject_cast<QMainWindow *>(w))
+        {
+            return mainWindow;
+        }
+    }
+    return nullptr;
+}
+
+void AbstractIndexWidget::displayStatus(const QString &message)
+{
+    QMainWindow *mainWindow = getMainWindow();
+    if (!mainWindow)
+    {
+        return;
+    }
+    mainWindow->statusBar()->showMessage(message);
+}
+
+void AbstractIndexWidget::clearStatus()
+{
+    QMainWindow *mainWindow = getMainWindow();
+    if (!mainWindow)
+    {
+        return;
+    }
+    mainWindow->statusBar()->clearMessage();
 }
 
 void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

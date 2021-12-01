@@ -19,6 +19,8 @@
 #include "indexlcdnumber.h"
 
 #include <QHBoxLayout>
+#include <QLCDNumber>
+#include <QLabel>
 
 IndexLCDNumber::IndexLCDNumber(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
@@ -38,6 +40,24 @@ IndexLCDNumber::IndexLCDNumber(const NodeObjectId &objId)
     hlayout->addWidget(_label);
 
     setLayout(hlayout);
+}
+
+void IndexLCDNumber::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event)
+    requestReadValue();
+}
+
+void IndexLCDNumber::mousePressEvent(QMouseEvent *event)
+{
+    QWidget::mousePressEvent(event);
+    indexWidgetMouseClick(event);
+}
+
+void IndexLCDNumber::mouseMoveEvent(QMouseEvent *event)
+{
+    QWidget::mouseMoveEvent(event);
+    indexWidgetMouseMove(event);
 }
 
 void IndexLCDNumber::setDisplayValue(const QVariant &value, AbstractIndexWidget::DisplayAttribute flags)
@@ -82,22 +102,4 @@ bool IndexLCDNumber::isEditing() const
 void IndexLCDNumber::updateObjId()
 {
     setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
-}
-
-void IndexLCDNumber::mouseDoubleClickEvent(QMouseEvent *event)
-{
-    Q_UNUSED(event)
-    requestReadValue();
-}
-
-void IndexLCDNumber::mousePressEvent(QMouseEvent *event)
-{
-    QWidget::mousePressEvent(event);
-    indexWidgetMouseClick(event);
-}
-
-void IndexLCDNumber::mouseMoveEvent(QMouseEvent *event)
-{
-    QWidget::mouseMoveEvent(event);
-    indexWidgetMouseMove(event);
 }

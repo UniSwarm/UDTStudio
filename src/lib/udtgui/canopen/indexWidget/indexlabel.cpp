@@ -24,6 +24,24 @@ IndexLabel::IndexLabel(const NodeObjectId &objId)
     _widget = this;
 }
 
+void IndexLabel::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event)
+    requestReadValue();
+}
+
+void IndexLabel::mousePressEvent(QMouseEvent *event)
+{
+    QLabel::mousePressEvent(event);
+    indexWidgetMouseClick(event);
+}
+
+void IndexLabel::mouseMoveEvent(QMouseEvent *event)
+{
+    QLabel::mouseMoveEvent(event);
+    indexWidgetMouseMove(event);
+}
+
 void IndexLabel::setDisplayValue(const QVariant &value, AbstractIndexWidget::DisplayAttribute flags)
 {
     if (flags == DisplayAttribute::Error)
@@ -50,22 +68,4 @@ bool IndexLabel::isEditing() const
 void IndexLabel::updateObjId()
 {
     setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
-}
-
-void IndexLabel::mouseDoubleClickEvent(QMouseEvent *event)
-{
-    Q_UNUSED(event)
-    requestReadValue();
-}
-
-void IndexLabel::mousePressEvent(QMouseEvent *event)
-{
-    QLabel::mousePressEvent(event);
-    indexWidgetMouseClick(event);
-}
-
-void IndexLabel::mouseMoveEvent(QMouseEvent *event)
-{
-    QLabel::mouseMoveEvent(event);
-    indexWidgetMouseMove(event);
 }

@@ -22,11 +22,10 @@
 #include "../../udtgui_global.h"
 
 #include "abstractindexwidget.h"
-
 #include <QWidget>
 
-#include <QLCDNumber>
-#include <QLabel>
+class QLabel;
+class QLCDNumber;
 
 class IndexLCDNumber : public QWidget, public AbstractIndexWidget
 {

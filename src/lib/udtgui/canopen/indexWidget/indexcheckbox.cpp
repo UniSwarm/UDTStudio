@@ -26,6 +26,35 @@ IndexCheckBox::IndexCheckBox(const NodeObjectId &objId)
     _widget = this;
 }
 
+void IndexCheckBox::mousePressEvent(QMouseEvent *event)
+{
+    QCheckBox::mousePressEvent(event);
+    indexWidgetMouseClick(event);
+}
+
+void IndexCheckBox::mouseMoveEvent(QMouseEvent *event)
+{
+    QCheckBox::mouseMoveEvent(event);
+    indexWidgetMouseMove(event);
+}
+
+
+void IndexCheckBox::nextCheckState()
+{
+    QCheckBox::nextCheckState();
+    int64_t oldValue = _lastValue.toLongLong();
+    int64_t newValue = 0;
+    if (isChecked())
+    {
+        newValue = oldValue | _bitMask;
+    }
+    else
+    {
+        newValue = oldValue & ~_bitMask;
+    }
+    requestWriteValue(QVariant(static_cast<qlonglong>(newValue)));
+}
+
 void IndexCheckBox::setDisplayValue(const QVariant &value, AbstractIndexWidget::DisplayAttribute flags)
 {
     if (flags == DisplayAttribute::Error)
@@ -52,32 +81,4 @@ bool IndexCheckBox::isEditing() const
 void IndexCheckBox::updateObjId()
 {
     setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
-}
-
-void IndexCheckBox::nextCheckState()
-{
-    QCheckBox::nextCheckState();
-    int64_t oldValue = _lastValue.toLongLong();
-    int64_t newValue = 0;
-    if (isChecked())
-    {
-        newValue = oldValue | _bitMask;
-    }
-    else
-    {
-        newValue = oldValue & ~_bitMask;
-    }
-    requestWriteValue(QVariant(static_cast<qlonglong>(newValue)));
-}
-
-void IndexCheckBox::mousePressEvent(QMouseEvent *event)
-{
-    QCheckBox::mousePressEvent(event);
-    indexWidgetMouseClick(event);
-}
-
-void IndexCheckBox::mouseMoveEvent(QMouseEvent *event)
-{
-    QCheckBox::mouseMoveEvent(event);
-    indexWidgetMouseMove(event);
 }

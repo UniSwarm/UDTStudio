@@ -30,17 +30,17 @@ class UDTGUI_EXPORT IndexLabel : public QLabel, public AbstractIndexWidget
 public:
     IndexLabel(const NodeObjectId &objId = NodeObjectId());
 
-    // AbstractIndexWidget interface
-protected:
-    void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
-    bool isEditing() const override;
-    void updateObjId() override;
-
     // QWidget interface
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+
+    // AbstractIndexWidget interface
+protected:
+    void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
+    bool isEditing() const override;
+    void updateObjId() override;
 };
 
 #endif  // INDEXLABEL_H

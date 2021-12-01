@@ -24,8 +24,6 @@
 #include "abstractindexwidget.h"
 #include <QComboBox>
 
-class QMainWindow;
-
 class UDTGUI_EXPORT IndexComboBox : public QComboBox, public AbstractIndexWidget
 {
     Q_OBJECT
@@ -35,10 +33,6 @@ public:
 protected:
     void setInternalIndex(int index);
     bool _internalUpdate;
-
-    QMainWindow *getMainWindow() const;
-    void displayStatus(const QString &message);
-    void clearStatus();
 
     // QWidget interface
 protected:

@@ -18,43 +18,14 @@
 
 #include "indexbar.h"
 
-#include <QDebug>
+#include <QStyle>
 #include <QStyleOptionProgressBar>
 #include <QStylePainter>
-#include <QStyle>
 
 IndexBar::IndexBar(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
     _widget = this;
-}
-
-void IndexBar::setDisplayValue(const QVariant &value, DisplayAttribute flags)
-{
-    if (flags == DisplayAttribute::Error)
-    {
-        QFont mfont = font();
-        mfont.setItalic(true);
-        setFont(mfont);
-    }
-    else
-    {
-        QFont mfont = font();
-        mfont.setItalic(false);
-        setFont(mfont);
-    }
-
-    setValue(value.toInt());
-}
-
-bool IndexBar::isEditing() const
-{
-    return false;
-}
-
-void IndexBar::updateObjId()
-{
-    setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
 }
 
 void IndexBar::paintEvent(QPaintEvent *event)
@@ -70,7 +41,7 @@ void IndexBar::paintEvent(QPaintEvent *event)
 
     opt.rect = paint.style()->subElementRect(QStyle::SE_ProgressBarContents, &opt, this);
     QRect oldContentRect = opt.rect;
-    double offsetScale;
+    double offsetScale = 0;
     int range = (opt.maximum - opt.minimum);
     if (opt.minimum < 0)
     {
@@ -102,11 +73,6 @@ void IndexBar::mouseDoubleClickEvent(QMouseEvent *event)
     requestReadValue();
 }
 
-QString IndexBar::text() const
-{
-    return QString("%1%2").arg(AbstractIndexWidget::value().toDouble(), 0, 'g', 2).arg(_unit);
-}
-
 void IndexBar::mousePressEvent(QMouseEvent *event)
 {
     QProgressBar::mousePressEvent(event);
@@ -117,4 +83,37 @@ void IndexBar::mouseMoveEvent(QMouseEvent *event)
 {
     QProgressBar::mouseMoveEvent(event);
     indexWidgetMouseMove(event);
+}
+
+QString IndexBar::text() const
+{
+    return QString("%1%2").arg(AbstractIndexWidget::value().toDouble(), 0, 'g', 2).arg(_unit);
+}
+
+void IndexBar::setDisplayValue(const QVariant &value, DisplayAttribute flags)
+{
+    if (flags == DisplayAttribute::Error)
+    {
+        QFont mfont = font();
+        mfont.setItalic(true);
+        setFont(mfont);
+    }
+    else
+    {
+        QFont mfont = font();
+        mfont.setItalic(false);
+        setFont(mfont);
+    }
+
+    setValue(value.toInt());
+}
+
+bool IndexBar::isEditing() const
+{
+    return false;
+}
+
+void IndexBar::updateObjId()
+{
+    setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
 }

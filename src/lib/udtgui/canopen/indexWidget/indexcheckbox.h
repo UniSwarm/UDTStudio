@@ -22,7 +22,6 @@
 #include "../../udtgui_global.h"
 
 #include "abstractindexwidget.h"
-
 #include <QCheckBox>
 
 class UDTGUI_EXPORT IndexCheckBox : public QCheckBox, public AbstractIndexWidget
@@ -30,12 +29,6 @@ class UDTGUI_EXPORT IndexCheckBox : public QCheckBox, public AbstractIndexWidget
     Q_OBJECT
 public:
     IndexCheckBox(const NodeObjectId &objId = NodeObjectId());
-
-    // AbstractIndexWidget interface
-protected:
-    void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
-    bool isEditing() const override;
-    void updateObjId() override;
 
     // QWidget interface
 protected:
@@ -45,6 +38,12 @@ protected:
     // QAbstractButton interface
 protected:
     void nextCheckState() override;
+
+    // AbstractIndexWidget interface
+protected:
+    void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
+    bool isEditing() const override;
+    void updateObjId() override;
 };
 
 #endif  // INDEXCHECKBOX_H

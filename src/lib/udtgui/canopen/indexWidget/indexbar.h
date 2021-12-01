@@ -21,20 +21,14 @@
 
 #include "../../udtgui_global.h"
 
-#include <QProgressBar>
 #include "abstractindexwidget.h"
+#include <QProgressBar>
 
 class UDTGUI_EXPORT IndexBar : public QProgressBar, public AbstractIndexWidget
 {
     Q_OBJECT
 public:
     IndexBar(const NodeObjectId &objId = NodeObjectId());
-
-    // AbstractIndexWidget interface
-protected:
-    void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
-    bool isEditing() const override;
-    void updateObjId() override;
 
     // QWidget interface
 protected:
@@ -46,6 +40,12 @@ protected:
     // QProgressBar interface
 public:
     QString text() const override;
+
+    // AbstractIndexWidget interface
+protected:
+    void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
+    bool isEditing() const override;
+    void updateObjId() override;
 };
 
-#endif // INDEXBAR_H
+#endif  // INDEXBAR_H
