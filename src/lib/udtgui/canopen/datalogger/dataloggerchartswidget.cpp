@@ -190,18 +190,27 @@ void DataLoggerChartsWidget::updateDlData(int id)
 
     qreal min = qFloor(_dataLogger->min());
     qreal max = qCeil(_dataLogger->max());
-    qreal border = qMax(qCeil((max - min) * .1), 1);
-    qreal range = max - min + 2 * border;
+    qreal border = 0;qMax(qCeil((max - min) * .1), 1);
     if (min < _axisY->min() || min + border > _axisY->min() || max > _axisY->max() || max - border < _axisY->max())
     {
         _axisY->setRange(min - border, max + border);
-        if (range < 10.0)
+        /*
+        qreal range = max - min + 2 * border;if (range < 10.0)
         {
             _axisY->setTickCount(range + 1);
         }
         else if (range < 20.0)
         {
             _axisY->setTickCount(range / 2.0 + 1);
+        }*/
+        _axisY->applyNiceNumbers();
+        if (_axisY->tickCount() < 4)
+        {
+            _axisY->setMinorTickCount(1);
+        }
+        else
+        {
+            _axisY->setMinorTickCount(0);
         }
     }
 }
