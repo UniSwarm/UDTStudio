@@ -173,6 +173,7 @@ void Bootloader::startUpdate()
 
     setStatus(STATUS_CHECK_FILE_AND_DEVICE);
     _state = STATE_CHECK_MODE;
+    _node->sendPreop();
     _node->nodeOd()->createBootloaderObjects();
     readStatusProgram();
 }
