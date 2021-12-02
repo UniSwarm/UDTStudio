@@ -136,12 +136,14 @@ void MotorWidget::stateChanged()
     if (_nodeProfile402->currentState() == NodeProfile402::STATE_OperationEnabled)
     {
         _motorConfigGroupBox->setEnabled(false);
+        _bldcConfigGroupBox->setEnabled(false);
         _enableButton->setEnabled(true);
         _informationLabel->setText(tr("Not available in \"Operation Enabled\""));
     }
     else
     {
         _motorConfigGroupBox->setEnabled(true);
+        _bldcConfigGroupBox->setEnabled(true);
         _enableButton->setEnabled(false);
         _informationLabel->setText("");
     }
