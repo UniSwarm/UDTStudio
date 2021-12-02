@@ -56,7 +56,7 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
     //_axisX->setTitleText("Time");
 
     _axisY = new QtCharts::QValueAxis();
-    _axisY->setLabelFormat("%i");
+    _axisY->setLabelFormat("%g");
     //_axisY->setTitleText("Value");
 
     setDataLogger(dataLogger);
@@ -188,21 +188,16 @@ void DataLoggerChartsWidget::updateDlData(int id)
 
     updateYaxis();
 
-    qreal min = qFloor(_dataLogger->min());
-    qreal max = qCeil(_dataLogger->max());
-    qreal border = 0;qMax(qCeil((max - min) * .1), 1);
-    if (min < _axisY->min() || min + border > _axisY->min() || max > _axisY->max() || max - border < _axisY->max())
+    qreal min = _dataLogger->min();
+    qreal max = _dataLogger->max();
+    if (min == max)
     {
-        _axisY->setRange(min - border, max + border);
-        /*
-        qreal range = max - min + 2 * border;if (range < 10.0)
-        {
-            _axisY->setTickCount(range + 1);
-        }
-        else if (range < 20.0)
-        {
-            _axisY->setTickCount(range / 2.0 + 1);
-        }*/
+        min -= 0.5;
+        max += 0.5;
+    }
+    if (min < _axisY->min() || min > _axisY->min() || max > _axisY->max() || max < _axisY->max())
+    {
+        _axisY->setRange(min, max);
         _axisY->applyNiceNumbers();
         if (_axisY->tickCount() < 4)
         {
