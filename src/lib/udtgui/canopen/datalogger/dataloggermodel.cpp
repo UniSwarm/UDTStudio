@@ -203,6 +203,12 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
                 pix.fill(dlData->color());
                 return pix;
             }
+
+        case Qt::CheckStateRole:
+            if (index.column() == NodeName)
+            {
+                return QVariant(dlData->isActive());
+            }
     }
     return QVariant();
 }
@@ -242,9 +248,19 @@ int DataLoggerModel::rowCount(const QModelIndex &parent) const
 
 bool DataLoggerModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    Q_UNUSED(index)
-    Q_UNUSED(value)
-    Q_UNUSED(role)
+    if (!_dataLogger || !index.isValid())
+    {
+        return false;
+    }
+
+    DLData *dlData = _dataLogger->dataList().at(index.row());
+
+    if (role == Qt::CheckStateRole && index.column() == NodeName)
+    {
+        dlData->setActive(!dlData->isActive());
+        return true;
+    }
+
     return false;
 }
 
@@ -263,6 +279,12 @@ Qt::ItemFlags DataLoggerModel::flags(const QModelIndex &index) const
     flags.setFlag(Qt::ItemIsEditable, false);
     flags.setFlag(Qt::ItemIsSelectable, true);
     flags.setFlag(Qt::ItemIsEnabled, true);
+
+    if (index.column() == NodeName)
+    {
+        flags.setFlag(Qt::ItemIsUserCheckable, true);
+    }
+
     return flags;
 }
 
