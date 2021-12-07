@@ -92,3 +92,44 @@ bool ODIndexDb::isQ1516(quint16 index, quint8 subIndex, quint16 profileNumber)
     }
     return false;
 }
+
+double ODIndexDb::scale(quint16 index, quint8 subIndex, quint16 profileNumber)
+{
+    if (index < 0x2000 || index >= 0x6000)
+    {
+        return 1.0;
+    }
+
+    if (index == 0x2000) // board voltages
+    {
+        return 1/100.0;
+    }
+    if (index == 0x2020) // cpu temps
+    {
+        return 1/10.0;
+    }
+
+    if (profileNumber == 402)
+    {
+        if (index == 0x2801) // bridge temps
+        {
+            return 1/10.0;
+        }
+        if (index == 0x2802 || index == 0x2803) // bridge currents
+        {
+            return 1/100.0;
+        }
+        if (index == 0x2805) // bridge bemf voltages
+        {
+            return 1/10.0;
+        }
+        if ((index & (quint16)0xF1FF) == 0x4006) // Motor status
+        {
+            if (subIndex == 2) // motor current
+            {
+                return 1/100.0;
+            }
+        }
+    }
+    return 1.0;
+}

@@ -26,6 +26,7 @@ class OD_EXPORT ODIndexDb
 {
 public:
     static bool isQ1516(quint16 index, quint8 subIndex, quint16 profileNumber = 0);
+    static double scale(quint16 index, quint8 subIndex, quint16 profileNumber = 0);
 };
 
 #endif // ODINDEXDB_H
