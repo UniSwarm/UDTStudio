@@ -207,7 +207,7 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
         case Qt::CheckStateRole:
             if (index.column() == NodeName)
             {
-                return QVariant(dlData->isActive());
+                return QVariant(dlData->isActive() ? Qt::Checked : Qt::Unchecked);
             }
     }
     return QVariant();
