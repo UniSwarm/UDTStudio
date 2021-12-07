@@ -75,6 +75,7 @@ void DataLogger::addData(const NodeObjectId &objId)
         emit dataAboutToBeAdded(_dataList.count());
         DLData *dlData = new DLData(mobjId);
         dlData->setColor(QColor::fromHsv((_dataList.count() * 48) % 360, 255, 255, 200));
+        dlData->setActive(true);
         _dataMap.insert(dlData->key(), dlData);
         _dataList.append(dlData);
         registerObjId(dlData->objectId());
@@ -251,7 +252,7 @@ void DataLogger::readData()
 {
     for (DLData *dlData : qAsConst(_dataList))
     {
-        if (dlData->node())
+        if (dlData->node() && dlData->isActive())
         {
             dlData->node()->readObject(dlData->objectId());
         }

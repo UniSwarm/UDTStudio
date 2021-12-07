@@ -26,6 +26,7 @@ DLData::DLData(const NodeObjectId &objectId)
     : _objectId(objectId)
 {
     _node = nullptr;
+    _active = false;
     _q1516 = false;
 
     CanOpenBus *bus = CanOpen::bus(objectId.busId());
@@ -56,6 +57,16 @@ quint64 DLData::key() const
 Node *DLData::node() const
 {
     return _node;
+}
+
+bool DLData::isActive() const
+{
+    return _active;
+}
+
+void DLData::setActive(bool active)
+{
+    _active = active;
 }
 
 QString DLData::name() const

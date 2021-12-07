@@ -36,6 +36,9 @@ public:
     quint64 key() const;
     Node *node() const;
 
+    bool isActive() const;
+    void setActive(bool active);
+
     // apparence attributes
     QString name() const;
     void setName(const QString &name);
@@ -69,6 +72,7 @@ public:
 protected:
     NodeObjectId _objectId;
     Node *_node;
+    bool _active;
 
     QString _name;
     QColor _color;
