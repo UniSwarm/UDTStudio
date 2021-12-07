@@ -173,15 +173,15 @@ QGroupBox *NodeScreenSynchro::createSynchroStatusWidgets()
     QFormLayout *layout = new QFormLayout();
 
     _flagLabel = new IndexLabel();
-    layout->addRow(tr("&Flag:"), _flagLabel);
+    layout->addRow(tr("Flag:"), _flagLabel);
 
     _erorLabel = new IndexLabel();
     _erorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    layout->addRow(tr("&Error:"), _erorLabel);
+    layout->addRow(tr("Error:"), _erorLabel);
 
     _correctorLabel = new IndexLabel();
     _correctorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    layout->addRow(tr("&Corrector:"), _correctorLabel);
+    layout->addRow(tr("Corrector:"), _correctorLabel);
 
     groupBox->setLayout(layout);
     return groupBox;
@@ -242,4 +242,5 @@ void NodeScreenSynchro::setNodeInternal(Node *node, uint8_t axis)
     _dataLogger->removeData(correctorLabel_ObjId);
     _dataLogger->addData(erorLabel_ObjId);
     _dataLogger->addData(correctorLabel_ObjId);
+    _dataLoggerWidget->setTitle(tr("Node %1 axis %2 sync mode").arg(_node->nodeId()).arg(_axis));
 }

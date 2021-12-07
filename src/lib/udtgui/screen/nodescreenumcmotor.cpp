@@ -58,7 +58,7 @@ void NodeScreenUmcMotor::createWidgets()
     _motionSensorPositionWidget = new MotionSensorWidget();
     _motionSensorTorqueWidget = new MotionSensorWidget();
 
-    _P402Widget = new P402Widget();
+    _p402Widget = new P402Widget();
 
     setLayout(layout);
 }
@@ -86,8 +86,8 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)
 
     _axis = axis;
 
-    _P402Widget->setNode(node, axis);
-    _tabWidget->addTab(_P402Widget, " " + _P402Widget->title() + " ");
+    _p402Widget->setNode(node, axis);
+    _tabWidget->addTab(_p402Widget, " " + _p402Widget->title() + " ");
 
     _motorConfigWidget->setNode(node, axis);
     _tabWidget->addTab(_motorConfigWidget, " " + _motorConfigWidget->title() + " ");

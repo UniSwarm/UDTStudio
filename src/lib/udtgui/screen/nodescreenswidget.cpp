@@ -33,7 +33,9 @@ NodeScreensWidget::NodeScreensWidget(QWidget *parent)
     : QWidget(parent)
 {
     _activeNode = nullptr;
+
     createWidgets();
+    setStyleSheet("QTabWidget::tab-bar {left: 5px;}");
 }
 
 Node *NodeScreensWidget::activeNode() const

@@ -58,14 +58,14 @@ void NodeScreenHome::createWidgets()
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
-    QToolBar *toolBar = new QToolBar(tr("PDO commands"));
+    QToolBar *toolBar = new QToolBar(tr("Node screen commands"));
     toolBar->setIconSize(QSize(20, 20));
 
     // read all action
     QAction *actionReadMappings = toolBar->addAction(tr("Read all"));
     actionReadMappings->setIcon(QIcon(":/icons/img/icons8-sync.png"));
     actionReadMappings->setShortcut(QKeySequence("Ctrl+R"));
-    actionReadMappings->setStatusTip(tr("Read all PDO mapping from device"));
+    actionReadMappings->setStatusTip(tr("Read all the objects of the current window"));
     connect(actionReadMappings, &QAction::triggered, this, &NodeScreenHome::readAll);
 
     layout->addWidget(toolBar);
@@ -98,32 +98,32 @@ QWidget *NodeScreenHome::createSumaryWidget()
 
     IndexLabel *indexLabel;
     indexLabel = new IndexLabel(NodeObjectId(0x1008, 0));
-    sumaryLayout->addRow(tr("&Device name:"), indexLabel);
+    sumaryLayout->addRow(tr("Device name:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
     _summaryProfileLabel = new QLabel();
-    sumaryLayout->addRow(tr("&Profile:"), _summaryProfileLabel);
+    sumaryLayout->addRow(tr("Profile:"), _summaryProfileLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x1009, 0));
-    sumaryLayout->addRow(tr("&Hardware version:"), indexLabel);
+    sumaryLayout->addRow(tr("Hardware version:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x2001, 0));
-    sumaryLayout->addRow(tr("Manufacture &date:"), indexLabel);
+    sumaryLayout->addRow(tr("Manufacture date:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x100A, 0));
-    sumaryLayout->addRow(tr("&Software version:"), indexLabel);
+    sumaryLayout->addRow(tr("Software version:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x2003, 0));
-    sumaryLayout->addRow(tr("Software &build:"), indexLabel);
+    sumaryLayout->addRow(tr("Software build:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
     hlayout->addItem(sumaryLayout);
 
     QVBoxLayout *buttonlayout = new QVBoxLayout();
-    QPushButton *goFirmwareButton = new QPushButton(tr("Update firmware"));
+    QPushButton *goFirmwareButton = new QPushButton(tr("&Update firmware"));
     goFirmwareButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     connect(goFirmwareButton,
             &QPushButton::released,
@@ -172,7 +172,7 @@ QWidget *NodeScreenHome::createOdWidget()
     _odEdsFileLabel = new QLabel();
     _odEdsFileLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
     _odEdsFileLabel->setCursor(Qt::IBeamCursor);
-    odLayout->addRow(tr("&Eds file:"), _odEdsFileLabel);
+    odLayout->addRow(tr("Eds file:"), _odEdsFileLabel);
 
     _odFileInfosLabel = new QLabel();
     _odFileInfosLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
@@ -180,10 +180,10 @@ QWidget *NodeScreenHome::createOdWidget()
     odLayout->addRow(tr("Eds file infos:"), _odFileInfosLabel);
 
     _odCountLabel = new QLabel();
-    odLayout->addRow(tr("Index &count:"), _odCountLabel);
+    odLayout->addRow(tr("Index count:"), _odCountLabel);
 
     _odSubIndexCountLabel = new QLabel();
-    odLayout->addRow(tr("&Sub index count:"), _odSubIndexCountLabel);
+    odLayout->addRow(tr("Sub index count:"), _odSubIndexCountLabel);
 
     hlayout->addItem(odLayout);
 

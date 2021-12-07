@@ -51,7 +51,7 @@ protected:
     MotionSensorWidget *_motionSensorPositionWidget;
     MotionSensorWidget *_motionSensorTorqueWidget;
 
-    P402Widget *_P402Widget;
+    P402Widget *_p402Widget;
 
     QTabWidget *_tabWidget;
 
