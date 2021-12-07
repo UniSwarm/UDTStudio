@@ -21,6 +21,7 @@
 #include <QDebug>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QStandardItemModel>
 
 #include "node.h"
 
@@ -157,19 +158,35 @@ void NodeOdWidget::createDefaultFilters(uint profile)
             break;
 
         case 402:
+
+            _filterCombobox->addItem(tr("402"));
+            dynamic_cast<QStandardItemModel *>(_filterCombobox->model())->item(_filterCombobox->count() - 1)->setEnabled(false);
             _filterCombobox->addItem(tr("402 FSA"), QVariant("0x[6-A][058](0[27]|3F|4[01]|5[A-E]|6[01])"));
-            _filterCombobox->addItem(tr("402 tq (Torque)"), QVariant("0x[6-A][08](7[1-9]|8[7-8])"));
-            _filterCombobox->addItem(tr("402 tp (Torque profile)"), QVariant("0x[6-A][08](B[8-D]|D0)"));
-            _filterCombobox->addItem(tr("402 pt (Profile Torque)"), QVariant("0x[6-A][08](7[1-9]|E[01])"));
+            _filterCombobox->addItem(tr("402 tp (Touch probe)"), QVariant("0x[6-A][08](B[8-D]|D0)"));
             _filterCombobox->addItem(tr("402 hm (Homming)"), QVariant("0x[6-A][08](9[89A]|7C|E3)"));
+            _filterCombobox->addItem(tr("402 fg factors"), QVariant("0x[6-A][08](8F|9[0-267]|A[8-B])"));
+
+            _filterCombobox->addItem(tr("OTHER MODE"));
+            dynamic_cast<QStandardItemModel *>(_filterCombobox->model())->item(_filterCombobox->count() - 1)->setEnabled(false);
+            _filterCombobox->addItem(tr("402 dty (Duty cycle)"), QVariant("0x4[13579BDE][A-F]"));
+
+            _filterCombobox->addItem(tr("TORQUE MODE"));
+            dynamic_cast<QStandardItemModel *>(_filterCombobox->model())->item(_filterCombobox->count() - 1)->setEnabled(false);
+            _filterCombobox->addItem(tr("402 tq (Torque profile)"), QVariant("0x[6-A][08](7[1-9]|8[7-8])"));
+            _filterCombobox->addItem(tr("402 cst (Cyclic synchronous torque)"), QVariant("0x[6-A][08](7[17]|B2)"));
+            _filterCombobox->addItem(tr("402 cstca (Cyclic synchronous torque with commutation angle)"), QVariant("0x[6-A][08](7[17]|B2|EA)"));
+
+            _filterCombobox->addItem(tr("VELOCITY MODE"));
+            dynamic_cast<QStandardItemModel *>(_filterCombobox->model())->item(_filterCombobox->count() - 1)->setEnabled(false);
+            _filterCombobox->addItem(tr("402 vl (Velocity)"), QVariant("0x[6-A][08]4[2-F]"));
+            _filterCombobox->addItem(tr("402 pv (Profile Velocity)"), QVariant("0x[6-A][08](6[9-F]|70|F[8F])"));
+
+            _filterCombobox->addItem(tr("POSITION MODE"));
+            dynamic_cast<QStandardItemModel *>(_filterCombobox->model())->item(_filterCombobox->count() - 1)->setEnabled(false);
             _filterCombobox->addItem(tr("402 pc (Position Control)"), QVariant("0x[6-A][08](6[2-8]|F[24AC])"));
             _filterCombobox->addItem(tr("402 pp (Profile Position)"), QVariant("0x[6-A][08](7[ABDEF]|8[0-6]|A[34]|C[56]|6[2-4])"));
             _filterCombobox->addItem(tr("402 ip (Interpolated Position)"), QVariant("0x[6-A][08](C[0-4]|7[B-F]|8[0-5]|C[5-6]|6[2-4])"));
             _filterCombobox->addItem(tr("402 cp (Continuous Position)"), QVariant("0x[6-A][08](7[BDEF]|8[01345]|C[56]|6[2-4])|0x4[1-8]F0"));
-            _filterCombobox->addItem(tr("402 pv (Profile Velocity"), QVariant("0x[6-A][08](6[9-F]|70|F[8F])"));
-            _filterCombobox->addItem(tr("402 vl (Velocity)"), QVariant("0x[6-A][08]4[2-F]"));
-            _filterCombobox->addItem(tr("402 dty (Duty cycle)"), QVariant("0x4[13579BDE][A-F]"));
-            _filterCombobox->addItem(tr("402 factors"), QVariant("0x[6-A][08](8F|9[0-267]|A[8-B])"));
             break;
     }
     _oldProfile = profile;
