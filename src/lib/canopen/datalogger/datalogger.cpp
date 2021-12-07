@@ -201,6 +201,7 @@ void DataLogger::addDataValue(DLData *dlData, const QVariant &value, const QDate
     {
         valueDouble /= 65536.0;
     }
+    valueDouble *= dlData->scale();
 
     dlData->appendData(valueDouble, dateTime);
 

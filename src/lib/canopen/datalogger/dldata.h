@@ -69,6 +69,9 @@ public:
     bool isQ1516() const;
     void setQ1516(bool q1516);
 
+    qreal scale() const;
+    void setScale(qreal scale);
+
 protected:
     NodeObjectId _objectId;
     Node *_node;
@@ -76,6 +79,7 @@ protected:
 
     QString _name;
     QColor _color;
+    qreal _scale;
 
     QList<qreal> _values;
     QList<QDateTime> _times;

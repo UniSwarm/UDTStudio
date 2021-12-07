@@ -27,6 +27,7 @@ DLData::DLData(const NodeObjectId &objectId)
 {
     _node = nullptr;
     _active = false;
+    _scale = 1.0;
     _q1516 = false;
 
     CanOpenBus *bus = CanOpen::bus(objectId.busId());
@@ -87,6 +88,16 @@ QColor DLData::color() const
 void DLData::setColor(const QColor &color)
 {
     _color = color;
+}
+
+qreal DLData::scale() const
+{
+    return _scale;
+}
+
+void DLData::setScale(qreal scale)
+{
+    _scale = scale;
 }
 
 double DLData::firstValue() const
