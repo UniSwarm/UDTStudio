@@ -35,29 +35,14 @@ P402CpWidget::P402CpWidget(QWidget *parent)
     _nodeProfile402 = nullptr;
 }
 
-void P402CpWidget::updateTargetFromSpinbox()
+void P402CpWidget::goOneLineEditFinished()
 {
-    qint32 value = static_cast<qint16>(_positionTargetSpinBox->value());
-    _nodeProfile402->setTarget(value);
+    _nodeProfile402->setTarget(_goOneLineEdit->text().toInt());
 }
 
-void P402CpWidget::updateTargetFromSlider()
+void P402CpWidget::twoOneLineEditFinished()
 {
-    qint32 value = static_cast<qint16>(_positionTargetSlider->value());
-    _nodeProfile402->setTarget(value);
-}
-
-void P402CpWidget::updateMaxPosition()
-{
-    int max = _nodeProfile402->node()->nodeOd()->value(_positionRangeLimitMaxSpinBox->objId()).toInt();
-    _positionTargetSlider->setRange(-max, max);
-    _sliderMinLabel->setNum(-max);
-    _sliderMaxLabel->setNum(max);
-}
-
-void P402CpWidget::setZeroButton()
-{
-    _nodeProfile402->setTarget(0);
+    _nodeProfile402->setTarget(_goTwoLineEdit->text().toInt());
 }
 
 void P402CpWidget::sendAbsRel(bool ok)
@@ -156,35 +141,28 @@ void P402CpWidget::createWidgets()
 
 void P402CpWidget::createTargetWidgets()
 {
-    _positionTargetSpinBox = new QSpinBox();
-    _positionTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    _modeLayout->addRow(tr("Position &target:"), _positionTargetSpinBox);
+    _targetPositionLineEdit = new QLineEdit();
 
-    QLayout *labelSliderLayout = new QHBoxLayout();
-    _sliderMinLabel = new QLabel("min");
-    labelSliderLayout->addWidget(_sliderMinLabel);
-    labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
-    labelSliderLayout->addWidget(new QLabel("0"));
-    labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
-    _sliderMaxLabel = new QLabel("max");
-    labelSliderLayout->addWidget(_sliderMaxLabel);
-    _modeLayout->addRow(labelSliderLayout);
+    QHBoxLayout *goLayout = new QHBoxLayout();
+    _goOneLineEdit = new QLineEdit();
+    _goOneLineEdit->setPlaceholderText(tr("Target one"));
+    goLayout->addWidget(_goOneLineEdit);
+    _goOnePushButton = new QPushButton(tr("Go one"));
+    connect(_goOneLineEdit, &QLineEdit::returnPressed, this, &P402CpWidget::goOneLineEditFinished);
+    connect(_goOnePushButton, &QPushButton::clicked, this, &P402CpWidget::goOneLineEditFinished);
+    goLayout->addWidget(_goOnePushButton);
 
-    _positionTargetSlider = new QSlider(Qt::Horizontal);
-    _positionTargetSlider->setTickPosition(QSlider::TicksBothSides);
-    _modeLayout->addRow(_positionTargetSlider);
+    _goTwoLineEdit = new QLineEdit();
+    _goTwoLineEdit->setPlaceholderText(tr("Target two"));
+    goLayout->addWidget(_goTwoLineEdit);
+    _goTwoPushButton = new QPushButton(tr("Go two"));
+    connect(_goTwoLineEdit, &QLineEdit::returnPressed, this, &P402CpWidget::twoOneLineEditFinished);
+    connect(_goTwoPushButton, &QPushButton::clicked, this, &P402CpWidget::twoOneLineEditFinished);
+    goLayout->addWidget(_goTwoPushButton);
 
-    connect(_positionTargetSlider, &QSlider::valueChanged, this, &P402CpWidget::updateTargetFromSlider);
-    connect(_positionTargetSpinBox, &QSpinBox::editingFinished, this, &P402CpWidget::updateTargetFromSpinbox);
-
-    QPushButton *setZeroButton = new QPushButton();
-    setZeroButton->setText("Set to 0");
-    connect(setZeroButton, &QPushButton::clicked, this, &P402CpWidget::setZeroButton);
-    QLayout *setZeroLayout = new QHBoxLayout();
-    setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
-    setZeroLayout->addWidget(setZeroButton);
-    setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
-    _modeLayout->addRow(setZeroLayout);
+    QLabel *labelPositionTarget = new QLabel(tr("Position &target:"));
+    labelPositionTarget->setBuddy(_goOneLineEdit);
+    _modeLayout->addRow(labelPositionTarget, goLayout);
 }
 
 void P402CpWidget::createInformationWidgets()
@@ -335,27 +313,6 @@ void P402CpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     {
         return;
     }
-
-    if (objId == _positionTargetObjectId)
-    {
-        int value = _nodeProfile402->node()->nodeOd()->value(objId).toInt();
-        if (!_positionTargetSpinBox->hasFocus())
-        {
-            _positionTargetSpinBox->blockSignals(true);
-            _positionTargetSpinBox->setValue(value);
-            _positionTargetSpinBox->blockSignals(false);
-        }
-        if (!_positionTargetSlider->isSliderDown())
-        {
-            _positionTargetSlider->blockSignals(true);
-            _positionTargetSlider->setValue(value);
-            _positionTargetSlider->blockSignals(false);
-        }
-    }
-    else if (objId == _positionRangeLimitMaxSpinBox->objId())
-    {
-        updateMaxPosition();
-    }
 }
 
 void P402CpWidget::readRealTimeObjects()
@@ -393,7 +350,6 @@ void P402CpWidget::setNode(Node *node, uint8_t axis)
             absRelEvent(_modeCp->isAbsRel());
 
             _positionTargetObjectId = _modeCp->targetObjectId();
-            registerObjId(_positionTargetObjectId);
 
             _positionDemandValueObjectId = _modeCp->positionDemandValueObjectId();
             _positionDemandValueLabel->setObjId(_positionDemandValueObjectId);
@@ -419,10 +375,6 @@ void P402CpWidget::setNode(Node *node, uint8_t axis)
 
             _homeOffsetSpinBox->setObjId(_modeCp->homeOffsetObjectId());
             _polarityCheckBox->setObjId(_nodeProfile402->fgPolaritybjectId());
-
-            int max = _nodeProfile402->node()->nodeOd()->value(_positionRangeLimitMaxSpinBox->objId()).toInt();
-            _positionTargetSlider->setValue(_nodeProfile402->node()->nodeOd()->value(_positionTargetObjectId).toInt());
-            _positionTargetSlider->setRange(-max, max);
         }
     }
 }

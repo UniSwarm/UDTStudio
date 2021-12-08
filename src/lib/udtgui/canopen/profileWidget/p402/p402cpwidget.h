@@ -51,10 +51,8 @@ private:
     NodeObjectId _positionDemandValueObjectId;
     NodeObjectId _positionActualValueObjectId;
 
-    void updateTargetFromSpinbox();
-    void updateTargetFromSlider();
-    void updateMaxPosition();
-    void setZeroButton();
+    void goOneLineEditFinished();
+    void twoOneLineEditFinished();
 
     void sendAbsRel(bool ok);
     void absRelEvent(bool ok);
@@ -67,10 +65,11 @@ private:
     void createWidgets();
 
     void createTargetWidgets();
-    QSpinBox *_positionTargetSpinBox;
-    QSlider *_positionTargetSlider;
-    QLabel *_sliderMinLabel;
-    QLabel *_sliderMaxLabel;
+    QLineEdit *_targetPositionLineEdit;
+    QLineEdit *_goOneLineEdit;
+    QLineEdit *_goTwoLineEdit;
+    QPushButton *_goOnePushButton;
+    QPushButton *_goTwoPushButton;
 
     void createInformationWidgets();
     QLabel *_infoLabel;
