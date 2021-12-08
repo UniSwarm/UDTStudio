@@ -117,13 +117,6 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
     }
 }
 
-void P402PpWidget::targetPositionLineEditFinished()
-{
-    _listDataRecord = _targetPositionLineEdit->text().split(QLatin1Char(','), QString::SkipEmptyParts);
-    _iteratorForSendDataRecord = 0;
-    sendDataRecord();
-}
-
 void P402PpWidget::goOneLineEditFinished()
 {
     _modePp->newSetPoint(false);
@@ -136,21 +129,6 @@ void P402PpWidget::twoOneLineEditFinished()
     _modePp->newSetPoint(false);
     _nodeProfile402->setTarget(_goTwoLineEdit->text().toInt());
     _modePp->newSetPoint(true);
-}
-
-void P402PpWidget::sendDataRecord()
-{
-    if (_iteratorForSendDataRecord < _listDataRecord.size())
-    {
-        qint32 value = _listDataRecord.at(_iteratorForSendDataRecord).toInt();
-        _nodeProfile402->setTarget(value);
-        _iteratorForSendDataRecord++;
-    }
-    else
-    {
-        _targetPositionLineEdit->clear();
-        _listDataRecord.clear();
-    }
 }
 
 void P402PpWidget::changeSetImmediatelyPointCheckBoxRampClicked(bool ok)
@@ -479,13 +457,5 @@ void P402PpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     if ((!_nodeProfile402->node()) || (_nodeProfile402->node()->status() != Node::STARTED))
     {
         return;
-    }
-
-    if (objId == _positionTargetObjectId)
-    {
-        if (!_listDataRecord.isEmpty())
-        {
-            sendDataRecord();
-        }
     }
 }

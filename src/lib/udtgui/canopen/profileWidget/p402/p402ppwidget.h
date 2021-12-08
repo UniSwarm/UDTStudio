@@ -50,13 +50,8 @@ private:
     NodeObjectId _positionDemandValueObjectId;
     NodeObjectId _positionActualValueObjectId;
 
-    int _iteratorForSendDataRecord;
-    QStringList _listDataRecord;
-
-    void targetPositionLineEditFinished();
     void goOneLineEditFinished();
     void twoOneLineEditFinished();
-    void sendDataRecord();
 
     void changeSetImmediatelyPointCheckBoxRampClicked(bool ok);
     void changeSetImmediatelyPointEvent(bool ok);
