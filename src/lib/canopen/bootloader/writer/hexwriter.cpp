@@ -26,7 +26,7 @@ HexWriter::HexWriter()
 {
 }
 
-int HexWriter::write(const QByteArray &prog, const QString &filePath)
+int HexWriter::write(const QByteArray &prog, const QString &filePath, Optimization optimization)
 {
     QFile data(filePath);
     if (!data.open(QFile::WriteOnly | QFile::Truncate))
@@ -66,7 +66,14 @@ int HexWriter::write(const QByteArray &prog, const QString &filePath)
             line.append(prog.mid(index, dataCount).toHex().rightJustified(16, '0').toUpper());
             // Checksum
             line.append(QString::number(checksum(line), 16).rightJustified(2, '0').toUpper());
-            // if (!line.contains("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"))
+            if (optimization == ON)
+            {
+                if (!line.contains("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"))
+                {
+                    stream << line << "\n";
+                }
+            }
+            else
             {
                 stream << line << "\n";
             }

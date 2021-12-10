@@ -28,7 +28,13 @@ class CANOPEN_EXPORT HexWriter
 public:
     HexWriter();
 
-    int write(const QByteArray &prog, const QString &filePath);
+    enum Optimization
+    {
+        OFF,
+        ON
+    };
+
+    int write(const QByteArray &prog, const QString &filePath, Optimization optimization = OFF);
 
 private:
     int checksum(QString data);
