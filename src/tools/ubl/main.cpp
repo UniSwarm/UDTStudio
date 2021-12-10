@@ -218,7 +218,7 @@ int merge(QStringList aOptionList, QStringList bOptionList, QString outputFile, 
     }
 
     HexWriter hexWriter;
-    hexWriter.write(prog, outputFile);
+    hexWriter.write(prog, outputFile, HexWriter::Optimization::ON);
 
     return 0;
 }
