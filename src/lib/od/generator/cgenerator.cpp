@@ -207,6 +207,10 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
     out << "\n";
     out << "#include \"od_data.h\""
         << "\n";
+
+    out << "#define STRINGIZE(x) #x" << "\n";
+    out << "#define STRINGIZE_VALUE_OF(x) STRINGIZE(x)" << "\n";
+
     out << "\n";
     out << "// ==================== initialization ====================="
         << "\n";
@@ -1007,7 +1011,7 @@ void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile)
         value = subIndex->value().toString();
         if (value.startsWith("__") && value.endsWith("__") && value.size() > 4)  // value contain preprocessor value
         {
-            // Keep value without double quote
+            value = "STRINGIZE_VALUE_OF(" + value + ")";
         }
         else
         {
