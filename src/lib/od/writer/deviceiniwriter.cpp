@@ -363,7 +363,7 @@ QString DeviceIniWriter::accessToString(int access) const
 
         case SubIndex::WRITE:
         case SubIndex::WRITE + SubIndex::RPDO:
-            return QString("ro");
+            return QString("wo");
 
         case SubIndex::READ + SubIndex::WRITE:
         case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO + SubIndex::RPDO:
