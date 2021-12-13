@@ -124,8 +124,6 @@ void P401ChannelWidget::createWidgets()
     _modeCombobox->addItem(tr("Open-source"), QVariant(static_cast<uint16_t>(0x0002)));
     _modeCombobox->addItem(tr("Push-Pull"), QVariant(static_cast<uint16_t>(0x0003)));
     _modeCombobox->addItem(tr("PWM Open-drain"), QVariant(static_cast<uint16_t>(0x0011)));
-    _modeCombobox->addItem(tr("PWM Open-source"), QVariant(static_cast<uint16_t>(0x0012)));
-    _modeCombobox->addItem(tr("PWM Push-Pull"), QVariant(static_cast<uint16_t>(0x0013)));
     channelLayout->addWidget(_modeCombobox);
 
     channelLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding));
