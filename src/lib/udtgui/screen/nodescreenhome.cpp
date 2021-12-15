@@ -112,6 +112,10 @@ QWidget *NodeScreenHome::createSumaryWidget()
     sumaryLayout->addRow(tr("Manufacture date:"), indexLabel);
     _indexWidgets.append(indexLabel);
 
+    indexLabel = new IndexLabel(NodeObjectId(0x1018, 4));
+    sumaryLayout->addRow(tr("Serial number:"), indexLabel);
+    _indexWidgets.append(indexLabel);
+
     indexLabel = new IndexLabel(NodeObjectId(0x100A, 0));
     sumaryLayout->addRow(tr("Software version:"), indexLabel);
     _indexWidgets.append(indexLabel);
