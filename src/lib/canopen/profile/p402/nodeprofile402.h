@@ -71,6 +71,12 @@ public:
     QList<OperationMode> modesSupported();
     QList<OperationMode> modesSupportedByType(IndexDb402::OdMode402);
     Mode *mode(OperationMode mode) const;
+    enum ModeStatus
+    {
+        MODE_CHANGED = 0,
+        MODE_CHANGING = 1,
+    };
+    ModeStatus modeStatus() const;
 
     enum State402
     {
@@ -170,12 +176,7 @@ private:
     StateState _stateState;
 
     // OPERATION MODE
-    enum ModeState
-    {
-        NONE_MODE = 0,
-        MODE_CHANGE = 1,
-    };
-    ModeState _modeState;
+    ModeStatus _modeStatus;
     OperationMode _modeCurrent;
     OperationMode _modeRequested;
     QList<OperationMode> _modesSupported;
@@ -213,7 +214,7 @@ public:
     virtual void reset() override;
 
 public:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+  void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
 #endif  // NODEPROFILE402_H

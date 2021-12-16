@@ -159,7 +159,7 @@ void ModePp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         return;
     }
 
-    if ((objId == _controlWordObjectId) && _nodeProfile402->actualMode() == _mode)
+    if ((objId == _controlWordObjectId) && _nodeProfile402->actualMode() == _mode && _nodeProfile402->modeStatus() == NodeProfile402::MODE_CHANGED)
     {
         quint16 controlWord = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
         _cmdControlWordFlag = controlWord & CW_Mask;

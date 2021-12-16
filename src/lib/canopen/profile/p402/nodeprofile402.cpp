@@ -99,7 +99,7 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     _axisId = axis;
     _modeCurrent = NoMode;
     _modeRequested = NoMode;
-    _modeState = NONE_MODE;
+    _modeStatus = MODE_CHANGED;
 
     _stateState = NONE_STATE;
     _stateMachineRequested = State402::STATE_NotReadyToSwitchOn;
@@ -202,7 +202,7 @@ bool NodeProfile402::setMode(OperationMode mode)
         || (mode == CSV) || (mode == CST) || (mode == CSTCA))
     {
         _node->writeObject(_modesOfOperationObjectId, QVariant(mode));
-        _modeState = MODE_CHANGE;
+        _modeStatus = MODE_CHANGING;
         _modeRequested = mode;
         return true;
     }
@@ -504,6 +504,11 @@ void NodeProfile402::readOptionObjects() const
     {
         _node->readObject(optionObjectId);
     }
+}
+
+NodeProfile402::ModeStatus NodeProfile402::modeStatus() const
+{
+    return _modeStatus;
 }
 
 void NodeProfile402::initializeObjectsId()
@@ -953,12 +958,15 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
     if (objId == _modesOfOperationObjectId)
     {
         _node->readObject(_modesOfOperationDisplayObjectId);
+        _controlWord = (_controlWord & ~CW_OperationModeSpecific);
+        _controlWord |= _modes[_modeRequested]->getSpecificCwFlag();
+        _node->writeObject(_controlWordObjectId, QVariant(_controlWord));
     }
 
     if (objId == _modesOfOperationDisplayObjectId)
     {
         NodeProfile402::OperationMode mode = static_cast<NodeProfile402::OperationMode>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
-        if ((_modeState == NodeProfile402::MODE_CHANGE) && (_modeRequested != mode))
+        if ((_modeStatus == NodeProfile402::MODE_CHANGING) && (_modeRequested != mode))
         {
             _modeTimer.singleShot(TIMER_READ_MODE_OPERATION_DISPLAY, this, SLOT(readModeOfOperationDisplay()));
             return;
@@ -972,7 +980,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
         }
 
         _modeRequested = _modeCurrent;
-        _modeState = NodeProfile402::ModeState::NONE_MODE;
+        _modeStatus = NodeProfile402::ModeStatus::MODE_CHANGED;
 
         return;
     }
