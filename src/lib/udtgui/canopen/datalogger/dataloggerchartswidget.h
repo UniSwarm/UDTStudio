@@ -24,6 +24,7 @@
 #include <QChartView>
 
 #include <QLineSeries>
+#include <QTimer>
 
 #include "datalogger/datalogger.h"
 
@@ -68,6 +69,7 @@ signals:
     void rollingTimeMsChanged(int);
 
 protected slots:
+    void updateSeries();
     void updateDlData(int id);
 
     void addDataPrepare(int id);
@@ -82,9 +84,12 @@ private:
     DataLogger *_dataLogger;
 
     QtCharts::QChart *_chart;
-    QList<QtCharts::QXYSeries *> _series;
     QtCharts::QDateTimeAxis *_axisX;
     QtCharts::QValueAxis *_axisY;
+
+    QList<QtCharts::QXYSeries *> _series;
+    QList<qint64> _serieLastDates;
+    QTimer _updateTimer;
 
     int _idPending;
 

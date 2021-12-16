@@ -64,6 +64,9 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
 
     _useOpenGL = false;
     _viewCross = false;
+
+    connect(&_updateTimer, &QTimer::timeout, this, &DataLoggerChartsWidget::updateSeries);
+    _updateTimer.start(100);
 }
 
 DataLoggerChartsWidget::~DataLoggerChartsWidget()
@@ -86,7 +89,7 @@ void DataLoggerChartsWidget::setDataLogger(DataLogger *dataLogger)
             connect(dataLogger, &DataLogger::dataAdded, this, &DataLoggerChartsWidget::addDataOk);
             connect(dataLogger, &DataLogger::dataAboutToBeRemoved, this, &DataLoggerChartsWidget::removeDataPrepare);
             connect(dataLogger, &DataLogger::dataRemoved, this, &DataLoggerChartsWidget::removeDataOk);
-            connect(dataLogger, &DataLogger::dataChanged, this, &DataLoggerChartsWidget::updateDlData);
+            // connect(dataLogger, &DataLogger::dataChanged, this, &DataLoggerChartsWidget::updateDlData);
         }
     }
     _dataLogger = dataLogger;
@@ -173,13 +176,13 @@ void DataLoggerChartsWidget::updateDlData(int id)
 
     DLData *dlData = _dataLogger->data(id);
     QtCharts::QXYSeries *serie = _series[id];
-    if (dlData->values().isEmpty())
+    if (dlData->values().count() < serie->count())
     {
         serie->clear();
         return;
     }
 
-    serie->append(dlData->lastDateTime().toMSecsSinceEpoch(), dlData->lastValue());
+    // serie->append(dlData->lastDateTime().toMSecsSinceEpoch(), dlData->lastValue());
 
     if (serie->color() != dlData->color())
     {
@@ -237,6 +240,7 @@ void DataLoggerChartsWidget::addDataOk()
         serie->attachAxis(_axisX);
         serie->attachAxis(_axisY);
         _series.append(serie);
+        _serieLastDates.append(0);
 
         connect(serie, &QLineSeries::hovered, this, &DataLoggerChartsWidget::tooltip);
     }
@@ -249,7 +253,8 @@ void DataLoggerChartsWidget::removeDataPrepare(int id)
     {
         QtCharts::QXYSeries *serie = _series.at(id);
         _chart->removeSeries(serie);
-        _series.removeOne(serie);
+        _series.removeAt(id);
+        _serieLastDates.removeAt(id);
         serie->deleteLater();
     }
 }
@@ -266,10 +271,6 @@ void DataLoggerChartsWidget::updateYaxis()
 
     if (_rollingEnabled)  // rolling mode
     {
-        /*if (serie->count() > _rollingTimeMs)
-        {
-            serie->removePoints(0, serie->count() - _rollingTimeMs);
-        }*/
         firstDateTime = _dataLogger->lastDateTime().addMSecs(-_rollingTimeMs);
         _axisX->setRange(firstDateTime, lastDateTime);
     }
@@ -289,6 +290,55 @@ void DataLoggerChartsWidget::tooltip(QPointF point, bool state)
     QLineSeries *serie = dynamic_cast<QLineSeries *>(sender());
 
     QToolTip::showText(QCursor::pos(), QString("%1\n%2").arg(serie->name()).arg(point.y()), this, QRect());
+}
+
+void DataLoggerChartsWidget::updateSeries()
+{
+    if (!_dataLogger->isStarted())
+    {
+        return;
+    }
+
+    setUpdatesEnabled(false);
+
+    for (int idSerie = 0; idSerie < _series.count(); idSerie++)
+    {
+        DLData *dlData = _dataLogger->data(idSerie);
+        QXYSeries *serie = _series[idSerie];
+
+        qint64 lastDateSerie = _serieLastDates[idSerie];
+        qint64 lastDateDlData = dlData->lastDateTime().toMSecsSinceEpoch();
+
+        if (lastDateSerie < lastDateDlData)
+        {
+            QList<QPointF> points;
+
+            QList<qreal>::const_iterator valuesIt = dlData->values().cend();
+            QList<QDateTime>::const_iterator timesIt = dlData->times().cend();
+            valuesIt--;
+            timesIt--;
+            while (lastDateSerie < timesIt->toMSecsSinceEpoch())
+            {
+                points.prepend(QPointF(timesIt->toMSecsSinceEpoch(), *valuesIt));
+                if (timesIt == dlData->times().cbegin())
+                {
+                    break;
+                }
+                valuesIt--;
+                timesIt--;
+            }
+            serie->append(points);
+            if (idSerie == 0)
+            {
+                qDebug() << points.count() << lastDateDlData - lastDateSerie << (lastDateDlData - lastDateSerie) / points.count();
+            }
+
+            _serieLastDates[idSerie] = lastDateDlData;
+            updateDlData(idSerie);
+        }
+    }
+
+    setUpdatesEnabled(true);
 }
 
 void DataLoggerChartsWidget::dropEvent(QDropEvent *event)
