@@ -30,6 +30,8 @@
 #include "canopen/indexWidget/indexlabel.h"
 #include "screen/nodescreenswidget.h"
 
+#include "bootloader/bootloader.h"
+
 #include "canopen/bootloaderWidget/bootloaderwidget.h"
 
 NodeScreenHome::NodeScreenHome()
@@ -49,6 +51,11 @@ void NodeScreenHome::updateFirmware()
 {
     BootloaderWidget bootloaderWidget(_node, this);
     bootloaderWidget.exec();
+}
+
+void NodeScreenHome::resetHardware()
+{
+    _node->bootloader()->resetProgram();
 }
 
 void NodeScreenHome::createWidgets()
@@ -136,6 +143,17 @@ QWidget *NodeScreenHome::createSumaryWidget()
                 updateFirmware();
             });
     buttonlayout->addWidget(goFirmwareButton);
+
+    QPushButton *resetHardwareButton = new QPushButton(tr(" &Reset Hardware "));
+    resetHardwareButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+    connect(resetHardwareButton,
+            &QPushButton::released,
+            [=]()
+            {
+                resetHardware();
+            });
+    buttonlayout->addWidget(resetHardwareButton);
+
     buttonlayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
     hlayout->addItem(buttonlayout);
 

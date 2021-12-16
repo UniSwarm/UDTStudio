@@ -39,6 +39,7 @@ public:
 public:
     void readAll();
     void updateFirmware();
+    void resetHardware();
 
 protected:
     void createWidgets();
