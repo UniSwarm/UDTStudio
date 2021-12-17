@@ -96,8 +96,8 @@ void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
     out << "/**\n";
     out << " * Generated .h file\n";
 
-    QString date = QDateTime().currentDateTime().toString("dd-MM-yyyy");
-    QString time = QDateTime().currentDateTime().toString("hh:mm AP");
+    QString date = QDateTime::currentDateTime().toString("dd-MM-yyyy");
+    QString time = QDateTime::currentDateTime().toString("hh:mm AP");
     out << " * Creation date: " << date << "\n";
     out << " * Creation time: " << time << "\n";
 
@@ -198,8 +198,8 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
     out << "/**\n";
     out << " * Generated .c file\n";
 
-    QString date = QDateTime().currentDateTime().toString("dd-MM-yyyy");
-    QString time = QDateTime().currentDateTime().toString("hh:mm AP");
+    QString date = QDateTime::currentDateTime().toString("dd-MM-yyyy");
+    QString time = QDateTime::currentDateTime().toString("hh:mm AP");
     out << " * Creation date: " << date << "\n";
     out << " * Creation time: " << time << "\n";
 
@@ -208,8 +208,10 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
     out << "#include \"od_data.h\""
         << "\n";
 
-    out << "#define STRINGIZE(x) #x" << "\n";
-    out << "#define STRINGIZE_VALUE_OF(x) STRINGIZE(x)" << "\n";
+    out << "#define STRINGIZE(x) #x"
+        << "\n";
+    out << "#define STRINGIZE_VALUE_OF(x) STRINGIZE(x)"
+        << "\n";
 
     out << "\n";
     out << "// ==================== initialization ====================="
@@ -847,7 +849,7 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
             break;
 
         case Index::Object::ARRAY:
-            for (uint8_t i = 1; i < index->subIndexesCount(); i++)
+            for (int i = 1; i < index->subIndexesCount(); i++)
             {
                 if (!index->subIndexExist(i))
                 {
@@ -926,9 +928,6 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
             break;
 
         case Index::Object::RECORD:
-            cFile << index->maxSubIndex() - 1;
-            break;
-
         case Index::Object::ARRAY:
             cFile << index->maxSubIndex() - 1;
             break;
@@ -1004,30 +1003,32 @@ void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile)
     QString value;
     switch (subIndex->dataType())
     {
-    case SubIndex::VISIBLE_STRING:
-    case SubIndex::OCTET_STRING:
-        cFile << "static const char " << stringNameToString(subIndex) << "[]"
-              << " = ";
-        value = subIndex->value().toString();
-        if (value.startsWith("__") && value.endsWith("__") && value.size() > 4)  // value contain preprocessor value
-        {
-            value = "STRINGIZE_VALUE_OF(" + value + ")";
-        }
-        else
-        {
+        case SubIndex::VISIBLE_STRING:
+        case SubIndex::OCTET_STRING:
+            cFile << "static const char " << stringNameToString(subIndex) << "[]"
+                  << " = ";
+            value = subIndex->value().toString();
+            if (value.startsWith("__") && value.endsWith("__") && value.size() > 4)  // value contain preprocessor value
+            {
+                value = "STRINGIZE_VALUE_OF(" + value + ")";
+            }
+            else
+            {
+                value = "\"" + value + "\"";
+            }
+            cFile << value << ";\n";
+            break;
+
+        case SubIndex::UNICODE_STRING:
+            cFile << "static char " << stringNameToString(subIndex) << "[]"
+                  << " = ";
+            value = subIndex->value().toString();
             value = "\"" + value + "\"";
-        }
-        cFile << value << ";\n";
-        break;
-    case SubIndex::UNICODE_STRING:
-        cFile << "static char " << stringNameToString(subIndex) << "[]"
-              << " = ";
-        value = subIndex->value().toString();
-        value = "\"" + value + "\"";
-        cFile << value << ";\n";
-        break;
-    default:
-        break;
+            cFile << value << ";\n";
+            break;
+
+        default:
+            break;
     }
 }
 
@@ -1036,7 +1037,7 @@ void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile)
  * @param indexes
  * @param C file
  */
-void CGenerator::writeInitRamC(QList<Index *> indexes, QTextStream &cFile)
+void CGenerator::writeInitRamC(const QList<Index *> &indexes, QTextStream &cFile)
 {
     uint8_t lastObjectType = 0;
     int written = 1;

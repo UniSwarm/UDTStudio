@@ -60,7 +60,7 @@ private:
     void writeRecordCompletionC(Index *index, QTextStream &cFile);
     void writeOdCompletionC(Index *index, QTextStream &cFile);
     void writeCharLineC(const SubIndex *subIndex, QTextStream &cFile);
-    void writeInitRamC(QList<Index *> indexes, QTextStream &cFile);
+    void writeInitRamC(const QList<Index *> &indexes, QTextStream &cFile);
     void writeDefineH(Index *index, QTextStream &hFile);
     void writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextStream &cFile);
 
