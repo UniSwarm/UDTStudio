@@ -193,7 +193,7 @@ void BusManagerWidget::createWidgets()
     // Sync timer
     _syncTimerSpinBox = new QSpinBox();
     _syncTimerSpinBox->setRange(1, 5000);
-    _syncTimerSpinBox->setValue(1000);
+    _syncTimerSpinBox->setValue(100);
     _syncTimerSpinBox->setSuffix(" ms");
     _syncTimerSpinBox->setStatusTip(tr("Sets the interval of sync timer in ms"));
     _toolBar->addWidget(_syncTimerSpinBox);
