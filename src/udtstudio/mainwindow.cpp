@@ -35,8 +35,6 @@
 #include <QSplitter>
 #include <QStatusBar>
 
-#include <QDebug>
-
 #include "canopen/datalogger/dataloggersingleton.h"
 
 #ifdef Q_OS_UNIX
@@ -72,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent)
     CanOpen::addBus(bus);
 
     bus = new CanOpenBus(new CanBusDriver(""));
-    bus->setBusName("Bus eds");
+    bus->setBusName("VBus eds");
     CanOpen::addBus(bus);
     int id = 1;
     for (QString edsFile : qAsConst(OdDb::edsFiles()))
@@ -146,7 +144,9 @@ void MainWindow::createDocks()
     _dataLoggerDock = new QDockWidget(tr("Data logger"), this);
     _dataLoggerDock->setObjectName("dataLoggerDock");
     _dataLoggerWidget = new DataLoggerWidget();
-    _dataLoggerWidget->setTitle("Dock");
+    _dataLoggerWidget->setTitle(tr("Dockable data logger"));
+    _dataLoggerWidget->chartView()->setRollingTimeMs(10000);
+    _dataLoggerWidget->chartView()->setRollingEnabled(true);
     _dataLoggerDock->setWidget(_dataLoggerWidget);
     addDockWidget(Qt::BottomDockWidgetArea, _dataLoggerDock);
 
