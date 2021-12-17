@@ -62,7 +62,10 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
         QByteArray data = frame.payload().mid(offset, QMetaType::sizeOf(_objectCurrentMapped.at(i).dataType()));
         QVariant vata = convertQByteArrayToQVariant(data, _objectCurrentMapped.at(i).dataType());
 
-        _node->nodeOd()->updateObjectFromDevice(_objectCurrentMapped.at(i).index(), _objectCurrentMapped.at(i).subIndex(), vata, SDO::FlagsRequest::Pdo);
+        _node->nodeOd()->updateObjectFromDevice(_objectCurrentMapped.at(i).index(),
+                                                _objectCurrentMapped.at(i).subIndex(),
+                                                vata, SDO::FlagsRequest::Pdo,
+                                                QDateTime::fromMSecsSinceEpoch(frame.timeStamp().seconds() * 1000 + frame.timeStamp().microSeconds() / 1000));
         offset += QMetaType::sizeOf(_objectCurrentMapped.at(i).dataType());
     }
 }

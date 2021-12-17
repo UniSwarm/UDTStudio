@@ -69,7 +69,7 @@ public:
     QString accessString() const;
 
     const QVariant &value() const;
-    void setValue(const QVariant &value);
+    void setValue(const QVariant &value, const QDateTime &modificationDate = QDateTime());
     void clearValue();
 
     const QVariant &defaultValue() const;

@@ -86,7 +86,7 @@ public:
     void subscribe(NodeOdSubscriber *object, const quint16 notifyIndex, const quint8 notifySubIndex);
     void unsubscribe(NodeOdSubscriber *object);
     void unsubscribe(NodeOdSubscriber *object, const quint16 notifyIndex, const quint8 notifySubIndex);
-    void updateObjectFromDevice(const quint16 index, const quint8 subindex, const QVariant &value, const SDO::FlagsRequest flags);
+    void updateObjectFromDevice(const quint16 index, const quint8 subindex, const QVariant &value, const SDO::FlagsRequest flags, const QDateTime &modificationDate = QDateTime());
 
     // store / restore
     void store(uint8_t subIndex, uint32_t signature);

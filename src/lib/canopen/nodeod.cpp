@@ -478,7 +478,7 @@ void NodeOd::unsubscribe(NodeOdSubscriber *object, const quint16 notifyIndex, co
     }
 }
 
-void NodeOd::updateObjectFromDevice(const quint16 indexDevice, const quint8 subindexDevice, const QVariant &value, const SDO::FlagsRequest flags)
+void NodeOd::updateObjectFromDevice(const quint16 indexDevice, const quint8 subindexDevice, const QVariant &value, const SDO::FlagsRequest flags, const QDateTime &modificationDate)
 {
     if (indexExist(indexDevice))
     {
@@ -487,7 +487,7 @@ void NodeOd::updateObjectFromDevice(const quint16 indexDevice, const quint8 subi
             if (!(flags & SDO::Error))
             {
                 index(indexDevice)->subIndex(subindexDevice)->clearError();
-                index(indexDevice)->subIndex(subindexDevice)->setValue(value);
+                index(indexDevice)->subIndex(subindexDevice)->setValue(value, modificationDate);
             }
             else
             {

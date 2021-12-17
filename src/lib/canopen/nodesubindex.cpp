@@ -243,10 +243,17 @@ const QVariant &NodeSubIndex::value() const
  * @brief _value setter
  * @param new sub-index value
  */
-void NodeSubIndex::setValue(const QVariant &value)
+void NodeSubIndex::setValue(const QVariant &value, const QDateTime &modificationDate)
 {
     _value.setValue(value);
-    _lastModification = QDateTime::currentDateTime();
+    if (modificationDate.isNull())
+    {
+        _lastModification = QDateTime::currentDateTime();
+    }
+    else
+    {
+        _lastModification = modificationDate;
+    }
 }
 
 /**
