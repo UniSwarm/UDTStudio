@@ -47,3 +47,13 @@ Generator *Generator::getGenerator(const QString &type)
     }
     return nullptr;
 }
+
+const QString &Generator::errorStr() const
+{
+    return _errorStr;
+}
+
+void Generator::appendError(const QString &error)
+{
+    _errorStr.append(error);
+}

@@ -36,6 +36,12 @@ public:
     virtual bool generate(DeviceDescription *deviceDescription, const QString &filePath) = 0;
 
     static Generator *getGenerator(const QString &type);
+
+    const QString &errorStr() const;
+
+protected:
+    QString _errorStr;
+    void appendError(const QString &error);
 };
 
 #endif  // GENERATOR_H

@@ -71,10 +71,10 @@ bool CGenerator::generate(DeviceDescription *deviceDescription, const QString &f
  * @param output file name
  * @param CANopen node-id
  */
-void CGenerator::generate(DeviceDescription *deviceDescription, const QString &filePath, uint8_t nodeId)
+bool CGenerator::generate(DeviceDescription *deviceDescription, const QString &filePath, uint8_t nodeId)
 {
     DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, nodeId);
-    generate(deviceConfiguration, filePath);
+    return generate(deviceConfiguration, filePath);
 }
 
 /**
@@ -82,13 +82,14 @@ void CGenerator::generate(DeviceDescription *deviceDescription, const QString &f
  * @param device configuration model based on dcf or xdd files
  * @param output file name
  */
-void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QString &filePath)
+bool CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QString &filePath)
 {
     QFile hFile(filePath);
 
     if (!hFile.open(QIODevice::WriteOnly))
     {
-        return;
+        appendError(QString("Cannot open file %1\n").arg(filePath));
+        return false;
     }
 
     QTextStream out(&hFile);
@@ -176,7 +177,16 @@ void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
     out << "#endif // OD_DATA_H";
     out << "\n";
 
-    hFile.close();
+    if (_errorStr.isEmpty())
+    {
+        hFile.close();
+        return true;
+    }
+    else
+    {
+        hFile.remove();
+        return false;
+    }
 }
 
 /**
@@ -184,13 +194,14 @@ void CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
  * @param device configuration model based on dcf or xdd files
  * @param output file name
  */
-void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QString &filePath)
+bool CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QString &filePath)
 {
     QFile cFile(filePath);
 
     if (!cFile.open(QIODevice::WriteOnly))
     {
-        return;
+        appendError(QString("Cannot open file %1\n").arg(filePath));
+        return false;
     }
 
     QTextStream out(&cFile);
@@ -320,7 +331,16 @@ void CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
 
     writeSetNodeId(deviceConfiguration, out);
 
-    cFile.close();
+    if (_errorStr.isEmpty())
+    {
+        cFile.close();
+        return true;
+    }
+    else
+    {
+        cFile.remove();
+        return false;
+    }
 }
 
 /**
@@ -974,6 +994,7 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
         case Index::Object::ARRAY:
             if (!index->subIndexExist(1))
             {
+                appendError(QString("Invalid array 0x%1\n").arg(QString::number(index->index(), 16)));
                 break;
             }
 

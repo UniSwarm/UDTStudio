@@ -38,10 +38,10 @@ public:
 
     bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath);
     bool generate(DeviceDescription *deviceDescription, const QString &filePath);
-    void generate(DeviceDescription *deviceDescription, const QString &filePath, uint8_t nodeId);
+    bool generate(DeviceDescription *deviceDescription, const QString &filePath, uint8_t nodeId);
 
-    void generateH(DeviceConfiguration *deviceConfiguration, const QString &filePath);
-    void generateC(DeviceConfiguration *deviceConfiguration, const QString &filePath);
+    bool generateH(DeviceConfiguration *deviceConfiguration, const QString &filePath);
+    bool generateC(DeviceConfiguration *deviceConfiguration, const QString &filePath);
 
 private:
     static QString typeToString(const uint16_t &type);
