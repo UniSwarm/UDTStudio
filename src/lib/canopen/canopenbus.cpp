@@ -179,7 +179,7 @@ void CanOpenBus::setCanBusDriver(CanBusDriver *canBusDriver)
         {
             _canBusDriver->connectDevice();
         }
-        connect(_canBusDriver, &CanBusDriver::framesReceived, this, &CanOpenBus::canFrameRec);
+        connect(_canBusDriver, &CanBusDriver::framesReceived, this, &CanOpenBus::canFrameRec, Qt::UniqueConnection);
         connect(_canBusDriver, &CanBusDriver::stateChanged, this, &CanOpenBus::updateState);
     }
 }
@@ -232,10 +232,10 @@ void CanOpenBus::canFrameRec()
     {
         return;
     }
+
     QCanBusFrame frame = _canBusDriver->readFrame();
     while (frame.isValid())
     {
-        frame.setTimeStamp(QCanBusFrame::TimeStamp::fromMicroSeconds(QDateTime::currentMSecsSinceEpoch() * 1000));
         _serviceDispatcher->parseFrame(frame);
         _canFramesLog.append(frame);
 

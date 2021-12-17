@@ -25,6 +25,8 @@
 
 #include <QMutex>
 #include <QSocketNotifier>
+#include <QThread>
+class CanBusSocketCANNotifierThead;
 
 class CANOPEN_EXPORT CanBusSocketCAN : public CanBusDriver
 {
@@ -44,11 +46,27 @@ public:
 private:
     int _can_socket;
     QMutex _socketMutex;
-    QSocketNotifier *_readNotifier;
+    friend class CanBusSocketCANNotifierThead;
+    CanBusSocketCANNotifierThead *_readNotifier;
     QSocketNotifier *_errorNotifier;
+
+    void notifyRead();
 
 protected slots:
     void handleError();
+};
+
+class CanBusSocketCANNotifierThead : public QThread
+{
+    Q_OBJECT
+public:
+    CanBusSocketCANNotifierThead(CanBusSocketCAN *driver);
+
+    // QThread interface
+protected:
+    int _can_socket;
+    void run() override;
+    CanBusSocketCAN *_driver;
 };
 
 #endif  // CANBUSSOCKETCAN_H

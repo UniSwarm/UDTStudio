@@ -34,6 +34,41 @@ using namespace std;
 
 #include <QDebug>
 
+int createSocketCan(const QString &adress)
+{
+    struct ifreq ifr;
+    struct sockaddr_can addr;
+
+    // open socket
+    int can_socket = socket(PF_CAN, SOCK_RAW, CAN_RAW);
+    if (can_socket < 0)
+    {
+        close(can_socket);
+        return -1;
+    }
+
+    addr.can_family = AF_CAN;
+    strcpy(ifr.ifr_name, adress.toLocal8Bit().data());
+
+    if (ioctl(can_socket, SIOCGIFINDEX, &ifr) < 0)
+    {
+        close(can_socket);
+        return -1;
+    }
+
+    addr.can_ifindex = ifr.ifr_ifindex;
+
+    fcntl(can_socket, F_SETFL, O_NONBLOCK);
+
+    if (bind(can_socket, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+    {
+        close(can_socket);
+        return -1;
+    }
+
+    return can_socket;
+}
+
 CanBusSocketCAN::CanBusSocketCAN(const QString &adress)
     : CanBusDriver(adress)
 {
@@ -50,41 +85,15 @@ CanBusSocketCAN::~CanBusSocketCAN()
 bool CanBusSocketCAN::connectDevice()
 {
     QMutexLocker socketLocker(&_socketMutex);
-    struct ifreq ifr;
-    struct sockaddr_can addr;
 
-    // open socket
-    _can_socket = socket(PF_CAN, SOCK_RAW, CAN_RAW);
+    _can_socket = createSocketCan(_adress);
     if (_can_socket < 0)
     {
-        close(_can_socket);
-        _can_socket = -1;
         return false;
     }
 
-    addr.can_family = AF_CAN;
-    strcpy(ifr.ifr_name, _adress.toLocal8Bit().data());
-
-    if (ioctl(_can_socket, SIOCGIFINDEX, &ifr) < 0)
-    {
-        close(_can_socket);
-        _can_socket = -1;
-        return false;
-    }
-
-    addr.can_ifindex = ifr.ifr_ifindex;
-
-    fcntl(_can_socket, F_SETFL, O_NONBLOCK);
-
-    if (bind(_can_socket, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-    {
-        close(_can_socket);
-        _can_socket = -1;
-        return false;
-    }
-
-    _readNotifier = new QSocketNotifier(_can_socket, QSocketNotifier::Read, this);
-    connect(_readNotifier, &QSocketNotifier::activated, this, &CanBusDriver::framesReceived);
+    _readNotifier = new CanBusSocketCANNotifierThead(this);
+    _readNotifier->start();
 
     _errorNotifier = new QSocketNotifier(_can_socket, QSocketNotifier::Exception, this);
     connect(_errorNotifier, &QSocketNotifier::activated, this, &CanBusSocketCAN::handleError);
@@ -101,7 +110,7 @@ void CanBusSocketCAN::disconnectDevice()
         return;
     }
 
-    _readNotifier->setEnabled(false);
+    _readNotifier->terminate();
     _errorNotifier->setEnabled(false);
     close(_can_socket);
     _can_socket = -1;
@@ -123,6 +132,10 @@ QCanBusFrame CanBusSocketCAN::readFrame()
         qtFrame.setFrameType(QCanBusFrame::InvalidFrame);
         return qtFrame;
     }
+
+    struct timeval tv;
+    ioctl(_can_socket, SIOCGSTAMP_OLD, &tv);
+    qtFrame.setTimeStamp(QCanBusFrame::TimeStamp(tv.tv_sec, tv.tv_usec));
 
     qtFrame.setFrameId(frame.can_id & 0x1FFFFFFF);
 
@@ -170,7 +183,44 @@ bool CanBusSocketCAN::writeFrame(const QCanBusFrame &qtframe)
     return true;
 }
 
+void CanBusSocketCAN::notifyRead()
+{
+    emit framesReceived();
+}
+
 void CanBusSocketCAN::handleError()
 {
     disconnectDevice();
+}
+
+CanBusSocketCANNotifierThead::CanBusSocketCANNotifierThead(CanBusSocketCAN *driver)
+    : QThread(driver)
+{
+    _driver = driver;
+}
+
+void CanBusSocketCANNotifierThead::run()
+{
+    fd_set rdfs;
+    bool running = true;
+
+    _can_socket = createSocketCan(_driver->_adress);
+
+    while (running)
+    {
+        FD_ZERO(&rdfs);
+        FD_SET(_can_socket, &rdfs);
+
+        if (select(_can_socket + 1, &rdfs, NULL, NULL, NULL) <= 0)
+        {
+            terminate();
+            running = false;
+        }
+        else
+        {
+            struct can_frame frame;
+            read(_can_socket, &frame, sizeof(struct can_frame));
+            _driver->notifyRead();
+        }
+    }
 }
