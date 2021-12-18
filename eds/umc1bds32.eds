@@ -7,8 +7,8 @@ EDSVersion=4.0
 FileName=umc1bds32.eds
 FileRevision=1
 FileVersion=1
-ModificationDate=11-19-2021
-ModificationTime=02:25PM
+ModificationDate=12-14-2021
+ModificationTime=04:14PM
 ModifiedBy=UniSwarm SASU
 
 [DeviceInfo]
@@ -116,7 +116,7 @@ DefaultValue=0
 PDOMapping=0
 
 [OptionalObjects]
-SupportedObjects=230
+SupportedObjects=232
 1=0x1003
 2=0x1005
 3=0x1008
@@ -233,120 +233,122 @@ SupportedObjects=230
 114=0x60C4
 115=0x60C5
 116=0x60C6
-117=0x60F2
-118=0x60F4
-119=0x60F8
-120=0x60FA
-121=0x60FD
-122=0x60FE
-123=0x60FF
-124=0x6403
-125=0x6404
-126=0x6405
-127=0x6407
-128=0x6502
-129=0x6503
-130=0x6505
-131=0x67FE
-132=0x67FF
-133=0x6807
-134=0x6840
-135=0x6841
-136=0x6842
-137=0x6843
-138=0x6844
-139=0x6846
-140=0x6848
-141=0x6849
-142=0x684A
-143=0x684B
-144=0x684C
-145=0x685A
-146=0x685B
-147=0x685C
-148=0x685D
-149=0x685E
-150=0x6860
-151=0x6861
-152=0x6862
-153=0x6863
-154=0x6864
-155=0x6865
-156=0x6866
-157=0x6867
-158=0x6868
-159=0x6869
-160=0x686A
-161=0x686B
-162=0x686C
-163=0x686D
-164=0x686E
-165=0x686F
-166=0x6870
-167=0x6871
-168=0x6872
-169=0x6873
-170=0x6874
-171=0x6875
-172=0x6876
-173=0x6877
-174=0x6878
-175=0x6879
-176=0x687A
-177=0x687B
-178=0x687C
-179=0x687D
-180=0x687E
-181=0x687F
-182=0x6880
-183=0x6881
-184=0x6882
-185=0x6883
-186=0x6884
-187=0x6885
-188=0x6886
-189=0x6887
-190=0x6888
-191=0x688F
-192=0x6890
-193=0x6891
-194=0x6892
-195=0x6898
-196=0x6899
-197=0x689A
-198=0x68A3
-199=0x68A4
-200=0x68B0
-201=0x68B1
-202=0x68B2
-203=0x68B8
-204=0x68B9
-205=0x68BA
-206=0x68BB
-207=0x68BC
-208=0x68BD
-209=0x68C0
-210=0x68C1
-211=0x68C2
-212=0x68C4
-213=0x68C5
-214=0x68C6
-215=0x68F2
-216=0x68F4
-217=0x68F8
-218=0x68FA
-219=0x68FD
-220=0x68FE
-221=0x68FF
-222=0x6C03
-223=0x6C04
-224=0x6C05
-225=0x6C07
-226=0x6D02
-227=0x6D03
-228=0x6D05
-229=0x6FFE
-230=0x6FFF
+117=0x60EA
+118=0x60F2
+119=0x60F4
+120=0x60F8
+121=0x60FA
+122=0x60FD
+123=0x60FE
+124=0x60FF
+125=0x6403
+126=0x6404
+127=0x6405
+128=0x6407
+129=0x6502
+130=0x6503
+131=0x6505
+132=0x67FE
+133=0x67FF
+134=0x6807
+135=0x6840
+136=0x6841
+137=0x6842
+138=0x6843
+139=0x6844
+140=0x6846
+141=0x6848
+142=0x6849
+143=0x684A
+144=0x684B
+145=0x684C
+146=0x685A
+147=0x685B
+148=0x685C
+149=0x685D
+150=0x685E
+151=0x6860
+152=0x6861
+153=0x6862
+154=0x6863
+155=0x6864
+156=0x6865
+157=0x6866
+158=0x6867
+159=0x6868
+160=0x6869
+161=0x686A
+162=0x686B
+163=0x686C
+164=0x686D
+165=0x686E
+166=0x686F
+167=0x6870
+168=0x6871
+169=0x6872
+170=0x6873
+171=0x6874
+172=0x6875
+173=0x6876
+174=0x6877
+175=0x6878
+176=0x6879
+177=0x687A
+178=0x687B
+179=0x687C
+180=0x687D
+181=0x687E
+182=0x687F
+183=0x6880
+184=0x6881
+185=0x6882
+186=0x6883
+187=0x6884
+188=0x6885
+189=0x6886
+190=0x6887
+191=0x6888
+192=0x688F
+193=0x6890
+194=0x6891
+195=0x6892
+196=0x6898
+197=0x6899
+198=0x689A
+199=0x68A3
+200=0x68A4
+201=0x68B0
+202=0x68B1
+203=0x68B2
+204=0x68B8
+205=0x68B9
+206=0x68BA
+207=0x68BB
+208=0x68BC
+209=0x68BD
+210=0x68C0
+211=0x68C1
+212=0x68C2
+213=0x68C4
+214=0x68C5
+215=0x68C6
+216=0x68EA
+217=0x68F2
+218=0x68F4
+219=0x68F8
+220=0x68FA
+221=0x68FD
+222=0x68FE
+223=0x68FF
+224=0x6C03
+225=0x6C04
+226=0x6C05
+227=0x6C07
+228=0x6D02
+229=0x6D03
+230=0x6D05
+231=0x6FFE
+232=0x6FFF
 
 [1003]
 ParameterName=Predefined Error Field
@@ -387,9 +389,9 @@ PDOMapping=0
 [1009]
 ParameterName=Manufacturer Hardware Version
 ObjectType=0x7
-DataType=0x0009
+DataType=0x000B
 AccessType=ro
-DefaultValue="v1.1.0"
+DefaultValue="vXX.XX.XXX"
 PDOMapping=0
 
 [100A]
@@ -397,7 +399,7 @@ ParameterName=Manufacturer Software Version
 ObjectType=0x7
 DataType=0x0009
 AccessType=ro
-DefaultValue="v1.0.2"
+DefaultValue="v1.0.0"
 PDOMapping=0
 
 [100C]
@@ -2772,7 +2774,7 @@ DefaultValue=0
 PDOMapping=0
 
 [60B2]
-ParameterName=a1_csp_Torque_offset
+ParameterName=a1_cst_Torque_offset
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
@@ -2977,6 +2979,14 @@ ObjectType=0x7
 DataType=0x0007
 AccessType=rww
 DefaultValue=100000
+PDOMapping=1
+
+[60EA]
+ParameterName=a1_cstca_Commutation_angle
+ObjectType=0x7
+DataType=0x0003
+AccessType=rww
+DefaultValue=0
 PDOMapping=1
 
 [60F2]
@@ -4032,7 +4042,7 @@ DefaultValue=0
 PDOMapping=0
 
 [68B2]
-ParameterName=a2_csp_Torque_offset
+ParameterName=a2_cst_Torque_offset
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
@@ -4237,6 +4247,14 @@ ObjectType=0x7
 DataType=0x0007
 AccessType=rww
 DefaultValue=1
+PDOMapping=1
+
+[68EA]
+ParameterName=a2_cstca_Commutation_angle
+ObjectType=0x7
+DataType=0x0003
+AccessType=rww
+DefaultValue=0
 PDOMapping=1
 
 [68F2]
@@ -4496,9 +4514,9 @@ PDOMapping=1
 [2001]
 ParameterName=Manufacture_date
 ObjectType=0x7
-DataType=0x0009
+DataType=0x000B
 AccessType=ro
-DefaultValue="XX/XX/XX"
+DefaultValue="XXXX/XX/XX XX:XX:XX"
 PDOMapping=0
 
 [2002]
@@ -4506,7 +4524,7 @@ ParameterName=Calibration_date
 ObjectType=0x7
 DataType=0x0009
 AccessType=ro
-DefaultValue="XX/XX/XX"
+DefaultValue="XXXX/XX/XX XX:XX:XX"
 PDOMapping=0
 
 [2003]
@@ -4514,7 +4532,7 @@ ParameterName=Firmware_build_date
 ObjectType=0x7
 DataType=0x0009
 AccessType=ro
-DefaultValue="__TIMESTAMP__"
+DefaultValue="__DEVICE_BUILD_DATE__"
 PDOMapping=0
 
 [2004]
@@ -5038,31 +5056,59 @@ PDOMapping=1
 [4006]
 ParameterName=a1_Motor_status
 ObjectType=0x9
-SubNumber=4
+SubNumber=8
 
 [4006sub0]
 ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=6
+DefaultValue=7
 PDOMapping=0
 
-[4006sub4]
+[4006sub1]
 ParameterName=Command
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
+[4006sub2]
+ParameterName=Current
+ObjectType=0x7
+DataType=0x0003
+AccessType=ro
+PDOMapping=1
+
+[4006sub3]
+ParameterName=Torque
+ObjectType=0x7
+DataType=0x0004
+AccessType=ro
+PDOMapping=1
+
+[4006sub4]
+ParameterName=Velocity
+ObjectType=0x7
+DataType=0x0004
+AccessType=ro
+PDOMapping=1
+
 [4006sub5]
+ParameterName=Position
+ObjectType=0x7
+DataType=0x0004
+AccessType=ro
+PDOMapping=1
+
+[4006sub6]
 ParameterName=Error
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
 PDOMapping=1
 
-[4006sub6]
+[4006sub7]
 ParameterName=Temperature
 ObjectType=0x7
 DataType=0x0003
@@ -5095,7 +5141,7 @@ ParameterName=Peak_current
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=3200
 PDOMapping=0
 
 [4007sub3]
@@ -5103,7 +5149,7 @@ ParameterName=Burst_current
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=2000
 PDOMapping=0
 
 [4007sub4]
@@ -5111,7 +5157,7 @@ ParameterName=Burst_duration
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=1000
 PDOMapping=0
 
 [4007sub5]
@@ -5119,7 +5165,7 @@ ParameterName=Sustained_current
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=1500
 PDOMapping=0
 
 [4007sub6]
@@ -5127,7 +5173,7 @@ ParameterName=Current_constant
 ObjectType=0x7
 DataType=0x0004
 AccessType=rw
-DefaultValue=0
+DefaultValue=0x00010000
 PDOMapping=0
 
 [4007sub7]
@@ -5135,7 +5181,7 @@ ParameterName=Max_velocity
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=25000
 PDOMapping=0
 
 [4007sub8]
@@ -5379,7 +5425,7 @@ ParameterName=Sensor_select
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=4352
 PDOMapping=0
 
 [4023sub2]
@@ -5448,7 +5494,7 @@ ParameterName=Filter_select
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=8192
 PDOMapping=0
 
 [4024sub2]
@@ -5456,7 +5502,7 @@ ParameterName=Param_0
 ObjectType=0x7
 DataType=0x0004
 AccessType=rw
-DefaultValue=0
+DefaultValue=0x00100000
 PDOMapping=0
 
 [4024sub3]
@@ -6459,31 +6505,59 @@ PDOMapping=1
 [4206]
 ParameterName=a2_Motor_status
 ObjectType=0x9
-SubNumber=4
+SubNumber=8
 
 [4206sub0]
 ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=6
+DefaultValue=7
 PDOMapping=0
 
-[4206sub4]
+[4206sub1]
 ParameterName=Command
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
+[4206sub2]
+ParameterName=Current
+ObjectType=0x7
+DataType=0x0003
+AccessType=ro
+PDOMapping=1
+
+[4206sub3]
+ParameterName=Torque
+ObjectType=0x7
+DataType=0x0004
+AccessType=ro
+PDOMapping=1
+
+[4206sub4]
+ParameterName=Velocity
+ObjectType=0x7
+DataType=0x0004
+AccessType=ro
+PDOMapping=1
+
 [4206sub5]
+ParameterName=Position
+ObjectType=0x7
+DataType=0x0004
+AccessType=ro
+PDOMapping=1
+
+[4206sub6]
 ParameterName=Error
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
 PDOMapping=1
 
-[4206sub6]
+[4206sub7]
 ParameterName=Temperature
 ObjectType=0x7
 DataType=0x0003
@@ -6516,7 +6590,7 @@ ParameterName=Peak_current
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=3200
 PDOMapping=0
 
 [4207sub3]
@@ -6524,7 +6598,7 @@ ParameterName=Burst_current
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=2000
 PDOMapping=0
 
 [4207sub4]
@@ -6532,7 +6606,7 @@ ParameterName=Burst_duration
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=1000
 PDOMapping=0
 
 [4207sub5]
@@ -6540,7 +6614,7 @@ ParameterName=Sustained_current
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=1500
 PDOMapping=0
 
 [4207sub6]
@@ -6548,7 +6622,7 @@ ParameterName=Current_constant
 ObjectType=0x7
 DataType=0x0004
 AccessType=rw
-DefaultValue=0
+DefaultValue=0x00010000
 PDOMapping=0
 
 [4207sub7]
@@ -6556,7 +6630,7 @@ ParameterName=Max_velocity
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=25000
 PDOMapping=0
 
 [4207sub8]
@@ -6800,7 +6874,7 @@ ParameterName=Sensor_select
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=4352
 PDOMapping=0
 
 [4223sub2]
@@ -6869,7 +6943,7 @@ ParameterName=Filter_select
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=0
+DefaultValue=8192
 PDOMapping=0
 
 [4224sub2]
@@ -6877,7 +6951,7 @@ ParameterName=Param_0
 ObjectType=0x7
 DataType=0x0004
 AccessType=rw
-DefaultValue=0
+DefaultValue=0x00100000
 PDOMapping=0
 
 [4224sub3]

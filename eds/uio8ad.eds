@@ -7,8 +7,8 @@ EDSVersion=4.0
 FileName=uio8ad.eds
 FileRevision=1
 FileVersion=1
-ModificationDate=11-08-2021
-ModificationTime=11:13AM
+ModificationDate=12-13-2021
+ModificationTime=03:14PM
 ModifiedBy=UniSwarm SASU
 
 [DeviceInfo]
@@ -103,7 +103,7 @@ ParameterName=Revision number
 ObjectType=0x7
 DataType=0x0007
 AccessType=ro
-DefaultValue=1
+DefaultValue=0x01000002
 PDOMapping=0
 
 [1018sub4]
@@ -225,9 +225,9 @@ PDOMapping=0
 [1009]
 ParameterName=Manufacturer Hardware Version
 ObjectType=0x7
-DataType=0x0009
+DataType=0x000B
 AccessType=ro
-DefaultValue="v1.0.1"
+DefaultValue="vXX.XX.XXX"
 PDOMapping=0
 
 [100A]
@@ -235,7 +235,7 @@ ParameterName=Manufacturer Software Version
 ObjectType=0x7
 DataType=0x0009
 AccessType=ro
-DefaultValue="v1.0.1"
+DefaultValue="v1.0.2"
 PDOMapping=0
 
 [100C]
@@ -3807,9 +3807,9 @@ PDOMapping=0
 [2001]
 ParameterName=Manufacture_date
 ObjectType=0x7
-DataType=0x0009
+DataType=0x000B
 AccessType=ro
-DefaultValue="XXX/XX/XX"
+DefaultValue="XXXX/XX/XX XX:XX:XX"
 PDOMapping=0
 
 [2002]
@@ -3817,7 +3817,7 @@ ParameterName=Calibration_date
 ObjectType=0x7
 DataType=0x0009
 AccessType=ro
-DefaultValue="XXX/XX/XX"
+DefaultValue="XXXX/XX/XX XX:XX:XX"
 PDOMapping=0
 
 [2003]
@@ -3825,7 +3825,7 @@ ParameterName=Firmware_build_date
 ObjectType=0x7
 DataType=0x0009
 AccessType=ro
-DefaultValue="__TIMESTAMP__"
+DefaultValue="__DEVICE_BUILD_DATE__"
 PDOMapping=0
 
 [2004]
@@ -4001,21 +4001,21 @@ PDOMapping=0
 ParameterName=Key
 ObjectType=0x7
 DataType=0x0006
-AccessType=rw
+AccessType=wo
 PDOMapping=0
 
 [2050sub2]
 ParameterName=Checksum
 ObjectType=0x7
 DataType=0x0005
-AccessType=rw
+AccessType=wo
 PDOMapping=0
 
 [2050sub3]
 ParameterName=Status
 ObjectType=0x7
 DataType=0x0005
-AccessType=
+AccessType=ro
 PDOMapping=0
 
 [4000]
@@ -4036,7 +4036,7 @@ ParameterName=Channel_00
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=8100
+DefaultValue=7646
 PDOMapping=0
 
 [4000sub2]
@@ -4044,7 +4044,7 @@ ParameterName=Channel_01
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=8100
+DefaultValue=7646
 PDOMapping=0
 
 [4000sub3]
@@ -4052,7 +4052,7 @@ ParameterName=Channel_02
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=8100
+DefaultValue=7646
 PDOMapping=0
 
 [4000sub4]
@@ -4060,7 +4060,7 @@ ParameterName=Channel_03
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=8100
+DefaultValue=7646
 PDOMapping=0
 
 [4000sub5]
@@ -4068,7 +4068,7 @@ ParameterName=Channel_04
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=8100
+DefaultValue=7646
 PDOMapping=0
 
 [4000sub6]
@@ -4076,7 +4076,7 @@ ParameterName=Channel_05
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=8100
+DefaultValue=7646
 PDOMapping=0
 
 [4000sub7]
@@ -4084,7 +4084,7 @@ ParameterName=Channel_06
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=8100
+DefaultValue=7646
 PDOMapping=0
 
 [4000sub8]
@@ -4092,7 +4092,7 @@ ParameterName=Channel_07
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=8100
+DefaultValue=7646
 PDOMapping=0
 
 [4001]
@@ -4113,7 +4113,7 @@ ParameterName=Channel_00
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=6826
+DefaultValue=5460
 PDOMapping=0
 
 [4001sub2]
@@ -4121,7 +4121,7 @@ ParameterName=Channel_01
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=6826
+DefaultValue=5460
 PDOMapping=0
 
 [4001sub3]
@@ -4129,7 +4129,7 @@ ParameterName=Channel_02
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=6826
+DefaultValue=5460
 PDOMapping=0
 
 [4001sub4]
@@ -4137,7 +4137,7 @@ ParameterName=Channel_03
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=6826
+DefaultValue=5460
 PDOMapping=0
 
 [4001sub5]
@@ -4145,7 +4145,7 @@ ParameterName=Channel_04
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=6826
+DefaultValue=5460
 PDOMapping=0
 
 [4001sub6]
@@ -4153,7 +4153,7 @@ ParameterName=Channel_05
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=6826
+DefaultValue=5460
 PDOMapping=0
 
 [4001sub7]
@@ -4161,7 +4161,7 @@ ParameterName=Channel_06
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=6826
+DefaultValue=5460
 PDOMapping=0
 
 [4001sub8]
@@ -4169,7 +4169,7 @@ ParameterName=Channel_07
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=6826
+DefaultValue=5460
 PDOMapping=0
 
 [4200]
