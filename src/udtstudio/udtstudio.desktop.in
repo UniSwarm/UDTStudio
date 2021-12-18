@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=UDTStudio
+Comment=UniSwarm UDTStudio
+Exec=$$target.path/udtstudio
+Icon=$$icons.path/udtstudio.ico
+Categories=IDE;

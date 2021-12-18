@@ -149,3 +149,10 @@ unix:{
 }
 
 RESOURCES += $$PWD/img.qrc
+
+isEmpty(PREFIX)
+{
+    PREFIX=/usr/local
+}
+target.path=$$PREFIX/bin
+!isEmpty(target.path): INSTALLS += target

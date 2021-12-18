@@ -23,3 +23,10 @@ unix:{
     QMAKE_LFLAGS_RPATH=
     QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN\'"
 }
+
+isEmpty(PREFIX)
+{
+    PREFIX=/usr/local
+}
+target.path=$$PREFIX/bin
+!isEmpty(target.path): INSTALLS += target

@@ -62,3 +62,10 @@ SOURCES += \
     $$PWD/writer/devicedescriptionwriter.cpp \
     $$PWD/writer/deviceiniwriter.cpp \
     $$PWD/writer/edswriter.cpp
+
+isEmpty(PREFIX)
+{
+    PREFIX=/usr/local
+}
+target.path=$$PREFIX/bin
+!isEmpty(target.path): INSTALLS += target

@@ -27,6 +27,24 @@ unix:{
 }
 
 RESOURCES += $$PWD/../../contrib/QDarkStyleSheet/qdarkstyle/style.qrc
+#RESOURCES += $$PWD/../../contrib/QD2/qdarkstyle/dark/style.qrc
+
+isEmpty(PREFIX)
+{
+    PREFIX=/usr/local
+}
+target.path=$$PREFIX/bin
+unix
+{
+    QMAKE_SUBSTITUTES += udtstudio.desktop.in
+    desktop.path  = $$PREFIX/share/applications
+    desktop.files = udtstudio.desktop
+    INSTALLS += desktop
+    icons.path    = $$PREFIX/share/icons
+    icons.files   = ../lib/udtgui/img/udtstudio.ico
+    INSTALLS += icons
+}
+!isEmpty(target.path): INSTALLS += target
 
 win32|win64
 {
