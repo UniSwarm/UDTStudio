@@ -219,7 +219,7 @@ void DataLogger::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     }
 
     DLData *dlData = data(objId);
-    if (!dlData || flags == SDO::Error)
+    if (!dlData || !dlData->isActive() || flags == SDO::Error)
     {
         return;
     }
