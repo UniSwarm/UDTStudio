@@ -236,6 +236,7 @@ void NodeScreenHome::updateInfos(Node *node)
             switch (node->profileNumber())
             {
                 case 401:
+                case 428:
                     _summaryIconLabel->setPixmap(QPixmap(":/uBoards/uio.png"));
                     break;
 

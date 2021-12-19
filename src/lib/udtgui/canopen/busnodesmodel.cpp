@@ -297,6 +297,7 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
                         switch (node->profileNumber())
                         {
                             case 401:
+                            case 428:
                                 return QVariant(QIcon(":/uBoards/uio.png"));
                             case 402:
                                 return QVariant(QIcon(":/uBoards/umc.png"));
