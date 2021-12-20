@@ -70,7 +70,11 @@ QString NodeScreenUmcMotor::title() const
 
 QIcon NodeScreenUmcMotor::icon() const
 {
-    return QIcon(":/uBoards/umc.png");
+    if (_node->manufacturerId() == 0x04A2)  // UniSwarm
+    {
+        return QIcon(":/uBoards/umc.png");
+    }
+    return QIcon();
 }
 
 void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)
@@ -79,7 +83,7 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)
     {
         return;
     }
-    if ((node->profileNumber() != 0x192) || node->profiles().isEmpty())
+    if ((node->profileNumber() != 402) || node->profiles().isEmpty())
     {
         return;
     }
@@ -89,33 +93,36 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)
     _p402Widget->setNode(node, axis);
     _tabWidget->addTab(_p402Widget, " " + _p402Widget->title() + " ");
 
-    _motorConfigWidget->setNode(node, axis);
-    _tabWidget->addTab(_motorConfigWidget, " " + _motorConfigWidget->title() + " ");
+    if (node->manufacturerId() == 0x04A2)  // UniSwarm
+    {
+        _motorConfigWidget->setNode(node, axis);
+        _tabWidget->addTab(_motorConfigWidget, " " + _motorConfigWidget->title() + " ");
 
-    _motionSensorTorqueWidget->setMode(MotionSensorWidget::MODE_SENSOR_TORQUE);
-    _motionSensorTorqueWidget->setNode(node, axis);
-    _tabWidget->addTab(_motionSensorTorqueWidget, " " + _motionSensorTorqueWidget->title() + " ");
-    _tabWidget->tabBar()->setTabTextColor(_tabWidget->count() - 1, QColor::fromHsv(30, 255, 255));
-    _pidTorqueWidget->setMode(PidWidget::MODE_PID_TORQUE);
-    _pidTorqueWidget->setNode(node, axis);
-    _tabWidget->addTab(_pidTorqueWidget, " " + _pidTorqueWidget->title() + " ");
-    _tabWidget->tabBar()->setTabTextColor(_tabWidget->count() - 1, QColor::fromHsv(30, 255, 255));
+        _motionSensorTorqueWidget->setMode(MotionSensorWidget::MODE_SENSOR_TORQUE);
+        _motionSensorTorqueWidget->setNode(node, axis);
+        _tabWidget->addTab(_motionSensorTorqueWidget, " " + _motionSensorTorqueWidget->title() + " ");
+        _tabWidget->tabBar()->setTabTextColor(_tabWidget->count() - 1, QColor::fromHsv(30, 255, 255));
+        _pidTorqueWidget->setMode(PidWidget::MODE_PID_TORQUE);
+        _pidTorqueWidget->setNode(node, axis);
+        _tabWidget->addTab(_pidTorqueWidget, " " + _pidTorqueWidget->title() + " ");
+        _tabWidget->tabBar()->setTabTextColor(_tabWidget->count() - 1, QColor::fromHsv(30, 255, 255));
 
-    _motionSensorVelocityWidget->setMode(MotionSensorWidget::MODE_SENSOR_VELOCITY);
-    _motionSensorVelocityWidget->setNode(node, axis);
-    _tabWidget->addTab(_motionSensorVelocityWidget, " " + _motionSensorVelocityWidget->title() + " ");
-    _tabWidget->tabBar()->setTabTextColor(_tabWidget->count() - 1, QColor::fromHsv(60, 255, 255));
-    _pidVelocityWidget->setMode(PidWidget::MODE_PID_VELOCITY);
-    _pidVelocityWidget->setNode(node, axis);
-    _tabWidget->addTab(_pidVelocityWidget, " " + _pidVelocityWidget->title() + " ");
-    _tabWidget->tabBar()->setTabTextColor(_tabWidget->count() - 1, QColor::fromHsv(60, 255, 255));
+        _motionSensorVelocityWidget->setMode(MotionSensorWidget::MODE_SENSOR_VELOCITY);
+        _motionSensorVelocityWidget->setNode(node, axis);
+        _tabWidget->addTab(_motionSensorVelocityWidget, " " + _motionSensorVelocityWidget->title() + " ");
+        _tabWidget->tabBar()->setTabTextColor(_tabWidget->count() - 1, QColor::fromHsv(60, 255, 255));
+        _pidVelocityWidget->setMode(PidWidget::MODE_PID_VELOCITY);
+        _pidVelocityWidget->setNode(node, axis);
+        _tabWidget->addTab(_pidVelocityWidget, " " + _pidVelocityWidget->title() + " ");
+        _tabWidget->tabBar()->setTabTextColor(_tabWidget->count() - 1, QColor::fromHsv(60, 255, 255));
 
-    _motionSensorPositionWidget->setMode(MotionSensorWidget::MODE_SENSOR_POSITION);
-    _motionSensorPositionWidget->setNode(node, axis);
-    _tabWidget->addTab(_motionSensorPositionWidget, " " + _motionSensorPositionWidget->title() + " ");
-    _tabWidget->tabBar()->setTabTextColor(_tabWidget->count() - 1, QColor::fromHsv(210, 100, 255));
-    _pidPositionWidget->setMode(PidWidget::MODE_PID_POSITION);
-    _pidPositionWidget->setNode(node, axis);
-    _tabWidget->addTab(_pidPositionWidget, " " + _pidPositionWidget->title() + " ");
-    _tabWidget->tabBar()->setTabTextColor(_tabWidget->count() - 1, QColor::fromHsv(210, 100, 255));
+        _motionSensorPositionWidget->setMode(MotionSensorWidget::MODE_SENSOR_POSITION);
+        _motionSensorPositionWidget->setNode(node, axis);
+        _tabWidget->addTab(_motionSensorPositionWidget, " " + _motionSensorPositionWidget->title() + " ");
+        _tabWidget->tabBar()->setTabTextColor(_tabWidget->count() - 1, QColor::fromHsv(210, 100, 255));
+        _pidPositionWidget->setMode(PidWidget::MODE_PID_POSITION);
+        _pidPositionWidget->setNode(node, axis);
+        _tabWidget->addTab(_pidPositionWidget, " " + _pidPositionWidget->title() + " ");
+        _tabWidget->tabBar()->setTabTextColor(_tabWidget->count() - 1, QColor::fromHsv(210, 100, 255));
+    }
 }
