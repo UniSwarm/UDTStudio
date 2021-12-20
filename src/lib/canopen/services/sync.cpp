@@ -27,17 +27,21 @@ Sync::Sync(CanOpenBus *bus)
 {
     _syncCobId = 0x80;
     _cobIds.append(_syncCobId);
-    _syncTimer = new QTimer();
     _status = STOPPED;
-    _signalBeforeSync = new QTimer();
-    _syncOneShotTimer = new QTimer();
+
+    _syncTimer = new QTimer();
+    _syncTimer->setTimerType(Qt::PreciseTimer);
     connect(_syncTimer, &QTimer::timeout, this, &Sync::sendSync);
+
+    _signalBeforeSync = new QTimer();
+    _signalBeforeSync->setTimerType(Qt::PreciseTimer);
     connect(_signalBeforeSync, &QTimer::timeout, this, &Sync::signalBeforeSync);
 }
 
 Sync::~Sync()
 {
     delete _syncTimer;
+    delete _signalBeforeSync;
 }
 
 QString Sync::type() const
@@ -91,7 +95,7 @@ void Sync::sendSyncOne()
     }
     _status = STARTED;
     emit signalBeforeSync();
-    _syncOneShotTimer->singleShot(ONE_SHOT_TIMER, this, SLOT(sendSyncOneTimeout()));
+    QTimer::singleShot(ONE_SHOT_TIMER, this,  &Sync::sendSyncOneTimeout);
 }
 
 void Sync::parseFrame(const QCanBusFrame &frame)
