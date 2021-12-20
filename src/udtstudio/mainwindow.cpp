@@ -73,9 +73,9 @@ MainWindow::MainWindow(QWidget *parent)
     bus->setBusName("VBus eds");
     CanOpen::addBus(bus);
     int id = 1;
-    for (QString edsFile : qAsConst(OdDb::edsFiles()))
+    for (const QString &edsFile : qAsConst(OdDb::edsFiles()))
     {
-        Node *node = new Node(id, QFileInfo(edsFile).baseName(), edsFile);
+        Node *node = new Node(id, QFileInfo(edsFile).completeBaseName(), edsFile);
         bus->addNode(node);
         id++;
     }
