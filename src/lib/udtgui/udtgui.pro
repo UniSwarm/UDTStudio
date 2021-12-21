@@ -72,7 +72,8 @@ HEADERS += \
     $$PWD/screen/nodescreenumcmotor.h \
     $$PWD/screen/nodescreensynchro.h \
     $$PWD/screen/nodescreenuio.h \
-    $$PWD/canopen/bootloaderWidget/bootloaderwidget.h
+    $$PWD/canopen/bootloaderWidget/bootloaderwidget.h \
+    $$PWD/canopen/profileWidget/p402/p402cstcawidget.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -135,7 +136,8 @@ SOURCES += \
     $$PWD/screen/nodescreenumcmotor.cpp \
     $$PWD/screen/nodescreensynchro.cpp \
     $$PWD/screen/nodescreenuio.cpp \
-    $$PWD/canopen/bootloaderWidget/bootloaderwidget.cpp
+    $$PWD/canopen/bootloaderWidget/bootloaderwidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402cstcawidget.cpp
 
 LIBS += -L"$$PWD/../../../bin"
 android:LIBS += -lod_$${QT_ARCH} -lcanopen_$${QT_ARCH}

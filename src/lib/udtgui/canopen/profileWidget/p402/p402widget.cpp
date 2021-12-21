@@ -28,6 +28,7 @@
 #include "p402ppwidget.h"
 #include "p402tqwidget.h"
 #include "p402vlwidget.h"
+#include "p402cstcawidget.h"
 
 #include <QButtonGroup>
 #include <QFormLayout>
@@ -138,7 +139,7 @@ void P402Widget::updateMode(uint8_t axis, NodeProfile402::OperationMode mode)
     }
 
     if ((mode == NodeProfile402::IP) || (mode == NodeProfile402::VL) || (mode == NodeProfile402::TQ) || (mode == NodeProfile402::PP) || (mode == NodeProfile402::DTY)
-        || (mode == NodeProfile402::CP))
+        || (mode == NodeProfile402::CP) || (mode == NodeProfile402::CSTCA))
     {
         P402ModeWidget *mode402 = dynamic_cast<P402ModeWidget *>(_stackedWidget->currentWidget());
         // reset : Patch because the widget Tarqet torque and velocity are not an IndexSpinbox so not read automaticaly
@@ -487,6 +488,7 @@ void P402Widget::createWidgets()
     _modes.insert(NodeProfile402::PP, new P402PpWidget());
     _modes.insert(NodeProfile402::DTY, new P402DtyWidget());
     _modes.insert(NodeProfile402::CP, new P402CpWidget());
+    _modes.insert(NodeProfile402::CSTCA, new P402CstcaWidget());
     _modes.insert(NodeProfile402::NoMode, new P402OptionWidget());
 
     // Stacked Widget
