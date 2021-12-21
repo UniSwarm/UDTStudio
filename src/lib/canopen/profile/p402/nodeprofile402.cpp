@@ -962,7 +962,10 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
     {
         _node->readObject(_modesOfOperationDisplayObjectId);
         _controlWord = (_controlWord & ~CW_OperationModeSpecific);
-        _controlWord |= _modes[_modeRequested]->getSpecificCwFlag();
+        if (_modeCurrent != OperationMode::NoMode)
+        {
+            _controlWord |= _modes[_modeRequested]->getSpecificCwFlag();
+        }
         _node->writeObject(_controlWordObjectId, QVariant(_controlWord));
     }
 
