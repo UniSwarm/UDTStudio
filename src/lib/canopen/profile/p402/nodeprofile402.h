@@ -31,6 +31,7 @@ class ModeVl;
 class ModeIp;
 class ModeTq;
 class ModePp;
+class ModeCstca;
 class Mode;
 class AbstractIndexWidget;
 

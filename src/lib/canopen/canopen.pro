@@ -60,7 +60,9 @@ SOURCES += \
     $$PWD/bootloader/writer/ufwwriter.cpp \
     $$PWD/profile/p402/modecp.cpp \
     $$PWD/profile/p402/modehm.cpp \
-    $$PWD/profile/p402/modepc.cpp
+    $$PWD/profile/p402/modepc.cpp \
+    $$PWD/profile/p402/modecstca.cpp \
+    $$PWD/profile/p402/modetc.cpp
 
 HEADERS += \
     $$PWD/canopen.h \
@@ -113,7 +115,9 @@ HEADERS += \
     $$PWD/bootloader/writer/ufwwriter.h \
     $$PWD/profile/p402/modecp.h \
     $$PWD/profile/p402/modehm.h \
-    $$PWD/profile/p402/modepc.h
+    $$PWD/profile/p402/modepc.h \
+    $$PWD/profile/p402/modecstca.h \
+    $$PWD/profile/p402/modetc.h
 
 unix:{
     SOURCES += $$PWD/busdriver/canbussocketcan.cpp

@@ -24,6 +24,7 @@
 #include "modeip.h"
 #include "modepp.h"
 #include "modetq.h"
+#include "modecstca.h"
 #include "modevl.h"
 #include "node.h"
 #include "nodeobjectid.h"
@@ -123,6 +124,7 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     _modes.insert(VL, new ModeVl(this));
     _modes.insert(PP, new ModePp(this));
     _modes.insert(CP, new ModeCp(this));
+    _modes.insert(CSTCA, new ModeCstca(this));
 
     _controlWord = 0;
     _stateCountMachineRequested = STATE_MACHINE_REQUESTED_ATTEMPT;
@@ -198,8 +200,7 @@ bool NodeProfile402::setMode(OperationMode mode)
         return true;
     }
 
-    if ((mode == CP) || (mode == DTY) || (mode == NoMode) || (mode == PP) || (mode == VL) || (mode == PV) || (mode == TQ) || (mode == HM) || (mode == IP) || (mode == CSP)
-        || (mode == CSV) || (mode == CST) || (mode == CSTCA))
+    if ((mode == CP) || (mode == DTY) || (mode == NoMode) || (mode == PP) || (mode == VL) || (mode == TQ) ||  (mode == IP) || (mode == CSTCA))
     {
         _node->writeObject(_modesOfOperationObjectId, QVariant(mode));
         _modeStatus = MODE_CHANGING;
@@ -253,7 +254,7 @@ QString NodeProfile402::modeStr(NodeProfile402::OperationMode mode)
             return tr("Cyclic sync torque (CST)");
 
         case OperationMode::CSTCA:
-            return tr("Cyclic sync torque mode with commutation angle (CTCA)");
+            return tr("Cyclic sync torque with angle (CSTCA)");
 
         default:
             if (_modeCurrent < -1)
@@ -946,6 +947,8 @@ void NodeProfile402::reset()
     _modes[PP]->setCwDefaultflag();
     _modes[TQ]->setCwDefaultflag();
     _modes[VL]->setCwDefaultflag();
+    _modes[CSTCA]->setCwDefaultflag();
+    _modes[CP]->setCwDefaultflag();
 }
 
 void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)

@@ -245,6 +245,8 @@ NodeObjectId IndexDb402::getObjectId(IndexDb402::OdObject object, uint axis, uin
             return {static_cast<quint16>((0x60C5 + axisDecal)), 0x0};
         case OD_PC_MAX_DECELERATION:
             return {static_cast<quint16>((0x60C6 + axisDecal)), 0x0};
+        case OD_CSTCA_COMMUTATION_ANGLE:
+            return {static_cast<quint16>((0x60EA + axisDecal)), 0x0};
         case OD_PC_POSITIONING_OPTION_CODE:
             return {static_cast<quint16>((0x60F2 + axisDecal)), 0x0};
         case OD_PC_FOLLOWING_ERROR_ACTUAL_VALUE:

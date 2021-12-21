@@ -22,51 +22,11 @@
 #include "nodeprofile402.h"
 
 ModeTq::ModeTq(NodeProfile402 *nodeProfile402)
-    : Mode(nodeProfile402)
+    : ModeTc(nodeProfile402)
 {
-    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_TARGET, _nodeProfile402->axisId());
-    _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
-
-    _torqueDemandObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_DEMAND, _nodeProfile402->axisId());
-    _torqueDemandObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
-
-    _torqueActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE, _nodeProfile402->axisId());
-    _torqueActualValueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
-
-    _targetSlopeObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_SLOPE, _nodeProfile402->axisId());
-    _targetSlopeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
-
-    _maxTorqueObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_MAX_TORQUE, _nodeProfile402->axisId());
-    _maxTorqueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
-
     _mode = NodeProfile402::OperationMode::TQ;
 
     _cmdControlWordFlag = 0;
-}
-
-const NodeObjectId &ModeTq::targetObjectId() const
-{
-    return _targetObjectId;
-}
-
-const NodeObjectId &ModeTq::torqueDemandObjectId() const
-{
-    return _torqueDemandObjectId;
-}
-
-const NodeObjectId &ModeTq::torqueActualValueObjectId() const
-{
-    return _torqueActualValueObjectId;
-}
-
-const NodeObjectId &ModeTq::targetSlopeObjectId() const
-{
-    return _targetSlopeObjectId;
-}
-
-const NodeObjectId &ModeTq::maxTorqueObjectId() const
-{
-    return _maxTorqueObjectId;
 }
 
 void ModeTq::setTarget(qint32 target)

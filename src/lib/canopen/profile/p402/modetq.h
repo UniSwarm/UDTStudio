@@ -21,37 +21,22 @@
 
 #include "canopen_global.h"
 
-#include "mode.h"
+#include "modetc.h"
 
 class NodeObjectId;
 class NodeProfile402;
 
-class CANOPEN_EXPORT ModeTq : public Mode
+class CANOPEN_EXPORT ModeTq : public ModeTc
 {
     Q_OBJECT
 public:
     ModeTq(NodeProfile402 *nodeProfile402);
-
-    // ObjectId
-    const NodeObjectId &targetObjectId() const;
-    const NodeObjectId &torqueDemandObjectId() const;
-    const NodeObjectId &torqueActualValueObjectId() const;
-    const NodeObjectId &targetSlopeObjectId() const;
-    const NodeObjectId &maxTorqueObjectId() const;
 
 signals:
     void isAppliedTarget();
 
 private:
     quint16 _cmdControlWordFlag;
-
-    NodeObjectId _targetObjectId;
-
-    NodeObjectId _torqueDemandObjectId;
-    NodeObjectId _torqueActualValueObjectId;
-
-    NodeObjectId _targetSlopeObjectId;
-    NodeObjectId _maxTorqueObjectId;
 
     // Mode interface
 public:
