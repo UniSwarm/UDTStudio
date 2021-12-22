@@ -22,10 +22,6 @@
 #include "node.h"
 #include "p402/nodeprofile402.h"
 
-NodeProfileFactory::NodeProfileFactory()
-{
-}
-
 void NodeProfileFactory::profileFactory(Node *node)
 {
     if (node->profileNumber() == 0x192)

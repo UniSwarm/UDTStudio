@@ -49,7 +49,7 @@ public:
 
 protected:
     Node *_node;
-    uint8_t _axisId;
+    quint8 _axisId;
 };
 
 #endif  // NODEPROFILE_H

@@ -20,11 +20,11 @@
 
 #include "indexdb402.h"
 #include "modecp.h"
+#include "modecstca.h"
 #include "modedty.h"
 #include "modeip.h"
 #include "modepp.h"
 #include "modetq.h"
-#include "modecstca.h"
 #include "modevl.h"
 #include "node.h"
 #include "nodeobjectid.h"
@@ -89,7 +89,7 @@ enum SupportedDriveModes : quint32
     SDM_CP = 0x100000
 };
 
-NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
+NodeProfile402::NodeProfile402(Node *node, quint8 axis)
     : NodeProfile(node)
 {
     if (axis > 8)
@@ -127,7 +127,13 @@ NodeProfile402::NodeProfile402(Node *node, uint8_t axis)
     _modes.insert(CSTCA, new ModeCstca(this));
 
     _controlWord = 0;
+    _statusWordEvent = 0;
     _stateCountMachineRequested = STATE_MACHINE_REQUESTED_ATTEMPT;
+}
+
+NodeProfile402::~NodeProfile402()
+{
+    qDeleteAll(_modes);
 }
 
 void NodeProfile402::init()
@@ -176,7 +182,7 @@ void NodeProfile402::setDefaultValueOfMode()
     }
 }
 
-NodeProfile402::OperationMode NodeProfile402::actualMode()
+NodeProfile402::OperationMode NodeProfile402::actualMode() const
 {
     if ((_modeCurrent == CP) || (_modeCurrent == DTY) || (_modeCurrent == NoMode) || (_modeCurrent == PP) || (_modeCurrent == VL) || (_modeCurrent == PV) || (_modeCurrent == TQ)
         || (_modeCurrent == HM) || (_modeCurrent == IP) || (_modeCurrent == CSP) || (_modeCurrent == CSV) || (_modeCurrent == CST) || (_modeCurrent == CSTCA))
@@ -200,7 +206,7 @@ bool NodeProfile402::setMode(OperationMode mode)
         return true;
     }
 
-    if ((mode == CP) || (mode == DTY) || (mode == NoMode) || (mode == PP) || (mode == VL) || (mode == TQ) ||  (mode == IP) || (mode == CSTCA))
+    if ((mode == CP) || (mode == DTY) || (mode == NoMode) || (mode == PP) || (mode == VL) || (mode == TQ) || (mode == IP) || (mode == CSTCA))
     {
         _node->writeObject(_modesOfOperationObjectId, QVariant(mode));
         _modeStatus = MODE_CHANGING;
@@ -213,7 +219,7 @@ bool NodeProfile402::setMode(OperationMode mode)
     }
 }
 
-QString NodeProfile402::modeStr(NodeProfile402::OperationMode mode)
+QString NodeProfile402::modeStr(NodeProfile402::OperationMode mode) const
 {
     switch (mode)
     {
@@ -268,7 +274,7 @@ QString NodeProfile402::modeStr(NodeProfile402::OperationMode mode)
     }
 }
 
-bool NodeProfile402::isModeSupported(OperationMode mode)
+bool NodeProfile402::isModeSupported(OperationMode mode) const
 {
     for (const OperationMode &modesupported : qAsConst(_modesSupported))
     {
@@ -280,12 +286,12 @@ bool NodeProfile402::isModeSupported(OperationMode mode)
     return false;
 }
 
-QList<NodeProfile402::OperationMode> NodeProfile402::modesSupported()
+const QList<NodeProfile402::OperationMode> &NodeProfile402::modesSupported() const
 {
     return _modesSupported;
 }
 
-QList<NodeProfile402::OperationMode> NodeProfile402::modesSupportedByType(IndexDb402::OdMode402 mode)
+QList<NodeProfile402::OperationMode> NodeProfile402::modesSupportedByType(IndexDb402::OdMode402 mode) const
 {
     QList<NodeProfile402::OperationMode> modes;
     for (const OperationMode &modesupported : qAsConst(_modesSupported))
@@ -974,7 +980,11 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
         NodeProfile402::OperationMode mode = static_cast<NodeProfile402::OperationMode>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
         if ((_modeStatus == NodeProfile402::MODE_CHANGING) && (_modeRequested != mode))
         {
-            _modeTimer.singleShot(TIMER_READ_MODE_OPERATION_DISPLAY, this, SLOT(readModeOfOperationDisplay()));
+            QTimer::singleShot(TIMER_READ_MODE_OPERATION_DISPLAY,
+                               [=]()
+                               {
+                                   readModeOfOperationDisplay();
+                               });
             return;
         }
         if (_modeCurrent != mode)

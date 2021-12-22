@@ -23,6 +23,7 @@
 NodeProfile::NodeProfile(Node *node)
     : _node(node)
 {
+    _axisId = 0;
 }
 
 quint8 NodeProfile::busId() const

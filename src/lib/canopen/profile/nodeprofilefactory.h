@@ -26,8 +26,6 @@ class Node;
 class CANOPEN_EXPORT NodeProfileFactory
 {
 public:
-    NodeProfileFactory();
-
     static void profileFactory(Node *node);
 };
 

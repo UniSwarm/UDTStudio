@@ -39,14 +39,15 @@ class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
 {
     Q_OBJECT
 public:
-    NodeProfile402(Node *node, uint8_t axis);
+    NodeProfile402(Node *node, quint8 axis);
+    ~NodeProfile402();
 
     void init();
     void setTarget(qint32 setTarget);
     bool toggleHalt();
     void setDefaultValueOfMode();
 
-    enum OperationMode : int8_t
+    enum OperationMode
     {
         MS = -2,
         CP = -16,    // Continuous mode
@@ -65,12 +66,12 @@ public:
         Reserved = 12
     };
 
-    OperationMode actualMode();
+    OperationMode actualMode() const;
     bool setMode(OperationMode mode);
-    QString modeStr(NodeProfile402::OperationMode mode);
-    bool isModeSupported(OperationMode mode);
-    QList<OperationMode> modesSupported();
-    QList<OperationMode> modesSupportedByType(IndexDb402::OdMode402);
+    QString modeStr(NodeProfile402::OperationMode mode) const;
+    bool isModeSupported(OperationMode mode) const;
+    const QList<OperationMode> &modesSupported() const;
+    QList<OperationMode> modesSupportedByType(IndexDb402::OdMode402) const;
     Mode *mode(OperationMode mode) const;
     enum ModeStatus
     {
@@ -139,7 +140,7 @@ signals:
     void modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew);
     void stateChanged();
     void isHalted(bool state);
-    void eventHappened(quint8 Event402);
+    void eventHappened(quint8 event402);
 
     void supportedDriveModesUdpdated();
 
@@ -182,7 +183,6 @@ private:
     OperationMode _modeRequested;
     QList<OperationMode> _modesSupported;
     QMap<OperationMode, Mode *> _modes;
-    QTimer _modeTimer;
 
     // STATE MACHINE 402
     quint16 _controlWord;
@@ -190,9 +190,9 @@ private:
     State402 _stateMachineRequested;
     uint _stateCountMachineRequested;
 
-    uint8_t _statusWordEvent;
+    quint8 _statusWordEvent;
 
-    void initializeObjectsId(void);
+    void initializeObjectsId();
     void statusNodeChanged(Node::Status status);
     void changeStateMachine(const State402 state);
 
@@ -201,7 +201,7 @@ private:
     void decodeSupportedDriveModes(quint32 supportedDriveModes);
 
 public slots:
-    void readModeOfOperationDisplay(void);
+    void readModeOfOperationDisplay();
 
     // NodeOdSubscriber interface
 public:
@@ -215,7 +215,7 @@ public:
     virtual void reset() override;
 
 public:
-  void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
 };
 
 #endif  // NODEPROFILE402_H
