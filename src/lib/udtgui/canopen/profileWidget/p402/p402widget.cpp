@@ -95,6 +95,7 @@ void P402Widget::setNode(Node *node, uint8_t axis)
         connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &P402Widget::updateState);
         connect(_nodeProfile402, &NodeProfile402::isHalted, _haltPushButton, &QPushButton::setChecked);
         connect(_nodeProfile402, &NodeProfile402::eventHappened, this, &P402Widget::setEvent);
+        connect(_nodeProfile402, &NodeProfile402::supportedDriveModesUdpdated, this, &P402Widget::updateModeComboBox);
         connect(_modeComboBox,
                 QOverload<int>::of(&QComboBox::currentIndexChanged),
                 [=](int id)
@@ -392,6 +393,7 @@ void P402Widget::setEvent(quint8 event)
 
 void P402Widget::updateModeComboBox()
 {
+    _modeComboBox->blockSignals(true);
     _modeComboBox->clear();
 
     QList<NodeProfile402::OperationMode> otherSupportedModes = _nodeProfile402->modesSupportedByType(IndexDb402::MODE402_OTHER);
@@ -440,6 +442,7 @@ void P402Widget::updateModeComboBox()
             _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
         }
     }
+    _modeComboBox->blockSignals(false);
 }
 
 void P402Widget::displayOption402()
