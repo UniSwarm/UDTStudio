@@ -990,8 +990,6 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
         if (_modeCurrent != mode)
         {
             _modeCurrent = mode;
-            // Send new ControlWord with specific flag
-            changeStateMachine(_stateMachineCurrent);
             emit modeChanged(_axisId, _modeCurrent);
         }
 
