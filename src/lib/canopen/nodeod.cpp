@@ -61,6 +61,7 @@ void NodeOd::resetAllObjects()
         for (NodeSubIndex *subIndex : index->subIndexes())
         {
             subIndex->resetValue();
+            updateObjectFromDevice(subIndex->index(), subIndex->subIndex(), subIndex->value(), SDO::Read);
         }
     }
 }
