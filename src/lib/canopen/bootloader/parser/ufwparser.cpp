@@ -20,76 +20,65 @@
 
 #include <QFile>
 #include <QtEndian>
+#include <QByteArray>
 
 #include "bootloader/model/ufwmodel.h"
 
-UfwParser::UfwParser()
+UfwModel *UfwParser::parse(const QString &fileName)
 {
-    _ufwModel = new UfwModel();
-}
-
-UfwParser::~UfwParser()
-{
-    delete _ufwModel;
-}
-
-UfwModel *UfwParser::parse(const QString &fileName) const
-{
-    QByteArray uni;
+    QByteArray ufwData;
     QFile file(fileName);
 
     if (!file.open(QFile::ReadOnly))
     {
         return nullptr;
     }
-    else
-    {
-        uni = file.read(file.size());
-        file.close();
-    }
 
-    if (uni.size() < 0x25)
+    ufwData = file.read(file.size());
+    if (ufwData.size() < 0x25)
     {
         return nullptr;
     }
 
     uint8_t index = 0;
+    UfwModel *ufwModel = new UfwModel();
 
-    uint16_t device = qFromLittleEndian<uint16_t>(uni);
-    _ufwModel->setDeviceType(device);
-    index = sizeof(_ufwModel->deviceType());
+    uint16_t device = qFromLittleEndian<uint16_t>(ufwData);
+    ufwModel->setDeviceType(device);
+    index = sizeof(ufwModel->deviceType());
 
     // VERSION
-    uint8_t size = qFromLittleEndian<uint8_t>(uni.mid(index, sizeof(uint8_t)));
+    uint8_t size = qFromLittleEndian<uint8_t>(ufwData.mid(index, sizeof(uint8_t)));
     index += sizeof(uint8_t);
 
-    QString version = uni.mid(index, size);
-    _ufwModel->setSoftwareVersion(version);
+    QString version = ufwData.mid(index, size);
+    ufwModel->setSoftwareVersion(version);
     index += size;
 
     // DATE
-    size = qFromLittleEndian<uint8_t>(uni.mid(index, sizeof(uint8_t)));
+    size = qFromLittleEndian<uint8_t>(ufwData.mid(index, sizeof(uint8_t)));
     index += sizeof(uint8_t);
 
-    QString date = uni.mid(index, size);
-    _ufwModel->setBuildDate(date);
+    QString date = ufwData.mid(index, size);
+    ufwModel->setBuildDate(date);
     index += size;
 
-    uint8_t count = qFromLittleEndian<uint8_t>(uni.mid(index, sizeof(uint8_t)));
+    uint8_t count = qFromLittleEndian<uint8_t>(ufwData.mid(index, sizeof(uint8_t)));
     index += sizeof(uint8_t);
 
     for (int i = 0; i < count; i++)
     {
-        uint32_t start = qFromLittleEndian<uint32_t>(uni.mid(index + i * 8, sizeof(uint32_t)));
-        uint32_t end = qFromLittleEndian<uint32_t>(uni.mid(index + 4 + i * 8, sizeof(uint32_t)));
-        _ufwModel->appendSegment(start, end);
+        uint32_t start = qFromLittleEndian<uint32_t>(ufwData.mid(index + i * 8, sizeof(uint32_t)));
+        uint32_t end = qFromLittleEndian<uint32_t>(ufwData.mid(index + 4 + i * 8, sizeof(uint32_t)));
+        ufwModel->appendSegment(start, end);
     }
 
-    _ufwModel->setProg(uni.mid(index + count * 8, uni.size()));
-    if (_ufwModel->prog().size() == 0)
+    ufwModel->setProg(ufwData.mid(index + count * 8, ufwData.size()));
+    if (ufwModel->prog().size() == 0)
     {
+        delete ufwModel;
         return nullptr;
     }
 
-    return _ufwModel;
+    return ufwModel;
 }

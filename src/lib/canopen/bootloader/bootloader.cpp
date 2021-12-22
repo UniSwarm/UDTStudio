@@ -72,6 +72,8 @@ Bootloader::Bootloader(Node *node)
 Bootloader::~Bootloader()
 {
     delete _ufwUpdate;
+    delete _ufwModel;
+    unRegisterFullOd();
 }
 
 Node *Bootloader::node() const
@@ -137,22 +139,20 @@ bool Bootloader::openUfw(const QString &fileName)
         setStatus(STATUS_ERROR_OPEN_FILE);
         return false;
     }
-    else
+
+    UfwParser ufwParser;
+    _ufwModel = ufwParser.parse(fileName);
+    file.close();
+
+    if (!_ufwModel)
     {
-        _ufwParser = new UfwParser();
-        _ufwModel = _ufwParser->parse(fileName);
-        file.close();
-
-        if (!_ufwModel)
-        {
-            setStatus(STATUS_ERROR_ERROR_PARSER);
-            return false;
-        }
-
-        _ufwUpdate->setUfw(_ufwModel);
-        setStatus(STATUS_FILE_ANALYZED_OK);
-        _state = STATE_FREE;
+        setStatus(STATUS_ERROR_ERROR_PARSER);
+        return false;
     }
+
+    _ufwUpdate->setUfw(_ufwModel);
+    setStatus(STATUS_FILE_ANALYZED_OK);
+    _state = STATE_FREE;
 
     return true;
 }
@@ -209,7 +209,10 @@ void Bootloader::stopProgram()
 {
     uint8_t data = PROGRAM_CONTROL_STOP;
     _node->writeObject(_programControlObjectId, data);
-    _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusProgram()));
+    QTimer::singleShot(TIMER_READ_STATUS_DISPLAY, [=]()
+    {
+        readStatusProgram();
+    });
 }
 
 void Bootloader::startProgram()
@@ -228,7 +231,10 @@ void Bootloader::clearProgram()
 {
     uint8_t data = PROGRAM_CONTROL_CLEAR;
     _node->writeObject(_programControlObjectId, data);
-    _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusProgram()));
+    QTimer::singleShot(TIMER_READ_STATUS_DISPLAY, [=]()
+    {
+        readStatusProgram();
+    });
 }
 
 void Bootloader::updateProgram()
@@ -312,6 +318,7 @@ void Bootloader::process()
             }
             break;
         }
+
         case STATE_STOP_PROGRAM:
             setStatus(STATUS_DEVICE_CLEAR_IN_PROGRESS);
             sendKey();
@@ -334,7 +341,10 @@ void Bootloader::process()
             setStatus(STATUS_CHECKING_UPDATE);
             _node->writeObject(_bootloaderChecksumObjectId, _ufwUpdate->checksum());
             updateFinishedProgram();
-            _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusBootloader()));
+            QTimer::singleShot(TIMER_READ_STATUS_DISPLAY, [=]()
+            {
+                readStatusBootloader();
+            });
             _state = STATE_CHECK;
             break;
 
@@ -389,7 +399,10 @@ void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
             }
             else if (program == PROGRAM_CONTROL_CLEAR_IN_PROGRESS)
             {
-                _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusProgram()));
+                QTimer::singleShot(TIMER_READ_STATUS_DISPLAY, [=]()
+                {
+                    readStatusProgram();
+                });
             }
             else
             {

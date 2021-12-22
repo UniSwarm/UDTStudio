@@ -21,8 +21,6 @@
 
 #include "canopen_global.h"
 
-#include <QByteArray>
-#include <QList>
 #include <QString>
 
 class UfwModel;
@@ -30,13 +28,7 @@ class UfwModel;
 class CANOPEN_EXPORT UfwParser
 {
 public:
-    UfwParser();
-    ~UfwParser();
-
-    UfwModel *parse(const QString &fileName) const;
-
-private:
-    UfwModel *_ufwModel;
+    static UfwModel *parse(const QString &fileName);
 };
 
 #endif  // UFWPARSER_H
