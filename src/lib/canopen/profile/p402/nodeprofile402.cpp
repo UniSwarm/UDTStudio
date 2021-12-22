@@ -959,13 +959,17 @@ void NodeProfile402::reset()
 
 void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 {
-    if (flags & SDO::FlagsRequest::Error)
-    {
-        return;
-    }
-
     if (objId == _modesOfOperationObjectId)
     {
+        if (flags & SDO::FlagsRequest::Error)
+        {
+            _modeRequested = _modeCurrent;
+            _modeStatus = NodeProfile402::MODE_CHANGED;
+            emit modeChanged(_axisId, _modeCurrent);
+            _node->readObject(_supportedDriveModesObjectId);
+            return;
+        }
+
         _node->readObject(_modesOfOperationDisplayObjectId);
         _controlWord = (_controlWord & ~CW_OperationModeSpecific);
         if (_modeCurrent != OperationMode::NoMode)
@@ -977,6 +981,11 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
 
     if (objId == _modesOfOperationDisplayObjectId)
     {
+        if (flags & SDO::FlagsRequest::Error)
+        {
+            return;
+        }
+
         NodeProfile402::OperationMode mode = static_cast<NodeProfile402::OperationMode>(_node->nodeOd()->value(_modesOfOperationDisplayObjectId).toInt());
         if ((_modeStatus == NodeProfile402::MODE_CHANGING) && (_modeRequested != mode))
         {
@@ -1001,12 +1010,20 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
 
     if (objId == _supportedDriveModesObjectId)
     {
+        if (flags & SDO::FlagsRequest::Error)
+        {
+            return;
+        }
         quint32 modes = static_cast<quint32>(_node->nodeOd()->value(_supportedDriveModesObjectId).toUInt());
         decodeSupportedDriveModes(modes);
     }
 
     if (objId == _controlWordObjectId)
     {
+        if (flags & SDO::FlagsRequest::Error)
+        {
+            return;
+        }
         quint16 controlWord = static_cast<quint16>(_node->nodeOd()->value(_controlWordObjectId).toInt());
         if ((_controlWord & CW_Halt) != (controlWord & CW_Halt))
         {
@@ -1017,6 +1034,10 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
 
     if (objId == _statusWordObjectId)
     {
+        if (flags & SDO::FlagsRequest::Error)
+        {
+            return;
+        }
         quint16 statusWord = static_cast<quint16>(_node->nodeOd()->value(_statusWordObjectId).toUInt());
         decodeStateMachineStatusWord(statusWord);
         decodeEventStatusWord(statusWord);
