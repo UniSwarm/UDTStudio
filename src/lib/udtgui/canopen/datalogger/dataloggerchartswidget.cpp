@@ -328,10 +328,6 @@ void DataLoggerChartsWidget::updateSeries()
                 timesIt--;
             }
             serie->append(points);
-            if (idSerie == 0)
-            {
-                qDebug() << points.count() << lastDateDlData - lastDateSerie << (lastDateDlData - lastDateSerie) / points.count();
-            }
 
             _serieLastDates[idSerie] = lastDateDlData;
             updateDlData(idSerie);
