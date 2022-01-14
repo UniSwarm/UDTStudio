@@ -130,7 +130,7 @@ bool CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
         << "\n";
 
     // TODO test read access to know wich memory to use (FLASH/RAM)
-    out << "struct sOD_RAM"
+    out << "struct __attribute__((__packed__)) sOD_RAM"
         << "\n";
     out << "{"
         << "\n";
