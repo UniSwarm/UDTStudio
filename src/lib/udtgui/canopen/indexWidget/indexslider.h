@@ -34,6 +34,8 @@ public:
 
 protected:
     QSlider *_slider;
+
+    bool _internalUpdate;
     void applyValue(int value);
 
     // AbstractIndexWidget interface

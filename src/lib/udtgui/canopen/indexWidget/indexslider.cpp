@@ -24,6 +24,8 @@
 IndexSlider::IndexSlider(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
+    _internalUpdate = false;
+
     updateHint();
 
     QVBoxLayout *layout = new QVBoxLayout();
@@ -35,12 +37,17 @@ IndexSlider::IndexSlider(const NodeObjectId &objId)
 
 void IndexSlider::applyValue(int value)
 {
-    requestWriteValue(value);
+    if (!_internalUpdate)
+    {
+        requestWriteValue(value);
+    }
 }
 
 void IndexSlider::setDisplayValue(const QVariant &value, AbstractIndexWidget::DisplayAttribute flags)
 {
+    _internalUpdate = true;
     _slider->setValue(value.toInt());
+    _internalUpdate = false;
 }
 
 bool IndexSlider::isEditing() const
