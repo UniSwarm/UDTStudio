@@ -22,6 +22,7 @@ IndexComboBox::IndexComboBox(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
     _widget = this;
+    _internalUpdate = false;
 
     connect(this,
             QOverload<int>::of(&QComboBox::currentIndexChanged),
