@@ -92,6 +92,7 @@ protected:
     void cancelEdit();
 
     virtual void updateHint();
+    virtual void updateRange();
     virtual void updateObjId();
 
     QVariant pValue(const QVariant &value, const DisplayHint hint = DisplayHint::DisplayDirectValue) const;

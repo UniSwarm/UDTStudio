@@ -44,6 +44,7 @@ HEADERS += \
     $$PWD/canopen/indexWidget/indexcheckbox.h \
     $$PWD/canopen/indexWidget/indexcombobox.h \
     $$PWD/canopen/indexWidget/indexlabel.h \
+    $$PWD/canopen/indexWidget/indexslider.h \
     $$PWD/canopen/indexWidget/indexspinbox.h \
     $$PWD/canopen/compositeWidget/motionsensorwidget.h \
     $$PWD/canopen/compositeWidget/motorwidget.h \
@@ -108,6 +109,7 @@ SOURCES += \
     $$PWD/canopen/indexWidget/indexcheckbox.cpp \
     $$PWD/canopen/indexWidget/indexcombobox.cpp \
     $$PWD/canopen/indexWidget/indexlabel.cpp \
+    $$PWD/canopen/indexWidget/indexslider.cpp \
     $$PWD/canopen/indexWidget/indexspinbox.cpp \
     $$PWD/canopen/compositeWidget/motionsensorwidget.cpp \
     $$PWD/canopen/compositeWidget/motorwidget.cpp \

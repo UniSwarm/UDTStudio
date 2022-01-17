@@ -137,6 +137,10 @@ void AbstractIndexWidget::updateHint()
 {
 }
 
+void AbstractIndexWidget::updateRange()
+{
+}
+
 void AbstractIndexWidget::updateObjId()
 {
 }
@@ -265,6 +269,7 @@ const QVariant &AbstractIndexWidget::minValue() const
 void AbstractIndexWidget::setMinValue(const QVariant &minValue)
 {
     _minValue = minValue;
+    updateRange();
 }
 
 const QVariant &AbstractIndexWidget::maxValue() const
@@ -275,12 +280,14 @@ const QVariant &AbstractIndexWidget::maxValue() const
 void AbstractIndexWidget::setMaxValue(const QVariant &maxValue)
 {
     _maxValue = maxValue;
+    updateRange();
 }
 
 void AbstractIndexWidget::setRangeValue(const QVariant &minValue, const QVariant &maxValue)
 {
     _minValue = minValue;
     _maxValue = maxValue;
+    updateRange();
 }
 
 QString AbstractIndexWidget::unit() const
