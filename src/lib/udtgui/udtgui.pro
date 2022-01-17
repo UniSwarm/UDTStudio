@@ -44,27 +44,30 @@ HEADERS += \
     $$PWD/canopen/indexWidget/indexcheckbox.h \
     $$PWD/canopen/indexWidget/indexcombobox.h \
     $$PWD/canopen/indexWidget/indexlabel.h \
+    $$PWD/canopen/indexWidget/indexlcdnumber.h \
     $$PWD/canopen/indexWidget/indexslider.h \
     $$PWD/canopen/indexWidget/indexspinbox.h \
     $$PWD/canopen/compositeWidget/motionsensorwidget.h \
     $$PWD/canopen/compositeWidget/motorwidget.h \
     $$PWD/canopen/compositeWidget/pidwidget.h \
-    $$PWD/canopen/profileWidget/p402/p402modewidget.h \
-    $$PWD/canopen/profileWidget/p402/p402dtywidget.h \
-    $$PWD/canopen/profileWidget/p402/p402ipwidget.h \
-    $$PWD/canopen/profileWidget/p402/p402cpwidget.h \
-    $$PWD/canopen/profileWidget/p402/p402optionwidget.h \
-    $$PWD/canopen/profileWidget/p402/p402ppwidget.h \
-    $$PWD/canopen/profileWidget/p402/p402tqwidget.h \
-    $$PWD/canopen/profileWidget/p402/p402vlwidget.h \
-    $$PWD/canopen/profileWidget/p402/p402widget.h \
     $$PWD/canopen/profileWidget/p401/p401channelwidget.h \
     $$PWD/canopen/profileWidget/p401/p401inputwidget.h \
     $$PWD/canopen/profileWidget/p401/p401outputwidget.h \
     $$PWD/canopen/profileWidget/p401/p401widget.h \
     $$PWD/canopen/profileWidget/p401/p401inputoptionwidget.h \
     $$PWD/canopen/profileWidget/p401/p401outputoptionwidget.h \
-    $$PWD/canopen/indexWidget/indexlcdnumber.h \
+    $$PWD/canopen/profileWidget/p402/p402modewidget.h \
+    $$PWD/canopen/profileWidget/p402/p402dtywidget.h \
+    $$PWD/canopen/profileWidget/p402/p402ipwidget.h \
+    $$PWD/canopen/profileWidget/p402/p402cpwidget.h \
+    $$PWD/canopen/profileWidget/p402/p402cstcawidget.h \
+    $$PWD/canopen/profileWidget/p402/p402optionwidget.h \
+    $$PWD/canopen/profileWidget/p402/p402ppwidget.h \
+    $$PWD/canopen/profileWidget/p402/p402tqwidget.h \
+    $$PWD/canopen/profileWidget/p402/p402vlwidget.h \
+    $$PWD/canopen/profileWidget/p402/p402widget.h \
+    $$PWD/canopen/profileWidget/p428/p428channelwidget.h \
+    $$PWD/canopen/profileWidget/p428/p428widget.h \
     $$PWD/screen/nodescreenswidget.h \
     $$PWD/screen/nodescreen.h \
     $$PWD/screen/nodescreenhome.h \
@@ -73,8 +76,8 @@ HEADERS += \
     $$PWD/screen/nodescreenumcmotor.h \
     $$PWD/screen/nodescreensynchro.h \
     $$PWD/screen/nodescreenuio.h \
-    $$PWD/canopen/bootloaderWidget/bootloaderwidget.h \
-    $$PWD/canopen/profileWidget/p402/p402cstcawidget.h
+    $$PWD/screen/nodescreenuioled.h \
+    $$PWD/canopen/bootloaderWidget/bootloaderwidget.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -109,27 +112,30 @@ SOURCES += \
     $$PWD/canopen/indexWidget/indexcheckbox.cpp \
     $$PWD/canopen/indexWidget/indexcombobox.cpp \
     $$PWD/canopen/indexWidget/indexlabel.cpp \
+    $$PWD/canopen/indexWidget/indexlcdnumber.cpp \
     $$PWD/canopen/indexWidget/indexslider.cpp \
     $$PWD/canopen/indexWidget/indexspinbox.cpp \
     $$PWD/canopen/compositeWidget/motionsensorwidget.cpp \
     $$PWD/canopen/compositeWidget/motorwidget.cpp \
     $$PWD/canopen/compositeWidget/pidwidget.cpp \
-    $$PWD/canopen/profileWidget/p402/p402modewidget.cpp \
-    $$PWD/canopen/profileWidget/p402/p402dtywidget.cpp \
-    $$PWD/canopen/profileWidget/p402/p402ipwidget.cpp \
-    $$PWD/canopen/profileWidget/p402/p402cpwidget.cpp \
-    $$PWD/canopen/profileWidget/p402/p402optionwidget.cpp \
-    $$PWD/canopen/profileWidget/p402/p402ppwidget.cpp \
-    $$PWD/canopen/profileWidget/p402/p402tqwidget.cpp \
-    $$PWD/canopen/profileWidget/p402/p402vlwidget.cpp \
-    $$PWD/canopen/profileWidget/p402/p402widget.cpp \
     $$PWD/canopen/profileWidget/p401/p401channelwidget.cpp \
     $$PWD/canopen/profileWidget/p401/p401inputwidget.cpp \
     $$PWD/canopen/profileWidget/p401/p401outputwidget.cpp \
     $$PWD/canopen/profileWidget/p401/p401widget.cpp \
     $$PWD/canopen/profileWidget/p401/p401inputoptionwidget.cpp \
     $$PWD/canopen/profileWidget/p401/p401outputoptionwidget.cpp \
-    $$PWD/canopen/indexWidget/indexlcdnumber.cpp \
+    $$PWD/canopen/profileWidget/p402/p402modewidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402dtywidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402ipwidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402cpwidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402cstcawidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402optionwidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402ppwidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402tqwidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402vlwidget.cpp \
+    $$PWD/canopen/profileWidget/p402/p402widget.cpp \
+    $$PWD/canopen/profileWidget/p428/p428channelwidget.cpp \
+    $$PWD/canopen/profileWidget/p428/p428widget.cpp \
     $$PWD/screen/nodescreenswidget.cpp \
     $$PWD/screen/nodescreen.cpp \
     $$PWD/screen/nodescreenhome.cpp \
@@ -138,8 +144,8 @@ SOURCES += \
     $$PWD/screen/nodescreenumcmotor.cpp \
     $$PWD/screen/nodescreensynchro.cpp \
     $$PWD/screen/nodescreenuio.cpp \
-    $$PWD/canopen/bootloaderWidget/bootloaderwidget.cpp \
-    $$PWD/canopen/profileWidget/p402/p402cstcawidget.cpp
+    $$PWD/screen/nodescreenuioled.cpp \
+    $$PWD/canopen/bootloaderWidget/bootloaderwidget.cpp
 
 LIBS += -L"$$PWD/../../../bin"
 android:LIBS += -lod_$${QT_ARCH} -lcanopen_$${QT_ARCH}

@@ -24,6 +24,7 @@
 #include "nodescreenpdo.h"
 #include "nodescreensynchro.h"
 #include "nodescreenuio.h"
+#include "nodescreenuioled.h"
 #include "nodescreenumcmotor.h"
 
 #include <QApplication>
@@ -120,34 +121,43 @@ void NodeScreensWidget::addNode(Node *node)
     nodeScreens.screens.append(screen);
 
     // add specific screens node
-    if ((node->profileNumber()) == 0x192)
+    switch (node->profileNumber())
     {
-        for (int i = 0; i < node->profilesCount(); i++)
+        case 401:  // UIO, P401
         {
             QApplication::processEvents();
-            screen = new NodeScreenUmcMotor();
-            screen->setNode(node, i);
+            screen = new NodeScreenUio();
+            screen->setNode(node);
             screen->setScreenWidget(this);
             nodeScreens.screens.append(screen);
         }
-        if (node->profilesCount() > 1)
+        case 402:  // UMC, P402
+        {
+            for (int i = 0; i < node->profilesCount(); i++)
+            {
+                QApplication::processEvents();
+                screen = new NodeScreenUmcMotor();
+                screen->setNode(node, i);
+                screen->setScreenWidget(this);
+                nodeScreens.screens.append(screen);
+            }
+            if (node->profilesCount() > 1)
+            {
+                QApplication::processEvents();
+                screen = new NodeScreenSynchro();
+                screen->setNode(node, 12);
+                screen->setScreenWidget(this);
+                nodeScreens.screens.append(screen);
+            }
+        }
+        case 428:  // UIOled, P428
         {
             QApplication::processEvents();
-            screen = new NodeScreenSynchro();
-            screen->setNode(node, 12);
+            screen = new NodeScreenUIOLed();
+            screen->setNode(node);
             screen->setScreenWidget(this);
             nodeScreens.screens.append(screen);
         }
-    }
-
-    // add specific screens node
-    if ((node->profileNumber()) == 0x191)
-    {
-        QApplication::processEvents();
-        screen = new NodeScreenUio();
-        screen->setNode(node);
-        screen->setScreenWidget(this);
-        nodeScreens.screens.append(screen);
     }
 
     // add NodeScreensStruct to nodeIt
