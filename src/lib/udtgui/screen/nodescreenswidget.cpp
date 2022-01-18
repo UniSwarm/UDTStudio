@@ -130,6 +130,7 @@ void NodeScreensWidget::addNode(Node *node)
             screen->setNode(node);
             screen->setScreenWidget(this);
             nodeScreens.screens.append(screen);
+            break;
         }
         case 402:  // UMC, P402
         {
@@ -149,6 +150,7 @@ void NodeScreensWidget::addNode(Node *node)
                 screen->setScreenWidget(this);
                 nodeScreens.screens.append(screen);
             }
+            break;
         }
         case 428:  // UIOled, P428
         {
@@ -157,6 +159,7 @@ void NodeScreensWidget::addNode(Node *node)
             screen->setNode(node);
             screen->setScreenWidget(this);
             nodeScreens.screens.append(screen);
+            break;
         }
     }
 
