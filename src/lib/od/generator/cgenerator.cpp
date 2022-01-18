@@ -130,7 +130,7 @@ bool CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
         << "\n";
 
     // TODO test read access to know wich memory to use (FLASH/RAM)
-    out << "struct __attribute__((__packed__)) sOD_RAM"
+    out << "struct sOD_RAM"
         << "\n";
     out << "{"
         << "\n";
@@ -783,11 +783,11 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile)
                 break;
             }
 
-            hFile << "    " << dataType << " " << varNameToString(index->name()) << ";";
+            hFile << "    " << dataType << " _od_align " << varNameToString(index->name()) << ";";
             break;
 
         case Index::Object::RECORD:
-            hFile << "    " << structNameToString(index->name()) << " " << varNameToString(index->name()) << ";";
+            hFile << "    " << structNameToString(index->name()) << " _od_align " << varNameToString(index->name()) << ";";
             break;
 
         case Index::Object::ARRAY:
@@ -802,7 +802,7 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile)
                 break;
             }
 
-            hFile << "    " << dataType << " " << varNameToString(index->name());
+            hFile << "    " << dataType << " _od_align " << varNameToString(index->name());
             hFile << "[" << index->maxSubIndex() - 1 << "]"
                   << ";";
 
