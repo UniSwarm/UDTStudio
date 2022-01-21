@@ -31,7 +31,7 @@
 class OD_EXPORT Index
 {
 public:
-    Index(const uint16_t &index);
+    Index(uint16_t index);
     Index(const Index &other);
     ~Index();
 

@@ -29,9 +29,9 @@ class OD_EXPORT DeviceDescription : public DeviceModel
 {
 public:
     DeviceDescription();
-    virtual ~DeviceDescription();
+    ~DeviceDescription() override;
 
-    Type type();
+    Type type() override;
 
     const QMap<QString, QString> &deviceInfos() const;
     void setDeviceInfo(const QString &key, const QString &value);

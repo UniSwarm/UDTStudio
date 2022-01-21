@@ -30,9 +30,9 @@ class OD_EXPORT DeviceConfiguration : public DeviceModel
 {
 public:
     DeviceConfiguration();
-    virtual ~DeviceConfiguration();
+    ~DeviceConfiguration() override;
 
-    Type type();
+    Type type() override;
 
     const QMap<QString, QString> &deviceComissionings() const;
 

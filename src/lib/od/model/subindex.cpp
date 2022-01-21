@@ -22,15 +22,15 @@
  * @brief constructor
  * @param sub-index number
  */
-SubIndex::SubIndex(const uint8_t subIndex)
+SubIndex::SubIndex(uint8_t subIndex)
 {
     _index = nullptr;
-    _subIndex = subIndex;
     _accessType = NONE;
-    _hasNodeId = false;
-    _isHexVal = false;
+    _subIndex = subIndex;
     _dataType = INVALID;
     _objFlags = 0;
+    _hasNodeId = false;
+    _isHexVal = false;
 }
 
 /**
@@ -45,6 +45,7 @@ SubIndex::SubIndex(const SubIndex &other)
     _subIndex = other.subIndex();
     _name = other.name();
     _value = other.value();
+    _dataType = other.dataType();
 
     _lowLimit = other.lowLimit();
     _highLimit = other.highLimit();
@@ -53,7 +54,6 @@ SubIndex::SubIndex(const SubIndex &other)
 
     _hasNodeId = other.hasNodeId();
     _isHexVal = other.isHexValue();
-    _dataType = other.dataType();
 }
 
 /**
@@ -76,7 +76,7 @@ SubIndex::AccessType SubIndex::accessType() const
  * @brief access type setter
  * @param 8 bits access type code
  */
-void SubIndex::setAccessType(const AccessType accessType)
+void SubIndex::setAccessType(AccessType accessType)
 {
     _accessType = accessType;
 }
@@ -231,7 +231,7 @@ SubIndex::DataType SubIndex::dataType() const
  * @brief _dataType setter
  * @param new 16 bits data type code
  */
-void SubIndex::setDataType(const DataType dataType)
+void SubIndex::setDataType(DataType dataType)
 {
     _dataType = dataType;
 }
@@ -241,7 +241,7 @@ void SubIndex::setDataType(const DataType dataType)
  * @param 16 bits data type code
  * @return data type string
  */
-QString SubIndex::dataTypeStr(const DataType dataType)
+QString SubIndex::dataTypeStr(DataType dataType)
 {
     switch (dataType)
     {

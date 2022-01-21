@@ -52,6 +52,7 @@ public:
     void setComment(const QString &key, const QString &value);
 
     const QMap<uint16_t, Index *> &indexes() const;
+    QMap<uint16_t, Index *> &indexes();
     Index *index(uint16_t index) const;
     Index *index(QString name) const;
     void addIndex(Index *index);

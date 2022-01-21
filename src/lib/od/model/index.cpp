@@ -22,7 +22,7 @@
  * @brief constructor
  * @param 16 bits index number
  */
-Index::Index(const uint16_t &index)
+Index::Index(uint16_t index)
 {
     _index = index;
     _maxSubIndex = 0;

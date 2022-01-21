@@ -30,7 +30,7 @@ class Index;
 class OD_EXPORT SubIndex
 {
 public:
-    SubIndex(const uint8_t subIndex);
+    SubIndex(uint8_t subIndex);
     SubIndex(const SubIndex &other);
     ~SubIndex();
 
@@ -45,7 +45,7 @@ public:
         CONST = 0x10
     };
     AccessType accessType() const;
-    void setAccessType(const AccessType accessType);
+    void setAccessType(AccessType accessType);
 
     uint8_t subIndex() const;
     void setSubIndex(const uint8_t &subIndex);
@@ -101,8 +101,8 @@ public:
         UNSIGNED64 = 0x001B
     };
     DataType dataType() const;
-    void setDataType(const DataType dataType);
-    static QString dataTypeStr(const DataType dataType);
+    void setDataType(DataType dataType);
+    static QString dataTypeStr(DataType dataType);
 
     int length() const;
 

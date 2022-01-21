@@ -117,6 +117,11 @@ const QMap<uint16_t, Index *> &DeviceModel::indexes() const
     return _indexes;
 }
 
+QMap<uint16_t, Index *> &DeviceModel::indexes()
+{
+    return _indexes;
+}
+
 /**
  * @brief returns the value associated with the key index
  * @param index
@@ -150,6 +155,14 @@ Index *DeviceModel::index(QString name) const
  */
 void DeviceModel::addIndex(Index *index)
 {
+    if (!index)
+    {
+        return;
+    }
+    if (_indexes.contains(index->index()))
+    {
+        return;
+    }
     _indexes.insert(index->index(), index);
 }
 
