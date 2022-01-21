@@ -166,20 +166,27 @@ QVariant ConfigurationApply::readData(SubIndex::DataType dataType, QString strin
     bool ok;
     switch (dataType)
     {
-        case SubIndex::BOOLEAN:
         case SubIndex::INTEGER8:
         case SubIndex::INTEGER16:
+        case SubIndex::INTEGER24:
         case SubIndex::INTEGER32:
             return QVariant(stringValue.toInt(&ok, base));
 
+        case SubIndex::INTEGER40:
+        case SubIndex::INTEGER48:
+        case SubIndex::INTEGER56:
         case SubIndex::INTEGER64:
             return QVariant(stringValue.toLongLong(&ok, base));
 
         case SubIndex::UNSIGNED8:
         case SubIndex::UNSIGNED16:
+        case SubIndex::UNSIGNED24:
         case SubIndex::UNSIGNED32:
             return QVariant(stringValue.toUInt(&ok, base));
 
+        case SubIndex::UNSIGNED40:
+        case SubIndex::UNSIGNED48:
+        case SubIndex::UNSIGNED56:
         case SubIndex::UNSIGNED64:
             return QVariant(stringValue.toULongLong(&ok, base));
 
@@ -191,6 +198,7 @@ QVariant ConfigurationApply::readData(SubIndex::DataType dataType, QString strin
 
         case SubIndex::VISIBLE_STRING:
         case SubIndex::OCTET_STRING:
+        case SubIndex::UNICODE_STRING:
             return QVariant(stringValue);
 
         default:
