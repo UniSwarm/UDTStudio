@@ -25,37 +25,37 @@ ODMerger::ODMerger()
 {
 }
 
-void ODMerger::merge(DeviceDescription *deviceDescription, DeviceDescription *secondDeviceDescription)
+void ODMerger::merge(DeviceModel *firstDeviceModel, DeviceModel *secondDeviceModel)
 {
-    for (Index *index2 : secondDeviceDescription->indexes())
+    for (Index *index2 : secondDeviceModel->indexes())
     {
-        Index *index = deviceDescription->index(index2->index());
+        Index *index = firstDeviceModel->index(index2->index());
         if (!index)
         {
-            dbg() << "Missing index 0x" << indexStr(index2) << " " << index2->name();
-            deviceDescription->addIndex(new Index(*index2));
+            // dbg() << "Missing index 0x" << indexStr(index2) << " " << index2->name();
+            firstDeviceModel->addIndex(new Index(*index2));
         }
         else
         {
             if (index->name() != index2->name())
             {
-                dbg() << "Change index name 0x" << indexStr(index) << " to \"" << index->name() << "\"";
+                // dbg() << "Change index name 0x" << indexStr(index) << " to \"" << index->name() << "\"";
                 index->setName(index2->name());
             }
             if (index->objectType() != index2->objectType())
             {
-                dbg() << "Change index objectType 0x" << indexStr(index) << " to " << index->objectType();
+                // dbg() << "Change index objectType 0x" << indexStr(index) << " to " << index->objectType();
                 index->setObjectType(index2->objectType());
             }
-            mergeIndex(index, secondDeviceDescription->index(index2->index()));
+            mergeIndex(index, secondDeviceModel->index(index2->index()));
         }
     }
 
-    for (Index *index : deviceDescription->indexes())
+    for (Index *index : firstDeviceModel->indexes())
     {
-        if (!secondDeviceDescription->indexExist(index->index()))
+        if (!secondDeviceModel->indexExist(index->index()))
         {
-            dbg() << "Extra index 0x" << indexStr(index) << " \"" << index->name() << "\"";
+            // dbg() << "Extra index 0x" << indexStr(index) << " \"" << index->name() << "\"";
         }
     }
 }
@@ -67,34 +67,34 @@ void ODMerger::mergeIndex(Index *index, Index *index2)
         SubIndex *subIndex = index->subIndex(subIndex2->subIndex());
         if (!subIndex)
         {
-            dbg() << "+ Missing subindex 0x" << indexStr(index) << "." << subIndex2->subIndex() << " : \"" << index->name() << "\"";
+            // dbg() << "+ Missing subindex 0x" << indexStr(index) << "." << subIndex2->subIndex() << " : \"" << index->name() << "\"";
             index->addSubIndex(new SubIndex(*index2->subIndex(subIndex2->subIndex())));
         }
         else
         {
             if (subIndex->name() != subIndex2->name())
             {
-                dbg() << "+ Change subindex name 0x" << indexStr(index) << "." << subIndex2->subIndex() << " to \"" << index->name() << "\"";
+                // dbg() << "+ Change subindex name 0x" << indexStr(index) << "." << subIndex2->subIndex() << " to \"" << index->name() << "\"";
                 subIndex->setName(subIndex2->name());
             }
             if (subIndex->accessType() != subIndex2->accessType())
             {
-                dbg() << "+ Change subindex accessType 0x" << indexStr(index) << "." << subIndex2->subIndex() << " to " << subIndex2->accessType();
+                // dbg() << "+ Change subindex accessType 0x" << indexStr(index) << "." << subIndex2->subIndex() << " to " << subIndex2->accessType();
                 subIndex->setAccessType(subIndex2->accessType());
             }
             if (subIndex->dataType() != subIndex2->dataType())
             {
-                dbg() << "+ Change subindex dataType 0x" << indexStr(index) << "." << subIndex2->subIndex() << " to " << subIndex2->dataType();
+                // dbg() << "+ Change subindex dataType 0x" << indexStr(index) << "." << subIndex2->subIndex() << " to " << subIndex2->dataType();
                 subIndex->setDataType(subIndex2->dataType());
             }
             if (subIndex->lowLimit() != subIndex2->lowLimit())
             {
-                dbg() << "+ Change subindex lowLimit 0x" << indexStr(index) << "." << subIndex2->subIndex() << " to " << subIndex2->lowLimit();
+                // dbg() << "+ Change subindex lowLimit 0x" << indexStr(index) << "." << subIndex2->subIndex() << " to " << subIndex2->lowLimit();
                 subIndex->setLowLimit(subIndex2->lowLimit());
             }
             if (subIndex->highLimit() != subIndex2->highLimit())
             {
-                dbg() << "+ Change subindex highLimit 0x" << indexStr(index) << "." << subIndex2->subIndex() << " to " << subIndex2->highLimit();
+                // dbg() << "+ Change subindex highLimit 0x" << indexStr(index) << "." << subIndex2->subIndex() << " to " << subIndex2->highLimit();
                 subIndex->setLowLimit(subIndex2->highLimit());
             }
         }
