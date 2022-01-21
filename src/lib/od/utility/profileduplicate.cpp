@@ -37,26 +37,30 @@ void ProfileDuplicate::duplicate(DeviceDescription *deviceDescription, const uin
         // Standardized profile area : 0x6000 to 0x9FFF
         QList<Index *> standardizedIndex;
 
-        for (Index *index : deviceDescription->indexes().values())
+        for (auto it = deviceDescription->indexes().begin(); it != deviceDescription->indexes().end(); )
         {
-            uint16_t numIndex = index->index();
+            uint16_t numIndex = (*it)->index();
             if (numIndex >= 0x4000 && numIndex < 0x4200)
             {
-                manufactureIndex.append(index);
-                deviceDescription->deleteIndex(index);
+                manufactureIndex.append(*it);
+                it = deviceDescription->indexes().erase(it);
             }
-            if (numIndex >= 0x4200 && numIndex <= 0x4FFF)
+            else if (numIndex >= 0x4200 && numIndex <= 0x4FFF)
             {
-                deviceDescription->deleteIndex(index);
+                it = deviceDescription->indexes().erase(it);
             }
-            if (numIndex >= 0x6000 && numIndex < 0x6800)
+            else if (numIndex >= 0x6000 && numIndex < 0x6800)
             {
-                standardizedIndex.append(index);
-                deviceDescription->deleteIndex(index);
+                standardizedIndex.append(*it);
+                it = deviceDescription->indexes().erase(it);
             }
-            if (numIndex >= 0x6800 && numIndex <= 0x9FFF)
+            else if (numIndex >= 0x6800 && numIndex <= 0x9FFF)
             {
-                deviceDescription->deleteIndex(index);
+                it = deviceDescription->indexes().erase(it);
+            }
+            else
+            {
+                it++;
             }
         }
 
@@ -96,17 +100,21 @@ void ProfileDuplicate::duplicate(DeviceDescription *deviceDescription, const uin
         // Standardized profile area : 0x6000 to 0x9FFF
         QList<Index *> standardizedIndex;
 
-        for (Index *index : deviceDescription->indexes().values())
+        for (auto it = deviceDescription->indexes().begin(); it != deviceDescription->indexes().end(); )
         {
-            uint16_t numIndex = index->index();
+            uint16_t numIndex = (*it)->index();
             if (numIndex >= 0x6000 && numIndex < 0x6100)
             {
-                standardizedIndex.append(index);
-                deviceDescription->deleteIndex(index);
+                standardizedIndex.append(*it);
+                it = deviceDescription->indexes().erase(it);
             }
-            if (numIndex >= 0x6100 && numIndex <= 0x9FFF)
+            else if (numIndex >= 0x6100 && numIndex <= 0x9FFF)
             {
-                deviceDescription->deleteIndex(index);
+                it = deviceDescription->indexes().erase(it);
+            }
+            else
+            {
+                it++;
             }
         }
 
