@@ -38,6 +38,12 @@
 
 #include <cstdint>
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+#   define cendl endl
+#else
+#   define cendl Qt::endl
+#endif
+
 /**
  * @brief main
  * @return
@@ -86,7 +92,7 @@ int main(int argc, char *argv[])
     const QStringList files = cliParser.positionalArguments();
     if (files.isEmpty())
     {
-        err << QCoreApplication::translate("main", "error (1): input file is needed") << endl;
+        err << QCoreApplication::translate("main", "error (1): input file is needed") << cendl;
         cliParser.showHelp(-1);
     }
     const QString &inputFile = files.at(0);
@@ -110,7 +116,7 @@ int main(int argc, char *argv[])
             nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
             if (nodeid == 0 || nodeid > 127)
             {
-                err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << endl;
+                err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << cendl;
                 return -2;
             }
         }
@@ -125,7 +131,7 @@ int main(int argc, char *argv[])
         deviceDescription = parser.parse(inputFile);
         if (!deviceDescription)
         {
-            err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist") << endl;
+            err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist") << cendl;
             return -5;
         }
         deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, nodeid);
@@ -137,7 +143,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        err << QCoreApplication::translate("main", "error (3): invalid input file format, .eds or .dcf accepted") << endl;
+        err << QCoreApplication::translate("main", "error (3): invalid input file format, .eds or .dcf accepted") << cendl;
         return -3;
     }
 
@@ -156,7 +162,7 @@ int main(int argc, char *argv[])
         {
             delete deviceDescription;
             delete deviceConfiguration;
-            err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist") << endl;
+            err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist") << cendl;
             return -5;
         }
         if (deviceDescription)
@@ -267,7 +273,7 @@ int main(int argc, char *argv[])
     {
         delete deviceDescription;
         delete deviceConfiguration;
-        err << QCoreApplication::translate("main", "error (4): invalid output file format, .c, .h, .dcf, .eds, .csv or .tex accepted") << endl;
+        err << QCoreApplication::translate("main", "error (4): invalid output file format, .c, .h, .dcf, .eds, .csv or .tex accepted") << cendl;
         return -4;
     }
 
