@@ -50,6 +50,11 @@ const QMap<QString, QString> &DeviceDescription::deviceInfos() const
     return _deviceInfos;
 }
 
+void DeviceDescription::setDeviceInfos(const QMap<QString, QString> &deviceInfos)
+{
+    _deviceInfos = deviceInfos;
+}
+
 /**
  * @brief inserts a new devcie info with the key key and a value of value
  * @param key

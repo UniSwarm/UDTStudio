@@ -25,15 +25,48 @@ ODMerger::ODMerger()
 {
 }
 
-void ODMerger::merge(DeviceModel *firstDeviceModel, DeviceModel *secondDeviceModel)
+void ODMerger::merge(DeviceDescription *deviceDescription, DeviceDescription *secondDeviceDescription)
 {
+    QMap<QString, QString> deviceInfos(deviceDescription->deviceInfos());
+    for (auto i = secondDeviceDescription->deviceInfos().constBegin(); i != secondDeviceDescription->deviceInfos().constEnd(); i++)
+    {
+         deviceInfos.insert(i.key(), i.value());
+    }
+    deviceDescription->setDeviceInfos(deviceInfos);
+
+    merge(dynamic_cast<DeviceModel *>(deviceDescription), dynamic_cast<DeviceModel *>(secondDeviceDescription));
+}
+
+void ODMerger::merge(DeviceModel *deviceModel, DeviceModel *secondDeviceModel)
+{
+    QMap<QString, QString> fileInfos(deviceModel->fileInfos());
+    for (auto i = secondDeviceModel->fileInfos().constBegin(); i != secondDeviceModel->fileInfos().constEnd(); i++)
+    {
+         fileInfos.insert(i.key(), i.value());
+    }
+    deviceModel->setFileInfos(fileInfos);
+
+    QMap<QString, QString> dummyUsages(deviceModel->dummyUsages());
+    for (auto i = secondDeviceModel->dummyUsages().constBegin(); i != secondDeviceModel->dummyUsages().constEnd(); i++)
+    {
+         dummyUsages.insert(i.key(), i.value());
+    }
+    deviceModel->setDummyUsages(dummyUsages);
+
+    QMap<QString, QString> comments(deviceModel->comments());
+    for (auto i = secondDeviceModel->comments().constBegin(); i != secondDeviceModel->comments().constEnd(); i++)
+    {
+         comments.insert(i.key(), i.value());
+    }
+    deviceModel->setComments(comments);
+
     for (Index *index2 : secondDeviceModel->indexes())
     {
-        Index *index = firstDeviceModel->index(index2->index());
+        Index *index = deviceModel->index(index2->index());
         if (!index)
         {
             // dbg() << "Missing index 0x" << indexStr(index2) << " " << index2->name();
-            firstDeviceModel->addIndex(new Index(*index2));
+            deviceModel->addIndex(new Index(*index2));
         }
         else
         {
@@ -51,7 +84,7 @@ void ODMerger::merge(DeviceModel *firstDeviceModel, DeviceModel *secondDeviceMod
         }
     }
 
-    for (Index *index : firstDeviceModel->indexes())
+    for (Index *index : deviceModel->indexes())
     {
         if (!secondDeviceModel->indexExist(index->index()))
         {

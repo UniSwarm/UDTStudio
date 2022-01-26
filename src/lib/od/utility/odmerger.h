@@ -28,7 +28,8 @@ class OD_EXPORT ODMerger
 public:
     ODMerger();
 
-    void merge(DeviceModel *deviceDescription, DeviceModel *secondDeviceDescription);
+    void merge(DeviceDescription *deviceDescription, DeviceDescription *secondDeviceDescription);
+    void merge(DeviceModel *deviceModel, DeviceModel *secondDeviceModel);
 
 protected:
     void mergeIndex(Index *index, Index *index2);
