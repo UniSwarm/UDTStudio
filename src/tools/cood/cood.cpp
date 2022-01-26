@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 
     QCommandLineOption configurationOption(QStringList() << "c"
                                                          << "configuration",
-                                           QCoreApplication::translate("main", "Configuration apply"),
+                                           QCoreApplication::translate("main", "Configuration files"),
                                            "configuration");
     cliParser.addOption(configurationOption);
 
@@ -166,10 +166,11 @@ int main(int argc, char *argv[])
         merger.merge(deviceConfiguration, secondDeviceDescription);
     }
 
-    QString cfgFile = cliParser.value("configuration");
-    if (!cfgFile.isEmpty())
+    QStringList cfgFiles = cliParser.values("configuration");
+    for (const QString &cfgFile : qAsConst(cfgFiles))
     {
         ConfigurationApply configurationApply;
+
         if (deviceConfiguration)
         {
             if (!configurationApply.apply(deviceConfiguration, cfgFile))
@@ -177,6 +178,7 @@ int main(int argc, char *argv[])
                 return -6;
             }
         }
+
         if (!configurationApply.apply(deviceDescription, cfgFile))
         {
             return -6;
