@@ -23,12 +23,16 @@
 #include "generator/cgenerator.h"
 #include "generator/csvgenerator.h"
 #include "generator/texgenerator.h"
+
 #include "model/devicemodel.h"
+
 #include "parser/dcfparser.h"
 #include "parser/edsparser.h"
+
 #include "utility/configurationapply.h"
 #include "utility/odmerger.h"
 #include "utility/profileduplicate.h"
+
 #include "writer/dcfwriter.h"
 #include "writer/edswriter.h"
 
@@ -51,17 +55,17 @@ int main(int argc, char *argv[])
     cliParser.setApplicationDescription(QCoreApplication::translate("main", "Object dictionary command line interface."));
     cliParser.addHelpOption();
     cliParser.addVersionOption();
-    cliParser.addPositionalArgument("file", QCoreApplication::translate("main", "Object dictionary file (dcf or eds)."), "file");
+    cliParser.addPositionalArgument("file", QCoreApplication::translate("main", "Object dictionary file (.dcf or .eds)"), "file");
 
     QCommandLineOption outOption(QStringList() << "o"
                                                << "out",
-                                 QCoreApplication::translate("main", "Output directory or file."),
+                                 QCoreApplication::translate("main", "Output directory or file"),
                                  "out");
     cliParser.addOption(outOption);
 
     QCommandLineOption nodeIdOption(QStringList() << "n"
                                                   << "nodeid",
-                                    QCoreApplication::translate("main", "CANOpen Node Id."),
+                                    QCoreApplication::translate("main", "CANOpen Node Id"),
                                     "nodeid");
     cliParser.addOption(nodeIdOption);
 
@@ -76,12 +80,6 @@ int main(int argc, char *argv[])
                                            QCoreApplication::translate("main", "Configuration apply"),
                                            "configuration");
     cliParser.addOption(configurationOption);
-
-    QCommandLineOption mergeOption(QStringList() << "m"
-                                                 << "merge",
-                                   QCoreApplication::translate("main", "Merge 2 eds files"),
-                                   "merge");
-    cliParser.addOption(mergeOption);
 
     cliParser.process(app);
 
@@ -143,30 +141,81 @@ int main(int argc, char *argv[])
         return -3;
     }
 
-    QString iniFile = cliParser.value("configuration");
-    if (!iniFile.isEmpty())
+    for (int fileId = 1; fileId < files.count(); fileId++)
+    {
+        if (QFileInfo(files.at(fileId)).suffix() != "eds")
+        {
+            continue;
+        }
+
+        EdsParser parser;
+        ODMerger merger;
+
+        DeviceDescription *secondDeviceDescription = parser.parse(files.at(fileId));
+        if (!secondDeviceDescription)
+        {
+            delete deviceDescription;
+            delete deviceConfiguration;
+            err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist") << endl;
+            return -5;
+        }
+        if (deviceDescription)
+        {
+            merger.merge(deviceDescription, secondDeviceDescription);
+        }
+        merger.merge(deviceConfiguration, secondDeviceDescription);
+    }
+
+    QString cfgFile = cliParser.value("configuration");
+    if (!cfgFile.isEmpty())
     {
         ConfigurationApply configurationApply;
-        if (!configurationApply.apply(deviceConfiguration, iniFile))
+        if (deviceConfiguration)
         {
-            return -6;
+            if (!configurationApply.apply(deviceConfiguration, cfgFile))
+            {
+                return -6;
+            }
         }
-        if (!configurationApply.apply(deviceDescription, iniFile))
+        if (!configurationApply.apply(deviceDescription, cfgFile))
         {
             return -6;
         }
     }
 
+    /*if (deviceDescription)
+    {
+        for (Index *index : deviceDescription->indexes())
+        {
+            for (SubIndex *subIndex : index->subIndexes())
+            {
+                if (subIndex->accessType() & SubIndex::WRITE
+                        && !subIndex->value().isValid())
+                {
+                    subIndex->setValue(QVariant(0));
+                }
+            }
+        }
+    }*/
+
     // OUTPUT FILE
     if (outSuffix == "c")
     {
         CGenerator cgenerator;
-        cgenerator.generateC(deviceConfiguration, outputFile);
+        if (!cgenerator.generateC(deviceConfiguration, outputFile))
+        {
+            err << cgenerator.errorStr();
+            return -4;
+        }
     }
     else if (outSuffix == "h")
     {
         CGenerator cgenerator;
-        cgenerator.generateH(deviceConfiguration, outputFile);
+        if (!cgenerator.generateH(deviceConfiguration, outputFile))
+        {
+            err << cgenerator.errorStr();
+            return -4;
+        }
     }
     else if (outSuffix == "dcf")
     {
@@ -181,28 +230,6 @@ int main(int argc, char *argv[])
         {
             ProfileDuplicate profileDuplicate;
             profileDuplicate.duplicate(deviceDescription, duplicate);
-        }
-
-        if (cliParser.isSet("merge"))
-        {
-            if (files.size() < 2)
-            {
-                delete deviceDescription;
-                delete deviceConfiguration;
-                err << QCoreApplication::translate("main", "error (6): invalid number of eds inputs file, need more than one") << endl;
-                return -6;
-            }
-            EdsParser parser;
-            DeviceDescription *secondDeviceDescription = parser.parse(files.at(1));
-            if (!secondDeviceDescription)
-            {
-                delete deviceDescription;
-                delete deviceConfiguration;
-                err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist") << endl;
-                return -5;
-            }
-            ODMerger merger;
-            merger.merge(deviceDescription, secondDeviceDescription);
         }
 
         EdsWriter edsWriter;
@@ -222,8 +249,16 @@ int main(int argc, char *argv[])
     {
         CGenerator cgenerator;
         DcfWriter dcfWriter;
-        cgenerator.generateC(deviceConfiguration, QString(outputFile + "/od_data.c"));
-        cgenerator.generateH(deviceConfiguration, QString(outputFile + "/od_data.h"));
+        if (!cgenerator.generateC(deviceConfiguration, QString(outputFile + "/od_data.c")))
+        {
+            err << cgenerator.errorStr();
+            return -4;
+        }
+        if (!cgenerator.generateH(deviceConfiguration, QString(outputFile + "/od_data.h")))
+        {
+            err << cgenerator.errorStr();
+            return -4;
+        }
         dcfWriter.write(deviceConfiguration, QString(outputFile + "/out.dcf"));
     }
     else
