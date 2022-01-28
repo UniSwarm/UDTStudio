@@ -33,6 +33,7 @@
 #include <QTabWidget>
 #include <QTimer>
 #include <QToolBar>
+#include <QLabel>
 
 class Node;
 class DataLogger;
@@ -95,6 +96,7 @@ protected:
     IndexSpinBox *_thresholdSpinBox;
     IndexSpinBox *_freqDividerSpinBox;
     IndexCheckBox *_antiReverseCheckBox;
+    QLabel *_directCtrlLabel;
     IndexCheckBox *_directCtrlCheckBox;
 
     QGroupBox *createPIDStatusWidgets();

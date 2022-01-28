@@ -152,6 +152,8 @@ void PidWidget::setIMode()
             _pidTestGroupBox->setTitle(tr("Torque PID test"));
             _dataLoggerWidget->setTitle(tr("Node %1 axis %2 torque PID").arg(_nodeProfile402->nodeId()).arg(_axis));
             odMode402 = IndexDb402::MODE402_TORQUE;
+            _directCtrlCheckBox->setEnabled(false);
+            _directCtrlLabel->setEnabled(false);
             break;
 
         case MODE_PID_VELOCITY:
@@ -605,7 +607,9 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
 
     _directCtrlCheckBox = new IndexCheckBox();
     _directCtrlCheckBox->setBitMask(1 << 8);
-    formLayout->addRow(tr("&Direct control:"), _directCtrlCheckBox);
+    _directCtrlLabel = new QLabel(tr("Direct &control:"));
+    _directCtrlLabel->setBuddy(_directCtrlCheckBox);
+    formLayout->addRow(_directCtrlLabel, _directCtrlCheckBox);
     _indexWidgets.append(_directCtrlCheckBox);
 
     groupBox->setLayout(formLayout);
