@@ -170,5 +170,6 @@ void ModePc::readAllObjects()
     _nodeProfile402->node()->readObject(_maxAccelerationObjectId);
     _nodeProfile402->node()->readObject(_profileDecelerationObjectId);
     _nodeProfile402->node()->readObject(_maxDecelerationObjectId);
+    _nodeProfile402->node()->readObject(_quickStopDecelerationObjectId);
     ModeHm::readAllObjects();
 }
