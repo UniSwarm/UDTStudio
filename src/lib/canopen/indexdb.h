@@ -83,6 +83,8 @@ public:
     //    static QString description(const NodeObjectId &nodeObjectId);
 
     static bool isQ1516(const NodeObjectId &objId, quint16 profileNumber);
+    static double scale(const NodeObjectId &objId, quint16 profileNumber);
+    static QString unit(const NodeObjectId &objId, quint16 profileNumber);
 };
 
 #endif  // INDEXDB_H

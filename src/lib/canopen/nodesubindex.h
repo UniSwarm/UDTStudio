@@ -131,6 +131,12 @@ public:
     bool isQ1516() const;
     void setQ1516(bool q1516);
 
+    double scale() const;
+    void setScale(double scale);
+
+    QString unit() const;
+    void setUnit(const QString &unit);
+
     const QDateTime &lastModification() const;
 
 private:
@@ -154,6 +160,8 @@ private:
 
     // TODO add enum for interpretation
     bool _q1516;
+    double _scale;
+    QString _unit;
 };
 
 #endif  // NODESUBINDEX_H

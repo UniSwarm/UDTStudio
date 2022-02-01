@@ -172,3 +172,13 @@ bool IndexDb::isQ1516(const NodeObjectId &objId, quint16 profileNumber)
 {
     return ODIndexDb::isQ1516(objId.index(), objId.subIndex(), profileNumber);
 }
+
+double IndexDb::scale(const NodeObjectId &objId, quint16 profileNumber)
+{
+    return ODIndexDb::scale(objId.index(), objId.subIndex(), profileNumber);
+}
+
+QString IndexDb::unit(const NodeObjectId &objId, quint16 profileNumber)
+{
+    return ODIndexDb::unit(objId.index(), objId.subIndex(), profileNumber);
+}

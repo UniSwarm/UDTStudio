@@ -113,7 +113,10 @@ bool NodeOd::loadEds(const QString &fileName)
             nodeSubIndex->setLowLimit(odSubIndex->lowLimit());
             nodeSubIndex->setHighLimit(odSubIndex->highLimit());
             nodeIndex->addSubIndex(nodeSubIndex);
+
             nodeSubIndex->setQ1516(IndexDb::isQ1516(nodeSubIndex->objectId(), _node->profileNumber()));
+            nodeSubIndex->setScale(IndexDb::scale(nodeSubIndex->objectId(), _node->profileNumber()));
+            nodeSubIndex->setUnit(IndexDb::unit(nodeSubIndex->objectId(), _node->profileNumber()));
         }
     }
 

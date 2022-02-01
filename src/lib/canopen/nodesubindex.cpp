@@ -634,6 +634,26 @@ void NodeSubIndex::setQ1516(bool q1516)
     _q1516 = q1516;
 }
 
+double NodeSubIndex::scale() const
+{
+    return _scale;
+}
+
+void NodeSubIndex::setScale(double scale)
+{
+    _scale = scale;
+}
+
+QString NodeSubIndex::unit() const
+{
+    return _unit;
+}
+
+void NodeSubIndex::setUnit(const QString &unit)
+{
+    _unit = unit;
+}
+
 const QDateTime &NodeSubIndex::lastModification() const
 {
     return _lastModification;
