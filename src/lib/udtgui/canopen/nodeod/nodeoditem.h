@@ -72,6 +72,7 @@ protected:
 
     enum ViewType
     {
+        ViewRawValue,
         ViewValue,
         ViewHex,
         ViewHybrid,
@@ -79,6 +80,7 @@ protected:
         EditHex
     };
     QVariant formatValue(NodeSubIndex *subIndex, ViewType viewType) const;
+    QString formatDouble(double value) const;
 };
 
 #endif  // NODEODITEM_H

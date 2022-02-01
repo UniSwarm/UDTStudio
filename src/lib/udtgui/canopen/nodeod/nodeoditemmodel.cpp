@@ -174,14 +174,24 @@ QVariant NodeOdItemModel::headerData(int section, Qt::Orientation orientation, i
             {
                 case OdIndex:
                     return QVariant(tr("Index"));
+
                 case Name:
                     return QVariant(tr("Name"));
+
                 case Type:
                     return QVariant(tr("Type"));
+
                 case Acces:
                     return QVariant(tr("Acces"));
+
                 case Value:
                     return QVariant(tr("Value"));
+
+                case RawValue:
+                    return QVariant(tr("Raw"));
+
+                case HexValue:
+                    return QVariant(tr("Hex"));
             }
             break;
     }

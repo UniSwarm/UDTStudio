@@ -52,6 +52,8 @@ public:
         Type,
         Acces,
         Value,
+        RawValue,
+        HexValue,
         ColumnCount
     };
 
