@@ -448,12 +448,18 @@ void TexGenerator::writeIndex(Index *index, QTextStream *out, bool generic)
     {
         *out << "{" << subIndex->value().toString() << "}";
     }
-    *out << "{-}";
-    *out << "{";
 
+    // Unit
+    *out << "{";
+    writeUnit(subIndex, out);
+    *out << "}";
+
+    // Limits / Range
+    *out << "{";
     writeLimit(subIndex, out);
-    *out << "}}%\n";
-    *out << "\n";
+    *out << "}";
+
+    *out << "}%\n\n";
 }
 
 /**
@@ -700,7 +706,7 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
         *out << "{" << accessStr(subIndex->accessType());
         if (pdoAccessStr(subIndex->accessType()) != "")
         {
-            *out << "," << pdoAccessStr(subIndex->accessType()) << "}";
+            *out << ", " << pdoAccessStr(subIndex->accessType()) << "}";
         }
         else
         {
@@ -714,11 +720,18 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
         {
             *out << "{" << subIndex->value().toString() << "}";
         }
-        *out << "{-}";
-        *out << "{";
 
+        // Unit
+        *out << "{";
+        writeUnit(subIndex, out);
+        *out << "}";
+
+        // Limits / Range
+        *out << "{";
         writeLimit(subIndex, out);
-        *out << "}}%\n";
+        *out << "}";
+
+        *out << "}%\n";
     }
     *out << "\n";
 }
@@ -732,12 +745,37 @@ void TexGenerator::writeArray(Index *index, QTextStream *out, bool generic)
     writeRecord(index, out, generic);
 }
 
+void TexGenerator::writeUnit(const SubIndex *subIndex, QTextStream *out)
+{
+    double scale = ODIndexDb::scale(subIndex->index()->index(), subIndex->subIndex(), _profile);
+    QString scaleDiv;
+    if (scale != 1.0 && scale != 0.0)
+    {
+        scaleDiv = QString::number(scale);
+    }
+
+    QString unit = ODIndexDb::unit(subIndex->index()->index(), subIndex->subIndex(), _profile);
+    unit.replace("°", "$^{\\circ}$");
+    unit.replace("µ", "$\\mu$");
+    unit = unit.trimmed();
+
+    if (unit.isEmpty() && scaleDiv.isEmpty())
+    {
+        unit = "-";
+    }
+    *out << (scaleDiv + " " + unit).trimmed();
+}
+
 /**
  * @brief writes high limit and low limit of a sub-index if they exist
  * @param sub index model
  */
 void TexGenerator::writeLimit(const SubIndex *subIndex, QTextStream *out)
 {
+    if (subIndex->hasLowLimit() || subIndex->hasHighLimit())
+    {
+        *out << "[";
+    }
     if (subIndex->hasLowLimit())
     {
         *out << subIndex->lowLimit().toString() << " ";
@@ -746,6 +784,10 @@ void TexGenerator::writeLimit(const SubIndex *subIndex, QTextStream *out)
     if (subIndex->hasHighLimit())
     {
         *out << " " << subIndex->highLimit().toString();
+    }
+    if (subIndex->hasLowLimit() || subIndex->hasHighLimit())
+    {
+        *out << "]";
     }
 }
 

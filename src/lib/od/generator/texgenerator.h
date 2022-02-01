@@ -47,6 +47,7 @@ private:
     void writeIndex(Index *index, QTextStream *out, bool generic);
     void writeRecord(Index *index, QTextStream *out, bool generic);
     void writeArray(Index *index, QTextStream *out, bool generic);
+    void writeUnit(const SubIndex *subIndex, QTextStream *out);
     void writeLimit(const SubIndex *subIndex, QTextStream *out);
 
     QString dataTypeStr(SubIndex *subIndex) const;
