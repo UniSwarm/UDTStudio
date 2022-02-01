@@ -109,26 +109,55 @@ double ODIndexDb::scale(quint16 index, quint8 subIndex, quint16 profileNumber)
 
     if (index == 0x2000)  // board voltages
     {
-        return 1 / 100.0;
+        if (subIndex > 0)
+        {
+            return 1 / 100.0;
+        }
     }
     if (index == 0x2020)  // cpu temperatures
     {
-        return 1 / 10.0;
+        if (subIndex > 0)
+        {
+            return 1 / 10.0;
+        }
     }
 
     if (profileNumber == 402)
     {
+        if (index == 0x2041)  // Board under/overvoltage
+        {
+            if (subIndex > 0)
+            {
+                return 1 / 100.0;
+            }
+        }
         if (index == 0x2801)  // bridge temperatures
         {
-            return 1 / 10.0;
+            if (subIndex > 0)
+            {
+                return 1 / 10.0;
+            }
         }
         if (index == 0x2802 || index == 0x2803)  // bridge currents
         {
-            return 1 / 100.0;
+            if (subIndex > 0)
+            {
+                return 1 / 100.0;
+            }
         }
         if (index == 0x2805)  // bridge bemf voltages
         {
-            return 1 / 10.0;
+            if (subIndex > 0)
+            {
+                return 1 / 10.0;
+            }
+        }
+        if (index == 0x2810)  // driver temperature protection
+        {
+            if (subIndex == 1 || subIndex == 2)
+            {
+                return 1 / 10.0;
+            }
         }
         if ((index & (quint16)0xF1FF) == 0x4006)  // Motor status
         {
@@ -163,26 +192,62 @@ QString ODIndexDb::unit(quint16 index, quint8 subIndex, quint16 profileNumber)
 {
     if (index == 0x2000)  // board voltages
     {
-        return QString(" V");
+        if (subIndex > 0)
+        {
+            return QString(" V");
+        }
     }
     if (index == 0x2020)  // cpu temps
     {
-        return QString(" °C");
+        if (subIndex > 0)
+        {
+            return QString(" °C");
+        }
+    }
+    if (index == 0x2023 || index == 0x2024 || index == 0x2025)  // cpu stats us
+    {
+        if (subIndex > 0)
+        {
+            return QString(" µs");
+        }
     }
 
     if (profileNumber == 402)
     {
+        if (index == 0x2041)  // Board under/overvoltage
+        {
+            if (subIndex > 0)
+            {
+                return QString(" V");
+            }
+        }
         if (index == 0x2801)  // bridge temps
         {
-            return QString(" °C");
+            if (subIndex > 0)
+            {
+                return QString(" °C");
+            }
         }
         if (index == 0x2802 || index == 0x2803)  // bridge currents
         {
-            return QString(" A");
+            if (subIndex > 0)
+            {
+                return QString(" A");
+            }
         }
         if (index == 0x2805)  // bridge bemf voltages
         {
-            return QString(" V");
+            if (subIndex > 0)
+            {
+                return QString(" V");
+            }
+        }
+        if (index == 0x2810)  // driver temperature protection
+        {
+            if (subIndex == 1 || subIndex == 2)
+            {
+                return QString(" °C");
+            }
         }
         if ((index & (quint16)0xF1FF) == 0x4006)  // Motor status
         {
@@ -209,7 +274,11 @@ QString ODIndexDb::unit(quint16 index, quint8 subIndex, quint16 profileNumber)
             {
                 return QString(" Nm/A");
             }
-            if (subIndex == 7)  // velocity constant
+            if (subIndex == 7)  // maximum velocity
+            {
+                return QString(" rpm");
+            }
+            if (subIndex == 8)  // velocity constant
             {
                 return QString(" rpm/V");
             }
