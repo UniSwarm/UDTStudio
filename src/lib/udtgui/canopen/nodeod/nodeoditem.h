@@ -77,6 +77,7 @@ protected:
         ViewHex,
         ViewHybrid,
         EditValue,
+        EditRawValue,
         EditHex
     };
     QVariant formatValue(NodeSubIndex *subIndex, ViewType viewType) const;

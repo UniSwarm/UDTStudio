@@ -182,6 +182,24 @@ QVariant NodeOdItem::data(int column, int role) const
                                 return value;
                             }
                             break;
+
+                        case NodeOdItemModel::RawValue:
+                            if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
+                            {
+                                QVariant value = formatValue(_index->subIndex(0), EditRawValue);
+                                value.convert(QMetaType::QString);
+                                return value;
+                            }
+                            break;
+
+                        case NodeOdItemModel::HexValue:
+                            if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
+                            {
+                                QVariant value = formatValue(_index->subIndex(0), EditHex);
+                                value.convert(QMetaType::QString);
+                                return value;
+                            }
+                            break;
                     }
                     break;
 
@@ -254,9 +272,25 @@ QVariant NodeOdItem::data(int column, int role) const
                     switch (column)
                     {
                         case NodeOdItemModel::Value:
+                        {
                             QVariant value = formatValue(_subIndex, EditValue);
                             value.convert(QMetaType::QString);
                             return value;
+                        }
+
+                        case NodeOdItemModel::RawValue:
+                        {
+                            QVariant value = formatValue(_subIndex, EditRawValue);
+                            value.convert(QMetaType::QString);
+                            return value;
+                        }
+
+                        case NodeOdItemModel::HexValue:
+                        {
+                            QVariant value = formatValue(_subIndex, EditHex);
+                            value.convert(QMetaType::QString);
+                            return value;
+                        }
                     }
                     break;
 
@@ -285,14 +319,34 @@ QVariant NodeOdItem::data(int column, int role) const
 bool NodeOdItem::setData(int column, const QVariant &value, int role, Node *node)
 {
     Q_UNUSED(role)
+    QVariant valueToWrite;
 
-    if (column != NodeOdItemModel::Value)
+    switch ((NodeOdItemModel::Column)column)
     {
-        return false;
+        case NodeOdItemModel::Value:
+            valueToWrite = value;
+            break;
+
+        case NodeOdItemModel::RawValue:
+            valueToWrite = value;
+            break;
+
+        case NodeOdItemModel::HexValue:
+            if (!value.toString().startsWith("0x"))
+            {
+                valueToWrite = QVariant("0x" + value.toString());
+            }
+            else
+            {
+                valueToWrite = value;
+            }
+            break;
+
+        default:
+            return false;
     }
 
     NodeSubIndex *subIndex = nullptr;
-
     switch (_type)
     {
         case TOD:
@@ -315,55 +369,68 @@ bool NodeOdItem::setData(int column, const QVariant &value, int role, Node *node
             }
             break;
     }
-
-    if (subIndex)
+    if (!subIndex)
     {
-        QVariant valueToWrite = value;
+        return false;
+    }
 
-        if (subIndex->isNumeric())
+    if (subIndex->isNumeric())
+    {
+        QString valueStr = valueToWrite.toString();
+        if (valueStr.startsWith("0x", Qt::CaseInsensitive))
         {
-            QString valueStr = valueToWrite.toString();
-            if (valueStr.startsWith("0x", Qt::CaseInsensitive))
+            bool ok;
+            valueStr = valueStr.mid(2);
+            switch (subIndex->dataType())
             {
-                bool ok;
-                valueStr = valueStr.mid(2);
-                switch (subIndex->dataType())
-                {
-                    case NodeSubIndex::BOOLEAN:
-                    case NodeSubIndex::INTEGER8:
-                    case NodeSubIndex::INTEGER16:
-                    case NodeSubIndex::INTEGER24:
-                    case NodeSubIndex::INTEGER32:
-                    case NodeSubIndex::INTEGER40:
-                    case NodeSubIndex::INTEGER48:
-                    case NodeSubIndex::INTEGER56:
-                    case NodeSubIndex::INTEGER64:
-                        valueToWrite.setValue(valueStr.toInt(&ok, 16));
-                        break;
+                case NodeSubIndex::BOOLEAN:
+                case NodeSubIndex::INTEGER8:
+                case NodeSubIndex::INTEGER16:
+                case NodeSubIndex::INTEGER24:
+                case NodeSubIndex::INTEGER32:
+                case NodeSubIndex::INTEGER40:
+                case NodeSubIndex::INTEGER48:
+                case NodeSubIndex::INTEGER56:
+                case NodeSubIndex::INTEGER64:
+                    valueToWrite.setValue(valueStr.toInt(&ok, 16));
+                    break;
 
-                    case NodeSubIndex::UNSIGNED8:
-                    case NodeSubIndex::UNSIGNED16:
-                    case NodeSubIndex::UNSIGNED24:
-                    case NodeSubIndex::UNSIGNED32:
-                    case NodeSubIndex::UNSIGNED40:
-                    case NodeSubIndex::UNSIGNED48:
-                    case NodeSubIndex::UNSIGNED56:
-                    case NodeSubIndex::UNSIGNED64:
-                        valueToWrite.setValue(valueStr.toUInt(&ok, 16));
-                        break;
+                case NodeSubIndex::UNSIGNED8:
+                case NodeSubIndex::UNSIGNED16:
+                case NodeSubIndex::UNSIGNED24:
+                case NodeSubIndex::UNSIGNED32:
+                case NodeSubIndex::UNSIGNED40:
+                case NodeSubIndex::UNSIGNED48:
+                case NodeSubIndex::UNSIGNED56:
+                case NodeSubIndex::UNSIGNED64:
+                    valueToWrite.setValue(valueStr.toUInt(&ok, 16));
+                    break;
 
-                    default:
-                        break;
-                }
-            }
-            else if (subIndex->isQ1516())
-            {
-                valueToWrite.setValue(valueToWrite.toDouble() * 65536.0);
+                default:
+                    break;
             }
         }
-
-        node->writeObject(subIndex->index(), subIndex->subIndex(), valueToWrite);
+        else if (column == NodeOdItemModel::Value)
+        {
+            double valueDouble = valueToWrite.toDouble();
+            if (subIndex->isQ1516())
+            {
+                valueDouble *= 65536.0;
+            }
+            if (subIndex->scale() != 0)
+            {
+                valueDouble /= subIndex->scale();
+            }
+            valueToWrite.setValue(valueDouble);
+        }
+        else
+        {
+            valueToWrite.convert(QMetaType::QReal);
+        }
     }
+
+    node->writeObject(subIndex->index(), subIndex->subIndex(), valueToWrite);
+
     return false;
 }
 
@@ -380,6 +447,8 @@ Qt::ItemFlags NodeOdItem::flags(int column) const
             switch (column)
             {
                 case NodeOdItemModel::Value:
+                case NodeOdItemModel::HexValue:
+                case NodeOdItemModel::RawValue:
                     if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
                     {
                         if (_index->subIndex(0)->isWritable())
@@ -395,6 +464,8 @@ Qt::ItemFlags NodeOdItem::flags(int column) const
             switch (column)
             {
                 case NodeOdItemModel::Value:
+                case NodeOdItemModel::HexValue:
+                case NodeOdItemModel::RawValue:
                     if (_subIndex->isWritable())
                     {
                         flags.setFlag(Qt::ItemIsEditable);
@@ -691,14 +762,17 @@ QVariant NodeOdItem::formatValue(NodeSubIndex *subIndex, NodeOdItem::ViewType vi
             hexStr = "0x" + QString::number(mvalue.toUInt(), 16).rightJustified(zero, '0').toUpper();
         }
     }
-    valueStr += subIndex->unit();
 
     switch (viewType)
     {
-        case NodeOdItem::EditValue:
         case NodeOdItem::ViewValue:
+            valueStr += subIndex->unit();
             return QVariant(valueStr);
 
+        case NodeOdItem::EditValue:
+            return QVariant(valueStr);
+
+        case NodeOdItem::EditRawValue:
         case NodeOdItem::ViewRawValue:
             return QVariant(rawValueStr);
 
