@@ -36,8 +36,8 @@ public:
     ~TexGenerator();
 
     // Generator interface
-    bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath);
-    bool generate(DeviceDescription *deviceDescription, const QString &filePath);
+    bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath) override;
+    bool generate(DeviceDescription *deviceDescription, const QString &filePath) override;
 
 private:
 
@@ -59,7 +59,7 @@ private:
     QString accessStr(int access) const;
     QString pdoAccessStr(uint8_t accessType) const;
 
-    int _profile;
+    uint16_t _profile;
 };
 
 #endif  // TEXGENERATOR_H
