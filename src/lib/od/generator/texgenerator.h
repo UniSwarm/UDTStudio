@@ -49,6 +49,7 @@ private:
     void writeArray(Index *index, QTextStream *out, bool generic);
     void writeUnit(const SubIndex *subIndex, QTextStream *out);
     void writeLimit(const SubIndex *subIndex, QTextStream *out);
+    void writeAccessType(const SubIndex *subIndex, QTextStream *out);
 
     QString formatNameIndex(Index *index, bool generic);
     QString formatNameIndexForTex(Index *index, bool generic);
@@ -59,7 +60,7 @@ private:
     QString accessStr(int access) const;
     QString pdoAccessStr(uint8_t accessType) const;
 
-    uint16_t _profile;
+    uint _profile;
 };
 
 #endif  // TEXGENERATOR_H
