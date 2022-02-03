@@ -742,7 +742,202 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
  */
 void TexGenerator::writeArray(Index *index, QTextStream *out, bool generic)
 {
-    writeRecord(index, out, generic);
+    int base = 16;
+
+    QString nameForTex = formatNameIndexForTex(index, generic);
+    QString nameIndex = formatNameIndex(index, generic);
+
+    // Line 1 : % 4n00 a1_Motion_statusX
+    *out << "% " << formatIndex(index, generic) << " " << index->name();
+    if (generic)
+    {
+        *out << "X";
+    }
+
+    *out << "\n";
+
+    QString nameCommand = nameForTex;
+    nameCommand.prepend("\\name");
+    QString indexCommand = nameForTex;
+    indexCommand.prepend("\\index");
+    QString subIndexCommand = nameForTex;
+    subIndexCommand.prepend("\\subIndex");
+    QString sectionCommand = nameForTex;
+    sectionCommand.prepend("\\section");
+    QString dispIndexSubCommand = nameForTex;
+    dispIndexSubCommand.prepend("\\dispIndexSub");
+    QString dispIndexNameCommand = nameForTex;
+    dispIndexNameCommand.prepend("\\dispIndexName");
+
+    // Line 2 : \newcommand{\nameMotionstatusX}{a@\_Motion\_status}%
+    *out << "\\newcommand{" << nameCommand << "}";
+    *out << "{" << nameIndex << "}%";
+    *out << "\n";
+
+    // Line 3 : \newcommand{\indexMotionstatusX}{4n00}%
+    *out << "\\newcommand{" << indexCommand << "}";
+    *out << "{" << formatIndex(index, generic) << "}%";
+    *out << "\n";
+
+    // Line 4 : \newcommand{\subIndexMotionstatusX}{0}%
+    *out << "\\newcommand{" << subIndexCommand << "}";
+    *out << "{0}%";
+    *out << "\n";
+
+    // Line 5 : \newcommand{\sectionMotionstatusX}{\sectionIndexName{\indexMotionstatusX}{\nameMotionstatusX}}%
+    *out << "\\newcommand{" << sectionCommand << "}";
+    *out << "{\\sectionIndexName";
+    *out << "{" << indexCommand << "}";
+    *out << "{" << nameCommand << "}}%";
+    *out << "\n";
+
+    // Line 6 : \newcommand{\dispIndexSubMotionstatusX}{\displayIndexSub{\indexMotionstatusX}{\subIndexMotionstatusX}}%
+    *out << "\\newcommand{" << dispIndexSubCommand << "}";
+    *out << "{\\displayIndexSub";
+    *out << "{" << indexCommand << "}";
+    *out << "{" << subIndexCommand << "}}%";
+    *out << "\n";
+
+    // Line 7 : \newcommand{\dispIndexNameMotionstatusX}{\displayIndexName{\indexMotionstatusX}{\nameMotionstatusX}}%
+    *out << "\\newcommand{" << dispIndexNameCommand << "}";
+    *out << "{\\displayIndexName";
+    *out << "{" << indexCommand << "}";
+    *out << "{" << nameCommand << "}}%";
+    *out << "\n";
+
+    QStringList lineArraySubIndex;
+
+    for (SubIndex *subIndex : index->subIndexes())
+    {
+        if (subIndex->subIndex() == 0)
+        {
+            continue;
+        }
+
+        // Line 1 : % 4n00.1 Error
+        *out << "% " << formatIndex(index, generic) << "." << QString::number(subIndex->subIndex(), base).toUpper() << " " << subIndex->name();
+        *out << "\n";
+
+        QString nameSubForTex = formatNameSubIndexForTex(subIndex->name());
+
+        QString nameFull = subIndex->name();
+        nameFull.replace("_", "\\_");
+
+        QString subIndexSubCommand = nameSubForTex;
+        subIndexSubCommand.prepend(nameForTex);
+        subIndexSubCommand.prepend("\\subIndex");
+
+        QString nameSubCommand = nameSubForTex;
+        nameSubCommand.prepend(nameForTex);
+        nameSubCommand.prepend("\\name");
+
+        QString indexSubCommand = nameSubForTex;
+        indexSubCommand.prepend(nameForTex);
+        indexSubCommand.prepend("\\index");
+
+        lineArraySubIndex.append("\\displayLineArraySubIndex{" + subIndexSubCommand + "}{" + nameSubCommand);
+
+        QString paraCommand = nameSubForTex;
+        paraCommand.prepend(nameForTex);
+        paraCommand.prepend("\\para");
+
+        QString dispIndexSubSubCommand = nameSubForTex;
+        dispIndexSubSubCommand.prepend(nameForTex);
+        dispIndexSubSubCommand.prepend("\\dispIndexSub");
+
+        QString dispIndexNameSubCommand = nameSubForTex;
+        dispIndexNameSubCommand.prepend(nameForTex);
+        dispIndexNameSubCommand.prepend("\\dispIndexSubName");
+
+        QString dispTabCommand = nameSubForTex;
+        dispTabCommand.prepend(nameForTex);
+        dispTabCommand.prepend("\\dispTab");
+
+        // Line 2 : \newcommand{\subIndexMotionstatusXError}{1}%
+        *out << "\\newcommand{" << subIndexSubCommand << "}";
+        *out << "{" << QString::number(subIndex->subIndex(), base).toUpper() << "}%";
+        *out << "\n";
+
+        // Line 3 : \newcommand{\nameMotionstatusXError}{Error}%
+        *out << "\\newcommand{" << nameSubCommand << "}";
+        *out << "{" << nameFull << "}%";
+        *out << "\n";
+
+        // Line 4 : \newcommand{\indexMotionstatusXError}{\indexMotionstatusX}%
+        *out << "\\newcommand{" << indexSubCommand << "}";
+        *out << "{" << indexCommand << "}%";
+        *out << "\n";
+
+        // Line 5 : \newcommand{\paraMotionstatusXError}{\paraIndexSubName{\indexMotionstatusX}{\subIndexMotionstatusXError}{\nameMotionstatusXError}}%
+        *out << "\\newcommand{" << paraCommand << "}";
+        *out << "{\\paraIndexSubName";
+        *out << "{" << indexCommand << "}";
+        *out << "{" << subIndexSubCommand << "}";
+        *out << "{" << nameSubCommand << "}}%";
+        *out << "\n";
+
+        // Line 6 : \newcommand{\dispIndexSubMotionstatusXError}{\displayIndexSub{\indexMotionstatusX}{\subIndexMotionstatusXError}}%
+        *out << "\\newcommand{" << dispIndexSubSubCommand << "}";
+        *out << "{\\displayIndexSub";
+        *out << "{" << indexCommand << "}";
+        *out << "{" << subIndexSubCommand << "}}%";
+        *out << "\n";
+
+        // Line 7 : \newcommand{\dispIndexSubNameMotionstatusXError}{\displayIndexSubName{\indexMotionstatusX}{\subIndexMotionstatusXError}{\nameMotionstatusXError}}%
+        *out << "\\newcommand{" << dispIndexNameSubCommand << "}";
+        *out << "{\\displayIndexSubName";
+        *out << "{" << indexCommand << "}";
+        *out << "{" << subIndexSubCommand << "}";
+        *out << "{" << nameSubCommand << "}}%";
+        *out << "\n";
+
+        // Line 8 :\newcommand{\dispTabMotionstatusXError}{\displayTab{\indexMotionstatusX}{\subIndexMotionstatusXError}{\nameMotionstatusXError}%
+        //          {UINT16}{RO,TPDO}{-}{-}{-}{\dispTabLineArraySubIndexMotionstatusX}}%
+        *out << "\\newcommand{" << dispTabCommand << "}";
+        *out << "{\\displayTab";
+        *out << "{" << indexCommand << "}";
+        *out << "{" << subIndexSubCommand << "}";
+        *out << "{" << nameSubCommand << "}%";
+        *out << "\n";
+        *out << "{" << dataTypeStr(subIndex) << "}";
+        *out << "{" << accessStr(subIndex->accessType());
+        if (pdoAccessStr(subIndex->accessType()) != "")
+        {
+            *out << "," << pdoAccessStr(subIndex->accessType()) << "}";
+        }
+        else
+        {
+            *out << "}";
+        }
+        if (subIndex->value().toString().isEmpty())
+        {
+            *out << "{-}";
+        }
+        else
+        {
+            *out << "{" << subIndex->value().toString() << "}";
+        }
+        *out << "{-}";
+        *out << "{";
+
+        writeLimit(subIndex, out);
+        *out << "}";
+        *out << "{\\dispTabLineArraySubIndex" + nameForTex + "}}%\n";
+    }
+
+    // Group end : \newcommand{\dispTabLineArraySubIndexMotionstatusX}{%
+    //              \displayLineArraySubIndex{\subIndexMotionstatusXError}{\nameMotionstatusXError}%
+    //              }%
+    *out << "%List subindex\n";
+    *out << "\\newcommand{\\dispTabLineArraySubIndex" << nameForTex << "}{%\n";
+    for (int i = 0; i < lineArraySubIndex.size(); ++i)
+    {
+        *out << lineArraySubIndex.at(i);
+        *out << "}%\n";
+    }
+    *out << "}%\n";
+
+    *out << "\n";
 }
 
 void TexGenerator::writeUnit(const SubIndex *subIndex, QTextStream *out)
@@ -789,6 +984,83 @@ void TexGenerator::writeLimit(const SubIndex *subIndex, QTextStream *out)
     {
         *out << "]";
     }
+}
+
+QString TexGenerator::formatNameIndex(Index *index, bool generic)
+{
+    QString nameIndex = index->name();
+
+    if (generic)
+    {
+        if (index->index() >= 0x1400 && index->index() < 0x1A04)
+        {
+            nameIndex.replace(QRegExp("[0-9]"), "X");
+        }
+        else
+        {
+            nameIndex.replace("a1", "a@");
+        }
+    }
+
+    nameIndex.replace("_", "\\_");
+    return nameIndex;
+}
+
+QString TexGenerator::formatNameIndexForTex(Index *index, bool generic)
+{
+    QString nameForTex = index->name();
+
+    if (generic)
+    {
+        nameForTex.append("X");
+    }
+
+    nameForTex.remove(QRegExp("^[a][0-9]"));
+    nameForTex = formatNameSubIndexForTex(nameForTex);
+    return nameForTex;
+}
+
+QString TexGenerator::formatNameSubIndexForTex(QString nameSubIndex)
+{
+    nameSubIndex.remove("_");
+    nameSubIndex.remove(" ");
+    nameSubIndex.remove("-");
+    nameSubIndex.replace("0", "A");
+    nameSubIndex.replace("1", "B");
+    nameSubIndex.replace("2", "C");
+    nameSubIndex.replace("3", "D");
+    nameSubIndex.replace("4", "E");
+    nameSubIndex.replace("5", "F");
+    nameSubIndex.replace("6", "G");
+    nameSubIndex.replace("7", "H");
+    nameSubIndex.replace("8", "I");
+    nameSubIndex.replace("9", "J");
+
+    return nameSubIndex;
+}
+
+QString TexGenerator::formatIndex(Index *index, bool generic)
+{
+    int base = 16;
+    QString str;
+
+    if (generic)
+    {
+        if (index->index() >= 0x1400 && index->index() < 0x1A04)
+        {
+            str = QString::number(index->index(), base).toUpper().replace(3, 1, "n");
+        }
+        else
+        {
+            str = QString::number(index->index(), base).toUpper().replace(1, 1, "n");
+        }
+    }
+    else
+    {
+        str = QString::number(index->index(), base).toUpper();
+    }
+
+    return str;
 }
 
 QString TexGenerator::dataTypeStr(SubIndex *subIndex) const

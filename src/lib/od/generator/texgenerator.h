@@ -50,6 +50,11 @@ private:
     void writeUnit(const SubIndex *subIndex, QTextStream *out);
     void writeLimit(const SubIndex *subIndex, QTextStream *out);
 
+    QString formatNameIndex(Index *index, bool generic);
+    QString formatNameIndexForTex(Index *index, bool generic);
+    QString formatNameSubIndexForTex(QString nameSubIndex);
+    QString formatIndex(Index *index, bool generic);
+
     QString dataTypeStr(SubIndex *subIndex) const;
     QString accessStr(int access) const;
     QString pdoAccessStr(uint8_t accessType) const;
