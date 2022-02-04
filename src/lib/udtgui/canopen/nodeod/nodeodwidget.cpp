@@ -134,6 +134,11 @@ void NodeOdWidget::createWidgets()
     setLayout(layout);
 }
 
+NodeOdTreeView *NodeOdWidget::nodeOdTreeView() const
+{
+    return _nodeOdTreeView;
+}
+
 void NodeOdWidget::createDefaultFilters(uint profile)
 {
     if (profile == _oldProfile)

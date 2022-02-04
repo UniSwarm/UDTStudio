@@ -46,6 +46,8 @@ public:
     Filter filter() const;
     void setFilter(Filter filter);
 
+    NodeOdTreeView *nodeOdTreeView() const;
+
 public slots:
     void setNode(Node *node);
 
