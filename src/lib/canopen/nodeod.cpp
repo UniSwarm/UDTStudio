@@ -528,6 +528,7 @@ void NodeOd::createMandatoryObjects()
     deviceType->setName("Device type");
     deviceType->setObjectType(NodeIndex::VAR);
     deviceType->addSubIndex(new NodeSubIndex(0));
+    deviceType->subIndex(0)->setAccessType(NodeSubIndex::READ);
     deviceType->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
     deviceType->subIndex(0)->setName("Device type");
     addIndex(deviceType);
@@ -540,27 +541,32 @@ void NodeOd::createMandatoryObjects()
     subIndex = new NodeSubIndex(0);
     subIndex->setDataType(NodeSubIndex::UNSIGNED8);
     subIndex->setName("Highest sub-index supported");
-    subIndex->setValue(4);
+    subIndex->setAccessType(NodeSubIndex::READ);
+    subIndex->setValue(QVariant(static_cast<uint>(4)));
     identityObject->addSubIndex(subIndex);
 
     subIndex = new NodeSubIndex(1);
     subIndex->setDataType(NodeSubIndex::UNSIGNED32);
     subIndex->setName("Vendor-ID");
+    subIndex->setAccessType(NodeSubIndex::READ);
     identityObject->addSubIndex(subIndex);
 
     subIndex = new NodeSubIndex(2);
     subIndex->setDataType(NodeSubIndex::UNSIGNED32);
     subIndex->setName("Product code");
+    subIndex->setAccessType(NodeSubIndex::READ);
     identityObject->addSubIndex(subIndex);
 
     subIndex = new NodeSubIndex(3);
     subIndex->setDataType(NodeSubIndex::UNSIGNED32);
     subIndex->setName("Revision number");
+    subIndex->setAccessType(NodeSubIndex::READ);
     identityObject->addSubIndex(subIndex);
 
     subIndex = new NodeSubIndex(4);
     subIndex->setDataType(NodeSubIndex::UNSIGNED32);
     subIndex->setName("Serial number");
+    subIndex->setAccessType(NodeSubIndex::READ);
     identityObject->addSubIndex(subIndex);
 
     addIndex(identityObject);
@@ -568,21 +574,21 @@ void NodeOd::createMandatoryObjects()
 
 void NodeOd::createBootloaderObjects()
 {
+    NodeIndex *versionHard = new NodeIndex(0x1009);
+    versionHard->setName("Manufacturer Hardware Version");
+    versionHard->setObjectType(NodeIndex::VAR);
+    versionHard->addSubIndex(new NodeSubIndex(0));
+    versionHard->subIndex(0)->setDataType(NodeSubIndex::VISIBLE_STRING);
+    versionHard->subIndex(0)->setAccessType(NodeSubIndex::READ);
+    addIndex(versionHard);
+
     NodeIndex *version = new NodeIndex(0x100A);
     version->setName("Manufacturer Software Version");
     version->setObjectType(NodeIndex::VAR);
     version->addSubIndex(new NodeSubIndex(0));
     version->subIndex(0)->setDataType(NodeSubIndex::VISIBLE_STRING);
-    version->subIndex(0)->setName("Manufacturer Software Version");
+    version->subIndex(0)->setAccessType(NodeSubIndex::READ);
     addIndex(version);
-
-    NodeIndex *versionHard = new NodeIndex(0x100A);
-    versionHard->setName("Manufacturer Hardware Version");
-    versionHard->setObjectType(NodeIndex::VAR);
-    versionHard->addSubIndex(new NodeSubIndex(0));
-    versionHard->subIndex(0)->setDataType(NodeSubIndex::VISIBLE_STRING);
-    versionHard->subIndex(0)->setName("Manufacturer Hardware Version");
-    addIndex(versionHard);
 
     NodeIndex *program = new NodeIndex(0x1F50);
     program->setName("Program");
@@ -593,11 +599,13 @@ void NodeOd::createBootloaderObjects()
     subIndex->setDataType(NodeSubIndex::UNSIGNED8);
     subIndex->setName("Number of Entries");
     subIndex->setValue(1);
+    subIndex->setAccessType(NodeSubIndex::READ);
     program->addSubIndex(subIndex);
 
     subIndex = new NodeSubIndex(1);
     subIndex->setDataType(NodeSubIndex::DDOMAIN);
     subIndex->setName("Program_1");
+    subIndex->setAccessType(static_cast<NodeSubIndex::AccessType>(NodeSubIndex::READ | NodeSubIndex::WRITE));
     program->addSubIndex(subIndex);
     addIndex(program);
 
@@ -610,12 +618,13 @@ void NodeOd::createBootloaderObjects()
     subIndexProgramControl->setDataType(NodeSubIndex::UNSIGNED8);
     subIndexProgramControl->setName("Number of Entries");
     subIndexProgramControl->setValue(1);
+    subIndexProgramControl->setAccessType(NodeSubIndex::READ);
     programControl->addSubIndex(subIndexProgramControl);
 
     subIndexProgramControl = new NodeSubIndex(1);
     subIndexProgramControl->setDataType(NodeSubIndex::UNSIGNED8);
     subIndexProgramControl->setName("Program_1");
-    subIndexProgramControl->setAccessType(static_cast<NodeSubIndex::AccessType>(0x03));
+    subIndexProgramControl->setAccessType(static_cast<NodeSubIndex::AccessType>(NodeSubIndex::READ | NodeSubIndex::WRITE));
     programControl->addSubIndex(subIndexProgramControl);
     addIndex(programControl);
 
@@ -625,6 +634,7 @@ void NodeOd::createBootloaderObjects()
     date->addSubIndex(new NodeSubIndex(0));
     date->subIndex(0)->setDataType(NodeSubIndex::VISIBLE_STRING);
     date->subIndex(0)->setName("Firmware_build_date");
+    date->subIndex(0)->setAccessType(NodeSubIndex::READ);
     addIndex(date);
 
     NodeIndex *conf = new NodeIndex(0x2040);
@@ -636,17 +646,18 @@ void NodeOd::createBootloaderObjects()
     subIndexconf->setDataType(NodeSubIndex::UNSIGNED8);
     subIndexconf->setName("Number of Entries");
     subIndexconf->setValue(1);
+    subIndexconf->setAccessType(NodeSubIndex::READ);
     conf->addSubIndex(subIndexconf);
 
     subIndexconf = new NodeSubIndex(1);
     subIndexconf->setDataType(NodeSubIndex::UNSIGNED8);
-    subIndexProgramControl->setAccessType(static_cast<NodeSubIndex::AccessType>(0x03));
+    subIndexconf->setAccessType(static_cast<NodeSubIndex::AccessType>(NodeSubIndex::READ | NodeSubIndex::WRITE));
     subIndexconf->setName("Node_ID");
     conf->addSubIndex(subIndexconf);
 
     subIndexconf = new NodeSubIndex(2);
     subIndexconf->setDataType(NodeSubIndex::UNSIGNED8);
-    subIndexconf->setAccessType(static_cast<NodeSubIndex::AccessType>(0x03));
+    subIndexconf->setAccessType(static_cast<NodeSubIndex::AccessType>(NodeSubIndex::READ | NodeSubIndex::WRITE));
     subIndexconf->setName("Bit_rate");
     conf->addSubIndex(subIndexconf);
 
@@ -664,6 +675,7 @@ void NodeOd::createBootloaderObjects()
     subIndexbootloader->setDataType(NodeSubIndex::UNSIGNED8);
     subIndexbootloader->setName("Highest sub-index supported");
     subIndexbootloader->setValue(1);
+    subIndexbootloader->setAccessType(NodeSubIndex::AccessType::READ);
     bootloader->addSubIndex(subIndexbootloader);
 
     subIndexbootloader = new NodeSubIndex(1);
