@@ -240,11 +240,11 @@ QVariant NodeOdItem::data(int column, int role) const
                         case NodeOdItemModel::Type:
                             if (_subIndex->isQ1516())
                             {
-                                return QVariant(QString("Q1516"));
+                                return QVariant("  " + QString("Q1516"));
                             }
                             else
                             {
-                                return QVariant(NodeSubIndex::dataTypeStr(_subIndex->dataType()));
+                                return QVariant("  " + NodeSubIndex::dataTypeStr(_subIndex->dataType()));
                             }
 
                         case NodeOdItemModel::Access:
