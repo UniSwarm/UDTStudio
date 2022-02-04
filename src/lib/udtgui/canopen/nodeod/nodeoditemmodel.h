@@ -50,7 +50,7 @@ public:
         OdIndex,
         Name,
         Type,
-        Acces,
+        Access,
         Value,
         RawValue,
         HexValue,
