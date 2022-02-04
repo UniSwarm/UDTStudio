@@ -130,7 +130,10 @@ void NodeOdTreeView::readSelected()
         {
             for (NodeSubIndex *subIndexN : nodeIndex->subIndexes())
             {
-                _odModel->node()->readObject(nodeIndex->index(), subIndexN->subIndex());
+                if (subIndexN->isReadable())
+                {
+                    _odModel->node()->readObject(nodeIndex->index(), subIndexN->subIndex());
+                }
             }
             continue;
         }
@@ -138,7 +141,10 @@ void NodeOdTreeView::readSelected()
         NodeSubIndex *nodeSubIndex = _odModel->nodeSubIndex(curentIndex);
         if (nodeSubIndex)
         {
-            _odModel->node()->readObject(nodeSubIndex->index(), nodeSubIndex->subIndex());
+            if (nodeSubIndex->isReadable())
+            {
+                _odModel->node()->readObject(nodeSubIndex->index(), nodeSubIndex->subIndex());
+            }
             continue;
         }
     }
