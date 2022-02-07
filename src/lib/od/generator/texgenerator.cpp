@@ -757,6 +757,13 @@ void TexGenerator::writeArray(Index *index, QTextStream *out, bool generic)
         // Line 3 : \newcommand{\nameMotionstatusXError}{Error}%
         *out << "\\newcommand{" << nameSubCommand << "}";
         *out << "{" << nameFull << "}%\n";
+
+        // Line 4 : \newcommand{\dispIndexSubMotionstatusXError}{\displayIndexSub{\indexMotionstatusX}{\subIndexMotionstatusXError}}%
+        *out << "\\newcommand{" << dispIndexSubSubCommand << "}";
+        *out << "{\\displayIndexSub";
+        *out << "{" << indexCommand << "}";
+        *out << "{" << subIndexSubCommand << "}}%";
+        *out << "\n";
     }
 
     // Group end : \newcommand{\dispTabLineArraySubIndexMotionstatusX}{%
