@@ -374,8 +374,7 @@ void TexGenerator::writeVar(Index *index, QTextStream *out, bool generic)
     *out << "{\\displayTab";
     *out << "{" << indexCommand << "}";
     *out << "{" << subIndexCommand << "}";
-    *out << "{" << nameCommand << "}%";
-    *out << "\n";
+    *out << "{" << nameCommand << "}";
     *out << "{" << dataTypeStr(subIndex) << "}";
 
     // Access Type
@@ -394,7 +393,8 @@ void TexGenerator::writeVar(Index *index, QTextStream *out, bool generic)
     writeLimit(subIndex, out);
     *out << "}";
 
-    *out << "}%\n\n";
+    *out << "}%\n";
+    *out << "\n";
 }
 
 /**
@@ -475,8 +475,7 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
     *out << "{\\displayTabRecord";
     *out << "{" << indexCommand << "}";
     *out << "{" << nameCommand << "}";
-    *out << "{" << "{RECORD}" << "}%";
-    *out << "\n";
+    *out << "{RECORD}";
     *out << "{\\dispTabLineRecordSubIndex" + nameForTex + "}}%\n";
 
     QStringList lineRecordSubIndex;
@@ -513,7 +512,9 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
         paraCommand.prepend(nameForTex);
         paraCommand.prepend("\\para");
 
-        lineRecordSubIndex.append("\\displayLineRecordSubIndex{" + subIndexSubCommand + "}{" + nameSubCommand + "}{" + dataTypeStr(subIndex) + "}");
+        lineRecordSubIndex.append("\\displayLineRecordSubIndex{" + subIndexSubCommand + "}"
+                                  + "{\\hyperref["+ indexCommand + subIndexSubCommand + "]{" + nameSubCommand + "}}"
+                                  + "{" + dataTypeStr(subIndex) + "}%\n");
 
         QString dispIndexSubSubCommand = nameSubForTex;
         dispIndexSubSubCommand.prepend(nameForTex);
@@ -598,10 +599,8 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
     for (int i = 0; i < lineRecordSubIndex.size(); ++i)
     {
       *out << lineRecordSubIndex.at(i);
-      *out << "%\n";
     }
     *out << "}%\n";
-
     *out << "\n";
 }
 
@@ -685,19 +684,18 @@ void TexGenerator::writeArray(Index *index, QTextStream *out, bool generic)
     *out << "{\\displayTabArray";
     *out << "{" << indexCommand << "}";
     *out << "{" << nameCommand << "}";
-    *out << "{" << "{ARRAY}" << "}%";
-    *out << "\n";
+    *out << "{ARRAY}";
     *out << "{" << dataTypeStr(subIndex) << "}";
 
     // Access Type
     writeAccessType(subIndex, out);
 
-       // Unit
+    // Unit
     *out << "{";
     writeUnit(subIndex, out);
     *out << "}";
 
-       // Limits / Range
+    // Limits / Range
     *out << "{";
     writeLimit(subIndex, out);
     *out << "}";
@@ -734,7 +732,7 @@ void TexGenerator::writeArray(Index *index, QTextStream *out, bool generic)
         indexSubCommand.prepend(nameForTex);
         indexSubCommand.prepend("\\index");
 
-        lineArraySubIndex.append("\\displayLineArraySubIndex{" + subIndexSubCommand + "}{" + nameSubCommand);
+        lineArraySubIndex.append("\\displayLineArraySubIndex{" + subIndexSubCommand + "}{" + nameSubCommand + "}%\n");
 
         QString paraCommand = nameSubForTex;
         paraCommand.prepend(nameForTex);
@@ -754,66 +752,11 @@ void TexGenerator::writeArray(Index *index, QTextStream *out, bool generic)
 
         // Line 2 : \newcommand{\subIndexMotionstatusXError}{1}%
         *out << "\\newcommand{" << subIndexSubCommand << "}";
-        *out << "{" << QString::number(subIndex->subIndex(), base).toUpper() << "}%";
-        *out << "\n";
+        *out << "{" << QString::number(subIndex->subIndex(), base).toUpper() << "}%\n";
 
         // Line 3 : \newcommand{\nameMotionstatusXError}{Error}%
         *out << "\\newcommand{" << nameSubCommand << "}";
-        *out << "{" << nameFull << "}%";
-        *out << "\n";
-
-        // Line 4 : \newcommand{\indexMotionstatusXError}{\indexMotionstatusX}%
-        *out << "\\newcommand{" << indexSubCommand << "}";
-        *out << "{" << indexCommand << "}%";
-        *out << "\n";
-
-        // Line 5 : \newcommand{\paraMotionstatusXError}{\paraIndexSubName{\indexMotionstatusX}{\subIndexMotionstatusXError}{\nameMotionstatusXError}}%
-        *out << "\\newcommand{" << paraCommand << "}";
-        *out << "{\\paraIndexSubName";
-        *out << "{" << indexCommand << "}";
-        *out << "{" << subIndexSubCommand << "}";
-        *out << "{" << nameSubCommand << "}}%";
-        *out << "\n";
-
-        // Line 6 : \newcommand{\dispIndexSubMotionstatusXError}{\displayIndexSub{\indexMotionstatusX}{\subIndexMotionstatusXError}}%
-        *out << "\\newcommand{" << dispIndexSubSubCommand << "}";
-        *out << "{\\displayIndexSub";
-        *out << "{" << indexCommand << "}";
-        *out << "{" << subIndexSubCommand << "}}%";
-        *out << "\n";
-
-        // Line 7 : \newcommand{\dispIndexSubNameMotionstatusXError}{\displayIndexSubName{\indexMotionstatusX}{\subIndexMotionstatusXError}{\nameMotionstatusXError}}%
-        *out << "\\newcommand{" << dispIndexNameSubCommand << "}";
-        *out << "{\\displayIndexSubName";
-        *out << "{" << indexCommand << "}";
-        *out << "{" << subIndexSubCommand << "}";
-        *out << "{" << nameSubCommand << "}}%";
-        *out << "\n";
-
-        // Line 8 :\newcommand{\dispTabMotionstatusXError}{\displayTab{\indexMotionstatusX}{\subIndexMotionstatusXError}{\nameMotionstatusXError}%
-        //          {UINT16}{RO,TPDO}{-}{-}{-}{\dispTabLineArraySubIndexMotionstatusX}}%
-//        *out << "\\newcommand{" << dispTabCommand << "}";
-//        *out << "{\\displayTab";
-//        *out << "{" << indexCommand << "}";
-//        *out << "{" << subIndexSubCommand << "}";
-//        *out << "{" << nameSubCommand << "}%";
-//        *out << "\n";
-//        *out << "{" << dataTypeStr(subIndex) << "}";
-//        // Access Type
-//        writeAccessType(subIndex, out);
-
-//        // Default Type
-//        writeDefaultValue(subIndex, out);
-
-//        // Unit
-//        *out << "{";
-//        writeUnit(subIndex, out);
-//        *out << "}";
-
-//        // Limits / Range
-//        *out << "{";
-//        writeLimit(subIndex, out);
-//        *out << "}}%\n";
+        *out << "{" << nameFull << "}%\n";
     }
 
     // Group end : \newcommand{\dispTabLineArraySubIndexMotionstatusX}{%
@@ -824,23 +767,22 @@ void TexGenerator::writeArray(Index *index, QTextStream *out, bool generic)
     for (int i = 0; i < lineArraySubIndex.size(); ++i)
     {
         *out << lineArraySubIndex.at(i);
-        *out << "}%\n";
     }
-    *out << "}%\n";
 
+    *out << "}%\n";
     *out << "\n";
 }
 
 void TexGenerator::writeUnit(const SubIndex *subIndex, QTextStream *out)
 {
-    double scale = ODIndexDb::scale(subIndex->index()->index(), subIndex->subIndex(), _profile);
+    double scale = ODIndexDb::scale(subIndex->index()->index(), subIndex->subIndex(), static_cast<quint16>(_profile));
     QString scaleDiv;
     if (scale != 1.0 && scale != 0.0)
     {
         scaleDiv = QString::number(scale);
     }
 
-    QString unit = ODIndexDb::unit(subIndex->index()->index(), subIndex->subIndex(), _profile);
+    QString unit = ODIndexDb::unit(subIndex->index()->index(), subIndex->subIndex(), static_cast<quint16>(_profile));
     unit.replace("°", "$^{\\circ}$");
     unit.replace("µ", "$\\mu$");
     unit = unit.trimmed();
