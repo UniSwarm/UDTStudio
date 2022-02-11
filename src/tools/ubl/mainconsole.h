@@ -22,12 +22,17 @@
 #include <QObject>
 
 class UpdateProcess;
+class Node;
 
 class MainConsole : public QObject
 {
     Q_OBJECT
 public:
     MainConsole(quint8 bus, quint8 speed, quint8 nodeid, QString binary);
+    MainConsole(Node *node);
+
+public slots:
+    void updateStatus();
 
 private slots:
     void nodeConnected(bool connected);
@@ -35,7 +40,9 @@ private slots:
 signals:
     void finished(int retcode = 0);
 
-private:
+private:    
+    Node *_node;
+
     quint8 _busId;
     quint8 _speed;
     quint8 _nodeId;

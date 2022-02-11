@@ -17,6 +17,10 @@
  **/
 
 #include "mainconsole.h"
+#include "bootloader/bootloader.h"
+#include "node.h"
+
+#include <QDebug>
 
 MainConsole::MainConsole(quint8 busId, quint8 speed, quint8 nodeid, QString binary)
     : _busId(busId)
@@ -25,6 +29,26 @@ MainConsole::MainConsole(quint8 busId, quint8 speed, quint8 nodeid, QString bina
       , _binary(binary)
 {
 
+}
+
+MainConsole::MainConsole(Node *node)
+    : _node(node)
+{
+
+}
+
+void MainConsole::updateStatus()
+{
+    Bootloader::Status status = _node->bootloader()->status();
+    qDebug() << _node->bootloader()->statusStr(status);
+    if (status < 0)
+    {
+      emit finished(-1);
+    }
+    else if (status == Bootloader::STATUS_UPDATE_SUCCESSFUL)
+    {
+      emit finished(0);
+    }
 }
 
 void MainConsole::nodeConnected(bool connected)
