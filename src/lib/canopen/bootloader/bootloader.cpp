@@ -24,9 +24,9 @@
 #include "parser/ufwparser.h"
 #include "utility/ufwupdate.h"
 
-#include <QtEndian>
 #include <QDebug>
 #include <QFile>
+#include <QtEndian>
 
 #define TIMER_READ_STATUS_DISPLAY 500
 
@@ -59,7 +59,7 @@ Bootloader::Bootloader(Node *node)
     _bootloaderKeyObjectId = IndexDb::getObjectId(IndexDb::OD_BOOTLOADER_KEY);
     _bootloaderChecksumObjectId = IndexDb::getObjectId(IndexDb::OD_BOOTLOADER_CHECKSUM);
     _bootloaderStatusObjectId = IndexDb::getObjectId(IndexDb::OD_BOOTLOADER_STATUS);
-    _programControlObjectId = IndexDb::getObjectId(IndexDb::OD_PROGRAM_CONTROL_1);    
+    _programControlObjectId = IndexDb::getObjectId(IndexDb::OD_PROGRAM_CONTROL_1);
     _programDataObjectId = IndexDb::getObjectId(IndexDb::OD_PROGRAM_DATA_1);
 
     setNodeInterrest(_node);
@@ -124,7 +124,7 @@ QString Bootloader::statusStr(Status status) const
         case Bootloader::STATUS_DEVICE_CLEAR_IN_PROGRESS:
             return QString(tr("Device clear in progress"));
         case STATUS_DEVICE_WRITING_OTP_IN_PROGRESS:
-          return QString(tr("Device writing otp in progress"));
+            return QString(tr("Device writing otp in progress"));
         case Bootloader::STATUS_DEVICE_UPDATE_IN_PROGRESS:
             return QString(tr("Device update in progress"));
         case Bootloader::STATUS_CHECKING_UPDATE:
@@ -188,8 +188,8 @@ void Bootloader::startOtpUpload()
 {
     if (_progOtp.isEmpty())
     {
-      setStatus(STATUS_ERROR_NO_FILE);
-      return;
+        setStatus(STATUS_ERROR_NO_FILE);
+        return;
     }
 
     _node->nodeOd()->createBootloaderObjects();
@@ -251,10 +251,11 @@ void Bootloader::stopProgram()
 {
     uint8_t data = PROGRAM_CONTROL_STOP;
     _node->writeObject(_programControlObjectId, data);
-    QTimer::singleShot(TIMER_READ_STATUS_DISPLAY, [=]()
-    {
-        readStatusProgram();
-    });
+    QTimer::singleShot(TIMER_READ_STATUS_DISPLAY,
+                       [=]()
+                       {
+                           readStatusProgram();
+                       });
 }
 
 void Bootloader::startProgram()
@@ -273,10 +274,11 @@ void Bootloader::clearProgram()
 {
     uint8_t data = PROGRAM_CONTROL_CLEAR;
     _node->writeObject(_programControlObjectId, data);
-    QTimer::singleShot(TIMER_READ_STATUS_DISPLAY, [=]()
-    {
-        readStatusProgram();
-    });
+    QTimer::singleShot(TIMER_READ_STATUS_DISPLAY,
+                       [=]()
+                       {
+                           readStatusProgram();
+                       });
 }
 
 void Bootloader::updateProgram()
@@ -305,7 +307,7 @@ void Bootloader::sendKey()
 
     if (_mode == MODE_OTP && _progOtp != nullptr)
     {
-      _node->writeObject(_bootloaderKeyObjectId, _deviceOtp);
+        _node->writeObject(_bootloaderKeyObjectId, _deviceOtp);
     }
 }
 
@@ -362,14 +364,14 @@ void Bootloader::process()
                 case StatusProgram::PROGRAM_STOPPED:
                     if (_mode == MODE_OTP)
                     {
-                      setStatus(STATUS_DEVICE_WRITING_OTP_IN_PROGRESS);
-                      sendKey();
+                        setStatus(STATUS_DEVICE_WRITING_OTP_IN_PROGRESS);
+                        sendKey();
                     }
                     else
                     {
-                      setStatus(STATUS_DEVICE_CLEAR_IN_PROGRESS);
-                      sendKey();
-                      clearProgram();
+                        setStatus(STATUS_DEVICE_CLEAR_IN_PROGRESS);
+                        sendKey();
+                        clearProgram();
                     }
                     break;
 
@@ -388,12 +390,12 @@ void Bootloader::process()
         case STATE_STOP_PROGRAM:
             if (_mode == MODE_OTP)
             {
-              setStatus(STATUS_DEVICE_WRITING_OTP_IN_PROGRESS);
+                setStatus(STATUS_DEVICE_WRITING_OTP_IN_PROGRESS);
             }
             else
             {
-              setStatus(STATUS_DEVICE_CLEAR_IN_PROGRESS);
-              clearProgram();
+                setStatus(STATUS_DEVICE_CLEAR_IN_PROGRESS);
+                clearProgram();
             }
             sendKey();
             break;
@@ -414,31 +416,32 @@ void Bootloader::process()
             setStatus(STATUS_CHECKING_UPDATE);
             _node->writeObject(_bootloaderChecksumObjectId, _ufwUpdate->checksum());
             updateFinishedProgram();
-            QTimer::singleShot(TIMER_READ_STATUS_DISPLAY, [=]()
-            {
-                readStatusBootloader();
-            });
+            QTimer::singleShot(TIMER_READ_STATUS_DISPLAY,
+                               [=]()
+                               {
+                                   readStatusBootloader();
+                               });
             _state = STATE_CHECK;
             break;
 
         case STATE_UPLOAD_OTP_START:
-          sendKey();
-          sendOtpUploadStart();
-          setStatus(STATUS_DEVICE_UPDATE_IN_PROGRESS);
-          break;
+            sendKey();
+            sendOtpUploadStart();
+            setStatus(STATUS_DEVICE_UPDATE_IN_PROGRESS);
+            break;
 
         case STATE_UPLOAD_OTP_IN_PROGRESS:
-          setStatus(STATUS_DEVICE_UPDATE_IN_PROGRESS);
-          uploadOtpData();
-          break;
+            setStatus(STATUS_DEVICE_UPDATE_IN_PROGRESS);
+            uploadOtpData();
+            break;
 
         case STATE_UPLOAD_OTP_FINISHED:
-          setStatus(STATUS_CHECKING_UPDATE);
-          updateFinishedProgram();
-          _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusBootloader()));
-          _state = STATE_CHECK;
-          _mode = MODE_NONE;
-          break;
+            setStatus(STATUS_CHECKING_UPDATE);
+            updateFinishedProgram();
+            _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusBootloader()));
+            _state = STATE_CHECK;
+            _mode = MODE_NONE;
+            break;
 
         case STATE_CHECK:
             break;
@@ -451,27 +454,27 @@ void Bootloader::process()
             break;
 
         case STATE_NOT_OK:
-          if (_mode == MODE_OTP)
-          {
-            resetProgram();
-            _state = STATE_FREE;
-            if (_error == SDO::CO_SDO_ABORT_CODE_FAILED_HARDWARE_ERR)
+            if (_mode == MODE_OTP)
             {
-              setStatus(STATUS_MEMORY_ALREADY_WRITTEN);
+                resetProgram();
+                _state = STATE_FREE;
+                if (_error == SDO::CO_SDO_ABORT_CODE_FAILED_HARDWARE_ERR)
+                {
+                    setStatus(STATUS_MEMORY_ALREADY_WRITTEN);
+                }
+                else
+                {
+                    setStatus(STATUS_ERROR_UPDATE_FAILED);
+                }
             }
             else
             {
-              setStatus(STATUS_ERROR_UPDATE_FAILED);
+                _state = STATE_FREE;
+                _mode = MODE_NONE;
+                setStatus(STATUS_ERROR_UPDATE_FAILED);
             }
-          }
-          else
-          {
-            _state = STATE_FREE;
             _mode = MODE_NONE;
-            setStatus(STATUS_ERROR_UPDATE_FAILED);
-          }
-          _mode = MODE_NONE;
-          break;
+            break;
     }
 }
 
@@ -501,11 +504,11 @@ void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
                 _statusProgram = PROGRAM_STOPPED;
                 if (_mode == MODE_OTP)
                 {
-                  _state = STATE_UPLOAD_OTP_START;
+                    _state = STATE_UPLOAD_OTP_START;
                 }
                 else
                 {
-                  _state = STATE_CLEAR_PROGRAM;
+                    _state = STATE_CLEAR_PROGRAM;
                 }
                 process();
             }
@@ -514,28 +517,29 @@ void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
                 _statusProgram = NO_PROGRAM;
                 if (_mode == MODE_OTP)
                 {
-                  _state = STATE_NOT_OK;
+                    _state = STATE_NOT_OK;
                 }
                 else
                 {
-                  _state = STATE_UPDATE_PROGRAM;
+                    _state = STATE_UPDATE_PROGRAM;
                 }
                 process();
             }
             else if (program == PROGRAM_CONTROL_CLEAR_IN_PROGRESS)
             {
-              if (_mode == MODE_OTP)
-              {
-                _statusProgram = NO_PROGRAM;
-                _state = STATE_NOT_OK;
-              }
-              else
-              {
-                QTimer::singleShot(TIMER_READ_STATUS_DISPLAY, [=]()
-                                   {
-                                     readStatusProgram();
-                                   });
-              }
+                if (_mode == MODE_OTP)
+                {
+                    _statusProgram = NO_PROGRAM;
+                    _state = STATE_NOT_OK;
+                }
+                else
+                {
+                    QTimer::singleShot(TIMER_READ_STATUS_DISPLAY,
+                                       [=]()
+                                       {
+                                           readStatusProgram();
+                                       });
+                }
             }
             else
             {
@@ -545,8 +549,8 @@ void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
         }
         else if (flags == SDO::FlagsRequest::Write && _mode == MODE_OTP && _state == STATE_UPLOAD_OTP_START)
         {
-          _state = STATE_UPLOAD_OTP_IN_PROGRESS;
-          process();
+            _state = STATE_UPLOAD_OTP_IN_PROGRESS;
+            process();
         }
         if ((flags & SDO::FlagsRequest::Error) == SDO::FlagsRequest::Error)
         {
@@ -575,19 +579,19 @@ void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 
     if (objId.index() == _programDataObjectId.index())
     {
-      if (_mode == MODE_OTP)
-      {
-        if ((flags & SDO::FlagsRequest::Error) == SDO::FlagsRequest::Error)
+        if (_mode == MODE_OTP)
         {
-          _progOtp.clear();
-          _state = STATE_NOT_OK;
+            if ((flags & SDO::FlagsRequest::Error) == SDO::FlagsRequest::Error)
+            {
+                _progOtp.clear();
+                _state = STATE_NOT_OK;
+            }
+            else if (flags == SDO::FlagsRequest::Write)
+            {
+                _progOtp.clear();
+                _state = STATE_UPLOAD_OTP_FINISHED;
+            }
+            process();
         }
-        else if (flags == SDO::FlagsRequest::Write)
-        {
-          _progOtp.clear();
-          _state = STATE_UPLOAD_OTP_FINISHED;
-        }
-        process();
-      }
     }
 }

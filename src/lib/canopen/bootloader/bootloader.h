@@ -48,7 +48,7 @@ public:
         STATUS_ERROR_FILE_NOT_CORRESPONDING = -4,
         STATUS_ERROR_UPDATE_FAILED = -5,
         STATUS_UPDATE_ALREADY_IN_PROGRESS = -6,
-        STATUS_MEMORY_ALREADY_WRITTEN  = -7,
+        STATUS_MEMORY_ALREADY_WRITTEN = -7,
 
         STATUS_FILE_ANALYZED_OK = 1,
         STATUS_UPDATE_SUCCESSFUL = 2,
@@ -111,7 +111,7 @@ private:
     NodeObjectId _bootloaderChecksumObjectId;
     NodeObjectId _bootloaderStatusObjectId;
     NodeObjectId _programObjectId;
-    NodeObjectId _programControlObjectId;   
+    NodeObjectId _programControlObjectId;
     NodeObjectId _programDataObjectId;
 
     UfwModel *_ufwModel;
@@ -139,8 +139,8 @@ private:
 
     enum BootloaderMode
     {
-      MODE_NONE = 0,
-      MODE_OTP = 1
+        MODE_NONE = 0,
+        MODE_OTP = 1
     };
     BootloaderMode _mode;
 
