@@ -313,10 +313,6 @@ void Bootloader::sendOtpUploadStart()
 {
     uint8_t data = PROGRAM_CONTROL_MANU_DATA_START;
     _node->writeObject(_programControlObjectId, data);
-    QTimer::singleShot(TIMER_READ_STATUS_DISPLAY, [=]()
-    {
-      readStatusProgram();
-    });
 }
 
 void Bootloader::uploadOtpData()
@@ -368,7 +364,6 @@ void Bootloader::process()
                     {
                       setStatus(STATUS_DEVICE_WRITING_OTP_IN_PROGRESS);
                       sendKey();
-                      sendOtpUploadStart();
                     }
                     else
                     {
@@ -542,26 +537,22 @@ void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
                                    });
               }
             }
-            else if (program == PROGRAM_CONTROL_MANU_DATA_START)
-            {
-                _state = STATE_UPLOAD_OTP_IN_PROGRESS;
-                process();
-            }
             else
             {
                 _statusProgram = PROGRAM_STARTED;
                 process();
             }
         }
-        else if ((flags & SDO::FlagsRequest::Error) == SDO::FlagsRequest::Error)
+        else if (flags == SDO::FlagsRequest::Write && _mode == MODE_OTP && _state == STATE_UPLOAD_OTP_START)
+        {
+          _state = STATE_UPLOAD_OTP_IN_PROGRESS;
+          process();
+        }
+        if ((flags & SDO::FlagsRequest::Error) == SDO::FlagsRequest::Error)
         {
             _error = static_cast<quint32>(_node->nodeOd()->errorObject(_programControlObjectId));
             _state = STATE_NOT_OK;
             process();
-        }
-        else
-        {
-          qDebug() << static_cast<quint32>(_node->nodeOd()->errorObject(_programControlObjectId));
         }
     }
 
