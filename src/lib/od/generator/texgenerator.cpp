@@ -158,7 +158,7 @@ void TexGenerator::writeListIndexComm(const QList<Index *> indexes, QTextStream 
     for (Index *index : indexes)
     {
         uint16_t numIndex = index->index();
-        if (numIndex >= 0x1000 && numIndex < 0x1400)
+        if (numIndex >= 0x1000 && numIndex <= 0x1A03)
         {
             switch (index->objectType())
             {
@@ -173,46 +173,6 @@ void TexGenerator::writeListIndexComm(const QList<Index *> indexes, QTextStream 
                 case Index::Object::ARRAY:
                     writeArray(index, out, false);
                     break;
-            }
-        }
-    }
-
-    // Write only Object master without subindex
-    for (Index *index : indexes)
-    {
-        uint16_t numIndex = index->index();
-        if (numIndex >= 0x1400 && numIndex < 0x1A04)
-        {
-            writeVar(index, out, false);
-        }
-    }
-
-    // Write generic Object with X
-    for (Index *index : indexes)
-    {
-        uint16_t numIndex = index->index();
-        if (numIndex >= 0x1400 && numIndex < 0x1A04)
-        {
-            if (numIndex == 0x1400 || numIndex == 0x1600 || numIndex == 0x1800 || numIndex == 0x1A00)
-            {
-                switch (index->objectType())
-                {
-                    case Index::Object::VAR:
-                        writeVar(index, out, false);
-                        break;
-
-                    case Index::Object::RECORD:
-                        writeRecord(index, out, false);
-                        break;
-
-                    case Index::Object::ARRAY:
-                        writeArray(index, out, false);
-                        break;
-                }
-            }
-            else
-            {
-                writeVar(index, out, false);
             }
         }
     }
@@ -223,55 +183,7 @@ void TexGenerator::writeListIndexManufacturer402(const QList<Index *> indexes, Q
     for (Index *index : indexes)
     {
         uint16_t numIndex = index->index();
-        if (numIndex >= 0x2000 && numIndex < 0x3000)
-        {
-            switch (index->objectType())
-            {
-                case Index::Object::VAR:
-                    writeVar(index, out, false);
-                    break;
-
-                case Index::Object::RECORD:
-                    writeRecord(index, out, false);
-                    break;
-
-                case Index::Object::ARRAY:
-                    writeArray(index, out, false);
-                    break;
-            }
-        }
-    }
-
-    // Write only Object master without subindex
-    for (Index *index : indexes)
-    {
-        uint16_t numIndex = index->index();
-        if ((numIndex >= 0x4000 && numIndex < 0x4040) || (numIndex >= 0x4080 && numIndex < 0x40FF))
-        {
-            switch (index->objectType())
-            {
-                case Index::Object::VAR:
-                    writeVar(index, out, false);
-                    break;
-
-                case Index::Object::RECORD:
-                    writeRecord(index, out, false);
-                    break;
-
-                case Index::Object::ARRAY:
-                    writeArray(index, out, false);
-                    break;
-            }
-        }
-        else if (numIndex >= 0x4040 && numIndex < 0x4080)
-        {
-            writeVar(index, out, false);
-        }
-    }
-    for (Index *index : indexes)
-    {
-        uint16_t numIndex = index->index();
-        if (numIndex >= 0x40FF && numIndex < 0x4200)
+        if (numIndex >= 0x2000 && numIndex < 0x41FF)
         {
             switch (index->objectType())
             {
@@ -368,13 +280,10 @@ void TexGenerator::writeVar(Index *index, QTextStream *out, bool generic)
     *out << "{" << nameCommand << "}}%";
     *out << "\n";
 
-    // Line 8 : \newcommand{\dispTabDeviceType}{\displayTab{\indexDeviceType}{\subIndexDeviceType}{\nameDeviceType}%
+    // Line 8 : \newcommand{\dispTabDeviceType}{\displayTabVar{\indexDeviceType}{\subIndexDeviceType}{\nameDeviceType}%
     //          {UINT32}{RO}{402}{-}{-}}%
     *out << "\\newcommand{" << dispTabCommand << "}";
-    *out << "{\\displayTab";
-    *out << "{" << indexCommand << "}";
-    *out << "{" << subIndexCommand << "}";
-    *out << "{" << nameCommand << "}";
+    *out << "{\\displayTabVar";
     *out << "{" << dataTypeStr(subIndex) << "}";
 
     // Access Type
@@ -466,7 +375,7 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
     *out << "{" << nameCommand << "}}%";
     *out << "\n";
 
-    // Line 8 :\newcommand{\dispTabMotionstatusXError}{\displayTab{\indexMotionstatusX}{\subIndexMotionstatusXError}{\nameMotionstatusXError}%
+    // Line 8 :\newcommand{\dispTabMotionstatusXError}{\displayTabRecord{\indexMotionstatusX}{\subIndexMotionstatusXError}{\nameMotionstatusXError}%
     //          {UINT16}{RO,TPDO}{-}{-}{-}{\dispTabLineArraySubIndexMotionstatusX}}%
     QString dispTabCommand = nameForTex;
     dispTabCommand.prepend("\\dispTab");
@@ -841,13 +750,13 @@ void TexGenerator::writeAccessType(const SubIndex *subIndex, QTextStream *out)
 
 void TexGenerator::writeDefaultValue(const SubIndex *subIndex, QTextStream *out)
 {
-  if (subIndex->value().toString().isEmpty())
+  if (subIndex->value().toString().isEmpty() || subIndex->value().toString().startsWith("__"))
   {
     *out << "{-}";
   }
   else
   {
-    *out << "{" << subIndex->value().toString() << "}";
+    *out << "{" << subIndex->value().toString().replace("_","\\_") << "}";
   }
 }
 
