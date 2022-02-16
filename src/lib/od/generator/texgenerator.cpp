@@ -224,7 +224,7 @@ void TexGenerator::writeVar(Index *index, QTextStream *out, bool generic)
     *out << "% " << formatIndex(index, generic) << " " << index->name();
     if (generic)
     {
-      *out << "X";
+        *out << "X";
     }
 
     *out << "\n";
@@ -292,14 +292,14 @@ void TexGenerator::writeVar(Index *index, QTextStream *out, bool generic)
     // Default Type
     writeDefaultValue(subIndex, out);
 
-    // Unit
-    *out << "{";
-    writeUnit(subIndex, out);
-    *out << "}";
-
     // Limits / Range
     *out << "{";
     writeLimit(subIndex, out);
+    *out << "}";
+
+    // Unit
+    *out << "{";
+    writeUnit(subIndex, out);
     *out << "}";
 
     *out << "}%\n";
@@ -314,14 +314,14 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
 {
     int base = 16;
 
-  QString nameForTex = formatNameIndexForTex(index, generic);
-  QString nameIndex = formatNameIndex(index, generic);
+    QString nameForTex = formatNameIndexForTex(index, generic);
+    QString nameIndex = formatNameIndex(index, generic);
 
     // Line 1 : % 4n06 a@_Motor_statusX
     *out << "% " << formatIndex(index, generic) << " " << index->name();
     if (generic)
     {
-      *out << "X";
+        *out << "X";
     }
 
     *out << "\n";
@@ -391,7 +391,7 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
 
     for (SubIndex *subIndex : index->subIndexes())
     {
-        if (subIndex->subIndex() == 0)
+        if ((subIndex->subIndex() == 0) && !((index->index() >= 0x1600 && index->index() <= 0x1603) || (index->index() >= 0x1A00 && index->index() <= 0x1A03)))
         {
             continue;
         }
@@ -421,8 +421,7 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
         paraCommand.prepend(nameForTex);
         paraCommand.prepend("\\para");
 
-        lineRecordSubIndex.append("\\displayLineRecordSubIndex{" + subIndexSubCommand + "}"
-                                  + "{\\hyperref["+ indexCommand + subIndexSubCommand + "]{" + nameSubCommand + "}}"
+        lineRecordSubIndex.append("\\displayLineRecordSubIndex{" + subIndexSubCommand + "}" + "{\\hyperref[" + indexCommand + subIndexSubCommand + "]{" + nameSubCommand + "}}"
                                   + "{" + dataTypeStr(subIndex) + "}%\n");
 
         QString dispIndexSubSubCommand = nameSubForTex;
@@ -487,14 +486,14 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
         // Default Type
         writeDefaultValue(subIndex, out);
 
-        // Unit
-        *out << "{";
-        writeUnit(subIndex, out);
-        *out << "}";
-
         // Limits / Range
         *out << "{";
         writeLimit(subIndex, out);
+        *out << "}";
+
+        // Unit
+        *out << "{";
+        writeUnit(subIndex, out);
         *out << "}";
 
         *out << "}%\n";
@@ -507,7 +506,7 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
     *out << "\\newcommand{\\dispTabLineRecordSubIndex" << nameForTex << "}{%\n";
     for (int i = 0; i < lineRecordSubIndex.size(); ++i)
     {
-      *out << lineRecordSubIndex.at(i);
+        *out << lineRecordSubIndex.at(i);
     }
     *out << "}%\n";
     *out << "\n";
@@ -599,14 +598,14 @@ void TexGenerator::writeArray(Index *index, QTextStream *out, bool generic)
     // Access Type
     writeAccessType(subIndex, out);
 
-    // Unit
-    *out << "{";
-    writeUnit(subIndex, out);
-    *out << "}";
-
     // Limits / Range
     *out << "{";
     writeLimit(subIndex, out);
+    *out << "}";
+
+    // Unit
+    *out << "{";
+    writeUnit(subIndex, out);
     *out << "}";
 
     *out << "{\\dispTabLineArraySubIndex" + nameForTex + "}}%\n";
@@ -737,27 +736,27 @@ void TexGenerator::writeLimit(const SubIndex *subIndex, QTextStream *out)
 
 void TexGenerator::writeAccessType(const SubIndex *subIndex, QTextStream *out)
 {
-  *out << "{" << accessStr(subIndex->accessType());
-  if (pdoAccessStr(subIndex->accessType()) != "")
-  {
-    *out << "," << pdoAccessStr(subIndex->accessType()) << "}";
-  }
-  else
-  {
-    *out << "}";
-  }
+    *out << "{" << accessStr(subIndex->accessType());
+    if (pdoAccessStr(subIndex->accessType()) != "")
+    {
+        *out << "," << pdoAccessStr(subIndex->accessType()) << "}";
+    }
+    else
+    {
+        *out << "}";
+    }
 }
 
 void TexGenerator::writeDefaultValue(const SubIndex *subIndex, QTextStream *out)
 {
-  if (subIndex->value().toString().isEmpty() || subIndex->value().toString().startsWith("__"))
-  {
-    *out << "{-}";
-  }
-  else
-  {
-    *out << "{" << subIndex->value().toString().replace("_","\\_") << "}";
-  }
+    if (subIndex->value().toString().isEmpty() || subIndex->value().toString().startsWith("__"))
+    {
+        *out << "{-}";
+    }
+    else
+    {
+        *out << "{" << subIndex->value().toString().replace("_", "\\_") << "}";
+    }
 }
 
 QString TexGenerator::formatNameIndex(Index *index, bool generic)
