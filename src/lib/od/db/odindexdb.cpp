@@ -190,6 +190,31 @@ double ODIndexDb::scale(quint16 index, quint8 subIndex, quint16 profileNumber)
 
 QString ODIndexDb::unit(quint16 index, quint8 subIndex, quint16 profileNumber)
 {
+    if (index == 0x100C)  // Guard time
+    {
+        if (subIndex == 0)
+        {
+            return QString(" ms");
+        }
+    }
+    if (index == 0x1017)  // Producer heartbeat time
+    {
+        if (subIndex == 0)
+        {
+            return QString(" ms");
+        }
+    }
+    if ((index >= 0x1400 && index <= 0x1403) || (index >= 0x1800 && index <= 0x1803))  // RPDO TPDO
+    {
+        if (subIndex == 3)
+        {
+            return QString(" µs");
+        }
+        if (subIndex == 5)
+        {
+            return QString(" ms");
+        }
+    }
     if (index == 0x2000)  // board voltages
     {
         if (subIndex > 0)
