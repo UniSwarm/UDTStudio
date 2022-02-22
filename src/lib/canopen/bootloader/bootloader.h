@@ -115,10 +115,7 @@ private:
     NodeObjectId _programDataObjectId;
 
     UfwModel *_ufwModel;
-    UfwParser *_ufwParser;
     UfwUpdate *_ufwUpdate;
-
-    QTimer *_timer;
 
     enum BootloaderState
     {
@@ -144,8 +141,6 @@ private:
     };
     BootloaderMode _mode;
 
-    QTimer _statusTimer;
-
     void process();
     void updateProgram();
     void updateStartProgram();
@@ -155,6 +150,8 @@ private:
     uint16_t _deviceOtp;
     void sendOtpUploadStart();
     void uploadOtpData();
+
+    QByteArray capString(const QString &str, int size);
 
     // NodeOdSubscriber interface
 protected:

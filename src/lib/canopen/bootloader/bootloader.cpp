@@ -69,6 +69,9 @@ Bootloader::Bootloader(Node *node)
     registerObjId({0x1F50, 1});
     registerObjId({0x1000, 0});
 
+    _error = 0;
+    _deviceOtp = 0;
+    _status = STATUS_ERROR_NO_FILE;
     _state = STATE_FREE;
     _statusProgram = NONE;
     _mode = MODE_NONE;
@@ -169,10 +172,12 @@ bool Bootloader::openUfw(const QString &fileName)
 void Bootloader::setOtpInformation(uint32_t address, const QString &date, uint16_t device, uint32_t serialNumber, const QString &version)
 {
     char buffer[4];
+    _progOtp.clear();
+
     qToLittleEndian(address, buffer);
     _progOtp.append(buffer, sizeof(address));
 
-    _progOtp.append(date.toUtf8());
+    _progOtp.append(capString(date, 19));
 
     _deviceOtp = device;
     qToLittleEndian(_deviceOtp, buffer);
@@ -181,7 +186,7 @@ void Bootloader::setOtpInformation(uint32_t address, const QString &date, uint16
     qToLittleEndian(serialNumber, buffer);
     _progOtp.append(buffer, sizeof(serialNumber));
 
-    _progOtp.append(version.toUtf8());
+    _progOtp.append(capString(version, 10));
 }
 
 void Bootloader::startOtpUpload()
@@ -322,6 +327,13 @@ void Bootloader::uploadOtpData()
     _node->writeObject(_programDataObjectId, _progOtp);
 }
 
+QByteArray Bootloader::capString(const QString &str, int size)
+{
+    QByteArray bytes;
+    bytes.append(str.toUtf8());
+    return bytes.leftJustified(size, '\0', true);
+}
+
 void Bootloader::readStatusProgram()
 {
     _node->readObject(_programControlObjectId);
@@ -438,7 +450,7 @@ void Bootloader::process()
         case STATE_UPLOAD_OTP_FINISHED:
             setStatus(STATUS_CHECKING_UPDATE);
             updateFinishedProgram();
-            _statusTimer.singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusBootloader()));
+            QTimer::singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusBootloader()));
             _state = STATE_CHECK;
             _mode = MODE_NONE;
             break;
