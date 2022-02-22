@@ -71,11 +71,11 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     }
     _axis = axis;
 
-    connect(_node, &Node::statusChanged, this, &MotorWidget::statusNodeChanged);
+    connect(_node, &Node::statusChanged, this, &MotorWidget::updateNodeStatus);
     if (!_node->profiles().isEmpty())
     {
         _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
-        connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &MotorWidget::stateChanged);
+        connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &MotorWidget::updateState);
     }
 
     // motor config
@@ -131,12 +131,12 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _electricalAngleLabel->setNode(node);
 }
 
-void MotorWidget::statusNodeChanged(Node::Status status)
+void MotorWidget::updateNodeStatus(Node::Status status)
 {
     setEnabled(status != Node::STOPPED);
 }
 
-void MotorWidget::stateChanged()
+void MotorWidget::updateState()
 {
     if (_nodeProfile402->currentState() == NodeProfile402::STATE_OperationEnabled)
     {
@@ -154,7 +154,7 @@ void MotorWidget::stateChanged()
     }
 }
 
-void MotorWidget::readAllObject()
+void MotorWidget::readAllObjects()
 {
     for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
     {
@@ -201,7 +201,7 @@ QToolBar *MotorWidget::createToolBarWidgets()
     readAllAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
     readAllAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));
-    connect(readAllAction, &QAction::triggered, this, &MotorWidget::readAllObject);
+    connect(readAllAction, &QAction::triggered, this, &MotorWidget::readAllObjects);
 
     // currents actions
     QAction *mapCurrentsAction = toolBar->addAction(tr("Map currents"));
@@ -226,7 +226,7 @@ QGroupBox *MotorWidget::createInformationWidgets()
     informationLayout->addWidget(_informationLabel);
 
     _enableButton = new QPushButton(tr("Unlock config, Go to \"Switched On\""));
-    connect(_enableButton, &QPushButton::clicked, this, &MotorWidget::goEnableButton);
+    connect(_enableButton, &QPushButton::clicked, this, &MotorWidget::switchOn402);
     informationLayout->addWidget(_enableButton);
 
     informationGroupBox->setLayout(informationLayout);
@@ -438,7 +438,7 @@ QGroupBox *MotorWidget::createBldcStatusWidgets()
     return statusGroupBox;
 }
 
-void MotorWidget::goEnableButton()
+void MotorWidget::switchOn402()
 {
     _nodeProfile402->goToState(NodeProfile402::STATE_SwitchedOn);
 }

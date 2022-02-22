@@ -56,7 +56,13 @@ protected:
     uint8_t _axis;
     NodeProfile402 *_nodeProfile402;
 
+    // Creation widgets
+    void createWidgets();
+    QList<AbstractIndexWidget *> _indexWidgets;
+    QToolBar *createToolBarWidgets();
+
     // Information
+    QGroupBox *createInformationWidgets();
     QLabel *_informationLabel;
     QPushButton *_enableButton;
 
@@ -97,18 +103,10 @@ protected:
     IndexLabel *_hallPhaseLabel;
     IndexLabel *_electricalAngleLabel;
 
-    void statusNodeChanged(Node::Status status);
-    void stateChanged();
-    void readAllObject();
-
-    // Creation widgets
-    void createWidgets();
-    QToolBar *createToolBarWidgets();
-    QGroupBox *createInformationWidgets();
-
-    void goEnableButton();
-
-    QList<AbstractIndexWidget *> _indexWidgets;
+    void updateNodeStatus(Node::Status status);
+    void updateState();
+    void readAllObjects();
+    void switchOn402();
 
     void mapCurrents();
     void monitorCurrents();
