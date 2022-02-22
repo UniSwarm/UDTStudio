@@ -24,17 +24,15 @@
 
 MainConsole::MainConsole(quint8 busId, quint8 speed, quint8 nodeid, QString binary)
     : _busId(busId)
-      , _speed(speed)
-      , _nodeId(nodeid)
-      , _binary(binary)
+    , _speed(speed)
+    , _nodeId(nodeid)
+    , _binary(binary)
 {
-
 }
 
 MainConsole::MainConsole(Node *node)
     : _node(node)
 {
-
 }
 
 void MainConsole::updateStatus()
@@ -43,11 +41,11 @@ void MainConsole::updateStatus()
     qDebug() << _node->bootloader()->statusStr(status);
     if (status < 0)
     {
-      emit finished(-1);
+        emit finished(-1);
     }
     else if (status == Bootloader::STATUS_UPDATE_SUCCESSFUL)
     {
-      emit finished(0);
+        emit finished(0);
     }
 }
 
@@ -58,5 +56,4 @@ void MainConsole::nodeConnected(bool connected)
         emit finished(-1);
         return;
     }
-
 }

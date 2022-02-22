@@ -40,7 +40,7 @@ private slots:
 signals:
     void finished(int retcode = 0);
 
-private:    
+private:
     Node *_node;
 
     quint8 _busId;
@@ -51,4 +51,4 @@ private:
     UpdateProcess *_updateProcess;
 };
 
-#endif // MAINCONSOLE_H
+#endif  // MAINCONSOLE_H

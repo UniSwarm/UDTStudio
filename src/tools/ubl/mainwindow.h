@@ -23,11 +23,11 @@
 #include <QMainWindow>
 #include <QPushButton>
 
+#include "bootloader/parser/hexparser.h"
 #include "canopen.h"
 #include "canopen/busnodesmanagerview.h"
 #include "canopen/nodeod/nodeodwidget.h"
 #include "canopenbus.h"
-#include "bootloader/parser/hexparser.h"
 
 #include "model/deviceconfiguration.h"
 #include "parser/edsparser.h"
@@ -37,7 +37,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    //explicit MainWindow(QBytequint8 nodeId);
+    // explicit MainWindow(QBytequint8 nodeId);
 
 signals:
 
@@ -61,8 +61,8 @@ private:
 
     BusNodesTreeView *_busNodesManagerView;
 
-    //void connectDevice();
-    //void disconnectDevice();
+    // void connectDevice();
+    // void disconnectDevice();
 
     QLabel *_serialNumberLabel;
     QLabel *_vendorIdLabel;
@@ -78,7 +78,7 @@ private:
     QLabel *_statusLabel;
 
     quint8 _iNodeListSelected;
-    //QList<ProgramDownload *> _programList;
+    // QList<ProgramDownload *> _programList;
 };
 
-#endif // MAINWINDOW_H
+#endif  // MAINWINDOW_H

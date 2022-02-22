@@ -35,7 +35,7 @@
 #include "parser/edsparser.h"
 
 #ifdef Q_OS_UNIX
-#   include "busdriver/canbussocketcan.h"
+#    include "busdriver/canbussocketcan.h"
 #endif
 
 MainWindow::MainWindow(QWidget *parent)
@@ -66,20 +66,20 @@ void MainWindow::nodeChanged(Node *currentNode)
         statusBar()->showMessage(tr("No node selected"));
         return;
     }
-//    for (ProgramD ownload *program : _programList)
-//    {
-//        if (program->nodeId() == currentNode->nodeId())
-//        {
-//            refreshInfo();
-//            return;
-//        }
-//    }
+    //    for (ProgramD ownload *program : _programList)
+    //    {
+    //        if (program->nodeId() == currentNode->nodeId())
+    //        {
+    //            refreshInfo();
+    //            return;
+    //        }
+    //    }
 
-//    ProgramDownload *program = new ProgramDownload(currentNode);
-//    _programList.append(program);
-//    connect(program, &ProgramDownload::downloadFinished, this, &MainWindow::updateProgram);
-//    connect(program, &ProgramDownload::downloadState, this, &MainWindow::downloadState);
-//    refreshInfo();
+    //    ProgramDownload *program = new ProgramDownload(currentNode);
+    //    _programList.append(program);
+    //    connect(program, &ProgramDownload::downloadFinished, this, &MainWindow::updateProgram);
+    //    connect(program, &ProgramDownload::downloadState, this, &MainWindow::downloadState);
+    //    refreshInfo();
 }
 void MainWindow::update()
 {
@@ -89,11 +89,11 @@ void MainWindow::update()
 
 void MainWindow::updateProgram()
 {
-//    if (_iNodeListSelected < _programList.size())
-//    {
-//        _programList.at(_iNodeListSelected)->update();
-//    }
-//    _iNodeListSelected++;
+    //    if (_iNodeListSelected < _programList.size())
+    //    {
+    //        _programList.at(_iNodeListSelected)->update();
+    //    }
+    //    _iNodeListSelected++;
 }
 
 void MainWindow::downloadState(QString state)
@@ -109,15 +109,15 @@ void MainWindow::openHexFile()
         return;
     }
 
-//    QString file = QFileDialog::getOpenFileName(this, "exemple.hex", "ex", "Hex (*.hex)");
-//    for (ProgramDownload *program : _programList)
-//    {
-//        if (program->nodeId() == _busNodesManagerView->currentNode()->nodeId())
-//        {
-//            //program->openHex(file);
-//            //_fileNameHexDataLabel->setText(program->fileNameHex());
-//        }
-//    }
+    //    QString file = QFileDialog::getOpenFileName(this, "exemple.hex", "ex", "Hex (*.hex)");
+    //    for (ProgramDownload *program : _programList)
+    //    {
+    //        if (program->nodeId() == _busNodesManagerView->currentNode()->nodeId())
+    //        {
+    //            //program->openHex(file);
+    //            //_fileNameHexDataLabel->setText(program->fileNameHex());
+    //        }
+    //    }
 }
 
 void MainWindow::refreshInfo()
@@ -129,8 +129,8 @@ void MainWindow::refreshInfo()
         return;
     }
 
-    _groupBoxInfo->setTitle("Information Node :" + QString::number(currentNode->nodeId(), 16) + ", Device : 0x" +
-                            QString("0x%1").arg(QString::number(currentNode->nodeOd()->value(0x1000, 0).toUInt(), 16).toUpper()));
+    _groupBoxInfo->setTitle("Information Node :" + QString::number(currentNode->nodeId(), 16) + ", Device : 0x"
+                            + QString("0x%1").arg(QString::number(currentNode->nodeOd()->value(0x1000, 0).toUInt(), 16).toUpper()));
     _serialNumberLabel->setText(QString("0x%1").arg(QString::number(currentNode->nodeOd()->value(0x1018, 1).toUInt(), 16).toUpper()));
     _vendorIdLabel->setText(QString("0x%1").arg(QString::number(currentNode->nodeOd()->value(0x1018, 2).toUInt(), 16).toUpper()));
     _productCodeLabel->setText(QString("0x%1").arg(QString::number(currentNode->nodeOd()->value(0x1018, 3).toUInt(), 16).toUpper()));
@@ -205,16 +205,16 @@ void MainWindow::createMenus()
     connect(_disconnectAction, &QAction::triggered, this, &MainWindow::disconnectDevice);*/
 
     QAction *_canSettingsAction = new QAction(tr("&Can Settings"), this);
-    //connect(_canSettingsAction, &QAction::triggered, _connectDialog, &CanSettingsDialog::show);
+    // connect(_canSettingsAction, &QAction::triggered, _connectDialog, &CanSettingsDialog::show);
 
     QMenu *menu;
     menu = menuBar()->addMenu(tr("&Connection"));
-    //menu->addAction(_connectAction);
-    //menu->addAction(_disconnectAction);
+    // menu->addAction(_connectAction);
+    // menu->addAction(_disconnectAction);
     menu->addAction(_canSettingsAction);
     menu->addSeparator();
 
-    //connect(_connectDialog, &QDialog::accepted, this, &MainWindow::connectDevice);
+    // connect(_connectDialog, &QDialog::accepted, this, &MainWindow::connectDevice);
     connect(_busNodesManagerView, &BusNodesTreeView::nodeSelected, this, &MainWindow::nodeChanged);
 }
 

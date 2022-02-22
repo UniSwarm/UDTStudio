@@ -32,16 +32,16 @@
 
 #include "mainconsole.h"
 
+#include "bootloader/bootloader.h"
+#include "bootloader/model/ufwmodel.h"
 #include "bootloader/parser/hexparser.h"
+#include "bootloader/parser/ufwparser.h"
 #include "bootloader/utility/hexmerger.h"
 #include "bootloader/writer/hexwriter.h"
-#include "bootloader/model/ufwmodel.h"
-#include "bootloader/parser/ufwparser.h"
 #include "bootloader/writer/ufwwriter.h"
-#include "bootloader/bootloader.h"
 
 #ifdef Q_OS_UNIX
-#   include "busdriver/canbussocketcan.h"
+#    include "busdriver/canbussocketcan.h"
 #endif
 
 int hexdump(QString fileA)
@@ -91,7 +91,7 @@ int hexdump(QString fileA)
         _process->waitForFinished(-1);
     }
 
-    QByteArray stdOut = _process->readAllStandardOutput(); // Reads standard output
+    QByteArray stdOut = _process->readAllStandardOutput();  // Reads standard output
     _process->terminate();
 
     QString fileAHexDump = fileA.split(".").at(0) + ".hexdump";
@@ -140,7 +140,7 @@ int diff(QString fileA, QString fileB)
                     QStringList() << "-C"
                                   << "-v" << QString("%1").arg(fileA + ".bin"));
     _process->waitForFinished(-1);
-    QByteArray stdOut = _process->readAllStandardOutput(); // Reads standard output
+    QByteArray stdOut = _process->readAllStandardOutput();  // Reads standard output
     _process->terminate();
 
     QString fileAHexDump = fileA.split(".").at(0) + ".hexdump";
@@ -164,7 +164,7 @@ int diff(QString fileA, QString fileB)
                     QStringList() << "-C"
                                   << "-v" << QString("%1").arg(fileB + ".bin"));
     _process->waitForFinished(-1);
-    stdOut = _process->readAllStandardOutput(); // Reads standard output
+    stdOut = _process->readAllStandardOutput();  // Reads standard output
     _process->terminate();
 
     QString fileBHexDump = fileB.split(".").at(0) + ".hexdump";
@@ -272,7 +272,8 @@ int main(int argc, char *argv[])
     // HEX DUMP
     cliParser.addPositionalArgument("hexdump", QCoreApplication::translate("main", "fileA"), "hexdump");
     // OTP
-    cliParser.addPositionalArgument("otp", QCoreApplication::translate("main", "-n nodeId -a adress -d\"XXXX/XX/XX hh:mm:ss\" -t typeDevice -s SerialNumber -i HardVersion -e eds"), "otp");
+    cliParser.addPositionalArgument(
+        "otp", QCoreApplication::translate("main", "-n nodeId -a adress -d\"XXXX/XX/XX hh:mm:ss\" -t typeDevice -s SerialNumber -i HardVersion -e eds"), "otp");
 
     // MERGE
     QCommandLineOption outOption(QStringList() << "o"
@@ -331,14 +332,14 @@ int main(int argc, char *argv[])
                                "start:end");
     cliParser.addOption(sOption);
     QCommandLineOption softwareVersionOption(QStringList() << "i"
-                                                 << "i",
-                                   QCoreApplication::translate("main", "Software version."),
-                                   "i");
+                                                           << "i",
+                                             QCoreApplication::translate("main", "Software version."),
+                                             "i");
     cliParser.addOption(softwareVersionOption);
     QCommandLineOption dateOption(QStringList() << "d"
-                                                 << "date",
-                                   QCoreApplication::translate("main", "Date."),
-                                   "date");
+                                                << "date",
+                                  QCoreApplication::translate("main", "Date."),
+                                  "date");
     cliParser.addOption(dateOption);
     cliParser.process(app);
 
@@ -421,11 +422,7 @@ int main(int argc, char *argv[])
 
         bool ok;
         UfwWriter *createBinary = new UfwWriter();
-        createBinary->create(static_cast<uint16_t>(type.toUInt(&ok, 16)),
-                             cliParser.value(softwareVersionOption),
-                             cliParser.value(dateOption),
-                             segmentList,
-                             hex->prog());
+        createBinary->create(static_cast<uint16_t>(type.toUInt(&ok, 16)), cliParser.value(softwareVersionOption), cliParser.value(dateOption), segmentList, hex->prog());
 
         // Save file
         QString outputFile = cliParser.value("out");
@@ -483,81 +480,77 @@ int main(int argc, char *argv[])
     else if (argument.at(0) == "otp")
     {
 
-      quint8 nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
-      if (nodeid == 0 || nodeid >= 126)
-      {
-        err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << "\n";
-        return -2;
-      }
+        quint8 nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
+        if (nodeid == 0 || nodeid >= 126)
+        {
+            err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << "\n";
+            return -2;
+        }
 
-      CanOpenBus *bus;
-      if (CanOpen::buses().isEmpty())
-      {
+        CanOpenBus *bus;
+        if (CanOpen::buses().isEmpty())
+        {
 #ifdef Q_OS_UNIX
-        bus = new CanOpenBus(new CanBusSocketCAN("can0"));
+            bus = new CanOpenBus(new CanBusSocketCAN("can0"));
 #endif
+            if (!bus)
+            {
+                return 0;
+            }
+            bus->setBusName("Bus 1");
+            CanOpen::addBus(bus);
+        }
+        else
+        {
+            bus = CanOpen::bus(0);
+        }
         if (!bus)
         {
-          return 0;
+            return 0;
         }
-        bus->setBusName("Bus 1");
-        CanOpen::addBus(bus);
-      }
-      else
-      {
-        bus = CanOpen::bus(0);
-      }
-      if (!bus)
-      {
-        return 0;
-      }
 
-      QString eds = cliParser.value(edsOption);
-      if (eds.isEmpty())
-      {
-        err << QCoreApplication::translate("main", "error (1): eds is needed") << "\n";
-        cliParser.showHelp(-1);
-      }
-      QString date = cliParser.value(dateOption);
-      if (date.isEmpty())
-      {
-        err << QCoreApplication::translate("main", "error (1): date is needed") << "\n";
-        cliParser.showHelp(-1);
-      }
-      QString hardVersion = cliParser.value(softwareVersionOption);
-      if (hardVersion.isEmpty())
-      {
-        err << QCoreApplication::translate("main", "error (1): hardware version is needed") << "\n";
-        cliParser.showHelp(-1);
-      }
+        QString eds = cliParser.value(edsOption);
+        if (eds.isEmpty())
+        {
+            err << QCoreApplication::translate("main", "error (1): eds is needed") << "\n";
+            cliParser.showHelp(-1);
+        }
+        QString date = cliParser.value(dateOption);
+        if (date.isEmpty())
+        {
+            err << QCoreApplication::translate("main", "error (1): date is needed") << "\n";
+            cliParser.showHelp(-1);
+        }
+        QString hardVersion = cliParser.value(softwareVersionOption);
+        if (hardVersion.isEmpty())
+        {
+            err << QCoreApplication::translate("main", "error (1): hardware version is needed") << "\n";
+            cliParser.showHelp(-1);
+        }
 
-      bus->addNode(new Node(nodeid, "name", eds));
+        bus->addNode(new Node(nodeid, "name", eds));
 
-      Node *node = CanOpen::bus(0)->node(nodeid);
-      MainConsole *mainConsole = new MainConsole(node);
+        Node *node = CanOpen::bus(0)->node(nodeid);
+        MainConsole *mainConsole = new MainConsole(node);
 
-      QObject::connect(node->bootloader(), &Bootloader::statusEvent, mainConsole, &MainConsole::updateStatus);
-      QObject::connect(mainConsole, &MainConsole::finished, &app, &QCoreApplication::exit);
+        QObject::connect(node->bootloader(), &Bootloader::statusEvent, mainConsole, &MainConsole::updateStatus);
+        QObject::connect(mainConsole, &MainConsole::finished, &app, &QCoreApplication::exit);
 
-      bool ok;
-      uint32_t adr = static_cast<uint32_t>(cliParser.value(aOption).toInt(&ok, 16));
-      uint16_t type = static_cast<uint16_t>(cliParser.value(typeOption).toUInt(&ok, 16));
-      uint32_t serial = static_cast<uint32_t>(cliParser.value(sOption).toUInt(&ok, 10));
+        bool ok;
+        uint32_t adr = static_cast<uint32_t>(cliParser.value(aOption).toInt(&ok, 16));
+        uint16_t type = static_cast<uint16_t>(cliParser.value(typeOption).toUInt(&ok, 16));
+        uint32_t serial = static_cast<uint32_t>(cliParser.value(sOption).toUInt(&ok, 10));
 
-      if (adr == 0 || type == 0 || serial == 0)
-      {
-        err << QCoreApplication::translate("main", "error (1):Adress, type or serial is needed") << "\n";
-        cliParser.showHelp(-1);
-      }
+        if (adr == 0 || type == 0 || serial == 0)
+        {
+            err << QCoreApplication::translate("main", "error (1):Adress, type or serial is needed") << "\n";
+            cliParser.showHelp(-1);
+        }
 
-      node->bootloader()->setOtpInformation(adr,
-                                  date,
-                                  type,
-                                  serial,
-                                  hardVersion);
+        node->bootloader()->setOtpInformation(adr, date, type, serial, hardVersion);
 
-      node->bootloader()->startOtpUpload();
-      return app.exec();
+        node->bootloader()->startOtpUpload();
+        return app.exec();
     }
     else
     {
@@ -567,4 +560,3 @@ int main(int argc, char *argv[])
     }
     return 0;
 }
-
