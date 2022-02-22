@@ -36,6 +36,7 @@ public:
     bool isStarted() const;
 
     void addData(const NodeObjectId &objId);
+    void addData(const QList<NodeObjectId> &objIds);
     void removeData(const NodeObjectId &objId);
     void removeAllData();
     QList<DLData *> &dataList();

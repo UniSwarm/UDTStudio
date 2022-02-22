@@ -86,6 +86,14 @@ void DataLogger::addData(const NodeObjectId &objId)
     }
 }
 
+void DataLogger::addData(const QList<NodeObjectId> &objIds)
+{
+    for (const NodeObjectId &objId : qAsConst(objIds))
+    {
+        addData(objId);
+    }
+}
+
 void DataLogger::removeData(const NodeObjectId &objId)
 {
     DLData *dlData = data(objId);
