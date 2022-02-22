@@ -109,6 +109,9 @@ protected:
     void goEnableButton();
 
     QList<AbstractIndexWidget *> _indexWidgets;
+
+    void mapCurrents();
+    void monitorCurrents();
 };
 
 #endif  // MOTORCONFIG_H

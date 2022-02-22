@@ -18,13 +18,18 @@
 
 #include "motorwidget.h"
 
+#include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/indexWidget/indexbar.h"
 #include "canopen/indexWidget/indexcheckbox.h"
 #include "canopen/indexWidget/indexcombobox.h"
 #include "canopen/indexWidget/indexlabel.h"
 #include "canopen/indexWidget/indexspinbox.h"
 
-#include "indexdb402.h"
+#include <datalogger/datalogger.h>
+#include <services/rpdo.h>
+#include <services/tpdo.h>
+
+#include <indexdb402.h>
 
 #include <QFormLayout>
 #include <QGroupBox>
@@ -197,6 +202,16 @@ QToolBar *MotorWidget::createToolBarWidgets()
     readAllAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));
     connect(readAllAction, &QAction::triggered, this, &MotorWidget::readAllObject);
+
+    // currents actions
+    QAction *mapCurrentsAction = toolBar->addAction(tr("Map currents"));
+    mapCurrentsAction->setShortcut(QKeySequence("Ctrl+M"));
+    connect(mapCurrentsAction, &QAction::triggered, this, &MotorWidget::mapCurrents);
+
+    QAction *monitorCurrentsAction = toolBar->addAction(tr("Logger currents"));
+    monitorCurrentsAction->setShortcut(QKeySequence("Ctrl+D"));
+    connect(monitorCurrentsAction, &QAction::triggered, this, &MotorWidget::monitorCurrents);
+
     return toolBar;
 }
 
@@ -426,4 +441,56 @@ QGroupBox *MotorWidget::createBldcStatusWidgets()
 void MotorWidget::goEnableButton()
 {
     _nodeProfile402->goToState(NodeProfile402::STATE_SwitchedOn);
+}
+
+void MotorWidget::mapCurrents()
+{
+    QList<NodeObjectId> currentsHLObjectsList;
+    for (int i = 1; i <= 4; i++)
+    {
+        currentsHLObjectsList.append(NodeObjectId(_node->busId(), _node->nodeId(), 0x2802, i));
+    }
+    QList<NodeObjectId> currentsLLObjectsList;
+    for (int i = 1; i <= 4; i++)
+    {
+        currentsLLObjectsList.append(NodeObjectId(_node->busId(), _node->nodeId(), 0x2803, i));
+    }
+
+    _nodeProfile402->node()->tpdos().at(2)->writeMapping(currentsHLObjectsList);
+    _nodeProfile402->node()->tpdos().at(3)->writeMapping(currentsLLObjectsList);
+}
+
+void MotorWidget::monitorCurrents()
+{
+    QList<NodeObjectId> currentsHLObjectsList;
+    for (int i = 1; i <= 4; i++)
+    {
+        currentsHLObjectsList.append(NodeObjectId(_node->busId(), _node->nodeId(), 0x2802, i));
+    }
+    QList<NodeObjectId> currentsLLObjectsList;
+    for (int i = 1; i <= 4; i++)
+    {
+        currentsLLObjectsList.append(NodeObjectId(_node->busId(), _node->nodeId(), 0x2803, i));
+    }
+
+    DataLogger *dataLoggerHL = new DataLogger();
+    DataLoggerWidget *dataLoggerWidgetHL = new DataLoggerWidget(dataLoggerHL);
+    dataLoggerWidgetHL->setTitle(tr("HL currents node %1").arg(_nodeProfile402->nodeId()));
+    dataLoggerHL->addData(currentsHLObjectsList);
+    dataLoggerWidgetHL->setAttribute(Qt::WA_DeleteOnClose);
+    connect(dataLoggerWidgetHL, &QObject::destroyed, dataLoggerHL, &DataLogger::deleteLater);
+    dataLoggerWidgetHL->show();
+    dataLoggerWidgetHL->raise();
+    dataLoggerWidgetHL->activateWindow();
+
+
+    DataLogger *dataLoggerLL = new DataLogger();
+    DataLoggerWidget *dataLoggerWidgetLL = new DataLoggerWidget(dataLoggerLL);
+    dataLoggerWidgetLL->setTitle(tr("LL currents node %1").arg(_nodeProfile402->nodeId()));
+    dataLoggerLL->addData(currentsLLObjectsList);
+    dataLoggerWidgetLL->setAttribute(Qt::WA_DeleteOnClose);
+    connect(dataLoggerWidgetLL, &QObject::destroyed, dataLoggerLL, &DataLogger::deleteLater);
+    dataLoggerWidgetLL->show();
+    dataLoggerWidgetLL->raise();
+    dataLoggerWidgetLL->activateWindow();
 }
