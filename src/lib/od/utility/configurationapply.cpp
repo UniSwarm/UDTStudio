@@ -54,7 +54,23 @@ bool ConfigurationApply::apply(DeviceModel *deviceDescription, const QString &fi
         {
             QString strValue = settings.value(childKey).toString();
             QVariant value = readData(subIndex->dataType(), strValue);
-            subIndex->setValue(value);
+
+            if (subIndex->index()->objectType() == Index::ARRAY && subIndex->subIndex() == 0)
+            {
+                if (value.canConvert(QMetaType::UInt) && value.toUInt() <= 128 && subIndex->index()->subIndexesCount() >= 2)
+                {
+                    resizeArray(subIndex->index(), value.toUInt());
+                }
+                else
+                {
+                    dbg() << "Invalid ARRAY for resize: " << childKey;
+                    return false;
+                }
+            }
+            else
+            {
+                subIndex->setValue(value);
+            }
         }
         else
         {
@@ -129,6 +145,34 @@ SubIndex *ConfigurationApply::getSubIndex(DeviceModel *deviceDescription, const 
         }
     }
     return nullptr;
+}
+
+void ConfigurationApply::resizeArray(Index *index, int newSize)
+{
+    // remove all sub > 1
+    for (int sub = 2 ; sub <= index->subIndexesCount(); sub++)
+    {
+        index->removeSubIndex(sub);
+    }
+
+    SubIndex *subIndex = index->subIndex(1);
+    for (int sub = 2 ; sub < newSize + 1; sub++)
+    {
+        SubIndex *newSubIndex = new SubIndex(*subIndex);
+        newSubIndex->setSubIndex(sub);
+        QString name = subIndex->name();
+        name.replace("%d", QString::number(sub));
+        name.replace("%c", QString('A' + sub - 1));
+        newSubIndex->setName(name);
+        index->addSubIndex(newSubIndex);
+    }
+    QString name = subIndex->name();
+    name.replace("%d", QString::number(1));
+    name.replace("%c", QString('A'));
+    subIndex->setName(name);
+
+    index->setMaxSubIndex(newSize + 1);
+    index->subIndex(0)->setValue(newSize);
 }
 
 /**

@@ -33,6 +33,7 @@ public:
 
 private:
     SubIndex *getSubIndex(DeviceModel *deviceDescription, const QString &childKey);
+    void resizeArray(Index *index, int newSize);
 
     QVariant readData(SubIndex::DataType dataType, QString stringValue) const;
 };
