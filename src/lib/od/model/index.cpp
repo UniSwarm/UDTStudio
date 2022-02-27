@@ -42,7 +42,7 @@ Index::Index(const Index &other)
 
     for (SubIndex *subIndex : other._subIndexes)
     {
-        _subIndexes.insert(subIndex->subIndex(), new SubIndex(*subIndex));
+        addSubIndex(new SubIndex(*subIndex));
     }
 }
 
@@ -176,6 +176,16 @@ bool Index::subIndexExist(QString nameSubIndex)
         }
     }
     return false;
+}
+
+void Index::removeSubIndex(uint8_t subIndex)
+{
+    if (_subIndexes.contains(subIndex))
+    {
+        SubIndex * const subIndexToRemove = _subIndexes.value(subIndex);
+        _subIndexes.remove(subIndex);
+        delete subIndexToRemove;
+    }
 }
 
 /**

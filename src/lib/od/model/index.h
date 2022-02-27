@@ -49,6 +49,7 @@ public:
     int subIndexesCount();
     bool subIndexExist(uint8_t subIndex);
     bool subIndexExist(QString nameSubIndex);
+    void removeSubIndex(uint8_t subIndex);
 
     // =========== Object type ====================
     enum Object
