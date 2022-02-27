@@ -32,7 +32,7 @@ bool ConfigurationApply::apply(DeviceModel *deviceDescription, const QString &fi
 {
     if (!QFileInfo::exists(fileIniPath))
     {
-        dbg() << "File Configuration not exist: " << fileIniPath;
+        dbg() << "File configuration does not exist: " << fileIniPath;
         return false;
     }
 
@@ -40,109 +40,95 @@ bool ConfigurationApply::apply(DeviceModel *deviceDescription, const QString &fi
     QStringList groups = settings.childGroups();
     if (!groups.contains("Default"))
     {
-        dbg() << "File Configuration : corrupted file (miss default group) " << fileIniPath;
+        dbg() << "File Configuration : corrupted file (missing [Default] group) " << fileIniPath;
         return false;
     }
 
     settings.beginGroup("Default");
 
-    const QStringList childKeys = settings.childKeys();
+    const QStringList &childKeys = settings.childKeys();
     for (const QString &childKey : childKeys)
     {
-        bool ok;
+        SubIndex *subIndex = getSubIndex(deviceDescription, childKey);
+        if (subIndex)
+        {
+            QString strValue = settings.value(childKey).toString();
+            QVariant value = readData(subIndex->dataType(), strValue);
+            subIndex->setValue(value);
+        }
+        else
+        {
+            dbg() << "Configuration | Object does not exist: " << childKey;
+            return false;
+        }
+    }
+
+    settings.endGroup();
+    return true;
+}
+
+SubIndex *ConfigurationApply::getSubIndex(DeviceModel *deviceDescription, const QString &childKey)
+{
+    bool ok;
+    if (childKey.contains(QRegExp("^[0-9]")))
+    {
         uint16_t indexId = 0;
         uint8_t subIndexId = 0;
 
-        if (childKey.contains(QRegExp("^[0-9]")))
+        // Find by id
+        if (childKey.contains("sub"))
         {
-            // Find by id
-            if (childKey.contains("sub"))
-            {
-                QStringList keys = childKey.split("sub");
-                indexId = static_cast<uint16_t>(keys[0].toUInt(&ok, 16));
-                subIndexId = static_cast<uint8_t>(keys[1].toUInt(&ok, 16));
-            }
-            else
-            {
-                indexId = static_cast<uint16_t>(childKey.toUInt(&ok, 16));
-                subIndexId = 0;
-            }
+            QStringList keys = childKey.split("sub");
+            indexId = static_cast<uint16_t>(keys[0].toUInt(&ok, 16));
+            subIndexId = static_cast<uint8_t>(keys[1].toUInt(&ok, 16));
+        }
+        else
+        {
+            indexId = static_cast<uint16_t>(childKey.toUInt(&ok, 16));
+            subIndexId = 0;
+        }
 
-            if (deviceDescription->indexExist(indexId))
+        if (deviceDescription->indexExist(indexId))
+        {
+            Index *index = deviceDescription->index(indexId);
+            if (index->subIndexExist(subIndexId))
             {
-                QString value = settings.value(childKey).toString();
-                Index *index = deviceDescription->index(indexId);
-                if (index->subIndexExist(subIndexId))
-                {
-                    SubIndex *sub = index->subIndex(subIndexId);
-                    sub->setValue(readData(sub->dataType(), value));
-                }
-                else
-                {
-                    dbg() << "Configuration | SubIndex not exist: " << indexId << subIndexId;
-                    return false;
-                }
+                SubIndex *sub = index->subIndex(subIndexId);
+                return sub;
             }
-            else
+        }
+    }
+    else
+    {
+        // Find by String
+        QString indexName;
+        QString subIndexName;
+
+        if (childKey.contains("."))
+        {
+            QStringList keys = childKey.split(".");
+            indexName = keys[0];
+            subIndexName = keys[1];
+
+            Index *index = deviceDescription->index(indexName);
+            if (index)
             {
-                dbg() << "Configuration | Index not exist: " << indexId;
-                return false;
+                SubIndex *sub = index->subIndex(subIndexName);
+                return sub;
             }
         }
         else
         {
-            // Find by String
-            QString indexName;
-            QString subIndexName;
-
-            if (childKey.contains("."))
+            indexName = childKey;
+            Index *index = deviceDescription->index(indexName);
+            if (index)
             {
-                QStringList keys = childKey.split(".");
-                indexName = keys[0];
-                subIndexName = keys[1];
-
-                if (deviceDescription->indexExist(indexName))
-                {
-                    QString value = settings.value(childKey).toString();
-                    Index *index = deviceDescription->index(indexName);
-                    if (index->subIndexExist(subIndexName))
-                    {
-                        SubIndex *sub = index->subIndex(subIndexName);
-                        sub->setValue(readData(sub->dataType(), value));
-                    }
-                    else
-                    {
-                        dbg() << "Configuration | SubIndex not exist: " << indexName << subIndexName;
-                        return false;
-                    }
-                }
-                else
-                {
-                    dbg() << "Configuration | Index not exist: " << indexName;
-                    return false;
-                }
-            }
-            else
-            {
-                indexName = childKey;
-                if (deviceDescription->indexExist(indexName))
-                {
-                    QString value = settings.value(childKey).toString();
-                    Index *index = deviceDescription->index(indexName);
-                    SubIndex *sub = index->subIndex(0);
-                    sub->setValue(readData(sub->dataType(), value));
-                }
-
-                else
-                {
-                    dbg() << "Configuration | Index not exist: " << indexName;
-                    return false;
-                }
+                SubIndex *sub = index->subIndex(0);
+                return sub;
             }
         }
     }
-    settings.endGroup();
-    return true;
+    return nullptr;
 }
 
 /**

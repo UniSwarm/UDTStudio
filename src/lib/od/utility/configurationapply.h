@@ -32,6 +32,8 @@ public:
     bool apply(DeviceModel *deviceDescription, const QString &fileIniPath);
 
 private:
+    SubIndex *getSubIndex(DeviceModel *deviceDescription, const QString &childKey);
+
     QVariant readData(SubIndex::DataType dataType, QString stringValue) const;
 };
 
