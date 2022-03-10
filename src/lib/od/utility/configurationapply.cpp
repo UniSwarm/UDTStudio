@@ -129,7 +129,16 @@ SubIndex *ConfigurationApply::getSubIndex(DeviceModel *deviceDescription, const 
             Index *index = deviceDescription->index(indexName);
             if (index)
             {
-                SubIndex *sub = index->subIndex(subIndexName);
+                SubIndex *sub;
+                if (subIndexName.startsWith("sub"))
+                {
+                    uint subIndexNumber = subIndexName.midRef(3).toUInt();
+                    sub = index->subIndex(subIndexNumber);
+                }
+                else
+                {
+                    sub = index->subIndex(subIndexName);
+                }
                 return sub;
             }
         }
