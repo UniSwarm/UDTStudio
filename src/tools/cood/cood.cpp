@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
         deviceDescription = parser.parse(inputFile);
         if (!deviceDescription)
         {
-            err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist") << cendl;
+            err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist '%1'").arg(inputFile) << cendl;
             return -5;
         }
         deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, nodeid);
@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
         {
             delete deviceDescription;
             delete deviceConfiguration;
-            err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist") << cendl;
+            err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist '%1'").arg(files.at(fileId)) << cendl;
             return -5;
         }
         if (deviceDescription)
