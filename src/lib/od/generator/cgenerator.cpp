@@ -1092,6 +1092,10 @@ void CGenerator::writeDefineH(Index *index, QTextStream &hFile)
 
     else if (index->objectType() == Index::Object::ARRAY)
     {
+        hFile << "#define "
+              << "OD_" << varNameToString(index->name()).toUpper() << "_COUNT " << index->subIndexesCount() - 1 << "\n";
+        hFile << "#define "
+              << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_COUNT " << index->subIndexesCount() - 1 << "\n";
         for (SubIndex *subIndex : index->subIndexes())
         {
             uint8_t numSubIndex = subIndex->subIndex();
