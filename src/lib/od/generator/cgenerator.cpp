@@ -95,7 +95,7 @@ bool CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
     QTextStream out(&hFile);
 
     out << "/**\n";
-    out << " * Generated .h file\n";
+    out << " * Generated od_data.h file\n";
 
     QString date = QDateTime::currentDateTime().toString("dd-MM-yyyy");
     QString time = QDateTime::currentDateTime().toString("hh:mm AP");
@@ -114,7 +114,7 @@ bool CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
     out << "\n";
     out << "// == Number of entries in object dictionary =="
         << "\n";
-    out << "#define OD_NB_ELEMENTS " << deviceConfiguration->indexCount() << "\n";
+    out << "#define OD_OBJECTS_COUNT " << deviceConfiguration->indexCount() << "\n";
     out << "\n";
     out << "// ===== struct definitions for records ======="
         << "\n";
@@ -152,7 +152,7 @@ bool CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
     out << "\n";
     out << "// ======== extern declaration of OD ========"
         << "\n";
-    out << "extern const OD_entry_t OD[OD_NB_ELEMENTS];"
+    out << "extern const OD_entry_t OD[OD_OBJECTS_COUNT];"
         << "\n";
     out << "extern struct sOD_RAM OD_RAM;"
         << "\n";
@@ -182,11 +182,8 @@ bool CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
         hFile.close();
         return true;
     }
-    else
-    {
-        hFile.remove();
-        return false;
-    }
+    hFile.remove();
+    return false;
 }
 
 /**
@@ -207,7 +204,7 @@ bool CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
     QTextStream out(&cFile);
 
     out << "/**\n";
-    out << " * Generated .c file\n";
+    out << " * Generated od_data.c file\n";
 
     QString date = QDateTime::currentDateTime().toString("dd-MM-yyyy");
     QString time = QDateTime::currentDateTime().toString("hh:mm AP");
@@ -217,6 +214,7 @@ bool CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
     out << " */\n";
     out << "\n";
     out << "#include \"od_data.h\""
+        << "\n"
         << "\n";
 
     out << "#define STRINGIZE(x) #x"
@@ -315,7 +313,7 @@ bool CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
 
     out << "// ============ object dicitonary completion =============="
         << "\n";
-    out << "const OD_entry_t OD[OD_NB_ELEMENTS] = "
+    out << "const OD_entry_t OD[OD_OBJECTS_COUNT] = "
         << "\n";
     out << "{"
         << "\n";
@@ -336,11 +334,8 @@ bool CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
         cFile.close();
         return true;
     }
-    else
-    {
-        cFile.remove();
-        return false;
-    }
+    cFile.remove();
+    return false;
 }
 
 /**
