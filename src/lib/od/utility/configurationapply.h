@@ -27,15 +27,13 @@
 class OD_EXPORT ConfigurationApply
 {
 public:
-    ConfigurationApply();
-
-    bool apply(DeviceModel *deviceDescription, const QString &fileIniPath);
+    static bool apply(DeviceModel *deviceModel, const QString &fileIniPath);
 
 private:
-    SubIndex *getSubIndex(DeviceModel *deviceDescription, const QString &childKey);
-    void resizeArray(Index *index, int newSize);
+    static SubIndex *getSubIndex(DeviceModel *deviceDescription, const QString &childKey);
+    static void resizeArray(Index *index, int newSize);
 
-    QVariant readData(SubIndex::DataType dataType, QString stringValue) const;
+    static QVariant readData(SubIndex::DataType dataType, QString stringValue);
 };
 
 #endif  // CONFIGURATIONAPPLY_H

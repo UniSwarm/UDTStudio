@@ -26,15 +26,13 @@
 class OD_EXPORT ODMerger
 {
 public:
-    ODMerger();
-
-    void merge(DeviceDescription *deviceDescription, DeviceDescription *secondDeviceDescription);
-    void merge(DeviceModel *deviceModel, DeviceModel *secondDeviceModel);
+    static void merge(DeviceDescription *deviceDescription, DeviceDescription *secondDeviceDescription);
+    static void merge(DeviceModel *deviceModel, DeviceModel *secondDeviceModel);
 
 protected:
-    void mergeIndex(Index *index, Index *index2);
+    static void mergeIndex(Index *index, Index *index2);
 
-    QString indexStr(Index *index);
+    static QString indexStr(Index *index);
 };
 
 #endif  // ODMERGER_H

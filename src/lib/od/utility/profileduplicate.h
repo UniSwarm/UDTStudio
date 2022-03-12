@@ -26,9 +26,7 @@
 class OD_EXPORT ProfileDuplicate
 {
 public:
-    ProfileDuplicate();
-
-    void duplicate(DeviceModel *deviceModel, uint8_t profileCount = 1);
+    static void duplicate(DeviceModel *deviceModel, uint8_t profileCount = 1);
 };
 
 #endif  // PROFILEDUPLICATE_H

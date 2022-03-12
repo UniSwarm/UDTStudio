@@ -21,10 +21,6 @@
 #include <QDebug>
 #define dbg() qDebug().noquote().nospace()
 
-ODMerger::ODMerger()
-{
-}
-
 void ODMerger::merge(DeviceDescription *deviceDescription, DeviceDescription *secondDeviceDescription)
 {
     QMap<QString, QString> deviceInfos(deviceDescription->deviceInfos());

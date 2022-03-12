@@ -18,10 +18,6 @@
 
 #include "profileduplicate.h"
 
-ProfileDuplicate::ProfileDuplicate()
-{
-}
-
 void ProfileDuplicate::duplicate(DeviceModel *deviceModel, uint8_t profileCount)
 {
     if (!deviceModel->indexExist(0x1000))

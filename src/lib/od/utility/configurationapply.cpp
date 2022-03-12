@@ -24,11 +24,7 @@
 #include <QDebug>
 #define dbg() qDebug().noquote().nospace()
 
-ConfigurationApply::ConfigurationApply()
-{
-}
-
-bool ConfigurationApply::apply(DeviceModel *deviceDescription, const QString &fileIniPath)
+bool ConfigurationApply::apply(DeviceModel *deviceModel, const QString &fileIniPath)
 {
     if (!QFileInfo::exists(fileIniPath))
     {
@@ -49,7 +45,7 @@ bool ConfigurationApply::apply(DeviceModel *deviceDescription, const QString &fi
     const QStringList &childKeys = settings.childKeys();
     for (const QString &childKey : childKeys)
     {
-        SubIndex *subIndex = getSubIndex(deviceDescription, childKey);
+        SubIndex *subIndex = getSubIndex(deviceModel, childKey);
         if (subIndex)
         {
             QString strValue = settings.value(childKey).toString();
@@ -189,7 +185,7 @@ void ConfigurationApply::resizeArray(Index *index, int newSize)
  * @param dcf or eds file
  * @return data
  */
-QVariant ConfigurationApply::readData(SubIndex::DataType dataType, QString stringValue) const
+QVariant ConfigurationApply::readData(SubIndex::DataType dataType, QString stringValue)
 {
     int base = 10;
     if (stringValue.startsWith("0x"))
