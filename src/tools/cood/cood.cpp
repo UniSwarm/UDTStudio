@@ -155,7 +155,6 @@ int main(int argc, char *argv[])
         }
 
         EdsParser parser;
-        ODMerger merger;
 
         DeviceDescription *secondDeviceDescription = parser.parse(files.at(fileId));
         if (!secondDeviceDescription)
@@ -167,28 +166,37 @@ int main(int argc, char *argv[])
         }
         if (deviceDescription)
         {
-            merger.merge(deviceDescription, secondDeviceDescription);
+            ODMerger::merge(deviceDescription, secondDeviceDescription);
         }
-        merger.merge(deviceConfiguration, secondDeviceDescription);
+        ODMerger::merge(deviceConfiguration, secondDeviceDescription);
     }
 
     QStringList cfgFiles = cliParser.values("configuration");
     for (const QString &cfgFile : qAsConst(cfgFiles))
     {
-        ConfigurationApply configurationApply;
-
         if (deviceConfiguration)
         {
-            if (!configurationApply.apply(deviceConfiguration, cfgFile))
+            if (!ConfigurationApply::apply(deviceConfiguration, cfgFile))
             {
                 return -6;
             }
         }
 
-        if (!configurationApply.apply(deviceDescription, cfgFile))
+        if (!ConfigurationApply::apply(deviceDescription, cfgFile))
         {
             return -6;
         }
+    }
+
+    uint8_t duplicate = 0;
+    duplicate = static_cast<uint8_t>(cliParser.value("duplicate").toUInt());
+    if (duplicate != 0)
+    {
+        if (deviceConfiguration)
+        {
+            ProfileDuplicate::duplicate(deviceConfiguration, duplicate);
+        }
+        ProfileDuplicate::duplicate(deviceDescription, duplicate);
     }
 
     /*if (deviceDescription)
@@ -232,14 +240,6 @@ int main(int argc, char *argv[])
     }
     else if (outSuffix == "eds" && deviceDescription)
     {
-        uint8_t duplicate = 0;
-        duplicate = static_cast<uint8_t>(cliParser.value("duplicate").toUInt());
-        if (duplicate != 0)
-        {
-            ProfileDuplicate profileDuplicate;
-            profileDuplicate.duplicate(deviceDescription, duplicate);
-        }
-
         EdsWriter edsWriter;
         edsWriter.write(deviceDescription, outputFile);
     }
