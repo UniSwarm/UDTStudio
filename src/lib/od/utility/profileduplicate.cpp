@@ -60,18 +60,14 @@ void ProfileDuplicate::duplicate(DeviceModel *deviceModel, uint8_t profileCount)
             }
         }
 
-        QString name;
-        QRegExp reg("^[a][0-9]_");
+        QRegularExpression reg("^[a][0-9]_");
         for (uint16_t count = 0; count < profileCount; count++)
         {
             for (const Index *index : manufactureIndex)
             {
                 Index *newIndex = new Index(*index);
-                uint16_t indexId = index->index() + (0x200 * count);
-                name = index->name();
-                name.remove(reg);
-                newIndex->setName(QString("a%1_").arg(count + 1) + name);
-                newIndex->setIndex(indexId);
+                newIndex->setIndex(index->index() + (0x200 * count));
+                renameIndex(newIndex, reg, QString("a%1_").arg(count + 1));
                 deviceModel->addIndex(newIndex);
             }
         }
@@ -81,11 +77,8 @@ void ProfileDuplicate::duplicate(DeviceModel *deviceModel, uint8_t profileCount)
             for (const Index *index : standardizedIndex)
             {
                 Index *newIndex = new Index(*index);
-                uint16_t indexId = index->index() + (0x800 * count);
-                name = index->name();
-                name.remove(reg);
-                newIndex->setName(QString("a%1_").arg(count + 1) + name);
-                newIndex->setIndex(indexId);
+                newIndex->setIndex(index->index() + (0x800 * count));
+                renameIndex(newIndex, reg, QString("a%1_").arg(count + 1));
                 deviceModel->addIndex(newIndex);
             }
         }
@@ -114,20 +107,29 @@ void ProfileDuplicate::duplicate(DeviceModel *deviceModel, uint8_t profileCount)
             }
         }
 
-        QString name;
-        QRegExp reg("^[s][0-9]+_");
+        QRegularExpression reg("^[s][0-9]+_");
         for (uint16_t count = 0; count < profileCount; count++)
         {
             for (const Index *index : standardizedIndex)
             {
                 Index *newIndex = new Index(*index);
-                uint16_t indexId = newIndex->index() + (0x100 * count);
-                name = index->name();
-                name.remove(reg);
-                newIndex->setName(QString("s%1_").arg(QString::number(count + 1).rightJustified(2, '0')) + name);
-                newIndex->setIndex(indexId);
+                newIndex->setIndex(newIndex->index() + (0x100 * count));
+                renameIndex(newIndex, reg, QString("s%1_").arg(count + 1));
                 deviceModel->addIndex(newIndex);
             }
         }
+    }
+}
+
+void ProfileDuplicate::renameIndex(Index *index, const QRegularExpression &nameRegExp, const QString &replacement)
+{
+    QString name = index->name();
+    name.replace(nameRegExp, replacement);
+    index->setName(name);
+    for (SubIndex *subIndex : index->subIndexes())
+    {
+        QString name = subIndex->name();
+        name.replace(nameRegExp, replacement);
+        subIndex->setName(name);
     }
 }

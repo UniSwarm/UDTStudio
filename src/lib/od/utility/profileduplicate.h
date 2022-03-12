@@ -23,10 +23,15 @@
 
 #include "../model/devicedescription.h"
 
+#include <QRegularExpression>
+
 class OD_EXPORT ProfileDuplicate
 {
 public:
     static void duplicate(DeviceModel *deviceModel, uint8_t profileCount = 1);
+
+private:
+    static void renameIndex(Index *index, const QRegularExpression &nameRegExp, const QString &replacement);
 };
 
 #endif  // PROFILEDUPLICATE_H
