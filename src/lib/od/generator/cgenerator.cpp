@@ -20,6 +20,7 @@
 
 #include <QDateTime>
 #include <QFile>
+#include <QFileInfo>
 #include <QList>
 #include <QMap>
 #include <QRegularExpression>
@@ -338,6 +339,67 @@ bool CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
     return false;
 }
 
+bool CGenerator::generateHStruct(DeviceConfiguration *deviceConfiguration, const QString &filePath, uint16_t min, uint16_t max, const QString &structName)
+{
+    QFile hFile(filePath);
+
+    if (!hFile.open(QIODevice::WriteOnly))
+    {
+        appendError(QString("Cannot open file %1\n").arg(filePath));
+        return false;
+    }
+
+    QTextStream out(&hFile);
+
+    out << "/**\n";
+    out << " * Generated partial OD struct file\n";
+
+    QString date = QDateTime::currentDateTime().toString("dd-MM-yyyy");
+    QString time = QDateTime::currentDateTime().toString("hh:mm AP");
+    out << " * Creation date: " << date << "\n";
+    out << " * Creation time: " << time << "\n";
+
+    QString defineName = QFileInfo(filePath).fileName().toUpper().replace(' ', '_').replace('.', '_');
+    out << " */\n";
+    out << "\n";
+    out << "#ifndef " << defineName
+        << "\n";
+    out << "#define " << defineName
+        << "\n";
+    out << "\n";
+    out << "#include \"od_data.h\""
+        << "\n";
+    out << "\n";
+
+    out << "struct " << structName
+        << "\n";
+    out << "{"
+        << "\n";
+
+    QMap<uint16_t, Index *> indexes = deviceConfiguration->indexes();
+    for (Index *index : indexes)
+    {
+        if (index->index() >= min && index->index() <= max)
+        {
+            writeIndexH(index, out);
+        }
+    }
+
+    out << "};"
+        << "\n";
+    out << "\n";
+    out << "#endif  // " << defineName
+        << "\n";
+
+    if (_errorStr.isEmpty())
+    {
+        hFile.close();
+        return true;
+    }
+    hFile.remove();
+    return false;
+}
+
 /**
  * @brief converts a data type to a string
  * @param data type
@@ -388,7 +450,7 @@ QString CGenerator::typeToString(const uint16_t &type)
             return QLatin1String("OD_domain_t");
 
         default:
-            return nullptr;
+            return QLatin1String("");
     }
 }
 

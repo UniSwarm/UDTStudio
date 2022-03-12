@@ -87,6 +87,18 @@ int main(int argc, char *argv[])
                                            "configuration");
     cliParser.addOption(configurationOption);
 
+    QCommandLineOption rangeOption(QStringList() << "r"
+                                                 << "range",
+                                   QCoreApplication::translate("main", "Partial OD range index (min and max separated with ':')"),
+                                   "range");
+    cliParser.addOption(rangeOption);
+
+    QCommandLineOption structOption(QStringList() << "s"
+                                                 << "structName",
+                                   QCoreApplication::translate("main", "Partial OD struct name (use with range option)"),
+                                   "structName");
+    cliParser.addOption(structOption);
+
     cliParser.process(app);
 
     const QStringList files = cliParser.positionalArguments();
@@ -111,7 +123,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        if (inSuffix == "eds" && outSuffix != "eds")
+        if (inSuffix == "eds" && outSuffix != "eds" && cliParser.value("range").isEmpty() && cliParser.value("structName").isEmpty())
         {
             nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
             if (nodeid == 0 || nodeid > 127)
@@ -227,7 +239,46 @@ int main(int argc, char *argv[])
     else if (outSuffix == "h")
     {
         CGenerator cgenerator;
-        if (!cgenerator.generateH(deviceConfiguration, outputFile))
+        bool noError = true;
+        QString rangeStr = cliParser.value("range");
+        if (rangeStr.isEmpty())
+        {
+            noError = cgenerator.generateH(deviceConfiguration, outputFile);
+        }
+        else
+        {
+            bool ok;
+            QStringList rangeList = rangeStr.split(':');
+            uint16_t min, max;
+            QString structName = cliParser.value("structName");
+            if (rangeList.size() != 2)
+            {
+                err << QCoreApplication::translate("main", "error (4): invalid range option value") << cendl;
+                return -4;
+            }
+
+            min = rangeList[0].toUInt(&ok, 0);
+            if (!ok)
+            {
+                noError = false;
+            }
+            max = rangeList[1].toUInt(&ok, 0);
+            if (!ok)
+            {
+                noError = false;
+            }
+
+            if (structName.isEmpty())
+            {
+                noError = false;
+            }
+            if (noError)
+            {
+                noError = cgenerator.generateHStruct(deviceConfiguration, outputFile, min, max, structName);
+            }
+        }
+
+        if (!noError)
         {
             err << cgenerator.errorStr();
             return -4;

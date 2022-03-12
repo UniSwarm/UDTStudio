@@ -43,6 +43,8 @@ public:
     bool generateH(DeviceConfiguration *deviceConfiguration, const QString &filePath);
     bool generateC(DeviceConfiguration *deviceConfiguration, const QString &filePath);
 
+    bool generateHStruct(DeviceConfiguration *deviceConfiguration, const QString &filePath, uint16_t min, uint16_t max, const QString &structName);
+
 private:
     static QString typeToString(const uint16_t &type);
     static QString varNameToString(const QString &name);
