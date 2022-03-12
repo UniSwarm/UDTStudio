@@ -52,7 +52,7 @@ void DeviceIniWriter::writeObjects(const DeviceModel *deviceModel) const
     QList<Index *> optionals;
     QList<Index *> manufacturers;
 
-    for (Index *index : deviceModel->indexes().values())
+    for (Index *index : deviceModel->indexes())
     {
         uint16_t numIndex = index->index();
 
@@ -178,7 +178,7 @@ void DeviceIniWriter::writeSupportedIndexes(const QList<Index *> &indexes) const
  * @brief writes a list of index and these parameters
  * @param list of indexes
  */
-void DeviceIniWriter::writeListIndex(const QList<Index *> indexes) const
+void DeviceIniWriter::writeListIndex(const QList<Index *> &indexes) const
 {
     for (Index *index : indexes)
     {
@@ -258,6 +258,7 @@ void DeviceIniWriter::writeRecord(Index *index) const
         {
             *_file << "DefaultValue=" << defaultValue(subIndex) << "\r\n";
         }
+
         *_file << "PDOMapping=" << pdoToString(subIndex->accessType()) << "\r\n";
         if (subIndex->objFlags() != 0)
         {
@@ -429,12 +430,11 @@ QString DeviceIniWriter::defaultValue(const SubIndex *subIndex) const
         }
         return string;
     }
-    else if (subIndex->isHexValue())
+
+    if (subIndex->isHexValue())
     {
         return valueToString(subIndex->value().toInt(), 16, subIndex->length() * 2);
     }
-    else
-    {
-        return dataToString(subIndex->value());
-    }
+
+    return dataToString(subIndex->value());
 }

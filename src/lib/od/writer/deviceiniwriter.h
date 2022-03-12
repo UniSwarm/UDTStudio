@@ -37,7 +37,7 @@ public:
     void writeDummyUsage(const QMap<QString, QString> &dummyUsages) const;
     void writeComments(const QMap<QString, QString> &comments) const;
     void writeSupportedIndexes(const QList<Index *> &indexes) const;
-    void writeListIndex(const QList<Index *> indexes) const;
+    void writeListIndex(const QList<Index *> &indexes) const;
     void writeIndex(Index *index) const;
     void writeRecord(Index *index) const;
     void writeArray(Index *index) const;
