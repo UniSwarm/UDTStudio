@@ -61,7 +61,7 @@ public:
         RPDO = 0x08
     };
     AccessType accessType() const;
-    void setAccessType(const AccessType &accessType);
+    void setAccessType(AccessType accessType);
     bool isReadable() const;
     bool isWritable() const;
     bool hasTPDOAccess() const;

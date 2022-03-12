@@ -31,6 +31,7 @@ NodeSubIndex::NodeSubIndex(const quint8 subIndex)
 
     _error = 0;
     _q1516 = false;
+    _scale = 1.0;
 }
 
 NodeSubIndex::NodeSubIndex(const NodeSubIndex &other)
@@ -165,7 +166,7 @@ NodeSubIndex::AccessType NodeSubIndex::accessType() const
  * @brief access type setter
  * @param 8 bits access type code
  */
-void NodeSubIndex::setAccessType(const AccessType &accessType)
+void NodeSubIndex::setAccessType(AccessType accessType)
 {
     _accessType = accessType;
 }
