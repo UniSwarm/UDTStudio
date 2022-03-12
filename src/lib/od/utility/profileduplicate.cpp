@@ -22,13 +22,13 @@ ProfileDuplicate::ProfileDuplicate()
 {
 }
 
-void ProfileDuplicate::duplicate(DeviceDescription *deviceDescription, const uint8_t number)
+void ProfileDuplicate::duplicate(DeviceModel *deviceModel, uint8_t profileCount)
 {
-    if (!deviceDescription->indexExist(0x1000))
+    if (!deviceModel->indexExist(0x1000))
     {
         return;
     }
-    uint32_t deviceType = deviceDescription->index(0x1000)->subIndex(0)->value().toUInt();
+    uint32_t deviceType = deviceModel->index(0x1000)->subIndex(0)->value().toUInt();
 
     if ((deviceType & 0x0000FFFF) == 402)
     {
@@ -37,26 +37,26 @@ void ProfileDuplicate::duplicate(DeviceDescription *deviceDescription, const uin
         // Standardized profile area : 0x6000 to 0x9FFF
         QList<Index *> standardizedIndex;
 
-        for (auto it = deviceDescription->indexes().begin(); it != deviceDescription->indexes().end(); )
+        for (auto it = deviceModel->indexes().begin(); it != deviceModel->indexes().end(); )
         {
             uint16_t numIndex = (*it)->index();
             if (numIndex >= 0x4000 && numIndex < 0x4200)
             {
                 manufactureIndex.append(*it);
-                it = deviceDescription->indexes().erase(it);
+                it = deviceModel->indexes().erase(it);
             }
             else if (numIndex >= 0x4200 && numIndex <= 0x4FFF)
             {
-                it = deviceDescription->indexes().erase(it);
+                it = deviceModel->indexes().erase(it);
             }
             else if (numIndex >= 0x6000 && numIndex < 0x6800)
             {
                 standardizedIndex.append(*it);
-                it = deviceDescription->indexes().erase(it);
+                it = deviceModel->indexes().erase(it);
             }
             else if (numIndex >= 0x6800 && numIndex <= 0x9FFF)
             {
-                it = deviceDescription->indexes().erase(it);
+                it = deviceModel->indexes().erase(it);
             }
             else
             {
@@ -66,7 +66,7 @@ void ProfileDuplicate::duplicate(DeviceDescription *deviceDescription, const uin
 
         QString name;
         QRegExp reg("^[a][0-9]_");
-        for (uint16_t count = 0; count < number; count++)
+        for (uint16_t count = 0; count < profileCount; count++)
         {
             for (const Index *index : manufactureIndex)
             {
@@ -76,11 +76,11 @@ void ProfileDuplicate::duplicate(DeviceDescription *deviceDescription, const uin
                 name.remove(reg);
                 newIndex->setName(QString("a%1_").arg(count + 1) + name);
                 newIndex->setIndex(indexId);
-                deviceDescription->addIndex(newIndex);
+                deviceModel->addIndex(newIndex);
             }
         }
 
-        for (uint16_t count = 0; count < number; count++)
+        for (uint16_t count = 0; count < profileCount; count++)
         {
             for (const Index *index : standardizedIndex)
             {
@@ -90,7 +90,7 @@ void ProfileDuplicate::duplicate(DeviceDescription *deviceDescription, const uin
                 name.remove(reg);
                 newIndex->setName(QString("a%1_").arg(count + 1) + name);
                 newIndex->setIndex(indexId);
-                deviceDescription->addIndex(newIndex);
+                deviceModel->addIndex(newIndex);
             }
         }
     }
@@ -100,17 +100,17 @@ void ProfileDuplicate::duplicate(DeviceDescription *deviceDescription, const uin
         // Standardized profile area : 0x6000 to 0x9FFF
         QList<Index *> standardizedIndex;
 
-        for (auto it = deviceDescription->indexes().begin(); it != deviceDescription->indexes().end(); )
+        for (auto it = deviceModel->indexes().begin(); it != deviceModel->indexes().end(); )
         {
             uint16_t numIndex = (*it)->index();
             if (numIndex >= 0x6000 && numIndex < 0x6100)
             {
                 standardizedIndex.append(*it);
-                it = deviceDescription->indexes().erase(it);
+                it = deviceModel->indexes().erase(it);
             }
             else if (numIndex >= 0x6100 && numIndex <= 0x9FFF)
             {
-                it = deviceDescription->indexes().erase(it);
+                it = deviceModel->indexes().erase(it);
             }
             else
             {
@@ -120,7 +120,7 @@ void ProfileDuplicate::duplicate(DeviceDescription *deviceDescription, const uin
 
         QString name;
         QRegExp reg("^[s][0-9]+_");
-        for (uint16_t count = 0; count < number; count++)
+        for (uint16_t count = 0; count < profileCount; count++)
         {
             for (const Index *index : standardizedIndex)
             {
@@ -130,7 +130,7 @@ void ProfileDuplicate::duplicate(DeviceDescription *deviceDescription, const uin
                 name.remove(reg);
                 newIndex->setName(QString("s%1_").arg(QString::number(count + 1).rightJustified(2, '0')) + name);
                 newIndex->setIndex(indexId);
-                deviceDescription->addIndex(newIndex);
+                deviceModel->addIndex(newIndex);
             }
         }
     }
