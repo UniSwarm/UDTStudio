@@ -114,7 +114,7 @@ void ProfileDuplicate::duplicate(DeviceModel *deviceModel, uint8_t profileCount)
             {
                 Index *newIndex = new Index(*index);
                 newIndex->setIndex(newIndex->index() + (0x100 * count));
-                renameIndex(newIndex, reg, QString("s%1_").arg(count + 1));
+                renameIndex(newIndex, reg, QString("s") + QString::number(count + 1).rightJustified(2, '0') + QString("_"));
                 deviceModel->addIndex(newIndex);
             }
         }
