@@ -19,6 +19,7 @@
 #include "configurationapply.h"
 
 #include <QFileInfo>
+#include <QRegularExpression>
 #include <QSettings>
 
 #include <QDebug>
@@ -165,19 +166,43 @@ void ConfigurationApply::resizeArray(Index *index, int newSize)
     {
         SubIndex *newSubIndex = new SubIndex(*subIndex);
         newSubIndex->setSubIndex(sub);
-        QString name = subIndex->name();
-        name.replace("%d", QString::number(sub));
-        name.replace("%c", QString('A' + sub - 1));
-        newSubIndex->setName(name);
+        newSubIndex->setName(renameItem(subIndex->name(), sub));
         index->addSubIndex(newSubIndex);
     }
-    QString name = subIndex->name();
-    name.replace("%d", QString::number(1));
-    name.replace("%c", QString('A'));
-    subIndex->setName(name);
+    subIndex->setName(renameItem(subIndex->name(), 1));
 
     index->setMaxSubIndex(newSize + 1);
     index->subIndex(0)->setValue(newSize);
+}
+
+QString ConfigurationApply::renameItem(const QString &name, int value)
+{
+    QString newName = name;
+    QRegularExpression reg("%([0-9]*)([z]*)([cd])");
+    QRegularExpressionMatch match = reg.match(name);
+    QString modifier = match.captured(2);
+    QString type = match.captured(3);
+    if (type == 'd')
+    {
+        if (modifier == 'z')
+        {
+            value--;
+        }
+        int length = match.captured(1).toInt();
+        newName.replace(reg, QString::number(value).rightJustified(length, '0'));
+        return newName;
+    }
+    else if (type == 'c')
+    {
+        newName.replace("%c", QString('a' + value - 1));
+        return newName;
+    }
+    else if (type == 'C')
+    {
+        newName.replace("%c", QString('A' + value - 1));
+        return newName;
+    }
+    return name;
 }
 
 /**
