@@ -945,7 +945,7 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
                 cFile << " = ";
                 cFile << dataToString(index->subIndex(i));
                 cFile << ";";
-                cFile << "  // 0x" << QString::number(index->index(), 16) << "." << i - 1;
+                cFile << "  // 0x" << QString::number(index->index(), 16) << "." << i;
                 cFile << "\n";
                 written++;
             }
@@ -994,19 +994,18 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
           << "{";
 
     // OD_entry_t.index
-    cFile << "0x" << QString::number(index->index(), 16).toUpper() << ", "
-          << "0x";
+    cFile << "0x" << QString::number(index->index(), 16).toUpper() << ", ";
 
     // OD_entry_t.nbSubIndex
     switch (index->objectType())
     {
         case Index::Object::VAR:
-            cFile << "0";
+            cFile << "0x0";
             break;
 
         case Index::Object::RECORD:
         case Index::Object::ARRAY:
-            cFile << index->maxSubIndex() - 1;
+            cFile << "0x" << QString::number(index->maxSubIndex() - 1, 16).toUpper();
             break;
     }
     cFile << ", ";
