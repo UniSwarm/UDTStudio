@@ -178,7 +178,7 @@ void ConfigurationApply::resizeArray(Index *index, int newSize)
 QString ConfigurationApply::renameItem(const QString &name, int value)
 {
     QString newName = name;
-    QRegularExpression reg("%([0-9]*)([z]*)([cd])");
+    QRegularExpression reg("%([0-9]*)([z]*)([cCd])");
     QRegularExpressionMatch match = reg.match(name);
     QString modifier = match.captured(2);
     QString type = match.captured(3);
@@ -192,17 +192,17 @@ QString ConfigurationApply::renameItem(const QString &name, int value)
         newName.replace(reg, QString::number(value).rightJustified(length, '0'));
         return newName;
     }
-    else if (type == 'c')
+    if (type == "C")
+    {
+        newName.replace("%C", QString('A' + value - 1));
+        return newName;
+    }
+    if (type == "c")
     {
         newName.replace("%c", QString('a' + value - 1));
         return newName;
     }
-    else if (type == 'C')
-    {
-        newName.replace("%c", QString('A' + value - 1));
-        return newName;
-    }
-    return name;
+    return newName;
 }
 
 /**
