@@ -78,7 +78,6 @@ void DataLogger::addData(const NodeObjectId &objId)
         DLData *dlData = new DLData(mobjId);
         dlData->setColor(QColor::fromHsv((_dataList.count() * 48) % 360, 255, 255, 200));
         dlData->setActive(true);
-        dlData->setScale(ODIndexDb::scale(mobjId.index(), mobjId.subIndex(), dlData->node()->profileNumber()));
         _dataMap.insert(dlData->key(), dlData);
         _dataList.append(dlData);
         registerObjId(dlData->objectId());

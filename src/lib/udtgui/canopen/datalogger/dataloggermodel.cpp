@@ -184,13 +184,13 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
                     return QVariant(dlData->name());
 
                 case Value:
-                    return dlData->isEmpty() ? QVariant("-") : QVariant(dlData->lastValue());
+                    return dlData->isEmpty() ? QVariant("-") : QVariant(QString::number(dlData->lastValue()) + dlData->unit());
 
                 case Min:
-                    return dlData->isEmpty() ? QVariant("-") : QVariant(dlData->min());
+                    return dlData->isEmpty() ? QVariant("-") : QVariant(QString::number(dlData->min()) + dlData->unit());
 
                 case Max:
-                    return dlData->isEmpty() ? QVariant("-") : QVariant(dlData->max());
+                    return dlData->isEmpty() ? QVariant("-") : QVariant(QString::number(dlData->max()) + dlData->unit());
 
                 default:
                     return QVariant();
@@ -203,12 +203,14 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
                 pix.fill(dlData->color());
                 return pix;
             }
+            return QVariant();
 
         case Qt::CheckStateRole:
             if (index.column() == NodeName)
             {
                 return QVariant(dlData->isActive() ? Qt::Checked : Qt::Unchecked);
             }
+            return QVariant();
     }
     return QVariant();
 }
@@ -248,6 +250,8 @@ int DataLoggerModel::rowCount(const QModelIndex &parent) const
 
 bool DataLoggerModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    Q_UNUSED(value);
+
     if (!_dataLogger || !index.isValid())
     {
         return false;
@@ -305,7 +309,7 @@ QMimeData *DataLoggerModel::mimeData(const QModelIndexList &indexes) const
         if (index.isValid() && index.column() == NodeName)
         {
             const DLData *dlData = _dataLogger->dataList().at(index.row());
-            encodedData.append(dlData->objectId().mimeData() + ":");
+            encodedData.append((dlData->objectId().mimeData() + ":").toUtf8());
         }
     }
     mimeData->setData("index/subindex", encodedData);

@@ -72,6 +72,9 @@ public:
     qreal scale() const;
     void setScale(qreal scale);
 
+    QString unit() const;
+    void setUnit(const QString &unit);
+
 protected:
     NodeObjectId _objectId;
     Node *_node;
@@ -88,6 +91,7 @@ protected:
     qreal _max;
 
     bool _q1516;
+    QString _unit;
 };
 
 #endif  // DLDATA_H

@@ -39,6 +39,8 @@ DLData::DLData(const NodeObjectId &objectId)
         {
             _name = nodeSubIndex->nodeIndex()->name() + "." + nodeSubIndex->name();
             _q1516 = nodeSubIndex->isQ1516();
+            _scale = nodeSubIndex->scale();
+            _unit = nodeSubIndex->unit();
         }
     }
 
@@ -98,6 +100,16 @@ qreal DLData::scale() const
 void DLData::setScale(qreal scale)
 {
     _scale = scale;
+}
+
+QString DLData::unit() const
+{
+    return _unit;
+}
+
+void DLData::setUnit(const QString &unit)
+{
+    _unit = unit;
 }
 
 double DLData::firstValue() const
