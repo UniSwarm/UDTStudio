@@ -134,18 +134,19 @@ QWidget *NodeScreenHome::createSumaryWidget()
     hlayout->addItem(sumaryLayout);
 
     QVBoxLayout *buttonlayout = new QVBoxLayout();
-    QPushButton *goFirmwareButton = new QPushButton(tr("&Update firmware"));
-    goFirmwareButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
-    connect(goFirmwareButton,
+    buttonlayout->setSpacing(3);
+    QPushButton *updateFirmwareButton = new QPushButton(tr("&Update firmware"));
+    updateFirmwareButton->setFixedWidth(200);
+    connect(updateFirmwareButton,
             &QPushButton::released,
             [=]()
             {
                 updateFirmware();
             });
-    buttonlayout->addWidget(goFirmwareButton);
+    buttonlayout->addWidget(updateFirmwareButton);
 
-    QPushButton *resetHardwareButton = new QPushButton(tr(" &Reset Hardware "));
-    resetHardwareButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+    QPushButton *resetHardwareButton = new QPushButton(tr("&Reset hardware"));
+    resetHardwareButton->setFixedWidth(200);
     connect(resetHardwareButton,
             &QPushButton::released,
             [=]()
@@ -211,7 +212,7 @@ QWidget *NodeScreenHome::createOdWidget()
 
     QVBoxLayout *buttonlayout = new QVBoxLayout();
     QPushButton *goODButton = new QPushButton(tr("Go to OD tab"));
-    goODButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+    goODButton->setFixedWidth(200);
     connect(goODButton,
             &QPushButton::released,
             [=]()
@@ -246,14 +247,18 @@ void NodeScreenHome::updateInfos(Node *node)
             }
         }
         _odEdsFileLabel->setText(node->edsFileName());
+
         QString fileInfos;
+        fileInfos.append("<table><tbody>");
         QMapIterator<QString, QString> i(node->nodeOd()->edsFileInfos());
         while (i.hasNext())
         {
             i.next();
-            fileInfos.append(i.key() + " : \t" + i.value() + "\n");
+            fileInfos.append("<tr><td>" + i.key() + ": </td><td>" + i.value() + "</td></tr>");
         }
+        fileInfos.append("</tbody></table>");
         _odFileInfosLabel->setText(fileInfos);
+
         _odCountLabel->setNum(node->nodeOd()->indexCount());
         _odSubIndexCountLabel->setNum(node->nodeOd()->subIndexCount());
     }
