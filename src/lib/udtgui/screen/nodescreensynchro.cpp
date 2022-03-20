@@ -141,11 +141,13 @@ QGroupBox *NodeScreenSynchro::createSynchroConfigurationWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Synchro config"));
     QFormLayout *layout = new QFormLayout();
+    layout->setVerticalSpacing(3);
+    layout->setHorizontalSpacing(3);
 
     _modeSynchroComboBox = new IndexComboBox();
     _modeSynchroComboBox->addItem("OFF", QVariant(static_cast<uint16_t>(0x0000)));
     _modeSynchroComboBox->addItem("Position", QVariant(static_cast<uint16_t>(0x0001)));
-    layout->addRow(tr("&Mode_Synchro:"), _modeSynchroComboBox);
+    layout->addRow(tr("&Mode:"), _modeSynchroComboBox);
 
     _maxDiffSpinBox = new IndexSpinBox();
     _maxDiffSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
@@ -171,6 +173,8 @@ QGroupBox *NodeScreenSynchro::createSynchroStatusWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Synchro status"));
     QFormLayout *layout = new QFormLayout();
+    layout->setVerticalSpacing(3);
+    layout->setHorizontalSpacing(3);
 
     _flagLabel = new IndexLabel();
     layout->addRow(tr("Flag:"), _flagLabel);
