@@ -30,11 +30,15 @@ public:
 
     // QObject interface
 public:
-    bool eventFilter(QObject *watched, QEvent *event) override;
+    bool eventFilter(QObject *editor, QEvent *event) override;
 
     // QAbstractItemDelegate interface
 public:
     void setEditorData(QWidget *editor, const QModelIndex &index) const override;
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+
+private:
+    mutable QString _currentEditUnit;
 };
 
 #endif  // NODEODITEMDELEGATE_H

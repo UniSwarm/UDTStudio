@@ -374,6 +374,11 @@ bool NodeOdItem::setData(int column, const QVariant &value, int role, Node *node
         return false;
     }
 
+    if (valueToWrite.toString().endsWith(subIndex->unit()))
+    {
+        valueToWrite = valueToWrite.toString().mid(0, valueToWrite.toString().size() - subIndex->unit().count());
+    }
+
     if (subIndex->isNumeric())
     {
         QString valueStr = valueToWrite.toString();

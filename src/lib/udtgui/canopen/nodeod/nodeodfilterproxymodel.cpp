@@ -33,6 +33,36 @@ NodeOdFilterProxyModel::~NodeOdFilterProxyModel()
 {
 }
 
+Node *NodeOdFilterProxyModel::node() const
+{
+    NodeOdItemModel *smodel = dynamic_cast<NodeOdItemModel *>(sourceModel());
+    if (!smodel)
+    {
+        return nullptr;
+    }
+    return smodel->node();
+}
+
+NodeIndex *NodeOdFilterProxyModel::nodeIndex(const QModelIndex &index) const
+{
+    NodeOdItemModel *smodel = dynamic_cast<NodeOdItemModel *>(sourceModel());
+    if (!smodel)
+    {
+        return nullptr;
+    }
+    return smodel->nodeIndex(mapToSource(index));
+}
+
+NodeSubIndex *NodeOdFilterProxyModel::nodeSubIndex(const QModelIndex &index) const
+{
+    NodeOdItemModel *smodel = dynamic_cast<NodeOdItemModel *>(sourceModel());
+    if (!smodel)
+    {
+        return nullptr;
+    }
+    return smodel->nodeSubIndex(mapToSource(index));
+}
+
 NodeOdFilterProxyModel::PDOFilter NodeOdFilterProxyModel::pdoFilter() const
 {
     return _pdoFilter;

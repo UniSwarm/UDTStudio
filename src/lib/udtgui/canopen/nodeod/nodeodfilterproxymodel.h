@@ -23,12 +23,20 @@
 
 #include <QSortFilterProxyModel>
 
+class Node;
+class NodeIndex;
+class NodeSubIndex;
+
 class UDTGUI_EXPORT NodeOdFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 public:
     NodeOdFilterProxyModel(QObject *parent = nullptr);
     ~NodeOdFilterProxyModel();
+
+    Node *node() const;
+    NodeIndex *nodeIndex(const QModelIndex &index) const;
+    NodeSubIndex *nodeSubIndex(const QModelIndex &index) const;
 
     enum PDOFilter
     {
