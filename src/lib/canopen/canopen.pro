@@ -34,6 +34,8 @@ SOURCES += \
     $$PWD/services/nodediscover.cpp \
     $$PWD/datalogger/datalogger.cpp \
     $$PWD/datalogger/dldata.cpp \
+    $$PWD/datalogger/fastdatalogger.cpp \
+    $$PWD/datalogger/fastdataloggerconfig.cpp \
     $$PWD/profile/nodeprofile.cpp \
     $$PWD/profile/nodeprofilefactory.cpp \
     $$PWD/profile/p402/nodeprofile402.cpp \
@@ -89,6 +91,8 @@ HEADERS += \
     $$PWD/services/nodediscover.h \
     $$PWD/datalogger/datalogger.h \
     $$PWD/datalogger/dldata.h \
+    $$PWD/datalogger/fastdatalogger.h \
+    $$PWD/datalogger/fastdataloggerconfig.h \
     $$PWD/profile/nodeprofilefactory.h \
     $$PWD/profile/p402/nodeprofile402.h \
     $$PWD/profile/nodeprofile.h \
