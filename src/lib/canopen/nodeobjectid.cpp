@@ -198,7 +198,7 @@ QString NodeObjectId::mimeData() const
              QString::number(_subIndex, 16).rightJustified(2, '0'));
 }
 
-NodeObjectId NodeObjectId::fromMimeData(const QString mimeData)
+NodeObjectId NodeObjectId::fromMimeData(const QString &mimeData)
 {
     const QStringList fields = mimeData.split('.', QString::SkipEmptyParts);
     if (fields.count() < 4)
@@ -218,12 +218,12 @@ quint8 NodeObjectId::nodeId() const
     return _nodeId;
 }
 
-void NodeObjectId::setNodeId(const quint8 &nodeId)
+void NodeObjectId::setNodeId(quint8 nodeId)
 {
     _nodeId = nodeId;
 }
 
-void NodeObjectId::setBusIdNodeId(const quint8 &busId, const quint8 &nodeId)
+void NodeObjectId::setBusIdNodeId(quint8 busId, quint8 nodeId)
 {
     _nodeId = nodeId;
     _busId = busId;
@@ -234,7 +234,7 @@ quint16 NodeObjectId::index() const
     return _index;
 }
 
-void NodeObjectId::setIndex(const quint16 &index)
+void NodeObjectId::setIndex(quint16 index)
 {
     _index = index;
 }
@@ -244,7 +244,7 @@ quint8 NodeObjectId::subIndex() const
     return _subIndex;
 }
 
-void NodeObjectId::setSubIndex(const quint8 &subIndex)
+void NodeObjectId::setSubIndex(quint8 subIndex)
 {
     _subIndex = subIndex;
 }
@@ -254,7 +254,7 @@ QMetaType::Type NodeObjectId::dataType() const
     return _dataType;
 }
 
-void NodeObjectId::setDataType(const QMetaType::Type &dataType)
+void NodeObjectId::setDataType(QMetaType::Type dataType)
 {
     _dataType = dataType;
 }
@@ -264,7 +264,7 @@ quint8 NodeObjectId::busId() const
     return _busId;
 }
 
-void NodeObjectId::setBusId(const quint8 &busId)
+void NodeObjectId::setBusId(quint8 busId)
 {
     _busId = busId;
 }

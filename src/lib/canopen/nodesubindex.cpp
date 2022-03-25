@@ -21,7 +21,7 @@
 #include "nodeindex.h"
 #include "nodeod.h"
 
-NodeSubIndex::NodeSubIndex(const quint8 subIndex)
+NodeSubIndex::NodeSubIndex(quint8 subIndex)
 {
     _nodeIndex = nullptr;
 
@@ -130,7 +130,7 @@ uint8_t NodeSubIndex::subIndex() const
  * @brief sub-index number setter
  * @param 8 bits sub-index number
  */
-void NodeSubIndex::setSubIndex(const uint8_t subIndex)
+void NodeSubIndex::setSubIndex(uint8_t subIndex)
 {
     _subIndex = subIndex;
 }
@@ -308,7 +308,7 @@ quint32 NodeSubIndex::error() const
  * @brief _error setter
  * @param new sub-index value
  */
-void NodeSubIndex::setError(const quint32 error)
+void NodeSubIndex::setError(quint32 error)
 {
     _error = error;
 }
@@ -335,7 +335,7 @@ NodeSubIndex::DataType NodeSubIndex::dataType() const
  * @brief _dataType setter
  * @param new 16 bits data type code
  */
-void NodeSubIndex::setDataType(const DataType dataType)
+void NodeSubIndex::setDataType(DataType dataType)
 {
     _dataType = dataType;
 }
@@ -345,7 +345,7 @@ void NodeSubIndex::setDataType(const DataType dataType)
  * @param 16 bits data type code
  * @return data type string
  */
-QString NodeSubIndex::dataTypeStr(const DataType dataType)
+QString NodeSubIndex::dataTypeStr(DataType dataType)
 {
     switch (dataType)
     {

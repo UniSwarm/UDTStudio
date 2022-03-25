@@ -35,7 +35,7 @@ public:
     NodeOdSubscriber();
     virtual ~NodeOdSubscriber();
 
-    void notifySubscriber(const NodeObjectId &objId, const SDO::FlagsRequest flags);
+    void notifySubscriber(const NodeObjectId &objId, SDO::FlagsRequest flags);
 
     QList<NodeObjectId> objIdList() const;
 
@@ -43,16 +43,19 @@ protected:
     Node *nodeInterrest() const;
     void setNodeInterrest(Node *nodeInterrest);
 
-    void readObject(const quint16 index, const quint8 subindex, const QMetaType::Type dataType = QMetaType::UnknownType);
+    void readObject(const NodeObjectId &id);
+    void readObject(quint16 index, quint8 subindex, QMetaType::Type dataType = QMetaType::UnknownType);
+    void writeObject(const NodeObjectId &id, const QVariant &data);
+    void writeObject(quint16 index, quint8 subindex, const QVariant &data);
 
     void registerObjId(const NodeObjectId &objId);
-    void registerSubIndex(const quint16 index, const quint8 subindex);
-    void registerIndex(const quint16 index);
+    void registerSubIndex(quint16 index, quint8 subindex);
+    void registerIndex(quint16 index);
     void registerFullOd();
 
     void unRegisterObjId(const NodeObjectId &objId);
-    void unRegisterSubIndex(const quint16 index, const quint8 subindex);
-    void unRegisterIndex(const quint16 index);
+    void unRegisterSubIndex(quint16 index, quint8 subindex);
+    void unRegisterIndex(quint16 index);
     void unRegisterFullOd();
 
     virtual void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) = 0;  // TODO constify flags param

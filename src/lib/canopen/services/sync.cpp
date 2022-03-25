@@ -95,7 +95,7 @@ void Sync::sendSyncOne()
     }
     _status = STARTED;
     emit signalBeforeSync();
-    QTimer::singleShot(ONE_SHOT_TIMER, this,  &Sync::sendSyncOneTimeout);
+    QTimer::singleShot(ONE_SHOT_TIMER, this, &Sync::sendSyncOneTimeout);
 }
 
 void Sync::parseFrame(const QCanBusFrame &frame)

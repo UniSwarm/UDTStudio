@@ -39,21 +39,21 @@ public:
     NodeObjectId &operator=(const NodeObjectId &other);
 
     quint8 busId() const;
-    void setBusId(const quint8 &busId);
+    void setBusId(quint8 busId);
 
     quint8 nodeId() const;
-    void setNodeId(const quint8 &nodeId);
+    void setNodeId(quint8 nodeId);
 
-    void setBusIdNodeId(const quint8 &busId, const quint8 &nodeId);
+    void setBusIdNodeId(quint8 busId, quint8 nodeId);
 
     quint16 index() const;
-    void setIndex(const quint16 &index);
+    void setIndex(quint16 index);
 
     quint8 subIndex() const;
-    void setSubIndex(const quint8 &subIndex);
+    void setSubIndex(quint8 subIndex);
 
     QMetaType::Type dataType() const;
-    void setDataType(const QMetaType::Type &dataType);
+    void setDataType(QMetaType::Type dataType);
 
     quint8 bitSize() const;
 
@@ -71,7 +71,8 @@ public:
     NodeSubIndex *nodeSubIndex() const;
 
     QString mimeData() const;
-    static NodeObjectId fromMimeData(const QString mimeData);
+
+    static NodeObjectId fromMimeData(const QString &mimeData);
 
 private:
     quint8 _busId;

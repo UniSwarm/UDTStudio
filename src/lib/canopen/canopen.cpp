@@ -44,7 +44,7 @@ void CanOpen::removeBus(CanOpenBus *bus)
     instance()->removeBusI(bus);
 }
 
-CanOpenBus *CanOpen::bus(const quint8 busId)
+CanOpenBus *CanOpen::bus(quint8 busId)
 {
     QMap<quint8, CanOpenBus *>::const_iterator it = instance()->_busesMap.constFind(busId);
     if (it != instance()->_busesMap.cend())

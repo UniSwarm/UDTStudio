@@ -121,7 +121,7 @@ quint8 Node::nodeId() const
     return _nodeId;
 }
 
-void Node::setNodeId(const quint8 nodeId)
+void Node::setNodeId(quint8 nodeId)
 {
     _nodeId = nodeId;
 }
@@ -150,7 +150,7 @@ QString Node::statusStr() const
     return QString();
 }
 
-void Node::setStatus(const Status status)
+void Node::setStatus(Status status)
 {
     bool changed = (status != _status);
     _status = status;
@@ -200,7 +200,7 @@ void Node::readObject(const NodeObjectId &id)
     readObject(id.index(), id.subIndex(), id.dataType());
 }
 
-void Node::readObject(const quint16 index, const quint8 subindex, const QMetaType::Type dataType)
+void Node::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
 {
     if (status() == STOPPED)
     {
@@ -223,7 +223,7 @@ void Node::writeObject(const NodeObjectId &id, const QVariant &data)
     writeObject(id.index(), id.subIndex(), data);
 }
 
-void Node::writeObject(const quint16 index, const quint8 subindex, const QVariant &data)
+void Node::writeObject(quint16 index, quint8 subindex, const QVariant &data)
 {
     if (status() == STOPPED)
     {

@@ -91,12 +91,12 @@ const QList<Node *> &CanOpenBus::nodes() const
     return _nodes;
 }
 
-Node *CanOpenBus::node(const quint8 nodeId)
+Node *CanOpenBus::node(quint8 nodeId)
 {
     return _nodesMap.value(nodeId);
 }
 
-bool CanOpenBus::existNode(const quint8 nodeId)
+bool CanOpenBus::existNode(quint8 nodeId)
 {
     return _nodesMap.contains(nodeId);
 }

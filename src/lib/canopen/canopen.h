@@ -36,7 +36,7 @@ public:
     static const QList<CanOpenBus *> &buses();
     static CanOpenBus *addBus(CanOpenBus *bus);
     static void removeBus(CanOpenBus *bus);
-    static CanOpenBus *bus(const quint8 busId);
+    static CanOpenBus *bus(quint8 busId);
 
     static inline CanOpen *instance()
     {

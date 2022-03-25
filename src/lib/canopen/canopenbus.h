@@ -44,10 +44,10 @@ public:
     quint8 busId() const;
 
     const QList<Node *> &nodes() const;
-    Node *node(const quint8 nodeId);
+    Node *node(quint8 nodeId);
     void addNode(Node *node);
     void removeNode(Node *node);
-    bool existNode(const quint8 nodeId);
+    bool existNode(quint8 nodeId);
 
     CanBusDriver *canBusDriver() const;
     void setCanBusDriver(CanBusDriver *canBusDriver);

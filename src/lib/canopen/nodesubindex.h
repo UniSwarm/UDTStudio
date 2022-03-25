@@ -33,7 +33,7 @@ class NodeIndex;
 class CANOPEN_EXPORT NodeSubIndex
 {
 public:
-    NodeSubIndex(const quint8 subIndex);
+    NodeSubIndex(quint8 subIndex);
     NodeSubIndex(const NodeSubIndex &other);
     ~NodeSubIndex();
 
@@ -46,7 +46,7 @@ public:
     NodeObjectId objectId() const;
 
     quint8 subIndex() const;
-    void setSubIndex(const quint8 subIndex);
+    void setSubIndex(quint8 subIndex);
 
     const QString &name() const;
     void setName(const QString &name);
@@ -77,7 +77,7 @@ public:
     void resetValue();
 
     quint32 error() const;
-    void setError(const quint32 value);
+    void setError(quint32 value);
     void clearError();
 
     // =============== Data type ==================
@@ -111,8 +111,8 @@ public:
         UNSIGNED64 = 0x001B
     };
     DataType dataType() const;
-    void setDataType(const DataType dataType);
-    static QString dataTypeStr(const DataType dataType);
+    void setDataType(DataType dataType);
+    static QString dataTypeStr(DataType dataType);
     bool isNumeric() const;
     QMetaType::Type metaType() const;
 

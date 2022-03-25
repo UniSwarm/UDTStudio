@@ -48,7 +48,7 @@ public:
     quint8 busId() const;
 
     quint8 nodeId() const;
-    void setNodeId(const quint8 nodeId);
+    void setNodeId(quint8 nodeId);
 
     enum Status
     {
@@ -59,7 +59,7 @@ public:
     };
     Status status() const;
     QString statusStr() const;
-    void setStatus(const Status status);
+    void setStatus(Status status);
 
     const QString &name() const;
     quint16 manufacturerId() const;
@@ -69,9 +69,9 @@ public:
     // Node od
     NodeOd *nodeOd() const;
     void readObject(const NodeObjectId &id);
-    void readObject(const quint16 index, const quint8 subindex, const QMetaType::Type dataType = QMetaType::Type::UnknownType);
+    void readObject(quint16 index, quint8 subindex, QMetaType::Type dataType = QMetaType::UnknownType);
     void writeObject(const NodeObjectId &id, const QVariant &data);
-    void writeObject(const quint16 index, const quint8 subindex, const QVariant &data);
+    void writeObject(quint16 index, quint8 subindex, const QVariant &data);
 
     void loadEds(const QString &fileName);
     const QString &edsFileName() const;
