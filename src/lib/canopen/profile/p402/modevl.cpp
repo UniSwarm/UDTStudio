@@ -255,9 +255,9 @@ void ModeVl::reset()
     _nodeProfile402->node()->readObject(_targetObjectId);
 }
 
-void ModeVl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void ModeVl::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & SDO::FlagsRequest::Error)
+    if (flags & NodeOd::FlagsRequest::Error)
     {
         return;
     }

@@ -531,7 +531,7 @@ QHBoxLayout *P402IpWidget::createButtonWidgets()
     return layout;
 }
 
-void P402IpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void P402IpWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     Q_UNUSED(objId)
     Q_UNUSED(flags)

@@ -152,9 +152,9 @@ void ModePp::readAllObjects()
     _nodeProfile402->node()->readObject(_targetObjectId);
 }
 
-void ModePp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void ModePp::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & SDO::FlagsRequest::Error)
+    if (flags & NodeOd::FlagsRequest::Error)
     {
         return;
     }

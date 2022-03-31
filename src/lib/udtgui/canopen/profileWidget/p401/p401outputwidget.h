@@ -84,7 +84,7 @@ private:
 
     // NodeOdSubscriber interface
 protected:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+    void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;
 };
 
 #endif  // P401OUTPUTWIDGET_H

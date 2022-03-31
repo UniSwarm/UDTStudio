@@ -134,7 +134,7 @@ void UfwUpdate::removeByte(QByteArray &prog)
     }
 }
 
-void UfwUpdate::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void UfwUpdate::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     if (_byteArrayList.isEmpty())
     {
@@ -143,13 +143,13 @@ void UfwUpdate::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 
     if (objId.index() == _programDataObjectId.index())
     {
-        if ((flags & SDO::FlagsRequest::Error) == SDO::FlagsRequest::Error)
+        if ((flags & NodeOd::FlagsRequest::Error) == NodeOd::FlagsRequest::Error)
         {
             emit finished(false);
             _indexList = 0;
             _byteArrayList.clear();
         }
-        else if (flags == SDO::FlagsRequest::Write)
+        else if (flags == NodeOd::FlagsRequest::Write)
         {
             if (!_indexList)
             {
@@ -162,7 +162,7 @@ void UfwUpdate::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
                 process();
             }
         }
-        else if (flags == SDO::FlagsRequest::Read)
+        else if (flags == NodeOd::FlagsRequest::Read)
         {
         }
     }

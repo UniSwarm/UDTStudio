@@ -217,7 +217,7 @@ public:
     virtual void reset() override;
 
 public:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+    void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;
 };
 
 #endif  // NODEPROFILE402_H

@@ -26,6 +26,7 @@
 
 #include "nodeobjectid.h"
 #include "services/sdo.h"
+#include "nodeod.h"
 
 class Node;
 
@@ -35,7 +36,7 @@ public:
     NodeOdSubscriber();
     virtual ~NodeOdSubscriber();
 
-    void notifySubscriber(const NodeObjectId &objId, SDO::FlagsRequest flags);
+    void notifySubscriber(const NodeObjectId &objId, NodeOd::FlagsRequest flags);
 
     QList<NodeObjectId> objIdList() const;
 
@@ -58,7 +59,7 @@ protected:
     void unRegisterIndex(quint16 index);
     void unRegisterFullOd();
 
-    virtual void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) = 0;  // TODO constify flags param
+    virtual void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) = 0;  // TODO constify flags param
 
 private:
     friend class NodeOd;

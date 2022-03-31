@@ -490,7 +490,7 @@ void Bootloader::process()
     }
 }
 
-void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void Bootloader::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     if (objId.index() == 0x1000)
     {
@@ -508,7 +508,7 @@ void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
 
     if ((objId.index() == _programControlObjectId.index()) && objId.subIndex() == 1)
     {
-        if (flags == SDO::FlagsRequest::Read)
+        if (flags == NodeOd::FlagsRequest::Read)
         {
             uint8_t program = static_cast<uint8_t>(_node->nodeOd()->value(_programControlObjectId).toUInt());
             if (program == PROGRAM_CONTROL_STOP || program == PROGRAM_CONTROL_RESET)
@@ -559,12 +559,12 @@ void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
                 process();
             }
         }
-        else if (flags == SDO::FlagsRequest::Write && _mode == MODE_OTP && _state == STATE_UPLOAD_OTP_START)
+        else if (flags == NodeOd::FlagsRequest::Write && _mode == MODE_OTP && _state == STATE_UPLOAD_OTP_START)
         {
             _state = STATE_UPLOAD_OTP_IN_PROGRESS;
             process();
         }
-        if ((flags & SDO::FlagsRequest::Error) == SDO::FlagsRequest::Error)
+        if ((flags & NodeOd::FlagsRequest::Error) == NodeOd::FlagsRequest::Error)
         {
             _error = static_cast<quint32>(_node->nodeOd()->errorObject(_programControlObjectId));
             _state = STATE_NOT_OK;
@@ -593,12 +593,12 @@ void Bootloader::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     {
         if (_mode == MODE_OTP)
         {
-            if ((flags & SDO::FlagsRequest::Error) == SDO::FlagsRequest::Error)
+            if ((flags & NodeOd::FlagsRequest::Error) == NodeOd::FlagsRequest::Error)
             {
                 _progOtp.clear();
                 _state = STATE_NOT_OK;
             }
-            else if (flags == SDO::FlagsRequest::Write)
+            else if (flags == NodeOd::FlagsRequest::Write)
             {
                 _progOtp.clear();
                 _state = STATE_UPLOAD_OTP_FINISHED;

@@ -84,10 +84,18 @@ public:
     QDateTime lastModification(quint16 index, quint8 subIndex = 0x00) const;
 
     // subscribe, notifier service
+    enum FlagsRequest
+    {
+        Read = 0x01,
+        Write = 0x02,
+        Error = 0x04,
+        Sdo = 0x08,
+        Pdo = 0x10
+    };
     void subscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex);
     void unsubscribe(NodeOdSubscriber *object);
     void unsubscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex);
-    void updateObjectFromDevice(quint16 index, quint8 subindex, const QVariant &value, SDO::FlagsRequest flags, const QDateTime &modificationDate = QDateTime());
+    void updateObjectFromDevice(quint16 index, quint8 subindex, const QVariant &value, NodeOd::FlagsRequest flags, const QDateTime &modificationDate = QDateTime());
 
     // store / restore
     void store(uint8_t subIndex, uint32_t signature);
@@ -110,7 +118,7 @@ private:
         quint8 notifySubIndex;
     };
     QMultiMap<quint32, Subscriber> _subscribers;
-    void notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySubIndex, SDO::FlagsRequest flags);
+    void notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySubIndex, NodeOd::FlagsRequest flags);
 };
 
 #endif  // NODEOD_H

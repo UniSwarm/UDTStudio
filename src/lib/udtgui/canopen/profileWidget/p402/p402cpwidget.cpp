@@ -307,9 +307,9 @@ QHBoxLayout *P402CpWidget::createButtonWidgets()
     return layout;
 }
 
-void P402CpWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void P402CpWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & SDO::FlagsRequest::Error)
+    if (flags & NodeOd::FlagsRequest::Error)
     {
         return;
     }

@@ -33,7 +33,7 @@ NodeOdSubscriber::~NodeOdSubscriber()
     unRegisterFullOd();
 }
 
-void NodeOdSubscriber::notifySubscriber(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void NodeOdSubscriber::notifySubscriber(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     this->odNotify(objId, flags);
 }
@@ -69,7 +69,7 @@ void NodeOdSubscriber::setNodeInterrest(Node *nodeInterrest)
             {
                 _nodeInterrest->nodeOd()->subscribe(this, objId.index(), objId.subIndex());
 
-                this->odNotify(objId, SDO::Read);
+                this->odNotify(objId, NodeOd::Read);
             }
         }
     }

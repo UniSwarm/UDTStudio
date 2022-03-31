@@ -367,7 +367,7 @@ QModelIndex NodeOdItemModel::subIndexItem(quint16 index, quint8 subindex, int co
     return createIndex(childSubIndex->row(), col, childSubIndex);
 }
 
-void NodeOdItemModel::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void NodeOdItemModel::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     Q_UNUSED(flags)
     QModelIndex modelIndexStart = subIndexItem(objId.index(), objId.subIndex(), Value);

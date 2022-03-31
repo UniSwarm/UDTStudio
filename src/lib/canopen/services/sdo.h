@@ -44,29 +44,19 @@ public:
     void processingFrameFromClient(const QCanBusFrame &frame);
     void processingFrameFromServer(const QCanBusFrame &frame);
 
-    quint32 cobIdClientToServer();
-    quint32 cobIdServerToClient();
+    quint32 cobIdClientToServer() const;
+    quint32 cobIdServerToClient() const;
 
-    bool hasRequestPending();
+    bool hasRequestPending() const;
 
     bool uploadData(quint16 index, quint8 subindex, QMetaType::Type dataType);
     bool downloadData(quint16 index, quint8 subindex, const QVariant &data);
-
-    enum FlagsRequest
-    {
-        Read = 0x01,
-        Write = 0x02,
-        Error = 0x04,
-        Sdo = 0x08,
-        Pdo = 0x10
-    };
 
     enum Status
     {
         SDO_STATE_FREE,
         SDO_STATE_NOT_FREE
     };
-
     Status status() const;
 
     // ================= sdo abort codes ====================
@@ -120,8 +110,7 @@ public:
         // object dictionary is generated from file and generation fails because of an file error)
         CO_SDO_ABORT_CODE_NO_DATA_AVAILABLE = 0x08000024  // No data available
     };
-
-    QString sdoAbort(quint32 error);
+    QString sdoAbort(quint32 error) const;
 
 private:
     quint32 _cobIdClientToServer;

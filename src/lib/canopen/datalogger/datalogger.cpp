@@ -218,7 +218,7 @@ void DataLogger::addDataValue(DLData *dlData, const QVariant &value, const QDate
     emit dataChanged(_dataList.indexOf(dlData));
 }
 
-void DataLogger::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void DataLogger::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     if (!_timer.isActive())
     {
@@ -226,7 +226,7 @@ void DataLogger::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
     }
 
     DLData *dlData = data(objId);
-    if (!dlData || !dlData->isActive() || flags == SDO::Error)
+    if (!dlData || !dlData->isActive() || flags == NodeOd::Error)
     {
         return;
     }

@@ -77,11 +77,11 @@ void ErrorControl::parseFrame(const QCanBusFrame &frame)
     manageErrorControl(frame);
 }
 
-void ErrorControl::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void ErrorControl::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     if ((objId.index() == _guardTime) && _node->nodeOd()->indexExist(_guardTime))
     {
-        if ((flags != SDO::FlagsRequest::Error) && (_node->nodeOd()->value(_guardTime, 0).toUInt() != 0))
+        if ((flags != NodeOd::FlagsRequest::Error) && (_node->nodeOd()->value(_guardTime, 0).toUInt() != 0))
         {
             //_guardTimeTimer->start(_node->nodeOd()->value(_guardTime, 0).toInt());
         }

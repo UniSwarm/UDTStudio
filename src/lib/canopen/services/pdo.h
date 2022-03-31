@@ -123,9 +123,9 @@ protected:
 
     QList<NodeObjectId> _objectCommList;
 
-    void managementRespWriteCommParam(const NodeObjectId &objId, SDO::FlagsRequest flags);
-    void managementRespReadCommAndMapping(const NodeObjectId &objId, SDO::FlagsRequest flags);
-    void managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequest flags);
+    void managementRespWriteCommParam(const NodeObjectId &objId, NodeOd::FlagsRequest flags);
+    void managementRespReadCommAndMapping(const NodeObjectId &objId, NodeOd::FlagsRequest flags);
+    void managementRespProcessMapping(const NodeObjectId &objId, NodeOd::FlagsRequest flags);
     bool createListObjectMapped();
 
     QList<NodeObjectId> _objectCurrentMapped;

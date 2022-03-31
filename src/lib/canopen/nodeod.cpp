@@ -61,7 +61,7 @@ void NodeOd::resetAllObjects()
         for (NodeSubIndex *subIndex : index->subIndexes())
         {
             subIndex->resetValue();
-            updateObjectFromDevice(subIndex->index(), subIndex->subIndex(), subIndex->value(), SDO::Read);
+            updateObjectFromDevice(subIndex->index(), subIndex->subIndex(), subIndex->value(), NodeOd::Read);
         }
     }
 }
@@ -498,13 +498,13 @@ void NodeOd::unsubscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 n
     }
 }
 
-void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, const QVariant &value, SDO::FlagsRequest flags, const QDateTime &modificationDate)
+void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, const QVariant &value, NodeOd::FlagsRequest flags, const QDateTime &modificationDate)
 {
     if (indexExist(indexDevice))
     {
         if (index(indexDevice)->subIndexExist(subindexDevice))
         {
-            if (!(flags & SDO::Error))
+            if (!(flags & NodeOd::Error))
             {
                 index(indexDevice)->subIndex(subindexDevice)->clearError();
                 index(indexDevice)->subIndex(subindexDevice)->setValue(value, modificationDate);
@@ -723,7 +723,7 @@ const QMap<QString, QString> &NodeOd::edsFileInfos() const
     return _edsFileInfos;
 }
 
-void NodeOd::notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySubIndex, SDO::FlagsRequest flags)
+void NodeOd::notifySubscribers(quint32 key, quint16 notifyIndex, quint8 notifySubIndex, NodeOd::FlagsRequest flags)
 {
     QList<Subscriber> interrestedSubscribers = _subscribers.values(key);
     QList<Subscriber>::const_iterator subscriber = interrestedSubscribers.cbegin();

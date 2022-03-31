@@ -90,7 +90,7 @@ private:
 
     // NodeOdSubscriber interface
 protected:
-    void odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags) override;
+    void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;
 
     // P402Mode interface
 public:

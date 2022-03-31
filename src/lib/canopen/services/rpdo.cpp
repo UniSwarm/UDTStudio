@@ -51,7 +51,7 @@ void RPDO::parseFrame(const QCanBusFrame &frame)
     Q_UNUSED(frame)
 }
 
-void RPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void RPDO::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     if ((objId.index() == _objectCommId) && (objId.subIndex() == 0x01))
     {

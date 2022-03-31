@@ -64,7 +64,7 @@ void ModeCstca::reset()
     _nodeProfile402->node()->readObject(_targetObjectId);
 }
 
-void ModeCstca::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void ModeCstca::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     Q_UNUSED(objId)
     Q_UNUSED(flags)

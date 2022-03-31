@@ -64,13 +64,13 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
 
         _node->nodeOd()->updateObjectFromDevice(_objectCurrentMapped.at(i).index(),
                                                 _objectCurrentMapped.at(i).subIndex(),
-                                                vata, SDO::FlagsRequest::Pdo,
+                                                vata, NodeOd::FlagsRequest::Pdo,
                                                 QDateTime::fromMSecsSinceEpoch(frame.timeStamp().seconds() * 1000 + frame.timeStamp().microSeconds() / 1000));
         offset += QMetaType::sizeOf(_objectCurrentMapped.at(i).dataType());
     }
 }
 
-void TPDO::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void TPDO::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     if ((objId.index() == _objectCommId) && (objId.subIndex() == 0x01))
     {

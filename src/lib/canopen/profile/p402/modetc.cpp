@@ -98,7 +98,7 @@ const NodeObjectId &ModeTc::motorRatedTorqueObjectId() const
     return _motorRatedTorqueObjectId;
 }
 
-void ModeTc::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void ModeTc::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     Q_UNUSED(objId)
     Q_UNUSED(flags)

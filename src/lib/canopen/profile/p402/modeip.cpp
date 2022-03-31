@@ -116,9 +116,9 @@ void ModeIp::reset()
     _nodeProfile402->node()->readObject(_targetObjectId);
 }
 
-void ModeIp::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void ModeIp::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & SDO::FlagsRequest::Error)
+    if (flags & NodeOd::FlagsRequest::Error)
     {
         return;
     }

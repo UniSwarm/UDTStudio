@@ -358,9 +358,9 @@ QGroupBox *P402OptionWidget::faultReactionWidgets()
     return groupBox;
 }
 
-void P402OptionWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void P402OptionWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & SDO::FlagsRequest::Error)
+    if (flags & NodeOd::FlagsRequest::Error)
     {
         return;
     }

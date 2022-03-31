@@ -254,9 +254,9 @@ void FastDataLogger::setStatus(Status status)
     }
 }
 
-void FastDataLogger::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void FastDataLogger::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & SDO::Error)
+    if (flags & NodeOd::Error)
     {
         // TODO manage errors
         return;

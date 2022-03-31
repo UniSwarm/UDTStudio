@@ -63,7 +63,7 @@ void ModeTq::reset()
     _nodeProfile402->node()->readObject(_targetObjectId);
 }
 
-void ModeTq::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void ModeTq::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     Q_UNUSED(objId)
     Q_UNUSED(flags)

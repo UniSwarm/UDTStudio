@@ -57,12 +57,12 @@ QString SDO::type() const
     return QLatin1String("SDO");
 }
 
-quint32 SDO::cobIdClientToServer()
+quint32 SDO::cobIdClientToServer() const
 {
     return _cobIdClientToServer;
 }
 
-quint32 SDO::cobIdServerToClient()
+quint32 SDO::cobIdServerToClient() const
 {
     return _cobIdServerToClient;
 }
@@ -170,7 +170,7 @@ void SDO::processingFrameFromServer(const QCanBusFrame &frame)
     }
 }
 
-bool SDO::hasRequestPending()
+bool SDO::hasRequestPending() const
 {
     if (_requestQueue.isEmpty())
     {
@@ -188,74 +188,74 @@ SDO::Status SDO::status() const
     return _status;
 }
 
-QString SDO::sdoAbort(quint32 error)
+QString SDO::sdoAbort(quint32 error) const
 {
     switch (error)
     {
         case SDO::CO_SDO_ABORT_CODE_BIT_NOT_ALTERNATED:
-            return QString("Toggle bit not alternated");
+            return QStringLiteral("Toggle bit not alternated");
         case SDO::CO_SDO_ABORT_CODE_TIMED_OUT:
-            return QString("SDO protocol timed out");
+            return QStringLiteral("SDO protocol timed out");
         case SDO::CO_SDO_ABORT_CODE_CMD_NOT_VALID:
-            return QString("Client/server command specifier not valid or unknown");
+            return QStringLiteral("Client/server command specifier not valid or unknown");
         case SDO::CO_SDO_ABORT_CODE_INVALID_BLOCK_SIZE:
-            return QString("Invalid block size (block mode only)");
+            return QStringLiteral("Invalid block size (block mode only)");
         case SDO::CO_SDO_ABORT_CODE_INVALID_SEQ_NUMBER:
-            return QString("Invalid sequence number (block mode only)");
+            return QStringLiteral("Invalid sequence number (block mode only)");
         case SDO::CO_SDO_ABORT_CODE_CRC_ERROR:
-            return QString("CRC error (block mode only)");
+            return QStringLiteral("CRC error (block mode only)");
         case SDO::CO_SDO_ABORT_CODE_OUT_OF_MEMORY:
-            return QString("Out of memory");
+            return QStringLiteral("Out of memory");
         case SDO::CO_SDO_ABORT_CODE_UNSUPPORTED_ACCESS:
-            return QString("Unsupported access to an object");
+            return QStringLiteral("Unsupported access to an object");
         case SDO::CO_SDO_ABORT_CODE_WRITE_ONLY:
-            return QString("Attempt to read a write only object");
+            return QStringLiteral("Attempt to read a write only object");
         case SDO::CO_SDO_ABORT_CODE_READ_ONLY:
-            return QString("Attempt to write a read only object");
+            return QStringLiteral("Attempt to write a read only object");
         case SDO::CO_SDO_ABORT_CODE_NO_OBJECT:
-            return QString("Object does not exist in the object dictionary");
+            return QStringLiteral("Object does not exist in the object dictionary");
         case SDO::CO_SDO_ABORT_CODE_NO_SUBINDEX:
-            return QString("Sub-index does not exist");
+            return QStringLiteral("Sub-index does not exist");
         case SDO::CO_SDO_ABORT_CODE_CANNOT_MAP_PDO:
-            return QString("Object cannot be mapped to the PDO");
+            return QStringLiteral("Object cannot be mapped to the PDO");
         case SDO::CO_SDO_ABORT_CODE_EXCEED_PDO_LENGTH:
-            return QString("The number and length of the objects to be mapped would exceed PDO length");
+            return QStringLiteral("The number and length of the objects to be mapped would exceed PDO length");
         case SDO::CO_SDO_ABORT_CODE_PARAM_IMCOMPATIBILITY:
-            return QString("General parameter incompatibility reason");
+            return QStringLiteral("General parameter incompatibility reason");
         case SDO::CO_SDO_ABORT_CODE_ITRN_IMCOMPATIBILITY:
-            return QString("General internal incompatibility in the device");
+            return QStringLiteral("General internal incompatibility in the device");
         case SDO::CO_SDO_ABORT_CODE_FAILED_HARDWARE_ERR:
-            return QString("Access failed due to an hardware error");
+            return QStringLiteral("Access failed due to an hardware error");
         case SDO::CO_SDO_ABORT_CODE_LENGTH_DOESNT_MATCH:
-            return QString("Data type does not match, length of service parameter does not match");
+            return QStringLiteral("Data type does not match, length of service parameter does not match");
         case SDO::CO_SDO_ABORT_CODE_LENGTH_TOO_HIGH:
-            return QString("Data type does not match, length of service parameter too high");
+            return QStringLiteral("Data type does not match, length of service parameter too high");
         case SDO::CO_SDO_ABORT_CODE_LENGTH_TOO_LOW:
-            return QString("Data type does not match, length of service parameter too low");
+            return QStringLiteral("Data type does not match, length of service parameter too low");
         case SDO::CO_SDO_ABORT_CODE_INVALID_VALUE:
-            return QString("Invalid value for parameter (download only)");
+            return QStringLiteral("Invalid value for parameter (download only)");
         case SDO::CO_SDO_ABORT_CODE_VALUE_TOO_HIGH:
-            return QString("Value of parameter written too high (download only)");
+            return QStringLiteral("Value of parameter written too high (download only)");
         case SDO::CO_SDO_ABORT_CODE_VALUE_TOO_LOW:
-            return QString("Value of parameter written too low (download only)");
+            return QStringLiteral("Value of parameter written too low (download only)");
         case SDO::CO_SDO_ABORT_CODE_MAX_VALUE_LESS_MIN:
-            return QString("Maximum value is less than minimum value");
+            return QStringLiteral("Maximum value is less than minimum value");
         case SDO::CO_SDO_ABORT_CODE_RESRC_NOT_AVAILABLE:
-            return QString("esource not available: SDO connection");
+            return QStringLiteral("esource not available: SDO connection");
         case SDO::CO_SDO_ABORT_CODE_GENERAL_ERROR:
-            return QString("General error");
+            return QStringLiteral("General error");
         case SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_1:
-            return QString("Data cannot be transferred or stored to the application");
+            return QStringLiteral("Data cannot be transferred or stored to the application");
         case SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_2:
-            return QString("Data cannot be transferred or stored to the application because of local control");
+            return QStringLiteral("Data cannot be transferred or stored to the application because of local control");
         case SDO::CO_SDO_ABORT_CODE_CANNOT_TRANSFERRED_3:
-            return QString("Data cannot be transferred or stored to the application because of the present device state");
+            return QStringLiteral("Data cannot be transferred or stored to the application because of the present device state");
         case SDO::CO_SDO_ABORT_CODE_NO_OBJECT_DICO:
-            return QString("Object dictionary dynamic generation fails or no object dictionary is present");
+            return QStringLiteral("Object dictionary dynamic generation fails or no object dictionary is present");
         case SDO::CO_SDO_ABORT_CODE_NO_DATA_AVAILABLE:
-            return QString("No data available");
+            return QStringLiteral("No data available");
         default:
-            return QString("Unknown error code");
+            return QStringLiteral("Unknown error code");
     }
 }
 
@@ -982,17 +982,17 @@ void SDO::sendErrorSdoToDevice(SDOAbortCodes error)
  */
 void SDO::setErrorToObject(SDOAbortCodes error)
 {
-    uint8_t flags = FlagsRequest::Error;
+    uint8_t flags = NodeOd::FlagsRequest::Error;
     if (_requestCurrent->state == STATE_UPLOAD)
     {
-        flags += SDO::FlagsRequest::Read;
+        flags += NodeOd::FlagsRequest::Read;
     }
     else if (_requestCurrent->state == STATE_DOWNLOAD)
     {
-        flags += SDO::FlagsRequest::Write;
+        flags += NodeOd::FlagsRequest::Write;
     }
 
-    _node->nodeOd()->updateObjectFromDevice(_requestCurrent->index, _requestCurrent->subIndex, QVariant(error), static_cast<SDO::FlagsRequest>(flags));
+    _node->nodeOd()->updateObjectFromDevice(_requestCurrent->index, _requestCurrent->subIndex, QVariant(error), static_cast<NodeOd::FlagsRequest>(flags));
 
     _status = SDO_STATE_FREE;
     _requestCurrent->state = STATE_FREE;
@@ -1008,11 +1008,11 @@ void SDO::endRequest()
     if (_requestCurrent->state == STATE_UPLOAD)
     {
         _node->nodeOd()->updateObjectFromDevice(
-            _requestCurrent->index, _requestCurrent->subIndex, arrangeDataUpload(_requestCurrent->dataByte, _requestCurrent->dataType), FlagsRequest::Read);
+            _requestCurrent->index, _requestCurrent->subIndex, arrangeDataUpload(_requestCurrent->dataByte, _requestCurrent->dataType), NodeOd::FlagsRequest::Read);
     }
     else if (_requestCurrent->state == STATE_DOWNLOAD)
     {
-        _node->nodeOd()->updateObjectFromDevice(_requestCurrent->index, _requestCurrent->subIndex, _requestCurrent->data, FlagsRequest::Write);
+        _node->nodeOd()->updateObjectFromDevice(_requestCurrent->index, _requestCurrent->subIndex, _requestCurrent->data, NodeOd::FlagsRequest::Write);
     }
 
     _status = SDO_STATE_FREE;

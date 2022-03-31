@@ -90,9 +90,9 @@ void P401InputWidget::createWidgets()
     setLayout(hlayout);
 }
 
-void P401InputWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void P401InputWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & SDO::FlagsRequest::Error)
+    if (flags & NodeOd::FlagsRequest::Error)
     {
         return;
     }

@@ -144,7 +144,7 @@ const NodeObjectId &ModePc::quickStopDecelerationObjectId() const
     return _quickStopDecelerationObjectId;
 }
 
-void ModePc::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void ModePc::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     Q_UNUSED(objId)
     Q_UNUSED(flags)

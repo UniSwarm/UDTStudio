@@ -245,9 +245,9 @@ QHBoxLayout *P402CstcaWidget::createButtonWidgets()
     return layout;
 }
 
-void P402CstcaWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void P402CstcaWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & SDO::FlagsRequest::Error)
+    if (flags & NodeOd::FlagsRequest::Error)
     {
         return;
     }

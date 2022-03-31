@@ -295,9 +295,9 @@ void PDO::setEventTimerMs(quint32 eventTimerMs)
 /**
  * @brief management response from device after setInhibitTime, setEventTimer, setTransmissionType and setSyncStartValue
  */
-void PDO::managementRespWriteCommParam(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void PDO::managementRespWriteCommParam(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags == SDO::FlagsRequest::Error)
+    if (flags == NodeOd::FlagsRequest::Error)
     {
         if (objId.subIndex() == PDO_COMM_TRANSMISSION_TYPE)
         {
@@ -328,11 +328,11 @@ void PDO::managementRespWriteCommParam(const NodeObjectId &objId, SDO::FlagsRequ
 /**
  * @brief management response from device after readCommParam and readMappingParam
  */
-void PDO::managementRespReadCommAndMapping(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void PDO::managementRespReadCommAndMapping(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     if (objId.index() == _objectCommId)
     {
-        if (flags == SDO::FlagsRequest::Error)
+        if (flags == NodeOd::FlagsRequest::Error)
         {
             /*qDebug() << ">PDO::odNotify : Index:SubIndex"
                      << QString("0x%1").arg(QString::number(objId.index(), 16))
@@ -374,7 +374,7 @@ void PDO::managementRespReadCommAndMapping(const NodeObjectId &objId, SDO::Flags
 
     if (objId.index() == _objectMappingId)
     {
-        if (flags == SDO::FlagsRequest::Error)
+        if (flags == NodeOd::FlagsRequest::Error)
         {
             /*qDebug() << ">PDO::odNotify : Index:SubIndex"
                      << QString("0x%1").arg(QString::number(objId.index(), 16))
@@ -473,11 +473,11 @@ bool PDO::checkIndex(quint16 index)
 /**
  * @brief management response from device after processMapping
  */
-void PDO::managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void PDO::managementRespProcessMapping(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     if ((objId.index() == _objectCommId) && (_stateMapping == STATE_FREE))
     {
-        if (flags == SDO::FlagsRequest::Error)
+        if (flags == NodeOd::FlagsRequest::Error)
         {
             setError(ERROR_DEACTIVATE_COBID);
             _statusPdo = STATE_NONE;
@@ -497,7 +497,7 @@ void PDO::managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequ
         }
         if (_stateMapping == STATE_DISABLE)
         {
-            if (flags == SDO::FlagsRequest::Error)
+            if (flags == NodeOd::FlagsRequest::Error)
             {
                 // ERROR so cobId is invalid and mapping is disable
                 qDebug() << ">TPDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index(), 16)) << ":" << objId.subIndex()
@@ -515,7 +515,7 @@ void PDO::managementRespProcessMapping(const NodeObjectId &objId, SDO::FlagsRequ
         }
         if (_stateMapping == STATE_MODIFY)
         {
-            if (flags == SDO::FlagsRequest::Error)
+            if (flags == NodeOd::FlagsRequest::Error)
             {
                 // ERROR so cobId is invalid and mapping is disable
                 qDebug() << ">TPDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index(), 16)) << ":" << objId.subIndex()

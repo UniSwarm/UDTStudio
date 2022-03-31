@@ -235,9 +235,9 @@ QWidget *P401OutputWidget::digitalWidgets()
     return widget;
 }
 
-void P401OutputWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void P401OutputWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & SDO::FlagsRequest::Error)
+    if (flags & NodeOd::FlagsRequest::Error)
     {
         return;
     }

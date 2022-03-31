@@ -969,11 +969,11 @@ void NodeProfile402::reset()
     _modes[CP]->setCwDefaultflag();
 }
 
-void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void NodeProfile402::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     if (objId == _modesOfOperationObjectId)
     {
-        if (flags & SDO::FlagsRequest::Error)
+        if (flags & NodeOd::FlagsRequest::Error)
         {
             _modeRequested = _modeCurrent;
             _modeStatus = NodeProfile402::MODE_CHANGED;
@@ -993,7 +993,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
 
     if (objId == _modesOfOperationDisplayObjectId)
     {
-        if (flags & SDO::FlagsRequest::Error)
+        if (flags & NodeOd::FlagsRequest::Error)
         {
             return;
         }
@@ -1022,7 +1022,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
 
     if (objId == _supportedDriveModesObjectId)
     {
-        if (flags & SDO::FlagsRequest::Error)
+        if (flags & NodeOd::FlagsRequest::Error)
         {
             return;
         }
@@ -1032,7 +1032,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
 
     if (objId == _controlWordObjectId)
     {
-        if (flags & SDO::FlagsRequest::Error)
+        if (flags & NodeOd::FlagsRequest::Error)
         {
             return;
         }
@@ -1046,7 +1046,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags
 
     if (objId == _statusWordObjectId)
     {
-        if (flags & SDO::FlagsRequest::Error)
+        if (flags & NodeOd::FlagsRequest::Error)
         {
             return;
         }

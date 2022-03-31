@@ -430,7 +430,7 @@ void AbstractIndexWidget::clearStatus()
     mainWindow->statusBar()->clearMessage();
 }
 
-void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest flags)
+void AbstractIndexWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     if (!nodeInterrest())
     {
@@ -438,15 +438,15 @@ void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest 
     }
 
     _lastValue = nodeInterrest()->nodeOd()->value(objId);
-    if (flags & SDO::Error)
+    if (flags & NodeOd::Error)
     {
-        if (_pendingValue.isValid() && (flags & SDO::Write))  // we request a write value that cause an error
+        if (_pendingValue.isValid() && (flags & NodeOd::Write))  // we request a write value that cause an error
         {
             setDisplayValue(pValue(_pendingValue, _hint), DisplayAttribute::Error);
             _pendingValue = QVariant();
             return;
         }
-        else if (flags & SDO::Read)  // any read cause an error
+        else if (flags & NodeOd::Read)  // any read cause an error
         {
             if (isEditing() && !_requestRead)
             {
@@ -461,7 +461,7 @@ void AbstractIndexWidget::odNotify(const NodeObjectId &objId, SDO::FlagsRequest 
             return;
         }
     }
-    if (flags & SDO::Read && this->isEditing() && !_requestRead)
+    if (flags & NodeOd::Read && this->isEditing() && !_requestRead)
     {
         return;
     }
