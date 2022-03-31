@@ -209,9 +209,14 @@ void Node::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
     {
         return;
     }
-    if (isMappedObjectInTpdo(NodeObjectId(index, subindex, dataType)) && status() == STARTED && (_bus->sync()->status() == Sync::STARTED))
+
+    TPDO *tpdoMapped = isMappedObjectInTpdo(NodeObjectId(index, subindex, dataType));
+    if (tpdoMapped)
     {
-        return;
+        if (tpdoMapped->isEnabled() && _status == STARTED && _bus->sync()->status() == Sync::STARTED)
+        {
+            return;
+        }
     }
 
     QMetaType::Type mdataType = dataType;
@@ -245,17 +250,24 @@ void Node::writeObject(quint16 index, quint8 subindex, const QVariant &data)
     }
 
     NodeObjectId object(busId(), nodeId(), index, subindex);
-    if (isMappedObjectInRpdo(NodeObjectId(index, subindex)) && status() == STARTED && (_bus->sync()->status() == Sync::STARTED))
+    if (isMappedObjectInRpdo(NodeObjectId(index, subindex)) && _status == STARTED && _bus->sync()->status() == Sync::STARTED)
     {
+        bool writtenInRpdo = false;
         for (RPDO *rpdo : qAsConst(_rpdos))
         {
-            if (rpdo->isMappedObject(object))
+            if (rpdo->isMappedObject(object) && rpdo->isEnabled())
             {
                 rpdo->write(object, data);
+                writtenInRpdo = true;
             }
         }
-        return;
+
+        if (writtenInRpdo)
+        {
+            return;
+        }
     }
+
     _sdoClients.at(0)->downloadData(index, subindex, mdata);
 }
 
