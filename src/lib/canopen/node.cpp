@@ -84,6 +84,7 @@ Node::~Node()
     qDeleteAll(_sdoClients);
     qDeleteAll(_tpdos);
     qDeleteAll(_rpdos);
+    qDeleteAll(_nodeProfiles);
     delete _emergency;
     delete _nmt;
     delete _errorControl;
