@@ -75,6 +75,9 @@ protected:
     QList<DLData *> _dataList;
     QTimer _timer;
 
+    QColor findFreeColor() const;
+    bool isColorFree(const QColor color) const;
+
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;

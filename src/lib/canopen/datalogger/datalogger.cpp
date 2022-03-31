@@ -267,7 +267,7 @@ void DataLogger::addDlData(const NodeObjectId &mobjId)
     // TODO optimize emit signal
     emit dataAboutToBeAdded(_dataList.count());
     DLData *dlData = new DLData(mobjId);
-    dlData->setColor(QColor::fromHsv((_dataList.count() * 48) % 360, 255, 255, 200));
+    dlData->setColor(findFreeColor());
     dlData->setActive(true);
     _dataMap.insert(dlData->key(), dlData);
     _dataList.append(dlData);
@@ -280,4 +280,27 @@ void DataLogger::addDlData(const NodeObjectId &mobjId)
             {
                 removeData(mobjId);
             });
+}
+
+QColor DataLogger::findFreeColor() const
+{
+    int c = 0;
+    QColor color;
+    do
+    {
+        color = QColor::fromHsv((c++ * 48) % 360, 255, 255, 200);
+    } while (!isColorFree(color) && c < 24);
+    return color;
+}
+
+bool DataLogger::isColorFree(const QColor color) const
+{
+    for (DLData *dlData : qAsConst(_dataList))
+    {
+        if (dlData->color() == color)
+        {
+            return false;
+        }
+    }
+    return true;
 }
