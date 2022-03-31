@@ -73,15 +73,7 @@ void DataLogger::addData(const NodeObjectId &objId)
 
     for (const NodeObjectId &mobjId : objToAdd)
     {
-        // TODO optimize emit signal
-        emit dataAboutToBeAdded(_dataList.count());
-        DLData *dlData = new DLData(mobjId);
-        dlData->setColor(QColor::fromHsv((_dataList.count() * 48) % 360, 255, 255, 200));
-        dlData->setActive(true);
-        _dataMap.insert(dlData->key(), dlData);
-        _dataList.append(dlData);
-        registerObjId(dlData->objectId());
-        emit dataAdded();
+        addDlData(mobjId);
     }
 }
 
@@ -268,4 +260,24 @@ void DataLogger::readData()
             dlData->node()->readObject(dlData->objectId());
         }
     }
+}
+
+void DataLogger::addDlData(const NodeObjectId &mobjId)
+{
+    // TODO optimize emit signal
+    emit dataAboutToBeAdded(_dataList.count());
+    DLData *dlData = new DLData(mobjId);
+    dlData->setColor(QColor::fromHsv((_dataList.count() * 48) % 360, 255, 255, 200));
+    dlData->setActive(true);
+    _dataMap.insert(dlData->key(), dlData);
+    _dataList.append(dlData);
+    registerObjId(dlData->objectId());
+    emit dataAdded();
+
+    connect(dlData->node(),
+            &QObject::destroyed,
+            [=]()
+            {
+                removeData(mobjId);
+            });
 }

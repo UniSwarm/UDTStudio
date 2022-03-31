@@ -70,6 +70,7 @@ protected slots:
     void readData();
 
 protected:
+    void addDlData(const NodeObjectId &mobjId);
     QMap<quint64, DLData *> _dataMap;
     QList<DLData *> _dataList;
     QTimer _timer;
