@@ -29,7 +29,7 @@
 Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
     : _nodeId(nodeId)
 {
-    _status = INIT;
+    _status = UNKNOWN;
     _bus = nullptr;
     _nodeOd = new NodeOd(this);
 
@@ -135,6 +135,9 @@ QString Node::statusStr() const
 {
     switch (_status)
     {
+        case Node::UNKNOWN:
+            return tr("unknown");
+
         case Node::INIT:
             return tr("init");
 
@@ -202,7 +205,7 @@ void Node::readObject(const NodeObjectId &id)
 
 void Node::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
 {
-    if (status() == STOPPED)
+    if (_status == STOPPED || _status == UNKNOWN)
     {
         return;
     }
@@ -210,6 +213,7 @@ void Node::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
     {
         return;
     }
+
     QMetaType::Type mdataType = dataType;
     if (mdataType == QMetaType::Type::UnknownType)
     {
@@ -225,10 +229,11 @@ void Node::writeObject(const NodeObjectId &id, const QVariant &data)
 
 void Node::writeObject(quint16 index, quint8 subindex, const QVariant &data)
 {
-    if (status() == STOPPED)
+    if (_status == STOPPED || _status == UNKNOWN)
     {
         return;
     }
+
     QVariant mdata = data;
     QMetaType::Type mdataType = _nodeOd->dataType(index, subindex);
     if (mdataType != QMetaType::Type::UnknownType)

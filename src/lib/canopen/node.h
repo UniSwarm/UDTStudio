@@ -52,6 +52,7 @@ public:
 
     enum Status
     {
+        UNKNOWN,
         INIT,
         PREOP,
         STARTED,
