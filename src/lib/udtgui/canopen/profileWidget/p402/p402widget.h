@@ -53,7 +53,7 @@ public slots:
     void gotoStateOEClicked();
 
 protected slots:
-    void toggleStartLogger(bool start);
+    void setStartLogger(bool start);
     void setLogTimer(int ms);
 
     void updateNodeStatus();

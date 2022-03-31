@@ -518,6 +518,11 @@ NodeProfile402::ModeStatus NodeProfile402::modeStatus() const
     return _modeStatus;
 }
 
+NodeProfile402::State NodeProfile402::state() const
+{
+    return _nodeProfileState;
+}
+
 void NodeProfile402::initializeObjectsId()
 {
     _modesOfOperationObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, _axisId);
@@ -826,6 +831,9 @@ void NodeProfile402::decodeStateMachineStatusWord(quint16 statusWord)
 
 void NodeProfile402::decodeSupportedDriveModes(quint32 supportedDriveModes)
 {
+    QList<OperationMode> oldModesSupported;
+    oldModesSupported = _modesSupported;
+
     _modesSupported.clear();
     if ((supportedDriveModes & 0x7EF) == 0)
     {
@@ -885,7 +893,11 @@ void NodeProfile402::decodeSupportedDriveModes(quint32 supportedDriveModes)
                 break;
         }
     }
-    emit supportedDriveModesUdpdated();
+
+    if (oldModesSupported != _modesSupported)
+    {
+        emit supportedDriveModesUdpdated();
+    }
 }
 
 void NodeProfile402::readModeOfOperationDisplay()

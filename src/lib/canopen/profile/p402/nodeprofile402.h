@@ -80,6 +80,13 @@ public:
     };
     ModeStatus modeStatus() const;
 
+    enum State
+    {
+        NODEPROFILE_STOPED,
+        NODEPROFILE_STARTED
+    };
+    State state() const;
+
     enum State402
     {
         STATE_NotReadyToSwitchOn = 1,
@@ -162,11 +169,6 @@ private:
     QList<NodeObjectId> _optionObjectIds;
 
     // STATE
-    enum State
-    {
-        NODEPROFILE_STOPED,
-        NODEPROFILE_STARTED
-    };
     State _nodeProfileState;
     QTimer _nodeProfleTimer;
 

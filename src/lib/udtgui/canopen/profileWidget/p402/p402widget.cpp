@@ -127,7 +127,7 @@ void P402Widget::updateNodeStatus()
         }
         else
         {
-            toggleStartLogger(false);
+            setStartLogger(false);
         }
     }
 }
@@ -148,6 +148,7 @@ void P402Widget::updateMode(uint8_t axis, NodeProfile402::OperationMode mode)
 
         _option402Action->setChecked(false);
         _stackedWidget->setCurrentWidget(_modes[mode]);
+        _modeComboBox->setCurrentText(_nodeProfile402->modeStr(mode));
     }
     else
     {
@@ -155,7 +156,6 @@ void P402Widget::updateMode(uint8_t axis, NodeProfile402::OperationMode mode)
         _stackedWidget->setCurrentWidget(_modes[NodeProfile402::NoMode]);
     }
 
-    _modeComboBox->setCurrentText(_nodeProfile402->modeStr(mode));
     _modeComboBox->setEnabled(true);
     _modeLabel->clear();
 }
@@ -266,11 +266,11 @@ void P402Widget::setModeIndex(int id)
 
 void P402Widget::gotoStateOEClicked()
 {
-    toggleStartLogger(true);
+    setStartLogger(true);
     _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
 }
 
-void P402Widget::toggleStartLogger(bool start)
+void P402Widget::setStartLogger(bool start)
 {
     if (!_node)
     {
@@ -279,6 +279,11 @@ void P402Widget::toggleStartLogger(bool start)
 
     if (start)
     {
+        if (_nodeProfile402->state() == NodeProfile402::NODEPROFILE_STARTED)
+        {
+            return;
+        }
+
         if (_node->status() != Node::STARTED)
         {
             _node->sendStart();
@@ -465,6 +470,7 @@ void P402Widget::stateMachineClicked(int id)
     {
         return;
     }
+    setStartLogger(true);
     _nodeProfile402->goToState(static_cast<NodeProfile402::State402>(id));
 }
 
@@ -555,7 +561,7 @@ QToolBar *P402Widget::createToolBarWidgets()
     iconStartStop.addFile(":/icons/img/icons8-play.png", QSize(), QIcon::Normal, QIcon::Off);
     _startStopAction->setIcon(iconStartStop);
     _startStopAction->setStatusTip(tr("Start or stop the data logger"));
-    connect(_startStopAction, &QAction::triggered, this, &P402Widget::toggleStartLogger);
+    connect(_startStopAction, &QAction::triggered, this, &P402Widget::setStartLogger);
 
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
