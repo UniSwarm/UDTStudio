@@ -5,10 +5,10 @@ CreationTime=01:52PM
 Description=UMC1BDS32 motion controller
 EDSVersion=4.0
 FileName=umc1bds32.eds
-FileRevision=1
+FileRevision=1.0.2
 FileVersion=1
-ModificationDate=12-14-2021
-ModificationTime=04:14PM
+ModificationDate=03-09-2022
+ModificationTime=11:47AM
 ModifiedBy=UniSwarm SASU
 
 [DeviceInfo]
@@ -30,7 +30,7 @@ NrOfTXPDO=4
 OrderCode=0
 ProductName=UMC1BDS32
 ProductNumber=0x1001
-RevisionNumber=1
+RevisionNumber=1.0.2
 SimpleBootUpMaster=0
 SimpleBootUpSlave=1
 VendorName=UniSwarm SASU
@@ -104,7 +104,7 @@ ParameterName=Revision number
 ObjectType=0x7
 DataType=0x0007
 AccessType=ro
-DefaultValue=1
+DefaultValue=0x01000002
 PDOMapping=0
 
 [1018sub4]
@@ -399,7 +399,7 @@ ParameterName=Manufacturer Software Version
 ObjectType=0x7
 DataType=0x0009
 AccessType=ro
-DefaultValue="v1.0.0"
+DefaultValue="__DEVICE_SOFT_VERSION__"
 PDOMapping=0
 
 [100C]
@@ -562,7 +562,7 @@ ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=1
+DefaultValue=10
 PDOMapping=0
 
 [1016sub1]
@@ -739,10 +739,8 @@ ParameterName=Number of entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=3
+DefaultValue=5
 PDOMapping=0
-LowLimit=0x02
-HighLimit=0x03
 
 [1400sub1]
 ParameterName=COB ID
@@ -759,7 +757,7 @@ ParameterName=Transmission Type
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=0
+DefaultValue=1
 PDOMapping=0
 
 [1400sub3]
@@ -788,10 +786,8 @@ ParameterName=Number of entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=3
+DefaultValue=5
 PDOMapping=0
-LowLimit=0x02
-HighLimit=0x03
 
 [1401sub1]
 ParameterName=COB ID
@@ -808,7 +804,7 @@ ParameterName=Transmission Type
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=0
+DefaultValue=1
 PDOMapping=0
 
 [1401sub3]
@@ -837,10 +833,8 @@ ParameterName=Number of entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=3
+DefaultValue=5
 PDOMapping=0
-LowLimit=0x02
-HighLimit=0x03
 
 [1402sub1]
 ParameterName=COB ID
@@ -857,7 +851,7 @@ ParameterName=Transmission Type
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=0
+DefaultValue=1
 PDOMapping=0
 
 [1402sub3]
@@ -886,10 +880,8 @@ ParameterName=Number of entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=3
+DefaultValue=5
 PDOMapping=0
-LowLimit=0x02
-HighLimit=0x03
 
 [1403sub1]
 ParameterName=COB ID
@@ -906,7 +898,7 @@ ParameterName=Transmission Type
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=0
+DefaultValue=1
 PDOMapping=0
 
 [1403sub3]
@@ -1385,7 +1377,7 @@ ParameterName=Transmission Type
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=0
+DefaultValue=1
 PDOMapping=0
 
 [1802sub3]
@@ -1442,7 +1434,7 @@ ParameterName=Transmission Type
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=0
+DefaultValue=1
 PDOMapping=0
 
 [1803sub3]
@@ -2984,7 +2976,7 @@ PDOMapping=1
 [60EA]
 ParameterName=a1_cstca_Commutation_angle
 ObjectType=0x7
-DataType=0x0003
+DataType=0x0006
 AccessType=rww
 DefaultValue=0
 PDOMapping=1
@@ -3101,7 +3093,7 @@ ParameterName=a1_Supported_drive_modes
 ObjectType=0x7
 DataType=0x0007
 AccessType=ro
-DefaultValue=1114187
+DefaultValue=1115211
 PDOMapping=0
 LowLimit=0
 HighLimit=0xFFFFFFFF
@@ -4252,7 +4244,7 @@ PDOMapping=1
 [68EA]
 ParameterName=a2_cstca_Commutation_angle
 ObjectType=0x7
-DataType=0x0003
+DataType=0x0006
 AccessType=rww
 DefaultValue=0
 PDOMapping=1
@@ -4369,7 +4361,7 @@ ParameterName=a2_Supported_drive_modes
 ObjectType=0x7
 DataType=0x0007
 AccessType=ro
-DefaultValue=1114187
+DefaultValue=1115211
 PDOMapping=0
 LowLimit=0
 HighLimit=0xFFFFFFFF
@@ -4406,7 +4398,7 @@ AccessType=ro
 PDOMapping=0
 
 [ManufacturerObjects]
-SupportedObjects=83
+SupportedObjects=84
 1=0x2000
 2=0x2001
 3=0x2002
@@ -4419,77 +4411,78 @@ SupportedObjects=83
 10=0x2024
 11=0x2025
 12=0x2040
-13=0x2050
-14=0x2801
-15=0x2802
-16=0x2803
-17=0x2804
-18=0x2805
-19=0x2810
-20=0x2A00
-21=0x2A01
-22=0x4000
-23=0x4006
-24=0x4007
-25=0x4008
-26=0x4009
-27=0x4020
-28=0x4021
-29=0x4022
-30=0x4023
-31=0x4024
-32=0x4025
-33=0x4040
-34=0x4041
-35=0x4042
-36=0x4043
-37=0x4044
-38=0x4045
-39=0x4060
-40=0x4061
-41=0x4062
-42=0x4063
-43=0x4064
-44=0x4065
-45=0x4081
-46=0x4082
-47=0x4083
-48=0x41F0
-49=0x41FA
-50=0x41FB
-51=0x41FC
-52=0x41FD
-53=0x4200
-54=0x4206
-55=0x4207
-56=0x4208
-57=0x4209
-58=0x4220
-59=0x4221
-60=0x4222
-61=0x4223
-62=0x4224
-63=0x4225
-64=0x4240
-65=0x4241
-66=0x4242
-67=0x4243
-68=0x4244
-69=0x4245
-70=0x4260
-71=0x4261
-72=0x4262
-73=0x4263
-74=0x4264
-75=0x4265
-76=0x4281
-77=0x4282
-78=0x4283
-79=0x43F0
-80=0x43FA
-81=0x43FB
-82=0x43FC
-83=0x43FD
+13=0x2041
+14=0x2050
+15=0x2801
+16=0x2802
+17=0x2803
+18=0x2804
+19=0x2805
+20=0x2810
+21=0x2A00
+22=0x2A01
+23=0x4000
+24=0x4006
+25=0x4007
+26=0x4008
+27=0x4009
+28=0x4020
+29=0x4021
+30=0x4022
+31=0x4023
+32=0x4024
+33=0x4025
+34=0x4040
+35=0x4041
+36=0x4042
+37=0x4043
+38=0x4044
+39=0x4045
+40=0x4060
+41=0x4061
+42=0x4062
+43=0x4063
+44=0x4064
+45=0x4065
+46=0x4081
+47=0x4082
+48=0x4083
+49=0x41F0
+50=0x41FA
+51=0x41FB
+52=0x41FC
+53=0x41FD
+54=0x4200
+55=0x4206
+56=0x4207
+57=0x4208
+58=0x4209
+59=0x4220
+60=0x4221
+61=0x4222
+62=0x4223
+63=0x4224
+64=0x4225
+65=0x4240
+66=0x4241
+67=0x4242
+68=0x4243
+69=0x4244
+70=0x4245
+71=0x4260
+72=0x4261
+73=0x4262
+74=0x4263
+75=0x4264
+76=0x4265
+77=0x4281
+78=0x4282
+79=0x4283
+80=0x43F0
+81=0x43FA
+82=0x43FB
+83=0x43FC
+84=0x43FD
 
 [2000]
 ParameterName=Board_voltage
@@ -4546,14 +4539,14 @@ PDOMapping=0
 [2020]
 ParameterName=cpu_Temperature
 ObjectType=0x8
-SubNumber=2
+SubNumber=3
 
 [2020sub0]
 ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=1
+DefaultValue=2
 PDOMapping=0
 
 [2020sub1]
@@ -4561,19 +4554,26 @@ ParameterName=cpu1_Temperature
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
-PDOMapping=0
+PDOMapping=1
+
+[2020sub2]
+ParameterName=cpu2_Temperature
+ObjectType=0x7
+DataType=0x0003
+AccessType=ro
+PDOMapping=1
 
 [2021]
 ParameterName=cpu_Life_cycle
 ObjectType=0x8
-SubNumber=2
+SubNumber=3
 
 [2021sub0]
 ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=1
+DefaultValue=2
 PDOMapping=0
 
 [2021sub1]
@@ -4581,7 +4581,14 @@ ParameterName=cpu1_Life_cycle
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
-PDOMapping=0
+PDOMapping=1
+
+[2021sub2]
+ParameterName=cpu1_Life_cycle
+ObjectType=0x7
+DataType=0x0006
+AccessType=ro
+PDOMapping=1
 
 [2022]
 ParameterName=cpu_Error
@@ -4665,7 +4672,7 @@ PDOMapping=0
 
 [2040]
 ParameterName=Communication_config
-ObjectType=0x8
+ObjectType=0x9
 SubNumber=3
 
 [2040sub0]
@@ -4692,9 +4699,38 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
+[2041]
+ParameterName=Board_voltage_config
+ObjectType=0x9
+SubNumber=3
+
+[2041sub0]
+ParameterName=Number of Entries
+ObjectType=0x7
+DataType=0x0006
+AccessType=ro
+DefaultValue=2
+PDOMapping=0
+
+[2041sub1]
+ParameterName=Undervoltage
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=1100
+PDOMapping=0
+
+[2041sub2]
+ParameterName=Overvoltage
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=5500
+PDOMapping=0
+
 [2050]
 ParameterName=Bootloader
-ObjectType=0x8
+ObjectType=0x9
 SubNumber=4
 
 [2050sub0]
@@ -4709,21 +4745,21 @@ PDOMapping=0
 ParameterName=Key
 ObjectType=0x7
 DataType=0x0006
-AccessType=rw
+AccessType=wo
 PDOMapping=0
 
 [2050sub2]
 ParameterName=Checksum
 ObjectType=0x7
 DataType=0x0005
-AccessType=rw
+AccessType=wo
 PDOMapping=0
 
 [2050sub3]
 ParameterName=Status
 ObjectType=0x7
 DataType=0x0005
-AccessType=
+AccessType=ro
 PDOMapping=0
 
 [2801]
@@ -4740,14 +4776,14 @@ DefaultValue=2
 PDOMapping=0
 
 [2801sub1]
-ParameterName=Driver_temperature_1
+ParameterName=Sensor_1
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
 [2801sub2]
-ParameterName=Driver_temperature_2
+ParameterName=Sensor_2
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
@@ -4927,7 +4963,7 @@ ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=3
+DefaultValue=2
 PDOMapping=0
 
 [2810sub1]
@@ -5125,7 +5161,7 @@ ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=7
+DefaultValue=9
 PDOMapping=0
 
 [4007sub1]
@@ -6318,7 +6354,7 @@ ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=5
+DefaultValue=4
 PDOMapping=0
 
 [4081sub1]
@@ -6356,30 +6392,46 @@ PDOMapping=0
 [4082]
 ParameterName=a1_Brake_config
 ObjectType=0x9
-SubNumber=3
+SubNumber=5
 
 [4082sub0]
 ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=2
+DefaultValue=4
 PDOMapping=0
 
 [4082sub1]
-ParameterName=Brake_maintain
+ParameterName=Brake_mode
 ObjectType=0x7
-DataType=0x0004
+DataType=0x0005
 AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
 [4082sub2]
-ParameterName=Brake_peak
+ParameterName=Brake_excitation_time_ms
 ObjectType=0x7
-DataType=0x0004
+DataType=0x0006
 AccessType=rw
 DefaultValue=1
+PDOMapping=0
+
+[4082sub3]
+ParameterName=Brake_excitation_duty
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
+[4082sub4]
+ParameterName=Brake_activated_duty
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
 PDOMapping=0
 
 [4083]
@@ -6574,7 +6626,7 @@ ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=7
+DefaultValue=9
 PDOMapping=0
 
 [4207sub1]
@@ -7767,7 +7819,7 @@ ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=5
+DefaultValue=4
 PDOMapping=0
 
 [4281sub1]
@@ -7805,30 +7857,46 @@ PDOMapping=0
 [4282]
 ParameterName=a2_Brake_config
 ObjectType=0x9
-SubNumber=3
+SubNumber=5
 
 [4282sub0]
 ParameterName=Number of Entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
-DefaultValue=2
+DefaultValue=4
 PDOMapping=0
 
 [4282sub1]
-ParameterName=Brake_maintain
+ParameterName=Brake_mode
 ObjectType=0x7
-DataType=0x0004
+DataType=0x0005
 AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
 [4282sub2]
-ParameterName=Brake_peak
+ParameterName=Brake_excitation_time_ms
 ObjectType=0x7
-DataType=0x0004
+DataType=0x0006
 AccessType=rw
 DefaultValue=1
+PDOMapping=0
+
+[4282sub3]
+ParameterName=Brake_excitation_duty
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
+[4282sub4]
+ParameterName=Brake_activated_duty
+ObjectType=0x7
+DataType=0x0006
+AccessType=rw
+DefaultValue=0
 PDOMapping=0
 
 [4283]
