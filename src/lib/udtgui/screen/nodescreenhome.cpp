@@ -229,7 +229,7 @@ QWidget *NodeScreenHome::createOdWidget()
 
 void NodeScreenHome::updateInfos(Node *node)
 {
-    if (node)
+    if (node != nullptr)
     {
         _summaryProfileLabel->setText(QString("DS%1").arg(node->profileNumber()));
         if (node->manufacturerId() == 0x04A2)  // UniSwarm
@@ -289,7 +289,7 @@ void NodeScreenHome::setNodeInternal(Node *node, uint8_t axis)
 
     updateInfos(node);
 
-    if (node)
+    if (node != nullptr)
     {
         connect(node,
                 &Node::edsFileChanged,

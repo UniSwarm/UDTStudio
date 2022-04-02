@@ -62,14 +62,14 @@ CanOpen *BusNodesTreeView::canOpen() const
 
 void BusNodesTreeView::setCanOpen(CanOpen *canOpen)
 {
-    if (_busNodesModel->canOpen())
+    if (_busNodesModel->canOpen() != nullptr)
     {
         disconnect(_busNodesModel->canOpen(), nullptr, this, nullptr);
     }
 
     _busNodesModel->setCanOpen(canOpen);
 
-    if (canOpen)
+    if (canOpen != nullptr)
     {
         connect(canOpen, &CanOpen::busAdded, this, &BusNodesTreeView::addBus);
     }
@@ -106,7 +106,7 @@ void BusNodesTreeView::indexDbClick(const QModelIndex &index)
     QModelIndex indexBusNodeModel = _sortFilterProxyModel->mapToSource(index);
 
     CanOpenBus *bus = _busNodesModel->bus(indexBusNodeModel);
-    if (bus)
+    if (bus != nullptr)
     {
         if (!bus->isConnected())
         {
@@ -122,7 +122,7 @@ void BusNodesTreeView::indexDbClick(const QModelIndex &index)
 void BusNodesTreeView::addBus(quint8 busId)
 {
     CanOpenBus *bus = _busNodesModel->canOpen()->bus(busId);
-    if (!bus)
+    if (bus == nullptr)
     {
         return;
     }
@@ -161,14 +161,14 @@ void BusNodesTreeView::contextMenuEvent(QContextMenuEvent *event)
         const QModelIndex &curentIndex = _sortFilterProxyModel->mapToSource(row);
 
         Node *node = _busNodesModel->node(curentIndex);
-        if (node)
+        if (node != nullptr)
         {
             selectedNodes.append(node);
             continue;
         }
 
         CanOpenBus *bus = _busNodesModel->bus(curentIndex);
-        if (bus)
+        if (bus != nullptr)
         {
             selectedBuses.append(bus);
             continue;

@@ -22,13 +22,13 @@
 #include "canopen/indexWidget/indexlabel.h"
 
 #include "p402cpwidget.h"
+#include "p402cstcawidget.h"
 #include "p402dtywidget.h"
 #include "p402ipwidget.h"
 #include "p402optionwidget.h"
 #include "p402ppwidget.h"
 #include "p402tqwidget.h"
 #include "p402vlwidget.h"
-#include "p402cstcawidget.h"
 
 #include <QButtonGroup>
 #include <QFormLayout>
@@ -59,7 +59,7 @@ QString P402Widget::title() const
 
 void P402Widget::setNode(Node *node, uint8_t axis)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
@@ -76,7 +76,7 @@ void P402Widget::setNode(Node *node, uint8_t axis)
     }
     _axis = axis;
 
-    if (_node)
+    if (_node != nullptr)
     {
         _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
         _nodeProfile402->init();
@@ -116,7 +116,7 @@ void P402Widget::setNode(Node *node, uint8_t axis)
 
 void P402Widget::updateNodeStatus()
 {
-    if (_node)
+    if (_node != nullptr)
     {
         if (_node->status() == Node::STARTED)
         {
@@ -249,7 +249,7 @@ void P402Widget::updateState()
 
 void P402Widget::setModeIndex(int id)
 {
-    if (!_node)
+    if (_node == nullptr)
     {
         return;
     }
@@ -272,7 +272,7 @@ void P402Widget::gotoStateOEClicked()
 
 void P402Widget::setStartLogger(bool start)
 {
-    if (!_node)
+    if (_node == nullptr)
     {
         return;
     }
@@ -322,7 +322,7 @@ void P402Widget::setLogTimer(int ms)
 
 void P402Widget::readAllObjects()
 {
-    if (_node)
+    if (_node != nullptr)
     {
         if (_stackedWidget->currentWidget() == _modes[NodeProfile402::NoMode])
         {
@@ -338,11 +338,11 @@ void P402Widget::readAllObjects()
 void P402Widget::setEvent(quint8 event)
 {
     QString informationText;
-    if (event & NodeProfile402::VoltageEnabled)
+    if ((event & NodeProfile402::VoltageEnabled) != 0)
     {
         informationText = _nodeProfile402->event402Str(NodeProfile402::VoltageEnabled);
     }
-    if (event & NodeProfile402::Remote)
+    if ((event & NodeProfile402::Remote) != 0)
     {
         if (!informationText.isEmpty())
         {
@@ -350,7 +350,7 @@ void P402Widget::setEvent(quint8 event)
         }
         informationText.append(_nodeProfile402->event402Str(NodeProfile402::Remote));
     }
-    if (event & NodeProfile402::TargetReached)
+    if ((event & NodeProfile402::TargetReached) != 0)
     {
         if (!informationText.isEmpty())
         {
@@ -358,7 +358,7 @@ void P402Widget::setEvent(quint8 event)
         }
         informationText.append(_nodeProfile402->event402Str(NodeProfile402::TargetReached));
     }
-    if (event & NodeProfile402::ModeSpecific)
+    if ((event & NodeProfile402::ModeSpecific) != 0)
     {
         if (!informationText.isEmpty())
         {
@@ -369,11 +369,11 @@ void P402Widget::setEvent(quint8 event)
     _informationLabel->setText(informationText);
 
     QString warningText;
-    if (event & NodeProfile402::InternalLimitActive)
+    if ((event & NodeProfile402::InternalLimitActive) != 0)
     {
         warningText.append(_nodeProfile402->event402Str(NodeProfile402::InternalLimitActive));
     }
-    if (event & NodeProfile402::Warning)
+    if ((event & NodeProfile402::Warning) != 0)
     {
         if (!warningText.isEmpty())
         {
@@ -384,7 +384,7 @@ void P402Widget::setEvent(quint8 event)
     quint16 mode = static_cast<quint16>(_nodeProfile402->actualMode());
     if (mode == 7)
     {
-        if (event & NodeProfile402::FollowingError)
+        if ((event & NodeProfile402::FollowingError) != 0)
         {
             if (!warningText.isEmpty())
             {
@@ -466,7 +466,7 @@ void P402Widget::displayOption402()
 
 void P402Widget::stateMachineClicked(int id)
 {
-    if (!_node)
+    if (_node == nullptr)
     {
         return;
     }

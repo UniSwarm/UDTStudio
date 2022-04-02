@@ -38,7 +38,7 @@ P402VlWidget::P402VlWidget(QWidget *parent)
 
 void P402VlWidget::readRealTimeObjects()
 {
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _nodeProfile402->readRealTimeObjects();
     }
@@ -46,7 +46,7 @@ void P402VlWidget::readRealTimeObjects()
 
 void P402VlWidget::readAllObjects()
 {
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _nodeProfile402->readAllObjects();
     }
@@ -59,7 +59,7 @@ void P402VlWidget::reset()
 
 void P402VlWidget::setNode(Node *node, uint8_t axis)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
@@ -69,7 +69,7 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
         return;
     }
 
-    if (node)
+    if (node != nullptr)
     {
         setNodeInterrest(node);
 
@@ -152,7 +152,7 @@ void P402VlWidget::enableRampClicked(bool ok)
     // 0 -> Velocity demand value shall be controlled in any other
     // 1 -> Velocity demand value shall accord with ramp output value
 
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _modeVl->setEnableRamp(ok);
     }
@@ -163,7 +163,7 @@ void P402VlWidget::unlockRampClicked(bool ok)
     // 0 -> Ramp output value shall be locked to current output value
     // 1 -> Ramp output value shall follow ramp input value
 
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _modeVl->setUnlockRamp(ok);
     }
@@ -173,7 +173,7 @@ void P402VlWidget::referenceRampClicked(bool ok)
 {
     // 0 -> Ramp input value shall be set to zero
     // 1 -> Ramp input value shall accord with ramp reference
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _modeVl->setReferenceRamp(ok);
     }
@@ -483,7 +483,7 @@ QGroupBox *P402VlWidget::createControlWordWidgets()
     return groupBox;
 }
 
-QHBoxLayout *P402VlWidget::createButtonWidgets()
+QHBoxLayout *P402VlWidget::createButtonWidgets() const
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402VlWidget::createDataLogger);
@@ -511,7 +511,7 @@ QHBoxLayout *P402VlWidget::createButtonWidgets()
 
 void P402VlWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & NodeOd::FlagsRequest::Error)
+    if ((flags & NodeOd::FlagsRequest::Error) != 0)
     {
         return;
     }

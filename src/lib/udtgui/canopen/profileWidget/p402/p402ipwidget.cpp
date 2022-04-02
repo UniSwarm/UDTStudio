@@ -44,7 +44,7 @@ P402IpWidget::P402IpWidget(QWidget *parent)
 
 void P402IpWidget::readRealTimeObjects()
 {
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _modeIp->readRealTimeObjects();
     }
@@ -52,7 +52,7 @@ void P402IpWidget::readRealTimeObjects()
 
 void P402IpWidget::readAllObjects()
 {
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _modeIp->readAllObjects();
     }
@@ -60,7 +60,7 @@ void P402IpWidget::readAllObjects()
 
 void P402IpWidget::setNode(Node *node, uint8_t axis)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
@@ -70,7 +70,7 @@ void P402IpWidget::setNode(Node *node, uint8_t axis)
         return;
     }
 
-    if (node)
+    if (node != nullptr)
     {
         setNodeInterrest(node);
 
@@ -147,7 +147,7 @@ void P402IpWidget::enableRampClicked(bool ok)
 {
     // 0 Disable interpolation
     // 1 Enable interpolation
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _modeIp->setEnableRamp(ok);
     }
@@ -505,7 +505,7 @@ QGroupBox *P402IpWidget::createControlWordWidgets()
     return groupBox;
 }
 
-QHBoxLayout *P402IpWidget::createButtonWidgets()
+QHBoxLayout *P402IpWidget::createButtonWidgets() const
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402IpWidget::createDataLogger);

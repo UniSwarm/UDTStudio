@@ -90,7 +90,7 @@ private:
     IndexSpinBox *_homeOffsetSpinBox;
     IndexCheckBox *_polarityCheckBox;
 
-    QHBoxLayout *createButtonWidgets();
+    QHBoxLayout *createButtonWidgets() const;
 
     // NodeOdSubscriber interface
 protected:

@@ -86,7 +86,7 @@ QVariant ODItemModel::headerData(int section, Qt::Orientation orientation, int r
 
 QVariant ODItemModel::data(const QModelIndex &index, int role) const
 {
-    if (!_root)
+    if (_root == nullptr)
     {
         return QVariant();
     }
@@ -102,7 +102,7 @@ QVariant ODItemModel::data(const QModelIndex &index, int role) const
 
 bool ODItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (!_root || !index.isValid())
+    if ((_root == nullptr) || !index.isValid())
     {
         return false;
     }
@@ -113,7 +113,7 @@ bool ODItemModel::setData(const QModelIndex &index, const QVariant &value, int r
 
 QModelIndex ODItemModel::index(int row, int column, const QModelIndex &parent) const
 {
-    if (!_root)
+    if (_root == nullptr)
     {
         return QModelIndex();
     }
@@ -129,14 +129,11 @@ QModelIndex ODItemModel::index(int row, int column, const QModelIndex &parent) c
     }
 
     ODItem *childItem = item->child(row);
-    if (childItem)
+    if (childItem != nullptr)
     {
         return createIndex(row, column, childItem);
     }
-    else
-    {
-        return QModelIndex();
-    }
+    return QModelIndex();
 }
 
 QModelIndex ODItemModel::parent(const QModelIndex &child) const
@@ -159,7 +156,7 @@ QModelIndex ODItemModel::parent(const QModelIndex &child) const
 
 int ODItemModel::rowCount(const QModelIndex &parent) const
 {
-    if (!_root)
+    if (_root == nullptr)
     {
         return 0;
     }
@@ -179,7 +176,7 @@ int ODItemModel::rowCount(const QModelIndex &parent) const
 
 Qt::ItemFlags ODItemModel::flags(const QModelIndex &index) const
 {
-    if (!_root || !index.isValid())
+    if ((_root == nullptr) || !index.isValid())
     {
         return Qt::NoItemFlags;
     }

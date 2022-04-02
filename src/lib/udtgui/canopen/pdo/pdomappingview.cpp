@@ -86,12 +86,12 @@ PDO *PDOMappingView::pdo() const
 
 void PDOMappingView::setPdo(PDO *pdo)
 {
-    if (_pdo)
+    if (_pdo != nullptr)
     {
         disconnect(_pdo, &PDO::mappingChanged, this, &PDOMappingView::updateMapping);
     }
     _pdo = pdo;
-    if (_pdo)
+    if (_pdo != nullptr)
     {
         connect(_pdo, &PDO::mappingChanged, this, &PDOMappingView::updateMapping);
         connect(_pdo, &PDO::enabledChanged, this, &PDOMappingView::updateEnabled);
@@ -134,7 +134,7 @@ void PDOMappingView::paintEvent(QPaintEvent *event)
 
 void PDOMappingView::updateMapping()
 {
-    if (_pdo)
+    if (_pdo != nullptr)
     {
         const QList<NodeObjectId> &nodeListMapping = _pdo->currentMappind();
         _nodeListName.clear();
@@ -145,7 +145,7 @@ void PDOMappingView::updateMapping()
             QString objName;
             QColor color = Qt::blue;
             NodeSubIndex *nodeSubIndex = objId.nodeSubIndex();
-            if (nodeSubIndex)
+            if (nodeSubIndex != nullptr)
             {
                 objName = nodeSubIndex->name();
                 if (nodeSubIndex->isWritable())
@@ -180,7 +180,7 @@ void PDOMappingView::dropEvent(QDropEvent *event)
             QString objName;
             QColor color = Qt::blue;
             NodeSubIndex *nodeSubIndex = _dragObjId.nodeSubIndex();
-            if (nodeSubIndex)
+            if (nodeSubIndex != nullptr)
             {
                 objName = nodeSubIndex->name();
                 if (nodeSubIndex->isWritable())
@@ -201,14 +201,14 @@ void PDOMappingView::dropEvent(QDropEvent *event)
 
 void PDOMappingView::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasFormat("index/subindex") && _pdo)
+    if (event->mimeData()->hasFormat("index/subindex") && (_pdo != nullptr))
     {
         const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', QString::SkipEmptyParts);
         for (const QString &stringObjId : stringListObjId)
         {
             _dragObjId = NodeObjectId::fromMimeData(stringObjId);
             NodeSubIndex *nodeSubIndex = _dragObjId.nodeSubIndex();
-            if (!nodeSubIndex)
+            if (nodeSubIndex == nullptr)
             {
                 return;
             }

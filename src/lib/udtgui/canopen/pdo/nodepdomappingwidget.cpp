@@ -39,7 +39,7 @@ Node *NodePDOMappingWidget::node() const
 void NodePDOMappingWidget::setNode(Node *node)
 {
     _node = node;
-    if (node)
+    if (node != nullptr)
     {
         for (int rpdo = 0; rpdo < 4; rpdo++)
         {
@@ -68,7 +68,7 @@ void NodePDOMappingWidget::setNode(Node *node)
 
 void NodePDOMappingWidget::readAllMapping()
 {
-    if (_node)
+    if (_node != nullptr)
     {
         for (int rpdo = 0; rpdo < 4; rpdo++)
         {

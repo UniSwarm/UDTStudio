@@ -76,7 +76,7 @@ QString MotionSensorWidget::title() const
 void MotionSensorWidget::setNode(Node *node, uint8_t axis)
 {
     _node = node;
-    if (!_node)
+    if (_node == nullptr)
     {
         return;
     }
@@ -123,7 +123,7 @@ void MotionSensorWidget::setIMode()
     NodeObjectId flagLabel_ObjId;
     NodeObjectId valueLabel_ObjId;
 
-    if (!_nodeProfile402)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }
@@ -539,11 +539,13 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
     _thresholdModeComboBox->setItemData(_thresholdModeComboBox->count() - 1, tr("Apply a modulo to keep value in range from min to max"), Qt::StatusTipRole);
     _thresholdModeComboBox->addItem(tr("Last valid value"), QVariant(static_cast<uint16_t>(0x0003)));
     _thresholdModeComboBox->setItemData(_thresholdModeComboBox->count() - 1, tr("Keep the last valid value as output"), Qt::StatusTipRole);
-    connect(_thresholdModeComboBox, qOverload<int>(&QComboBox::currentIndexChanged), [=](int index)
-    {
-        _thresholdMinSpinBox->setEnabled(index != 0);
-        _thresholdMaxSpinBox->setEnabled(index != 0);
-    });
+    connect(_thresholdModeComboBox,
+            qOverload<int>(&QComboBox::currentIndexChanged),
+            [=](int index)
+            {
+                _thresholdMinSpinBox->setEnabled(index != 0);
+                _thresholdMaxSpinBox->setEnabled(index != 0);
+            });
     formLayout->addRow(tr("Th&reshold:"), _thresholdModeComboBox);
     _indexWidgets.append(_thresholdModeComboBox);
 

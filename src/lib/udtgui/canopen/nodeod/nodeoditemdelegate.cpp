@@ -22,8 +22,8 @@
 #include <QEvent>
 #include <QLineEdit>
 
-#include "nodeoditemmodel.h"
 #include "nodeodfilterproxymodel.h"
+#include "nodeoditemmodel.h"
 
 NodeOdItemDelegate::NodeOdItemDelegate(QObject *parent)
     : QItemDelegate(parent)

@@ -42,7 +42,7 @@ P402PpWidget::P402PpWidget(QWidget *parent)
 
 void P402PpWidget::readRealTimeObjects()
 {
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _nodeProfile402->readRealTimeObjects();
     }
@@ -50,7 +50,7 @@ void P402PpWidget::readRealTimeObjects()
 
 void P402PpWidget::readAllObjects()
 {
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _nodeProfile402->readAllObjects();
     }
@@ -58,7 +58,7 @@ void P402PpWidget::readAllObjects()
 
 void P402PpWidget::setNode(Node *node, uint8_t axis)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
@@ -68,7 +68,7 @@ void P402PpWidget::setNode(Node *node, uint8_t axis)
         return;
     }
 
-    if (node)
+    if (node != nullptr)
     {
         setNodeInterrest(node);
 
@@ -133,7 +133,7 @@ void P402PpWidget::twoOneLineEditFinished()
 
 void P402PpWidget::changeSetImmediatelyPointCheckBoxRampClicked(bool ok)
 {
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _modePp->setChangeSetImmediately(ok);
     }
@@ -148,7 +148,7 @@ void P402PpWidget::changeSetImmediatelyPointEvent(bool ok)
 
 void P402PpWidget::absRelCheckBoxRampClicked(bool ok)
 {
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _modePp->setAbsRel(ok);
     }
@@ -161,7 +161,7 @@ void P402PpWidget::absRelEvent(bool ok)
 
 void P402PpWidget::changeOnSetPointCheckBoxRampClicked(bool ok)
 {
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _modePp->setChangeOnSetPoint(ok);
     }
@@ -421,7 +421,7 @@ QGroupBox *P402PpWidget::createControlWordWidgets()
     return groupBox;
 }
 
-QHBoxLayout *P402PpWidget::createButtonWidgets()
+QHBoxLayout *P402PpWidget::createButtonWidgets() const
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402PpWidget::createDataLogger);
@@ -449,12 +449,12 @@ QHBoxLayout *P402PpWidget::createButtonWidgets()
 
 void P402PpWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & NodeOd::FlagsRequest::Error)
+    if ((flags & NodeOd::FlagsRequest::Error) != 0)
     {
         return;
     }
 
-    if ((!_nodeProfile402->node()) || (_nodeProfile402->node()->status() != Node::STARTED))
+    if ((_nodeProfile402->node() == nullptr) || (_nodeProfile402->node()->status() != Node::STARTED))
     {
         return;
     }

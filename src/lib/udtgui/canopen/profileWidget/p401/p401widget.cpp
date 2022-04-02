@@ -86,7 +86,7 @@ void P401Widget::stop()
 
 void P401Widget::setNode(Node *node)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }

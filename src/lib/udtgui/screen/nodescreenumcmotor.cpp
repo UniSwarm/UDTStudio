@@ -79,7 +79,7 @@ QIcon NodeScreenUmcMotor::icon() const
 
 void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }

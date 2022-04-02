@@ -47,7 +47,7 @@ void P402CpWidget::twoOneLineEditFinished()
 
 void P402CpWidget::sendAbsRel(bool ok)
 {
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _modeCp->setAbsRel(ok);
     }
@@ -281,7 +281,7 @@ QGroupBox *P402CpWidget::createControlWordWidgets()
     return groupBox;
 }
 
-QHBoxLayout *P402CpWidget::createButtonWidgets()
+QHBoxLayout *P402CpWidget::createButtonWidgets() const
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402CpWidget::createDataLogger);
@@ -309,7 +309,7 @@ QHBoxLayout *P402CpWidget::createButtonWidgets()
 
 void P402CpWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & NodeOd::FlagsRequest::Error)
+    if ((flags & NodeOd::FlagsRequest::Error) != 0)
     {
         return;
     }
@@ -327,7 +327,7 @@ void P402CpWidget::readAllObjects()
 
 void P402CpWidget::setNode(Node *node, uint8_t axis)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
@@ -337,7 +337,7 @@ void P402CpWidget::setNode(Node *node, uint8_t axis)
         return;
     }
 
-    if (node)
+    if (node != nullptr)
     {
         setNodeInterrest(node);
 

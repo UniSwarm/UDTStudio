@@ -38,7 +38,6 @@ void IndexCheckBox::mouseMoveEvent(QMouseEvent *event)
     indexWidgetMouseMove(event);
 }
 
-
 void IndexCheckBox::nextCheckState()
 {
     QCheckBox::nextCheckState();

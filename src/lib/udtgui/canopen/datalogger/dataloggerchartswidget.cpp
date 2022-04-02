@@ -83,7 +83,7 @@ void DataLoggerChartsWidget::setDataLogger(DataLogger *dataLogger)
 {
     if (dataLogger != _dataLogger)
     {
-        if (dataLogger)
+        if (dataLogger != nullptr)
         {
             connect(dataLogger, &DataLogger::dataAboutToBeAdded, this, &DataLoggerChartsWidget::addDataPrepare);
             connect(dataLogger, &DataLogger::dataAdded, this, &DataLoggerChartsWidget::addDataOk);

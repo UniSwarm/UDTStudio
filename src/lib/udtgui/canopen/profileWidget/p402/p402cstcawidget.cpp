@@ -219,7 +219,7 @@ void P402CstcaWidget::createHomePolarityWidgets()
     _modeLayout->addRow(tr("Polarity:"), _polarityCheckBox);
 }
 
-QHBoxLayout *P402CstcaWidget::createButtonWidgets()
+QHBoxLayout *P402CstcaWidget::createButtonWidgets() const
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402CstcaWidget::createDataLogger);
@@ -247,12 +247,12 @@ QHBoxLayout *P402CstcaWidget::createButtonWidgets()
 
 void P402CstcaWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & NodeOd::FlagsRequest::Error)
+    if ((flags & NodeOd::FlagsRequest::Error) != 0)
     {
         return;
     }
 
-    if ((!_nodeProfile402->node()) || (_nodeProfile402->node()->status() != Node::STARTED))
+    if ((_nodeProfile402->node() == nullptr) || (_nodeProfile402->node()->status() != Node::STARTED))
     {
         return;
     }
@@ -277,7 +277,7 @@ void P402CstcaWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest f
 
 void P402CstcaWidget::readRealTimeObjects()
 {
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _nodeProfile402->readRealTimeObjects();
     }
@@ -285,7 +285,7 @@ void P402CstcaWidget::readRealTimeObjects()
 
 void P402CstcaWidget::readAllObjects()
 {
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _nodeProfile402->readAllObjects();
     }
@@ -298,7 +298,7 @@ void P402CstcaWidget::reset()
 
 void P402CstcaWidget::setNode(Node *node, uint8_t axis)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
@@ -308,7 +308,7 @@ void P402CstcaWidget::setNode(Node *node, uint8_t axis)
         return;
     }
 
-    if (node)
+    if (node != nullptr)
     {
         setNodeInterrest(node);
 

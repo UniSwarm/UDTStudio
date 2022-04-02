@@ -117,7 +117,7 @@ private:
     QGroupBox *createControlWordWidgets();
     QCheckBox *_enableRampCheckBox;
 
-    QHBoxLayout *createButtonWidgets();
+    QHBoxLayout *createButtonWidgets() const;
 
     // P402Mode interface
 public:

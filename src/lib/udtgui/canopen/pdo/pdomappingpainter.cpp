@@ -96,7 +96,9 @@ void PDOMappingPainter::drawListMapping(const QRect &rect,
         }
         if (!enabled)
         {
-            int h, s, v;
+            int h;
+            int s;
+            int v;
             color.getHsv(&h, &s, &v);
             v /= 4;
             s /= 4;

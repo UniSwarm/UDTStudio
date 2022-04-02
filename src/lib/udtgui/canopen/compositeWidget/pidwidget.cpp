@@ -70,7 +70,7 @@ QString PidWidget::title() const
 
 void PidWidget::setNode(Node *node, uint8_t axis)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
@@ -132,7 +132,7 @@ void PidWidget::setIMode()
 
     QList<NodeProfile402::OperationMode> modeList;
 
-    if (!_nodeProfile402)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }
@@ -224,7 +224,7 @@ void PidWidget::screenshotSave()
 
 void PidWidget::changeMode402()
 {
-    if (!_nodeProfile402)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }
@@ -281,7 +281,7 @@ void PidWidget::changeMode402()
 
 void PidWidget::mode402Changed(uint8_t axis, NodeProfile402::OperationMode mode)
 {
-    if (!_nodeProfile402)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }
@@ -371,7 +371,7 @@ void PidWidget::manageMeasurement()
 
 void PidWidget::stopFirstMeasurement()
 {
-    if (!_nodeProfile402)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }
@@ -402,7 +402,7 @@ void PidWidget::stopFirstMeasurement()
 
 void PidWidget::stopSecondMeasurement()
 {
-    if (!_nodeProfile402)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }

@@ -68,7 +68,7 @@ void NodeOdWidget::setNode(Node *node)
 {
     _node = node;
     _nodeOdTreeView->setNode(node);
-    if (node)
+    if (node != nullptr)
     {
         createDefaultFilters(node->profileNumber());
     }

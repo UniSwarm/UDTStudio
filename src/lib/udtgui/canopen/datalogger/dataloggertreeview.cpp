@@ -60,7 +60,7 @@ DataLoggerTreeView::~DataLoggerTreeView()
 
 DLData *DataLoggerTreeView::currentData() const
 {
-    if (!_loggerModel->dataLogger())
+    if (_loggerModel->dataLogger() == nullptr)
     {
         return nullptr;
     }
@@ -85,7 +85,7 @@ void DataLoggerTreeView::setDataLogger(DataLogger *dataLogger)
 
 void DataLoggerTreeView::removeCurrent()
 {
-    if (!_loggerModel->dataLogger())
+    if (_loggerModel->dataLogger() == nullptr)
     {
         return;
     }
@@ -120,22 +120,22 @@ void DataLoggerTreeView::removeCurrent()
 void DataLoggerTreeView::setColorCurrent()
 {
     DLData *dlData = currentData();
-    if (!dlData)
+    if (dlData == nullptr)
     {
         return;
     }
     QColorDialog colorDialog(this);
     colorDialog.show();
-    if (colorDialog.exec())
+    if (colorDialog.exec() != 0)
     {
         dlData->setColor(colorDialog.currentColor());
     }
 }
 
-void DataLoggerTreeView::exportOneCurrent()
+void DataLoggerTreeView::exportOneCurrent() const
 {
     DLData *dlData = currentData();
-    if (!dlData)
+    if (dlData == nullptr)
     {
         return;
     }

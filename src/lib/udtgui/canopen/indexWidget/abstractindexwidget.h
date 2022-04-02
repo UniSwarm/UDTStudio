@@ -49,7 +49,7 @@ public:
         DisplayFloat = 0x08,
     };
     DisplayHint hint() const;
-    void setDisplayHint(const DisplayHint hint);
+    void setDisplayHint(DisplayHint hint);
 
     QVariant value() const;
     QString stringValue() const;
@@ -95,8 +95,8 @@ protected:
     virtual void updateRange();
     virtual void updateObjId();
 
-    QVariant pValue(const QVariant &value, const DisplayHint hint = DisplayHint::DisplayDirectValue) const;
-    QString pstringValue(const QVariant &value, const DisplayHint hint = DisplayHint::DisplayDirectValue) const;
+    QVariant pValue(const QVariant &value, DisplayHint hint = DisplayHint::DisplayDirectValue) const;
+    QString pstringValue(const QVariant &value, DisplayHint hint = DisplayHint::DisplayDirectValue) const;
 
     enum Bound
     {

@@ -50,7 +50,7 @@ void DataLoggerManagerWidget::setLogTimerMs(int ms)
 
 void DataLoggerManagerWidget::setUseOpenGL(bool useOpenGL)
 {
-    if (_chartWidget)
+    if (_chartWidget != nullptr)
     {
         _chartWidget->setUseOpenGL(useOpenGL);
     }
@@ -59,7 +59,7 @@ void DataLoggerManagerWidget::setUseOpenGL(bool useOpenGL)
 
 void DataLoggerManagerWidget::setViewCross(bool viewCross)
 {
-    if (_chartWidget)
+    if (_chartWidget != nullptr)
     {
         _chartWidget->setViewCross(viewCross);
     }
@@ -67,7 +67,7 @@ void DataLoggerManagerWidget::setViewCross(bool viewCross)
 
 void DataLoggerManagerWidget::setRollingEnabled(bool enabled)
 {
-    if (_chartWidget)
+    if (_chartWidget != nullptr)
     {
         _chartWidget->setRollingEnabled(enabled);
     }
@@ -75,7 +75,7 @@ void DataLoggerManagerWidget::setRollingEnabled(bool enabled)
 
 void DataLoggerManagerWidget::setRollingTimeMs(int ms)
 {
-    if (_chartWidget)
+    if (_chartWidget != nullptr)
     {
         _chartWidget->setRollingTimeMs(ms);
     }

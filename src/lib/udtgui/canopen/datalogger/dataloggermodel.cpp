@@ -56,7 +56,7 @@ void DataLoggerModel::setDataLogger(DataLogger *dataLogger)
 NodeObjectId DataLoggerModel::objId(const QModelIndex &index)
 {
     const DLData *dlData = this->dlData(index);
-    if (!dlData)
+    if (dlData == nullptr)
     {
         return NodeObjectId();
     }
@@ -65,7 +65,7 @@ NodeObjectId DataLoggerModel::objId(const QModelIndex &index)
 
 DLData *DataLoggerModel::dlData(const QModelIndex &index)
 {
-    if (!index.isValid() || !_dataLogger)
+    if (!index.isValid() || (_dataLogger == nullptr))
     {
         return nullptr;
     }
@@ -150,7 +150,7 @@ QVariant DataLoggerModel::headerData(int section, Qt::Orientation orientation, i
 QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
 {
     Node *node;
-    if (!index.isValid() || !_dataLogger)
+    if (!index.isValid() || (_dataLogger == nullptr))
     {
         return QVariant();
     }
@@ -168,14 +168,11 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
             {
                 case NodeName:
                     node = dlData->node();
-                    if (node)
+                    if (node != nullptr)
                     {
                         return QVariant(QString("%1.%2 %3").arg(node->busId()).arg(node->nodeId()).arg(node->name()));
                     }
-                    else
-                    {
-                        return QVariant(tr("Unknown"));
-                    }
+                    return QVariant(tr("Unknown"));
 
                 case Index:
                     return QVariant(QString("0x%1.%2").arg(QString::number(dlData->objectId().index(), 16), QString::number(dlData->objectId().subIndex(), 16)));
@@ -218,7 +215,7 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
 QModelIndex DataLoggerModel::index(int row, int column, const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    if (!_dataLogger)
+    if (_dataLogger == nullptr)
     {
         return QModelIndex();
     }
@@ -237,7 +234,7 @@ QModelIndex DataLoggerModel::parent(const QModelIndex &child) const
 
 int DataLoggerModel::rowCount(const QModelIndex &parent) const
 {
-    if (!_dataLogger)
+    if (_dataLogger == nullptr)
     {
         return 0;
     }
@@ -252,7 +249,7 @@ bool DataLoggerModel::setData(const QModelIndex &index, const QVariant &value, i
 {
     Q_UNUSED(value);
 
-    if (!_dataLogger || !index.isValid())
+    if ((_dataLogger == nullptr) || !index.isValid())
     {
         return false;
     }
@@ -270,7 +267,7 @@ bool DataLoggerModel::setData(const QModelIndex &index, const QVariant &value, i
 
 Qt::ItemFlags DataLoggerModel::flags(const QModelIndex &index) const
 {
-    if (!_dataLogger)
+    if (_dataLogger == nullptr)
     {
         return Qt::NoItemFlags;
     }
@@ -322,11 +319,7 @@ bool DataLoggerModel::canDropMimeData(const QMimeData *mimeData, Qt::DropAction 
     Q_UNUSED(row)
     Q_UNUSED(column)
     Q_UNUSED(parent)
-    if (mimeData->hasFormat("index/subindex"))
-    {
-        return true;
-    }
-    return false;
+    return mimeData->hasFormat("index/subindex");
 }
 
 bool DataLoggerModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction action, int row, int column, const QModelIndex &parent)

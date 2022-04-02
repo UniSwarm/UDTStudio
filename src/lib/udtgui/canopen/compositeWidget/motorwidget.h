@@ -59,7 +59,7 @@ protected:
     // Creation widgets
     void createWidgets();
     QList<AbstractIndexWidget *> _indexWidgets;
-    QToolBar *createToolBarWidgets();
+    QToolBar *createToolBarWidgets() const;
 
     // Information
     QGroupBox *createInformationWidgets();

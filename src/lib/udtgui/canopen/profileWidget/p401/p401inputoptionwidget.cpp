@@ -38,7 +38,7 @@ void P401InputOptionWidget::readAllObject()
 
 void P401InputOptionWidget::setNode(Node *node)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }

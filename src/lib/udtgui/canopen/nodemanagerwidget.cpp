@@ -51,7 +51,7 @@ void NodeManagerWidget::setNode(Node *node)
 {
     if (node != _node)
     {
-        if (_node)
+        if (_node != nullptr)
         {
             disconnect(_node, &Node::statusChanged, this, &NodeManagerWidget::updateData);
         }
@@ -59,26 +59,26 @@ void NodeManagerWidget::setNode(Node *node)
 
     _node = node;
 
-    if (_node)
+    if (_node != nullptr)
     {
         connect(_node, &Node::statusChanged, this, &NodeManagerWidget::updateData);
     }
-    _groupBox->setEnabled(_node);
-    _groupNmt->setEnabled(_node);
+    _groupBox->setEnabled(_node != nullptr);
+    _groupNmt->setEnabled(_node != nullptr);
 
-    _actionLoadEds->setEnabled(_node);
-    _actionReLoadEds->setEnabled(_node);
+    _actionLoadEds->setEnabled(_node != nullptr);
+    _actionReLoadEds->setEnabled(_node != nullptr);
 
-    _actionRemoveNode->setEnabled(_node);
+    _actionRemoveNode->setEnabled(_node != nullptr);
 
-    _actionUpdateFirmware->setEnabled(_node);
+    _actionUpdateFirmware->setEnabled(_node != nullptr);
 
     updateData();
 }
 
 void NodeManagerWidget::updateData()
 {
-    if (_node)
+    if (_node != nullptr)
     {
         _nodeNameEdit->setText(_node->name());
         _nodeStatusLabel->setText(_node->statusStr());
@@ -106,7 +106,7 @@ void NodeManagerWidget::updateData()
 
 void NodeManagerWidget::preop()
 {
-    if (_node)
+    if (_node != nullptr)
     {
         _node->sendPreop();
     }
@@ -114,7 +114,7 @@ void NodeManagerWidget::preop()
 
 void NodeManagerWidget::start()
 {
-    if (_node)
+    if (_node != nullptr)
     {
         _node->sendStart();
     }
@@ -122,7 +122,7 @@ void NodeManagerWidget::start()
 
 void NodeManagerWidget::stop()
 {
-    if (_node)
+    if (_node != nullptr)
     {
         _node->sendStop();
     }
@@ -130,7 +130,7 @@ void NodeManagerWidget::stop()
 
 void NodeManagerWidget::resetCom()
 {
-    if (_node)
+    if (_node != nullptr)
     {
         _node->sendResetComm();
         updateData();
@@ -139,7 +139,7 @@ void NodeManagerWidget::resetCom()
 
 void NodeManagerWidget::resetNode()
 {
-    if (_node)
+    if (_node != nullptr)
     {
         _node->sendResetNode();
         updateData();
@@ -148,7 +148,7 @@ void NodeManagerWidget::resetNode()
 
 void NodeManagerWidget::removeNode()
 {
-    if (_node)
+    if (_node != nullptr)
     {
         Node *node = _node;
         setNode(nullptr);
@@ -158,7 +158,7 @@ void NodeManagerWidget::removeNode()
 
 void NodeManagerWidget::updateNodeFirmware()
 {
-    if (_node)
+    if (_node != nullptr)
     {
         BootloaderWidget bootloaderWidget(_node, this);
         bootloaderWidget.exec();
@@ -167,7 +167,7 @@ void NodeManagerWidget::updateNodeFirmware()
 
 void NodeManagerWidget::loadEds(const QString &edsFileName)
 {
-    if (_node)
+    if (_node != nullptr)
     {
         QString fileName = edsFileName;
         if (fileName.isEmpty())
@@ -185,7 +185,7 @@ void NodeManagerWidget::loadEds(const QString &edsFileName)
 
 void NodeManagerWidget::reloadEds()
 {
-    if (_node)
+    if (_node != nullptr)
     {
         _node->loadEds(_node->edsFileName());
     }
@@ -193,7 +193,7 @@ void NodeManagerWidget::reloadEds()
 
 void NodeManagerWidget::setNodeName()
 {
-    if (_node)
+    if (_node != nullptr)
     {
         _node->setName(_nodeNameEdit->text());
     }

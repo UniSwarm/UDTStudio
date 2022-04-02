@@ -32,7 +32,7 @@ ODItem::ODItem(DeviceModel *od, ODItem *parent)
 
 ODItem::ODItem(Index *index, ODItem *parent)
 {
-    if (parent->_deviceModel)
+    if (parent->_deviceModel != nullptr)
     {
         _deviceModel = parent->_deviceModel;
     }
@@ -49,7 +49,7 @@ ODItem::ODItem(Index *index, ODItem *parent)
 
 ODItem::ODItem(SubIndex *subIndex, ODItem *parent)
 {
-    if (parent->_deviceModel)
+    if (parent->_deviceModel != nullptr)
     {
         _deviceModel = parent->_deviceModel;
     }
@@ -147,10 +147,7 @@ QVariant ODItem::data(int column, int role) const
                                 {
                                     return QString("$NODEID+%1").arg(_index->subIndex(0)->value().toString());
                                 }
-                                else
-                                {
-                                    return _index->subIndex(0)->value();
-                                }
+                                return _index->subIndex(0)->value();
                             }
                             else
                             {
@@ -354,7 +351,7 @@ ODItem *ODItem::child(int id) const
 
 int ODItem::row() const
 {
-    if (!_parent)
+    if (_parent == nullptr)
     {
         return 0;
     }

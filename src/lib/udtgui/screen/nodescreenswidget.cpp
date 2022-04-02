@@ -56,7 +56,7 @@ void NodeScreensWidget::setActiveNode(Node *node)
 
     _activeNode = node;
 
-    if (node)
+    if (node != nullptr)
     {
         addNode(node);
 

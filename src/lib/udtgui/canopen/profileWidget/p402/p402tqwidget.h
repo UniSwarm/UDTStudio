@@ -86,7 +86,7 @@ private:
     void createSlopeWidgets();
     IndexSpinBox *_targetSlopeSpinBox;
 
-    QHBoxLayout *createButtonWidgets();
+    QHBoxLayout *createButtonWidgets() const;
 
     // NodeOdSubscriber interface
 protected:

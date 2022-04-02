@@ -45,7 +45,7 @@ void P401OutputWidget::readAllObject()
 
 void P401OutputWidget::setNode(Node *node)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
@@ -104,7 +104,7 @@ void P401OutputWidget::digitalPushButtonClicked(bool clicked)
 {
     uint8_t valueDigital = static_cast<uint8_t>(_node->nodeOd()->value(_digitalObjectId).toUInt());
     uint8_t value = valueDigital & ~(1 << _channel);
-    value |= (clicked << _channel);
+    value |= (static_cast<int>(clicked) << _channel);
     _node->writeObject(_digitalObjectId, QVariant(value));
 
     if (clicked)
@@ -237,7 +237,7 @@ QWidget *P401OutputWidget::digitalWidgets()
 
 void P401OutputWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & NodeOd::FlagsRequest::Error)
+    if ((flags & NodeOd::FlagsRequest::Error) != 0)
     {
         return;
     }
@@ -276,7 +276,7 @@ void P401OutputWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest 
     if (objId == _digitalObjectId)
     {
         uint8_t valueDigital = static_cast<uint8_t>(_node->nodeOd()->value(_digitalObjectId).toUInt());
-        bool act = (valueDigital >> _channel) & 1;
+        bool act = ((valueDigital >> _channel) & 1) != 0;
         _digitalPushButton->setEnabled(true);
         _digitalPushButton->setChecked(act);
     }

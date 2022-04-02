@@ -34,7 +34,7 @@ DataLoggerWidget::DataLoggerWidget(DataLogger *dataLogger, Qt::Orientation orien
 {
     _type = UserType;
 
-    if (!_dataLogger)
+    if (_dataLogger == nullptr)
     {
         _dataLogger = new DataLogger(this);
     }

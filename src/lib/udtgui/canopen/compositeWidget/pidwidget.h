@@ -28,12 +28,12 @@
 #include <QComboBox>
 #include <QFormLayout>
 #include <QGroupBox>
+#include <QLabel>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QTabWidget>
 #include <QTimer>
 #include <QToolBar>
-#include <QLabel>
 
 class Node;
 class DataLogger;

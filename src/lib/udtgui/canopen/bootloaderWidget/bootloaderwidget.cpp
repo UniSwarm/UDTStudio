@@ -51,7 +51,7 @@ Node *BootloaderWidget::node() const
 
 void BootloaderWidget::setNode(Node *node)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
@@ -107,7 +107,7 @@ void BootloaderWidget::updateStatus()
     else
     {
         _statusLabel->setStyleSheet("QLabel { color : red;font-weight: bold; }");
-        _statusLabel->setText(_node->bootloader()->statusStr(status) + " (0x" +QString::number(_node->bootloader()->error(), 16) + ")");
+        _statusLabel->setText(_node->bootloader()->statusStr(status) + " (0x" + QString::number(_node->bootloader()->error(), 16) + ")");
     }
 
     if (status == Bootloader::Status::STATUS_FILE_ANALYZED_OK)

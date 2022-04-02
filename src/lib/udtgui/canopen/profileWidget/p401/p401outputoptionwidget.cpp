@@ -37,7 +37,7 @@ void P401OutputOptionWidget::readAllObject()
 
 void P401OutputOptionWidget::setNode(Node *node)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }

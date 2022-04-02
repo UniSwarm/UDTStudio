@@ -101,7 +101,7 @@ private:
     QGroupBox *createControlWordWidgets();
     QCheckBox *_absRelCheckBox;
 
-    QHBoxLayout *createButtonWidgets();
+    QHBoxLayout *createButtonWidgets() const;
 
     // NodeOdSubscriber interface
 protected:

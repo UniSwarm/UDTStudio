@@ -40,25 +40,25 @@ CanOpenBus *BusManagerWidget::bus() const
 
 void BusManagerWidget::setBus(CanOpenBus *bus)
 {
-    if (_bus)
+    if (_bus != nullptr)
     {
         disconnect(_bus, nullptr, this, nullptr);
     }
 
     _bus = bus;
-    if (_bus)
+    if (_bus != nullptr)
     {
         connect(_bus, &CanOpenBus::connectedChanged, this, &BusManagerWidget::updateBusData);
         connect(_bus, &CanOpenBus::busNameChanged, this, &BusManagerWidget::updateBusData);
     }
 
-    _groupBox->setEnabled(_bus);
+    _groupBox->setEnabled(_bus != nullptr);
     updateBusData();
 }
 
 void BusManagerWidget::updateBusData()
 {
-    if (_bus)
+    if (_bus != nullptr)
     {
         _actionTogleConnect->blockSignals(true);
         _actionTogleConnect->setEnabled(true);
@@ -76,7 +76,7 @@ void BusManagerWidget::updateBusData()
         _actionSyncOne->setEnabled(_bus->isConnected());
         _actionSyncStart->setEnabled(_bus->isConnected());
     }
-    if (!_bus)
+    if (_bus == nullptr)
     {
         _actionTogleConnect->setChecked(false);
         _actionTogleConnect->setEnabled(false);
@@ -88,9 +88,9 @@ void BusManagerWidget::updateBusData()
 
 void BusManagerWidget::togleConnect()
 {
-    if (_bus)
+    if (_bus != nullptr)
     {
-        if (_bus->canBusDriver())
+        if (_bus->canBusDriver() != nullptr)
         {
             if (_bus->isConnected())
             {
@@ -106,7 +106,7 @@ void BusManagerWidget::togleConnect()
 
 void BusManagerWidget::exploreBus()
 {
-    if (_bus)
+    if (_bus != nullptr)
     {
         _bus->exploreBus();
     }
@@ -114,7 +114,7 @@ void BusManagerWidget::exploreBus()
 
 void BusManagerWidget::sendSyncOne()
 {
-    if (_bus)
+    if (_bus != nullptr)
     {
         _bus->sync()->sendSyncOne();
     }
@@ -122,7 +122,7 @@ void BusManagerWidget::sendSyncOne()
 
 void BusManagerWidget::toggleSync(bool start)
 {
-    if (_bus)
+    if (_bus != nullptr)
     {
         if (start)
         {
@@ -139,7 +139,7 @@ void BusManagerWidget::setSyncTimer(int i)
 {
     if (_actionSyncStart->isChecked())
     {
-        if (_bus)
+        if (_bus != nullptr)
         {
             _bus->sync()->startSync(i);
         }
@@ -148,7 +148,7 @@ void BusManagerWidget::setSyncTimer(int i)
 
 void BusManagerWidget::setBusName()
 {
-    if (_bus)
+    if (_bus != nullptr)
     {
         _bus->setBusName(_busNameEdit->text());
     }

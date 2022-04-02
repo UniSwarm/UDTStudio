@@ -105,7 +105,7 @@ private:
     QCheckBox *_unlockRampCheckBox;
     QCheckBox *_referenceRampCheckBox;
 
-    QHBoxLayout *createButtonWidgets();
+    QHBoxLayout *createButtonWidgets() const;
 
     // NodeOdSubscriber interface
 protected:

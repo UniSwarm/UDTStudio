@@ -44,7 +44,7 @@ public:
 public slots:
     void removeCurrent();
     void setColorCurrent();
-    void exportOneCurrent();
+    void exportOneCurrent() const;
 
 protected slots:
     void updateSelect(const QItemSelection &selected, const QItemSelection &deselected);

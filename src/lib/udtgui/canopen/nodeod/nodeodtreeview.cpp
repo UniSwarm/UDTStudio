@@ -84,7 +84,7 @@ void NodeOdTreeView::setEditable(bool editable)
     _odModel->setEditable(editable);
 }
 
-void NodeOdTreeView::setFilter(const QString filterText)
+void NodeOdTreeView::setFilter(const QString &filterText)
 {
     QRegularExpression filterRegExp("(?:pdo:(?<pdo>[^ ]*) *|type:(?<type>[^ ]*) *)*(.*)");
     QRegularExpressionMatch match = filterRegExp.match(filterText);
@@ -126,7 +126,7 @@ void NodeOdTreeView::readSelected()
         const QModelIndex &curentIndex = _odModelSorter->mapToSource(row);
 
         NodeIndex *nodeIndex = _odModel->nodeIndex(curentIndex);
-        if (nodeIndex)
+        if (nodeIndex != nullptr)
         {
             for (NodeSubIndex *subIndexN : nodeIndex->subIndexes())
             {
@@ -139,7 +139,7 @@ void NodeOdTreeView::readSelected()
         }
 
         NodeSubIndex *nodeSubIndex = _odModel->nodeSubIndex(curentIndex);
-        if (nodeSubIndex)
+        if (nodeSubIndex != nullptr)
         {
             if (nodeSubIndex->isReadable())
             {
@@ -157,7 +157,7 @@ void NodeOdTreeView::readAll()
         const QModelIndex &firstIndex = _odModelSorter->mapToSource(_odModelSorter->index(i, 0));
 
         NodeIndex *nodeIndex = _odModel->nodeIndex(firstIndex);
-        if (nodeIndex)
+        if (nodeIndex != nullptr)
         {
             for (NodeSubIndex *subIndexN : nodeIndex->subIndexes())
             {
@@ -178,7 +178,7 @@ void NodeOdTreeView::copy()
     {
         const QModelIndex &curentIndex = _odModelSorter->mapToSource(row);
         NodeSubIndex *nodeSubIndex = _odModel->nodeSubIndex(curentIndex);
-        if (nodeSubIndex)
+        if (nodeSubIndex != nullptr)
         {
             copyText.append(nodeSubIndex->nodeIndex()->name() + "." + nodeSubIndex->name() + "=" + nodeSubIndex->value().toString() + "\n");
         }

@@ -40,7 +40,7 @@ void P401InputWidget::readAllObject()
 
 void P401InputWidget::setNode(Node *node)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
@@ -92,7 +92,7 @@ void P401InputWidget::createWidgets()
 
 void P401InputWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & NodeOd::FlagsRequest::Error)
+    if ((flags & NodeOd::FlagsRequest::Error) != 0)
     {
         return;
     }
@@ -109,7 +109,7 @@ void P401InputWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest f
         _analogProgressBar->setValue(value);
 
         uint8_t valueDigital = static_cast<uint8_t>(_node->nodeOd()->value(_digitalObjectId).toUInt());
-        bool act = (valueDigital >> _channel) & 1;
+        bool act = ((valueDigital >> _channel) & 1) != 0;
 
         if (act)
         {

@@ -114,7 +114,7 @@ void NodeScreenOD::restoreClicked()
 
 void NodeScreenOD::statusNodeChanged()
 {
-    if (_node)
+    if (_node != nullptr)
     {
         if (_node->status() == Node::STARTED || _node->status() == Node::STOPPED)
         {

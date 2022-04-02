@@ -110,7 +110,7 @@ private:
     QCheckBox *_changeSetImmediatelyPointCheckBox;
     QCheckBox *_absRelCheckBox;
 
-    QHBoxLayout *createButtonWidgets();
+    QHBoxLayout *createButtonWidgets() const;
 
     // NodeOdSubscriber interface
 protected:

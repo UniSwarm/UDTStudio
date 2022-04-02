@@ -43,7 +43,7 @@ public:
     void setEditable(bool editable);
 
 public slots:
-    void setFilter(const QString filterText);
+    void setFilter(const QString &filterText);
     void readSelected();
     void readAll();
     void copy();

@@ -53,7 +53,7 @@ void P402DtyWidget::reset()
 
 void P402DtyWidget::setNode(Node *node, uint8_t axis)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
@@ -63,7 +63,7 @@ void P402DtyWidget::setNode(Node *node, uint8_t axis)
         return;
     }
 
-    if (node)
+    if (node != nullptr)
     {
         setNodeInterrest(node);
 
@@ -251,7 +251,7 @@ QGroupBox *P402DtyWidget::createControlWordWidgets()
     return groupBox;
 }
 
-QHBoxLayout *P402DtyWidget::createButtonWidgets()
+QHBoxLayout *P402DtyWidget::createButtonWidgets() const
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402DtyWidget::createDataLogger);
@@ -279,12 +279,12 @@ QHBoxLayout *P402DtyWidget::createButtonWidgets()
 
 void P402DtyWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & NodeOd::FlagsRequest::Error)
+    if ((flags & NodeOd::FlagsRequest::Error) != 0)
     {
         return;
     }
 
-    if ((!_nodeProfile402->node()) || (_nodeProfile402->node()->status() != Node::STARTED))
+    if ((_nodeProfile402->node() == nullptr) || (_nodeProfile402->node()->status() != Node::STARTED))
     {
         return;
     }

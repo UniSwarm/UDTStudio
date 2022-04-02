@@ -40,7 +40,7 @@ public:
 
     static inline DataLoggerSingleton *instance()
     {
-        if (!DataLoggerSingleton::_instance)
+        if (DataLoggerSingleton::_instance == nullptr)
         {
             DataLoggerSingleton::_instance = new DataLoggerSingleton();
         }

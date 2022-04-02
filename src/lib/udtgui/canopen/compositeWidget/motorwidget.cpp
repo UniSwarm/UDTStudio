@@ -60,7 +60,7 @@ QString MotorWidget::title() const
 void MotorWidget::setNode(Node *node, uint8_t axis)
 {
     _node = node;
-    if (!_node)
+    if (_node == nullptr)
     {
         return;
     }
@@ -190,7 +190,7 @@ void MotorWidget::createWidgets()
     setLayout(vBoxLayout);
 }
 
-QToolBar *MotorWidget::createToolBarWidgets()
+QToolBar *MotorWidget::createToolBarWidgets() const
 {
     // toolbar
     QToolBar *toolBar = new QToolBar(tr("Motor commands"));
@@ -349,7 +349,7 @@ QGroupBox *MotorWidget::createMotorStatusWidgets()
     _bridgeCommandBar = new IndexBar();
     statusLayout->addRow(tr("Command duty cycle:"), _bridgeCommandBar);
     _bridgeCommandBar->setUnit("%");
-    _bridgeCommandBar->setScale(100.0/32768.0);
+    _bridgeCommandBar->setScale(100.0 / 32768.0);
     _bridgeCommandBar->setRange(-100, 100);
     _indexWidgets.append(_bridgeCommandBar);
 
@@ -482,7 +482,6 @@ void MotorWidget::monitorCurrents()
     dataLoggerWidgetHL->show();
     dataLoggerWidgetHL->raise();
     dataLoggerWidgetHL->activateWindow();
-
 
     DataLogger *dataLoggerLL = new DataLogger();
     DataLoggerWidget *dataLoggerWidgetLL = new DataLoggerWidget(dataLoggerLL);

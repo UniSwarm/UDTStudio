@@ -35,7 +35,7 @@ P402OptionWidget::P402OptionWidget(QWidget *parent)
 
 void P402OptionWidget::readAllObjects()
 {
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _nodeProfile402->readOptionObjects();
     }
@@ -43,7 +43,7 @@ void P402OptionWidget::readAllObjects()
 
 void P402OptionWidget::setNode(Node *node, uint8_t axis)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
@@ -65,7 +65,7 @@ void P402OptionWidget::setNode(Node *node, uint8_t axis)
 
 void P402OptionWidget::abortConnectionOptionClicked(int id)
 {
-    if (!_nodeProfile402)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }
@@ -75,7 +75,7 @@ void P402OptionWidget::abortConnectionOptionClicked(int id)
 
 void P402OptionWidget::quickStopOptionClicked(int id)
 {
-    if (!_nodeProfile402)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }
@@ -85,7 +85,7 @@ void P402OptionWidget::quickStopOptionClicked(int id)
 
 void P402OptionWidget::shutdownOptionClicked(int id)
 {
-    if (!_nodeProfile402)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }
@@ -95,7 +95,7 @@ void P402OptionWidget::shutdownOptionClicked(int id)
 
 void P402OptionWidget::disableOptionClicked(int id)
 {
-    if (!_nodeProfile402)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }
@@ -105,7 +105,7 @@ void P402OptionWidget::disableOptionClicked(int id)
 
 void P402OptionWidget::haltOptionClicked(int id)
 {
-    if (!_nodeProfile402)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }
@@ -115,7 +115,7 @@ void P402OptionWidget::haltOptionClicked(int id)
 
 void P402OptionWidget::faultReactionOptionClicked(int id)
 {
-    if (!_nodeProfile402)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }
@@ -360,7 +360,7 @@ QGroupBox *P402OptionWidget::faultReactionWidgets()
 
 void P402OptionWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & NodeOd::FlagsRequest::Error)
+    if ((flags & NodeOd::FlagsRequest::Error) != 0)
     {
         return;
     }

@@ -126,10 +126,7 @@ QVariant NodeOdItem::data(int column, int role) const
                                 {
                                     return QVariant(QString("Q1516"));
                                 }
-                                else
-                                {
-                                    return QVariant(NodeSubIndex::dataTypeStr(_index->subIndex(0)->dataType()));
-                                }
+                                return QVariant(NodeSubIndex::dataTypeStr(_index->subIndex(0)->dataType()));
                             }
                             else
                             {
@@ -214,7 +211,7 @@ QVariant NodeOdItem::data(int column, int role) const
                 case Qt::FontRole:
                     if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
                     {
-                        if (_index->subIndex(0)->error())
+                        if (_index->subIndex(0)->error() != 0u)
                         {
                             QFont font;
                             font.setItalic(true);
@@ -303,7 +300,7 @@ QVariant NodeOdItem::data(int column, int role) const
                     break;
 
                 case Qt::FontRole:
-                    if (_subIndex->error())
+                    if (_subIndex->error() != 0u)
                     {
                         QFont font;
                         font.setItalic(true);
@@ -369,7 +366,7 @@ bool NodeOdItem::setData(int column, const QVariant &value, int role, Node *node
             }
             break;
     }
-    if (!subIndex)
+    if (subIndex == nullptr)
     {
         return false;
     }
@@ -505,7 +502,7 @@ NodeOdItem *NodeOdItem::childIndex(quint16 index) const
 
 int NodeOdItem::row() const
 {
-    if (!_parent)
+    if (_parent == nullptr)
     {
         return 0;
     }

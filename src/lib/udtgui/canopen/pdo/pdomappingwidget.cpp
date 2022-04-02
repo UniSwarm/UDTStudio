@@ -33,12 +33,12 @@ void PDOMappingWidget::setPdo(PDO *pdo)
 {
     _pdoMappingView->setPdo(pdo);
 
-    if (_pdo)
+    if (_pdo != nullptr)
     {
         disconnect(_pdo, &PDO::enabledChanged, this, &PDOMappingWidget::updateEnabled);
     }
     _pdo = pdo;
-    if (_pdo)
+    if (_pdo != nullptr)
     {
         _pdoNameLabel->setText(_pdo->type());
         _pdoIndexLabel->setText(QString("0x%1").arg(QString::number(_pdo->cobId(), 16).toUpper()));
@@ -49,7 +49,7 @@ void PDOMappingWidget::setPdo(PDO *pdo)
 
 void PDOMappingWidget::clearMapping()
 {
-    if (_pdo)
+    if (_pdo != nullptr)
     {
         _pdo->writeMapping(QList<NodeObjectId>());
     }
@@ -57,7 +57,7 @@ void PDOMappingWidget::clearMapping()
 
 void PDOMappingWidget::setEnabled(bool enabled)
 {
-    if (_pdo)
+    if (_pdo != nullptr)
     {
         _pdo->setEnabled(enabled);
     }

@@ -30,7 +30,7 @@ NodeScreenUio::NodeScreenUio(QWidget *parent)
 
 void NodeScreenUio::toggleStartLogger(bool start)
 {
-    if (!_node)
+    if (_node == nullptr)
     {
         return;
     }
@@ -136,7 +136,7 @@ void NodeScreenUio::setNodeInternal(Node *node, uint8_t axis)
 {
     Q_UNUSED(axis)
 
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }

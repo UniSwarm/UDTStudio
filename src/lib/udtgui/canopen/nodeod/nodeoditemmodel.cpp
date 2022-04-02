@@ -43,7 +43,7 @@ Node *NodeOdItemModel::node() const
 
 NodeOdItem::Type NodeOdItemModel::typeIndex(const QModelIndex &index) const
 {
-    if (!_root)
+    if (_root == nullptr)
     {
         return NodeOdItem::TOD;
     }
@@ -58,7 +58,7 @@ NodeOdItem::Type NodeOdItemModel::typeIndex(const QModelIndex &index) const
 
 NodeIndex *NodeOdItemModel::nodeIndex(const QModelIndex &index) const
 {
-    if (!_root)
+    if (_root == nullptr)
     {
         return nullptr;
     }
@@ -77,7 +77,7 @@ NodeIndex *NodeOdItemModel::nodeIndex(const QModelIndex &index) const
 
 NodeSubIndex *NodeOdItemModel::nodeSubIndex(const QModelIndex &index) const
 {
-    if (!_root)
+    if (_root == nullptr)
     {
         return nullptr;
     }
@@ -94,7 +94,7 @@ NodeSubIndex *NodeOdItemModel::nodeSubIndex(const QModelIndex &index) const
     if (item->type() == NodeOdItem::TIndex)
     {
         NodeIndex *nodeIndex = item->index();
-        if (nodeIndex && nodeIndex->subIndexExist(0))
+        if ((nodeIndex != nullptr) && nodeIndex->subIndexExist(0))
         {
             return nodeIndex->subIndex(0);
         }
@@ -112,7 +112,7 @@ void NodeOdItemModel::setNode(Node *node)
     beginResetModel();
     delete _root;
 
-    if (_node)
+    if (_node != nullptr)
     {
         disconnect(_node, nullptr, this, nullptr);
     }
@@ -120,7 +120,7 @@ void NodeOdItemModel::setNode(Node *node)
     _node = node;
     setNodeInterrest(_node);
 
-    if (_node)
+    if (_node != nullptr)
     {
         _root = new NodeOdItem(_node->nodeOd());
         connect(_node,
@@ -200,7 +200,7 @@ QVariant NodeOdItemModel::headerData(int section, Qt::Orientation orientation, i
 
 QModelIndex NodeOdItemModel::index(int row, int column, const QModelIndex &parent) const
 {
-    if (!_root)
+    if (_root == nullptr)
     {
         return QModelIndex();
     }
@@ -221,14 +221,11 @@ QModelIndex NodeOdItemModel::index(int row, int column, const QModelIndex &paren
     }
 
     NodeOdItem *childItem = parentItem->child(row);
-    if (childItem)
+    if (childItem != nullptr)
     {
         return createIndex(row, column, childItem);
     }
-    else
-    {
-        return QModelIndex();
-    }
+    return QModelIndex();
 }
 
 QModelIndex NodeOdItemModel::parent(const QModelIndex &child) const
@@ -241,7 +238,7 @@ QModelIndex NodeOdItemModel::parent(const QModelIndex &child) const
     NodeOdItem *childItem = static_cast<NodeOdItem *>(child.internalPointer());
     NodeOdItem *parentItem = childItem->parent();
 
-    if (parentItem == _root || !parentItem)
+    if (parentItem == _root || (parentItem == nullptr))
     {
         return QModelIndex();
     }
@@ -251,7 +248,7 @@ QModelIndex NodeOdItemModel::parent(const QModelIndex &child) const
 
 int NodeOdItemModel::rowCount(const QModelIndex &parent) const
 {
-    if (!_root)
+    if (_root == nullptr)
     {
         return 0;
     }
@@ -271,7 +268,7 @@ int NodeOdItemModel::rowCount(const QModelIndex &parent) const
 
 QVariant NodeOdItemModel::data(const QModelIndex &index, int role) const
 {
-    if (!_root)
+    if (_root == nullptr)
     {
         return QVariant();
     }
@@ -286,7 +283,7 @@ QVariant NodeOdItemModel::data(const QModelIndex &index, int role) const
 
 bool NodeOdItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (!_root)
+    if (_root == nullptr)
     {
         return false;
     }
@@ -310,7 +307,7 @@ bool NodeOdItemModel::setData(const QModelIndex &index, const QVariant &value, i
 
 Qt::ItemFlags NodeOdItemModel::flags(const QModelIndex &index) const
 {
-    if (!_root)
+    if (_root == nullptr)
     {
         return Qt::NoItemFlags;
     }
@@ -329,13 +326,13 @@ Qt::ItemFlags NodeOdItemModel::flags(const QModelIndex &index) const
 
 QModelIndex NodeOdItemModel::indexItem(quint16 index, int col)
 {
-    if (!_root)
+    if (_root == nullptr)
     {
         return QModelIndex();
     }
 
     NodeOdItem *childIndex = _root->childIndex(index);
-    if (!childIndex)
+    if (childIndex == nullptr)
     {
         return QModelIndex();
     }
@@ -344,13 +341,13 @@ QModelIndex NodeOdItemModel::indexItem(quint16 index, int col)
 
 QModelIndex NodeOdItemModel::subIndexItem(quint16 index, quint8 subindex, int col)
 {
-    if (!_root)
+    if (_root == nullptr)
     {
         return QModelIndex();
     }
 
     NodeOdItem *childIndex = _root->childIndex(index);
-    if (!childIndex)
+    if (childIndex == nullptr)
     {
         return QModelIndex();
     }
@@ -360,7 +357,7 @@ QModelIndex NodeOdItemModel::subIndexItem(quint16 index, quint8 subindex, int co
     }
 
     NodeOdItem *childSubIndex = childIndex->childIndex(subindex);
-    if (!childSubIndex)
+    if (childSubIndex == nullptr)
     {
         return QModelIndex();
     }
@@ -411,11 +408,7 @@ bool NodeOdItemModel::canDropMimeData(const QMimeData *mimeData, Qt::DropAction 
     Q_UNUSED(row)
     Q_UNUSED(column)
     Q_UNUSED(parent)
-    if (mimeData->hasFormat("index/subindex"))
-    {
-        return true;
-    }
-    return false;
+    return mimeData->hasFormat("index/subindex");
 }
 
 bool NodeOdItemModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction action, int row, int column, const QModelIndex &parent)

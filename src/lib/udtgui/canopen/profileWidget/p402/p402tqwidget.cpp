@@ -38,7 +38,7 @@ P402TqWidget::P402TqWidget(QWidget *parent)
 
 void P402TqWidget::readRealTimeObjects()
 {
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _nodeProfile402->readRealTimeObjects();
     }
@@ -46,7 +46,7 @@ void P402TqWidget::readRealTimeObjects()
 
 void P402TqWidget::readAllObjects()
 {
-    if (_nodeProfile402)
+    if (_nodeProfile402 != nullptr)
     {
         _nodeProfile402->readAllObjects();
     }
@@ -59,7 +59,7 @@ void P402TqWidget::reset()
 
 void P402TqWidget::setNode(Node *node, uint8_t axis)
 {
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
@@ -69,7 +69,7 @@ void P402TqWidget::setNode(Node *node, uint8_t axis)
         return;
     }
 
-    if (node)
+    if (node != nullptr)
     {
         setNodeInterrest(node);
 
@@ -250,7 +250,7 @@ void P402TqWidget::createSlopeWidgets()
     _modeLayout->addRow(tr("Target &slope "), _targetSlopeSpinBox);
 }
 
-QHBoxLayout *P402TqWidget::createButtonWidgets()
+QHBoxLayout *P402TqWidget::createButtonWidgets() const
 {
     QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
     connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402TqWidget::createDataLogger);
@@ -278,12 +278,12 @@ QHBoxLayout *P402TqWidget::createButtonWidgets()
 
 void P402TqWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & NodeOd::FlagsRequest::Error)
+    if ((flags & NodeOd::FlagsRequest::Error) != 0)
     {
         return;
     }
 
-    if ((!_nodeProfile402->node()) || (_nodeProfile402->node()->status() != Node::STARTED))
+    if ((_nodeProfile402->node() == nullptr) || (_nodeProfile402->node()->status() != Node::STARTED))
     {
         return;
     }

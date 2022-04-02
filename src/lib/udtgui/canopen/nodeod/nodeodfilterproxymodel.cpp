@@ -36,7 +36,7 @@ NodeOdFilterProxyModel::~NodeOdFilterProxyModel()
 Node *NodeOdFilterProxyModel::node() const
 {
     NodeOdItemModel *smodel = dynamic_cast<NodeOdItemModel *>(sourceModel());
-    if (!smodel)
+    if (smodel == nullptr)
     {
         return nullptr;
     }
@@ -46,7 +46,7 @@ Node *NodeOdFilterProxyModel::node() const
 NodeIndex *NodeOdFilterProxyModel::nodeIndex(const QModelIndex &index) const
 {
     NodeOdItemModel *smodel = dynamic_cast<NodeOdItemModel *>(sourceModel());
-    if (!smodel)
+    if (smodel == nullptr)
     {
         return nullptr;
     }
@@ -56,7 +56,7 @@ NodeIndex *NodeOdFilterProxyModel::nodeIndex(const QModelIndex &index) const
 NodeSubIndex *NodeOdFilterProxyModel::nodeSubIndex(const QModelIndex &index) const
 {
     NodeOdItemModel *smodel = dynamic_cast<NodeOdItemModel *>(sourceModel());
-    if (!smodel)
+    if (smodel == nullptr)
     {
         return nullptr;
     }
@@ -77,14 +77,14 @@ void NodeOdFilterProxyModel::setPdoFilter(NodeOdFilterProxyModel::PDOFilter pdoF
 bool NodeOdFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
     NodeOdItemModel *smodel = dynamic_cast<NodeOdItemModel *>(sourceModel());
-    if (!smodel)
+    if (smodel == nullptr)
     {
         return false;
     }
 
     // limit filter to index only and not subindex
     NodeIndex *nodeIndex = smodel->nodeIndex(source_parent);
-    if (nodeIndex)
+    if (nodeIndex != nullptr)
     {
         return true;
     }
@@ -146,13 +146,13 @@ bool NodeOdFilterProxyModel::filterAcceptsColumn(int source_column, const QModel
 bool NodeOdFilterProxyModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const
 {
     NodeOdItemModel *smodel = dynamic_cast<NodeOdItemModel *>(sourceModel());
-    if (!smodel)
+    if (smodel == nullptr)
     {
         return false;
     }
 
     QCollator collator;
-    QVariant l = (source_left.model() ? source_left.model()->data(source_left, sortRole()) : QVariant());
-    QVariant r = (source_right.model() ? source_right.model()->data(source_right, sortRole()) : QVariant());
+    QVariant l = (source_left.model() != nullptr) ? source_left.model()->data(source_left, sortRole()) : QVariant();
+    QVariant r = (source_right.model() != nullptr) ? source_right.model()->data(source_right, sortRole()) : QVariant();
     return collator.compare(l.toString(), r.toString()) < 0;
 }

@@ -23,9 +23,9 @@
 #include <QStandardItemModel>
 #include <QVBoxLayout>
 
-#include "canopen/indexWidget/indexspinbox.h"
 #include "canopen/indexWidget/indexcombobox.h"
 #include "canopen/indexWidget/indexslider.h"
+#include "canopen/indexWidget/indexspinbox.h"
 
 P428ChannelWidget::P428ChannelWidget(uint8_t channel, QWidget *parent)
     : QWidget{parent}

@@ -112,7 +112,7 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    if (!_bus)
+    if (_bus == nullptr)
     {
         // internal data mode
         if (index.row() >= _frames.count())
@@ -128,7 +128,7 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
             return QVariant();
         }
     }
-    const QCanBusFrame &canFrame = (!_bus) ? _frames.at(index.row()) : _bus->canFramesLog().at(index.row());
+    const QCanBusFrame &canFrame = (_bus == nullptr) ? _frames.at(index.row()) : _bus->canFramesLog().at(index.row());
 
     switch (role)
     {
@@ -207,7 +207,7 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
 QModelIndex CanFrameModel::index(int row, int column, const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    if (!_bus)
+    if (_bus == nullptr)
     {
         // internal data mode
         if (row >= _frames.count())
@@ -236,14 +236,11 @@ int CanFrameModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid())
     {
-        if (!_bus)
+        if (_bus == nullptr)
         {
             return _frames.count();
         }
-        else
-        {
-            return _frameId;
-        }
+        return _frameId;
     }
     return 0;
 }

@@ -83,7 +83,7 @@ private:
     QGroupBox *createControlWordWidgets();
     QCheckBox *_enableRampCheckBox;
 
-    QHBoxLayout *createButtonWidgets();
+    QHBoxLayout *createButtonWidgets() const;
 
     // NodeOdSubscriber interface
 protected:

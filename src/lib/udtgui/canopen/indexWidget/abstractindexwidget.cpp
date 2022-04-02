@@ -50,7 +50,7 @@ Node *AbstractIndexWidget::node() const
 void AbstractIndexWidget::setNode(Node *node)
 {
     setNodeInterrest(node);
-    if (node)
+    if (node != nullptr)
     {
         _objId.setBusId(node->busId());
         _objId.setNodeId(node->nodeId());
@@ -70,7 +70,7 @@ void AbstractIndexWidget::setNode(Node *node)
 
 void AbstractIndexWidget::requestWriteValue(const QVariant &value)
 {
-    if (!nodeInterrest())
+    if (nodeInterrest() == nullptr)
     {
         return;
     }
@@ -115,7 +115,7 @@ void AbstractIndexWidget::requestWriteValue(const QVariant &value)
 
 void AbstractIndexWidget::requestReadValue()
 {
-    if (!nodeInterrest())
+    if (nodeInterrest() == nullptr)
     {
         return;
     }
@@ -125,7 +125,7 @@ void AbstractIndexWidget::requestReadValue()
 
 void AbstractIndexWidget::cancelEdit()
 {
-    if (!nodeInterrest())
+    if (nodeInterrest() == nullptr)
     {
         setDisplayValue(QVariant(), DisplayAttribute::Error);
         return;
@@ -345,7 +345,7 @@ void AbstractIndexWidget::setDisplayHint(const AbstractIndexWidget::DisplayHint 
     {
         _hint = hint;
         updateHint();
-        if (!nodeInterrest())
+        if (nodeInterrest() == nullptr)
         {
             return;
         }
@@ -365,7 +365,7 @@ QString AbstractIndexWidget::stringValue() const
 
 void AbstractIndexWidget::readObject()
 {
-    if (!nodeInterrest())
+    if (nodeInterrest() == nullptr)
     {
         return;
     }
@@ -390,7 +390,7 @@ void AbstractIndexWidget::setObjId(const NodeObjectId &objId)
         registerObjId(_objId);
     }
     Node *node = _objId.node();
-    if (node)
+    if (node != nullptr)
     {
         setNode(node);
         return;
@@ -413,7 +413,7 @@ QMainWindow *AbstractIndexWidget::getMainWindow() const
 void AbstractIndexWidget::displayStatus(const QString &message)
 {
     QMainWindow *mainWindow = getMainWindow();
-    if (!mainWindow)
+    if (mainWindow == nullptr)
     {
         return;
     }
@@ -423,7 +423,7 @@ void AbstractIndexWidget::displayStatus(const QString &message)
 void AbstractIndexWidget::clearStatus()
 {
     QMainWindow *mainWindow = getMainWindow();
-    if (!mainWindow)
+    if (mainWindow == nullptr)
     {
         return;
     }
@@ -432,21 +432,21 @@ void AbstractIndexWidget::clearStatus()
 
 void AbstractIndexWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (!nodeInterrest())
+    if (nodeInterrest() == nullptr)
     {
         return;
     }
 
     _lastValue = nodeInterrest()->nodeOd()->value(objId);
-    if (flags & NodeOd::Error)
+    if ((flags & NodeOd::Error) != 0)
     {
-        if (_pendingValue.isValid() && (flags & NodeOd::Write))  // we request a write value that cause an error
+        if (_pendingValue.isValid() && ((flags & NodeOd::Write) != 0))  // we request a write value that cause an error
         {
             setDisplayValue(pValue(_pendingValue, _hint), DisplayAttribute::Error);
             _pendingValue = QVariant();
             return;
         }
-        else if (flags & NodeOd::Read)  // any read cause an error
+        if (flags & NodeOd::Read)  // any read cause an error
         {
             if (isEditing() && !_requestRead)
             {
@@ -461,7 +461,7 @@ void AbstractIndexWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsReque
             return;
         }
     }
-    if (flags & NodeOd::Read && this->isEditing() && !_requestRead)
+    if (((flags & NodeOd::Read) != 0) && this->isEditing() && !_requestRead)
     {
         return;
     }

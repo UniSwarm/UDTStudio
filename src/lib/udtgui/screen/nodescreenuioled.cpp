@@ -67,7 +67,7 @@ void NodeScreenUIOLed::setNodeInternal(Node *node, uint8_t axis)
 {
     Q_UNUSED(axis)
 
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
