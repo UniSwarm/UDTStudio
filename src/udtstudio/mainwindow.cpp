@@ -38,7 +38,7 @@
 #include "canopen/datalogger/dataloggersingleton.h"
 
 #ifdef Q_OS_UNIX
-#   include "busdriver/canbussocketcan.h"
+#    include "busdriver/canbussocketcan.h"
 #endif
 #include "busdriver/canbustcpudt.h"
 
@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
 #ifdef Q_OS_UNIX
     bus = new CanOpenBus(new CanBusSocketCAN("can0"));
 #endif
-    if (bus)
+    if (bus != nullptr)
     {
         bus->setBusName("Bus can0");
         CanOpen::addBus(bus);
@@ -93,15 +93,12 @@ MainWindow::~MainWindow()
 void MainWindow::exportCfgFile()
 {
     Node *node = _busNodesManagerView->currentNode();
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
 
-    QString fileName = QFileDialog::getSaveFileName(this,
-                                                    tr("Save configuration file"),
-                                                    "",
-                                                    tr("Configuration file (*.conf)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save configuration file"), "", tr("Configuration file (*.conf)"));
 
     node->nodeOd()->exportConf(fileName);
 }
@@ -109,15 +106,12 @@ void MainWindow::exportCfgFile()
 void MainWindow::exportDCF()
 {
     Node *node = _busNodesManagerView->currentNode();
-    if (!node)
+    if (node == nullptr)
     {
         return;
     }
 
-    QString fileName = QFileDialog::getSaveFileName(this,
-                                                    tr("Save DCF File"),
-                                                    "",
-                                                    tr("Device File Configuration (*.dcf)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save DCF File"), "", tr("Device File Configuration (*.dcf)"));
 
     node->nodeOd()->exportDcf(fileName);
 }
@@ -304,8 +298,8 @@ GNU General Public License for more details.<br>\
 You should have received a copy of the GNU General Public License \
 along with this program. If not, see <a href=\"http://www.gnu.org/licenses/\">www.gnu.org/licenses</a><br>\
 <br>\
-Build date: ") + __DATE__ + QString(" time: ") +
-                           __TIME__ + QString("<br>\
+Build date: ") + __DATE__ + QString(" time: ")
+                           + __TIME__ + QString("<br>\
 <br>\
 UDTStudio use others open libraries :<br>\
 - QDarkStyleSheet, a nice dark theme for Qt (dark theme) <a href=\"https://github.com/ColinDuquesnoy/QDarkStyleSheet\">github.com/ColinDuquesnoy/QDarkStyleSheet</a> [MIT]<br>\

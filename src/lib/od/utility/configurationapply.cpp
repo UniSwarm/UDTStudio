@@ -47,7 +47,7 @@ bool ConfigurationApply::apply(DeviceModel *deviceModel, const QString &fileIniP
     for (const QString &childKey : childKeys)
     {
         SubIndex *subIndex = getSubIndex(deviceModel, childKey);
-        if (subIndex)
+        if (subIndex != nullptr)
         {
             QString strValue = settings.value(childKey).toString();
             QVariant value = readData(subIndex->dataType(), strValue);
@@ -124,7 +124,7 @@ SubIndex *ConfigurationApply::getSubIndex(DeviceModel *deviceDescription, const 
             subIndexName = keys[1];
 
             Index *index = deviceDescription->index(indexName);
-            if (index)
+            if (index != nullptr)
             {
                 SubIndex *sub;
                 if (subIndexName.startsWith("sub"))
@@ -143,7 +143,7 @@ SubIndex *ConfigurationApply::getSubIndex(DeviceModel *deviceDescription, const 
         {
             indexName = childKey;
             Index *index = deviceDescription->index(indexName);
-            if (index)
+            if (index != nullptr)
             {
                 SubIndex *sub = index->subIndex(0);
                 return sub;

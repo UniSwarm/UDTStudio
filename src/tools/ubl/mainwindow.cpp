@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
 #ifdef Q_OS_UNIX
     bus = new CanOpenBus(new CanBusSocketCAN("can0"));
 #endif
-    if (bus)
+    if (bus != nullptr)
     {
         bus->setBusName("Bus 1");
         CanOpen::addBus(bus);
@@ -61,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::nodeChanged(Node *currentNode)
 {
-    if (!currentNode)
+    if (currentNode == nullptr)
     {
         statusBar()->showMessage(tr("No node selected"));
         return;
@@ -103,7 +103,7 @@ void MainWindow::downloadState(QString state)
 
 void MainWindow::openHexFile()
 {
-    if (!_busNodesManagerView->currentNode())
+    if (_busNodesManagerView->currentNode() == nullptr)
     {
         statusBar()->showMessage(tr("No node selected"));
         return;
@@ -123,7 +123,7 @@ void MainWindow::openHexFile()
 void MainWindow::refreshInfo()
 {
     Node *currentNode = _busNodesManagerView->currentNode();
-    if (!currentNode)
+    if (currentNode == nullptr)
     {
         statusBar()->showMessage(tr("No node selected"));
         return;

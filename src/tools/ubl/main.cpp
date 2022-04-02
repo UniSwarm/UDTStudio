@@ -246,7 +246,7 @@ int main(int argc, char *argv[])
         MainWindow w;
         w.show();
 
-        return a.exec();
+        return QApplication::exec();
     }
 
     QCoreApplication app(argc, argv);
@@ -472,10 +472,10 @@ int main(int argc, char *argv[])
         }
 
         UfwParser *p = new UfwParser();
-        MainConsole *mainConsole = new MainConsole(bus, speed, nodeid, p->parse(binFile)->prog());
+        MainConsole *mainConsole = new MainConsole(bus, speed, nodeid, UfwParser::parse(binFile)->prog());
         QObject::connect(mainConsole, &MainConsole::finished, &app, &QCoreApplication::exit);
 
-        return app.exec();
+        return QCoreApplication::exec();
     }
     else if (argument.at(0) == "otp")
     {
@@ -493,7 +493,7 @@ int main(int argc, char *argv[])
 #ifdef Q_OS_UNIX
             bus = new CanOpenBus(new CanBusSocketCAN("can0"));
 #endif
-            if (!bus)
+            if (bus == nullptr)
             {
                 return 0;
             }
@@ -504,7 +504,7 @@ int main(int argc, char *argv[])
         {
             bus = CanOpen::bus(0);
         }
-        if (!bus)
+        if (bus == nullptr)
         {
             return 0;
         }
@@ -550,7 +550,7 @@ int main(int argc, char *argv[])
         node->bootloader()->setOtpInformation(adr, date, type, serial, hardVersion);
 
         node->bootloader()->startOtpUpload();
-        return app.exec();
+        return QCoreApplication::exec();
     }
     else
     {

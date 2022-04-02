@@ -39,9 +39,9 @@
 #include <cstdint>
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-#   define cendl endl
+#    define cendl endl
 #else
-#   define cendl Qt::endl
+#    define cendl Qt::endl
 #endif
 
 /**
@@ -94,9 +94,9 @@ int main(int argc, char *argv[])
     cliParser.addOption(rangeOption);
 
     QCommandLineOption structOption(QStringList() << "s"
-                                                 << "structName",
-                                   QCoreApplication::translate("main", "Partial OD struct name (use with range option)"),
-                                   "structName");
+                                                  << "structName",
+                                    QCoreApplication::translate("main", "Partial OD struct name (use with range option)"),
+                                    "structName");
     cliParser.addOption(structOption);
 
     cliParser.process(app);
@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
     {
         EdsParser parser;
         deviceDescription = parser.parse(inputFile);
-        if (!deviceDescription)
+        if (deviceDescription == nullptr)
         {
             err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist '%1'").arg(inputFile) << cendl;
             return -5;
@@ -169,14 +169,14 @@ int main(int argc, char *argv[])
         EdsParser parser;
 
         DeviceDescription *secondDeviceDescription = parser.parse(files.at(fileId));
-        if (!secondDeviceDescription)
+        if (secondDeviceDescription == nullptr)
         {
             delete deviceDescription;
             delete deviceConfiguration;
             err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist '%1'").arg(files.at(fileId)) << cendl;
             return -5;
         }
-        if (deviceDescription)
+        if (deviceDescription != nullptr)
         {
             ODMerger::merge(deviceDescription, secondDeviceDescription);
         }
@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
     QStringList cfgFiles = cliParser.values("configuration");
     for (const QString &cfgFile : qAsConst(cfgFiles))
     {
-        if (deviceConfiguration)
+        if (deviceConfiguration != nullptr)
         {
             if (!ConfigurationApply::apply(deviceConfiguration, cfgFile))
             {
@@ -204,7 +204,7 @@ int main(int argc, char *argv[])
     duplicate = static_cast<uint8_t>(cliParser.value("duplicate").toUInt());
     if (duplicate != 0)
     {
-        if (deviceConfiguration)
+        if (deviceConfiguration != nullptr)
         {
             ProfileDuplicate::duplicate(deviceConfiguration, duplicate);
         }
@@ -249,7 +249,8 @@ int main(int argc, char *argv[])
         {
             bool ok;
             QStringList rangeList = rangeStr.split(':');
-            uint16_t min, max;
+            uint16_t min;
+            uint16_t max;
             QString structName = cliParser.value("structName");
             if (rangeList.size() != 2)
             {
@@ -289,17 +290,17 @@ int main(int argc, char *argv[])
         DcfWriter dcfWriter;
         dcfWriter.write(deviceConfiguration, outputFile);
     }
-    else if (outSuffix == "eds" && deviceDescription)
+    else if (outSuffix == "eds" && (deviceDescription != nullptr))
     {
         EdsWriter edsWriter;
         edsWriter.write(deviceDescription, outputFile);
     }
-    else if (outSuffix == "tex" && deviceDescription)
+    else if (outSuffix == "tex" && (deviceDescription != nullptr))
     {
         TexGenerator texGenerator;
         texGenerator.generate(deviceDescription, outputFile);
     }
-    else if (outSuffix == "csv" && deviceDescription)
+    else if (outSuffix == "csv" && (deviceDescription != nullptr))
     {
         CsvGenerator csvGenerator;
         csvGenerator.generate(deviceDescription, outputFile);

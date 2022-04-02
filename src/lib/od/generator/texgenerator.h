@@ -41,13 +41,13 @@ public:
 
 private:
 
-    void writeListIndex(const QList<Index *> indexes, QTextStream *out);
-    void writeListIndexComm(const QList<Index *> indexes, QTextStream *out);
-    void writeListIndexManufacturer402(const QList<Index *> indexes, QTextStream *out);
+    void writeListIndex(QList<Index *> indexes, QTextStream *out);
+    void writeListIndexComm(QList<Index *> indexes, QTextStream *out);
+    void writeListIndexManufacturer402(QList<Index *> indexes, QTextStream *out);
     void writeVar(Index *index, QTextStream *out, bool generic);
     void writeRecord(Index *index, QTextStream *out, bool generic);
     void writeArray(Index *index, QTextStream *out, bool generic);
-    void writeUnit(const SubIndex *subIndex, QTextStream *out);
+    void writeUnit(const SubIndex *subIndex, QTextStream *out) const;
     void writeLimit(const SubIndex *subIndex, QTextStream *out);
     void writeAccessType(const SubIndex *subIndex, QTextStream *out);
     void writeDefaultValue(const SubIndex *subIndex, QTextStream *out);

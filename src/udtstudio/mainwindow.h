@@ -69,4 +69,4 @@ public:
     bool event(QEvent *event) override;
 };
 
-#endif // MAINWINDOW_H
+#endif  // MAINWINDOW_H

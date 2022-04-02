@@ -37,7 +37,7 @@ public:
 
     static inline OdDb *instance()
     {
-        if (!OdDb::_instance)
+        if (OdDb::_instance == nullptr)
         {
             OdDb::_instance = new OdDb();
             _instance->init();

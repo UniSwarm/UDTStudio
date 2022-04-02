@@ -67,21 +67,24 @@ DeviceDescription *EdsParser::parse(const QString &path) const
             iniFile.endGroup();
             continue;
         }
-        else if (group == "FileInfo")
+
+        if (group == "FileInfo")
         {
             iniFile.beginGroup(group);
             parser.readFileInfo(deviceDescription);
             iniFile.endGroup();
             continue;
         }
-        else if (group == "DummyUsage")
+
+        if (group == "DummyUsage")
         {
             iniFile.beginGroup(group);
             parser.readDummyUsage(deviceDescription);
             iniFile.endGroup();
             continue;
         }
-        else if (group == "Comments")
+
+        if (group == "Comments")
         {
             iniFile.beginGroup(group);
             parser.readComments(deviceDescription);

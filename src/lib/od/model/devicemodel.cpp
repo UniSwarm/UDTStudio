@@ -155,7 +155,7 @@ Index *DeviceModel::index(QString name) const
  */
 void DeviceModel::addIndex(Index *index)
 {
-    if (!index)
+    if (index == nullptr)
     {
         return;
     }
@@ -210,7 +210,7 @@ void DeviceModel::deleteIndex(Index *index)
 SubIndex *DeviceModel::subIndex(uint16_t index, uint8_t subIndex) const
 {
     Index *mindex = _indexes.value(index);
-    if (!mindex)
+    if (mindex == nullptr)
     {
         return nullptr;
     }
@@ -221,7 +221,7 @@ SubIndex *DeviceModel::subIndex(uint16_t index, uint8_t subIndex) const
 SubIndex *DeviceModel::subIndex(QString index, QString subIndex) const
 {
     Index *mindex = this->index(index);
-    if (!mindex)
+    if (mindex == nullptr)
     {
         return nullptr;
     }
@@ -242,7 +242,7 @@ bool DeviceModel::subIndexExist(QString index, QString subIndex) const
 QVariant DeviceModel::subIndexValue(uint16_t index, uint8_t subIndex, const QVariant &defaultValue) const
 {
     SubIndex *msubIndex = this->subIndex(index, subIndex);
-    if (!msubIndex)
+    if (msubIndex == nullptr)
     {
         return defaultValue;
     }

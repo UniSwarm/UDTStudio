@@ -60,7 +60,7 @@ DeviceConfiguration *DcfParser::parse(const QString &path) const
             continue;
         }
 
-        else if (group == "FileInfo")
+        if (group == "FileInfo")
         {
             file.beginGroup(group);
             parser.readFileInfo(deviceConfiguration);
@@ -68,7 +68,7 @@ DeviceConfiguration *DcfParser::parse(const QString &path) const
             continue;
         }
 
-        else if (group == "DummyUsage")
+        if (group == "DummyUsage")
         {
             file.beginGroup(group);
             parser.readDummyUsage(deviceConfiguration);

@@ -31,9 +31,9 @@ int main(int argc, char *argv[])
 
     ODTreeView w;
 
-    if (a.arguments().size() > 1)
+    if (QApplication::arguments().size() > 1)
     {
-        QString fileName = QDir::fromNativeSeparators(a.arguments()[1]);
+        QString fileName = QDir::fromNativeSeparators(QApplication::arguments()[1]);
         EdsParser parser;
         DeviceDescription *deviceDescription = parser.parse(fileName);
         w.setDeviceModel(deviceDescription);
@@ -46,5 +46,5 @@ int main(int argc, char *argv[])
         w.resizeColumnToContents(i);
     }
 
-    return a.exec();
+    return QApplication::exec();
 }

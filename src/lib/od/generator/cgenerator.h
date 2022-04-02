@@ -50,9 +50,9 @@ private:
     static QString varNameToString(const QString &name);
     static QString structNameToString(const QString &name);
     static QString dataToString(const SubIndex *index);
-    static QString objectTypeToEnumString(const uint16_t objectType);
-    static QString dataTypeToEnumString(const uint16_t dataType);
-    static QString accessToEnumString(const uint8_t acces);
+    static QString objectTypeToEnumString(uint16_t objectType);
+    static QString dataTypeToEnumString(uint16_t dataType);
+    static QString accessToEnumString(uint8_t acces);
     static QString typeObjectToString(Index *index, uint8_t subIndex, bool isInRecord);
     static QString stringNameToString(const SubIndex *subIndex);
 

@@ -688,7 +688,7 @@ void TexGenerator::writeArray(Index *index, QTextStream *out, bool generic)
     *out << "\n";
 }
 
-void TexGenerator::writeUnit(const SubIndex *subIndex, QTextStream *out)
+void TexGenerator::writeUnit(const SubIndex *subIndex, QTextStream *out) const
 {
     double scale = ODIndexDb::scale(subIndex->index()->index(), subIndex->subIndex(), static_cast<quint16>(_profile));
     QString scaleDiv;

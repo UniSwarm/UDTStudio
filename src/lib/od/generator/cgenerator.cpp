@@ -696,11 +696,11 @@ QString CGenerator::accessToEnumString(const uint8_t acces)
 {
     QString accessToEnumString;
 
-    if (acces & SubIndex::READ)
+    if ((acces & SubIndex::READ) != 0)
     {
         accessToEnumString += "OD_ACCESS_READ";
     }
-    if (acces & SubIndex::WRITE)
+    if ((acces & SubIndex::WRITE) != 0)
     {
         if (!accessToEnumString.isEmpty())
         {
@@ -708,7 +708,7 @@ QString CGenerator::accessToEnumString(const uint8_t acces)
         }
         accessToEnumString += "OD_ACCESS_WRITE";
     }
-    if (acces & SubIndex::TPDO)
+    if ((acces & SubIndex::TPDO) != 0)
     {
         if (!accessToEnumString.isEmpty())
         {
@@ -716,7 +716,7 @@ QString CGenerator::accessToEnumString(const uint8_t acces)
         }
         accessToEnumString += "OD_ACCESS_TPDO";
     }
-    if (acces & SubIndex::RPDO)
+    if ((acces & SubIndex::RPDO) != 0)
     {
         if (!accessToEnumString.isEmpty())
         {

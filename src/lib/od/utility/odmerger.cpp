@@ -59,7 +59,7 @@ void ODMerger::merge(DeviceModel *deviceModel, DeviceModel *secondDeviceModel)
     for (Index *index2 : secondDeviceModel->indexes())
     {
         Index *index = deviceModel->index(index2->index());
-        if (!index)
+        if (index == nullptr)
         {
             // dbg() << "Missing index 0x" << indexStr(index2) << " " << index2->name();
             deviceModel->addIndex(new Index(*index2));
@@ -94,7 +94,7 @@ void ODMerger::mergeIndex(Index *index, Index *index2)
     for (SubIndex *subIndex2 : index2->subIndexes())
     {
         SubIndex *subIndex = index->subIndex(subIndex2->subIndex());
-        if (!subIndex)
+        if (subIndex == nullptr)
         {
             // dbg() << "+ Missing subindex 0x" << indexStr(index) << "." << subIndex2->subIndex() << " : \"" << index->name() << "\"";
             index->addSubIndex(new SubIndex(*index2->subIndex(subIndex2->subIndex())));

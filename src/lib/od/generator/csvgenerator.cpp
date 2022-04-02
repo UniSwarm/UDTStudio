@@ -163,8 +163,8 @@ void CsvGenerator::writeIndex(Index *index, QTextStream *out)
     *out << "0,";                                                    // subIndex
     QString name = index->name();
     *out << name.replace("_", " ") << ",";                       // Name
-    *out << index->objectTypeStr(index->objectType()) << ",";    // objectType
-    *out << subIndex->dataTypeStr(subIndex->dataType()) << ",";  // dataType
+    *out << Index::objectTypeStr(index->objectType()) << ",";    // objectType
+    *out << SubIndex::dataTypeStr(subIndex->dataType()) << ",";  // dataType
     *out << accessToString(subIndex->accessType()) << ",";       // accessType
     *out << pdoToString(subIndex->accessType()) << ",";          // pdoMapping
     *out << subIndex->value().toString() << ",";                 // defaultValue
@@ -186,7 +186,7 @@ void CsvGenerator::writeRecord(Index *index, QTextStream *out)
     *out << ",";                                                     // subIndex
     QString name = index->name();
     *out << name.replace("_", " ") << ",";                     // Name
-    *out << index->objectTypeStr(index->objectType()) << ",";  // objectType
+    *out << Index::objectTypeStr(index->objectType()) << ",";  // objectType
     *out << ",,,,,,";                                          // dataType,accessType,pdoMapping,defaultValue,lowLimit,highLimit
     *out << "\n";
 
@@ -197,8 +197,8 @@ void CsvGenerator::writeRecord(Index *index, QTextStream *out)
         *out << subIndex->subIndex() << ",";                             // subIndex
         QString name = subIndex->name();
         *out << name.replace("_", " ") << ",";                       // Name
-        *out << index->objectTypeStr(Index::Object::VAR) << ",";     // objectType
-        *out << subIndex->dataTypeStr(subIndex->dataType()) << ",";  // dataType
+        *out << Index::objectTypeStr(Index::Object::VAR) << ",";     // objectType
+        *out << SubIndex::dataTypeStr(subIndex->dataType()) << ",";  // dataType
         *out << accessToString(subIndex->accessType()) << ",";       // accessType
         *out << pdoToString(subIndex->accessType()) << ",";          // pdoMapping
         *out << subIndex->value().toString() << ",";                 // defaultValue
