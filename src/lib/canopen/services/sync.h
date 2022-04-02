@@ -30,7 +30,7 @@ class CANOPEN_EXPORT Sync : public Service
     Q_OBJECT
 public:
     Sync(CanOpenBus *bus);
-    ~Sync();
+    ~Sync() override;
 
     void startSync(int ms);
     void stopSync();

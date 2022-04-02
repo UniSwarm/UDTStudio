@@ -26,9 +26,9 @@
  * @param file
  */
 DeviceIniWriter::DeviceIniWriter(QTextStream *file)
+    : _file(file)
+    , _isDescription(false)
 {
-    _file = file;
-    _isDescription = false;
 }
 
 /**
@@ -205,9 +205,7 @@ void DeviceIniWriter::writeListIndex(const QList<Index *> &indexes) const
  */
 void DeviceIniWriter::writeIndex(Index *index) const
 {
-    SubIndex *subIndex;
-    subIndex = index->subIndex(0);
-
+    SubIndex *subIndex = index->subIndex(0);
     if (subIndex == nullptr)
     {
         return;

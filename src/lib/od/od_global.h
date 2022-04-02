@@ -22,9 +22,9 @@
 #include <QtCore/qglobal.h>
 
 #if defined(OD_EXPORT_LIB)
-#define OD_EXPORT Q_DECL_EXPORT
+#    define OD_EXPORT Q_DECL_EXPORT
 #else
-#define OD_EXPORT Q_DECL_IMPORT
+#    define OD_EXPORT Q_DECL_IMPORT
 #endif
 
-#endif // OD_GLOBAL_H
+#endif  // OD_GLOBAL_H

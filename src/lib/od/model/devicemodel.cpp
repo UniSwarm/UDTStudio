@@ -137,7 +137,7 @@ Index *DeviceModel::index(uint16_t index) const
  * @param index
  * @return an Index*
  */
-Index *DeviceModel::index(QString name) const
+Index *DeviceModel::index(const QString &name) const
 {
     for (Index *index : _indexes)
     {
@@ -190,7 +190,7 @@ bool DeviceModel::indexExist(uint16_t index) const
  * @param key
  * @return boolean
  */
-bool DeviceModel::indexExist(QString name) const
+bool DeviceModel::indexExist(const QString &name) const
 {
     for (Index *index : _indexes)
     {
@@ -218,7 +218,7 @@ SubIndex *DeviceModel::subIndex(uint16_t index, uint8_t subIndex) const
     return mindex->subIndex(subIndex);
 }
 
-SubIndex *DeviceModel::subIndex(QString index, QString subIndex) const
+SubIndex *DeviceModel::subIndex(const QString &index, const QString &subIndex) const
 {
     Index *mindex = this->index(index);
     if (mindex == nullptr)
@@ -234,7 +234,7 @@ bool DeviceModel::subIndexExist(uint16_t index, uint8_t subIndex) const
     return (this->subIndex(index, subIndex) != nullptr);
 }
 
-bool DeviceModel::subIndexExist(QString index, QString subIndex) const
+bool DeviceModel::subIndexExist(const QString &index, const QString &subIndex) const
 {
     return (this->subIndex(index, subIndex) != nullptr);
 }

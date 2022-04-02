@@ -362,17 +362,14 @@ bool CGenerator::generateHStruct(DeviceConfiguration *deviceConfiguration, const
     QString defineName = QFileInfo(filePath).fileName().toUpper().replace(' ', '_').replace('.', '_');
     out << " */\n";
     out << "\n";
-    out << "#ifndef " << defineName
-        << "\n";
-    out << "#define " << defineName
-        << "\n";
+    out << "#ifndef " << defineName << "\n";
+    out << "#define " << defineName << "\n";
     out << "\n";
     out << "#include \"od_data.h\""
         << "\n";
     out << "\n";
 
-    out << "struct " << structName
-        << "\n";
+    out << "struct " << structName << "\n";
     out << "{"
         << "\n";
 
@@ -388,8 +385,7 @@ bool CGenerator::generateHStruct(DeviceConfiguration *deviceConfiguration, const
     out << "};"
         << "\n";
     out << "\n";
-    out << "#endif  // " << defineName
-        << "\n";
+    out << "#endif  // " << defineName << "\n";
 
     if (_errorStr.isEmpty())
     {

@@ -33,7 +33,7 @@ class UDTGUI_EXPORT DataLoggerWidget : public QWidget
 public:
     DataLoggerWidget(QWidget *parent = nullptr);
     DataLoggerWidget(DataLogger *dataLogger, Qt::Orientation orientation = Qt::Horizontal, QWidget *parent = nullptr);
-    ~DataLoggerWidget();
+    ~DataLoggerWidget() override;
 
     DataLogger *dataLogger() const;
 

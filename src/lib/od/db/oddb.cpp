@@ -73,9 +73,9 @@ void OdDb::searchFile(const QString &directory)
         bool exists = false;
         if (!values.isEmpty())
         {
-            for (int i = 0; i < values.size(); i++)
+            for (const auto &value : values)
             {
-                if (values.at(i).first == revision)
+                if (value.first == revision)
                 {
                     // eds already exists with this revision number
                     exists = true;
@@ -112,11 +112,11 @@ QString OdDb::file(quint32 deviceType, quint32 vendorID, quint32 productCode, qu
         quint32 rev = revisionNumber;
         do
         {
-            for (int i = 0; i < values.size(); i++)
+            for (const auto &value : values)
             {
-                if (values.at(i).first == rev)
+                if (value.first == rev)
                 {
-                    return values.at(i).second;
+                    return value.second;
                 }
             }
             if (rev == 0)

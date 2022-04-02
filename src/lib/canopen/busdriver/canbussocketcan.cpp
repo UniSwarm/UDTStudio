@@ -206,7 +206,7 @@ void CanBusSocketCANNotifierThead::run()
         FD_ZERO(&rdfs);
         FD_SET(_can_socket, &rdfs);
 
-        if (select(_can_socket + 1, &rdfs, NULL, NULL, NULL) <= 0)
+        if (select(_can_socket + 1, &rdfs, nullptr, nullptr, nullptr) <= 0)
         {
             terminate();
             running = false;

@@ -34,10 +34,10 @@ class OD_EXPORT CGenerator : public Generator
 {
 public:
     CGenerator();
-    ~CGenerator();
+    ~CGenerator() override;
 
-    bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath);
-    bool generate(DeviceDescription *deviceDescription, const QString &filePath);
+    bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath) override;
+    bool generate(DeviceDescription *deviceDescription, const QString &filePath) override;
     bool generate(DeviceDescription *deviceDescription, const QString &filePath, uint8_t nodeId);
 
     bool generateH(DeviceConfiguration *deviceConfiguration, const QString &filePath);

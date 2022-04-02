@@ -26,7 +26,7 @@
 
 #include "subindex.h"
 
-#include <stdint.h>
+#include <cstdint>
 
 class OD_EXPORT Index
 {
@@ -44,11 +44,11 @@ public:
     const QMap<uint8_t, SubIndex *> &subIndexes() const;
 
     SubIndex *subIndex(uint8_t subIndex) const;
-    SubIndex *subIndex(QString nameSubIndex) const;
+    SubIndex *subIndex(const QString &nameSubIndex) const;
     void addSubIndex(SubIndex *subIndex);
     int subIndexesCount();
     bool subIndexExist(uint8_t subIndex);
-    bool subIndexExist(QString nameSubIndex);
+    bool subIndexExist(const QString &nameSubIndex);
     void removeSubIndex(uint8_t subIndex);
 
     // =========== Object type ====================

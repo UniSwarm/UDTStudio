@@ -30,8 +30,11 @@
 #include "nodeobjectid.h"
 #include "nodeodsubscriber.h"
 
-#define TIMER_READ_MODE_OPERATION_DISPLAY 100u
-#define STATE_MACHINE_REQUESTED_ATTEMPT   10
+enum
+{
+    TIMER_READ_MODE_OPERATION_DISPLAY = 100U,
+    STATE_MACHINE_REQUESTED_ATTEMPT = 10
+};
 
 enum ControlWord : quint16
 {
@@ -193,10 +196,8 @@ NodeProfile402::OperationMode NodeProfile402::actualMode() const
     {
         return OperationMode::MS;
     }
-    else
-    {
-        return OperationMode::Reserved;
-    }
+
+    return OperationMode::Reserved;
 }
 
 bool NodeProfile402::setMode(OperationMode mode)
@@ -809,7 +810,7 @@ void NodeProfile402::decodeStateMachineStatusWord(quint16 statusWord)
     {
         changeStateMachine(_stateMachineRequested);
         _stateCountMachineRequested--;
-        if (_stateCountMachineRequested == 0u)
+        if (_stateCountMachineRequested == 0U)
         {
             _stateState = NONE_STATE;
             _stateMachineRequested = _stateMachineCurrent;

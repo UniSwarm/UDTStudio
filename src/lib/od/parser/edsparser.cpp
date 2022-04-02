@@ -45,14 +45,12 @@ EdsParser::~EdsParser()
  */
 DeviceDescription *EdsParser::parse(const QString &path) const
 {
-    DeviceDescription *deviceDescription;
-
     if (!QFile(path).exists())
     {
         return nullptr;
     }
 
-    deviceDescription = new DeviceDescription();
+    DeviceDescription *deviceDescription = new DeviceDescription();
 
     QSettings iniFile(path, QSettings::IniFormat);
     DeviceIniParser parser(&iniFile);

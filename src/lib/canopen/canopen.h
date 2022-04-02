@@ -63,7 +63,7 @@ signals:
 
 protected:
     CanOpen();
-    ~CanOpen();
+    ~CanOpen() override;
 
     QList<CanOpenBus *> _buses;
     QMap<quint8, CanOpenBus *> _busesMap;

@@ -38,7 +38,7 @@ class CANOPEN_EXPORT NodeOd : public QObject
     Q_OBJECT
 public:
     NodeOd(Node *node);
-    virtual ~NodeOd();
+    ~NodeOd() override;
 
     Node *node() const;
 

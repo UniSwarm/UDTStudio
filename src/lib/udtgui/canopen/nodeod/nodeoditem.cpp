@@ -211,7 +211,7 @@ QVariant NodeOdItem::data(int column, int role) const
                 case Qt::FontRole:
                     if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
                     {
-                        if (_index->subIndex(0)->error() != 0u)
+                        if (_index->subIndex(0)->error() != 0U)
                         {
                             QFont font;
                             font.setItalic(true);
@@ -300,7 +300,7 @@ QVariant NodeOdItem::data(int column, int role) const
                     break;
 
                 case Qt::FontRole:
-                    if (_subIndex->error() != 0u)
+                    if (_subIndex->error() != 0U)
                     {
                         QFont font;
                         font.setItalic(true);

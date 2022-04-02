@@ -51,7 +51,7 @@ private:
 
     void update();
     void updateProgram();
-    void downloadState(QString state);
+    void downloadState(const QString &state);
 
     void refreshInfo();
 

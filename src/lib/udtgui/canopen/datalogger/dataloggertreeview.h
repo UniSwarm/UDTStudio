@@ -32,7 +32,7 @@ class UDTGUI_EXPORT DataLoggerTreeView : public QTreeView
     Q_OBJECT
 public:
     DataLoggerTreeView(QWidget *parent = nullptr);
-    ~DataLoggerTreeView();
+    ~DataLoggerTreeView() override;
 
     DLData *currentData() const;
 

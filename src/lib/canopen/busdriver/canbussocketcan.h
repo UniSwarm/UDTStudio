@@ -33,7 +33,7 @@ class CANOPEN_EXPORT CanBusSocketCAN : public CanBusDriver
     Q_OBJECT
 public:
     CanBusSocketCAN(const QString &adress);
-    ~CanBusSocketCAN();
+    ~CanBusSocketCAN() override;
 
     // CanBusDriver interface
 public:

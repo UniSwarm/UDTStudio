@@ -30,7 +30,7 @@ class UDTGUI_EXPORT DataLoggerModel : public QAbstractItemModel
     Q_OBJECT
 public:
     DataLoggerModel(QObject *parent = nullptr);
-    ~DataLoggerModel();
+    ~DataLoggerModel() override;
 
     DataLogger *dataLogger() const;
     void setDataLogger(DataLogger *dataLogger);

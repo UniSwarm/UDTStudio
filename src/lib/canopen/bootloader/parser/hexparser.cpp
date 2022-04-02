@@ -140,9 +140,9 @@ bool HexParser::read()
     }
 
     _checksum = 0;
-    for (int i = 0; i < _prog.size(); i++)
+    for (auto &&i : _prog)
     {
-        _checksum += static_cast<unsigned char>(_prog[i]);
+        _checksum += static_cast<unsigned char>(i);
     }
 
     return true;

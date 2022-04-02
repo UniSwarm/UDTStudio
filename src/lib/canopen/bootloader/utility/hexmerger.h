@@ -36,9 +36,9 @@ public:
 private:
     QByteArray _prog;
 
-    int merge(const QByteArray &appA, QStringList segmentA, const QByteArray &appB, QStringList segmentB);
-    int append(const QByteArray &a, QStringList addresses);
-    int checkAddresses(QStringList addresses);
+    int merge(const QByteArray &appA, const QStringList &segmentA, const QByteArray &appB, const QStringList &segmentB);
+    int append(const QByteArray &a, const QStringList &addresses);
+    int checkAddresses(const QStringList &addresses);
 };
 
 #endif  // HEXMERGER_H

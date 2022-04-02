@@ -24,11 +24,14 @@
 #include <QDataStream>
 #include <QDebug>
 
-#define PDO_INDEX_MASK        0xFFFF0000
-#define PDO_SUBINDEX_MASK     0x0000FF00
-#define PDO_DATASIZE_MASK     0x000000FF
-#define COBID_MASK            0x7FFFFFFF
-#define COBID_VALID_NOT_VALID 0x80000000u
+enum
+{
+    PDO_INDEX_MASK = 0xFFFF0000,
+    PDO_SUBINDEX_MASK = 0x0000FF00,
+    PDO_DATASIZE_MASK = 0x000000FF,
+    COBID_MASK = 0x7FFFFFFF,
+    COBID_VALID_NOT_VALID = 0x80000000U
+};
 
 PDO::PDO(Node *node, quint8 number)
     : Service(node)
@@ -60,24 +63,24 @@ void PDO::reset()
     _statusPdo = STATE_NONE;
     _stateMapping = STATE_FREE;
 
-    _objectCurrentMapped.clear();
+    _currentMappedObjectsId.clear();
     _objectToMap.clear();
     createListObjectMapped();
 }
 
 const QList<NodeObjectId> &PDO::currentMappind() const
 {
-    return _objectCurrentMapped;
+    return _currentMappedObjectsId;
 }
 
 bool PDO::hasMappedObject() const
 {
-    return !_objectCurrentMapped.isEmpty();
+    return !_currentMappedObjectsId.isEmpty();
 }
 
 bool PDO::isMappedObject(const NodeObjectId &object) const
 {
-    for (const NodeObjectId &objectIterator : qAsConst(_objectCurrentMapped))
+    for (const NodeObjectId &objectIterator : qAsConst(_currentMappedObjectsId))
     {
         if ((objectIterator.index() == object.index()) && (objectIterator.subIndex() == object.subIndex()))
         {
@@ -89,7 +92,7 @@ bool PDO::isMappedObject(const NodeObjectId &object) const
 
 bool PDO::canInsertObjectAtBitPos(const NodeObjectId &object, int bitPos) const
 {
-    return canInsertObjectAtBitPos(_objectCurrentMapped, object, bitPos);
+    return canInsertObjectAtBitPos(_currentMappedObjectsId, object, bitPos);
 }
 
 bool PDO::canInsertObjectAtBitPos(const QList<NodeObjectId> &objectList, const NodeObjectId &object, int bitPos) const
@@ -147,7 +150,7 @@ int PDO::maxMappingBitSize() const
 
 int PDO::mappingBitSize() const
 {
-    return PDO::mappingBitSize(_objectCurrentMapped);
+    return PDO::mappingBitSize(_currentMappedObjectsId);
 }
 
 int PDO::maxMappingObjectCount() const
@@ -162,7 +165,7 @@ int PDO::maxMappingObjectCount() const
 
 int PDO::mappingObjectCount() const
 {
-    return _objectCurrentMapped.count();
+    return _currentMappedObjectsId.count();
 }
 
 int PDO::mappingBitSize(const QList<NodeObjectId> &objectList)
@@ -177,7 +180,7 @@ int PDO::mappingBitSize(const QList<NodeObjectId> &objectList)
 
 int PDO::indexAtBitPos(int bitPos) const
 {
-    return PDO::indexAtBitPos(_objectCurrentMapped, bitPos);
+    return PDO::indexAtBitPos(_currentMappedObjectsId, bitPos);
 }
 
 int PDO::indexAtBitPos(const QList<NodeObjectId> &objectList, int bitPos)
@@ -427,7 +430,7 @@ bool PDO::createListObjectMapped()
     {
         clearDataWaiting();
     }
-    _objectCurrentMapped.clear();
+    _currentMappedObjectsId.clear();
     NodeObjectId objectMapping(_objectMappingId, 0);
     quint8 numberEntries = static_cast<quint8>(_node->nodeOd()->value(objectMapping).toUInt());
 
@@ -442,13 +445,13 @@ bool PDO::createListObjectMapped()
         if (checkIndex(indexMapping))
         {
             NodeObjectId object(_node->busId(), _node->nodeId(), indexMapping, subIndexMapping, _node->nodeOd()->dataType(indexMapping, subIndexMapping));
-            _objectCurrentMapped.append(object);
+            _currentMappedObjectsId.append(object);
         }
     }
 
     if (_node->nodeOd()->indexExist(objectMapping.index()))
     {
-        numberEntries = static_cast<quint8>(_objectCurrentMapped.size());
+        numberEntries = static_cast<quint8>(_currentMappedObjectsId.size());
         _node->nodeOd()->index(objectMapping.index())->subIndex(objectMapping.subIndex())->setValue(numberEntries);
     }
     emit mappingChanged();

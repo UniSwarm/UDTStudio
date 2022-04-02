@@ -21,11 +21,14 @@
 #include "canopenbus.h"
 #include "nmt.h"
 
-#define NMT_CS_START      0x01
-#define NMT_CS_STOP       0x02
-#define NMT_CS_PRE_OP     0x80
-#define NMT_CS_RESET_NODE 0x81
-#define NMT_CS_RESET_COMM 0x82
+enum
+{
+    NMT_CS_START = 0x01,
+    NMT_CS_STOP = 0x02,
+    NMT_CS_PRE_OP = 0x80,
+    NMT_CS_RESET_NODE = 0x81,
+    NMT_CS_RESET_COMM = 0x82
+};
 
 NMT::NMT(Node *node)
     : Service(node)

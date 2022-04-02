@@ -121,7 +121,7 @@ bool CsvGenerator::generate(DeviceDescription *deviceDescription, const QString 
  * @brief writes a list of index and these parameters
  * @param list of indexes
  */
-void CsvGenerator::writeListIndex(const QList<Index *> indexes, QTextStream *out)
+void CsvGenerator::writeListIndex(const QList<Index *> &indexes, QTextStream *out)
 {
     for (Index *index : indexes)
     {
@@ -148,9 +148,7 @@ void CsvGenerator::writeListIndex(const QList<Index *> indexes, QTextStream *out
  */
 void CsvGenerator::writeIndex(Index *index, QTextStream *out)
 {
-    SubIndex *subIndex;
-    subIndex = index->subIndex(0);
-
+    SubIndex *subIndex = index->subIndex(0);
     if (subIndex == nullptr)
     {
         return;

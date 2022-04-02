@@ -130,8 +130,6 @@ void PidWidget::setIMode()
     NodeObjectId pidIntegratorStatus_ObjId;
     NodeObjectId pidOutputStatus_ObjId;
 
-    QList<NodeProfile402::OperationMode> modeList;
-
     if (_nodeProfile402 == nullptr)
     {
         return;
@@ -197,10 +195,10 @@ void PidWidget::setIMode()
     _outputLabel->setObjId(pidOutputStatus_ObjId);
 
     _modeComboBox->clear();
-    modeList = _nodeProfile402->modesSupportedByType(odMode402);
-    for (int i = 0; i < modeList.size(); i++)
+    QList<NodeProfile402::OperationMode> supportedModeList = _nodeProfile402->modesSupportedByType(odMode402);
+    for (NodeProfile402::OperationMode mode : supportedModeList)
     {
-        _modeComboBox->addItem(_nodeProfile402->modeStr(modeList.at(i)), QVariant(static_cast<int>(modeList.at(i))));
+        _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
     }
 
     // Datalogger

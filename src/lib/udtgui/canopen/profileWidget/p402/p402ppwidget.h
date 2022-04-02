@@ -62,7 +62,7 @@ private:
     void changeOnSetPointCheckBoxRampClicked(bool ok);
     void changeOnSetPointEvent(bool ok);
 
-    void updateInformationLabel(void);
+    void updateInformationLabel();
 
     void createDataLogger();
     void mapDefaultObjects();

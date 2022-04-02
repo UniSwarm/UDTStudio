@@ -293,7 +293,7 @@ QColor DataLogger::findFreeColor() const
     return color;
 }
 
-bool DataLogger::isColorFree(const QColor color) const
+bool DataLogger::isColorFree(const QColor &color) const
 {
     for (DLData *dlData : qAsConst(_dataList))
     {

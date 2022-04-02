@@ -27,9 +27,9 @@ class OD_EXPORT EdsParser : public DeviceDescriptionParser
 {
 public:
     EdsParser();
-    ~EdsParser();
+    ~EdsParser() override;
 
-    DeviceDescription *parse(const QString &path) const;
+    DeviceDescription *parse(const QString &path) const override;
 };
 
 #endif  // EDSPARSER_H

@@ -60,7 +60,7 @@ private:
 public:
     QString type() const override;
     void parseFrame(const QCanBusFrame &frame) override;
-    virtual void setBus(CanOpenBus *bus) override;
+    void setBus(CanOpenBus *bus) override;
 
     // PDO interface
 public:

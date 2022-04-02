@@ -5,14 +5,17 @@
 #include <QList>
 #include <QtEndian>
 
-#define VERSION_CHAR_MAX 6
-#define DATE_CHAR_MAX    30
+enum
+{
+    VERSION_CHAR_MAX = 6,
+    DATE_CHAR_MAX = 30
+};
 
 UfwWriter::UfwWriter()
 {
 }
 
-int UfwWriter::create(uint16_t type, QString version, QString date, QStringList segment, const QByteArray &hex)
+int UfwWriter::create(uint16_t type, const QString &version, const QString &date, const QStringList &segment, const QByteArray &hex)
 {
     char buffer[DATE_CHAR_MAX];
 
@@ -93,7 +96,7 @@ int UfwWriter::append(const QByteArray &app, QStringList addresses)
     return 0;
 }
 
-int UfwWriter::checkAddresses(QStringList addresses)
+int UfwWriter::checkAddresses(const QStringList &addresses)
 {
     int i = 0;
     for (i = 0; i < addresses.size(); i++)

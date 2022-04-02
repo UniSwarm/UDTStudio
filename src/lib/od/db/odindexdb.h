@@ -31,4 +31,4 @@ public:
     static QString unit(quint16 index, quint8 subIndex, quint16 profileNumber = 0);
 };
 
-#endif // ODINDEXDB_H
+#endif  // ODINDEXDB_H

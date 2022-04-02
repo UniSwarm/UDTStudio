@@ -27,9 +27,9 @@ class OD_EXPORT DcfParser : public DeviceConfigurationParser
 {
 public:
     DcfParser();
-    ~DcfParser();
+    ~DcfParser() override;
 
-    DeviceConfiguration *parse(const QString &path) const;
+    DeviceConfiguration *parse(const QString &path) const override;
 };
 
 #endif  // DCFPARSER_H

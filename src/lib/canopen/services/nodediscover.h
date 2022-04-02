@@ -33,7 +33,7 @@ class CANOPEN_EXPORT NodeDiscover : public Service
     Q_OBJECT
 public:
     NodeDiscover(CanOpenBus *bus);
-    ~NodeDiscover();
+    ~NodeDiscover() override;
 
     QString type() const override;
 

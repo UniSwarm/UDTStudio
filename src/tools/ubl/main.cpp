@@ -44,7 +44,7 @@
 #    include "busdriver/canbussocketcan.h"
 #endif
 
-int hexdump(QString fileA)
+int hexdump(const QString &fileA)
 {
     if (QFileInfo(fileA).suffix() != "bin" && QFileInfo(fileA).suffix() != "hex")
     {
@@ -106,7 +106,7 @@ int hexdump(QString fileA)
     return 0;
 }
 
-int diff(QString fileA, QString fileB)
+int diff(const QString &fileA, const QString &fileB)
 {
     if (QFileInfo(fileA).suffix() != "hex" || QFileInfo(fileB).suffix() != "hex")
     {

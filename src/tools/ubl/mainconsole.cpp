@@ -21,8 +21,9 @@
 #include "node.h"
 
 #include <QDebug>
+#include <utility>
 
-MainConsole::MainConsole(quint8 busId, quint8 speed, quint8 nodeid, QString binary)
+MainConsole::MainConsole(quint8 busId, quint8 speed, quint8 nodeid, const QString &binary)
     : _busId(busId)
     , _speed(speed)
     , _nodeId(nodeid)

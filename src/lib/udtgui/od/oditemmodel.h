@@ -32,7 +32,7 @@ class UDTGUI_EXPORT ODItemModel : public QAbstractItemModel
     Q_OBJECT
 public:
     ODItemModel();
-    ~ODItemModel();
+    ~ODItemModel() override;
 
     void setDeviceModel(DeviceModel *deviceModel);
     DeviceModel *deviceModel() const;

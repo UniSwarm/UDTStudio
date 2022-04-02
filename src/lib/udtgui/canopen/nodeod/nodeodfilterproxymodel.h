@@ -32,7 +32,7 @@ class UDTGUI_EXPORT NodeOdFilterProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 public:
     NodeOdFilterProxyModel(QObject *parent = nullptr);
-    ~NodeOdFilterProxyModel();
+    ~NodeOdFilterProxyModel() override;
 
     Node *node() const;
     NodeIndex *nodeIndex(const QModelIndex &index) const;

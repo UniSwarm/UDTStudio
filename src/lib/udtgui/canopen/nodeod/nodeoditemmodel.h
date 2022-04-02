@@ -35,7 +35,7 @@ class UDTGUI_EXPORT NodeOdItemModel : public QAbstractItemModel, public NodeOdSu
     Q_OBJECT
 public:
     NodeOdItemModel(QObject *parent = nullptr);
-    ~NodeOdItemModel();
+    ~NodeOdItemModel() override;
 
     Node *node() const;
     NodeOdItem::Type typeIndex(const QModelIndex &index) const;

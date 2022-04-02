@@ -134,7 +134,7 @@ protected:
 
     // NodeOdSubscriber interface
 protected:
-    void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags);
+    void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;
 };
 
 #endif  // ABSTRACTINDEXWIDGET_H

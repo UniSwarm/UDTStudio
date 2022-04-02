@@ -21,6 +21,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QtEndian>
+#include <utility>
 
 #include "bootloader/parser/hexparser.h"
 
@@ -43,7 +44,7 @@ int HexMerger::merge(QString &fileA, QStringList &segmentA, QString &fileB, QStr
     return 0;
 }
 
-int HexMerger::merge(const QByteArray &appA, QStringList segmentA, const QByteArray &appB, QStringList segmentB)
+int HexMerger::merge(const QByteArray &appA, const QStringList &segmentA, const QByteArray &appB, const QStringList &segmentB)
 {
     int ret = 0;
     ret = append(appA, segmentA);
@@ -66,7 +67,7 @@ const QByteArray &HexMerger::prog() const
     return _prog;
 }
 
-int HexMerger::append(const QByteArray &a, QStringList addresses)
+int HexMerger::append(const QByteArray &a, const QStringList &addresses)
 {
     bool ok;
     int i = 0;
@@ -98,7 +99,7 @@ int HexMerger::append(const QByteArray &a, QStringList addresses)
     return 0;
 }
 
-int HexMerger::checkAddresses(QStringList addresses)
+int HexMerger::checkAddresses(const QStringList &addresses)
 {
     int i = 0;
     for (i = 0; i < addresses.size(); i++)

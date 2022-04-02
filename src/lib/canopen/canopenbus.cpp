@@ -195,7 +195,7 @@ bool CanOpenBus::isConnected() const
 
 bool CanOpenBus::canWrite() const
 {
-    return !(!_canBusDriver || _spyMode);
+    return !((_canBusDriver == nullptr) || _spyMode);
 }
 
 bool CanOpenBus::writeFrame(const QCanBusFrame &frame)

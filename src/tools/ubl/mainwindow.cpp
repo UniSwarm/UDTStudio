@@ -96,7 +96,7 @@ void MainWindow::updateProgram()
     //    _iNodeListSelected++;
 }
 
-void MainWindow::downloadState(QString state)
+void MainWindow::downloadState(const QString &state)
 {
     _statusLabel->setText(state);
 }

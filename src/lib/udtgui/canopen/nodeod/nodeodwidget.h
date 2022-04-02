@@ -34,7 +34,7 @@ class UDTGUI_EXPORT NodeOdWidget : public QWidget
 public:
     NodeOdWidget(QWidget *parent = nullptr);
     NodeOdWidget(Node *node, QWidget *parent = nullptr);
-    ~NodeOdWidget();
+    ~NodeOdWidget() override;
 
     Node *node() const;
 

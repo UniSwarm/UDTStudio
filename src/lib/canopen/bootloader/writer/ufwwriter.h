@@ -31,7 +31,7 @@ class CANOPEN_EXPORT UfwWriter
 public:
     UfwWriter();
 
-    int create(uint16_t type, QString version, QString date, QStringList segment, const QByteArray &hex);
+    int create(uint16_t type, const QString &version, const QString &date, const QStringList &segment, const QByteArray &hex);
 
     const QByteArray &binary() const;
 
@@ -42,7 +42,7 @@ private:
     QByteArray _ufwByteArray;
 
     int append(const QByteArray &app, QStringList addresses);
-    int checkAddresses(QStringList addresses);
+    int checkAddresses(const QStringList &addresses);
 };
 
 #endif  // UFWWRITER_H

@@ -31,7 +31,7 @@ class CANOPEN_EXPORT DataLogger : public QObject, public NodeOdSubscriber
     Q_OBJECT
 public:
     DataLogger(QObject *parent = nullptr);
-    virtual ~DataLogger();
+    ~DataLogger() override;
 
     bool isStarted() const;
 

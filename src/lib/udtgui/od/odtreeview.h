@@ -32,7 +32,7 @@ class UDTGUI_EXPORT ODTreeView : public QTreeView
     Q_OBJECT
 public:
     ODTreeView(QWidget *parent = nullptr);
-    ~ODTreeView();
+    ~ODTreeView() override;
 
     void setDeviceModel(DeviceModel *deviceModel);
     DeviceModel *deviceModel() const;

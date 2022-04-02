@@ -37,7 +37,7 @@ public:
     int write(const QByteArray &prog, const QString &filePath, Optimization optimization = OFF);
 
 private:
-    int checksum(QString data);
+    int checksum(const QString &data);
 };
 
 #endif  // HEXWRITER_H

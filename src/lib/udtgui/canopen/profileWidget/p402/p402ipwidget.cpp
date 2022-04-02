@@ -33,8 +33,6 @@
 #include <QStringList>
 #include <QtMath>
 
-#include "canopen/indexWidget/indexcheckbox.h"
-
 P402IpWidget::P402IpWidget(QWidget *parent)
     : P402ModeWidget(parent)
 {

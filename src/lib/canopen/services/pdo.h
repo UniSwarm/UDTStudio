@@ -128,7 +128,7 @@ protected:
     void managementRespProcessMapping(const NodeObjectId &objId, NodeOd::FlagsRequest flags);
     bool createListObjectMapped();
 
-    QList<NodeObjectId> _objectCurrentMapped;
+    QList<NodeObjectId> _currentMappedObjectsId;
     QList<NodeObjectId> _objectToMap;
 
     enum CommParam

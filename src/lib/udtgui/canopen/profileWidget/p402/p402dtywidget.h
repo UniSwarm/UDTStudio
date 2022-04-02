@@ -44,7 +44,7 @@ public:
     P402DtyWidget(QWidget *parent = nullptr);
 
     void setEnableRamp(bool ok);
-    bool isEnableRamp(void) const;
+    bool isEnableRamp() const;
 
 private:
     ModeDty *_modeDty;

@@ -18,8 +18,10 @@
 
 #include "canbusdriver.h"
 
-CanBusDriver::CanBusDriver(const QString &adress)
-    : _adress(adress)
+#include <utility>
+
+CanBusDriver::CanBusDriver(QString adress)
+    : _adress(std::move(adress))
 {
     _state = DISCONNECTED;
 }

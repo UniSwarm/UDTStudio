@@ -23,14 +23,14 @@
  * @param sub-index number
  */
 SubIndex::SubIndex(uint8_t subIndex)
+    : _index(nullptr)
+    , _accessType(NONE)
+    , _subIndex(subIndex)
+    , _dataType(INVALID)
+    , _objFlags(0)
+    , _hasNodeId(false)
+    , _isHexVal(false)
 {
-    _index = nullptr;
-    _accessType = NONE;
-    _subIndex = subIndex;
-    _dataType = INVALID;
-    _objFlags = 0;
-    _hasNodeId = false;
-    _isHexVal = false;
 }
 
 /**
@@ -38,22 +38,18 @@ SubIndex::SubIndex(uint8_t subIndex)
  * @param other
  */
 SubIndex::SubIndex(const SubIndex &other)
+    : _index(nullptr)
+    , _accessType(other.accessType())
+    , _subIndex(other.subIndex())
+    , _name(other.name())
+    , _value(other.value())
+    , _dataType(other.dataType())
+    , _lowLimit(other.lowLimit())
+    , _highLimit(other.highLimit())
+    , _objFlags(other.objFlags())
+    , _hasNodeId(other.hasNodeId())
+    , _isHexVal(other.isHexValue())
 {
-    _index = nullptr;
-
-    _accessType = other.accessType();
-    _subIndex = other.subIndex();
-    _name = other.name();
-    _value = other.value();
-    _dataType = other.dataType();
-
-    _lowLimit = other.lowLimit();
-    _highLimit = other.highLimit();
-
-    _objFlags = other.objFlags();
-
-    _hasNodeId = other.hasNodeId();
-    _isHexVal = other.isHexValue();
 }
 
 /**

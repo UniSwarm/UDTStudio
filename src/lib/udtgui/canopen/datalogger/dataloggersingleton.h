@@ -60,7 +60,7 @@ signals:
 
 protected:
     DataLoggerSingleton();
-    ~DataLoggerSingleton();
+    ~DataLoggerSingleton() override;
     QList<DataLoggerWidget *> _dataLoggerWidgets;
 
     QMenu *_loggersMenu;

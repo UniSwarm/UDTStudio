@@ -31,7 +31,7 @@ class UDTGUI_EXPORT BusNodesModel : public QAbstractItemModel
 public:
     BusNodesModel(QObject *parent = nullptr);
     BusNodesModel(CanOpen *canOpen, QObject *parent = nullptr);
-    ~BusNodesModel();
+    ~BusNodesModel() override;
 
     CanOpen *canOpen() const;
     void setCanOpen(CanOpen *canOpen);
@@ -60,13 +60,13 @@ protected:
 
     // QAbstractItemModel interface
 public:
-    int columnCount(const QModelIndex &parent) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    QVariant data(const QModelIndex &index, int role) const;
-    QModelIndex index(int row, int column, const QModelIndex &parent) const;
-    QModelIndex parent(const QModelIndex &child) const;
-    int rowCount(const QModelIndex &parent) const;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    int columnCount(const QModelIndex &parent) const override;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
+    QModelIndex index(int row, int column, const QModelIndex &parent) const override;
+    QModelIndex parent(const QModelIndex &child) const override;
+    int rowCount(const QModelIndex &parent) const override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
 private:
     CanOpen *_canOpen;

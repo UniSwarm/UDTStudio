@@ -446,7 +446,7 @@ void AbstractIndexWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsReque
             _pendingValue = QVariant();
             return;
         }
-        if (flags & NodeOd::Read)  // any read cause an error
+        if ((flags & NodeOd::Read) != 0)  // any read cause an error
         {
             if (isEditing() && !_requestRead)
             {
@@ -456,10 +456,8 @@ void AbstractIndexWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsReque
             _requestRead = false;
             return;
         }
-        else  // any other write request failed
-        {
-            return;
-        }
+        // any other write request failed
+        return;
     }
     if (((flags & NodeOd::Read) != 0) && this->isEditing() && !_requestRead)
     {

@@ -26,7 +26,7 @@ void ODMerger::merge(DeviceDescription *deviceDescription, DeviceDescription *se
     QMap<QString, QString> deviceInfos(deviceDescription->deviceInfos());
     for (auto i = secondDeviceDescription->deviceInfos().constBegin(); i != secondDeviceDescription->deviceInfos().constEnd(); i++)
     {
-         deviceInfos.insert(i.key(), i.value());
+        deviceInfos.insert(i.key(), i.value());
     }
     deviceDescription->setDeviceInfos(deviceInfos);
 
@@ -38,21 +38,21 @@ void ODMerger::merge(DeviceModel *deviceModel, DeviceModel *secondDeviceModel)
     QMap<QString, QString> fileInfos(deviceModel->fileInfos());
     for (auto i = secondDeviceModel->fileInfos().constBegin(); i != secondDeviceModel->fileInfos().constEnd(); i++)
     {
-         fileInfos.insert(i.key(), i.value());
+        fileInfos.insert(i.key(), i.value());
     }
     deviceModel->setFileInfos(fileInfos);
 
     QMap<QString, QString> dummyUsages(deviceModel->dummyUsages());
     for (auto i = secondDeviceModel->dummyUsages().constBegin(); i != secondDeviceModel->dummyUsages().constEnd(); i++)
     {
-         dummyUsages.insert(i.key(), i.value());
+        dummyUsages.insert(i.key(), i.value());
     }
     deviceModel->setDummyUsages(dummyUsages);
 
     QMap<QString, QString> comments(deviceModel->comments());
     for (auto i = secondDeviceModel->comments().constBegin(); i != secondDeviceModel->comments().constEnd(); i++)
     {
-         comments.insert(i.key(), i.value());
+        comments.insert(i.key(), i.value());
     }
     deviceModel->setComments(comments);
 

@@ -26,8 +26,8 @@
  * @brief default constructor
  */
 TexGenerator::TexGenerator()
+    : _profile(0)
 {
-    _profile = 0;
 }
 
 /**
@@ -132,7 +132,7 @@ bool TexGenerator::generate(DeviceDescription *deviceDescription, const QString 
  * @brief writes a list of index and these parameters
  * @param list of indexes
  */
-void TexGenerator::writeListIndex(const QList<Index *> indexes, QTextStream *out)
+void TexGenerator::writeListIndex(const QList<Index *> &indexes, QTextStream *out)
 {
     for (Index *index : indexes)
     {
@@ -153,7 +153,7 @@ void TexGenerator::writeListIndex(const QList<Index *> indexes, QTextStream *out
     }
 }
 
-void TexGenerator::writeListIndexComm(const QList<Index *> indexes, QTextStream *out)
+void TexGenerator::writeListIndexComm(const QList<Index *> &indexes, QTextStream *out)
 {
     for (Index *index : indexes)
     {
@@ -178,7 +178,7 @@ void TexGenerator::writeListIndexComm(const QList<Index *> indexes, QTextStream 
     }
 }
 
-void TexGenerator::writeListIndexManufacturer402(const QList<Index *> indexes, QTextStream *out)
+void TexGenerator::writeListIndexManufacturer402(const QList<Index *> &indexes, QTextStream *out)
 {
     for (Index *index : indexes)
     {
@@ -209,7 +209,7 @@ void TexGenerator::writeListIndexManufacturer402(const QList<Index *> indexes, Q
  */
 void TexGenerator::writeVar(Index *index, QTextStream *out, bool generic)
 {
-    SubIndex *subIndex;
+    SubIndex *subIndex = nullptr;
     subIndex = index->subIndex(0);
 
     if (subIndex == nullptr)
@@ -583,8 +583,7 @@ void TexGenerator::writeArray(Index *index, QTextStream *out, bool generic)
 
     // Line 8 :\newcommand{\dispTabMotionstatusXError}{\displayTab{\indexMotionstatusX}{\subIndexMotionstatusXError}{\nameMotionstatusXError}%
     //          {UINT16}{RO,TPDO}{-}{-}{-}{\dispTabLineArraySubIndexMotionstatusX}}%
-    SubIndex *subIndex;
-    subIndex = index->subIndex(1);
+    SubIndex *subIndex = index->subIndex(1);
     QString dispTabCommand = nameForTex;
     dispTabCommand.prepend("\\dispTab");
 

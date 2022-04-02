@@ -82,7 +82,7 @@ bool ConfigurationApply::apply(DeviceModel *deviceModel, const QString &fileIniP
 
 SubIndex *ConfigurationApply::getSubIndex(DeviceModel *deviceDescription, const QString &childKey)
 {
-    bool ok;
+    bool ok = false;
     if (childKey.contains(QRegExp("^[0-9]")))
     {
         uint16_t indexId = 0;
@@ -126,7 +126,7 @@ SubIndex *ConfigurationApply::getSubIndex(DeviceModel *deviceDescription, const 
             Index *index = deviceDescription->index(indexName);
             if (index != nullptr)
             {
-                SubIndex *sub;
+                SubIndex *sub = nullptr;
                 if (subIndexName.startsWith("sub"))
                 {
                     uint subIndexNumber = subIndexName.midRef(3).toUInt();
@@ -156,13 +156,13 @@ SubIndex *ConfigurationApply::getSubIndex(DeviceModel *deviceDescription, const 
 void ConfigurationApply::resizeArray(Index *index, int newSize)
 {
     // remove all sub > 1
-    for (int sub = 2 ; sub <= index->subIndexesCount(); sub++)
+    for (int sub = 2; sub <= index->subIndexesCount(); sub++)
     {
         index->removeSubIndex(sub);
     }
 
     SubIndex *subIndex = index->subIndex(1);
-    for (int sub = 2 ; sub < newSize + 1; sub++)
+    for (int sub = 2; sub < newSize + 1; sub++)
     {
         SubIndex *newSubIndex = new SubIndex(*subIndex);
         newSubIndex->setSubIndex(sub);
@@ -210,7 +210,7 @@ QString ConfigurationApply::renameItem(const QString &name, int value)
  * @param dcf or eds file
  * @return data
  */
-QVariant ConfigurationApply::readData(SubIndex::DataType dataType, QString stringValue)
+QVariant ConfigurationApply::readData(SubIndex::DataType dataType, const QString &stringValue)
 {
     int base = 10;
     if (stringValue.startsWith("0x"))
@@ -223,7 +223,7 @@ QVariant ConfigurationApply::readData(SubIndex::DataType dataType, QString strin
         return QVariant();
     }
 
-    bool ok;
+    bool ok = false;
     switch (dataType)
     {
         case SubIndex::INTEGER8:

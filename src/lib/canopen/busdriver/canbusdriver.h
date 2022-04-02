@@ -29,7 +29,7 @@ class CANOPEN_EXPORT CanBusDriver : public QObject
 {
     Q_OBJECT
 public:
-    CanBusDriver(const QString &adress);
+    CanBusDriver(QString adress);
 
     const QString &adress() const;
     enum State

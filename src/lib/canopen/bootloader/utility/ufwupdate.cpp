@@ -60,10 +60,10 @@ void UfwUpdate::update()
     char buffer[4];
     uint32_t sum = 0;
     _checksum = 0;
-    for (int i = 0; i < _ufwModel->segmentList().size(); i++)
+    for (auto i : _ufwModel->segmentList())
     {
-        uint32_t start = _ufwModel->segmentList().at(i).start;
-        uint32_t end = _ufwModel->segmentList().at(i).end;
+        uint32_t start = i.start;
+        uint32_t end = i.end;
 
         QByteArray prog = _ufwModel->prog().mid(static_cast<int>(start), static_cast<int>(end) - static_cast<int>(start));
 

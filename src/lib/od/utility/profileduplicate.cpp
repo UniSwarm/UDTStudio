@@ -33,7 +33,7 @@ void ProfileDuplicate::duplicate(DeviceModel *deviceModel, uint8_t profileCount)
         // Standardized profile area : 0x6000 to 0x9FFF
         QList<Index *> standardizedIndex;
 
-        for (auto it = deviceModel->indexes().begin(); it != deviceModel->indexes().end(); )
+        for (auto it = deviceModel->indexes().begin(); it != deviceModel->indexes().end();)
         {
             uint16_t numIndex = (*it)->index();
             if (numIndex >= 0x4000 && numIndex < 0x4200)
@@ -89,7 +89,7 @@ void ProfileDuplicate::duplicate(DeviceModel *deviceModel, uint8_t profileCount)
         // Standardized profile area : 0x6000 to 0x9FFF
         QList<Index *> standardizedIndex;
 
-        for (auto it = deviceModel->indexes().begin(); it != deviceModel->indexes().end(); )
+        for (auto it = deviceModel->indexes().begin(); it != deviceModel->indexes().end();)
         {
             uint16_t numIndex = (*it)->index();
             if (numIndex >= 0x6000 && numIndex < 0x6100)

@@ -33,17 +33,16 @@ class OD_EXPORT TexGenerator : public Generator
 {
 public:
     TexGenerator();
-    ~TexGenerator();
+    ~TexGenerator() override;
 
     // Generator interface
     bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath) override;
     bool generate(DeviceDescription *deviceDescription, const QString &filePath) override;
 
 private:
-
-    void writeListIndex(QList<Index *> indexes, QTextStream *out);
-    void writeListIndexComm(QList<Index *> indexes, QTextStream *out);
-    void writeListIndexManufacturer402(QList<Index *> indexes, QTextStream *out);
+    void writeListIndex(const QList<Index *> &indexes, QTextStream *out);
+    void writeListIndexComm(const QList<Index *> &indexes, QTextStream *out);
+    void writeListIndexManufacturer402(const QList<Index *> &indexes, QTextStream *out);
     void writeVar(Index *index, QTextStream *out, bool generic);
     void writeRecord(Index *index, QTextStream *out, bool generic);
     void writeArray(Index *index, QTextStream *out, bool generic);

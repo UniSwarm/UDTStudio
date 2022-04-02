@@ -42,7 +42,7 @@ class CANOPEN_EXPORT Node : public QObject
     Q_OBJECT
 public:
     Node(quint8 nodeId, const QString &name = QString(), const QString &edsFileName = QString());
-    ~Node();
+    ~Node() override;
 
     CanOpenBus *bus() const;
     quint8 busId() const;

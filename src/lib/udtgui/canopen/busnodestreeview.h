@@ -35,7 +35,7 @@ class UDTGUI_EXPORT BusNodesTreeView : public QTreeView
 public:
     BusNodesTreeView(QWidget *parent = nullptr);
     BusNodesTreeView(CanOpen *canOpen, QWidget *parent = nullptr);
-    ~BusNodesTreeView();
+    ~BusNodesTreeView() override;
 
     CanOpen *canOpen() const;
     void setCanOpen(CanOpen *canOpen);

@@ -37,7 +37,7 @@ public:
 
     void setUfw(UfwModel *ufwModel);
 
-    void update(void);
+    void update();
 
     int status();
 

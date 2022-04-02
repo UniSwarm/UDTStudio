@@ -114,13 +114,13 @@ quint8 RPDO::transmissionType()
 
 void RPDO::receiveSync()
 {
-    if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()))
+    if ((_currentMappedObjectsId.isEmpty()) || (!isEnabled()))
     {
         return;
     }
 
     // Update data of object in NodeOd after a sync
-    for (const NodeObjectId &objectIterator : qAsConst(_objectCurrentMapped))
+    for (const NodeObjectId &objectIterator : qAsConst(_currentMappedObjectsId))
     {
         if (_dataObjectCurrentMapped.contains(objectIterator.key()) && _node->nodeOd()->indexExist(objectIterator.index())
             && _node->nodeOd()->subIndexExist(objectIterator.index(), objectIterator.subIndex()))
@@ -138,12 +138,12 @@ void RPDO::receiveSync()
  */
 void RPDO::write(const NodeObjectId &object, const QVariant &data)
 {
-    if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()))
+    if ((_currentMappedObjectsId.isEmpty()) || (!isEnabled()))
     {
         return;
     }
 
-    for (const NodeObjectId &objectIterator : qAsConst(_objectCurrentMapped))
+    for (const NodeObjectId &objectIterator : qAsConst(_currentMappedObjectsId))
     {
         if (objectIterator.index() == object.index() && objectIterator.subIndex() == object.subIndex())
         {
@@ -170,7 +170,7 @@ void RPDO::clearDataWaiting()
  */
 void RPDO::prepareAndSendData()
 {
-    if ((_objectCurrentMapped.isEmpty()) || (!isEnabled()) || _node->status() != Node::STARTED)
+    if ((_currentMappedObjectsId.isEmpty()) || (!isEnabled()) || _node->status() != Node::STARTED)
     {
         return;
     }
@@ -178,7 +178,7 @@ void RPDO::prepareAndSendData()
     QDataStream request(&_rpdoDataToSendReqPayload, QIODevice::WriteOnly);
     request.setByteOrder(QDataStream::LittleEndian);
 
-    for (const NodeObjectId &objectIterator : qAsConst(_objectCurrentMapped))
+    for (const NodeObjectId &objectIterator : qAsConst(_currentMappedObjectsId))
     {
         quint8 size = static_cast<quint8>(QMetaType::sizeOf(objectIterator.dataType()));
         if (size > 8)

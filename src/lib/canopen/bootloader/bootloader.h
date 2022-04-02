@@ -61,7 +61,7 @@ public:
     };
     Status status() const;
     QString statusStr(Status status) const;
-    quint32 error(void) const;
+    quint32 error() const;
 
     bool openUfw(const QString &fileName);
 
@@ -71,9 +71,9 @@ public:
     void startOtpUpload();
 
     // Info UFW
-    uint32_t deviceType(void);
-    QString versionSoftware(void);
-    QString buildDate(void);
+    uint32_t deviceType();
+    QString versionSoftware();
+    QString buildDate();
 
 public slots:
     void stopProgram();

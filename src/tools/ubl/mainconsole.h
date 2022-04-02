@@ -28,7 +28,7 @@ class MainConsole : public QObject
 {
     Q_OBJECT
 public:
-    MainConsole(quint8 bus, quint8 speed, quint8 nodeid, QString binary);
+    MainConsole(quint8 bus, quint8 speed, quint8 nodeid, const QString &binary);
     MainConsole(Node *node);
 
 public slots:
@@ -43,12 +43,12 @@ signals:
 private:
     Node *_node;
 
-    quint8 _busId;
-    quint8 _speed;
-    quint8 _nodeId;
+    quint8 _busId{};
+    quint8 _speed{};
+    quint8 _nodeId{};
     QString _binary;
 
-    UpdateProcess *_updateProcess;
+    UpdateProcess *_updateProcess{};
 };
 
 #endif  // MAINCONSOLE_H

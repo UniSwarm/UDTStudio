@@ -97,7 +97,7 @@ int HexWriter::write(const QByteArray &prog, const QString &filePath, Optimizati
     return 0;
 }
 
-int HexWriter::checksum(QString data)
+int HexWriter::checksum(const QString &data)
 {
     int i = 0;
     int checksum = 0;

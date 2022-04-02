@@ -40,7 +40,7 @@ class CANOPEN_EXPORT NodeProfile402 : public NodeProfile
     Q_OBJECT
 public:
     NodeProfile402(Node *node, quint8 axis);
-    ~NodeProfile402();
+    ~NodeProfile402() override;
 
     void init();
     void setTarget(qint32 setTarget);
@@ -214,7 +214,7 @@ public:
     void readAllObjects() const override;
     quint16 profileNumber() const override;
     QString profileNumberStr() const override;
-    virtual void reset() override;
+    void reset() override;
 
 public:
     void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;

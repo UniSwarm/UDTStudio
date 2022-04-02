@@ -37,7 +37,7 @@ class CANOPEN_EXPORT Service : public QObject
 public:
     Service(CanOpenBus *bus);
     Service(Node *node);
-    virtual ~Service();
+    ~Service() override;
 
     virtual void setBus(CanOpenBus *bus);
 

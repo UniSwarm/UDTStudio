@@ -157,7 +157,7 @@ DeviceConfiguration *DeviceConfiguration::fromDeviceDescription(const DeviceDesc
                     base = 16;
                 }
 
-                bool ok;
+                bool ok = false;
                 subIndex->setValue(value.toUInt(&ok, base) + nodeId);
             }
         }

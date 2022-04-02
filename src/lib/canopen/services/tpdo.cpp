@@ -51,23 +51,23 @@ QString TPDO::type() const
 
 void TPDO::parseFrame(const QCanBusFrame &frame)
 {
-    if (_objectCurrentMapped.isEmpty())
+    if (_currentMappedObjectsId.isEmpty())
     {
         return;
     }
     quint8 offset = 0;
 
-    for (quint8 i = 0; i < _objectCurrentMapped.size(); i++)
+    for (const NodeObjectId &mappedObjectId : _currentMappedObjectsId)
     {
-        QByteArray data = frame.payload().mid(offset, QMetaType::sizeOf(_objectCurrentMapped.at(i).dataType()));
-        QVariant vata = convertQByteArrayToQVariant(data, _objectCurrentMapped.at(i).dataType());
+        QByteArray data = frame.payload().mid(offset, QMetaType::sizeOf(mappedObjectId.dataType()));
+        QVariant vata = convertQByteArrayToQVariant(data, mappedObjectId.dataType());
 
-        _node->nodeOd()->updateObjectFromDevice(_objectCurrentMapped.at(i).index(),
-                                                _objectCurrentMapped.at(i).subIndex(),
+        _node->nodeOd()->updateObjectFromDevice(mappedObjectId.index(),
+                                                mappedObjectId.subIndex(),
                                                 vata,
                                                 NodeOd::FlagsRequest::Pdo,
                                                 QDateTime::fromMSecsSinceEpoch(frame.timeStamp().seconds() * 1000 + frame.timeStamp().microSeconds() / 1000));
-        offset += QMetaType::sizeOf(_objectCurrentMapped.at(i).dataType());
+        offset += QMetaType::sizeOf(mappedObjectId.dataType());
     }
 }
 
@@ -158,29 +158,39 @@ QVariant TPDO::convertQByteArrayToQVariant(QByteArray data, QMetaType::Type type
     switch (type)
     {
         case QMetaType::Int:
+        {
             int a;
             dataStream >> a;
             return QVariant(a);
+        }
 
         case QMetaType::UInt:
+        {
             unsigned int b;
             dataStream >> b;
             return QVariant(b);
+        }
 
         case QMetaType::LongLong:
+        {
             qint64 c;
             dataStream >> c;
             return QVariant(c);
+        }
 
         case QMetaType::ULongLong:
+        {
             quint64 d;
             dataStream >> d;
             return QVariant(d);
+        }
 
         case QMetaType::Double:
+        {
             double e;
             dataStream >> e;
             return QVariant(e);
+        }
 
         case QMetaType::Long:
         {
@@ -192,9 +202,11 @@ QVariant TPDO::convertQByteArrayToQVariant(QByteArray data, QMetaType::Type type
         }
 
         case QMetaType::Short:
+        {
             short g;
             dataStream >> g;
             return QVariant(g);
+        }
 
         case QMetaType::Char:
             return QVariant(data);
@@ -227,9 +239,11 @@ QVariant TPDO::convertQByteArrayToQVariant(QByteArray data, QMetaType::Type type
         }
 
         case QMetaType::Float:
+        {
             float l;
             dataStream >> l;
             return QVariant(l);
+        }
 
         case QMetaType::SChar:
         {

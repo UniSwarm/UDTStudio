@@ -24,9 +24,12 @@
 #include <QDebug>
 #include <QThread>
 
-#define ATTEMPT_ERROR_MAX    3
-#define TIME_BLOCK_DOWNALOAD 1
-#define TIMEOUT_SDO          1800
+enum
+{
+    ATTEMPT_ERROR_MAX = 3,
+    TIME_BLOCK_DOWNALOAD = 1,
+    TIMEOUT_SDO = 1800
+};
 
 SDO::SDO(Node *node)
     : Service(node)
@@ -731,12 +734,10 @@ bool SDO::sdoDownloadInitiate(const QCanBusFrame &frame)
             endRequest();
             return true;
         }
-        else
-        {
-            _requestCurrent->state = STATE_DOWNLOAD_SEGMENT;
-            sendSdoRequest(cmd, buffer);
-            _requestCurrent->stay -= SDO_SG_SIZE;
-        }
+
+        _requestCurrent->state = STATE_DOWNLOAD_SEGMENT;
+        sendSdoRequest(cmd, buffer);
+        _requestCurrent->stay -= SDO_SG_SIZE;
     }
     else if (_requestCurrent->state == STATE_DOWNLOAD)
     {
@@ -790,12 +791,10 @@ bool SDO::sdoDownloadSegment(const QCanBusFrame &frame)
         endRequest();
         return true;
     }
-    else
-    {
-        _requestCurrent->state = STATE_DOWNLOAD_SEGMENT;
-        sendSdoRequest(cmd, buffer);
-        _requestCurrent->stay -= SDO_SG_SIZE;
-    }
+
+    _requestCurrent->state = STATE_DOWNLOAD_SEGMENT;
+    sendSdoRequest(cmd, buffer);
+    _requestCurrent->stay -= SDO_SG_SIZE;
 
     return true;
 }

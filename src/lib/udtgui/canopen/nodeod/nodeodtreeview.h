@@ -34,7 +34,7 @@ class UDTGUI_EXPORT NodeOdTreeView : public QTreeView
     Q_OBJECT
 public:
     NodeOdTreeView(QWidget *parent = nullptr);
-    ~NodeOdTreeView();
+    ~NodeOdTreeView() override;
 
     Node *node() const;
     void setNode(Node *node);

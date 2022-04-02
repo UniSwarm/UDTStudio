@@ -39,7 +39,7 @@ class UDTGUI_EXPORT DataLoggerChartsWidget : public QtCharts::QChartView
     Q_OBJECT
 public:
     DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *parent = nullptr);
-    ~DataLoggerChartsWidget();
+    ~DataLoggerChartsWidget() override;
 
     DataLogger *dataLogger() const;
     void setDataLogger(DataLogger *dataLogger);

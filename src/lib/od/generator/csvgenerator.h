@@ -33,17 +33,17 @@ class OD_EXPORT CsvGenerator : public Generator
 
 public:
     CsvGenerator();
-    ~CsvGenerator();
+    ~CsvGenerator() override;
 
     // Generator interface
-    bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath);
-    bool generate(DeviceDescription *deviceDescription, const QString &filePath);
+    bool generate(DeviceConfiguration *deviceConfiguration, const QString &filePath) override;
+    bool generate(DeviceDescription *deviceDescription, const QString &filePath) override;
 
 private:
     static QString accessToString(int access);
     static QString pdoToString(uint8_t accessType);
 
-    void writeListIndex(QList<Index *> indexes, QTextStream *out);
+    void writeListIndex(const QList<Index *> &indexes, QTextStream *out);
     void writeIndex(Index *index, QTextStream *out);
     void writeRecord(Index *index, QTextStream *out);
     void writeArray(Index *index, QTextStream *out);

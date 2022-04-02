@@ -14,7 +14,7 @@ bool QCanBusFrame::isValid() const
     }
 
     // long id used, but extended flag not set
-    if (!_isExtendedFrame && ((_canId & 0x1FFFF800U) != 0u))
+    if (!_isExtendedFrame && ((_canId & 0x1FFFF800U) != 0U))
     {
         return false;
     }
@@ -129,7 +129,7 @@ void QCanBusFrame::setFrameId(quint32 newFrameId)
     {
         _isValidFrameId = true;
         _canId = newFrameId;
-        setExtendedFrameFormat(_isExtendedFrame || ((newFrameId & 0x1FFFF800U) != 0u));
+        setExtendedFrameFormat(_isExtendedFrame || ((newFrameId & 0x1FFFF800U) != 0U));
     }
     else
     {

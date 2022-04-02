@@ -27,8 +27,8 @@
  * @param file to parse
  */
 DeviceIniParser::DeviceIniParser(QSettings *file)
+    : _file(file)
 {
-    _file = file;
 }
 
 /**
@@ -50,7 +50,7 @@ void DeviceIniParser::readIndexes(DeviceModel *deviceModel) const
     QRegularExpression reIndex("^[0-9A-F]{1,4}$");
     for (const QString &group : _file->childGroups())
     {
-        bool ok;
+        bool ok = false;
         uint16_t numIndex = 0;
         QRegularExpressionMatch matchIndex = reIndex.match(group);
 
@@ -78,7 +78,7 @@ void DeviceIniParser::readSubIndexes(DeviceModel *deviceModel) const
     QRegularExpression reSub("^([0-9A-F]{4})sub([0-9A-F]+)");
     for (const QString &group : _file->childGroups())
     {
-        bool ok;
+        bool ok = false;
         uint8_t numSubIndex = 0;
         QRegularExpressionMatch matchSub = reSub.match(group);
 
@@ -110,13 +110,13 @@ void DeviceIniParser::readSubIndexes(DeviceModel *deviceModel) const
  */
 void DeviceIniParser::readIndex(Index *index) const
 {
-    uint8_t objectType;
-    uint8_t maxSubIndex;
+    uint8_t objectType = 0;
+    uint8_t maxSubIndex = 0;
     QString name;
 
     for (const QString &key : _file->allKeys())
     {
-        bool ok;
+        bool ok = false;
         QString value = _file->value(key).toString();
 
         uint8_t base = 10;
@@ -260,7 +260,7 @@ QVariant DeviceIniParser::readData(bool *nodeId, bool *isHexValue) const
 
     uint16_t dataType = readDataType();
 
-    int base;
+    int base = 0;
     if (stringValue.startsWith("0x"))
     {
         base = 16;
@@ -277,7 +277,7 @@ QVariant DeviceIniParser::readData(bool *nodeId, bool *isHexValue) const
         return QVariant();
     }
 
-    bool ok;
+    bool ok = false;
     switch (dataType)
     {
         case SubIndex::BOOLEAN:
@@ -426,7 +426,7 @@ uint16_t DeviceIniParser::readDataType() const
         base = 16;
     }
 
-    bool ok;
+    bool ok = false;
     return static_cast<uint16_t>(dataType.toInt(&ok, base));
 }
 
@@ -440,6 +440,6 @@ uint32_t DeviceIniParser::readObjFlags() const
         base = 16;
     }
 
-    bool ok;
+    bool ok = false;
     return static_cast<uint32_t>(objFlags.toInt(&ok, base));
 }

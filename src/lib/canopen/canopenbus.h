@@ -36,7 +36,7 @@ class CANOPEN_EXPORT CanOpenBus : public QObject
     Q_OBJECT
 public:
     CanOpenBus(CanBusDriver *canBusDriver = Q_NULLPTR);
-    ~CanOpenBus();
+    ~CanOpenBus() override;
 
     QString busName() const;
 

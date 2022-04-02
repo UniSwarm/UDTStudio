@@ -34,7 +34,7 @@ private:
     static void resizeArray(Index *index, int newSize);
     static QString renameItem(const QString &name, int value);
 
-    static QVariant readData(SubIndex::DataType dataType, QString stringValue);
+    static QVariant readData(SubIndex::DataType dataType, const QString &stringValue);
 };
 
 #endif  // CONFIGURATIONAPPLY_H
