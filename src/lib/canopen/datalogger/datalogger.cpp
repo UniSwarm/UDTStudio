@@ -50,7 +50,7 @@ void DataLogger::addData(const NodeObjectId &objId)
     if (objId.isAnIndex())
     {
         NodeIndex *nodeIndex = objId.nodeIndex();
-        if (!nodeIndex)
+        if (nodeIndex == nullptr)
         {
             return;
         }
@@ -88,7 +88,7 @@ void DataLogger::addData(const QList<NodeObjectId> &objIds)
 void DataLogger::removeData(const NodeObjectId &objId)
 {
     DLData *dlData = data(objId);
-    if (!dlData)
+    if (dlData == nullptr)
     {
         return;
     }
@@ -218,7 +218,7 @@ void DataLogger::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
     }
 
     DLData *dlData = data(objId);
-    if (!dlData || !dlData->isActive() || flags == NodeOd::Error)
+    if ((dlData == nullptr) || !dlData->isActive() || flags == NodeOd::Error)
     {
         return;
     }
@@ -255,7 +255,7 @@ void DataLogger::readData()
 {
     for (DLData *dlData : qAsConst(_dataList))
     {
-        if (dlData->node() && dlData->isActive())
+        if ((dlData->node() != nullptr) && dlData->isActive())
         {
             dlData->node()->readObject(dlData->objectId());
         }

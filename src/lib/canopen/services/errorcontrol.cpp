@@ -129,7 +129,7 @@ void ErrorControl::manageErrorControl(const QCanBusFrame &frame)
 {
     if (frame.payload().size() == 1)
     {
-        bool actualToggleBit = (frame.payload().at(0) >> 7);
+        bool actualToggleBit = (frame.payload().at(0) >> 7) != 0;
         if (_oldToggleBit == actualToggleBit)
         {
             // ERROR TogleBit -> connection lost

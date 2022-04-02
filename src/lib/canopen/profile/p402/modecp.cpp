@@ -55,7 +55,7 @@ void ModeCp::setAbsRel(bool ok)
 
 bool ModeCp::isAbsRel() const
 {
-    return (_cmdControlWordFlag & CW_PP_AbsRel) >> 6;
+    return ((_cmdControlWordFlag & CW_PP_AbsRel) >> 6) != 0;
 }
 
 const NodeObjectId &ModeCp::targetObjectId() const

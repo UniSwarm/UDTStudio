@@ -212,7 +212,7 @@ FastDataLogger::SourceDataType FastDataLogger::typeFromObjId(const NodeObjectId 
 {
     NodeSubIndex *subIndex = nodeInterrest()->nodeOd()->subIndex(data_objId);
 
-    if (!subIndex)
+    if (subIndex == nullptr)
     {
         return SourceDataInvalid;
     }
@@ -256,7 +256,7 @@ void FastDataLogger::setStatus(Status status)
 
 void FastDataLogger::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & NodeOd::Error)
+    if ((flags & NodeOd::Error) != 0)
     {
         // TODO manage errors
         return;

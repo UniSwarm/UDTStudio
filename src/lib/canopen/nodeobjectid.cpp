@@ -76,56 +76,32 @@ quint64 NodeObjectId::key() const
 
 bool NodeObjectId::isValid() const
 {
-    if (_busId != 0xFF && _nodeId != 0xFF && _index != 0xFFFF && _subIndex != 0xFF)
-    {
-        return true;
-    }
-    return false;
+    return (_busId != 0xFF) && (_nodeId != 0xFF) && (_index != 0xFFFF) && (_subIndex != 0xFF);
 }
 
 bool NodeObjectId::isNodeIndependant() const
 {
-    if (_busId == 0xFF && _nodeId == 0xFF)
-    {
-        return true;
-    }
-    return false;
+    return (_busId == 0xFF) && (_nodeId == 0xFF);
 }
 
 bool NodeObjectId::isABus() const
 {
-    if (_busId != 0xFF && _nodeId == 0xFF && _index == 0xFFFF && _subIndex == 0xFF)
-    {
-        return true;
-    }
-    return false;
+    return (_busId != 0xFF) && (_nodeId == 0xFF) && (_index == 0xFFFF) && (_subIndex == 0xFF);
 }
 
 bool NodeObjectId::isANode() const
 {
-    if (_busId != 0xFF && _nodeId != 0xFF && _index == 0xFFFF && _subIndex == 0xFF)
-    {
-        return true;
-    }
-    return false;
+    return (_busId != 0xFF) && (_nodeId != 0xFF) && (_index == 0xFFFF) && (_subIndex == 0xFF);
 }
 
 bool NodeObjectId::isAnIndex() const
 {
-    if (_index != 0xFFFF && _subIndex == 0xFF)
-    {
-        return true;
-    }
-    return false;
+    return (_index != 0xFFFF) && (_subIndex == 0xFF);
 }
 
 bool NodeObjectId::isASubIndex() const
 {
-    if (_index != 0xFFFF && _subIndex != 0xFF)
-    {
-        return true;
-    }
-    return false;
+    return (_index != 0xFFFF) && (_subIndex != 0xFF);
 }
 
 CanOpenBus *NodeObjectId::bus() const
@@ -144,7 +120,7 @@ Node *NodeObjectId::node() const
         return nullptr;
     }
     CanOpenBus *bus = CanOpen::bus(_busId);
-    if (!bus)
+    if (bus == nullptr)
     {
         return nullptr;
     }
@@ -158,12 +134,12 @@ NodeIndex *NodeObjectId::nodeIndex() const
         return nullptr;
     }
     CanOpenBus *bus = CanOpen::bus(_busId);
-    if (!bus)
+    if (bus == nullptr)
     {
         return nullptr;
     }
     Node *node = bus->node(_nodeId);
-    if (!node)
+    if (node == nullptr)
     {
         return nullptr;
     }
@@ -177,12 +153,12 @@ NodeSubIndex *NodeObjectId::nodeSubIndex() const
         return nullptr;
     }
     CanOpenBus *bus = CanOpen::bus(_busId);
-    if (!bus)
+    if (bus == nullptr)
     {
         return nullptr;
     }
     Node *node = bus->node(_nodeId);
-    if (!node)
+    if (node == nullptr)
     {
         return nullptr;
     }

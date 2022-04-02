@@ -50,7 +50,7 @@ NodeIndex::~NodeIndex()
 
 quint8 NodeIndex::busId() const
 {
-    if (_nodeOd)
+    if (_nodeOd != nullptr)
     {
         return _nodeOd->node()->busId();
     }
@@ -59,7 +59,7 @@ quint8 NodeIndex::busId() const
 
 quint8 NodeIndex::nodeId() const
 {
-    if (_nodeOd)
+    if (_nodeOd != nullptr)
     {
         return _nodeOd->node()->nodeId();
     }
@@ -68,7 +68,7 @@ quint8 NodeIndex::nodeId() const
 
 Node *NodeIndex::node() const
 {
-    if (_nodeOd)
+    if (_nodeOd != nullptr)
     {
         return _nodeOd->node();
     }

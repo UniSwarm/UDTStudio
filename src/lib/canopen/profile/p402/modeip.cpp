@@ -67,7 +67,7 @@ void ModeIp::setEnableRamp(bool ok)
 
 bool ModeIp::isEnableRamp() const
 {
-    return (_cmdControlWordFlag & CW_IP_EnableRamp) >> 4;
+    return ((_cmdControlWordFlag & CW_IP_EnableRamp) >> 4) != 0;
 }
 
 void ModeIp::bufferClear()
@@ -118,7 +118,7 @@ void ModeIp::reset()
 
 void ModeIp::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & NodeOd::FlagsRequest::Error)
+    if ((flags & NodeOd::FlagsRequest::Error) != 0)
     {
         return;
     }
@@ -128,6 +128,6 @@ void ModeIp::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
         quint16 controlWord = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
         _cmdControlWordFlag = controlWord & CW_IP_EnableRamp;
 
-        emit enableRampEvent(_cmdControlWordFlag >> 4);
+        emit enableRampEvent((_cmdControlWordFlag >> 4) != 0);
     }
 }

@@ -29,7 +29,7 @@ class CANOPEN_EXPORT NMT : public Service
 public:
     NMT(Node *node);
 
-    uint32_t cobId();
+    uint32_t cobId() const;
 
     void sendPreop();
     void sendStart();

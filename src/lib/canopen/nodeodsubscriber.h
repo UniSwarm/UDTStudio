@@ -25,8 +25,8 @@
 #include <QVariant>
 
 #include "nodeobjectid.h"
-#include "services/sdo.h"
 #include "nodeod.h"
+#include "services/sdo.h"
 
 class Node;
 

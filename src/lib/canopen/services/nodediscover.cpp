@@ -30,7 +30,7 @@ NodeDiscover::NodeDiscover(CanOpenBus *bus)
 {
     for (quint8 nodeId = 1; nodeId <= 127; nodeId++)
     {
-        _cobIds.append(0x700u + nodeId);
+        _cobIds.append(0x700U + nodeId);
     }
 
     _exploreBusNodeId = 0;
@@ -55,7 +55,7 @@ void NodeDiscover::parseFrame(const QCanBusFrame &frame)
     if ((frame.frameId() >= 0x701) && (frame.frameId() <= 0x7FF) && frame.frameType() == QCanBusFrame::DataFrame)
     {
         uint8_t nodeId = frame.frameId() & 0x7F;
-        if (bus()->existNode(nodeId) == false)
+        if (!bus()->existNode(nodeId))
         {
             Node *node = new Node(nodeId);
 

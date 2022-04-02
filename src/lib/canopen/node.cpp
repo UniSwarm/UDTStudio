@@ -110,7 +110,7 @@ CanOpenBus *Node::bus() const
 
 quint8 Node::busId() const
 {
-    if (_bus)
+    if (_bus != nullptr)
     {
         return _bus->busId();
     }
@@ -212,7 +212,7 @@ void Node::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
     }
 
     TPDO *tpdoMapped = isMappedObjectInTpdo(NodeObjectId(index, subindex, dataType));
-    if (tpdoMapped)
+    if (tpdoMapped != nullptr)
     {
         if (tpdoMapped->isEnabled() && _status == STARTED && _bus->sync()->status() == Sync::STARTED)
         {
@@ -251,7 +251,7 @@ void Node::writeObject(quint16 index, quint8 subindex, const QVariant &data)
     }
 
     NodeObjectId object(busId(), nodeId(), index, subindex);
-    if (isMappedObjectInRpdo(NodeObjectId(index, subindex)) && _status == STARTED && _bus->sync()->status() == Sync::STARTED)
+    if ((isMappedObjectInRpdo(NodeObjectId(index, subindex)) != nullptr) && _status == STARTED && _bus->sync()->status() == Sync::STARTED)
     {
         bool writtenInRpdo = false;
         for (RPDO *rpdo : qAsConst(_rpdos))

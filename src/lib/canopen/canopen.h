@@ -40,7 +40,7 @@ public:
 
     static inline CanOpen *instance()
     {
-        if (!CanOpen::_instance)
+        if (CanOpen::_instance == nullptr)
         {
             CanOpen::_instance = new CanOpen();
         }

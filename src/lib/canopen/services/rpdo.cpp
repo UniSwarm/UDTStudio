@@ -60,7 +60,7 @@ void RPDO::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 
     if (_statusPdo == STATE_NONE && objId.index() == _objectMappingId)
     {
-        if (_objectCommList.size() != 0)
+        if (!_objectCommList.empty())
         {
             createListObjectMapped();
         }
@@ -97,11 +97,9 @@ bool RPDO::setTransmissionType(quint8 type)
         _node->writeObject(_objectCommList[1].index(), PDO_COMM_TRANSMISSION_TYPE, _waitingConf.transType);
         return true;
     }
-    else
-    {
-        setError(ERROR_PARAM_IMCOMPATIBILITY);
-        return false;
-    }
+
+    setError(ERROR_PARAM_IMCOMPATIBILITY);
+    return false;
 }
 
 /**

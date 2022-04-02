@@ -55,7 +55,7 @@ CanOpenBus::~CanOpenBus()
     delete _serviceDispatcher;
     qDeleteAll(_nodes);
 
-    if (_canBusDriver)
+    if (_canBusDriver != nullptr)
     {
         _canBusDriver->deleteLater();
     }
@@ -167,13 +167,13 @@ CanBusDriver *CanOpenBus::canBusDriver() const
 
 void CanOpenBus::setCanBusDriver(CanBusDriver *canBusDriver)
 {
-    if (_canBusDriver)
+    if (_canBusDriver != nullptr)
     {
         _canBusDriver->deleteLater();
     }
 
     _canBusDriver = canBusDriver;
-    if (_canBusDriver)
+    if (_canBusDriver != nullptr)
     {
         if (_canBusDriver->state() == CanBusDriver::DISCONNECTED)
         {
@@ -186,7 +186,7 @@ void CanOpenBus::setCanBusDriver(CanBusDriver *canBusDriver)
 
 bool CanOpenBus::isConnected() const
 {
-    if (!_canBusDriver)
+    if (_canBusDriver == nullptr)
     {
         return false;
     }
@@ -195,11 +195,7 @@ bool CanOpenBus::isConnected() const
 
 bool CanOpenBus::canWrite() const
 {
-    if (!_canBusDriver || _spyMode)
-    {
-        return false;
-    }
-    return true;
+    return !(!_canBusDriver || _spyMode);
 }
 
 bool CanOpenBus::writeFrame(const QCanBusFrame &frame)
@@ -228,7 +224,7 @@ Sync *CanOpenBus::sync() const
 
 void CanOpenBus::canFrameRec()
 {
-    if (!_canBusDriver)
+    if (_canBusDriver == nullptr)
     {
         return;
     }

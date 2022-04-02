@@ -45,7 +45,7 @@ void UfwUpdate::setUfw(UfwModel *ufwModel)
 
 void UfwUpdate::update()
 {
-    if (!_ufwModel)
+    if (_ufwModel == nullptr)
     {
         emit finished(false);
         return;
@@ -151,7 +151,7 @@ void UfwUpdate::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
         }
         else if (flags == NodeOd::FlagsRequest::Write)
         {
-            if (!_indexList)
+            if (_indexList == 0)
             {
                 _indexList = 0;
                 _byteArrayList.clear();

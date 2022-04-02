@@ -152,11 +152,10 @@ bool Bootloader::openUfw(const QString &fileName)
         return false;
     }
 
-    UfwParser ufwParser;
-    _ufwModel = ufwParser.parse(fileName);
+    _ufwModel = UfwParser::parse(fileName);
     file.close();
 
-    if (!_ufwModel)
+    if (_ufwModel == nullptr)
     {
         setStatus(STATUS_ERROR_ERROR_PARSER);
         return false;
@@ -206,7 +205,7 @@ void Bootloader::startOtpUpload()
 
 void Bootloader::startUpdate()
 {
-    if (!_ufwModel)
+    if (_ufwModel == nullptr)
     {
         setStatus(STATUS_ERROR_NO_FILE);
         return;
@@ -227,7 +226,7 @@ void Bootloader::startUpdate()
 
 uint32_t Bootloader::deviceType()
 {
-    if (!_ufwModel)
+    if (_ufwModel == nullptr)
     {
         return 0;
     }
@@ -236,7 +235,7 @@ uint32_t Bootloader::deviceType()
 
 QString Bootloader::versionSoftware()
 {
-    if (!_ufwModel)
+    if (_ufwModel == nullptr)
     {
         return QString();
     }
@@ -245,7 +244,7 @@ QString Bootloader::versionSoftware()
 
 QString Bootloader::buildDate()
 {
-    if (!_ufwModel)
+    if (_ufwModel == nullptr)
     {
         return QString();
     }
@@ -305,7 +304,7 @@ void Bootloader::updateFinishedProgram()
 
 void Bootloader::sendKey()
 {
-    if (_ufwModel)
+    if (_ufwModel != nullptr)
     {
         _node->writeObject(_bootloaderKeyObjectId, _ufwModel->deviceType());
     }

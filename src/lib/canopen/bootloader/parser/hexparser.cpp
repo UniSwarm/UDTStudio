@@ -31,7 +31,10 @@ bool HexParser::read()
 {
     int lineCount = 1;
     int offsetAddr = 0;
-    int dataCount, addr, type, checkSum;
+    int dataCount;
+    int addr;
+    int type;
+    int checkSum;
     bool ok;
 
     if (_fileName.isEmpty())

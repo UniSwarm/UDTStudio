@@ -76,7 +76,7 @@ protected:
     QTimer _timer;
 
     QColor findFreeColor() const;
-    bool isColorFree(const QColor color) const;
+    bool isColorFree(const QColor &color) const;
 
     // NodeOdSubscriber interface
 protected:

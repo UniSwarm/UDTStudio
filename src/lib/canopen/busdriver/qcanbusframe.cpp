@@ -14,7 +14,7 @@ bool QCanBusFrame::isValid() const
     }
 
     // long id used, but extended flag not set
-    if (!_isExtendedFrame && (_canId & 0x1FFFF800U))
+    if (!_isExtendedFrame && ((_canId & 0x1FFFF800U) != 0u))
     {
         return false;
     }
@@ -81,12 +81,12 @@ void QCanBusFrame::setFrameType(FrameType newFormat)
 
 bool QCanBusFrame::hasExtendedFrameFormat() const
 {
-    return (_isExtendedFrame & 0x1);
+    return (_isExtendedFrame & 0x1) != 0;
 }
 
 void QCanBusFrame::setExtendedFrameFormat(bool isExtended)
 {
-    _isExtendedFrame = (isExtended & 0x1);
+    _isExtendedFrame = (static_cast<int>(isExtended) & 0x1);
 }
 
 quint32 QCanBusFrame::frameId() const
@@ -129,7 +129,7 @@ void QCanBusFrame::setFrameId(quint32 newFrameId)
     {
         _isValidFrameId = true;
         _canId = newFrameId;
-        setExtendedFrameFormat(_isExtendedFrame || (newFrameId & 0x1FFFF800U));
+        setExtendedFrameFormat(_isExtendedFrame || ((newFrameId & 0x1FFFF800U) != 0u));
     }
     else
     {
@@ -219,17 +219,17 @@ QString QCanBusFrame::toString() const
 
 void QCanBusFrame::setLocalEcho(bool localEcho)
 {
-    _isLocalEcho = (localEcho & 0x1);
+    _isLocalEcho = (static_cast<int>(localEcho) & 0x1);
 }
 
 bool QCanBusFrame::hasLocalEcho() const
 {
-    return (_isLocalEcho & 0x1);
+    return (_isLocalEcho & 0x1) != 0;
 }
 
 void QCanBusFrame::setErrorStateIndicator(bool errorStateIndicator)
 {
-    _isErrorStateIndicator = (errorStateIndicator & 0x1);
+    _isErrorStateIndicator = (static_cast<int>(errorStateIndicator) & 0x1);
     if (errorStateIndicator)
     {
         _isFlexibleDataRate = 0x1;
@@ -238,24 +238,26 @@ void QCanBusFrame::setErrorStateIndicator(bool errorStateIndicator)
 
 bool QCanBusFrame::hasErrorStateIndicator() const
 {
-    return (_isErrorStateIndicator & 0x1);
+    return (_isErrorStateIndicator & 0x1) != 0;
 }
 
 void QCanBusFrame::setBitrateSwitch(bool bitrateSwitch)
 {
-    _isBitrateSwitch = (bitrateSwitch & 0x1);
+    _isBitrateSwitch = (static_cast<int>(bitrateSwitch) & 0x1);
     if (bitrateSwitch)
+    {
         _isFlexibleDataRate = 0x1;
+    }
 }
 
 bool QCanBusFrame::hasBitrateSwitch() const
 {
-    return (_isBitrateSwitch & 0x1);
+    return (_isBitrateSwitch & 0x1) != 0;
 }
 
 void QCanBusFrame::setFlexibleDataRateFormat(bool isFlexibleData)
 {
-    _isFlexibleDataRate = (isFlexibleData & 0x1);
+    _isFlexibleDataRate = (static_cast<int>(isFlexibleData) & 0x1);
     if (!isFlexibleData)
     {
         _isBitrateSwitch = 0x0;
@@ -265,5 +267,5 @@ void QCanBusFrame::setFlexibleDataRateFormat(bool isFlexibleData)
 
 bool QCanBusFrame::hasFlexibleDataRateFormat() const
 {
-    return (_isFlexibleDataRate & 0x1);
+    return (_isFlexibleDataRate & 0x1) != 0;
 }

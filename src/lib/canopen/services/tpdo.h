@@ -33,13 +33,13 @@ public:
 
     enum TransmissionType
     {
-        TPDO_ACYCLIC = 0x00u,     // synchronou,s (acyclic)
-        TPDO_CYCLIC_MIN = 0x01u,  // synchronou,s (cyclic every sync)
-        TPDO_CYCLIC_MAX = 0xF0u,  // synchronou,s (cyclic every 240 th SYNC)
-        TPDO_RTR_SYNC = 0xFCu,    // RTR-only (synchronou,s)
-        TPDO_RTR_EVENT = 0xFDu,   // RTR-only (event-driven)
-        TPDO_EVENT_MS = 0xFEu,    // event-driven (manufacturer-specific)
-        TPDO_EVENT_DP = 0xFFu     // event-driven (device profile and application profile specific)
+        TPDO_ACYCLIC = 0x00U,     // synchronou,s (acyclic)
+        TPDO_CYCLIC_MIN = 0x01U,  // synchronou,s (cyclic every sync)
+        TPDO_CYCLIC_MAX = 0xF0U,  // synchronou,s (cyclic every 240 th SYNC)
+        TPDO_RTR_SYNC = 0xFCU,    // RTR-only (synchronou,s)
+        TPDO_RTR_EVENT = 0xFDU,   // RTR-only (event-driven)
+        TPDO_EVENT_MS = 0xFEU,    // event-driven (manufacturer-specific)
+        TPDO_EVENT_DP = 0xFFU     // event-driven (device profile and application profile specific)
     };
     bool setTransmissionType(quint8 type);
     quint8 transmissionType();

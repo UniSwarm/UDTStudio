@@ -46,7 +46,7 @@ Node *NodeOdSubscriber::nodeInterrest() const
 void NodeOdSubscriber::setNodeInterrest(Node *nodeInterrest)
 {
     // unregister old _nodeInterrest
-    if (_nodeInterrest)
+    if (_nodeInterrest != nullptr)
     {
         _nodeInterrest->nodeOd()->unsubscribe(this);
         for (NodeObjectId &objId : _objIdList)
@@ -61,7 +61,7 @@ void NodeOdSubscriber::setNodeInterrest(Node *nodeInterrest)
     _nodeInterrest = nodeInterrest;
 
     // register new nodeInterrest
-    if (_nodeInterrest)
+    if (_nodeInterrest != nullptr)
     {
         for (const NodeObjectId &objId : qAsConst(_objIdList))
         {
@@ -77,7 +77,7 @@ void NodeOdSubscriber::setNodeInterrest(Node *nodeInterrest)
 
 void NodeOdSubscriber::readObject(const NodeObjectId &id)
 {
-    if (_nodeInterrest)
+    if (_nodeInterrest != nullptr)
     {
         _nodeInterrest->readObject(id);
     }
@@ -85,7 +85,7 @@ void NodeOdSubscriber::readObject(const NodeObjectId &id)
 
 void NodeOdSubscriber::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
 {
-    if (_nodeInterrest)
+    if (_nodeInterrest != nullptr)
     {
         _nodeInterrest->readObject(index, subindex, dataType);
     }
@@ -93,7 +93,7 @@ void NodeOdSubscriber::readObject(quint16 index, quint8 subindex, QMetaType::Typ
 
 void NodeOdSubscriber::writeObject(const NodeObjectId &id, const QVariant &data)
 {
-    if (_nodeInterrest)
+    if (_nodeInterrest != nullptr)
     {
         _nodeInterrest->writeObject(id, data);
     }
@@ -101,7 +101,7 @@ void NodeOdSubscriber::writeObject(const NodeObjectId &id, const QVariant &data)
 
 void NodeOdSubscriber::writeObject(quint16 index, quint8 subindex, const QVariant &data)
 {
-    if (_nodeInterrest)
+    if (_nodeInterrest != nullptr)
     {
         _nodeInterrest->writeObject(index, subindex, data);
     }
@@ -119,12 +119,12 @@ void NodeOdSubscriber::registerSubIndex(quint16 index, quint8 subindex)
 
 void NodeOdSubscriber::registerIndex(quint16 index)
 {
-    registerKey(NodeObjectId(index, 0xFFu));
+    registerKey(NodeObjectId(index, 0xFFU));
 }
 
 void NodeOdSubscriber::registerFullOd()
 {
-    registerKey(NodeObjectId(0xFFFFu, 0xFFu));
+    registerKey(NodeObjectId(0xFFFFU, 0xFFU));
 }
 
 void NodeOdSubscriber::unRegisterObjId(const NodeObjectId &objId)
@@ -139,14 +139,14 @@ void NodeOdSubscriber::unRegisterSubIndex(quint16 index, quint8 subindex)
 
 void NodeOdSubscriber::unRegisterIndex(quint16 index)
 {
-    unRegisterKey(NodeObjectId(index, 0xFFu));
+    unRegisterKey(NodeObjectId(index, 0xFFU));
 }
 
 void NodeOdSubscriber::unRegisterFullOd()
 {
     _indexSubIndexList.clear();
     _objIdList.clear();
-    if (_nodeInterrest)
+    if (_nodeInterrest != nullptr)
     {
         _nodeInterrest->nodeOd()->unsubscribe(this);
     }
@@ -170,7 +170,7 @@ void NodeOdSubscriber::registerKey(const NodeObjectId &objId)
     // register on nodeOd
     if (objId.isNodeIndependant())
     {
-        if (_nodeInterrest)
+        if (_nodeInterrest != nullptr)
         {
             _nodeInterrest->nodeOd()->subscribe(this, objId.index(), objId.subIndex());
         }
@@ -178,7 +178,7 @@ void NodeOdSubscriber::registerKey(const NodeObjectId &objId)
     else
     {
         Node *node = objId.node();
-        if (node)
+        if (node != nullptr)
         {
             NodeOd *nodeOd = node->nodeOd();
             nodeOd->subscribe(this, objId.index(), objId.subIndex());
@@ -199,7 +199,7 @@ void NodeOdSubscriber::unRegisterKey(const NodeObjectId &objId)
     // unregister on nodeOd
     if (objId.isNodeIndependant())
     {
-        if (_nodeInterrest)
+        if (_nodeInterrest != nullptr)
         {
             _nodeInterrest->nodeOd()->unsubscribe(this, objId.index(), objId.subIndex());
         }
@@ -207,7 +207,7 @@ void NodeOdSubscriber::unRegisterKey(const NodeObjectId &objId)
     else
     {
         Node *node = objId.node();
-        if (node)
+        if (node != nullptr)
         {
             NodeOd *nodeOd = node->nodeOd();
             nodeOd->unsubscribe(this, objId.index(), objId.subIndex());

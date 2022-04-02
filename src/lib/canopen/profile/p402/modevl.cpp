@@ -93,7 +93,7 @@ void ModeVl::setEnableRamp(bool ok)
 
 bool ModeVl::isEnableRamp() const
 {
-    return (_cmdControlWordFlag & CW_VL_EnableRamp) >> 4;
+    return ((_cmdControlWordFlag & CW_VL_EnableRamp) >> 4) != 0;
 }
 
 void ModeVl::setUnlockRamp(bool ok)
@@ -113,7 +113,7 @@ void ModeVl::setUnlockRamp(bool ok)
 
 bool ModeVl::isUnlockRamp() const
 {
-    return (_cmdControlWordFlag & CW_VL_UnlockRamp) >> 5;
+    return ((_cmdControlWordFlag & CW_VL_UnlockRamp) >> 5) != 0;
 }
 
 void ModeVl::setReferenceRamp(bool ok)
@@ -133,7 +133,7 @@ void ModeVl::setReferenceRamp(bool ok)
 
 bool ModeVl::isReferenceRamp() const
 {
-    return (_cmdControlWordFlag & CW_VL_ReferenceRamp) >> 6;
+    return ((_cmdControlWordFlag & CW_VL_ReferenceRamp) >> 6) != 0;
 }
 
 const NodeObjectId &ModeVl::targetObjectId() const
@@ -257,7 +257,7 @@ void ModeVl::reset()
 
 void ModeVl::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & NodeOd::FlagsRequest::Error)
+    if ((flags & NodeOd::FlagsRequest::Error) != 0)
     {
         return;
     }
@@ -267,8 +267,8 @@ void ModeVl::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
         quint16 controlWord = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
         _cmdControlWordFlag = controlWord & CW_Mask;
 
-        emit enableRampEvent((_cmdControlWordFlag & CW_VL_EnableRamp) >> 4);
-        emit referenceRampEvent((_cmdControlWordFlag & CW_VL_ReferenceRamp) >> 6);
-        emit unlockRampEvent((_cmdControlWordFlag & CW_VL_UnlockRamp) >> 5);
+        emit enableRampEvent(((_cmdControlWordFlag & CW_VL_EnableRamp) >> 4) != 0);
+        emit referenceRampEvent(((_cmdControlWordFlag & CW_VL_ReferenceRamp) >> 6) != 0);
+        emit unlockRampEvent(((_cmdControlWordFlag & CW_VL_UnlockRamp) >> 5) != 0);
     }
 }

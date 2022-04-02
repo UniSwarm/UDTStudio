@@ -40,7 +40,7 @@ QString NMT::type() const
     return QLatin1String("NMT");
 }
 
-uint32_t NMT::cobId()
+uint32_t NMT::cobId() const
 {
     return _cobId;
 }

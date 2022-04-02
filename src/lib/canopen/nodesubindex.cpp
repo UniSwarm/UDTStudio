@@ -64,7 +64,7 @@ NodeSubIndex::~NodeSubIndex()
 
 quint8 NodeSubIndex::busId() const
 {
-    if (_nodeIndex)
+    if (_nodeIndex != nullptr)
     {
         return _nodeIndex->busId();
     }
@@ -73,7 +73,7 @@ quint8 NodeSubIndex::busId() const
 
 quint8 NodeSubIndex::nodeId() const
 {
-    if (_nodeIndex)
+    if (_nodeIndex != nullptr)
     {
         return _nodeIndex->nodeId();
     }
@@ -82,7 +82,7 @@ quint8 NodeSubIndex::nodeId() const
 
 Node *NodeSubIndex::node() const
 {
-    if (_nodeIndex)
+    if (_nodeIndex != nullptr)
     {
         return _nodeIndex->node();
     }
@@ -91,7 +91,7 @@ Node *NodeSubIndex::node() const
 
 NodeOd *NodeSubIndex::nodeOd() const
 {
-    if (_nodeIndex)
+    if (_nodeIndex != nullptr)
     {
         return _nodeIndex->nodeOd();
     }
@@ -100,7 +100,7 @@ NodeOd *NodeSubIndex::nodeOd() const
 
 quint16 NodeSubIndex::index() const
 {
-    if (_nodeIndex)
+    if (_nodeIndex != nullptr)
     {
         return _nodeIndex->index();
     }
@@ -177,7 +177,7 @@ void NodeSubIndex::setAccessType(AccessType accessType)
  */
 bool NodeSubIndex::isReadable() const
 {
-    return (_accessType & READ);
+    return (_accessType & READ) != 0;
 }
 
 /**
@@ -186,7 +186,7 @@ bool NodeSubIndex::isReadable() const
  */
 bool NodeSubIndex::isWritable() const
 {
-    return (_accessType & WRITE);
+    return (_accessType & WRITE) != 0;
 }
 
 /**
@@ -195,7 +195,7 @@ bool NodeSubIndex::isWritable() const
  */
 bool NodeSubIndex::hasTPDOAccess() const
 {
-    return (_accessType & TPDO);
+    return (_accessType & TPDO) != 0;
 }
 
 /**
@@ -204,26 +204,26 @@ bool NodeSubIndex::hasTPDOAccess() const
  */
 bool NodeSubIndex::hasRPDOAccess() const
 {
-    return (_accessType & RPDO);
+    return (_accessType & RPDO) != 0;
 }
 
 QString NodeSubIndex::accessString() const
 {
     QString acces;
 
-    if (_accessType & READ)
+    if ((_accessType & READ) != 0)
     {
         acces += "R";
     }
-    if (_accessType & WRITE)
+    if ((_accessType & WRITE) != 0)
     {
         acces += "W";
     }
-    if (_accessType & TPDO)
+    if ((_accessType & TPDO) != 0)
     {
         acces += " TPDO";
     }
-    if (_accessType & RPDO)
+    if ((_accessType & RPDO) != 0)
     {
         acces += " RPDO";
     }

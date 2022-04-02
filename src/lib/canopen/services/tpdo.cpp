@@ -64,7 +64,8 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
 
         _node->nodeOd()->updateObjectFromDevice(_objectCurrentMapped.at(i).index(),
                                                 _objectCurrentMapped.at(i).subIndex(),
-                                                vata, NodeOd::FlagsRequest::Pdo,
+                                                vata,
+                                                NodeOd::FlagsRequest::Pdo,
                                                 QDateTime::fromMSecsSinceEpoch(frame.timeStamp().seconds() * 1000 + frame.timeStamp().microSeconds() / 1000));
         offset += QMetaType::sizeOf(_objectCurrentMapped.at(i).dataType());
     }
@@ -79,7 +80,7 @@ void TPDO::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 
     if (_statusPdo == STATE_NONE && objId.index() == _objectMappingId)
     {
-        if (_objectCommList.size() != 0)
+        if (!_objectCommList.empty())
         {
             createListObjectMapped();
         }
@@ -121,11 +122,9 @@ bool TPDO::setTransmissionType(quint8 type)
         _node->writeObject(_objectCommList[1].index(), PDO_COMM_TRANSMISSION_TYPE, _waitingConf.transType);
         return true;
     }
-    else
-    {
-        setError(ERROR_PARAM_IMCOMPATIBILITY);
-        return false;
-    }
+
+    setError(ERROR_PARAM_IMCOMPATIBILITY);
+    return false;
 }
 
 quint8 TPDO::transmissionType()

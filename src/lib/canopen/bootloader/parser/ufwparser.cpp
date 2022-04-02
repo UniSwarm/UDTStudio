@@ -18,9 +18,9 @@
 
 #include "ufwparser.h"
 
+#include <QByteArray>
 #include <QFile>
 #include <QtEndian>
-#include <QByteArray>
 
 #include "bootloader/model/ufwmodel.h"
 

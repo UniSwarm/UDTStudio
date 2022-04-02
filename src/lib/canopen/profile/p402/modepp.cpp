@@ -63,7 +63,7 @@ void ModePp::newSetPoint(bool ok)
 
 bool ModePp::isNewSetPoint() const
 {
-    return (_cmdControlWordFlag & CW_PP_NewSetPoint) >> 4;
+    return ((_cmdControlWordFlag & CW_PP_NewSetPoint) >> 4) != 0;
 }
 
 void ModePp::setChangeSetImmediately(bool ok)
@@ -83,12 +83,12 @@ void ModePp::setChangeSetImmediately(bool ok)
 
 bool ModePp::isChangeSetImmediately() const
 {
-    return (_cmdControlWordFlag & CW_PP_ChangeSetImmediately) >> 5;
+    return ((_cmdControlWordFlag & CW_PP_ChangeSetImmediately) >> 5) != 0;
 }
 
 bool ModePp::isAbsRel() const
 {
-    return (_cmdControlWordFlag & CW_PP_AbsRel) >> 6;
+    return ((_cmdControlWordFlag & CW_PP_AbsRel) >> 6) != 0;
 }
 
 void ModePp::setChangeOnSetPoint(bool ok)
@@ -108,7 +108,7 @@ void ModePp::setChangeOnSetPoint(bool ok)
 
 bool ModePp::isChangeOnSetPoint() const
 {
-    return (_cmdControlWordFlag & CW_PP_ChangeOnSetPoint) >> 9;
+    return ((_cmdControlWordFlag & CW_PP_ChangeOnSetPoint) >> 9) != 0;
 }
 
 const NodeObjectId &ModePp::targetObjectId() const
@@ -154,7 +154,7 @@ void ModePp::readAllObjects()
 
 void ModePp::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if (flags & NodeOd::FlagsRequest::Error)
+    if ((flags & NodeOd::FlagsRequest::Error) != 0)
     {
         return;
     }
@@ -164,9 +164,9 @@ void ModePp::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
         quint16 controlWord = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
         _cmdControlWordFlag = controlWord & CW_Mask;
 
-        emit changeNewSetPoint((_cmdControlWordFlag & CW_PP_NewSetPoint) >> 4);
-        emit changeSetImmediatelyEvent((_cmdControlWordFlag & CW_PP_ChangeSetImmediately) >> 5);
-        emit absRelEvent((_cmdControlWordFlag & CW_PP_AbsRel) >> 6);
-        emit changeOnSetPointEvent((_cmdControlWordFlag & CW_PP_ChangeOnSetPoint) >> 9);
+        emit changeNewSetPoint(((_cmdControlWordFlag & CW_PP_NewSetPoint) >> 4) != 0);
+        emit changeSetImmediatelyEvent(((_cmdControlWordFlag & CW_PP_ChangeSetImmediately) >> 5) != 0);
+        emit absRelEvent(((_cmdControlWordFlag & CW_PP_AbsRel) >> 6) != 0);
+        emit changeOnSetPointEvent(((_cmdControlWordFlag & CW_PP_ChangeOnSetPoint) >> 9) != 0);
     }
 }

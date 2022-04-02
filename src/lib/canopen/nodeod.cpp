@@ -73,7 +73,7 @@ bool NodeOd::loadEds(const QString &fileName)
 
     EdsParser parser;
     DeviceDescription *deviceDescription = parser.parse(mfileName);
-    if (!deviceDescription)
+    if (deviceDescription == nullptr)
     {
         return false;
     }
@@ -86,7 +86,7 @@ bool NodeOd::loadEds(const QString &fileName)
     {
         NodeIndex *nodeIndex;
         nodeIndex = index(odIndex->index());
-        if (!nodeIndex)
+        if (nodeIndex == nullptr)
         {
             nodeIndex = new NodeIndex(odIndex->index());
         }
@@ -98,7 +98,7 @@ bool NodeOd::loadEds(const QString &fileName)
         {
             NodeSubIndex *nodeSubIndex;
             nodeSubIndex = nodeIndex->subIndex(odSubIndex->subIndex());
-            if (!nodeSubIndex)
+            if (nodeSubIndex == nullptr)
             {
                 nodeSubIndex = new NodeSubIndex(odSubIndex->subIndex());
             }
@@ -256,13 +256,13 @@ bool NodeOd::indexExist(const quint16 index) const
 NodeSubIndex *NodeOd::subIndex(quint16 index, quint8 subIndex) const
 {
     NodeIndex *nodeIndex = this->index(index);
-    if (!nodeIndex)
+    if (nodeIndex == nullptr)
     {
         return nullptr;
     }
 
     NodeSubIndex *nodeSubIndex = nodeIndex->subIndex(subIndex);
-    if (!nodeSubIndex)
+    if (nodeSubIndex == nullptr)
     {
         return nullptr;
     }
@@ -278,18 +278,13 @@ NodeSubIndex *NodeOd::subIndex(const NodeObjectId &id) const
 bool NodeOd::subIndexExist(quint16 index, quint8 subIndex) const
 {
     NodeIndex *nodeIndex = this->index(index);
-    if (!nodeIndex)
+    if (nodeIndex == nullptr)
     {
         return false;
     }
 
     NodeSubIndex *nodeSubIndex = nodeIndex->subIndex(subIndex);
-    if (!nodeSubIndex)
-    {
-        return false;
-    }
-
-    return true;
+    return (nodeSubIndex != nullptr);
 }
 
 int NodeOd::subIndexCount() const
@@ -302,10 +297,10 @@ int NodeOd::subIndexCount() const
     return count;
 }
 
-void NodeOd::setErrorObject(quint16 index, quint8 subIndex, quint32 error)
+void NodeOd::setErrorObject(quint16 index, quint8 subIndex, quint32 error) const
 {
     NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
-    if (!nodeSubIndex)
+    if (nodeSubIndex == nullptr)
     {
         return;
     }
@@ -321,7 +316,7 @@ quint32 NodeOd::errorObject(const NodeObjectId &id) const
 quint32 NodeOd::errorObject(quint16 index, quint8 subIndex) const
 {
     NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
-    if (!nodeSubIndex)
+    if (nodeSubIndex == nullptr)
     {
         return 0;
     }
@@ -337,7 +332,7 @@ QVariant NodeOd::value(const NodeObjectId &id) const
 QVariant NodeOd::value(quint16 index, quint8 subIndex) const
 {
     NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
-    if (!nodeSubIndex)
+    if (nodeSubIndex == nullptr)
     {
         return QVariant();
     }
@@ -432,7 +427,7 @@ QMetaType::Type NodeOd::dataType(const NodeObjectId &id) const
 QMetaType::Type NodeOd::dataType(quint16 index, quint8 subIndex) const
 {
     NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
-    if (!nodeSubIndex)
+    if (nodeSubIndex == nullptr)
     {
         return QMetaType::UnknownType;
     }
@@ -448,7 +443,7 @@ QDateTime NodeOd::lastModification(const NodeObjectId &id) const
 QDateTime NodeOd::lastModification(quint16 index, quint8 subIndex) const
 {
     NodeSubIndex *nodeSubIndex = this->subIndex(index, subIndex);
-    if (!nodeSubIndex)
+    if (nodeSubIndex == nullptr)
     {
         return QDateTime();
     }
@@ -504,7 +499,7 @@ void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, 
     {
         if (index(indexDevice)->subIndexExist(subindexDevice))
         {
-            if (!(flags & NodeOd::Error))
+            if ((flags & NodeOd::Error) == 0)
             {
                 index(indexDevice)->subIndex(subindexDevice)->clearError();
                 index(indexDevice)->subIndex(subindexDevice)->setValue(value, modificationDate);
@@ -519,10 +514,10 @@ void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, 
     quint32 key = (static_cast<quint32>(indexDevice) << 8) + subindexDevice;
     notifySubscribers(key, indexDevice, subindexDevice, flags);  // notify subscribers to index/subindex
 
-    key = (static_cast<quint32>(indexDevice) << 8) + 0xFFu;
+    key = (static_cast<quint32>(indexDevice) << 8) + 0xFFU;
     notifySubscribers(key, indexDevice, subindexDevice, flags);  // notify subscribers to index with all subindex
 
-    key = (static_cast<quint32>(0xFFFFu) << 8) + 0xFFu;
+    key = (static_cast<quint32>(0xFFFFU) << 8) + 0xFFU;
     notifySubscribers(key, indexDevice, subindexDevice, flags);  // notify subscribers to the full od
 }
 

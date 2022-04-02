@@ -66,7 +66,7 @@ public:
     int subIndexCount() const;
 
     // error
-    void setErrorObject(quint16 index, quint8 subIndex, quint32 error);
+    void setErrorObject(quint16 index, quint8 subIndex, quint32 error) const;
     quint32 errorObject(const NodeObjectId &id) const;
     quint32 errorObject(quint16 index, quint8 subIndex = 0x00) const;
 

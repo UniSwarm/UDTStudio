@@ -29,7 +29,7 @@ class CANOPEN_EXPORT Emergency : public Service
 public:
     Emergency(Node *node);
 
-    uint32_t cobId();
+    uint32_t cobId() const;
 
     QString type() const override;
 

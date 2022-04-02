@@ -189,7 +189,7 @@ NodeProfile402::OperationMode NodeProfile402::actualMode() const
     {
         return static_cast<OperationMode>(_modeCurrent);
     }
-    else if (_modeCurrent < -1)
+    if (_modeCurrent < -1)
     {
         return OperationMode::MS;
     }
@@ -213,10 +213,7 @@ bool NodeProfile402::setMode(OperationMode mode)
         _modeRequested = mode;
         return true;
     }
-    else
-    {
-        return false;
-    }
+    return false;
 }
 
 QString NodeProfile402::modeStr(NodeProfile402::OperationMode mode) const
@@ -422,26 +419,26 @@ QString NodeProfile402::event402Str(quint8 event402) const
 void NodeProfile402::setPolarityPosition(bool polarity)
 {
     quint8 value = static_cast<quint8>(_node->nodeOd()->value(_fgPolaritybjectId).toInt());
-    value = (value & ~MASK_POLARITY_POSITION) | (MASK_POLARITY_POSITION & static_cast<uint8_t>(MASK_POLARITY_POSITION * polarity));
+    value = (value & ~MASK_POLARITY_POSITION) | (MASK_POLARITY_POSITION & static_cast<uint8_t>(MASK_POLARITY_POSITION * static_cast<int>(polarity)));
     _node->writeObject(_fgPolaritybjectId, QVariant(value));
 }
 
 void NodeProfile402::setPolarityVelocity(bool polarity)
 {
     quint8 value = static_cast<quint8>(_node->nodeOd()->value(_fgPolaritybjectId).toInt());
-    value = (value & ~MASK_POLARITY_VELOCITY) | (MASK_POLARITY_VELOCITY & static_cast<uint8_t>(MASK_POLARITY_VELOCITY * polarity));
+    value = (value & ~MASK_POLARITY_VELOCITY) | (MASK_POLARITY_VELOCITY & static_cast<uint8_t>(MASK_POLARITY_VELOCITY * static_cast<int>(polarity)));
     _node->writeObject(_fgPolaritybjectId, QVariant(value));
 }
 
 bool NodeProfile402::polarityPosition() const
 {
-    bool value = (static_cast<quint8>(_node->nodeOd()->value(_fgPolaritybjectId).toInt()) & MASK_POLARITY_POSITION) >> 7;
+    bool value = ((static_cast<quint8>(_node->nodeOd()->value(_fgPolaritybjectId).toInt()) & MASK_POLARITY_POSITION) >> 7) != 0;
     return value;
 }
 
 bool NodeProfile402::polarityVelocity() const
 {
-    bool value = (static_cast<quint8>(_node->nodeOd()->value(_fgPolaritybjectId).toInt()) & MASK_POLARITY_VELOCITY) >> 6;
+    bool value = ((static_cast<quint8>(_node->nodeOd()->value(_fgPolaritybjectId).toInt()) & MASK_POLARITY_VELOCITY) >> 6) != 0;
     return value;
 }
 
@@ -605,7 +602,7 @@ void NodeProfile402::changeStateMachine(const State402 state)
     {
         return;
     }
-    if (!_node)
+    if (_node == nullptr)
     {
         return;
     }
@@ -726,31 +723,31 @@ void NodeProfile402::decodeEventStatusWord(quint16 statusWord)
 {
     // TODO miss decode specific bit from mode
     quint8 eventStatusWord = 0;
-    if (statusWord & SW_EventVoltageEnabled)
+    if ((statusWord & SW_EventVoltageEnabled) != 0)
     {
         eventStatusWord += VoltageEnabled;
     }
-    if (statusWord & SW_EventRemote)
+    if ((statusWord & SW_EventRemote) != 0)
     {
         eventStatusWord += Remote;
     }
-    if (statusWord & SW_EventTargetReached)
+    if ((statusWord & SW_EventTargetReached) != 0)
     {
         eventStatusWord += TargetReached;
     }
-    if (statusWord & SW_EventInternalLimitActive)
+    if ((statusWord & SW_EventInternalLimitActive) != 0)
     {
         eventStatusWord += InternalLimitActive;
     }
-    if (statusWord & SW_EventWarning)
+    if ((statusWord & SW_EventWarning) != 0)
     {
         eventStatusWord += Warning;
     }
-    if (statusWord & SW_EventFollowingError)
+    if ((statusWord & SW_EventFollowingError) != 0)
     {
         eventStatusWord += FollowingError;
     }
-    if (statusWord & SW_EventSetPointAcknowledgeIpModeActive)
+    if ((statusWord & SW_EventSetPointAcknowledgeIpModeActive) != 0)
     {
         eventStatusWord += ModeSpecific;
     }
@@ -812,7 +809,7 @@ void NodeProfile402::decodeStateMachineStatusWord(quint16 statusWord)
     {
         changeStateMachine(_stateMachineRequested);
         _stateCountMachineRequested--;
-        if (!_stateCountMachineRequested)
+        if (_stateCountMachineRequested == 0u)
         {
             _stateState = NONE_STATE;
             _stateMachineRequested = _stateMachineCurrent;
@@ -821,12 +818,10 @@ void NodeProfile402::decodeStateMachineStatusWord(quint16 statusWord)
 
         return;
     }
-    else
-    {
-        _stateState = NONE_STATE;
-        _stateMachineRequested = _stateMachineCurrent;
-        _stateCountMachineRequested = STATE_MACHINE_REQUESTED_ATTEMPT;
-    }
+
+    _stateState = NONE_STATE;
+    _stateMachineRequested = _stateMachineCurrent;
+    _stateCountMachineRequested = STATE_MACHINE_REQUESTED_ATTEMPT;
 }
 
 void NodeProfile402::decodeSupportedDriveModes(quint32 supportedDriveModes)
@@ -973,7 +968,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest fl
 {
     if (objId == _modesOfOperationObjectId)
     {
-        if (flags & NodeOd::FlagsRequest::Error)
+        if ((flags & NodeOd::FlagsRequest::Error) != 0)
         {
             _modeRequested = _modeCurrent;
             _modeStatus = NodeProfile402::MODE_CHANGED;
@@ -993,7 +988,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest fl
 
     if (objId == _modesOfOperationDisplayObjectId)
     {
-        if (flags & NodeOd::FlagsRequest::Error)
+        if ((flags & NodeOd::FlagsRequest::Error) != 0)
         {
             return;
         }
@@ -1022,7 +1017,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest fl
 
     if (objId == _supportedDriveModesObjectId)
     {
-        if (flags & NodeOd::FlagsRequest::Error)
+        if ((flags & NodeOd::FlagsRequest::Error) != 0)
         {
             return;
         }
@@ -1032,7 +1027,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest fl
 
     if (objId == _controlWordObjectId)
     {
-        if (flags & NodeOd::FlagsRequest::Error)
+        if ((flags & NodeOd::FlagsRequest::Error) != 0)
         {
             return;
         }
@@ -1046,7 +1041,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest fl
 
     if (objId == _statusWordObjectId)
     {
-        if (flags & NodeOd::FlagsRequest::Error)
+        if ((flags & NodeOd::FlagsRequest::Error) != 0)
         {
             return;
         }

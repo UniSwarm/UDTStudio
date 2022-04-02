@@ -175,12 +175,7 @@ bool CanBusSocketCAN::writeFrame(const QCanBusFrame &qtframe)
     }
 
     retval = write(_can_socket, &frame, sizeof(struct can_frame));
-    if (retval != sizeof(struct can_frame))
-    {
-        return false;
-    }
-
-    return true;
+    return (retval == sizeof(struct can_frame));
 }
 
 void CanBusSocketCAN::notifyRead()

@@ -100,8 +100,8 @@ public:
     };
 
     State402 currentState() const;
-    void goToState(const State402 state);
-    QString stateStr(const State402 state) const;
+    void goToState(State402 state);
+    QString stateStr(State402 state) const;
 
     enum Event402 : quint8
     {
@@ -196,7 +196,7 @@ private:
 
     void initializeObjectsId();
     void statusNodeChanged(Node::Status status);
-    void changeStateMachine(const State402 state);
+    void changeStateMachine(State402 state);
 
     void decodeEventStatusWord(quint16 statusWord);
     void decodeStateMachineStatusWord(quint16 statusWord);

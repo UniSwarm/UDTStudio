@@ -35,10 +35,10 @@ public:
 
     enum TransmissionType
     {
-        RPDO_SYNC_MIN = 0x00u,  // synchronous (acyclic)
-        RPDO_SYNC_MAX = 0xF0u,  // synchronous (cyclic every 240 th SYNC)
-        RPDO_EVENT_MS = 0xFEu,  // event-driven (manufacturer-specific)
-        RPDO_EVENT_DP = 0xFFu   // event-driven (device profile and application profile specific)
+        RPDO_SYNC_MIN = 0x00U,  // synchronous (acyclic)
+        RPDO_SYNC_MAX = 0xF0U,  // synchronous (cyclic every 240 th SYNC)
+        RPDO_EVENT_MS = 0xFEU,  // event-driven (manufacturer-specific)
+        RPDO_EVENT_DP = 0xFFU   // event-driven (device profile and application profile specific)
     };
     bool setTransmissionType(quint8 type);
     quint8 transmissionType();

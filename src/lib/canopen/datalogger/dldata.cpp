@@ -31,11 +31,11 @@ DLData::DLData(const NodeObjectId &objectId)
     _q1516 = false;
 
     CanOpenBus *bus = CanOpen::bus(objectId.busId());
-    if (bus)
+    if (bus != nullptr)
     {
         _node = bus->node(objectId.nodeId());
         NodeSubIndex *nodeSubIndex = objectId.nodeSubIndex();
-        if (nodeSubIndex)
+        if (nodeSubIndex != nullptr)
         {
             _name = nodeSubIndex->nodeIndex()->name() + "." + nodeSubIndex->name();
             _q1516 = nodeSubIndex->isQ1516();

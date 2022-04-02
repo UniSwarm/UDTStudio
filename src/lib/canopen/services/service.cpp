@@ -52,7 +52,7 @@ const QList<quint32> &Service::cobIds() const
 
 CanOpenBus *Service::bus() const
 {
-    if (_node)
+    if (_node != nullptr)
     {
         return _node->bus();
     }
@@ -61,13 +61,13 @@ CanOpenBus *Service::bus() const
 
 CanBusDriver *Service::canDevice() const
 {
-    if (_bus)
+    if (_bus != nullptr)
     {
         return _bus->canBusDriver();
     }
-    if (_node)
+    if (_node != nullptr)
     {
-        if (_node->bus())
+        if (_node->bus() != nullptr)
         {
             return _node->bus()->canBusDriver();
         }

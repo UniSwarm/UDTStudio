@@ -62,7 +62,7 @@ void ModeDty::setEnableRamp(bool ok)
 
 bool ModeDty::isEnableRamp() const
 {
-    return (_cmdControlWordFlag & CW_DTY_EnableRamp) >> 4;
+    return ((_cmdControlWordFlag & CW_DTY_EnableRamp) >> 4) != 0;
 }
 
 const NodeObjectId &ModeDty::targetObjectId() const

@@ -95,7 +95,7 @@ bool PDO::canInsertObjectAtBitPos(const NodeObjectId &object, int bitPos) const
 bool PDO::canInsertObjectAtBitPos(const QList<NodeObjectId> &objectList, const NodeObjectId &object, int bitPos) const
 {
     NodeSubIndex *nodeSubIndex = object.nodeSubIndex();
-    if (!nodeSubIndex)
+    if (nodeSubIndex == nullptr)
     {
         return false;
     }
@@ -153,7 +153,7 @@ int PDO::mappingBitSize() const
 int PDO::maxMappingObjectCount() const
 {
     NodeIndex *mappingParam = _node->nodeOd()->index(_objectMappingId);
-    if (!mappingParam)
+    if (mappingParam == nullptr)
     {
         return 0;
     }
@@ -242,14 +242,7 @@ bool PDO::isEnabled() const
     NodeObjectId object(_objectCommId, PDO_COMM_COB_ID);
     quint32 cobIb = _node->nodeOd()->value(object).toUInt();
 
-    if ((cobIb & COBID_VALID_NOT_VALID) == COBID_VALID_NOT_VALID)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
+    return (cobIb & COBID_VALID_NOT_VALID) != COBID_VALID_NOT_VALID;
 }
 
 void PDO::setEnabled(bool enabled)
@@ -464,11 +457,7 @@ bool PDO::createListObjectMapped()
 
 bool PDO::checkIndex(quint16 index)
 {
-    if (index != 0)
-    {
-        return true;
-    }
-    return false;
+    return index != 0;
 }
 /**
  * @brief management response from device after processMapping

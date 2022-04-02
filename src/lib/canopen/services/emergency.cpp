@@ -26,7 +26,7 @@ Emergency::Emergency(Node *node)
     _cobIds.append(_cobId + node->nodeId());
 }
 
-uint32_t Emergency::cobId()
+uint32_t Emergency::cobId() const
 {
     return _cobId;
 }
