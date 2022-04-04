@@ -312,18 +312,18 @@ bool CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
         writeRecordCompletionC(index, out);
     }
 
-    out << "// ============ object dicitonary completion =============="
+    out << "// ============ object dictionary completion =============="
         << "\n";
     out << "const OD_entry_t OD[OD_OBJECTS_COUNT] = "
         << "\n";
     out << "{"
         << "\n";
-
+    out << "//  {index, typeObject, accessPDOmapping, nbSubIndex, ptData}"
+        << "\n";
     for (Index *index : indexes)
     {
         writeOdCompletionC(index, out);
     }
-
     out << "};";
     out << "\n";
     out << "\n";
@@ -964,13 +964,21 @@ void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile)
 
         for (SubIndex *subIndex : index->subIndexes())
         {
-            cFile << "    "
-                  << "{(void*)&OD_RAM." << varNameToString(index->name());
-            cFile << "." << varNameToString(subIndex->name());
-            // TODO PDOmapping
-            cFile << ", " << typeObjectToString(index, subIndex->subIndex(), true) << ", ";
+            cFile << "    {";
+
+            // OD_entrySubIndex_t.typeObject
+            cFile << typeObjectToString(index, subIndex->subIndex(), true) << ", ";
+
+            // OD_entrySubIndex_t.accessPDOmapping
             cFile << accessToEnumString(subIndex->accessType()) << ", ";
-            cFile << subIndex->subIndex();
+
+            // OD_entrySubIndex_t.subNumber
+            cFile << subIndex->subIndex() << ", ";
+
+            // OD_entrySubIndex_t.ptData
+            cFile << "(void*)&OD_RAM." << varNameToString(index->name());
+            cFile << "." << varNameToString(subIndex->name());
+
             cFile << "},"
                   << "\n";
         }
@@ -986,25 +994,10 @@ void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile)
  */
 void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
 {
-    cFile << "    "
-          << "{";
+    cFile << "    " << "{";
 
     // OD_entry_t.index
     cFile << "0x" << QString::number(index->index(), 16).toUpper() << ", ";
-
-    // OD_entry_t.nbSubIndex
-    switch (index->objectType())
-    {
-        case Index::Object::VAR:
-            cFile << "0x0";
-            break;
-
-        case Index::Object::RECORD:
-        case Index::Object::ARRAY:
-            cFile << "0x" << QString::number(index->maxSubIndex() - 1, 16).toUpper();
-            break;
-    }
-    cFile << ", ";
 
     // OD_entry_t.ptData, OD_entry_t.typeObject, OD_entry_t.accessPDOmapping
     switch (index->objectType())
@@ -1014,33 +1007,40 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
             {
                 break;
             }
-            // OD_entry_t.ptData
-            if (index->subIndex(0)->dataType() == SubIndex::VISIBLE_STRING || index->subIndex(0)->dataType() == SubIndex::OCTET_STRING
-                || index->subIndex(0)->dataType() == SubIndex::UNICODE_STRING)
-            {
-                cFile << "(void*)" << stringNameToString(index->subIndex(0)) << ", ";
-            }
-            else
-            {
-                cFile << "(void*)&OD_RAM." << varNameToString(index->name()) << ", ";
-            }
 
             // OD_entry_t.typeObject
             cFile << typeObjectToString(index, 0) << ", ";
 
             // OD_entry_t.accessPDOmapping
-            cFile << accessToEnumString(index->subIndex(0)->accessType());
+            cFile << accessToEnumString(index->subIndex(0)->accessType()) << ", ";
+
+            // OD_entry_t.nbSubIndex
+            cFile << "0x00" << ", ";
+
+            // OD_entry_t.ptData
+            if (index->subIndex(0)->dataType() == SubIndex::VISIBLE_STRING || index->subIndex(0)->dataType() == SubIndex::OCTET_STRING
+                || index->subIndex(0)->dataType() == SubIndex::UNICODE_STRING)
+            {
+                cFile << "(void*)" << stringNameToString(index->subIndex(0));
+            }
+            else
+            {
+                cFile << "(void*)&OD_RAM." << varNameToString(index->name());
+            }
             break;
 
         case Index::Object::RECORD:
-            // OD_entry_t.ptData
-            cFile << "(void*)OD_Record" << QString::number(index->index(), 16).toUpper() << ", ";
-
             // OD_entry_t.typeObject
             cFile << objectTypeToEnumString(Index::RECORD) << ", ";
 
             // OD_entry_t.accessPDOmapping
-            cFile << "0x0";
+            cFile << "0x00" << ", ";
+
+            // OD_entry_t.nbSubIndex
+            cFile << "0x" << QString::number(index->maxSubIndex() - 1, 16).toUpper().rightJustified(2, '0') << ", ";
+
+            // OD_entry_t.ptData
+            cFile << "(void*)OD_Record" << QString::number(index->index(), 16).toUpper();
             break;
 
         case Index::Object::ARRAY:
@@ -1050,14 +1050,17 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
                 break;
             }
 
-            // OD_entry_t.ptData
-            cFile << "(void*)OD_RAM." << varNameToString(index->name()) << ", ";
-
             // OD_entry_t.typeObject
             cFile << typeObjectToString(index, 1) << ", ";
 
             // OD_entry_t.accessPDOmapping
-            cFile << accessToEnumString(index->subIndex(1)->accessType());
+            cFile << accessToEnumString(index->subIndex(1)->accessType()) << ", ";
+
+            // OD_entry_t.nbSubIndex
+            cFile << "0x" << QString::number(index->maxSubIndex() - 1, 16).toUpper().rightJustified(2, '0') << ", ";
+
+            // OD_entry_t.ptData
+            cFile << "(void*)OD_RAM." << varNameToString(index->name());
             break;
     }
 
