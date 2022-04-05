@@ -92,7 +92,7 @@ void NodeManagerWidget::updateData()
         {
             action->setChecked(false);
         }
-        int idAction = _node->status() - 1;
+        int idAction = _node->status() - Node::PREOP;
         if (idAction < 0)
         {
             idAction = 0;
