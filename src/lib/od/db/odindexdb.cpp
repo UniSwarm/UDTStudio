@@ -102,6 +102,14 @@ bool ODIndexDb::isQ1516(quint16 index, quint8 subIndex, quint16 profileNumber)
 
 double ODIndexDb::scale(quint16 index, quint8 subIndex, quint16 profileNumber)
 {
+    if ((index >= 0x1400 && index <= 0x15FF) || (index >= 0x1800 && index <= 0x19FF))  // RPDO TPDO
+    {
+        if (subIndex == 3)  // Inhibit Time
+        {
+            return 0.1;
+        }
+    }
+
     if (index < 0x2000 || index >= 0x6000)
     {
         return 1.0;
@@ -204,13 +212,9 @@ QString ODIndexDb::unit(quint16 index, quint8 subIndex, quint16 profileNumber)
             return QString(" ms");
         }
     }
-    if ((index >= 0x1400 && index <= 0x1403) || (index >= 0x1800 && index <= 0x1803))  // RPDO TPDO
+    if ((index >= 0x1400 && index <= 0x15FF) || (index >= 0x1800 && index <= 0x19FF))  // RPDO TPDO
     {
-        if (subIndex == 3)
-        {
-            return QString(" µs");
-        }
-        if (subIndex == 5)
+        if (subIndex == 3 || subIndex == 5)  // Inhibit Time and Event Timer
         {
             return QString(" ms");
         }
