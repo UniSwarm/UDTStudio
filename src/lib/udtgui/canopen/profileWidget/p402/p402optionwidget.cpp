@@ -371,32 +371,56 @@ void P402OptionWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest 
 
         if (objId == _nodeProfile402->abortConnectionObjectId())
         {
-            _abortConnectionOptionGroup->button(value)->setChecked(true);
+            QAbstractButton *button = _abortConnectionOptionGroup->button(value);
+            if (button)
+            {
+                button->setChecked(true);
+            }
         }
 
         if (objId == _nodeProfile402->quickStopObjectId())
         {
-            _quickStopOptionGroup->button(value)->setChecked(true);
+            QAbstractButton *button = _quickStopOptionGroup->button(value);
+            if (button)
+            {
+                button->setChecked(true);
+            }
         }
 
         if (objId == _nodeProfile402->shutdownObjectId())
         {
-            _shutdownOptionGroup->button(value)->setChecked(true);
+            QAbstractButton *button = _shutdownOptionGroup->button(value);
+            if (button)
+            {
+                button->setChecked(true);
+            }
         }
 
         if (objId == _nodeProfile402->disableObjectId())
         {
-            _disableOptionGroup->button(value)->setChecked(true);
+            QAbstractButton *button = _disableOptionGroup->button(value);
+            if (button)
+            {
+                button->setChecked(true);
+            }
         }
 
         if (objId == _nodeProfile402->haltObjectId())
         {
-            _haltOptionGroup->button(value)->setChecked(true);
+            QAbstractButton *button = _haltOptionGroup->button(value);
+            if (button)
+            {
+                button->setChecked(true);
+            }
         }
 
         if (objId == _nodeProfile402->faultReactionObjectId())
         {
-            _faultReactionOptionGroup->button(value)->setChecked(true);
+            QAbstractButton *button = _faultReactionOptionGroup->button(value);
+            if (button)
+            {
+                button->setChecked(true);
+            }
         }
     }
 }
