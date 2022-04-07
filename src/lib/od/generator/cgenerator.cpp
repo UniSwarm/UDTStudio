@@ -792,16 +792,25 @@ void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile)
     hFile << "typedef struct"
           << "  // 0x" << QString::number(index->index(), 16) << "\n{\n";
 
+    QList<SubIndex *> recordFields;
     for (SubIndex *subIndex : index->subIndexes())
     {
         QString dataType = typeToString(subIndex->dataType());
-        if (dataType == nullptr)
+        if (dataType.isEmpty())
         {
             continue;
         }
-
-        hFile << "    " << dataType << " " << varNameToString(subIndex->name()) << ";"
-              << "\n";
+        recordFields.append(subIndex);
+    }
+    std::sort(recordFields.begin(),
+              recordFields.end(),
+              [](const SubIndex *a, const SubIndex *b) -> bool
+              {
+                  return a->length() > b->length();
+              });
+    for (SubIndex *subIndex : recordFields)
+    {
+        hFile << "    " << typeToString(subIndex->dataType()) << " " << varNameToString(subIndex->name()) << ";  // sub" << subIndex->subIndex() << "\n";
     }
     hFile << "} " << structName << ";\n\n";
 
