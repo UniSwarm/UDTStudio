@@ -163,10 +163,9 @@ void NodeOdWidget::createDefaultFilters(uint profile)
             break;
 
         case 402:
-
             _filterCombobox->addItem(tr("402"));
             dynamic_cast<QStandardItemModel *>(_filterCombobox->model())->item(_filterCombobox->count() - 1)->setEnabled(false);
-            _filterCombobox->addItem(tr("402 FSA"), QVariant("0x[6-A][058](0[27]|3F|4[01]|5[A-E]|6[01])"));
+            _filterCombobox->addItem(tr("402 FSA"), QVariant("0x[6-A][058D](0[27]|3F|4[01]|5[A-E]|6[01])"));
             _filterCombobox->addItem(tr("402 tp (Touch probe)"), QVariant("0x[6-A][08](B[8-D]|D0)"));
             _filterCombobox->addItem(tr("402 hm (Homming)"), QVariant("0x[6-A][08](9[89A]|7C|E3)"));
             _filterCombobox->addItem(tr("402 fg factors"), QVariant("0x[6-A][08](8F|9[0-267]|A[8-B])"));
