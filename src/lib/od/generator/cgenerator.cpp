@@ -401,7 +401,7 @@ bool CGenerator::generateHStruct(DeviceConfiguration *deviceConfiguration, const
  * @param data type
  * @return data type to C format
  */
-QString CGenerator::typeToString(const uint16_t &type)
+QString CGenerator::typeToString(SubIndex::DataType type)
 {
     switch (type)
     {
@@ -790,7 +790,7 @@ void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile)
     }
 
     hFile << "typedef struct"
-          << "  // 0x" << QString::number(index->index(), 16) << "\n{\n";
+          << "  // 0x" << QString::number(index->index(), 16).toUpper() << "\n{\n";
 
     QList<SubIndex *> recordFields;
     for (SubIndex *subIndex : index->subIndexes())
@@ -871,7 +871,7 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile)
             break;
     }
 
-    hFile << "  // 0x" << QString::number(index->index(), 16) << "\n";
+    hFile << "  // 0x" << QString::number(index->index(), 16).toUpper() << "\n";
 }
 
 /**
@@ -906,7 +906,7 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
             cFile << " = ";
             cFile << dataToString(index->subIndex(0));
             cFile << ";";
-            cFile << "  // 0x" << QString::number(index->index(), 16);
+            cFile << "  // 0x" << QString::number(index->index(), 16).toUpper();
             cFile << "\n";
             written++;
             break;
@@ -924,7 +924,7 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
                 cFile << " = ";
                 cFile << dataToString(subIndex);
                 cFile << ";";
-                cFile << "  // 0x" << QString::number(index->index(), 16) << "." << subIndex->subIndex();
+                cFile << "  // 0x" << QString::number(index->index(), 16).toUpper() << "." << subIndex->subIndex();
                 cFile << "\n";
                 written++;
             }
@@ -950,7 +950,7 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
                 cFile << " = ";
                 cFile << dataToString(index->subIndex(i));
                 cFile << ";";
-                cFile << "  // 0x" << QString::number(index->index(), 16) << "." << i;
+                cFile << "  // 0x" << QString::number(index->index(), 16).toUpper() << "." << i;
                 cFile << "\n";
                 written++;
             }
@@ -968,7 +968,7 @@ void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile)
 {
     if (index->objectType() == Index::Object::RECORD)
     {
-        cFile << "static const OD_entrySubIndex_t OD_Record" << QString::number(index->index(), 16).toUpper() << "[" << index->maxSubIndex() << "] =\n";
+        cFile << "static const OD_entrySubIndex_t OD_Record" << QString::number(index->index(), 16).toUpper().toUpper() << "[" << index->maxSubIndex() << "] =\n";
         cFile << "{\n";
 
         for (SubIndex *subIndex : index->subIndexes())
@@ -1003,7 +1003,8 @@ void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile)
  */
 void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
 {
-    cFile << "    " << "{";
+    cFile << "    "
+          << "{";
 
     // OD_entry_t.index
     cFile << "0x" << QString::number(index->index(), 16).toUpper() << ", ";
@@ -1024,7 +1025,8 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
             cFile << accessToEnumString(index->subIndex(0)->accessType()) << ", ";
 
             // OD_entry_t.nbSubIndex
-            cFile << "0x00" << ", ";
+            cFile << "0x00"
+                  << ", ";
 
             // OD_entry_t.ptData
             if (index->subIndex(0)->dataType() == SubIndex::VISIBLE_STRING || index->subIndex(0)->dataType() == SubIndex::OCTET_STRING
@@ -1043,7 +1045,8 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
             cFile << objectTypeToEnumString(Index::RECORD) << ", ";
 
             // OD_entry_t.accessPDOmapping
-            cFile << "0x00" << ", ";
+            cFile << "0x00"
+                  << ", ";
 
             // OD_entry_t.nbSubIndex
             cFile << "0x" << QString::number(index->maxSubIndex() - 1, 16).toUpper().rightJustified(2, '0') << ", ";
@@ -1055,7 +1058,7 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
         case Index::Object::ARRAY:
             if (!index->subIndexExist(1))
             {
-                appendError(QString("Invalid array 0x%1\n").arg(QString::number(index->index(), 16)));
+                appendError(QString("Invalid array 0x%1\n").arg(QString::number(index->index(), 16).toUpper()));
                 break;
             }
 

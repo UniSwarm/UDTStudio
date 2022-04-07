@@ -46,7 +46,7 @@ public:
     bool generateHStruct(DeviceConfiguration *deviceConfiguration, const QString &filePath, uint16_t min, uint16_t max, const QString &structName);
 
 private:
-    static QString typeToString(const uint16_t &type);
+    static QString typeToString(SubIndex::DataType type);
     static QString varNameToString(const QString &name);
     static QString structNameToString(const QString &name);
     static QString dataToString(const SubIndex *index);
