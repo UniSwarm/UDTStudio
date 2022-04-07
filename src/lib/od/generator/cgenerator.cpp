@@ -499,23 +499,18 @@ QString CGenerator::structNameToString(const QString &name)
  */
 QString CGenerator::dataToString(const SubIndex *subIndex)
 {
-    QString data;
-
     switch (subIndex->dataType())
     {
         case SubIndex::OCTET_STRING:
         case SubIndex::VISIBLE_STRING:
         case SubIndex::UNICODE_STRING:
-            data = stringNameToString(subIndex);
-            break;
+            return stringNameToString(subIndex);
 
         case SubIndex::REAL32:
-            data = QString::number(subIndex->value().toReal(), 'f', 7) + QStringLiteral("f");
-            break;
+            return QString::number(subIndex->value().toReal(), 'f', 7) + QStringLiteral("f");
 
         case SubIndex::REAL64:
-            data = QString::number(subIndex->value().toReal(), 'f', 16) + QStringLiteral("F");
-            break;
+            return QString::number(subIndex->value().toReal(), 'f', 16) + QStringLiteral("F");
 
         case SubIndex::UNSIGNED8:
         case SubIndex::UNSIGNED16:
@@ -525,15 +520,11 @@ QString CGenerator::dataToString(const SubIndex *subIndex)
         case SubIndex::UNSIGNED48:
         case SubIndex::UNSIGNED56:
         case SubIndex::UNSIGNED64:
-            data = subIndex->value().toString() + QStringLiteral("u");
-            break;
+            return subIndex->value().toString() + QStringLiteral("u");
 
         default:
-            data = subIndex->value().toString();
-            break;
+            return subIndex->value().toString();
     }
-
-    return data;
 }
 
 QString CGenerator::objectTypeToEnumString(const uint16_t objectType)
@@ -543,149 +534,112 @@ QString CGenerator::objectTypeToEnumString(const uint16_t objectType)
     switch (objectType)
     {
         case Index::OBJECT_NULL:
-            typeObject = "OD_OBJECT_NULL";
-            break;
+            return QStringLiteral("OD_OBJECT_NULL");
 
         case Index::OBJECT_DOMAIN:
-            typeObject = "OD_OBJECT_DOMAIN";
-            break;
+            return QStringLiteral("OD_OBJECT_DOMAIN");
 
         case Index::DEFTYPE:
-            typeObject = "OD_OBJECT_DEFTYPE";
-            break;
+            return QStringLiteral("OD_OBJECT_DEFTYPE");
 
         case Index::DEFSTRUCT:
-            typeObject = "OD_OBJECT_DEFSTRUCT";
-            break;
+            return QStringLiteral("OD_OBJECT_DEFSTRUCT");
 
         case Index::VAR:
-            typeObject = "OD_OBJECT_VAR";
-            break;
+            return QStringLiteral("OD_OBJECT_VAR");
 
         case Index::ARRAY:
-            typeObject = "OD_OBJECT_ARRAY";
-            break;
+            return QStringLiteral("OD_OBJECT_ARRAY");
 
         case Index::RECORD:
-            typeObject = "OD_OBJECT_RECORD";
-            break;
+            return QStringLiteral("OD_OBJECT_RECORD");
 
         default:
-            typeObject = QString::number(objectType, 16);
-            break;
+            return QString::number(objectType, 16);
     }
-
-    return typeObject;
 }
 
 QString CGenerator::dataTypeToEnumString(const uint16_t dataType)
 {
-    QString dataTypeEnumString;
-
     switch (dataType)
     {
         case SubIndex::BOOLEAN:
-            dataTypeEnumString = "OD_TYPE_BOOLEAN";
-            break;
+            return QStringLiteral("OD_TYPE_BOOLEAN");
 
         case SubIndex::INTEGER8:
-            dataTypeEnumString = "OD_TYPE_INTEGER8";
-            break;
+            return QStringLiteral("OD_TYPE_INTEGER8");
 
         case SubIndex::INTEGER16:
-            dataTypeEnumString = "OD_TYPE_INTEGER16";
-            break;
+            return QStringLiteral("OD_TYPE_INTEGER16");
 
         case SubIndex::INTEGER32:
-            dataTypeEnumString = "OD_TYPE_INTEGER32";
-            break;
+            return QStringLiteral("OD_TYPE_INTEGER32");
 
         case SubIndex::UNSIGNED8:
-            dataTypeEnumString = "OD_TYPE_UNSIGNED8";
-            break;
+            return QStringLiteral("OD_TYPE_UNSIGNED8");
 
         case SubIndex::UNSIGNED16:
-            dataTypeEnumString = "OD_TYPE_UNSIGNED16";
-            break;
+            return QStringLiteral("OD_TYPE_UNSIGNED16");
 
         case SubIndex::UNSIGNED32:
-            dataTypeEnumString = "OD_TYPE_UNSIGNED32";
-            break;
+            return QStringLiteral("OD_TYPE_UNSIGNED32");
 
         case SubIndex::REAL32:
-            dataTypeEnumString = "OD_TYPE_REAL32";
-            break;
+            return QStringLiteral("OD_TYPE_REAL32");
 
         case SubIndex::VISIBLE_STRING:
-            dataTypeEnumString = "OD_TYPE_VISIBLE_STRING";
-            break;
+            return QStringLiteral("OD_TYPE_VISIBLE_STRING");
 
         case SubIndex::OCTET_STRING:
-            dataTypeEnumString = "OD_TYPE_OCTET_STRING";
-            break;
+            return QStringLiteral("OD_TYPE_OCTET_STRING");
 
         case SubIndex::UNICODE_STRING:
-            dataTypeEnumString = "OD_TYPE_UNICODE_STRING";
-            break;
+            return QStringLiteral("OD_TYPE_UNICODE_STRING");
 
         case SubIndex::TIME_OF_DAY:
-            dataTypeEnumString = "OD_TYPE_TIME_OF_DAY";
-            break;
+            return QStringLiteral("OD_TYPE_TIME_OF_DAY");
 
         case SubIndex::TIME_DIFFERENCE:
-            dataTypeEnumString = "OD_TYPE_TIME_DIFFERENCE";
-            break;
+            return QStringLiteral("OD_TYPE_TIME_DIFFERENCE");
 
         case SubIndex::DDOMAIN:
-            dataTypeEnumString = "OD_TYPE_DOMAIN";
-            break;
+            return QStringLiteral("OD_TYPE_DOMAIN");
 
         case SubIndex::INTEGER24:
-            dataTypeEnumString = "OD_TYPE_INTEGER24";
-            break;
+            return QStringLiteral("OD_TYPE_INTEGER24");
 
         case SubIndex::REAL64:
-            dataTypeEnumString = "OD_TYPE_REAL64";
-            break;
+            return QStringLiteral("OD_TYPE_REAL64");
 
         case SubIndex::INTEGER40:
-            dataTypeEnumString = "OD_TYPE_INTEGER40";
-            break;
+            return QStringLiteral("OD_TYPE_INTEGER40");
 
         case SubIndex::INTEGER48:
-            dataTypeEnumString = "OD_TYPE_INTEGER48";
-            break;
+            return QStringLiteral("OD_TYPE_INTEGER48");
 
         case SubIndex::INTEGER56:
-            dataTypeEnumString = "OD_TYPE_INTEGER56";
-            break;
+            return QStringLiteral("OD_TYPE_INTEGER56");
 
         case SubIndex::INTEGER64:
-            dataTypeEnumString = "OD_TYPE_INTEGER64";
-            break;
+            return QStringLiteral("OD_TYPE_INTEGER64");
 
         case SubIndex::UNSIGNED24:
-            dataTypeEnumString = "OD_TYPE_UNSIGNED24";
-            break;
+            return QStringLiteral("OD_TYPE_UNSIGNED24");
 
         case SubIndex::UNSIGNED40:
-            dataTypeEnumString = "OD_TYPE_UNSIGNED40";
-            break;
+            return QStringLiteral("OD_TYPE_UNSIGNED40");
 
         case SubIndex::UNSIGNED48:
-            dataTypeEnumString = "OD_TYPE_UNSIGNED48";
-            break;
+            return QStringLiteral("OD_TYPE_UNSIGNED48");
 
         case SubIndex::UNSIGNED56:
-            dataTypeEnumString = "OD_TYPE_UNSIGNED56";
-            break;
+            return QStringLiteral("OD_TYPE_UNSIGNED56");
 
         case SubIndex::UNSIGNED64:
-            dataTypeEnumString = "OD_TYPE_UNSIGNED64";
-            break;
+            return QStringLiteral("OD_TYPE_UNSIGNED64");
     }
 
-    return dataTypeEnumString;
+    return QString();
 }
 
 QString CGenerator::accessToEnumString(const uint8_t acces)
@@ -756,18 +710,14 @@ QString CGenerator::typeObjectToString(Index *index, uint8_t subIndex, bool isIn
  */
 QString CGenerator::stringNameToString(const SubIndex *subIndex)
 {
-    QString string;
-
     if (subIndex->subIndex() == 0)
     {
-        string = varNameToString(subIndex->name()) + "Str";
+        return varNameToString(subIndex->name()) + "Str";
     }
     else
     {
-        string = varNameToString(subIndex->name()) + "Str" + QString::number(subIndex->subIndex());
+        return varNameToString(subIndex->name()) + "Str" + QString::number(subIndex->subIndex());
     }
-
-    return string;
 }
 
 /**
