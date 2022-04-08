@@ -62,9 +62,9 @@ public:
         ARRAY = 0x08,
         RECORD = 0x09
     };
-    uint8_t objectType() const;
-    void setObjectType(const uint8_t &objectType);
-    static QString objectTypeStr(const uint8_t &objectType);
+    Object objectType() const;
+    void setObjectType(Object objectType);
+    static QString objectTypeStr(Object objectType);
 
     const QString &name() const;
     void setName(const QString &name);
@@ -72,7 +72,7 @@ public:
 private:
     uint16_t _index;
     uint8_t _maxSubIndex;
-    uint8_t _objectType;
+    Object _objectType;
     QString _name;
     QMap<uint8_t, SubIndex *> _subIndexes;
 };

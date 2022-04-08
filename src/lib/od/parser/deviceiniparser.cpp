@@ -145,7 +145,7 @@ void DeviceIniParser::readIndex(Index *index) const
     readSubIndex(subIndex);
 
     index->setMaxSubIndex(maxSubIndex);
-    index->setObjectType(objectType);
+    index->setObjectType(static_cast<Index::Object>(objectType));
     index->setName(name);
     index->addSubIndex(subIndex);
 }

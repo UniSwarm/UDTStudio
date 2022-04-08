@@ -192,7 +192,7 @@ void Index::removeSubIndex(uint8_t subIndex)
  * @brief object type getter
  * @return 8bits object type code
  */
-uint8_t Index::objectType() const
+Index::Object Index::objectType() const
 {
     return _objectType;
 }
@@ -201,7 +201,7 @@ uint8_t Index::objectType() const
  * @brief object type setter
  * @param 8 bits objects type code
  */
-void Index::setObjectType(const uint8_t &objectType)
+void Index::setObjectType(Object objectType)
 {
     _objectType = objectType;
 }
@@ -211,7 +211,7 @@ void Index::setObjectType(const uint8_t &objectType)
  * @param 8 bits object type code
  * @return object type string
  */
-QString Index::objectTypeStr(const uint8_t &objectType)
+QString Index::objectTypeStr(Object objectType)
 {
     switch (objectType)
     {

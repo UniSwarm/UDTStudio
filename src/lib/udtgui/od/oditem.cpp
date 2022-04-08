@@ -281,7 +281,7 @@ bool ODItem::setData(int column, const QVariant &value, int role)
                             }
                             else
                             {
-                                index()->setObjectType(value.toInt());
+                                index()->setObjectType(static_cast<Index::Object>(value.toInt()));
                             }
                             return true;
 
