@@ -53,17 +53,21 @@ private:
     static QString objectTypeToEnumString(uint16_t objectType);
     static QString dataTypeToEnumString(uint16_t dataType);
     static QString accessToEnumString(uint8_t acces);
-    static QString typeObjectToString(Index *index, uint8_t subIndex, bool isInRecord);
     static QString stringNameToString(const SubIndex *subIndex);
 
     void writeRecordDefinitionH(Index *index, QTextStream &hFile);
+    void writeArrayDefinitionH(Index *index, QTextStream &hFile);
     void writeIndexH(Index *index, QTextStream &hFile);
+    void writeDefineH(Index *index, QTextStream &hFile);
+
     int writeRamLineC(Index *index, QTextStream &cFile);
-    void writeRecordCompletionC(Index *index, QTextStream &cFile);
+    void writeSubentriesList(Index *index, QTextStream &cFile);
+    void writeSubentry(const SubIndex *index, QTextStream &cFile);
     void writeOdCompletionC(Index *index, QTextStream &cFile);
     void writeCharLineC(const SubIndex *subIndex, QTextStream &cFile);
+
     void writeInitRamC(const QList<Index *> &indexes, QTextStream &cFile);
-    void writeDefineH(Index *index, QTextStream &hFile);
+
     void writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextStream &cFile);
 
     QSet<QString> _typeSetTable;

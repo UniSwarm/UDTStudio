@@ -124,7 +124,14 @@ bool CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
 
     for (Index *index : indexes)
     {
-        writeRecordDefinitionH(index, out);
+        if (index->objectType() == Index::RECORD)
+        {
+            writeRecordDefinitionH(index, out);
+        }
+        if (index->objectType() == Index::ARRAY)
+        {
+            writeArrayDefinitionH(index, out);
+        }
     }
 
     out << "// === struct definitions for memory types ==="
@@ -309,7 +316,7 @@ bool CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
 
     for (Index *index : indexes)
     {
-        writeRecordCompletionC(index, out);
+        writeSubentriesList(index, out);
     }
 
     out << "// ============ object dictionary completion =============="
@@ -318,7 +325,7 @@ bool CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
         << "\n";
     out << "{"
         << "\n";
-    out << "//  {index, typeObject, accessPDOmapping, nbSubIndex, ptData}"
+    out << "//  {index, typeObject, nbSubIndex, subEntries}"
         << "\n";
     for (Index *index : indexes)
     {
@@ -527,10 +534,8 @@ QString CGenerator::dataToString(const SubIndex *subIndex)
     }
 }
 
-QString CGenerator::objectTypeToEnumString(const uint16_t objectType)
+QString CGenerator::objectTypeToEnumString(uint16_t objectType)
 {
-    QString typeObject;
-
     switch (objectType)
     {
         case Index::OBJECT_NULL:
@@ -559,7 +564,7 @@ QString CGenerator::objectTypeToEnumString(const uint16_t objectType)
     }
 }
 
-QString CGenerator::dataTypeToEnumString(const uint16_t dataType)
+QString CGenerator::dataTypeToEnumString(uint16_t dataType)
 {
     switch (dataType)
     {
@@ -642,7 +647,7 @@ QString CGenerator::dataTypeToEnumString(const uint16_t dataType)
     return QString();
 }
 
-QString CGenerator::accessToEnumString(const uint8_t acces)
+QString CGenerator::accessToEnumString(uint8_t acces)
 {
     QString accessToEnumString;
 
@@ -679,30 +684,6 @@ QString CGenerator::accessToEnumString(const uint8_t acces)
 }
 
 /**
- * @brief converts data type and object type
- * @param sub-index
- * @return a C hexadecimal value coded on 16 bits
- */
-QString CGenerator::typeObjectToString(Index *index, uint8_t subIndex, bool isInRecord = false)
-{
-    QString typeObject;
-
-    if (isInRecord)
-    {
-        typeObject = objectTypeToEnumString(Index::VAR);
-    }
-    else
-    {
-        typeObject = objectTypeToEnumString(index->objectType());
-    }
-    typeObject += " | ";
-
-    typeObject += dataTypeToEnumString(index->subIndex(subIndex)->dataType());
-
-    return typeObject;
-}
-
-/**
  * @brief convert a string name
  * @param sub-index
  * @param sub-index number for arrays
@@ -727,13 +708,12 @@ QString CGenerator::stringNameToString(const SubIndex *subIndex)
  */
 void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile)
 {
-    if (index->objectType() != Index::Object::RECORD)
+    if (index->objectType() != Index::RECORD)
     {
         return;
     }
 
     QString structName = structNameToString(index->name());
-
     if (_typeSetTable.contains(structName))
     {
         return;
@@ -767,6 +747,26 @@ void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile)
     _typeSetTable.insert(structName);
 }
 
+void CGenerator::writeArrayDefinitionH(Index *index, QTextStream &hFile)
+{
+    if (index->objectType() != Index::ARRAY)
+    {
+        return;
+    }
+
+    QString structName = structNameToString(index->name());
+    if (_typeSetTable.contains(structName))
+    {
+        return;
+    }
+
+    hFile << "typedef struct"
+          << "  // 0x" << QString::number(index->index(), 16).toUpper() << "\n{\n";
+    hFile << "    uint8_t sub0;" << "\n";
+    hFile << "    " << typeToString(index->subIndex(1)->dataType()) << " data[" << index->subIndexesCount() - 1 << "];" << "\n";
+    hFile << "} " << structName << ";\n\n";
+}
+
 /**
  * @brief writes an index definition in a .h file
  * @param index
@@ -777,7 +777,7 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile)
     QString dataType;
     switch (index->objectType())
     {
-        case Index::Object::VAR:
+        case Index::VAR:
             if (!index->subIndexExist(0))
             {
                 return;
@@ -790,7 +790,7 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile)
             }
 
             dataType = typeToString(index->subIndex(0)->dataType());
-            if (dataType == nullptr)
+            if (dataType.isEmpty())
             {
                 break;
             }
@@ -798,26 +798,12 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile)
             hFile << "    " << dataType << " _od_align " << varNameToString(index->name()) << ";";
             break;
 
-        case Index::Object::RECORD:
+        case Index::ARRAY:
+        case Index::RECORD:
             hFile << "    " << structNameToString(index->name()) << " _od_align " << varNameToString(index->name()) << ";";
             break;
 
-        case Index::Object::ARRAY:
-            if (!index->subIndexExist(1))
-            {
-                break;
-            }
-
-            dataType = typeToString(index->subIndex(1)->dataType());
-            if (dataType == nullptr)
-            {
-                break;
-            }
-
-            hFile << "    " << dataType << " _od_align " << varNameToString(index->name());
-            hFile << "[" << index->maxSubIndex() - 1 << "]"
-                  << ";";
-
+        default:
             break;
     }
 
@@ -851,8 +837,7 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
                 break;
             }
 
-            cFile << "    "
-                  << "OD_RAM." << varNameToString(index->name());
+            cFile << "    OD_RAM." << varNameToString(index->name());
             cFile << " = ";
             cFile << dataToString(index->subIndex(0));
             cFile << ";";
@@ -869,8 +854,7 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
                 {
                     continue;
                 }
-                cFile << "    "
-                      << "OD_RAM." << varNameToString(index->name()) << "." << varNameToString(subIndex->name());
+                cFile << "    OD_RAM." << varNameToString(index->name()) << "." << varNameToString(subIndex->name());
                 cFile << " = ";
                 cFile << dataToString(subIndex);
                 cFile << ";";
@@ -881,7 +865,7 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
             break;
 
         case Index::Object::ARRAY:
-            for (int i = 1; i < index->subIndexesCount(); i++)
+            for (int i = 0; i < index->subIndexesCount(); i++)
             {
                 if (!index->subIndexExist(i))
                 {
@@ -895,15 +879,23 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
                 {
                     continue;
                 }
-                cFile << "    "
-                      << "OD_RAM." << varNameToString(index->name()) << "[" << i - 1 << "]";
-                cFile << " = ";
+                if (i == 0)
+                {
+                    cFile << "    OD_RAM." << varNameToString(index->name()) << ".sub0 = ";
+                }
+                else
+                {
+                    cFile << "    OD_RAM." << varNameToString(index->name()) << ".data[" << i - 1 << "] = ";
+                }
                 cFile << dataToString(index->subIndex(i));
                 cFile << ";";
                 cFile << "  // 0x" << QString::number(index->index(), 16).toUpper() << "." << i;
                 cFile << "\n";
                 written++;
             }
+            break;
+
+        default:
             break;
     }
     return written;
@@ -914,36 +906,96 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
  * @param index
  * @param .c file
  */
-void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile)
+void CGenerator::writeSubentriesList(Index *index, QTextStream &cFile)
 {
-    if (index->objectType() == Index::Object::RECORD)
+    cFile << "static const OD_entrySubIndex_t const od_Sub" << QString::number(index->index(), 16).toUpper().toUpper() << "[] =\n";
+    cFile << "{\n";
+
+    switch (index->objectType())
     {
-        cFile << "static const OD_entrySubIndex_t OD_Record" << QString::number(index->index(), 16).toUpper().toUpper() << "[" << index->maxSubIndex() << "] =\n";
-        cFile << "{\n";
+        case Index::VAR:
+            if (index->subIndexExist(0))
+            {
+                writeSubentry(index->subIndex(0), cFile);
+            }
+            break;
 
-        for (SubIndex *subIndex : index->subIndexes())
-        {
-            cFile << "    {";
+        case Index::ARRAY:
+            if (index->subIndexExist(0))
+            {
+                writeSubentry(index->subIndex(0), cFile);
+            }
+            if (index->subIndexExist(1))
+            {
+                writeSubentry(index->subIndex(1), cFile);
+            }
+            break;
 
-            // OD_entrySubIndex_t.typeObject
-            cFile << typeObjectToString(index, subIndex->subIndex(), true) << ", ";
+        case Index::RECORD:
+            for (SubIndex *subIndex : index->subIndexes())
+            {
+                writeSubentry(subIndex, cFile);
+            }
+            break;
 
-            // OD_entrySubIndex_t.accessPDOmapping
-            cFile << accessToEnumString(subIndex->accessType()) << ", ";
-
-            // OD_entrySubIndex_t.subNumber
-            cFile << subIndex->subIndex() << ", ";
-
-            // OD_entrySubIndex_t.ptData
-            cFile << "(void*)&OD_RAM." << varNameToString(index->name());
-            cFile << "." << varNameToString(subIndex->name());
-
-            cFile << "},"
-                  << "\n";
-        }
-
-        cFile << "};\n\n";
+        default:
+            break;
     }
+
+    cFile << "};\n\n";
+}
+
+void CGenerator::writeSubentry(const SubIndex *subIndex, QTextStream &cFile)
+{
+    cFile << "    {";
+
+    // OD_entrySubIndex_t.subNumber
+    cFile << subIndex->subIndex() << ", ";
+
+    // OD_entrySubIndex_t.accessPDOmapping
+    cFile << accessToEnumString(subIndex->accessType()) << ", ";
+
+    // OD_entrySubIndex_t.typeObject
+    cFile << dataTypeToEnumString(subIndex->dataType()) << ", ";
+
+    // OD_entrySubIndex_t.ptData
+    switch (subIndex->index()->objectType())
+    {
+        case Index::VAR:
+            if (subIndex->dataType() == SubIndex::VISIBLE_STRING || subIndex->dataType() == SubIndex::OCTET_STRING
+                || subIndex->dataType() == SubIndex::UNICODE_STRING)
+            {
+                cFile << "(void*)" << varNameToString(subIndex->name()) << "Str";
+            }
+            else
+            {
+                cFile << "(void*)&OD_RAM." << varNameToString(subIndex->name());
+            }
+            break;
+
+        case Index::ARRAY:
+            cFile << "(void*)&OD_RAM." << varNameToString(subIndex->index()->name());
+            if (subIndex->subIndex() == 0)
+            {
+                cFile << ".sub0";
+            }
+            else
+            {
+                cFile << ".data";
+            }
+            break;
+
+        case Index::RECORD:
+            cFile << "(void*)&OD_RAM." << varNameToString(subIndex->index()->name());
+            cFile << "." << varNameToString(subIndex->name());
+            break;
+
+        default:
+            break;
+    }
+
+    cFile << "},"
+          << "\n";
 }
 
 /**
@@ -953,78 +1005,25 @@ void CGenerator::writeRecordCompletionC(Index *index, QTextStream &cFile)
  */
 void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
 {
+    if (!index->subIndexExist(0))
+    {
+        return;
+    }
+
     cFile << "    "
           << "{";
 
     // OD_entry_t.index
     cFile << "0x" << QString::number(index->index(), 16).toUpper() << ", ";
 
-    // OD_entry_t.ptData, OD_entry_t.typeObject, OD_entry_t.accessPDOmapping
-    switch (index->objectType())
-    {
-        case Index::Object::VAR:
-            if (!index->subIndexExist(0))
-            {
-                break;
-            }
+    // OD_entry_t.typeObject
+    cFile << objectTypeToEnumString(index->objectType()).leftJustified(16, ' ')  << ", ";
 
-            // OD_entry_t.typeObject
-            cFile << typeObjectToString(index, 0) << ", ";
+    // OD_entry_t.nbSubIndex
+    cFile << QString::number(index->subIndexesCount()).toUpper().rightJustified(3, ' ') << ", ";
 
-            // OD_entry_t.accessPDOmapping
-            cFile << accessToEnumString(index->subIndex(0)->accessType()) << ", ";
-
-            // OD_entry_t.nbSubIndex
-            cFile << "0x00"
-                  << ", ";
-
-            // OD_entry_t.ptData
-            if (index->subIndex(0)->dataType() == SubIndex::VISIBLE_STRING || index->subIndex(0)->dataType() == SubIndex::OCTET_STRING
-                || index->subIndex(0)->dataType() == SubIndex::UNICODE_STRING)
-            {
-                cFile << "(void*)" << stringNameToString(index->subIndex(0));
-            }
-            else
-            {
-                cFile << "(void*)&OD_RAM." << varNameToString(index->name());
-            }
-            break;
-
-        case Index::Object::RECORD:
-            // OD_entry_t.typeObject
-            cFile << objectTypeToEnumString(Index::RECORD) << ", ";
-
-            // OD_entry_t.accessPDOmapping
-            cFile << "0x00"
-                  << ", ";
-
-            // OD_entry_t.nbSubIndex
-            cFile << "0x" << QString::number(index->maxSubIndex() - 1, 16).toUpper().rightJustified(2, '0') << ", ";
-
-            // OD_entry_t.ptData
-            cFile << "(void*)OD_Record" << QString::number(index->index(), 16).toUpper();
-            break;
-
-        case Index::Object::ARRAY:
-            if (!index->subIndexExist(1))
-            {
-                appendError(QString("Invalid array 0x%1\n").arg(QString::number(index->index(), 16).toUpper()));
-                break;
-            }
-
-            // OD_entry_t.typeObject
-            cFile << typeObjectToString(index, 1) << ", ";
-
-            // OD_entry_t.accessPDOmapping
-            cFile << accessToEnumString(index->subIndex(1)->accessType()) << ", ";
-
-            // OD_entry_t.nbSubIndex
-            cFile << "0x" << QString::number(index->maxSubIndex() - 1, 16).toUpper().rightJustified(2, '0') << ", ";
-
-            // OD_entry_t.ptData
-            cFile << "(void*)OD_RAM." << varNameToString(index->name());
-            break;
-    }
+    // OD_entry_t.subEntries
+    cFile << "od_Sub" << QString::number(index->index(), 16).toUpper();
 
     cFile << "},";
     cFile << "\n";
@@ -1097,41 +1096,47 @@ void CGenerator::writeInitRamC(const QList<Index *> &indexes, QTextStream &cFile
  */
 void CGenerator::writeDefineH(Index *index, QTextStream &hFile)
 {
-    hFile << "#define "
-          << "OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
-    hFile << "#define "
-          << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
-
-    if (index->objectType() == Index::Object::RECORD)
+    switch (index->objectType())
     {
-        for (SubIndex *subIndex : index->subIndexes())
-        {
-            hFile << "#define "
-                  << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(subIndex->subIndex(), 16).toUpper();
-            hFile << " OD_INDEX" << QString::number(index->index(), 16).toUpper() << "." << varNameToString(subIndex->name()) << "\n";
-        }
-    }
+        case Index::VAR:
+            hFile << "#define OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
+            hFile << "#define OD_INDEX" << QString::number(index->index(), 16).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
+            break;
 
-    else if (index->objectType() == Index::Object::ARRAY)
-    {
-        hFile << "#define "
-              << "OD_" << varNameToString(index->name()).toUpper() << "_COUNT " << index->subIndexesCount() - 1 << "\n";
-        hFile << "#define "
-              << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_COUNT " << index->subIndexesCount() - 1 << "\n";
-        for (SubIndex *subIndex : index->subIndexes())
-        {
-            uint8_t numSubIndex = subIndex->subIndex();
+        case Index::ARRAY:
+            hFile << "#define OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << ".data\n";
+            hFile << "#define OD_INDEX" << QString::number(index->index(), 16).toUpper() << " OD_RAM." << varNameToString(index->name()) << ".data\n";
 
-            if (numSubIndex == 0)
+            hFile << "#define OD_" << varNameToString(index->name()).toUpper() << "_COUNT " << index->subIndexesCount() - 1 << "\n";
+            hFile << "#define OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_COUNT " << index->subIndexesCount() - 1 << "\n";
+            for (SubIndex *subIndex : index->subIndexes())
             {
-                continue;
-            }
+                uint8_t numSubIndex = subIndex->subIndex();
 
-            hFile << "#define "
-                  << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(numSubIndex, 16).toUpper();
-            hFile << " OD_INDEX" << QString::number(index->index(), 16).toUpper() << "[" << QString::number(numSubIndex - 1, 16).toUpper() << "]"
-                  << "\n";
-        }
+                if (numSubIndex == 0)
+                {
+                    continue;
+                }
+
+                hFile << "#define OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(numSubIndex, 16).toUpper();
+                hFile << " OD_INDEX" << QString::number(index->index(), 16).toUpper() << "[" << QString::number(numSubIndex - 1, 16).toUpper() << "]"
+                      << "\n";
+            }
+            break;
+
+        case Index::RECORD:
+            hFile << "#define OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
+            hFile << "#define OD_INDEX" << QString::number(index->index(), 16).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
+
+            for (SubIndex *subIndex : index->subIndexes())
+            {
+                hFile << "#define OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(subIndex->subIndex(), 16).toUpper();
+                hFile << " OD_INDEX" << QString::number(index->index(), 16).toUpper() << "." << varNameToString(subIndex->name()) << "\n";
+            }
+            break;
+
+        default:
+            break;
     }
 
     hFile << "\n";
@@ -1159,6 +1164,9 @@ void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextS
                     case Index::Object::RECORD:
                     case Index::Object::ARRAY:
                         cFile << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(subIndex->subIndex(), 16);
+                        break;
+
+                    default:
                         break;
                 }
 
