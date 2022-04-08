@@ -732,15 +732,15 @@ void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile)
         }
         recordFields.append(subIndex);
     }
-    std::sort(recordFields.begin(),
+    /*std::sort(recordFields.begin(),
               recordFields.end(),
               [](const SubIndex *a, const SubIndex *b) -> bool
               {
                   return a->length() > b->length();
-              });
+              });*/
     for (SubIndex *subIndex : recordFields)
     {
-        hFile << "    " << typeToString(subIndex->dataType()) << " " << varNameToString(subIndex->name()) << ";  // sub" << subIndex->subIndex() << "\n";
+        hFile << "    _od_align " << typeToString(subIndex->dataType()) << " " << varNameToString(subIndex->name()) << ";  // sub" << subIndex->subIndex() << "\n";
     }
     hFile << "} " << structName << ";\n\n";
 
@@ -762,8 +762,8 @@ void CGenerator::writeArrayDefinitionH(Index *index, QTextStream &hFile)
 
     hFile << "typedef struct"
           << "  // 0x" << QString::number(index->index(), 16).toUpper() << "\n{\n";
-    hFile << "    uint8_t sub0;" << "\n";
-    hFile << "    " << typeToString(index->subIndex(1)->dataType()) << " data[" << index->subIndexesCount() - 1 << "];" << "\n";
+    hFile << "    _od_align uint8_t sub0;" << "\n";
+    hFile << "    _od_align " << typeToString(index->subIndex(1)->dataType()) << " data[" << index->subIndexesCount() - 1 << "];" << "\n";
     hFile << "} " << structName << ";\n\n";
 }
 
