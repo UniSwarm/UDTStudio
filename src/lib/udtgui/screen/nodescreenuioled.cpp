@@ -39,7 +39,7 @@ void NodeScreenUIOLed::createWidgets()
 
     // read all action
     QAction *readAllObjectAction = toolBar->addAction(tr("Read all objects"));
-    readAllObjectAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    readAllObjectAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
     readAllObjectAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllObjectAction->setStatusTip(tr("Read all the objects of the current window"));
     toolBar->addAction(readAllObjectAction);

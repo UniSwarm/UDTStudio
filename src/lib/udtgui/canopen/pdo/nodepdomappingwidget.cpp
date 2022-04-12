@@ -111,7 +111,7 @@ void NodePDOMappingWidget::createWidgets()
 
     // read all action
     _actionReadMappings = _toolBar->addAction(tr("Read all"));
-    _actionReadMappings->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    _actionReadMappings->setIcon(QIcon(":/icons/img/icons8-update.png"));
     _actionReadMappings->setShortcut(QKeySequence("Ctrl+R"));
     _actionReadMappings->setStatusTip(tr("Read all PDO mapping from device"));
     connect(_actionReadMappings, &QAction::triggered, this, &NodePDOMappingWidget::readAllMapping);

@@ -18,8 +18,9 @@
         <file>img/icons8-settings.png</file>
         <file>img/icons8-stepper-motor.png</file>
         <file>img/icons8-stop.png</file>
-        <file>img/icons8-sync1.png</file>
         <file>img/icons8-sync.png</file>
+        <file>img/icons8-sync1.png</file>
+        <file>img/icons8-update.png</file>
         <file>img/icons8-broom.png</file>
         <file>img/icons8-speed.png</file>
         <file>img/icons8-line-chart.png</file>
@@ -33,6 +34,7 @@
         <file>img/icons8-restore-page.png</file>
         <file>img/icons8-sort-desc.png</file>
         <file>img/icons8-video-trimming.png</file>
+        <file>img/icons8-screenshot.png</file>
     </qresource>
     <qresource prefix="/diagram">
         <file>img/diagrams/402VLDiagram.png</file>

@@ -129,7 +129,7 @@ QToolBar *NodeScreenSynchro::createToolBarWidgets()
 
     // read all action
     QAction *readAllAction = toolBar->addAction(tr("Read all objects"));
-    readAllAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    readAllAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
     readAllAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));
     connect(readAllAction, &QAction::triggered, this, &NodeScreenSynchro::readAllObject);

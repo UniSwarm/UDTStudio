@@ -204,7 +204,7 @@ void NodeOdTreeView::createActions()
     _readAllAction->setText(tr("Read &all"));
     _readAllAction->setShortcut(QKeySequence(Qt::SHIFT, Qt::Key_F5));
     _readAllAction->setShortcutContext(Qt::WidgetShortcut);
-    _readAllAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    _readAllAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
 #if QT_VERSION >= 0x050A00
     _readAllAction->setShortcutVisibleInContextMenu(true);
 #endif

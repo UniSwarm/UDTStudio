@@ -70,23 +70,22 @@ void NodeScreenHome::createWidgets()
 
     // read all action
     QAction *actionReadMappings = toolBar->addAction(tr("Read all"));
-    actionReadMappings->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    actionReadMappings->setIcon(QIcon(":/icons/img/icons8-update.png"));
     actionReadMappings->setShortcut(QKeySequence("Ctrl+R"));
     actionReadMappings->setStatusTip(tr("Read all the objects of the current window"));
     connect(actionReadMappings, &QAction::triggered, this, &NodeScreenHome::readAll);
-
-    layout->addWidget(toolBar);
 
     layout->addWidget(createSumaryWidget());
     layout->addWidget(createStatusWidget());
     layout->addWidget(createOdWidget());
     widget->setLayout(layout);
 
-    QScrollArea *scrollArea = new QScrollArea;
+    QScrollArea *scrollArea = new QScrollArea();
     scrollArea->setWidget(widget);
     scrollArea->setWidgetResizable(true);
     QLayout *glayout = new QVBoxLayout();
-    glayout->setContentsMargins(0, 0, 0, 0);
+    glayout->setContentsMargins(2, 2, 2, 2);
+    glayout->addWidget(toolBar);
     glayout->addWidget(scrollArea);
     setLayout(glayout);
 }

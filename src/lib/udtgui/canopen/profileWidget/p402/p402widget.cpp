@@ -568,6 +568,7 @@ QToolBar *P402Widget::createToolBarWidgets()
     _logTimerSpinBox->setValue(100);
     _logTimerSpinBox->setSuffix(" ms");
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
+    toolBar->addWidget(_logTimerSpinBox);
     connect(_logTimerSpinBox,
             QOverload<int>::of(&QSpinBox::valueChanged),
             [=](int i)
@@ -575,23 +576,22 @@ QToolBar *P402Widget::createToolBarWidgets()
                 setLogTimer(i);
             });
 
-    _option402Action = new QAction();
+    toolBar->addSeparator();
+
+    _option402Action = toolBar->addAction(tr("Options code"));
     _option402Action->setCheckable(true);
     _option402Action->setIcon(QIcon(":/icons/img/icons8-settings.png"));
-    _option402Action->setToolTip(tr("Option code"));
+    _option402Action->setStatusTip(tr("Show options code settings"));
     connect(_option402Action, &QAction::triggered, this, &P402Widget::displayOption402);
+
+    toolBar->addSeparator();
 
     // read all action
     QAction *readAllObjectAction = toolBar->addAction(tr("Read all objects"));
-    readAllObjectAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    readAllObjectAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
     readAllObjectAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllObjectAction->setStatusTip(tr("Read all the objects of the current window"));
     connect(readAllObjectAction, &QAction::triggered, this, &P402Widget::readAllObjects);
-
-    toolBar->addWidget(_logTimerSpinBox);
-    toolBar->addSeparator();
-    toolBar->addAction(_option402Action);
-    toolBar->addAction(readAllObjectAction);
 
     return toolBar;
 }
