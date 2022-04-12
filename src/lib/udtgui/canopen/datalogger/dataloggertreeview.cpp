@@ -19,12 +19,14 @@
 #include "dataloggertreeview.h"
 
 #include <QColorDialog>
+#include <QDir>
 #include <QFontMetrics>
 #include <QHeaderView>
 #include <QItemSelectionModel>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
+#include <QStandardPaths>
 #include <QTextStream>
 
 #include "node.h"
@@ -139,11 +141,15 @@ void DataLoggerTreeView::exportOneCurrent() const
     {
         return;
     }
-    QFile file(QString("export.csv").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz"), dlData->name()));
+
+    QString path = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/UDTStudio/";
+    QDir().mkdir(path);
+    QFile file(path + QString("export_%1.csv").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz"), dlData->name()));
     if (!file.open(QIODevice::WriteOnly))
     {
         return;
     }
+
     QTextStream stream(&file);
     int minCount = qMin(dlData->values().count(), dlData->times().count());
     for (int i = 0; i < minCount; i++)
@@ -190,6 +196,8 @@ void DataLoggerTreeView::createActions()
     _exportOneAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
     _exportOneAction->setShortcutContext(Qt::WidgetShortcut);
     _exportOneAction->setIcon(QIcon(":/icons/img/icons8-export.png"));
+    _exportOneAction->setStatusTip(tr("Exports CSV data in '%1' directory")
+                                    .arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/UDTStudio/"));
     _exportOneAction->setEnabled(false);
 #if QT_VERSION >= 0x050A00
     _exportOneAction->setShortcutVisibleInContextMenu(true);
