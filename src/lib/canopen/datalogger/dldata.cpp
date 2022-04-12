@@ -22,6 +22,9 @@
 
 #include "indexdb.h"
 
+#include <QFile>
+#include <QTextStream>
+
 DLData::DLData(const NodeObjectId &objectId)
     : _objectId(objectId)
 {
@@ -110,6 +113,28 @@ QString DLData::unit() const
 void DLData::setUnit(const QString &unit)
 {
     _unit = unit;
+}
+
+void DLData::exportCSVData(const QString &fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        return;
+    }
+
+    quint64 firstDateTime = _times.first().toMSecsSinceEpoch();
+
+    QTextStream stream(&file);
+    stream << "Time (s)" << ";" << _name  << " (" << _unit << ")" << '\n';
+
+    int minCount = qMin(_values.count(), _times.count());
+    for (int i = 0; i < minCount; i++)
+    {
+        quint64 time = _times[i].toMSecsSinceEpoch() - firstDateTime;
+        stream << time / 1000.0 << ';' << QString::number(_values[i], 'f') << '\n';
+    }
+    file.close();
 }
 
 double DLData::firstValue() const

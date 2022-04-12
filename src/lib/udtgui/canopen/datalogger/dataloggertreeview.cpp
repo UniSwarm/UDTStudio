@@ -27,7 +27,6 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QStandardPaths>
-#include <QTextStream>
 
 #include "node.h"
 
@@ -144,19 +143,8 @@ void DataLoggerTreeView::exportOneCurrent() const
 
     QString path = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/UDTStudio/";
     QDir().mkdir(path);
-    QFile file(path + QString("export_%1.csv").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz"), dlData->name()));
-    if (!file.open(QIODevice::WriteOnly))
-    {
-        return;
-    }
 
-    QTextStream stream(&file);
-    int minCount = qMin(dlData->values().count(), dlData->times().count());
-    for (int i = 0; i < minCount; i++)
-    {
-        stream << dlData->times()[i].toString("ss.zzz") << ';' << QString::number(dlData->values()[i], 'f') << '\n';
-    }
-    file.close();
+    dlData->exportCSVData(path + QString("export_%1.csv").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz")));
 }
 
 void DataLoggerTreeView::updateSelect(const QItemSelection &selected, const QItemSelection &deselected)

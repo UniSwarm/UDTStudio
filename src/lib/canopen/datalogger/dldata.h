@@ -75,6 +75,8 @@ public:
     QString unit() const;
     void setUnit(const QString &unit);
 
+    void exportCSVData(const QString &fileName);
+
 protected:
     NodeObjectId _objectId;
     Node *_node;
