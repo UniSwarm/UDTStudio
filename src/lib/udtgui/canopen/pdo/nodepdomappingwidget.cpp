@@ -68,22 +68,35 @@ void NodePDOMappingWidget::setNode(Node *node)
 
 void NodePDOMappingWidget::readAllMapping()
 {
-    if (_node != nullptr)
+    if (_node == nullptr)
     {
-        for (int rpdo = 0; rpdo < 4; rpdo++)
-        {
-            if (_node->rpdos().count() >= rpdo)
-            {
-                _node->rpdos()[rpdo]->readMapping();
-            }
-        }
-        for (int tpdo = 0; tpdo < 4; tpdo++)
-        {
-            if (_node->tpdos().count() >= tpdo)
-            {
-                _node->tpdos()[tpdo]->readMapping();
-            }
-        }
+        return;
+    }
+
+    for (RPDO *rpdo : _node->rpdos())
+    {
+        rpdo->readMapping();
+    }
+    for (TPDO *tpdo : _node->tpdos())
+    {
+        tpdo->readMapping();
+    }
+}
+
+void NodePDOMappingWidget::clearAllMapping()
+{
+    if (_node == nullptr)
+    {
+        return;
+    }
+
+    for (RPDO *rpdo : _node->rpdos())
+    {
+        rpdo->writeMapping(QList<NodeObjectId>());
+    }
+    for (TPDO *tpdo : _node->tpdos())
+    {
+        tpdo->writeMapping(QList<NodeObjectId>());
     }
 }
 
@@ -102,6 +115,12 @@ void NodePDOMappingWidget::createWidgets()
     _actionReadMappings->setShortcut(QKeySequence("Ctrl+R"));
     _actionReadMappings->setStatusTip(tr("Read all PDO mapping from device"));
     connect(_actionReadMappings, &QAction::triggered, this, &NodePDOMappingWidget::readAllMapping);
+
+    // read all action
+    _actionClearMappings = _toolBar->addAction(tr("Clear all"));
+    _actionClearMappings->setIcon(QIcon(":/icons/img/icons8-broom.png"));
+    _actionClearMappings->setStatusTip(tr("Clear all PDO mappings"));
+    connect(_actionClearMappings, &QAction::triggered, this, &NodePDOMappingWidget::clearAllMapping);
 
     layout->addWidget(_toolBar);
 

@@ -38,6 +38,7 @@ public:
 public slots:
     void setNode(Node *node);
     void readAllMapping();
+    void clearAllMapping();
 
 protected:
     void createWidgets();
@@ -47,6 +48,7 @@ protected:
     Node *_node;
     QToolBar *_toolBar;
     QAction *_actionReadMappings;
+    QAction *_actionClearMappings;
 };
 
 #endif  // NODEPDOMAPPINGWIDGET_H
