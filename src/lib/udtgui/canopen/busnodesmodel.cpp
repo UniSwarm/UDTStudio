@@ -1,6 +1,7 @@
 #include "busnodesmodel.h"
 
 #include <QIcon>
+#include <QPainter>
 
 BusNodesModel::BusNodesModel(QObject *parent)
     : BusNodesModel(nullptr, parent)
@@ -122,6 +123,7 @@ void BusNodesModel::addBus(quint8 busId)
             [=]()
             {
                 updateBus(bus, Status);
+                updateBus(bus, NodeId);
             });
 }
 
@@ -175,6 +177,7 @@ void BusNodesModel::addNode(CanOpenBus *bus, quint8 nodeId)
             [=]()
             {
                 updateNode(node, Status);
+                updateNode(node, NodeId);
             });
 }
 
@@ -220,8 +223,10 @@ QVariant BusNodesModel::headerData(int section, Qt::Orientation orientation, int
             {
                 case NodeId:
                     return QVariant(tr("Id"));
+
                 case Name:
                     return QVariant(tr("Name"));
+
                 case Status:
                     return QVariant(tr("Status"));
             }
@@ -247,10 +252,13 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
                 {
                     case NodeId:
                         return QVariant(index.row());
+
                     case Name:
                         return QVariant(bus->busName());
+
                     case Status:
                         return QVariant(bus->isConnected() ? tr("connected") : tr("unconnected"));
+
                     default:
                         return QVariant();
                 }
@@ -258,7 +266,28 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
             case Qt::DecorationRole:
                 if (index.column() == NodeId)
                 {
-                    return QVariant(QIcon(":/uBoards/connexion-usb.png"));
+                    QPixmap pixmap;
+
+                    pixmap = QPixmap(":/uBoards/usb.png");
+
+                    if (pixmap.isNull())
+                    {
+                        pixmap = QPixmap(":/uBoards/unknown.png");
+                    }
+
+                    QPainter painter(&pixmap);
+                    if (bus->isConnected())
+                    {
+                        painter.setBrush(QColor(0, 255, 0));
+                        painter.drawEllipse(pixmap.height() * .6, pixmap.width() * .6, pixmap.height() * .4, pixmap.width() * .4);
+                    }
+                    else
+                    {
+                        painter.setBrush(QColor(255, 0, 0));
+                        painter.drawEllipse(pixmap.height() * .6, pixmap.width() * .6, pixmap.height() * .4, pixmap.width() * .4);
+                    }
+
+                    return QVariant(QIcon(pixmap));
                 }
                 return QVariant();
 
@@ -281,10 +310,13 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
                 {
                     case NodeId:
                         return QVariant(node->nodeId());
+
                     case Name:
                         return QVariant(node->name());
+
                     case Status:
                         return QVariant(node->statusStr());
+
                     default:
                         return QVariant();
                 }
@@ -292,17 +324,50 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
             case Qt::DecorationRole:
                 if (index.column() == NodeId)
                 {
+                    QPixmap pixmap;
                     if (node->manufacturerId() == 0x04A2)  // UniSwarm
                     {
                         switch (node->profileNumber())
                         {
                             case 401:
                             case 428:
-                                return QVariant(QIcon(":/uBoards/uio.png"));
+                                pixmap = QPixmap(":/uBoards/uio.png");
+                                break;
+
                             case 402:
-                                return QVariant(QIcon(":/uBoards/umc.png"));
+                                pixmap = QPixmap(":/uBoards/umc.png");
+                                break;
                         }
                     }
+
+                    if (pixmap.isNull())
+                    {
+                        pixmap = QPixmap(":/uBoards/unknown.png");
+                    }
+
+                    QPainter painter(&pixmap);
+                    switch (node->status())
+                    {
+                        case Node::PREOP:
+                            painter.setBrush(QColor(255, 140, 0));
+                            painter.drawEllipse(pixmap.height() * .6, pixmap.width() * .6, pixmap.height() * .4, pixmap.width() * .4);
+                            break;
+
+                        case Node::STARTED:
+                            painter.setBrush(QColor(0, 255, 0));
+                            painter.drawEllipse(pixmap.height() * .6, pixmap.width() * .6, pixmap.height() * .4, pixmap.width() * .4);
+                            break;
+
+                        case Node::STOPPED:
+                            painter.setBrush(QColor(255, 0, 0));
+                            painter.drawEllipse(pixmap.height() * .6, pixmap.width() * .6, pixmap.height() * .4, pixmap.width() * .4);
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    return QVariant(QIcon(pixmap));
                 }
                 return QVariant();
 

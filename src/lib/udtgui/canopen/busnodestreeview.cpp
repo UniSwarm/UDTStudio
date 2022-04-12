@@ -53,6 +53,8 @@ BusNodesTreeView::BusNodesTreeView(CanOpen *canOpen, QWidget *parent)
     setSortingEnabled(true);
     setSelectionBehavior(QAbstractItemView::SelectRows);
     sortByColumn(0, Qt::AscendingOrder);
+
+    header()->hideSection(BusNodesModel::Status);
 }
 
 BusNodesTreeView::~BusNodesTreeView()
