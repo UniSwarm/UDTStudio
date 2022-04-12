@@ -41,7 +41,11 @@ BusNodesTreeView::BusNodesTreeView(CanOpen *canOpen, QWidget *parent)
     connect(selectionModel(), &QItemSelectionModel::selectionChanged, this, &BusNodesTreeView::updateSelection);
     connect(this, &QAbstractItemView::doubleClicked, this, &BusNodesTreeView::indexDbClick);
 
+#if QT_VERSION >= 0x050B00
     int w0 = QFontMetrics(font()).horizontalAdvance("0");
+#else
+    int w0 = QFontMetrics(font()).width("0");
+#endif
     header()->resizeSection(BusNodesModel::NodeId, 12 * w0);
     header()->resizeSection(BusNodesModel::Name, 14 * w0);
     header()->resizeSection(BusNodesModel::Status, 8 * w0);

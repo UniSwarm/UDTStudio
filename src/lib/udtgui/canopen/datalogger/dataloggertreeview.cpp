@@ -38,7 +38,11 @@ DataLoggerTreeView::DataLoggerTreeView(QWidget *parent)
     _sortProxy->setSourceModel(_loggerModel);
     setModel(_sortProxy);
 
+#if QT_VERSION >= 0x050B00
     int w0 = QFontMetrics(font()).horizontalAdvance("0");
+#else
+    int w0 = QFontMetrics(font()).width("0");
+#endif
     header()->resizeSection(DataLoggerModel::NodeName, 22 * w0);
     header()->resizeSection(DataLoggerModel::Index, 10 * w0);
     header()->resizeSection(DataLoggerModel::Name, 20 * w0);

@@ -37,7 +37,11 @@ NodeOdTreeView::NodeOdTreeView(QWidget *parent)
     _odModelSorter->setSourceModel(_odModel);
     setModel(_odModelSorter);
 
+#if QT_VERSION >= 0x050B00
     int w0 = QFontMetrics(font()).horizontalAdvance("0");
+#else
+    int w0 = QFontMetrics(font()).width("0");
+#endif
     header()->resizeSection(0, 12 * w0);
     header()->resizeSection(1, 40 * w0);
     header()->resizeSection(2, 12 * w0);
