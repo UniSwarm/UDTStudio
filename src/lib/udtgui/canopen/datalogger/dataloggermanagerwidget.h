@@ -50,6 +50,8 @@ protected slots:
     void setRollingEnabled(bool enabled);
     void setRollingTimeMs(int ms);
 
+    void takeScreenShot();
+
 protected:
     DataLogger *_logger;
     DataLoggerChartsWidget *_chartWidget;
@@ -64,6 +66,7 @@ protected:
     QAction *_crossAction;
     QAction *_rollAction;
     QSpinBox *_rollingTimeSpinBox;
+    QAction *_screenShotAction;
 };
 
 #endif  // DATALOGGERMANAGERWIDGET_H

@@ -19,6 +19,7 @@
 #include "dataloggermanagerwidget.h"
 
 #include <QHBoxLayout>
+#include <QStandardPaths>
 
 DataLoggerManagerWidget::DataLoggerManagerWidget(DataLogger *logger, QWidget *parent)
     : QWidget(parent)
@@ -78,6 +79,21 @@ void DataLoggerManagerWidget::setRollingTimeMs(int ms)
     if (_chartWidget != nullptr)
     {
         _chartWidget->setRollingTimeMs(ms);
+    }
+}
+
+void DataLoggerManagerWidget::takeScreenShot()
+{
+    if (_chartWidget != nullptr)
+    {
+        QWidget *parent = parentWidget();
+        QPixmap pixmap(parent->size());
+        parent->render(&pixmap, QPoint(), QRegion(QRect(QPoint(0, 0), parent->size())));
+
+        QString path = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation) + "/";
+        path += QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss");
+        path += "_datalogger_udtstudio.png";
+        pixmap.save(path);
     }
 }
 
@@ -227,6 +243,15 @@ void DataLoggerManagerWidget::createWidgets()
             {
                 setRollingTimeMs(i);
             });
+
+    _toolBar->addSeparator();
+
+    // screenshot
+    _screenShotAction = _toolBar->addAction(tr("Screenshot"));
+    _screenShotAction->setEnabled(true);
+    _screenShotAction->setIcon(QIcon(":/icons/img/icons8-screenshot.png"));
+    _screenShotAction->setStatusTip(tr("Takes a screenshot of the full datalogger window in '%1' directory").arg(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation) + "/"));
+    connect(_screenShotAction, &QAction::triggered, this, &DataLoggerManagerWidget::takeScreenShot);
 
     layout->addWidget(_toolBar);
 
