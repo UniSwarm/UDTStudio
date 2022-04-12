@@ -77,7 +77,7 @@ public:
     void resetValue();
 
     quint32 error() const;
-    void setError(quint32 value);
+    void setError(quint32 error);
     void clearError();
 
     // =============== Data type ==================

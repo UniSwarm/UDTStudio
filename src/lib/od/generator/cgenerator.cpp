@@ -695,10 +695,8 @@ QString CGenerator::stringNameToString(const SubIndex *subIndex)
     {
         return varNameToString(subIndex->name()) + "Str";
     }
-    else
-    {
-        return varNameToString(subIndex->name()) + "Str" + QString::number(subIndex->subIndex());
-    }
+
+    return varNameToString(subIndex->name()) + "Str" + QString::number(subIndex->subIndex());
 }
 
 /**
@@ -762,8 +760,10 @@ void CGenerator::writeArrayDefinitionH(Index *index, QTextStream &hFile)
 
     hFile << "typedef struct"
           << "  // 0x" << QString::number(index->index(), 16).toUpper() << "\n{\n";
-    hFile << "    _od_align uint8_t sub0;" << "\n";
-    hFile << "    _od_align " << typeToString(index->subIndex(1)->dataType()) << " data[" << index->subIndexesCount() - 1 << "];" << "\n";
+    hFile << "    _od_align uint8_t sub0;"
+          << "\n";
+    hFile << "    _od_align " << typeToString(index->subIndex(1)->dataType()) << " data[" << index->subIndexesCount() - 1 << "];"
+          << "\n";
     hFile << "} " << structName << ";\n\n";
 }
 
@@ -962,8 +962,7 @@ void CGenerator::writeSubentry(const SubIndex *subIndex, QTextStream &cFile)
     switch (subIndex->index()->objectType())
     {
         case Index::VAR:
-            if (subIndex->dataType() == SubIndex::VISIBLE_STRING || subIndex->dataType() == SubIndex::OCTET_STRING
-                || subIndex->dataType() == SubIndex::UNICODE_STRING)
+            if (subIndex->dataType() == SubIndex::VISIBLE_STRING || subIndex->dataType() == SubIndex::OCTET_STRING || subIndex->dataType() == SubIndex::UNICODE_STRING)
             {
                 cFile << "(void*)" << varNameToString(subIndex->name()) << "Str";
             }
@@ -1017,7 +1016,7 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
     cFile << "0x" << QString::number(index->index(), 16).toUpper() << ", ";
 
     // OD_entry_t.typeObject
-    cFile << objectTypeToEnumString(index->objectType()).leftJustified(16, ' ')  << ", ";
+    cFile << objectTypeToEnumString(index->objectType()).leftJustified(16, ' ') << ", ";
 
     // OD_entry_t.nbSubIndex
     cFile << QString::number(index->subIndexesCount()).toUpper().rightJustified(3, ' ') << ", ";

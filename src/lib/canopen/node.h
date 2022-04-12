@@ -86,8 +86,8 @@ public:
     const QList<TPDO *> &tpdos() const;
     const QList<RPDO *> &rpdos() const;
     bool isMappedObjectInPdo(const NodeObjectId &object) const;
-    RPDO *isMappedObjectInRpdo(const NodeObjectId &object) const;
-    TPDO *isMappedObjectInTpdo(const NodeObjectId &object) const;
+    RPDO *rpdoMappedObject(const NodeObjectId &object) const;
+    TPDO *tpdoMappedObject(const NodeObjectId &object) const;
 
     Bootloader *bootloader() const;
 
@@ -125,11 +125,10 @@ protected:
     Emergency *_emergency;
     NMT *_nmt;
     ErrorControl *_errorControl;
+    Bootloader *_bootloader;
     QList<Service *> _services;
 
     QList<NodeProfile *> _nodeProfiles;
-
-    Bootloader *_bootloader;
 
     NodeOd *_nodeOd;
 };

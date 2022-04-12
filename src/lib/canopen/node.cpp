@@ -211,7 +211,7 @@ void Node::readObject(quint16 index, quint8 subindex, QMetaType::Type dataType)
         return;
     }
 
-    TPDO *tpdoMapped = isMappedObjectInTpdo(NodeObjectId(index, subindex, dataType));
+    TPDO *tpdoMapped = tpdoMappedObject(NodeObjectId(index, subindex, dataType));
     if (tpdoMapped != nullptr)
     {
         if (tpdoMapped->isEnabled() && _status == STARTED && _bus->sync()->status() == Sync::STARTED)
@@ -251,7 +251,7 @@ void Node::writeObject(quint16 index, quint8 subindex, const QVariant &data)
     }
 
     NodeObjectId object(busId(), nodeId(), index, subindex);
-    if ((isMappedObjectInRpdo(NodeObjectId(index, subindex)) != nullptr) && _status == STARTED && _bus->sync()->status() == Sync::STARTED)
+    if ((rpdoMappedObject(NodeObjectId(index, subindex)) != nullptr) && _status == STARTED && _bus->sync()->status() == Sync::STARTED)
     {
         bool writtenInRpdo = false;
         for (RPDO *rpdo : qAsConst(_rpdos))
@@ -327,7 +327,7 @@ bool Node::isMappedObjectInPdo(const NodeObjectId &object) const
     return false;
 }
 
-RPDO *Node::isMappedObjectInRpdo(const NodeObjectId &object) const
+RPDO *Node::rpdoMappedObject(const NodeObjectId &object) const
 {
     for (RPDO *rpdo : _rpdos)
     {
@@ -339,7 +339,7 @@ RPDO *Node::isMappedObjectInRpdo(const NodeObjectId &object) const
     return nullptr;
 }
 
-TPDO *Node::isMappedObjectInTpdo(const NodeObjectId &object) const
+TPDO *Node::tpdoMappedObject(const NodeObjectId &object) const
 {
     for (TPDO *tpdo : _tpdos)
     {

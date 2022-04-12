@@ -21,13 +21,14 @@
 
 #include "../../../udtgui_global.h"
 
-#include "node.h"
 #include "nodeobjectid.h"
 #include "nodeodsubscriber.h"
 
 #include <QLabel>
 #include <QStackedWidget>
 #include <QWidget>
+
+class Node;
 
 class IndexComboBox;
 class P401InputWidget;
@@ -56,6 +57,8 @@ public slots:
 private:
     uint8_t _channel;
 
+    // Children widgets
+    void createWidgets();
     IndexComboBox *_modeCombobox;
 
     P401InputOptionWidget *_inputOptionWidget;
@@ -66,9 +69,6 @@ private:
 
     QStackedWidget *_inputStackedWidget;
     QStackedWidget *_outputStackedWidget;
-
-    // Create widgets
-    void createWidgets();
 };
 
 #endif  // P401CHANNELWIDGET_H

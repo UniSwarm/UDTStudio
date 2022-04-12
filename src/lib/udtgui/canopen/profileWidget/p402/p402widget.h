@@ -49,7 +49,7 @@ public:
     QString title() const;
 
 public slots:
-    void setNode(Node *value, uint8_t axis = 0);
+    void setNode(Node *node, uint8_t axis = 0);
     void gotoStateOEClicked();
 
 protected slots:

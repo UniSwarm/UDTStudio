@@ -40,20 +40,20 @@ public:
 protected:
     uint8_t _axis;
     void createWidgets();
+    QTabWidget *_tabWidget;
 
     MotorWidget *_motorConfigWidget;
 
-    PidWidget *_pidVelocityWidget;
-    PidWidget *_pidPositionWidget;
     PidWidget *_pidTorqueWidget;
-
-    MotionSensorWidget *_motionSensorVelocityWidget;
-    MotionSensorWidget *_motionSensorPositionWidget;
     MotionSensorWidget *_motionSensorTorqueWidget;
 
-    P402Widget *_p402Widget;
+    PidWidget *_pidVelocityWidget;
+    MotionSensorWidget *_motionSensorVelocityWidget;
 
-    QTabWidget *_tabWidget;
+    PidWidget *_pidPositionWidget;
+    MotionSensorWidget *_motionSensorPositionWidget;
+
+    P402Widget *_p402Widget;
 
     // NodeScreen interface
 public:

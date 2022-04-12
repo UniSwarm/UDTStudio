@@ -73,7 +73,7 @@ public:
     void readAllObjects() override;
 
 public slots:
-    void setNode(Node *value, uint8_t axis) override;
+    void setNode(Node *node, uint8_t axis) override;
 };
 
 #endif  // P402OPTIONWIDGET_H

@@ -29,8 +29,8 @@ class CANOPEN_EXPORT ModeCp : public ModePc
 public:
     ModeCp(NodeProfile402 *nodeProfile402);
 
-    void setAbsRel(bool ok);    // bit 6 of controlWord
-    bool isAbsRel() const;      // bit 6 of controlWord
+    void setAbsRel(bool ok);  // bit 6 of controlWord
+    bool isAbsRel() const;    // bit 6 of controlWord
 
     // ObjectID
     const NodeObjectId &targetObjectId() const;

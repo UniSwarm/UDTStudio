@@ -62,6 +62,8 @@ void NodeScreenUio::setLogTimer(int ms)
 
 void NodeScreenUio::createWidgets()
 {
+    _p401Widget = new P401Widget(8, this);
+
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(2, 2, 2, 2);
 
@@ -88,35 +90,32 @@ void NodeScreenUio::createWidgets()
             {
                 setLogTimer(i);
             });
+    toolBar->addWidget(_logTimerSpinBox);
+    toolBar->addSeparator();
+
+    QAction *settingsAction = new QAction();
+    settingsAction->setCheckable(true);
+    settingsAction->setIcon(QIcon(":/icons/img/icons8-settings.png"));
+    settingsAction->setToolTip(tr("Settings"));
+    connect(settingsAction, &QAction::triggered, _p401Widget, &P401Widget::setSettings);
+    toolBar->addAction(settingsAction);
 
     // read all action
     QAction *readAllObjectAction = toolBar->addAction(tr("Read all objects"));
     readAllObjectAction->setIcon(QIcon(":/icons/img/icons8-sync.png"));
     readAllObjectAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllObjectAction->setStatusTip(tr("Read all the objects of the current window"));
+    connect(readAllObjectAction, &QAction::triggered, _p401Widget, &P401Widget::readAllObject);
+    toolBar->addAction(readAllObjectAction);
+    toolBar->addSeparator();
 
     QAction *_dataLoggerAction = new QAction();
     _dataLoggerAction->setIcon(QIcon(":/icons/img/icons8-line-chart.png"));
     _dataLoggerAction->setToolTip(tr("Data logger"));
-
-    QAction *settingsAction = new QAction();
-    settingsAction->setCheckable(true);
-    settingsAction->setIcon(QIcon(":/icons/img/icons8-settings.png"));
-    settingsAction->setToolTip(tr("Settings"));
-
-    toolBar->addWidget(_logTimerSpinBox);
-    toolBar->addSeparator();
-    toolBar->addAction(settingsAction);
-    toolBar->addAction(readAllObjectAction);
-    toolBar->addSeparator();
-    toolBar->addAction(_dataLoggerAction);
-    toolBar->addAction(settingsAction);
-    layout->addWidget(toolBar);
-
-    _p401Widget = new P401Widget(8, this);
-    connect(settingsAction, &QAction::triggered, _p401Widget, &P401Widget::setSettings);
-    connect(readAllObjectAction, &QAction::triggered, _p401Widget, &P401Widget::readAllObject);
     connect(_dataLoggerAction, &QAction::triggered, _p401Widget, &P401Widget::dataLogger);
+    toolBar->addAction(_dataLoggerAction);
+
+    layout->addWidget(toolBar);
     layout->addWidget(_p401Widget);
 
     setLayout(layout);

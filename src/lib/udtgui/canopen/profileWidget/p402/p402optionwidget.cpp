@@ -372,7 +372,7 @@ void P402OptionWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest 
         if (objId == _nodeProfile402->abortConnectionObjectId())
         {
             QAbstractButton *button = _abortConnectionOptionGroup->button(value);
-            if (button)
+            if (button != nullptr)
             {
                 button->setChecked(true);
             }
@@ -381,7 +381,7 @@ void P402OptionWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest 
         if (objId == _nodeProfile402->quickStopObjectId())
         {
             QAbstractButton *button = _quickStopOptionGroup->button(value);
-            if (button)
+            if (button != nullptr)
             {
                 button->setChecked(true);
             }
@@ -390,7 +390,7 @@ void P402OptionWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest 
         if (objId == _nodeProfile402->shutdownObjectId())
         {
             QAbstractButton *button = _shutdownOptionGroup->button(value);
-            if (button)
+            if (button != nullptr)
             {
                 button->setChecked(true);
             }
@@ -399,7 +399,7 @@ void P402OptionWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest 
         if (objId == _nodeProfile402->disableObjectId())
         {
             QAbstractButton *button = _disableOptionGroup->button(value);
-            if (button)
+            if (button != nullptr)
             {
                 button->setChecked(true);
             }
@@ -408,7 +408,7 @@ void P402OptionWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest 
         if (objId == _nodeProfile402->haltObjectId())
         {
             QAbstractButton *button = _haltOptionGroup->button(value);
-            if (button)
+            if (button != nullptr)
             {
                 button->setChecked(true);
             }
@@ -417,7 +417,7 @@ void P402OptionWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest 
         if (objId == _nodeProfile402->faultReactionObjectId())
         {
             QAbstractButton *button = _faultReactionOptionGroup->button(value);
-            if (button)
+            if (button != nullptr)
             {
                 button->setChecked(true);
             }

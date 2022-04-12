@@ -72,7 +72,7 @@ public:
         OD_BOOTLOADER_STATUS
     };
 
-    static NodeObjectId getObjectId(OdObject object, uint opt = 0, uint opt2 = 0);
+    static NodeObjectId getObjectId(OdObject object, uint opt = 0, uint optMappingEntry = 0);
 
     // FUTURE
     //    static QString name(const NodeObjectId &nodeObjectId);

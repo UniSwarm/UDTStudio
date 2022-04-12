@@ -54,7 +54,7 @@ public:
     QAction *actionUpdateFirmware() const;
 
 public slots:
-    void setNode(Node *value);
+    void setNode(Node *node);
     void updateData();
 
     void preop();
