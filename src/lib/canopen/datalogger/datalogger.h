@@ -52,6 +52,8 @@ public:
 
     void addDataValue(DLData *dlData, const QVariant &value, const QDateTime &dateTime);
 
+    void exportCSVData(const QString &fileName);
+
 signals:
     void dataChanged(int id);
     void dataAboutToBeAdded(int id);

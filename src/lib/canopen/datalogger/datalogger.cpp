@@ -19,6 +19,8 @@
 #include "datalogger.h"
 
 #include <QDebug>
+#include <QFile>
+#include <QTextStream>
 
 #include "db/odindexdb.h"
 
@@ -208,6 +210,61 @@ void DataLogger::addDataValue(DLData *dlData, const QVariant &value, const QDate
     dlData->appendData(valueDouble, dateTime);
 
     emit dataChanged(_dataList.indexOf(dlData));
+}
+
+void DataLogger::exportCSVData(const QString &fileName)
+{
+    QList<quint64> timeStamps;
+    QVector<QMap<quint64, double>> maps(_dataList.count());
+    uint dlDataId = 0;
+    for (DLData *dlData : _dataList)
+    {
+        int minCount = qMin(dlData->values().count(), dlData->times().count());
+        for (int i = 0; i < minCount; i++)
+        {
+            quint64 time = dlData->times()[i].toMSecsSinceEpoch();
+            maps[dlDataId].insert(time, dlData->values()[i]);
+            timeStamps.append(time);
+        }
+        dlDataId++;
+    }
+
+    // sort timestamps and make it unique
+    std::sort(timeStamps.begin(), timeStamps.end());
+    auto last = std::unique(timeStamps.begin(), timeStamps.end());
+    timeStamps.erase(last, timeStamps.end());
+
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        return;
+    }
+
+    QTextStream stream(&file);
+    stream << "Time (s)" << ";";
+    for (DLData *dlData : _dataList)
+    {
+        stream << dlData->name()  << " (" << dlData->unit() << ")" << ";";
+    }
+    stream << '\n';
+
+    quint64 firstDateTime = timeStamps.first();
+    for (quint64 time : timeStamps)
+    {
+        stream << static_cast<double>(time - firstDateTime) / 1000.0 << ';';
+        for (const auto &mapValues : maps)
+        {
+            auto it = mapValues.constFind(time);
+            if (it != mapValues.constEnd())
+            {
+                stream << QString::number(*it, 'f');
+            }
+            stream << ";";
+        }
+        stream << '\n';
+    }
+    file.close();
 }
 
 void DataLogger::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)

@@ -51,6 +51,7 @@ protected slots:
     void setRollingTimeMs(int ms);
 
     void takeScreenShot();
+    void exportAllCSVData();
 
 protected:
     DataLogger *_logger;
@@ -66,6 +67,7 @@ protected:
     QAction *_crossAction;
     QAction *_rollAction;
     QSpinBox *_rollingTimeSpinBox;
+    QAction *_exportCSVAction;
     QAction *_screenShotAction;
 };
 

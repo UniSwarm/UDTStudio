@@ -85,18 +85,34 @@ void DataLoggerManagerWidget::setRollingTimeMs(int ms)
 
 void DataLoggerManagerWidget::takeScreenShot()
 {
-    if (_chartWidget != nullptr)
+    if (_chartWidget == nullptr)
     {
-        QWidget *parent = parentWidget();
-        QPixmap pixmap(parent->size());
-        parent->render(&pixmap, QPoint(), QRegion(QRect(QPoint(0, 0), parent->size())));
-
-        QString path = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation) + "/UDTStudio/";
-        QDir().mkdir(path);
-        path += QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss");
-        path += "_datalogger_udtstudio.png";
-        pixmap.save(path);
+        return;
     }
+
+    QWidget *parent = parentWidget();
+    QPixmap pixmap(parent->size());
+    parent->render(&pixmap, QPoint(), QRegion(QRect(QPoint(0, 0), parent->size())));
+
+    QString path = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation) + "/UDTStudio/";
+    QDir().mkdir(path);
+    path += QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss");
+    path += "_datalogger_udtstudio.png";
+    pixmap.save(path);
+}
+
+void DataLoggerManagerWidget::exportAllCSVData()
+{
+    if (_logger == nullptr)
+    {
+        return;
+    }
+
+    QString path = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/UDTStudio/";
+    QDir().mkdir(path);
+    path += QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss");
+    path += "_data.csv";
+    _logger->exportCSVData(path);
 }
 
 DataLoggerChartsWidget *DataLoggerManagerWidget::chartWidget() const
@@ -247,6 +263,14 @@ void DataLoggerManagerWidget::createWidgets()
             });
 
     _toolBar->addSeparator();
+
+    // export CSV
+    _exportCSVAction = _toolBar->addAction(tr("Screenshot"));
+    _exportCSVAction->setEnabled(true);
+    _exportCSVAction->setIcon(QIcon(":/icons/img/icons8-export.png"));
+    _exportCSVAction->setStatusTip(tr("Exports all data entries in '%1' directory as a CSV file")
+                                    .arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/UDTStudio/"));
+    connect(_exportCSVAction, &QAction::triggered, this, &DataLoggerManagerWidget::exportAllCSVData);
 
     // screenshot
     _screenShotAction = _toolBar->addAction(tr("Screenshot"));
