@@ -189,7 +189,7 @@ int merge(QStringList aOptionList, QStringList bOptionList, QString outputFile, 
 {
     if (bOptionList.isEmpty() || aOptionList.isEmpty())
     {
-        err << QCoreApplication::translate("main", "error (1): option -a, -b, -t or -k is needed") << "\n";
+        err << QCoreApplication::translate("ubl", "error (1): option -a, -b, -t or -k is needed") << "\n";
         return -1;
     }
 
@@ -202,7 +202,7 @@ int merge(QStringList aOptionList, QStringList bOptionList, QString outputFile, 
 
     if (QFileInfo(fileA).suffix() != "hex" || QFileInfo(fileB).suffix() != "hex")
     {
-        err << QCoreApplication::translate("main", "error (1): input file is needed") << "\n";
+        err << QCoreApplication::translate("ubl", "error (1): input file is needed") << "\n";
         return -1;
     }
 
@@ -210,7 +210,7 @@ int merge(QStringList aOptionList, QStringList bOptionList, QString outputFile, 
     HexMerger mergeProcess;
     if (mergeProcess.merge(fileA, aOptionList, fileB, bOptionList) < 0)
     {
-        err << QCoreApplication::translate("main", "error (1): merge process") << "\n";
+        err << QCoreApplication::translate("ubl", "error (1): merge process") << "\n";
         return -1;
     }
 
@@ -257,88 +257,88 @@ int main(int argc, char *argv[])
     QTextStream err(stderr, QIODevice::WriteOnly);
 
     QCommandLineParser cliParser;
-    cliParser.setApplicationDescription(QCoreApplication::translate("main", "UBL."));
+    cliParser.setApplicationDescription(QCoreApplication::translate("ubl", "UBL."));
     cliParser.addHelpOption();
     cliParser.addVersionOption();
 
     // MERGE
-    cliParser.addPositionalArgument("merge", QCoreApplication::translate("main", "-afileA -bfileB -a start:end ... -b start:end ..."), "merge");
+    cliParser.addPositionalArgument("merge", QCoreApplication::translate("ubl", "-afileA -bfileB -a start:end ... -b start:end ..."), "merge");
     // UPDATE and Flash
-    cliParser.addPositionalArgument("update", QCoreApplication::translate("main", "file -n nodeId"), "update");
+    cliParser.addPositionalArgument("update", QCoreApplication::translate("ubl", "file -n nodeId"), "update");
     // CREATE BIN
-    cliParser.addPositionalArgument("ufw", QCoreApplication::translate("main", "-h file.hex -t type -s start:end ..."), "create");
+    cliParser.addPositionalArgument("ufw", QCoreApplication::translate("ubl", "-h file.hex -t type -s start:end ..."), "create");
     // DIFF
-    cliParser.addPositionalArgument("diff", QCoreApplication::translate("main", "fileA fileB"), "diff");
+    cliParser.addPositionalArgument("diff", QCoreApplication::translate("ubl", "fileA fileB"), "diff");
     // HEX DUMP
-    cliParser.addPositionalArgument("hexdump", QCoreApplication::translate("main", "fileA"), "hexdump");
+    cliParser.addPositionalArgument("hexdump", QCoreApplication::translate("ubl", "fileA"), "hexdump");
     // OTP
     cliParser.addPositionalArgument(
-        "otp", QCoreApplication::translate("main", "-n nodeId -a adress -d\"XXXX/XX/XX hh:mm:ss\" -t typeDevice -s SerialNumber -i HardVersion -e eds"), "otp");
+        "otp", QCoreApplication::translate("ubl", "-n nodeId -a adress -d\"XXXX/XX/XX hh:mm:ss\" -t typeDevice -s SerialNumber -i HardVersion -e eds"), "otp");
 
     // MERGE
     QCommandLineOption outOption(QStringList() << "o"
                                                << "out",
-                                 QCoreApplication::translate("main", "Output directory or file."),
+                                 QCoreApplication::translate("ubl", "Output directory or file."),
                                  "out");
     cliParser.addOption(outOption);
 
-    QCommandLineOption aOption(QStringList() << "a", QCoreApplication::translate("main", "FileHex A and memory segment of FileHex A"), "fileA> -a<start:end");
+    QCommandLineOption aOption(QStringList() << "a", QCoreApplication::translate("ubl", "FileHex A and memory segment of FileHex A"), "fileA> -a<start:end");
     cliParser.addOption(aOption);
-    QCommandLineOption bOption(QStringList() << "b", QCoreApplication::translate("main", "FileHex B and memory segment of FileHex B"), "fileB> -b<start:end");
+    QCommandLineOption bOption(QStringList() << "b", QCoreApplication::translate("ubl", "FileHex B and memory segment of FileHex B"), "fileB> -b<start:end");
     cliParser.addOption(bOption);
 
-    QCommandLineOption kOption(QStringList() << "k", QCoreApplication::translate("main", "Adress of key"), "-kadress");
+    QCommandLineOption kOption(QStringList() << "k", QCoreApplication::translate("ubl", "Adress of key"), "-kadress");
     cliParser.addOption(kOption);
 
     // update and Flash
     QCommandLineOption edsOption(QStringList() << "e"
                                                << "eds",
-                                 QCoreApplication::translate("main", "EDS File"),
+                                 QCoreApplication::translate("ubl", "EDS File"),
                                  "eds");
     cliParser.addOption(edsOption);
 
     QCommandLineOption nodeIdOption(QStringList() << "n"
                                                   << "nodeid",
-                                    QCoreApplication::translate("main", "CANOpen Node Id."),
+                                    QCoreApplication::translate("ubl", "CANOpen Node Id."),
                                     "nodeid");
     cliParser.addOption(nodeIdOption);
     QCommandLineOption busOption(QStringList() << "c"
                                                << "busId",
-                                 QCoreApplication::translate("main", "CAN bus."),
+                                 QCoreApplication::translate("ubl", "CAN bus."),
                                  "busId");
     cliParser.addOption(busOption);
     QCommandLineOption speedOption(QStringList() << "l"
                                                  << "speed",
-                                   QCoreApplication::translate("main", "CAN Speed."),
+                                   QCoreApplication::translate("ubl", "CAN Speed."),
                                    "speed");
     cliParser.addOption(speedOption);
 
     // CREATE BIN
     QCommandLineOption hOption(QStringList() << "f"
                                              << "file",
-                               QCoreApplication::translate("main", "hex file"),
+                               QCoreApplication::translate("ubl", "hex file"),
                                "hex");
     cliParser.addOption(hOption);
 
     QCommandLineOption typeOption(QStringList() << "t"
                                                 << "type",
-                                  QCoreApplication::translate("main", "type device"),
+                                  QCoreApplication::translate("ubl", "type device"),
                                   "type");
     cliParser.addOption(typeOption);
 
     QCommandLineOption sOption(QStringList() << "s"
                                              << "segment",
-                               QCoreApplication::translate("main", "Memory segment of hex file"),
+                               QCoreApplication::translate("ubl", "Memory segment of hex file"),
                                "start:end");
     cliParser.addOption(sOption);
     QCommandLineOption softwareVersionOption(QStringList() << "i"
                                                            << "i",
-                                             QCoreApplication::translate("main", "Software version."),
+                                             QCoreApplication::translate("ubl", "Software version."),
                                              "i");
     cliParser.addOption(softwareVersionOption);
     QCommandLineOption dateOption(QStringList() << "d"
                                                 << "date",
-                                  QCoreApplication::translate("main", "Date."),
+                                  QCoreApplication::translate("ubl", "Date."),
                                   "date");
     cliParser.addOption(dateOption);
     cliParser.process(app);
@@ -347,14 +347,14 @@ int main(int argc, char *argv[])
 
     if (argument.isEmpty())
     {
-        err << QCoreApplication::translate("main", "error (1): input file is needed") << "\n";
+        err << QCoreApplication::translate("ubl", "error (1): input file is needed") << "\n";
         cliParser.showHelp(-1);
     }
     else if (argument.at(0) == "hexdump")
     {
         if (argument.size() != 2)
         {
-            err << QCoreApplication::translate("main", "error (1): miss file .bin ") << "\n";
+            err << QCoreApplication::translate("ubl", "error (1): miss file .bin ") << "\n";
             cliParser.showHelp(-1);
         }
 
@@ -362,7 +362,7 @@ int main(int argc, char *argv[])
         ret = hexdump(argument.at(1));
         if (ret < 0)
         {
-            err << QCoreApplication::translate("main", "error (1): miss file .bin ") << "\n";
+            err << QCoreApplication::translate("ubl", "error (1): miss file .bin ") << "\n";
             cliParser.showHelp(-1);
         }
 
@@ -374,7 +374,7 @@ int main(int argc, char *argv[])
         ret = diff(argument.at(1), argument.at(2));
         if (ret < 0)
         {
-            err << QCoreApplication::translate("main", "error (1): miss file to compare two file") << "\n";
+            err << QCoreApplication::translate("ubl", "error (1): miss file to compare two file") << "\n";
             cliParser.showHelp(-1);
         }
 
@@ -394,21 +394,21 @@ int main(int argc, char *argv[])
         QString type = cliParser.value("type");
         if (type.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): type of device is needed") << "\n";
+            err << QCoreApplication::translate("ubl", "error (1): type of device is needed") << "\n";
             cliParser.showHelp(-1);
         }
 
         QStringList segmentList = cliParser.values(sOption);
         if (segmentList.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): segment is needed") << "\n";
+            err << QCoreApplication::translate("ubl", "error (1): segment is needed") << "\n";
             cliParser.showHelp(-1);
         }
 
         QString hexFile = cliParser.value(hOption);
         if (hexFile.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): Hex file is needed") << "\n";
+            err << QCoreApplication::translate("ubl", "error (1): Hex file is needed") << "\n";
             cliParser.showHelp(-1);
         }
 
@@ -416,7 +416,7 @@ int main(int argc, char *argv[])
 
         if (!hex->read())
         {
-            err << QCoreApplication::translate("main", "error (1): Hex file not present") << "\n";
+            err << QCoreApplication::translate("ubl", "error (1): Hex file not present") << "\n";
             cliParser.showHelp(-1);
         }
 
@@ -433,7 +433,7 @@ int main(int argc, char *argv[])
         QFile file(outputFile);
         if (!file.open(QFile::WriteOnly))
         {
-            err << QCoreApplication::translate("main", "error (1): Hex file is needed") << "\n";
+            err << QCoreApplication::translate("ubl", "error (1): Hex file is needed") << "\n";
             cliParser.showHelp(-1);
         }
         else
@@ -447,27 +447,27 @@ int main(int argc, char *argv[])
         quint8 nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
         if (nodeid == 0 || nodeid >= 126)
         {
-            err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << "\n";
+            err << QCoreApplication::translate("ubl", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << "\n";
             return -2;
         }
         quint8 bus = static_cast<uint8_t>(cliParser.value("busId").toUInt());
         if (bus >= 126)
         {
-            err << QCoreApplication::translate("main", "error (3): invalid bus id, busId > 0 && busId < 126") << "\n";
+            err << QCoreApplication::translate("ubl", "error (3): invalid bus id, busId > 0 && busId < 126") << "\n";
             return -3;
         }
 
         quint8 speed = static_cast<uint8_t>(cliParser.value("speed").toUInt());
         if (speed == 0 || speed >= 126)
         {
-            // err << QCoreApplication::translate("main", "error (4): invalid speed") << "\n";
+            // err << QCoreApplication::translate("ubl", "error (4): invalid speed") << "\n";
             // return -4;
         }
 
         QString binFile = cliParser.value(hOption);
         if (binFile.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): Binary file is needed") << "\n";
+            err << QCoreApplication::translate("ubl", "error (1): Binary file is needed") << "\n";
             cliParser.showHelp(-1);
         }
 
@@ -483,7 +483,7 @@ int main(int argc, char *argv[])
         quint8 nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
         if (nodeid == 0 || nodeid >= 126)
         {
-            err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << "\n";
+            err << QCoreApplication::translate("ubl", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << "\n";
             return -2;
         }
 
@@ -512,19 +512,19 @@ int main(int argc, char *argv[])
         QString eds = cliParser.value(edsOption);
         if (eds.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): eds is needed") << "\n";
+            err << QCoreApplication::translate("ubl", "error (1): eds is needed") << "\n";
             cliParser.showHelp(-1);
         }
         QString date = cliParser.value(dateOption);
         if (date.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): date is needed") << "\n";
+            err << QCoreApplication::translate("ubl", "error (1): date is needed") << "\n";
             cliParser.showHelp(-1);
         }
         QString hardVersion = cliParser.value(softwareVersionOption);
         if (hardVersion.isEmpty())
         {
-            err << QCoreApplication::translate("main", "error (1): hardware version is needed") << "\n";
+            err << QCoreApplication::translate("ubl", "error (1): hardware version is needed") << "\n";
             cliParser.showHelp(-1);
         }
 
@@ -543,7 +543,7 @@ int main(int argc, char *argv[])
 
         if (adr == 0 || type == 0 || serial == 0)
         {
-            err << QCoreApplication::translate("main", "error (1):Adress, type or serial is needed") << "\n";
+            err << QCoreApplication::translate("ubl", "error (1):Adress, type or serial is needed") << "\n";
             cliParser.showHelp(-1);
         }
 
@@ -554,8 +554,8 @@ int main(int argc, char *argv[])
     }
     else
     {
-        err << QCoreApplication::translate("main", "error (6): invalid number of hex inputs file, need more than one") << "\n";
-        err << QCoreApplication::translate("main", "error (1): input file is needed for update") << "\n";
+        err << QCoreApplication::translate("ubl", "error (6): invalid number of hex inputs file, need more than one") << "\n";
+        err << QCoreApplication::translate("ubl", "error (1): input file is needed for update") << "\n";
         cliParser.showHelp(-1);
     }
     return 0;

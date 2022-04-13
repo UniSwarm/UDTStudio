@@ -51,51 +51,51 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationName("OD");
+    QCoreApplication::setApplicationName("COOD");
     QCoreApplication::setApplicationVersion("1.0");
 
     QTextStream out(stdout, QIODevice::WriteOnly);
     QTextStream err(stderr, QIODevice::WriteOnly);
 
     QCommandLineParser cliParser;
-    cliParser.setApplicationDescription(QCoreApplication::translate("main", "Object dictionary command line interface."));
+    cliParser.setApplicationDescription(QCoreApplication::translate("cood", "Object dictionary command line interface."));
     cliParser.addHelpOption();
     cliParser.addVersionOption();
-    cliParser.addPositionalArgument("file", QCoreApplication::translate("main", "Object dictionary file (.dcf or .eds)"), "file");
+    cliParser.addPositionalArgument("file", QCoreApplication::translate("cood", "Object dictionary file (.dcf or .eds)"), "file");
 
     QCommandLineOption outOption(QStringList() << "o"
                                                << "out",
-                                 QCoreApplication::translate("main", "Output directory or file"),
+                                 QCoreApplication::translate("cood", "Output directory or file"),
                                  "out");
     cliParser.addOption(outOption);
 
     QCommandLineOption nodeIdOption(QStringList() << "n"
                                                   << "nodeid",
-                                    QCoreApplication::translate("main", "CANOpen Node Id"),
+                                    QCoreApplication::translate("cood", "CANOpen Node Id"),
                                     "nodeid");
     cliParser.addOption(nodeIdOption);
 
     QCommandLineOption duplicateOption(QStringList() << "d"
                                                      << "duplicate",
-                                       QCoreApplication::translate("main", "Duplicate profile"),
+                                       QCoreApplication::translate("cood", "Duplicate profile"),
                                        "duplicate");
     cliParser.addOption(duplicateOption);
 
     QCommandLineOption configurationOption(QStringList() << "c"
                                                          << "configuration",
-                                           QCoreApplication::translate("main", "Configuration files"),
+                                           QCoreApplication::translate("cood", "Configuration files"),
                                            "configuration");
     cliParser.addOption(configurationOption);
 
     QCommandLineOption rangeOption(QStringList() << "r"
                                                  << "range",
-                                   QCoreApplication::translate("main", "Partial OD range index (min and max separated with ':')"),
+                                   QCoreApplication::translate("cood", "Partial OD range index (min and max separated with ':')"),
                                    "range");
     cliParser.addOption(rangeOption);
 
     QCommandLineOption structOption(QStringList() << "s"
                                                   << "structName",
-                                    QCoreApplication::translate("main", "Partial OD struct name (use with range option)"),
+                                    QCoreApplication::translate("cood", "Partial OD struct name (use with range option)"),
                                     "structName");
     cliParser.addOption(structOption);
 
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
     const QStringList files = cliParser.positionalArguments();
     if (files.isEmpty())
     {
-        err << QCoreApplication::translate("main", "error (1): input file is needed") << cendl;
+        err << QCoreApplication::translate("cood", "error (1): input file is needed") << cendl;
         cliParser.showHelp(-1);
     }
     const QString &inputFile = files.at(0);
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
             nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
             if (nodeid == 0 || nodeid > 127)
             {
-                err << QCoreApplication::translate("main", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << cendl;
+                err << QCoreApplication::translate("cood", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << cendl;
                 return -2;
             }
         }
@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
         deviceDescription = parser.parse(inputFile);
         if (deviceDescription == nullptr)
         {
-            err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist '%1'").arg(inputFile) << cendl;
+            err << QCoreApplication::translate("cood", "error (5): invalid eds file or file does not exist '%1'").arg(inputFile) << cendl;
             return -5;
         }
         deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, nodeid);
@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        err << QCoreApplication::translate("main", "error (3): invalid input file format, .eds or .dcf accepted") << cendl;
+        err << QCoreApplication::translate("cood", "error (3): invalid input file format, .eds or .dcf accepted") << cendl;
         return -3;
     }
 
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
         {
             delete deviceDescription;
             delete deviceConfiguration;
-            err << QCoreApplication::translate("main", "error (5): invalid eds file or file does not exist '%1'").arg(files.at(fileId)) << cendl;
+            err << QCoreApplication::translate("cood", "error (5): invalid eds file or file does not exist '%1'").arg(files.at(fileId)) << cendl;
             return -5;
         }
         if (deviceDescription != nullptr)
@@ -254,7 +254,7 @@ int main(int argc, char *argv[])
             QString structName = cliParser.value("structName");
             if (rangeList.size() != 2)
             {
-                err << QCoreApplication::translate("main", "error (4): invalid range option value") << cendl;
+                err << QCoreApplication::translate("cood", "error (4): invalid range option value") << cendl;
                 return -4;
             }
 
@@ -325,7 +325,7 @@ int main(int argc, char *argv[])
     {
         delete deviceDescription;
         delete deviceConfiguration;
-        err << QCoreApplication::translate("main", "error (4): invalid output file format, .c, .h, .dcf, .eds, .csv or .tex accepted") << cendl;
+        err << QCoreApplication::translate("cood", "error (4): invalid output file format, .c, .h, .dcf, .eds, .csv or .tex accepted") << cendl;
         return -4;
     }
 
