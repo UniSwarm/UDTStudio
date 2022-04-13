@@ -17,8 +17,12 @@
  **/
 
 #include "mainwindow.h"
+
 #include <QApplication>
 #include <QTextStream>
+#include <QTranslator>
+#include <QLibraryInfo>
+#include <QSettings>
 
 int main(int argc, char *argv[])
 {
@@ -26,6 +30,16 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationName("UniSwarm");
     QApplication::setOrganizationDomain("UniSwarm");
     QApplication::setApplicationName("UDTStudio");
+
+    // translate app
+    QSettings settings(QApplication::organizationName(), QApplication::applicationName());
+    QString lang = settings.value("language", "en").toString();
+    QTranslator qtTranslator;
+    qtTranslator.load("qt_" + lang, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    QApplication::installTranslator(&qtTranslator);
+    QTranslator udtstudioTranslator;
+    udtstudioTranslator.load("udtstudio_" + lang, ":/translations");
+    QApplication::installTranslator(&udtstudioTranslator);
 
     MainWindow w;
     // apply dark style

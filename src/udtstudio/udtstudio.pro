@@ -50,3 +50,5 @@ win32|win64
 {
     RC_FILE = udtstudio.rc
 }
+
+RESOURCES += $$PWD/../../translations/translations.qrc

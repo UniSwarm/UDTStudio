@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/translations">
+        <file>udtstudio_en.qm</file>
+        <file>udtstudio_fr.qm</file>
+    </qresource>
+</RCC>
