@@ -5,7 +5,7 @@ TEMPLATE = app
 DESTDIR = "$$PWD/../../../bin"
 
 SOURCES += \
-        $$PWD/main.cpp \
+        $$PWD/ubl.cpp \
 	$$PWD/mainwindow.cpp \
 	$$PWD/mainconsole.cpp
 

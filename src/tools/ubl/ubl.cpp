@@ -471,7 +471,6 @@ int main(int argc, char *argv[])
             cliParser.showHelp(-1);
         }
 
-        UfwParser *p = new UfwParser();
         MainConsole *mainConsole = new MainConsole(bus, speed, nodeid, UfwParser::parse(binFile)->prog());
         QObject::connect(mainConsole, &MainConsole::finished, &app, &QCoreApplication::exit);
 
