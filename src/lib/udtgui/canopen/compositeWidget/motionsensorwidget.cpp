@@ -205,6 +205,7 @@ void MotionSensorWidget::setIMode()
     // Datalogger
     _dataLogger->removeAllData();
     _dataLogger->addData(rawDataValueLabel_ObjId);
+    _dataLogger->data(0)->setActive(false);
     _dataLogger->addData(valueLabel_ObjId);
 }
 
