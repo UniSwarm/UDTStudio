@@ -18,9 +18,11 @@
 
 #include "busnodestreeview.h"
 
+#include <QApplication>
 #include <QContextMenuEvent>
 #include <QHeaderView>
 #include <QMenu>
+#include <QSettings>
 
 BusNodesTreeView::BusNodesTreeView(QWidget *parent)
     : BusNodesTreeView(nullptr, parent)
@@ -53,6 +55,14 @@ BusNodesTreeView::BusNodesTreeView(CanOpen *canOpen, QWidget *parent)
     setSortingEnabled(true);
     setSelectionBehavior(QAbstractItemView::SelectRows);
     sortByColumn(0, Qt::AscendingOrder);
+
+    QSettings settings(QApplication::organizationName(), QApplication::applicationName());
+    settings.beginGroup("MainWindow");
+    int columns = settings.value("NodeTreeViewColumns", QVariant(1)).toInt();
+    if ((columns & 1) != 1)
+    {
+        header()->hideSection(BusNodesModel::Status);
+    }
 }
 
 BusNodesTreeView::~BusNodesTreeView()
