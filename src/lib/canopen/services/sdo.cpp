@@ -24,13 +24,6 @@
 #include <QDebug>
 #include <QThread>
 
-enum
-{
-    ATTEMPT_ERROR_MAX = 3,
-    TIME_BLOCK_DOWNALOAD = 1,
-    TIMEOUT_SDO = 1800
-};
-
 enum CCS : quint8  // CCS : Client Command Specifier from Client to Server
 {
     SDO_CCS_CLIENT_DOWNLOAD_INITIATE = 0x20,  // ccs:1
@@ -118,6 +111,10 @@ SDO::SDO(Node *node)
 
     _status = SDO_STATE_FREE;
     _requestCurrent = nullptr;
+
+    _maxErrorAttempt = 3;
+    _blockDownloadIntervalMs = 1;
+    _timeoutMs = 1800;
 }
 
 SDO::~SDO()
@@ -907,7 +904,7 @@ bool SDO::sdoBlockDownload(const QCanBusFrame &frame)
 
         _requestCurrent->state = STATE_BLOCK_DOWNLOAD;
         _requestCurrent->seqno = 1;
-        _subBlockDownloadTimer->start(TIME_BLOCK_DOWNALOAD);
+        _subBlockDownloadTimer->start(_blockDownloadIntervalMs);
         _timeoutTimer->stop();
     }
     else if (ss == SS::SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_RESP)
@@ -932,7 +929,7 @@ bool SDO::sdoBlockDownload(const QCanBusFrame &frame)
             _requestCurrent->stay += (_requestCurrent->seqno - 1) * SDO_SG_SIZE;
             _requestCurrent->state = STATE_BLOCK_DOWNLOAD;
             _requestCurrent->attemptCount++;
-            if (_requestCurrent->attemptCount == ATTEMPT_ERROR_MAX)
+            if (_requestCurrent->attemptCount == _maxErrorAttempt)
             {
                 _requestCurrent->attemptCount = 0;
                 sendErrorSdoToDevice(CO_SDO_ABORT_CODE_INVALID_SEQ_NUMBER);
@@ -943,7 +940,7 @@ bool SDO::sdoBlockDownload(const QCanBusFrame &frame)
         if (_requestCurrent->state == STATE_BLOCK_DOWNLOAD)
         {
             _requestCurrent->seqno = 1;
-            _subBlockDownloadTimer->start(TIME_BLOCK_DOWNALOAD);
+            _subBlockDownloadTimer->start(_blockDownloadIntervalMs);
             _timeoutTimer->stop();
         }
         else if (_requestCurrent->state == STATE_BLOCK_DOWNLOAD_END)
@@ -1001,7 +998,7 @@ void SDO::sdoBlockDownloadSubBlock()
     {
         _subBlockDownloadTimer->stop();
         _requestCurrent->state = STATE_BLOCK_DOWNLOAD;
-        _timeoutTimer->start(TIMEOUT_SDO);
+        _timeoutTimer->start(_timeoutMs);
     }
 }
 
@@ -1145,7 +1142,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex)
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timeoutTimer->start(TIMEOUT_SDO);
+    _timeoutTimer->start(_timeoutMs);
     return bus()->writeFrame(frame);
 }
 
@@ -1176,7 +1173,7 @@ bool SDO::sendSdoRequest(quint8 cmd)
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timeoutTimer->start(TIMEOUT_SDO);
+    _timeoutTimer->start(_timeoutMs);
     return bus()->writeFrame(frame);
 }
 
@@ -1213,7 +1210,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QByte
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timeoutTimer->start(TIMEOUT_SDO);
+    _timeoutTimer->start(_timeoutMs);
     return bus()->writeFrame(frame);
 }
 
@@ -1243,7 +1240,7 @@ bool SDO::sendSdoRequest(quint8 cmd, const QByteArray &data)
     QCanBusFrame frame;
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
-    _timeoutTimer->start(TIMEOUT_SDO);
+    _timeoutTimer->start(_timeoutMs);
     return bus()->writeFrame(frame);
 }
 
@@ -1276,7 +1273,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 &crc)
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timeoutTimer->start(TIMEOUT_SDO);
+    _timeoutTimer->start(_timeoutMs);
     return bus()->writeFrame(frame);
 }
 
@@ -1315,7 +1312,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blks
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timeoutTimer->start(TIMEOUT_SDO);
+    _timeoutTimer->start(_timeoutMs);
     return bus()->writeFrame(frame);
 }
 
@@ -1373,7 +1370,7 @@ bool SDO::sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segD
 
     if (!moreSegments)
     {
-        _timeoutTimer->start(TIMEOUT_SDO);
+        _timeoutTimer->start(_timeoutMs);
         seqno |= 0x80;
         request << static_cast<quint8>(seqno);
     }
@@ -1421,7 +1418,7 @@ bool SDO::sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint32 err
     frame.setFrameId(_cobIdClientToServer + _nodeId);
     frame.setPayload(sdoWriteReqPayload);
 
-    _timeoutTimer->start(TIMEOUT_SDO);
+    _timeoutTimer->start(_timeoutMs);
     return bus()->writeFrame(frame);
 }
 
@@ -1611,4 +1608,34 @@ void SDO::arrangeDataDownload(QDataStream &request, const QVariant &data)
         default:
             break;
     }
+}
+
+int SDO::timeoutMs() const
+{
+    return _timeoutMs;
+}
+
+void SDO::setTimeoutMs(int timeoutMs)
+{
+    _timeoutMs = timeoutMs;
+}
+
+int SDO::blockDownloadIntervalMs() const
+{
+    return _blockDownloadIntervalMs;
+}
+
+void SDO::setBlockDownloadIntervalMs(int blockDownloadIntervalMs)
+{
+    _blockDownloadIntervalMs = blockDownloadIntervalMs;
+}
+
+int SDO::maxErrorAttempt() const
+{
+    return _maxErrorAttempt;
+}
+
+void SDO::setMaxErrorAttempt(int maxErrorAttempt)
+{
+    _maxErrorAttempt = maxErrorAttempt;
 }

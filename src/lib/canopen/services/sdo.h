@@ -35,14 +35,15 @@ public:
     SDO(Node *node);
     ~SDO() override;
 
-    QString type() const override;
+    // Settings
+    int maxErrorAttempt() const;
+    void setMaxErrorAttempt(int maxErrorAttempt);
 
-    void reset() override;
+    int blockDownloadIntervalMs() const;
+    void setBlockDownloadIntervalMs(int blockDownloadIntervalMs);
 
-    void parseFrame(const QCanBusFrame &frame) override;
-
-    void processingFrameFromClient(const QCanBusFrame &frame);
-    void processingFrameFromServer(const QCanBusFrame &frame);
+    int timeoutMs() const;
+    void setTimeoutMs(int timeoutMs);
 
     quint32 cobIdClientToServer() const;
     quint32 cobIdServerToClient() const;
@@ -116,6 +117,9 @@ private:
     quint32 _cobIdClientToServer;
     quint32 _cobIdServerToClient;
     quint8 _nodeId;
+
+    void processingFrameFromClient(const QCanBusFrame &frame);
+    void processingFrameFromServer(const QCanBusFrame &frame);
 
     enum RequestState
     {
@@ -196,6 +200,16 @@ private:
 
     QVariant arrangeDataUpload(QByteArray, QMetaType::Type type);
     void arrangeDataDownload(QDataStream &request, const QVariant &data);
+
+    // SDO settings
+    int _maxErrorAttempt;
+    int _blockDownloadIntervalMs;
+    int _timeoutMs;
+
+    // Service interface
+    QString type() const override;
+    void reset() override;
+    void parseFrame(const QCanBusFrame &frame) override;
 };
 
 #endif  // SDO_H
