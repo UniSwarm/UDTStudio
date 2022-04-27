@@ -31,6 +31,76 @@ enum
     TIMEOUT_SDO = 1800
 };
 
+enum CCS : quint8  // CCS : Client Command Specifier from Client to Server
+{
+    SDO_CCS_CLIENT_DOWNLOAD_INITIATE = 0x20,  // ccs:1
+    SDO_CCS_CLIENT_DOWNLOAD_SEGMENT = 0x00,   // ccs:0
+    SDO_CCS_CLIENT_UPLOAD_INITIATE = 0x40,    // ccs:2 : initiate upload request
+    SDO_CCS_CLIENT_UPLOAD_SEGMENT = 0x60,     // ccs:3
+    SDO_CCS_CLIENT_BLOCK_DOWNLOAD = 0xC0,     // ccs:6
+    SDO_CCS_CLIENT_BLOCK_UPLOAD = 0xA0,       // ccs:5
+    SDO_CCS_CLIENT_ABORT = 0x80
+};
+
+enum SCS : quint8  // SCS : Server Command Specifier from Server to Client
+{
+    SDO_SCS_SERVER_DOWNLOAD_INITIATE = 0x60,  // scs:3
+    SDO_SCS_SERVER_DOWNLOAD_SEGMENT = 0x20,   // scs:1
+    SDO_SCS_SERVER_UPLOAD_INITIATE = 0x40,    // scs:2
+    SDO_SCS_SERVER_UPLOAD_SEGMENT = 0x00,     // scs:0
+    SDO_SCS_SERVER_BLOCK_DOWNLOAD = 0xA0,     // scs:5
+    SDO_SCS_SERVER_BLOCK_UPLOAD = 0xC0,       // scs:6
+    SDO_SCS_CLIENT_ABORT = 0x80
+};
+
+enum CS : quint8  // cs: client subcommand
+{
+    SDO_CCS_CLIENT_BLOCK_DOWNLOAD_CS_MASK = 0x1,      // Maks for cs: client subcommand
+    SDO_CCS_CLIENT_BLOCK_DOWNLOAD_CS_INIT_REQ = 0x0,  // cs:0: initiate download request
+    SDO_CCS_CLIENT_BLOCK_DOWNLOAD_CS_END_REQ = 0x1,   // cs:1: end block download request
+    SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_MASK = 0x3,        // Mask for cs: client subcommand
+    SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_INIT_REQ = 0x0,    // 0: initiate upload request
+    SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_END_REQ = 0x1,     // 1: end block upload request
+    SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_RESP = 0x2,        // 2: block upload response
+    SDO_CCS_CLIENT_BLOCK_UPLOAD_CS_START = 0x3,       // 3: start upload
+};
+
+enum SS : quint8  // ss: server subcommand
+{
+    SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_MASK = 0x3,       // ss :0: initiate download response
+    SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_INIT_RESP = 0x0,  // ss :0: initiate download response
+    SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_RESP = 0x2,       // ss :2: block download response
+    SDO_SCS_SERVER_BLOCK_DOWNLOAD_SS_END_RESP = 0x1,   // ss :1: end block download response
+    SDO_SCS_SERVER_BLOCK_UPLOAD_SS_INIT_RESP = 0x0,    // 0: initiate upload response
+    SDO_SCS_SERVER_BLOCK_UPLOAD_SS_END_RESP = 0x1      // 1: end block upload response
+};
+
+enum Flag : quint8
+{
+    SDO_CSS_MASK = 0xE0,           // Mask for css
+    SDO_E_MASK = 0x2,              // Mask transfer type
+    SDO_E_NORMAL = 0x0,            // E: transfer type segmented/normal
+    SDO_E_EXPEDITED = 0x1,         // E: transfer type expedited
+    SDO_S_SIZE_MASK = 0x1,         // Mask size indicator mask
+    SDO_S_SIZE = 0x1,              // S : size indicator
+    SDO_N_NUMBER_INIT_MASK = 0xC,  // Mask indicates the number of bytes that do not contain data
+    SDO_N_NUMBER_SEG_MASK = 0xE,   // Mask indicates the number of bytes that do not contain data
+    SDO_C_MORE_MASK = 0x1,         // Mask C
+    SDO_C_MORE = 0x1,              // C: indicates whether there are still more segments to be downloaded.
+    SDO_TOGGLE_MASK = 0x10,        // Mask toggle
+    SDO_SG_SIZE = 0x7              // size max by segment, used for SDO SEGMENT ant SDO BLOCK
+};
+
+enum FlagBlock : quint8
+{
+    BLOCK_SIZE = 0x2,            // s: size indicator
+    BLOCK_CRC = 0x04,            // CRC
+    BLOCK_C_MORE_SEG = 0x80,     // C: indicates whether there are still more segments to be downloaded.
+    BLOCK_N_NUMBER_MASK = 0x1C,  // indicates the number of bytes that do not contain data
+    BLOCK_BLOCK_SIZE = 0x7F,     // size max by block
+    BLOCK_SEQNO_MASK = 0x7F      // Max segment by sub-block
+};
+
 SDO::SDO(Node *node)
     : Service(node)
 {
@@ -160,11 +230,11 @@ void SDO::processingFrameFromServer(const QCanBusFrame &frame)
 
         case SCS::SDO_SCS_CLIENT_ABORT:
         {
-            quint32 error = arrangeDataUpload(frame.payload().mid(4, 4), QMetaType::Type::UInt).toUInt();
+            SDOAbortCodes error = static_cast<SDOAbortCodes>(arrangeDataUpload(frame.payload().mid(4, 4), QMetaType::Type::UInt).toUInt());
             qDebug() << "ABORT received : Index :" << QString::number(indexFromFrame(frame), 16).toUpper()
                      << ", SubIndex :" << QString::number(subIndexFromFrame(frame), 16).toUpper() << ", abort :" << QString::number(error, 16).toUpper() << sdoAbort(error);
 
-            setErrorToObject(static_cast<SDOAbortCodes>(error));
+            setErrorToObject(error);
             break;
         }
         default:
@@ -186,7 +256,7 @@ SDO::Status SDO::status() const
     return _status;
 }
 
-QString SDO::sdoAbort(quint32 error) const
+QString SDO::sdoAbort(SDOAbortCodes error) const
 {
     switch (error)
     {
