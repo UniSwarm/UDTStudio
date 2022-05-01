@@ -34,9 +34,7 @@ namespace QtCharts
 class QDateTimeAxis;
 class QValueAxis;
 }  // namespace QtCharts
-#define QChartView QtCharts::QChartView
-#define QDateTimeAxis QtCharts::QDateTimeAxis
-#define QValueAxis QtCharts::QValueAxis
+using namespace QtCharts;
 #else
 class QDateTimeAxis;
 class QValueAxis;

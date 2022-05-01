@@ -28,10 +28,6 @@
 #include <QValueAxis>
 #include <qmath.h>
 
-#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
-using namespace QtCharts;
-#endif
-
 DataLoggerChartsWidget::DataLoggerChartsWidget(QWidget *parent)
     : DataLoggerChartsWidget(nullptr, parent)
 {
