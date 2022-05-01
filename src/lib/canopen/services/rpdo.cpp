@@ -21,6 +21,7 @@
 #include "canopenbus.h"
 #include <QDataStream>
 #include <QDebug>
+#include <QIODevice>
 
 RPDO::RPDO(Node *node, quint8 number)
     : PDO(node, number)

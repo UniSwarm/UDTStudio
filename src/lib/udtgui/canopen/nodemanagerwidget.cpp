@@ -18,6 +18,7 @@
 
 #include "nodemanagerwidget.h"
 
+#include <QActionGroup>
 #include <QDebug>
 #include <QFileDialog>
 #include <QFileInfo>

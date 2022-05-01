@@ -333,7 +333,7 @@ bool DataLoggerModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction act
     }
     if (mimeData->hasFormat("index/subindex"))
     {
-        const QStringList &stringListObjId = QString(mimeData->data("index/subindex")).split(':', QString::SkipEmptyParts);
+        const QStringList &stringListObjId = QString(mimeData->data("index/subindex")).split(':', Qt::SkipEmptyParts);
         for (const QString &stringObjId : stringListObjId)
         {
             NodeObjectId objId = NodeObjectId::fromMimeData(stringObjId);

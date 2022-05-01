@@ -22,6 +22,7 @@
 
 #include <QDataStream>
 #include <QDebug>
+#include <QIODevice>
 #include <QThread>
 
 enum CCS : quint8  // CCS : Client Command Specifier from Client to Server

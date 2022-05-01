@@ -478,7 +478,6 @@ int main(int argc, char *argv[])
     }
     else if (argument.at(0) == "otp")
     {
-
         quint8 nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
         if (nodeid == 0 || nodeid >= 126)
         {

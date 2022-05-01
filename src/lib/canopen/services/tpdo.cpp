@@ -19,6 +19,7 @@
 #include "tpdo.h"
 
 #include <QDebug>
+#include <QIODevice>
 
 #include "canopenbus.h"
 #include "sdo.h"

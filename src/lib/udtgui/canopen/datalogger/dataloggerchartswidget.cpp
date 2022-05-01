@@ -28,7 +28,14 @@
 #include <QValueAxis>
 #include <qmath.h>
 
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
 using namespace QtCharts;
+#endif
+
+DataLoggerChartsWidget::DataLoggerChartsWidget(QWidget *parent)
+    : DataLoggerChartsWidget(nullptr, parent)
+{
+}
 
 DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *parent)
     : QChartView(parent)
@@ -39,23 +46,23 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
 
     setStyleSheet("QAbstractScrollArea {padding: 0px;}");
 
-    _chart = new QtCharts::QChart();
+    _chart = new QChart();
     _chart->legend()->hide();
     //_chart->setTitle("Logger");
     _chart->legend()->setVisible(true);
     _chart->legend()->setAlignment(Qt::AlignBottom);
-    _chart->setTheme(QtCharts::QChart::ChartThemeBlueCerulean);
+    _chart->setTheme(QChart::ChartThemeBlueCerulean);
     setRenderHint(QPainter::Antialiasing);
     _chart->layout()->setContentsMargins(0, 0, 0, 0);
     _chart->setBackgroundBrush(QColor(0x19232D));
     setChart(_chart);
 
-    _axisX = new QtCharts::QDateTimeAxis();
+    _axisX = new QDateTimeAxis();
     _axisX->setTickCount(11);
     _axisX->setFormat("hh:mm:ss");
     //_axisX->setTitleText("Time");
 
-    _axisY = new QtCharts::QValueAxis();
+    _axisY = new QValueAxis();
     _axisY->setLabelFormat("%g");
     //_axisY->setTitleText("Value");
 
@@ -95,12 +102,12 @@ void DataLoggerChartsWidget::setDataLogger(DataLogger *dataLogger)
     _dataLogger = dataLogger;
 }
 
-QtCharts::QChart *DataLoggerChartsWidget::chart() const
+QChart *DataLoggerChartsWidget::chart() const
 {
     return _chart;
 }
 
-QList<QtCharts::QXYSeries *> DataLoggerChartsWidget::series() const
+QList<QXYSeries *> DataLoggerChartsWidget::series() const
 {
     return _series;
 }
@@ -175,7 +182,7 @@ void DataLoggerChartsWidget::updateDlData(int id)
     }
 
     DLData *dlData = _dataLogger->data(id);
-    QtCharts::QXYSeries *serie = _series[id];
+    QXYSeries *serie = _series[id];
     if (dlData->values().count() < serie->count())
     {
         serie->clear();
@@ -223,7 +230,7 @@ void DataLoggerChartsWidget::addDataOk()
     if (_idPending >= 0 && _idPending < _dataLogger->dataList().count())
     {
         DLData *dlData = _dataLogger->data(_idPending);
-        QtCharts::QLineSeries *serie = new QtCharts::QLineSeries();
+        QLineSeries *serie = new QLineSeries();
         serie->setName(dlData->name());
         serie->setPen(QPen(dlData->color(), 2));
         serie->setBrush(QBrush(dlData->color()));
@@ -251,7 +258,7 @@ void DataLoggerChartsWidget::removeDataPrepare(int id)
 {
     if (id >= 0 && id < _dataLogger->dataList().count())
     {
-        QtCharts::QXYSeries *serie = _series.at(id);
+        QXYSeries *serie = _series.at(id);
         _chart->removeSeries(serie);
         _series.removeAt(id);
         _serieLastDates.removeAt(id);
@@ -294,6 +301,10 @@ void DataLoggerChartsWidget::tooltip(QPointF point, bool state)
 
 void DataLoggerChartsWidget::updateSeries()
 {
+    if (_dataLogger == nullptr)
+    {
+        return;
+    }
     if (!_dataLogger->isStarted())
     {
         return;
@@ -342,7 +353,7 @@ void DataLoggerChartsWidget::dropEvent(QDropEvent *event)
     QChartView::dropEvent(event);
     if (event->mimeData()->hasFormat("index/subindex"))
     {
-        const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', QString::SkipEmptyParts);
+        const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', Qt::SkipEmptyParts);
         for (const QString &stringObjId : stringListObjId)
         {
             NodeObjectId objId = NodeObjectId::fromMimeData(stringObjId);

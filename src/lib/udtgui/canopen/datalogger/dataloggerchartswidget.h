@@ -28,24 +28,33 @@
 
 #include "datalogger/datalogger.h"
 
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
 namespace QtCharts
 {
 class QDateTimeAxis;
 class QValueAxis;
 }  // namespace QtCharts
+#define QChartView QtCharts::QChartView
+#define QDateTimeAxis QtCharts::QDateTimeAxis
+#define QValueAxis QtCharts::QValueAxis
+#else
+class QDateTimeAxis;
+class QValueAxis;
+#endif
 
-class UDTGUI_EXPORT DataLoggerChartsWidget : public QtCharts::QChartView
+class UDTGUI_EXPORT DataLoggerChartsWidget : public QChartView
 {
     Q_OBJECT
 public:
+    DataLoggerChartsWidget(QWidget *parent = nullptr);
     DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *parent = nullptr);
     ~DataLoggerChartsWidget() override;
 
     DataLogger *dataLogger() const;
     void setDataLogger(DataLogger *dataLogger);
 
-    QtCharts::QChart *chart() const;
-    QList<QtCharts::QXYSeries *> series() const;
+    QChart *chart() const;
+    QList<QXYSeries *> series() const;
 
     bool useOpenGL() const;
     bool viewCross() const;
@@ -83,11 +92,11 @@ protected:
 private:
     DataLogger *_dataLogger;
 
-    QtCharts::QChart *_chart;
-    QtCharts::QDateTimeAxis *_axisX;
-    QtCharts::QValueAxis *_axisY;
+    QChart *_chart;
+    QDateTimeAxis *_axisX;
+    QValueAxis *_axisY;
 
-    QList<QtCharts::QXYSeries *> _series;
+    QList<QXYSeries *> _series;
     QList<qint64> _serieLastDates;
     QTimer _updateTimer;
 

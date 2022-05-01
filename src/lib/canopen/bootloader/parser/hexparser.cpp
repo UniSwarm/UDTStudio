@@ -68,21 +68,21 @@ bool HexParser::read()
         }
         index++;
 
-        dataCount = line.midRef(index, 2).toInt(&ok, 16);
+        dataCount = line.mid(index, 2).toInt(&ok, 16);
         if (!ok)
         {
             return false;
         }
         index += 2;
 
-        addr = line.midRef(index, 4).toInt(&ok, 16);
+        addr = line.mid(index, 4).toInt(&ok, 16);
         if (!ok)
         {
             return false;
         }
         index += 4;
 
-        type = line.midRef(index, 2).toInt(&ok, 16);
+        type = line.mid(index, 2).toInt(&ok, 16);
         if (!ok)
         {
             return false;
@@ -100,7 +100,7 @@ bool HexParser::read()
                 }
                 for (int i = 0; i < dataCount; i++)
                 {
-                    int data = line.midRef(index, 2).toInt(&ok, 16);
+                    int data = line.mid(index, 2).toInt(&ok, 16);
                     if (!ok)
                     {
                         return false;
@@ -112,7 +112,7 @@ bool HexParser::read()
         }
         else if (type == 4)
         {
-            offsetAddr = line.midRef(index, 4).toInt(&ok, 16) * 0x10000;
+            offsetAddr = line.mid(index, 4).toInt(&ok, 16) * 0x10000;
             if (!ok)
             {
                 return false;
@@ -129,7 +129,7 @@ bool HexParser::read()
             // qDebug() << "unknow type" << type << "at line" << lineCount;
         }
 
-        checkSum = line.midRef(index, 2).toInt(&ok, 16);
+        checkSum = line.mid(index, 2).toInt(&ok, 16);
         if (!ok)
         {
             return false;

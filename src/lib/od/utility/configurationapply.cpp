@@ -83,7 +83,7 @@ bool ConfigurationApply::apply(DeviceModel *deviceModel, const QString &fileIniP
 SubIndex *ConfigurationApply::getSubIndex(DeviceModel *deviceDescription, const QString &childKey)
 {
     bool ok = false;
-    if (childKey.contains(QRegExp("^[0-9]")))
+    if (childKey.contains(QRegularExpression("^[0-9]")))
     {
         uint16_t indexId = 0;
         uint8_t subIndexId = 0;
@@ -129,7 +129,7 @@ SubIndex *ConfigurationApply::getSubIndex(DeviceModel *deviceDescription, const 
                 SubIndex *sub = nullptr;
                 if (subIndexName.startsWith("sub"))
                 {
-                    uint subIndexNumber = subIndexName.midRef(3).toUInt();
+                    uint subIndexNumber = subIndexName.mid(3).toUInt();
                     sub = index->subIndex(subIndexNumber);
                 }
                 else
@@ -194,12 +194,12 @@ QString ConfigurationApply::renameItem(const QString &name, int value)
     }
     if (type == "C")
     {
-        newName.replace("%C", QString('A' + value - 1));
+        newName.replace("%C", QChar('A' + value - 1));
         return newName;
     }
     if (type == "c")
     {
-        newName.replace("%c", QString('a' + value - 1));
+        newName.replace("%c", QChar('a' + value - 1));
         return newName;
     }
     return newName;

@@ -25,7 +25,6 @@
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QMenu>
-#include <QRegExp>
 
 #include "node.h"
 

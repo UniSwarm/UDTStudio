@@ -135,7 +135,7 @@ void BusNodesTreeView::indexDbClick(const QModelIndex &index)
 
 void BusNodesTreeView::addBus(quint8 busId)
 {
-    CanOpenBus *bus = _busNodesModel->canOpen()->bus(busId);
+    CanOpenBus *bus = CanOpen::bus(busId);
     if (bus == nullptr)
     {
         return;

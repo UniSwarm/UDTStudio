@@ -23,6 +23,7 @@
 #include <QTranslator>
 #include <QLibraryInfo>
 #include <QSettings>
+#include <QFile>
 
 int main(int argc, char *argv[])
 {
@@ -51,6 +52,7 @@ int main(int argc, char *argv[])
         app.setStyleSheet(ts.readAll());
         w.setStyleSheet("\
             QScrollArea {border: none;} \
+            QComboBox {padding-right: 4px;} \
             QComboBox::item:checked {height: 24px;} \
             QMenu::icon {margin: 1px;} \
             QMenu::icon:checked {margin: 0; background: #505F69; border: 1px inset #505F69; position: absolute; top: 1px; right: 1px; bottom: 1px; left: 1px;} \

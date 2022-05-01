@@ -19,6 +19,7 @@
 #include "texgenerator.h"
 
 #include <QFileInfo>
+#include <QRegularExpression>
 
 #include "db/odindexdb.h"
 
@@ -766,7 +767,7 @@ QString TexGenerator::formatNameIndex(Index *index, bool generic)
     {
         if (index->index() >= 0x1400 && index->index() < 0x1A04)
         {
-            nameIndex.replace(QRegExp("[0-9]"), "X");
+            nameIndex.replace(QRegularExpression("[0-9]"), "X");
         }
         else
         {
@@ -787,7 +788,7 @@ QString TexGenerator::formatNameIndexForTex(Index *index, bool generic)
         nameForTex.append("X");
     }
 
-    nameForTex.remove(QRegExp("^[a][0-9]"));
+    nameForTex.remove(QRegularExpression("^[a][0-9]"));
     nameForTex = formatNameSubIndexForTex(nameForTex);
     return nameForTex;
 }

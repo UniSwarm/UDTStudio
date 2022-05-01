@@ -38,14 +38,22 @@ CanFrameListView::CanFrameListView(QWidget *parent)
     connect(selectionModel(), &QItemSelectionModel::selectionChanged, this, &CanFrameListView::updateSelect);
 
     // columns width
+#if QT_VERSION >= 0x050B00
     int w0 = QFontMetrics(font()).horizontalAdvance("0");
+#else
+    int w0 = QFontMetrics(font()).width("0");
+#endif
     horizontalHeader()->resizeSection(CanFrameModel::Time, 10 * w0);
     horizontalHeader()->resizeSection(CanFrameModel::CanId, 12 * w0);
     horizontalHeader()->resizeSection(CanFrameModel::Type, 8 * w0);
 
     QFont fontMono = QApplication::font();
     fontMono.setStyleHint(QFont::Monospace);
+#if QT_VERSION >= 0x050B00
     int w1 = QFontMetrics(fontMono).horizontalAdvance("00 ");
+#else
+    int w1 = QFontMetrics(fontMono).width("00 ");
+#endif
     horizontalHeader()->resizeSection(CanFrameModel::DataByte, 9 * w1);
 
     // rows height
