@@ -176,7 +176,11 @@ QString NodeObjectId::mimeData() const
 
 NodeObjectId NodeObjectId::fromMimeData(const QString &mimeData)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    const QStringList fields = mimeData.split('.', QString::SkipEmptyParts);
+#else
     const QStringList fields = mimeData.split('.', Qt::SkipEmptyParts);
+#endif
     if (fields.count() < 4)
     {
         return NodeObjectId();

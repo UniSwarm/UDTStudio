@@ -118,7 +118,11 @@ void P402IpWidget::stop()
 
 void P402IpWidget::dataRecordLineEditFinished()
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    _listDataRecord = _dataRecordLineEdit->text().split(QLatin1Char(','), QString::SkipEmptyParts);
+#else
     _listDataRecord = _dataRecordLineEdit->text().split(QLatin1Char(','), Qt::SkipEmptyParts);
+#endif
     _iteratorForSendDataRecord = 0;
     sendDataRecord();
 }

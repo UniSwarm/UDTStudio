@@ -349,7 +349,11 @@ void DataLoggerChartsWidget::dropEvent(QDropEvent *event)
     QChartView::dropEvent(event);
     if (event->mimeData()->hasFormat("index/subindex"))
     {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+        const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', QString::SkipEmptyParts);
+#else
         const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', Qt::SkipEmptyParts);
+#endif
         for (const QString &stringObjId : stringListObjId)
         {
             NodeObjectId objId = NodeObjectId::fromMimeData(stringObjId);
