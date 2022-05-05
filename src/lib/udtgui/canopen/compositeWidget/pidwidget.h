@@ -130,7 +130,6 @@ protected:
     State _state;
 
     void setIMode();
-    void screenshotSave();
     void changeMode402();
     void mode402Changed(uint8_t axis, NodeProfile402::OperationMode mode);
     void manageMeasurement();

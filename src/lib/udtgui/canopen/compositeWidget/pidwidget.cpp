@@ -213,13 +213,6 @@ void PidWidget::setIMode()
     _dataLogger->addData(target_ObjId);
 }
 
-void PidWidget::screenshotSave()
-{
-    QPixmap pixmap = _dataLoggerWidget->grab();
-    QString file = QString("%1_%2.png").arg(title(), QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz"));
-    pixmap.save(file, "PNG");
-}
-
 void PidWidget::changeMode402()
 {
     if (_nodeProfile402 == nullptr)
@@ -688,10 +681,6 @@ QGroupBox *PidWidget::createPIDTestWidgets()
     formLayout->addRow(tr("&End time:"), _stopDataLoggerSpinBox);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
-    _savePushButton = new QPushButton(tr("&Screenshot logger"));
-    formLayout->addRow(_savePushButton);
-    connect(_savePushButton, &QPushButton::clicked, this, &PidWidget::screenshotSave);
-
     _stopTargetPushButton = new QPushButton(tr("Stop"));
     buttonLayout->addWidget(_stopTargetPushButton);
     connect(_stopTargetPushButton, &QPushButton::clicked, this, &PidWidget::stopMeasurement);
