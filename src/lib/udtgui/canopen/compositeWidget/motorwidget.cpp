@@ -138,20 +138,21 @@ void MotorWidget::updateNodeStatus(Node::Status status)
 
 void MotorWidget::updateState()
 {
+    _lockAction->blockSignals(true);
     if (_nodeProfile402->currentState() == NodeProfile402::STATE_OperationEnabled)
     {
         _motorConfigGroupBox->setEnabled(false);
         _bldcConfigGroupBox->setEnabled(false);
-        _enableButton->setEnabled(true);
-        _informationLabel->setText(tr("Not available in \"Operation Enabled\""));
+        _lockAction->setChecked(true);
     }
     else
     {
         _motorConfigGroupBox->setEnabled(true);
         _bldcConfigGroupBox->setEnabled(true);
-        _enableButton->setEnabled(false);
-        _informationLabel->setText("");
+        _lockAction->setChecked(false);
     }
+    _lockAction->blockSignals(false);
+    _lockAction->setEnabled((_nodeProfile402->status() == NodeProfile402::NODEPROFILE_STARTED));
 }
 
 void MotorWidget::readAllObjects()
@@ -168,8 +169,6 @@ void MotorWidget::createWidgets()
     QVBoxLayout *actionLayout = new QVBoxLayout(motorWidget);
     actionLayout->setContentsMargins(0, 0, 0, 0);
     actionLayout->setSpacing(0);
-
-    actionLayout->addWidget(createInformationWidgets());
 
     _motorConfigGroupBox = createMotorConfigWidgets();
     actionLayout->addWidget(_motorConfigGroupBox);
@@ -190,7 +189,7 @@ void MotorWidget::createWidgets()
     setLayout(vBoxLayout);
 }
 
-QToolBar *MotorWidget::createToolBarWidgets() const
+QToolBar *MotorWidget::createToolBarWidgets()
 {
     // toolbar
     QToolBar *toolBar = new QToolBar(tr("Motor commands"));
@@ -205,6 +204,20 @@ QToolBar *MotorWidget::createToolBarWidgets() const
 
     toolBar->addSeparator();
 
+    // lock / unlock action
+    _lockAction = toolBar->addAction(tr("Lock/unlock config objects"));
+    _lockAction->setEnabled(false);
+    _lockAction->setCheckable(true);
+    QIcon iconLockUnlock;
+    iconLockUnlock.addFile(":/icons/img/icons8-lock.png", QSize(), QIcon::Normal, QIcon::On);
+    iconLockUnlock.addFile(":/icons/img/icons8-unlock.png", QSize(), QIcon::Normal, QIcon::Off);
+    _lockAction->setIcon(iconLockUnlock);
+    _lockAction->setShortcut(QKeySequence("Ctrl+L"));
+    _lockAction->setStatusTip(tr("Editing of config parameters is not possible in OE mode, goto to SO to unlock"));
+    connect(_lockAction, &QAction::triggered, this, &MotorWidget::lockUnlockConfig);
+
+    toolBar->addSeparator();
+
     // currents actions
     QAction *mapCurrentsAction = toolBar->addAction(tr("Map currents"));
     mapCurrentsAction->setShortcut(QKeySequence("Ctrl+M"));
@@ -215,24 +228,6 @@ QToolBar *MotorWidget::createToolBarWidgets() const
     connect(monitorCurrentsAction, &QAction::triggered, this, &MotorWidget::monitorCurrents);
 
     return toolBar;
-}
-
-QGroupBox *MotorWidget::createInformationWidgets()
-{
-    QGroupBox *informationGroupBox = new QGroupBox(tr("Information"));
-    informationGroupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    QVBoxLayout *informationLayout = new QVBoxLayout();
-
-    _informationLabel = new QLabel();
-    _informationLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    informationLayout->addWidget(_informationLabel);
-
-    _enableButton = new QPushButton(tr("Unlock config, Go to \"Switched On\""));
-    connect(_enableButton, &QPushButton::clicked, this, &MotorWidget::switchOn402);
-    informationLayout->addWidget(_enableButton);
-
-    informationGroupBox->setLayout(informationLayout);
-    return informationGroupBox;
 }
 
 QGroupBox *MotorWidget::createMotorConfigWidgets()
@@ -440,9 +435,17 @@ QGroupBox *MotorWidget::createBldcStatusWidgets()
     return statusGroupBox;
 }
 
-void MotorWidget::switchOn402()
+void MotorWidget::lockUnlockConfig()
 {
-    _nodeProfile402->goToState(NodeProfile402::STATE_SwitchedOn);
+    if (_lockAction->isChecked())
+    {
+        _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
+    }
+    else
+    {
+        _nodeProfile402->goToState(NodeProfile402::STATE_SwitchedOn);
+    }
+    updateState();
 }
 
 void MotorWidget::mapCurrents()

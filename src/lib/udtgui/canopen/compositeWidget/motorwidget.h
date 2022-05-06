@@ -59,12 +59,8 @@ protected:
     // Creation widgets
     void createWidgets();
     QList<AbstractIndexWidget *> _indexWidgets;
-    QToolBar *createToolBarWidgets() const;
-
-    // Information
-    QGroupBox *createInformationWidgets();
-    QLabel *_informationLabel;
-    QPushButton *_enableButton;
+    QToolBar *createToolBarWidgets();
+    QAction *_lockAction;
 
     // Motor Config
     QGroupBox *createMotorConfigWidgets();
@@ -106,7 +102,7 @@ protected:
     void updateNodeStatus(Node::Status status);
     void updateState();
     void readAllObjects();
-    void switchOn402();
+    void lockUnlockConfig();
 
     void mapCurrents();
     void monitorCurrents();
