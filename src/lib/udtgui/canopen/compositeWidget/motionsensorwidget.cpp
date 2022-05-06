@@ -30,7 +30,6 @@
 
 #include <QFormLayout>
 #include <QGroupBox>
-#include <QPushButton>
 #include <QSplitter>
 #include <QStandardItemModel>
 #include <QWidget>
@@ -277,7 +276,6 @@ void MotionSensorWidget::createWidgets()
     actionLayout->setContentsMargins(0, 0, 4, 0);
     actionLayout->setSpacing(0);
 
-    actionLayout->addWidget(createInformationWidgets());
     _sensorConfigGroupBox = createSensorConfigurationWidgets();
     actionLayout->addWidget(_sensorConfigGroupBox);
     _filterGroupBox = createSensorFilterWidgets();
@@ -346,6 +344,20 @@ QToolBar *MotionSensorWidget::createToolBarWidgets()
 
     toolBar->addSeparator();
 
+    // lock / unlock action
+    _lockAction = toolBar->addAction(tr("Lock/unlock config objects"));
+    _lockAction->setEnabled(false);
+    _lockAction->setCheckable(true);
+    QIcon iconLockUnlock;
+    iconLockUnlock.addFile(":/icons/img/icons8-lock.png", QSize(), QIcon::Normal, QIcon::On);
+    iconLockUnlock.addFile(":/icons/img/icons8-unlock.png", QSize(), QIcon::Normal, QIcon::Off);
+    _lockAction->setIcon(iconLockUnlock);
+    _lockAction->setShortcut(QKeySequence("Ctrl+L"));
+    _lockAction->setStatusTip(tr("Editing of config parameters is not possible in OE mode, goto to SO to unlock"));
+    connect(_lockAction, &QAction::triggered, this, &MotionSensorWidget::lockUnlockConfig);
+
+    toolBar->addSeparator();
+
     // read all action
     QAction *readAllAction = toolBar->addAction(tr("Read all objects"));
     readAllAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
@@ -353,33 +365,20 @@ QToolBar *MotionSensorWidget::createToolBarWidgets()
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));
     connect(readAllAction, &QAction::triggered, this, &MotionSensorWidget::readAllObject);
 
+    QWidget *spacerWidget = new QLabel(this);
+    spacerWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    spacerWidget->setStyleSheet("QLabel {background: none}");
+    spacerWidget->setVisible(true);
+    toolBar->addWidget(spacerWidget);
+
+    QSlider *_motionTargetSlidder = new QSlider(Qt::Horizontal);
+    toolBar->addWidget(_motionTargetSlidder);
+
+    // revert color style for QSlider in toolbar
+    setStyleSheet("QSlider {background-color: #32414B;}\
+                   QSlider::groove:horizontal {background-color: #19232D;}");
+
     return toolBar;
-}
-
-QGroupBox *MotionSensorWidget::createInformationWidgets()
-{
-    QGroupBox *groupBox = new QGroupBox(tr("Information"));
-    groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    QVBoxLayout *vLayout = new QVBoxLayout();
-
-    _informationLabel = new QLabel();
-    _informationLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    vLayout->addWidget(_informationLabel);
-
-    QHBoxLayout *hButtonsLayout = new QHBoxLayout();
-    hButtonsLayout->setSpacing(5);
-    _unlockButton = new QPushButton(tr("Unlock config (SO)"));
-    hButtonsLayout->addWidget(_unlockButton);
-    connect(_unlockButton, &QPushButton::clicked, this, &MotionSensorWidget::unlockConfig);
-
-    _relockButton = new QPushButton(tr("Restart (OE)"));
-    hButtonsLayout->addWidget(_relockButton);
-    connect(_relockButton, &QPushButton::clicked, this, &MotionSensorWidget::relockConfig);
-
-    vLayout->addItem(hButtonsLayout);
-
-    groupBox->setLayout(vLayout);
-    return groupBox;
 }
 
 QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
@@ -601,6 +600,21 @@ QGroupBox *MotionSensorWidget::createSensorStatusWidgets()
     return groupBox;
 }
 
+void MotionSensorWidget::lockUnlockConfig()
+{
+    if (_lockAction->isChecked())
+    {
+        _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
+    }
+    else
+    {
+        _nodeProfile402->goToState(NodeProfile402::STATE_SwitchedOn);
+    }
+    _lockAction->blockSignals(true);
+    _lockAction->setChecked(!_lockAction->isChecked());  // Keep action in the previous state
+    _lockAction->blockSignals(false);
+}
+
 void MotionSensorWidget::statusNodeChanged(Node::Status status)
 {
     if (status == Node::STOPPED)
@@ -615,24 +629,23 @@ void MotionSensorWidget::statusNodeChanged(Node::Status status)
 
 void MotionSensorWidget::stateChanged()
 {
+    _lockAction->blockSignals(true);
     if (_nodeProfile402->currentState() == NodeProfile402::STATE_OperationEnabled)
     {
         _sensorConfigGroupBox->setEnabled(false);
         _filterGroupBox->setEnabled(false);
         _conditioningGroupBox->setEnabled(false);
-        _unlockButton->setEnabled(true);
-        _relockButton->setEnabled(false);
-        _informationLabel->setText(tr("Not available in \"Operation Enabled\""));
+        _lockAction->setChecked(true);
     }
     else
     {
         _sensorConfigGroupBox->setEnabled(true);
         _filterGroupBox->setEnabled(true);
         _conditioningGroupBox->setEnabled(true);
-        _unlockButton->setEnabled(false);
-        _relockButton->setEnabled(true);
-        _informationLabel->setText("");
+        _lockAction->setChecked(false);
     }
+    _lockAction->blockSignals(false);
+    _lockAction->setEnabled((_nodeProfile402->status() == NodeProfile402::NODEPROFILE_STARTED));
 }
 
 void MotionSensorWidget::readAllObject()
@@ -701,14 +714,4 @@ void MotionSensorWidget::updateFilterParams(int index)
             _filterParam0SpinBox->setEnabled(true);
             break;
     }
-}
-
-void MotionSensorWidget::unlockConfig()
-{
-    _nodeProfile402->goToState(NodeProfile402::STATE_SwitchedOn);
-}
-
-void MotionSensorWidget::relockConfig()
-{
-    _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
 }

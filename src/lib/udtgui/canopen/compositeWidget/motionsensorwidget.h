@@ -28,7 +28,6 @@
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QLabel>
-#include <QPushButton>
 #include <QSpinBox>
 #include <QTabWidget>
 #include <QTimer>
@@ -100,11 +99,7 @@ protected:
     void createWidgets();
     QToolBar *createToolBarWidgets();
     QSpinBox *_logTimerSpinBox;
-
-    QGroupBox *createInformationWidgets();
-    QLabel *_informationLabel;
-    QPushButton *_unlockButton;
-    QPushButton *_relockButton;
+    QAction *_lockAction;
 
     QGroupBox *createSensorConfigurationWidgets();
     QGroupBox *_sensorConfigGroupBox;
@@ -145,8 +140,7 @@ protected:
 
     QList<AbstractIndexWidget *> _indexWidgets;
 
-    void unlockConfig();
-    void relockConfig();
+    void lockUnlockConfig();
 };
 
 #endif  // MOTIONSENSORWIDGET_H

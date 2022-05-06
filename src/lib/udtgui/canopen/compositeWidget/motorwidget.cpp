@@ -445,7 +445,9 @@ void MotorWidget::lockUnlockConfig()
     {
         _nodeProfile402->goToState(NodeProfile402::STATE_SwitchedOn);
     }
-    updateState();
+    _lockAction->blockSignals(true);
+    _lockAction->setChecked(!_lockAction->isChecked());  // Keep action in the previous state
+    _lockAction->blockSignals(false);
 }
 
 void MotorWidget::mapCurrents()
