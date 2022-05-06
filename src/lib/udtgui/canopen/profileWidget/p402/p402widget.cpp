@@ -703,7 +703,7 @@ QGroupBox *P402Widget::createControlWordWidgets()
 
     _controlWordLabel = new IndexLabel();
     _controlWordLabel->setDisplayHint(AbstractIndexWidget::DisplayHexa);
-    layout->addRow(tr("ControlWord sended:"), _controlWordLabel);
+    layout->addRow(tr("Control word sent:"), _controlWordLabel);
 
     QPushButton *_gotoOEPushButton = new QPushButton(tr("Operation enabled quickly"));
     layout->addRow(_gotoOEPushButton);
@@ -715,7 +715,7 @@ QGroupBox *P402Widget::createControlWordWidgets()
 
 QGroupBox *P402Widget::createStatusWordWidgets()
 {
-    QGroupBox *groupBox = new QGroupBox(tr("Status Word (0x6n41)"));
+    QGroupBox *groupBox = new QGroupBox(tr("Status word (0x6n41)"));
     QFormLayout *layout = new QFormLayout();
 
     _statusWordLabel = new IndexLabel();

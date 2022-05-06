@@ -98,7 +98,6 @@ public:
         STATE_FaultReactionActive = 7,
         STATE_Fault = 8,
     };
-
     State402 currentState() const;
     void goToState(State402 state);
     QString stateStr(State402 state) const;
@@ -114,7 +113,6 @@ public:
         TargetReached = 0x20,
         ModeSpecific = 0x40
     };
-
     QString event402Str(quint8 Event402) const;
 
     void setPolarityPosition(bool polarity);

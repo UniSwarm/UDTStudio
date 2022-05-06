@@ -19,6 +19,10 @@
 #include "nodeprofile402.h"
 
 #include "indexdb402.h"
+
+#include "nodeobjectid.h"
+#include "nodeodsubscriber.h"
+
 #include "modecp.h"
 #include "modecstca.h"
 #include "modedty.h"
@@ -27,8 +31,6 @@
 #include "modetq.h"
 #include "modevl.h"
 #include "node.h"
-#include "nodeobjectid.h"
-#include "nodeodsubscriber.h"
 
 enum
 {
@@ -346,28 +348,28 @@ QString NodeProfile402::stateStr(const State402 state) const
     switch (state)
     {
         case State402::STATE_NotReadyToSwitchOn:
-            return tr("1_Not ready to switch on");
+            return tr("1. Not ready to switch on");
 
         case State402::STATE_SwitchOnDisabled:
-            return tr("2_Switch on disabled");
+            return tr("2. Switch on disabled");
 
         case State402::STATE_ReadyToSwitchOn:
-            return tr("3_Ready to switch on");
+            return tr("3. Ready to switch on");
 
         case State402::STATE_SwitchedOn:
-            return tr("4_Switched on");
+            return tr("4. Switched on");
 
         case State402::STATE_OperationEnabled:
-            return tr("5_Operation enabled");
+            return tr("5. Operation enabled");
 
         case State402::STATE_QuickStopActive:
-            return tr("6_Quick stop active");
+            return tr("6. Quick stop active");
 
         case State402::STATE_FaultReactionActive:
-            return tr("7_Fault reaction active");
+            return tr("7. Fault reaction active");
 
         case State402::STATE_Fault:
-            return tr("8_Fault");
+            return tr("8. Fault");
     }
     return QString();
 }
@@ -905,12 +907,14 @@ void NodeProfile402::start(int msec)
 {
     _nodeProfleTimer.start(msec);
     _nodeProfileState = State::NODEPROFILE_STARTED;
+    emit stateChanged();
 }
 
 void NodeProfile402::stop()
 {
     _nodeProfleTimer.stop();
     _nodeProfileState = State::NODEPROFILE_STOPED;
+    emit stateChanged();
 }
 
 bool NodeProfile402::status() const
