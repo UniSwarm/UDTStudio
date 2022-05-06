@@ -65,18 +65,18 @@ Bootloader::Bootloader(Node *node)
     _ufwUpdate = new UfwUpdate(_node);
     connect(_ufwUpdate, &UfwUpdate::finished, this, &Bootloader::processEndUpload);
 
+    _programDataObjectId = IndexDb::getObjectId(IndexDb::OD_PROGRAM_DATA_1);
+    _programControlObjectId = IndexDb::getObjectId(IndexDb::OD_PROGRAM_CONTROL_1);
     _bootloaderKeyObjectId = IndexDb::getObjectId(IndexDb::OD_BOOTLOADER_KEY);
     _bootloaderChecksumObjectId = IndexDb::getObjectId(IndexDb::OD_BOOTLOADER_CHECKSUM);
     _bootloaderStatusObjectId = IndexDb::getObjectId(IndexDb::OD_BOOTLOADER_STATUS);
-    _programControlObjectId = IndexDb::getObjectId(IndexDb::OD_PROGRAM_CONTROL_1);
-    _programDataObjectId = IndexDb::getObjectId(IndexDb::OD_PROGRAM_DATA_1);
 
     setNodeInterrest(_node);
-    registerObjId({0x2050, 1});
-    registerObjId({0x2050, 3});
-    registerObjId({0x1F51, 1});
-    registerObjId({0x1F50, 1});
     registerObjId({0x1000, 0});
+    registerObjId(_programDataObjectId);
+    registerObjId(_programControlObjectId);
+    registerObjId(_bootloaderKeyObjectId);
+    registerObjId(_bootloaderStatusObjectId);
 
     _error = 0;
     _deviceOtp = 0;
@@ -206,6 +206,7 @@ void Bootloader::startOtpUpload()
     }
 
     _node->nodeOd()->createBootloaderObjects();
+
     setStatus(STATUS_CHECK_FILE_AND_DEVICE);
     _mode = MODE_OTP;
     _state = STATE_CHECK_MODE;
@@ -458,7 +459,12 @@ void Bootloader::process()
         case STATE_UPLOAD_OTP_FINISHED:
             setStatus(STATUS_CHECKING_UPDATE);
             updateFinishedProgram();
-            QTimer::singleShot(TIMER_READ_STATUS_DISPLAY, this, SLOT(readStatusBootloader()));
+            QTimer::singleShot(TIMER_READ_STATUS_DISPLAY,
+                               [=]()
+                               {
+                                   qDebug() << "readStatusBootloader" << __LINE__;
+                                   readStatusBootloader();
+                               });
             _state = STATE_CHECK;
             _mode = MODE_NONE;
             break;
@@ -514,7 +520,7 @@ void Bootloader::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
         return;
     }
 
-    if ((objId.index() == _programControlObjectId.index()) && objId.subIndex() == 1)
+    if (objId.index() == _programControlObjectId.index() && objId.subIndex() == 1)
     {
         if (flags == NodeOd::FlagsRequest::Read)
         {
@@ -580,7 +586,7 @@ void Bootloader::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
         }
     }
 
-    if ((objId.index() == _bootloaderStatusObjectId.index()) && objId.subIndex() == _bootloaderStatusObjectId.subIndex())
+    if (objId.index() == _bootloaderStatusObjectId.index() && objId.subIndex() == _bootloaderStatusObjectId.subIndex())
     {
         uint8_t status = static_cast<uint8_t>(_node->nodeOd()->value(_bootloaderStatusObjectId).toUInt());
         if (_state == STATE_CHECK)

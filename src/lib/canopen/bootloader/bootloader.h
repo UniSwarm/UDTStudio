@@ -110,7 +110,6 @@ private:
     NodeObjectId _bootloaderKeyObjectId;
     NodeObjectId _bootloaderChecksumObjectId;
     NodeObjectId _bootloaderStatusObjectId;
-    NodeObjectId _programObjectId;
     NodeObjectId _programControlObjectId;
     NodeObjectId _programDataObjectId;
 
