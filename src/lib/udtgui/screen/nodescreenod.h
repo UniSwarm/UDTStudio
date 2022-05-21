@@ -43,9 +43,9 @@ protected:
     QComboBox *_restoreComboBox;
 
 private slots:
-    void storeClicked();
-    void restoreClicked();
-    void statusNodeChanged();
+    void store();
+    void restore();
+    void updateStatusNode();
 
     // NodeScreen interface
 public:
