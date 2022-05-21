@@ -111,6 +111,10 @@ void P402Widget::setNode(Node *node, uint8_t axis)
         updateNodeStatus();
         updateMode(_axis, _nodeProfile402->actualMode());
         updateState();
+
+        _modeOfOperationLabel->setText(tr("Modes of operation (0x%1):").arg(QString::number(_nodeProfile402->modesOfOperationObjectId().index(), 16)));
+        _controlWordGroupBox->setTitle(tr("Control word (0x%1)").arg(QString::number(_nodeProfile402->controlWordObjectId().index(), 16)));
+        _statusWordGroupBox->setTitle(tr("Status word (0x%1)").arg(QString::number(_nodeProfile402->statusWordObjectId().index(), 16)));
     }
 }
 
@@ -123,7 +127,6 @@ void P402Widget::updateNodeStatus()
             updateMode(_axis, _nodeProfile402->actualMode());
             _stackedWidget->setEnabled(false);
             _modeGroupBox->setEnabled(true);
-            _statusWordGroupBox->setEnabled(false);
         }
         else
         {
@@ -164,7 +167,7 @@ void P402Widget::updateState()
 {
     NodeProfile402::State402 state = _nodeProfile402->currentState();
 
-    foreach (QAbstractButton *button, _stateMachineButtonGroup->buttons())
+    for (QAbstractButton *button : _stateMachineButtonGroup->buttons())
     {
         button->setEnabled(false);
     }
@@ -293,7 +296,6 @@ void P402Widget::setStartLogger(bool start)
 
         _stackedWidget->setEnabled(true);
         _modeGroupBox->setEnabled(true);
-        _statusWordGroupBox->setEnabled(true);
     }
     else
     {
@@ -301,7 +303,6 @@ void P402Widget::setStartLogger(bool start)
 
         _stackedWidget->setEnabled(false);
         _modeGroupBox->setEnabled(true);
-        _statusWordGroupBox->setEnabled(false);
     }
 
     if (_startStopAction->isChecked() != start)
@@ -602,7 +603,8 @@ QGroupBox *P402Widget::createModeWidgets()
     QFormLayout *layout = new QFormLayout();
 
     _modeComboBox = new QComboBox();
-    layout->addRow(new QLabel(tr("Modes of operation (0x6n60):")));
+    _modeOfOperationLabel = new QLabel();
+    layout->addRow(_modeOfOperationLabel);
     layout->addRow(_modeComboBox);
 
     _modeLabel = new QLabel();
@@ -614,7 +616,7 @@ QGroupBox *P402Widget::createModeWidgets()
 
 QGroupBox *P402Widget::createStateMachineWidgets()
 {
-    QGroupBox *groupBox = new QGroupBox(tr("State Machine"));
+    QGroupBox *groupBox = new QGroupBox(tr("State machine"));
     QFormLayout *layout = new QFormLayout();
 
     _stateMachineButtonGroup = new QButtonGroup(this);
@@ -691,7 +693,7 @@ QGroupBox *P402Widget::createStateMachineWidgets()
 
 QGroupBox *P402Widget::createControlWordWidgets()
 {
-    QGroupBox *groupBox = new QGroupBox(tr("Control word (0x6n40)"));
+    QGroupBox *groupBox = new QGroupBox();
     QFormLayout *layout = new QFormLayout();
 
     _haltPushButton = new QPushButton(tr("Halt"));
@@ -715,7 +717,7 @@ QGroupBox *P402Widget::createControlWordWidgets()
 
 QGroupBox *P402Widget::createStatusWordWidgets()
 {
-    QGroupBox *groupBox = new QGroupBox(tr("Status word (0x6n41)"));
+    QGroupBox *groupBox = new QGroupBox();
     QFormLayout *layout = new QFormLayout();
 
     _statusWordLabel = new IndexLabel();
