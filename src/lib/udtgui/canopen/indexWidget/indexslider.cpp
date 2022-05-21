@@ -61,6 +61,7 @@ void IndexSlider::updateHint()
 
 void IndexSlider::updateObjId()
 {
+    AbstractIndexWidget::updateObjId();
 }
 
 void IndexSlider::updateRange()

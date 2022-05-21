@@ -206,6 +206,7 @@ void IndexSpinBox::updateHint()
 
 void IndexSpinBox::updateObjId()
 {
+    AbstractIndexWidget::updateObjId();
     setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
 }
 

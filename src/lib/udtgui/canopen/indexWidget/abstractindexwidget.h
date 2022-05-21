@@ -118,6 +118,8 @@ protected:
     double _scale;
     QVariant _minValue;
     QVariant _maxValue;
+    double _minType;
+    double _maxType;
     QString _unit;
 
     QWidget *_widget;

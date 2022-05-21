@@ -78,13 +78,15 @@ void AbstractIndexWidget::requestWriteValue(const QVariant &value)
     switch (inBound(value))
     {
         case AbstractIndexWidget::BoundTooLow:
-            _pendingValue = _minValue;
+            _pendingValue = (_minValue.isValid()) ? _minValue : _minType;
             break;
+
         case AbstractIndexWidget::BoundOK:
             _pendingValue = value;
             break;
+
         case AbstractIndexWidget::BoundTooHigh:
-            _pendingValue = _maxValue;
+            _pendingValue = (_maxValue.isValid()) ? _maxValue : _maxType;
             break;
     }
 
@@ -143,6 +145,16 @@ void AbstractIndexWidget::updateRange()
 
 void AbstractIndexWidget::updateObjId()
 {
+    NodeSubIndex *nodeSubIndex = _objId.nodeSubIndex();
+    if (nodeSubIndex != nullptr)
+    {
+        _minType = nodeSubIndex->minType();
+        _maxType = nodeSubIndex->maxType();
+        if (_unit.isEmpty())
+        {
+            _unit = nodeSubIndex->unit();
+        }
+    }
 }
 
 QVariant AbstractIndexWidget::pValue(const QVariant &value, const AbstractIndexWidget::DisplayHint hint) const
@@ -213,12 +225,8 @@ QString AbstractIndexWidget::pstringValue(const QVariant &value, const AbstractI
 
 AbstractIndexWidget::Bound AbstractIndexWidget::inBound(const QVariant &value)
 {
-    // TODO fixme
-    QVariant minType = -32768;
-    QVariant maxType = 32767;
-
-    QVariant min = (_minValue.isValid()) ? _minValue : minType;
-    QVariant max = (_minValue.isValid()) ? _maxValue : maxType;
+    QVariant min = (_minValue.isValid()) ? _minValue : _minType;
+    QVariant max = (_maxValue.isValid()) ? _maxValue : _maxType;
 
     if (value.toDouble() > max.toDouble())
     {
@@ -395,7 +403,7 @@ void AbstractIndexWidget::setObjId(const NodeObjectId &objId)
         setNode(node);
         return;
     }
-    updateObjId();
+    this->updateObjId();
 }
 
 QMainWindow *AbstractIndexWidget::getMainWindow() const
