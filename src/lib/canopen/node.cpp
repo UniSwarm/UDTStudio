@@ -16,6 +16,7 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include "indexdb.h"
 #include "node.h"
 
 #include "bootloader/bootloader.h"
@@ -191,7 +192,19 @@ quint16 Node::productCode() const
 
 quint16 Node::profileNumber() const
 {
-    return static_cast<quint16>(nodeOd()->value(0x1000).toUInt() & 0xFFFF);
+    return static_cast<quint16>(nodeOd()->value(0x1000).toUInt() & 0x0000FFFFU);
+}
+
+void Node::store(StoreSegment segment)
+{
+    NodeObjectId storeObjectId = IndexDb::getObjectId(IndexDb::OD_STORE, segment);
+    writeObject(storeObjectId, 0x65766173);
+}
+
+void Node::restore(RestoreSegment segment)
+{
+    NodeObjectId restoreObjectId = IndexDb::getObjectId(IndexDb::OD_RESTORE, segment);
+    writeObject(restoreObjectId, 0x64616F6C);
 }
 
 NodeOd *Node::nodeOd() const

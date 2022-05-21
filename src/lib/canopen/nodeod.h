@@ -97,10 +97,6 @@ public:
     void unsubscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 notifySubIndex);
     void updateObjectFromDevice(quint16 index, quint8 subindex, const QVariant &value, NodeOd::FlagsRequest flags, const QDateTime &modificationDate = QDateTime());
 
-    // store / restore
-    void store(uint8_t subIndex, uint32_t signature);
-    void restore(uint8_t subIndex, uint32_t signature);
-
     // default objects
     void createMandatoryObjects();
     void createBootloaderObjects();

@@ -521,18 +521,6 @@ void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, 
     notifySubscribers(key, indexDevice, subindexDevice, flags);  // notify subscribers to the full od
 }
 
-void NodeOd::store(uint8_t subIndex, uint32_t signature)
-{
-    NodeObjectId store = IndexDb::getObjectId(IndexDb::OD_STORE, subIndex);
-    _node->writeObject(store, signature);
-}
-
-void NodeOd::restore(uint8_t subIndex, uint32_t signature)
-{
-    NodeObjectId restore = IndexDb::getObjectId(IndexDb::OD_RESTORE, subIndex);
-    _node->writeObject(restore, signature);
-}
-
 void NodeOd::createMandatoryObjects()
 {
     NodeIndex *deviceType = new NodeIndex(0x1000);

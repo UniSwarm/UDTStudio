@@ -67,6 +67,29 @@ public:
     quint16 productCode() const;
     quint16 profileNumber() const;
 
+    // store / restore
+    enum StoreSegment
+    {
+        StoreAll = 1,
+        StoreCom = 2,
+        StoreApp = 3,
+        StoreMan = 4
+    };
+    void store(StoreSegment segment);
+
+    enum RestoreSegment
+    {
+        RestoreFactoryAll = 1,
+        RestoreFactoryCom = 2,
+        RestoreFactoryApp = 3,
+        RestoreFactoryMan = 4,
+        RestoreSavedAll = 5,
+        RestoreSavedCom = 6,
+        RestoreSavedApp = 7,
+        RestoreSavedMan = 8
+    };
+    void restore(RestoreSegment segment);
+
     // Node od
     NodeOd *nodeOd() const;
     void readObject(const NodeObjectId &id);
