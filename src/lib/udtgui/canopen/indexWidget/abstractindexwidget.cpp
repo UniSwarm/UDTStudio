@@ -449,8 +449,21 @@ void AbstractIndexWidget::updateToolTip()
     if (_widget != nullptr)
     {
         QString toolTip;
-        toolTip.append(QString("Index: 0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'),
+        NodeSubIndex *nodeSubIndex = _objId.nodeSubIndex();
+        if (nodeSubIndex != nullptr)
+        {
+            toolTip.append(QString("<br/><b>Name</b>: %1").arg(nodeSubIndex->name()));
+        }
+
+        toolTip.append(QString("<b>Index</b>: 0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'),
                                                             QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
+
+        if (nodeSubIndex != nullptr)
+        {
+            toolTip.append(QString("<br/><b>Access</b>: %1").arg(nodeSubIndex->accessString()));
+            toolTip.append(QString("<br/><b>Type</b>: %1").arg(NodeSubIndex::dataTypeStr(nodeSubIndex->dataType())));
+        }
+
         _widget->setToolTip(toolTip);
     }
 }
