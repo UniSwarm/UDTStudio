@@ -26,9 +26,9 @@
 IndexSpinBox::IndexSpinBox(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
-    _widget = this;
+    setObjId(objId);
 
-    updateHint();
+    _widget = this;
 }
 
 void IndexSpinBox::setDisplayValue(const QVariant &value, DisplayAttribute flags)
@@ -202,12 +202,6 @@ void IndexSpinBox::updateHint()
             break;
     }
     lineEdit()->setValidator(validator);
-}
-
-void IndexSpinBox::updateObjId()
-{
-    AbstractIndexWidget::updateObjId();
-    setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
 }
 
 void IndexSpinBox::mousePressEvent(QMouseEvent *event)

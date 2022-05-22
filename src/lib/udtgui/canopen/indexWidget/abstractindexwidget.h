@@ -134,6 +134,8 @@ protected:
     void displayStatus(const QString &message);
     void clearStatus();
 
+    void updateToolTip();
+
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;

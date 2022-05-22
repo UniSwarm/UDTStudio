@@ -21,6 +21,8 @@
 IndexLabel::IndexLabel(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
+    setObjId(objId);
+
     _widget = this;
 }
 
@@ -63,10 +65,4 @@ void IndexLabel::setDisplayValue(const QVariant &value, AbstractIndexWidget::Dis
 bool IndexLabel::isEditing() const
 {
     return false;
-}
-
-void IndexLabel::updateObjId()
-{
-    AbstractIndexWidget::updateObjId();
-    setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
 }

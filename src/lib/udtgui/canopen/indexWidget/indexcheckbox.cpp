@@ -21,6 +21,8 @@
 IndexCheckBox::IndexCheckBox(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
+    setObjId(objId);
+
     setText(tr("Enabled"));
 
     _widget = this;
@@ -75,10 +77,4 @@ void IndexCheckBox::setDisplayValue(const QVariant &value, AbstractIndexWidget::
 bool IndexCheckBox::isEditing() const
 {
     return false;
-}
-
-void IndexCheckBox::updateObjId()
-{
-    AbstractIndexWidget::updateObjId();
-    setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
 }

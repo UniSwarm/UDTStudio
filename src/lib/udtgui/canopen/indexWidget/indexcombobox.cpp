@@ -21,6 +21,8 @@
 IndexComboBox::IndexComboBox(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
+    setObjId(objId);
+
     _widget = this;
     _internalUpdate = false;
 
@@ -105,10 +107,4 @@ void IndexComboBox::setDisplayValue(const QVariant &value, AbstractIndexWidget::
 bool IndexComboBox::isEditing() const
 {
     return false;
-}
-
-void IndexComboBox::updateObjId()
-{
-    AbstractIndexWidget::updateObjId();
-    setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
 }

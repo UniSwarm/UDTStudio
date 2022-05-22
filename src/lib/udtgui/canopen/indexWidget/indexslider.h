@@ -42,8 +42,6 @@ protected:
 protected:
     void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
     bool isEditing() const override;
-    void updateHint() override;
-    void updateObjId() override;
     void updateRange() override;
 };
 

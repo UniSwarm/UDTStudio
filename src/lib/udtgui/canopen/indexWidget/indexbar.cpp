@@ -25,6 +25,8 @@
 IndexBar::IndexBar(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
+    setObjId(objId);
+
     _widget = this;
 }
 
@@ -111,10 +113,4 @@ void IndexBar::setDisplayValue(const QVariant &value, DisplayAttribute flags)
 bool IndexBar::isEditing() const
 {
     return false;
-}
-
-void IndexBar::updateObjId()
-{
-    AbstractIndexWidget::updateObjId();
-    setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
 }

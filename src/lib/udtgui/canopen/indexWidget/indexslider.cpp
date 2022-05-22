@@ -24,9 +24,9 @@
 IndexSlider::IndexSlider(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
-    _internalUpdate = false;
+    setObjId(objId);
 
-    updateHint();
+    _internalUpdate = false;
 
     QVBoxLayout *layout = new QVBoxLayout();
     _slider = new QSlider(Qt::Horizontal);
@@ -45,6 +45,8 @@ void IndexSlider::applyValue(int value)
 
 void IndexSlider::setDisplayValue(const QVariant &value, AbstractIndexWidget::DisplayAttribute flags)
 {
+    Q_UNUSED(flags)
+
     _internalUpdate = true;
     _slider->setValue(value.toInt());
     _internalUpdate = false;
@@ -53,15 +55,6 @@ void IndexSlider::setDisplayValue(const QVariant &value, AbstractIndexWidget::Di
 bool IndexSlider::isEditing() const
 {
     return false;
-}
-
-void IndexSlider::updateHint()
-{
-}
-
-void IndexSlider::updateObjId()
-{
-    AbstractIndexWidget::updateObjId();
 }
 
 void IndexSlider::updateRange()

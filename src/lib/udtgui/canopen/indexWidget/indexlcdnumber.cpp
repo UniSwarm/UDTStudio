@@ -25,6 +25,8 @@
 IndexLCDNumber::IndexLCDNumber(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
+    setObjId(objId);
+
     _widget = this;
 
     QHBoxLayout *hlayout = new QHBoxLayout();
@@ -97,10 +99,4 @@ void IndexLCDNumber::setDisplayValue(const QVariant &value, AbstractIndexWidget:
 bool IndexLCDNumber::isEditing() const
 {
     return false;
-}
-
-void IndexLCDNumber::updateObjId()
-{
-    AbstractIndexWidget::updateObjId();
-    setToolTip(QString("0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
 }

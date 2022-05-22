@@ -47,7 +47,6 @@ protected:
 protected:
     void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
     bool isEditing() const override;
-    void updateObjId() override;
 };
 
 #endif  // INDEXLCDNUMBER_H

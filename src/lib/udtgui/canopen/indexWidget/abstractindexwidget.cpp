@@ -30,7 +30,7 @@
 
 AbstractIndexWidget::AbstractIndexWidget(const NodeObjectId &objId)
 {
-    setObjId(objId);
+    Q_UNUSED(objId);
 
     _hint = DisplayDirectValue;
     _bitMask = 0xFFFFFFFFFFFFFFFF;
@@ -57,9 +57,13 @@ void AbstractIndexWidget::setNode(Node *node)
         if (_objId.isValid())
         {
             _lastValue = nodeInterrest()->nodeOd()->value(_objId);
+            this->updateObjId();
             setDisplayValue(pValue(_lastValue, _hint), DisplayAttribute::Normal);
         }
-        updateObjId();
+        else
+        {
+            this->updateObjId();
+        }
     }
     else
     {
@@ -152,8 +156,9 @@ void AbstractIndexWidget::updateObjId()
         _maxType = nodeSubIndex->maxType();
         if (_unit.isEmpty())
         {
-            _unit = nodeSubIndex->unit();
+            setUnit(nodeSubIndex->unit());
         }
+        updateToolTip();
     }
 }
 
@@ -408,7 +413,8 @@ void AbstractIndexWidget::setObjId(const NodeObjectId &objId)
 
 QMainWindow *AbstractIndexWidget::getMainWindow() const
 {
-    for (QWidget *w : QApplication::topLevelWidgets())
+    QWidgetList topLevelWidgets = QApplication::topLevelWidgets();
+    for (QWidget *w : topLevelWidgets)
     {
         if (QMainWindow *mainWindow = qobject_cast<QMainWindow *>(w))
         {
@@ -436,6 +442,17 @@ void AbstractIndexWidget::clearStatus()
         return;
     }
     mainWindow->statusBar()->clearMessage();
+}
+
+void AbstractIndexWidget::updateToolTip()
+{
+    if (_widget != nullptr)
+    {
+        QString toolTip;
+        toolTip.append(QString("Index: 0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'),
+                                                            QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
+        _widget->setToolTip(toolTip);
+    }
 }
 
 void AbstractIndexWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
