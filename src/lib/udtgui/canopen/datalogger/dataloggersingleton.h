@@ -64,11 +64,15 @@ protected:
     QList<DataLoggerWidget *> _dataLoggerWidgets;
 
     QMenu *_loggersMenu;
+    int _loggerWindowCount;
 
     static DataLoggerSingleton *_instance;
 
+    static void showWidgetRecursive(QWidget *widget);
+
 protected slots:
     void updateLoggersMenu();
+    void newLogger();
 };
 
 #define dataLoggers() (DataLoggerSingleton::instance())

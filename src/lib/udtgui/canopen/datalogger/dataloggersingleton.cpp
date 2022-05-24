@@ -19,6 +19,8 @@
 #include "dataloggersingleton.h"
 
 #include <QMenu>
+#include <QStackedWidget>
+#include <QTabWidget>
 
 DataLoggerSingleton *DataLoggerSingleton::_instance = nullptr;
 
@@ -41,14 +43,6 @@ void DataLoggerSingleton::removeLogger(DataLoggerWidget *logger)
     }
 }
 
-void DataLoggerSingleton::stopAll()
-{
-    for (DataLoggerWidget *logger : qAsConst(_dataLoggerWidgets))
-    {
-        logger->dataLogger()->stop();
-    }
-}
-
 QMenu *DataLoggerSingleton::loggersMenu()
 {
     return instance()->_loggersMenu;
@@ -58,6 +52,7 @@ DataLoggerSingleton::DataLoggerSingleton()
 {
     _loggersMenu = new QMenu(tr("Data loggers"));
     connect(_loggersMenu, &QMenu::aboutToShow, this, &DataLoggerSingleton::updateLoggersMenu);
+    _loggerWindowCount = 0;
 }
 
 DataLoggerSingleton::~DataLoggerSingleton()
@@ -65,18 +60,41 @@ DataLoggerSingleton::~DataLoggerSingleton()
     delete _loggersMenu;
 }
 
+void DataLoggerSingleton::showWidgetRecursive(QWidget *widget)
+{
+    if (widget->parentWidget())
+    {
+        DataLoggerSingleton::showWidgetRecursive(widget->parentWidget());
+        QStackedWidget *stackWidget = qobject_cast<QStackedWidget *>(widget->parentWidget());
+        if (stackWidget != nullptr)
+        {
+            QTabWidget *tabWidget = qobject_cast<QTabWidget *>(stackWidget->parentWidget());
+            if (tabWidget)
+            {
+                tabWidget->setCurrentWidget(widget);
+            }
+        }
+    }
+    widget->raise();
+    widget->show();
+    widget->activateWindow();
+}
+
 void DataLoggerSingleton::updateLoggersMenu()
 {
-    QAction *action;
-    QString actionText;
-
     _loggersMenu->clear();
-    action = _loggersMenu->addAction(tr("Stop all"));
-    connect(action, &QAction::triggered, this, &DataLoggerSingleton::stopAll);
+
+    QAction *newLoggerAction = _loggersMenu->addAction(tr("Create a new logger window"));
+    connect(newLoggerAction, &QAction::triggered, this, &DataLoggerSingleton::newLogger);
+
+    QAction *stopAllAction = _loggersMenu->addAction(tr("Stop all"));
+    connect(stopAllAction, &QAction::triggered, this, &DataLoggerSingleton::stopAll);
 
     _loggersMenu->addSection(tr("Loggers list"));
     for (DataLoggerWidget *loggerWidget : qAsConst(_dataLoggerWidgets))
     {
+        QString actionText;
+        QAction *action = nullptr;
         switch (loggerWidget->type())
         {
             case DataLoggerWidget::UserType:
@@ -98,5 +116,36 @@ void DataLoggerSingleton::updateLoggersMenu()
                 }
                 break;
         }
+        if (action != nullptr)
+        {
+            connect(action,
+                    &QAction::triggered,
+                    [=]()
+                    {
+                        showWidgetRecursive(loggerWidget);
+                    });
+        }
     }
+}
+
+void DataLoggerSingleton::stopAll()
+{
+    for (DataLoggerWidget *logger : qAsConst(_dataLoggerWidgets))
+    {
+        logger->dataLogger()->stop();
+    }
+}
+
+void DataLoggerSingleton::newLogger()
+{
+    DataLogger *dataLogger = new DataLogger();
+    DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
+    dataLoggerWidget->setTitle(tr("Logger window %1").arg(_loggerWindowCount++));
+
+    dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
+    connect(dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
+
+    dataLoggerWidget->show();
+    dataLoggerWidget->raise();
+    dataLoggerWidget->activateWindow();
 }
