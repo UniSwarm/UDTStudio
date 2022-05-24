@@ -126,6 +126,8 @@ public:
 
     int byteLength() const;
     int bitLength() const;
+    double minType() const;
+    double maxType() const;
 
     // Object interpretation
     bool isQ1516() const;

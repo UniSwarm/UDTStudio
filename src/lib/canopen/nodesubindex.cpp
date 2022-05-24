@@ -625,6 +625,118 @@ int NodeSubIndex::bitLength() const
     return 0;
 }
 
+double NodeSubIndex::minType() const
+{
+    switch (_dataType)
+    {
+        case NodeSubIndex::INTEGER8:
+            return -((int64_t)1 << 7);
+
+        case NodeSubIndex::INTEGER16:
+            return -((int64_t)1 << 15);
+
+        case NodeSubIndex::INTEGER24:
+            return -((int64_t)1 << 23);
+
+        case NodeSubIndex::INTEGER32:
+            return static_cast<double>(std::numeric_limits<int32_t>::min());
+
+        case NodeSubIndex::INTEGER40:
+            return -((int64_t)1 << 39);
+
+        case NodeSubIndex::INTEGER48:
+            return -((int64_t)1 << 47);
+
+        case NodeSubIndex::INTEGER56:
+            return -((int64_t)1 << 55);
+
+        case NodeSubIndex::INTEGER64:
+            return static_cast<double>(std::numeric_limits<int64_t>::min());
+
+        case NodeSubIndex::UNSIGNED8:
+        case NodeSubIndex::UNSIGNED16:
+        case NodeSubIndex::UNSIGNED24:
+        case NodeSubIndex::UNSIGNED32:
+        case NodeSubIndex::UNSIGNED40:
+        case NodeSubIndex::UNSIGNED48:
+        case NodeSubIndex::UNSIGNED56:
+        case NodeSubIndex::UNSIGNED64:
+            return 0;
+
+        case NodeSubIndex::REAL32:
+            return std::numeric_limits<float>::min();
+
+        case NodeSubIndex::REAL64:
+            return std::numeric_limits<double>::min();
+
+        default:
+            return 0;
+    }
+}
+
+double NodeSubIndex::maxType() const
+{
+    switch (_dataType)
+    {
+        case NodeSubIndex::INTEGER8:
+            return ((int64_t)1 << 7) - 1;
+
+        case NodeSubIndex::INTEGER16:
+            return ((int64_t)1 << 15) - 1;
+
+        case NodeSubIndex::INTEGER24:
+            return ((int64_t)1 << 23) - 1;
+
+        case NodeSubIndex::INTEGER32:
+            return static_cast<double>(std::numeric_limits<int32_t>::max());
+
+        case NodeSubIndex::INTEGER40:
+            return ((int64_t)1 << 39) - 1;
+
+        case NodeSubIndex::INTEGER48:
+            return ((int64_t)1 << 47) - 1;
+
+        case NodeSubIndex::INTEGER56:
+            return ((int64_t)1 << 55) - 1;
+
+        case NodeSubIndex::INTEGER64:
+            return static_cast<double>(std::numeric_limits<int64_t>::max());
+
+        case NodeSubIndex::UNSIGNED8:
+            return ((int64_t)1 << 8) - 1;
+
+        case NodeSubIndex::UNSIGNED16:
+            return ((int64_t)1 << 16) - 1;
+
+        case NodeSubIndex::UNSIGNED24:
+            return ((int64_t)1 << 24) - 1;
+
+        case NodeSubIndex::UNSIGNED32:
+            return static_cast<double>(std::numeric_limits<uint32_t>::max());
+
+        case NodeSubIndex::UNSIGNED40:
+            return ((int64_t)1 << 40) - 1;
+
+        case NodeSubIndex::UNSIGNED48:
+            return ((int64_t)1 << 48) - 1;
+
+        case NodeSubIndex::UNSIGNED56:
+            return ((int64_t)1 << 56) - 1;
+
+        case NodeSubIndex::UNSIGNED64:
+            return static_cast<double>(std::numeric_limits<uint64_t>::max());
+
+        case NodeSubIndex::REAL32:
+            return std::numeric_limits<float>::max();
+
+        case NodeSubIndex::REAL64:
+            return std::numeric_limits<double>::max();
+
+        default:
+            return 0;
+    }
+}
+
 bool NodeSubIndex::isQ1516() const
 {
     return _q1516;
