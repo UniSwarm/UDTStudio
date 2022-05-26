@@ -43,6 +43,9 @@ unix
     icons.path    = $$PREFIX/share/icons
     icons.files   = ../lib/udtgui/img/udtstudio.ico
     INSTALLS += icons
+    eds.path  = $$PREFIX/data/eds
+    eds.files = ../../eds/*
+    INSTALLS += eds
 }
 !isEmpty(target.path): INSTALLS += target
 

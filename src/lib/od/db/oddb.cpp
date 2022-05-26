@@ -34,7 +34,17 @@ OdDb::OdDb()
 void OdDb::init()
 {
     addDirectory(QProcessEnvironment::systemEnvironment().value("EDS_PATH").split(QDir::listSeparator()));
-    addDirectory(QCoreApplication::applicationDirPath() + "/../eds");
+
+    QString edsPath = QCoreApplication::applicationDirPath() + "/../eds";
+    if (QDir(edsPath).exists())
+    {
+        addDirectory(edsPath);
+    }
+    edsPath = QCoreApplication::applicationDirPath() + "/../data/eds";
+    if (QDir(edsPath).exists())
+    {
+        addDirectory(edsPath);
+    }
 }
 
 void OdDb::addDirectory(const QString &directory)
