@@ -42,6 +42,8 @@ public:
     bool isEditable() const;
     void setEditable(bool editable);
 
+    QList<NodeObjectId> selectedNodeObjectIds() const;
+
 public slots:
     void setFilter(const QString &filterText);
     void readSelected();

@@ -28,6 +28,8 @@
 
 #include "node.h"
 
+#include <canopen/datalogger/dataloggersingleton.h>
+
 NodeOdTreeView::NodeOdTreeView(QWidget *parent)
     : QTreeView(parent)
 {
@@ -87,9 +89,45 @@ void NodeOdTreeView::setEditable(bool editable)
     _odModel->setEditable(editable);
 }
 
+QList<NodeObjectId> NodeOdTreeView::selectedNodeObjectIds() const
+{
+    QList<NodeObjectId> nodeObjIds;
+
+    QModelIndexList selectedRows = selectionModel()->selectedRows();
+    for (QModelIndex row : qAsConst(selectedRows))
+    {
+        const QModelIndex &curentIndex = _odModelSorter->mapToSource(row);
+
+        NodeIndex *nodeIndex = _odModel->nodeIndex(curentIndex);
+        if (nodeIndex != nullptr)
+        {
+            for (NodeSubIndex *subIndexN : nodeIndex->subIndexes())
+            {
+                if (subIndexN->isReadable())
+                {
+                    nodeObjIds.append(subIndexN->objectId());
+                }
+            }
+            continue;
+        }
+
+        NodeSubIndex *nodeSubIndex = _odModel->nodeSubIndex(curentIndex);
+        if (nodeSubIndex != nullptr)
+        {
+            if (nodeSubIndex->isReadable())
+            {
+                nodeObjIds.append(nodeSubIndex->objectId());
+            }
+            continue;
+        }
+    }
+
+    return nodeObjIds;
+}
+
 void NodeOdTreeView::setFilter(const QString &filterText)
 {
-    QRegularExpression filterRegExp("(?:pdo:(?<pdo>[^ ]*) *|type:(?<type>[^ ]*) *)*(.*)");
+    static QRegularExpression filterRegExp("(?:pdo:(?<pdo>[^ ]*) *|type:(?<type>[^ ]*) *)*(.*)");
     QRegularExpressionMatch match = filterRegExp.match(filterText);
 
     // pdo
@@ -252,6 +290,10 @@ void NodeOdTreeView::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(_readAction);
     menu.addAction(_readAllAction);
     menu.addAction(_copyAction);
+    if (!selectionModel()->selectedRows().isEmpty())
+    {
+        menu.addMenu(DataLoggerSingleton::createAddToLoggerMenu(selectedNodeObjectIds()));
+    }
     menu.addSeparator();
     menu.addAction(_expandAllAction);
     menu.addAction(_collapseAllAction);

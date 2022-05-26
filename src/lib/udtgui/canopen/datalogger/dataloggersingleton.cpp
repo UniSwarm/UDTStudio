@@ -50,6 +50,11 @@ QMenu *DataLoggerSingleton::loggersMenu()
 
 QMenu *DataLoggerSingleton::createAddToLoggerMenu(const NodeObjectId &objId)
 {
+    return instance()->createAddToLoggerMenu(QList<NodeObjectId>() << objId);
+}
+
+QMenu *DataLoggerSingleton::createAddToLoggerMenu(const QList<NodeObjectId> &objIds)
+{
     QMenu *menu = new QMenu(tr("Add to logger..."));
     DataLoggerSingleton *instance = DataLoggerSingleton::instance();
 
@@ -72,18 +77,20 @@ QMenu *DataLoggerSingleton::createAddToLoggerMenu(const NodeObjectId &objId)
                     &QAction::triggered,
                     [=]()
                     {
-                        loggerWidget->dataLogger()->addData(objId);
+                        loggerWidget->dataLogger()->addData(objIds);
+                        showWidgetRecursive(loggerWidget);
                     });
         }
     }
 
+    menu->addSeparator();
     QAction *addNewAction = menu->addAction(tr("Add to new logger"));
     connect(addNewAction,
             &QAction::triggered,
             [=]()
             {
                 DataLoggerWidget *newLogger = instance->createNewLoggerWindow();
-                newLogger->dataLogger()->addData(objId);
+                newLogger->dataLogger()->addData(objIds);
             });
 
     return menu;

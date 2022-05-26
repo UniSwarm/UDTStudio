@@ -38,6 +38,7 @@ public:
 
     static QMenu *loggersMenu();
     static QMenu *createAddToLoggerMenu(const NodeObjectId &objId);
+    static QMenu *createAddToLoggerMenu(const QList<NodeObjectId> &objIds);
 
     static inline DataLoggerSingleton *instance()
     {
