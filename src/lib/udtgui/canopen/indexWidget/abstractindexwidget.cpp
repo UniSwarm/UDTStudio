@@ -18,6 +18,7 @@
 
 #include "abstractindexwidget.h"
 
+#include "canopen/datalogger/dataloggersingleton.h"
 #include "node.h"
 
 #include <QApplication>
@@ -498,6 +499,8 @@ QMenu *AbstractIndexWidget::createStandardContextMenu(QMenu *menu)
                          requestReadValue();
                      });
     standardMenu->insertAction(firstAction, readAction);
+
+    standardMenu->insertMenu(firstAction, DataLoggerSingleton::createAddToLoggerMenu(objId()));
 
     if (menu != nullptr)
     {

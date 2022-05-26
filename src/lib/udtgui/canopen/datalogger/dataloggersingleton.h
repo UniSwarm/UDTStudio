@@ -37,6 +37,7 @@ public:
     static void removeLogger(DataLoggerWidget *logger);
 
     static QMenu *loggersMenu();
+    static QMenu *createAddToLoggerMenu(const NodeObjectId &objId);
 
     static inline DataLoggerSingleton *instance()
     {
@@ -70,9 +71,10 @@ protected:
 
     static void showWidgetRecursive(QWidget *widget);
 
+    DataLoggerWidget *createNewLoggerWindow();
+
 protected slots:
     void updateLoggersMenu();
-    void newLogger();
 };
 
 #define dataLoggers() (DataLoggerSingleton::instance())

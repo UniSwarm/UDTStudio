@@ -60,6 +60,7 @@ const QString &DataLoggerWidget::title() const
 void DataLoggerWidget::setTitle(const QString &title)
 {
     _title = title;
+    setWindowTitle(title);
 }
 
 DataLoggerWidget::Type DataLoggerWidget::type() const

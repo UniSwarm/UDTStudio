@@ -48,6 +48,47 @@ QMenu *DataLoggerSingleton::loggersMenu()
     return instance()->_loggersMenu;
 }
 
+QMenu *DataLoggerSingleton::createAddToLoggerMenu(const NodeObjectId &objId)
+{
+    QMenu *menu = new QMenu(tr("Add to logger..."));
+    DataLoggerSingleton *instance = DataLoggerSingleton::instance();
+
+    for (DataLoggerWidget *loggerWidget : qAsConst(instance->_dataLoggerWidgets))
+    {
+        QAction *addAction = nullptr;
+        switch (loggerWidget->type())
+        {
+            case DataLoggerWidget::UserType:
+            case DataLoggerWidget::DockType:
+                addAction = menu->addAction(loggerWidget->title());
+                break;
+
+            case DataLoggerWidget::InternalType:
+                break;
+        }
+        if (addAction != nullptr)
+        {
+            connect(addAction,
+                    &QAction::triggered,
+                    [=]()
+                    {
+                        loggerWidget->dataLogger()->addData(objId);
+                    });
+        }
+    }
+
+    QAction *addNewAction = menu->addAction(tr("Add to new logger"));
+    connect(addNewAction,
+            &QAction::triggered,
+            [=]()
+            {
+                DataLoggerWidget *newLogger = instance->createNewLoggerWindow();
+                newLogger->dataLogger()->addData(objId);
+            });
+
+    return menu;
+}
+
 DataLoggerSingleton::DataLoggerSingleton()
 {
     _loggersMenu = new QMenu(tr("Data loggers"));
@@ -85,7 +126,7 @@ void DataLoggerSingleton::updateLoggersMenu()
     _loggersMenu->clear();
 
     QAction *newLoggerAction = _loggersMenu->addAction(tr("Create a new logger window"));
-    connect(newLoggerAction, &QAction::triggered, this, &DataLoggerSingleton::newLogger);
+    connect(newLoggerAction, &QAction::triggered, this, &DataLoggerSingleton::createNewLoggerWindow);
 
     QAction *stopAllAction = _loggersMenu->addAction(tr("Stop all"));
     connect(stopAllAction, &QAction::triggered, this, &DataLoggerSingleton::stopAll);
@@ -94,7 +135,7 @@ void DataLoggerSingleton::updateLoggersMenu()
     for (DataLoggerWidget *loggerWidget : qAsConst(_dataLoggerWidgets))
     {
         QString actionText;
-        QAction *action = nullptr;
+        QAction *showAction = nullptr;
         switch (loggerWidget->type())
         {
             case DataLoggerWidget::UserType:
@@ -104,21 +145,21 @@ void DataLoggerSingleton::updateLoggersMenu()
                 {
                     actionText.append(tr(" (Running)"));
                 }
-                action = _loggersMenu->addAction(actionText);
+                showAction = _loggersMenu->addAction(actionText);
                 // action
                 break;
 
             case DataLoggerWidget::InternalType:
                 if (loggerWidget->dataLogger()->isStarted())
                 {
-                    action = _loggersMenu->addAction(loggerWidget->title() + tr(" (Running)"));
+                    showAction = _loggersMenu->addAction(loggerWidget->title() + tr(" (Running)"));
                     // action
                 }
                 break;
         }
-        if (action != nullptr)
+        if (showAction != nullptr)
         {
-            connect(action,
+            connect(showAction,
                     &QAction::triggered,
                     [=]()
                     {
@@ -136,7 +177,7 @@ void DataLoggerSingleton::stopAll()
     }
 }
 
-void DataLoggerSingleton::newLogger()
+DataLoggerWidget *DataLoggerSingleton::createNewLoggerWindow()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
@@ -148,4 +189,6 @@ void DataLoggerSingleton::newLogger()
     dataLoggerWidget->show();
     dataLoggerWidget->raise();
     dataLoggerWidget->activateWindow();
+
+    return dataLoggerWidget;
 }
