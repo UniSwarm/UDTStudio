@@ -28,6 +28,7 @@
 class QMainWindow;
 class QWidget;
 class QMouseEvent;
+class QMenu;
 
 class UDTGUI_EXPORT AbstractIndexWidget : public NodeOdSubscriber
 {
@@ -135,6 +136,8 @@ protected:
     void clearStatus();
 
     void updateToolTip();
+
+    QMenu *createStandardContextMenu(QMenu *menu = nullptr);
 
     // NodeOdSubscriber interface
 protected:

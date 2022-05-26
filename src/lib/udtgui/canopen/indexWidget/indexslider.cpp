@@ -18,6 +18,8 @@
 
 #include "indexslider.h"
 
+#include <QContextMenuEvent>
+#include <QMenu>
 #include <QSlider>
 #include <QVBoxLayout>
 
@@ -60,4 +62,14 @@ bool IndexSlider::isEditing() const
 void IndexSlider::updateRange()
 {
     _slider->setRange(_minValue.toInt(), _maxValue.toInt());
+}
+
+void IndexSlider::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu *menu = createStandardContextMenu();
+
+    menu->exec(event->globalPos());
+    delete menu;
+
+    event->accept();
 }

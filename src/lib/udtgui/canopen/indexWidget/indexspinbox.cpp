@@ -18,9 +18,9 @@
 
 #include "indexspinbox.h"
 
-#include <QDebug>
 #include <QKeyEvent>
 #include <QLineEdit>
+#include <QMenu>
 #include <QRegularExpression>
 
 IndexSpinBox::IndexSpinBox(const NodeObjectId &objId)
@@ -214,4 +214,15 @@ void IndexSpinBox::mouseMoveEvent(QMouseEvent *event)
 {
     QAbstractSpinBox::mouseMoveEvent(event);
     indexWidgetMouseMove(event);
+}
+
+void IndexSpinBox::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu *menu = lineEdit()->createStandardContextMenu();
+    menu = createStandardContextMenu(menu);
+
+    menu->exec(event->globalPos());
+    delete menu;
+
+    event->accept();
 }

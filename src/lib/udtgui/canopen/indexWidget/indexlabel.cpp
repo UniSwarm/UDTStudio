@@ -18,6 +18,9 @@
 
 #include "indexlabel.h"
 
+#include <QContextMenuEvent>
+#include <QMenu>
+
 IndexLabel::IndexLabel(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
@@ -42,6 +45,16 @@ void IndexLabel::mouseMoveEvent(QMouseEvent *event)
 {
     QLabel::mouseMoveEvent(event);
     indexWidgetMouseMove(event);
+}
+
+void IndexLabel::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu *menu = createStandardContextMenu();
+
+    menu->exec(event->globalPos());
+    delete menu;
+
+    event->accept();
 }
 
 void IndexLabel::setDisplayValue(const QVariant &value, AbstractIndexWidget::DisplayAttribute flags)

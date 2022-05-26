@@ -18,6 +18,9 @@
 
 #include "indexcheckbox.h"
 
+#include <QContextMenuEvent>
+#include <QMenu>
+
 IndexCheckBox::IndexCheckBox(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
@@ -38,6 +41,16 @@ void IndexCheckBox::mouseMoveEvent(QMouseEvent *event)
 {
     QCheckBox::mouseMoveEvent(event);
     indexWidgetMouseMove(event);
+}
+
+void IndexCheckBox::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu *menu = createStandardContextMenu();
+
+    menu->exec(event->globalPos());
+    delete menu;
+
+    event->accept();
 }
 
 void IndexCheckBox::nextCheckState()

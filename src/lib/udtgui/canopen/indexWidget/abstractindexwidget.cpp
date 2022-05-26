@@ -23,6 +23,7 @@
 #include <QApplication>
 #include <QDrag>
 #include <QMainWindow>
+#include <QMenu>
 #include <QMimeData>
 #include <QMouseEvent>
 #include <QStatusBar>
@@ -452,20 +453,57 @@ void AbstractIndexWidget::updateToolTip()
         NodeSubIndex *nodeSubIndex = _objId.nodeSubIndex();
         if (nodeSubIndex != nullptr)
         {
-            toolTip.append(QString("<br/><b>Name</b>: %1").arg(nodeSubIndex->name()));
+            toolTip.append(QObject::tr("<b>Name</b>: %1<br/>", "AbstractIndexWidget").arg(nodeSubIndex->name()));
         }
 
-        toolTip.append(QString("<b>Index</b>: 0x%1.%2").arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'),
-                                                            QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
+        toolTip.append(QObject::tr("<b>Index</b>: 0x%1.%2", "AbstractIndexWidget")
+                           .arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
 
         if (nodeSubIndex != nullptr)
         {
-            toolTip.append(QString("<br/><b>Access</b>: %1").arg(nodeSubIndex->accessString()));
-            toolTip.append(QString("<br/><b>Type</b>: %1").arg(NodeSubIndex::dataTypeStr(nodeSubIndex->dataType())));
+            toolTip.append(QObject::tr("<br/><b>Access</b>: %1", "AbstractIndexWidget").arg(nodeSubIndex->accessString()));
+            toolTip.append(QObject::tr("<br/><b>Type</b>: %1", "AbstractIndexWidget").arg(NodeSubIndex::dataTypeStr(nodeSubIndex->dataType())));
         }
 
         _widget->setToolTip(toolTip);
     }
+}
+
+QMenu *AbstractIndexWidget::createStandardContextMenu(QMenu *menu)
+{
+    QMenu *standardMenu = menu;
+    QAction *firstAction = nullptr;
+    if (menu == nullptr)
+    {
+        standardMenu = new QMenu();
+    }
+    if (!standardMenu->actions().isEmpty())
+    {
+        firstAction = standardMenu->actions().at(0);
+    }
+    standardMenu->setAttribute(Qt::WA_DeleteOnClose);
+
+    // read action
+    QAction *readAction = new QAction(QObject::tr("Read"));
+    readAction->setShortcut(Qt::Key_F5);
+    readAction->setShortcutContext(Qt::WidgetShortcut);
+    readAction->setIcon(QIcon(":/icons/img/icons8-import.png"));
+#if QT_VERSION >= 0x050A00
+    readAction->setShortcutVisibleInContextMenu(true);
+#endif
+    QObject::connect(readAction,
+                     &QAction::triggered,
+                     [=]()
+                     {
+                         requestReadValue();
+                     });
+    standardMenu->insertAction(firstAction, readAction);
+
+    if (menu != nullptr)
+    {
+        standardMenu->insertSeparator(firstAction);
+    }
+    return standardMenu;
 }
 
 void AbstractIndexWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)

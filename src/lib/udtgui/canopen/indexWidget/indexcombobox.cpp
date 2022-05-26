@@ -18,6 +18,9 @@
 
 #include "indexcombobox.h"
 
+#include <QContextMenuEvent>
+#include <QMenu>
+
 IndexComboBox::IndexComboBox(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
 {
@@ -72,6 +75,16 @@ void IndexComboBox::mouseMoveEvent(QMouseEvent *event)
 {
     QComboBox::mouseMoveEvent(event);
     indexWidgetMouseMove(event);
+}
+
+void IndexComboBox::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu *menu = createStandardContextMenu();
+
+    menu->exec(event->globalPos());
+    delete menu;
+
+    event->accept();
 }
 
 void IndexComboBox::setDisplayValue(const QVariant &value, AbstractIndexWidget::DisplayAttribute flags)

@@ -18,9 +18,11 @@
 
 #include "indexlcdnumber.h"
 
+#include <QContextMenuEvent>
 #include <QHBoxLayout>
 #include <QLCDNumber>
 #include <QLabel>
+#include <QMenu>
 
 IndexLCDNumber::IndexLCDNumber(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
@@ -60,6 +62,16 @@ void IndexLCDNumber::mouseMoveEvent(QMouseEvent *event)
 {
     QWidget::mouseMoveEvent(event);
     indexWidgetMouseMove(event);
+}
+
+void IndexLCDNumber::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu *menu = createStandardContextMenu();
+
+    menu->exec(event->globalPos());
+    delete menu;
+
+    event->accept();
 }
 
 void IndexLCDNumber::setDisplayValue(const QVariant &value, AbstractIndexWidget::DisplayAttribute flags)

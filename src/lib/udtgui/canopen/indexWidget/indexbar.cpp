@@ -18,6 +18,8 @@
 
 #include "indexbar.h"
 
+#include <QContextMenuEvent>
+#include <QMenu>
 #include <QStyle>
 #include <QStyleOptionProgressBar>
 #include <QStylePainter>
@@ -85,6 +87,16 @@ void IndexBar::mouseMoveEvent(QMouseEvent *event)
 {
     QProgressBar::mouseMoveEvent(event);
     indexWidgetMouseMove(event);
+}
+
+void IndexBar::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu *menu = createStandardContextMenu();
+
+    menu->exec(event->globalPos());
+    delete menu;
+
+    event->accept();
 }
 
 QString IndexBar::text() const

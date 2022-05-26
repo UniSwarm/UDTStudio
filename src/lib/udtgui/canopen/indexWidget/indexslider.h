@@ -43,6 +43,10 @@ protected:
     void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
     bool isEditing() const override;
     void updateRange() override;
+
+    // QWidget interface
+protected:
+    void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
 #endif  // INDEXSLIDER_H
