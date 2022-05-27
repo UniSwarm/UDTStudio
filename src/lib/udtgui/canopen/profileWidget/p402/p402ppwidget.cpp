@@ -211,6 +211,18 @@ void P402PpWidget::mapDefaultObjects()
     _nodeProfile402->node()->tpdos().at(0)->writeMapping(ppTpdoObjectList);
 }
 
+void P402PpWidget::showDiagram()
+{
+    QPixmap ppModePixmap;
+    QLabel *ppModeLabel;
+    ppModeLabel = new QLabel();
+    ppModeLabel->setAttribute(Qt::WA_DeleteOnClose);
+    ppModePixmap.load(":/diagram/img/diagrams/402PPDiagram.png");
+    ppModeLabel->setPixmap(ppModePixmap);
+    ppModeLabel->setWindowTitle("402 PP Diagram");
+    ppModeLabel->show();
+}
+
 void P402PpWidget::createWidgets()
 {
     // Group Box PP mode
@@ -423,25 +435,20 @@ QGroupBox *P402PpWidget::createControlWordWidgets()
 
 QHBoxLayout *P402PpWidget::createButtonWidgets() const
 {
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402PpWidget::createDataLogger);
-
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map PP to PDOs"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402PpWidget::mapDefaultObjects);
-
-    QPixmap ppModePixmap;
-    QLabel *ppModeLabel;
-    ppModeLabel = new QLabel();
-    ppModePixmap.load(":/diagram/img/diagrams/402PPDiagram.png");
-    ppModeLabel->setPixmap(ppModePixmap);
-    QPushButton *imgPushButton = new QPushButton(tr("Diagram PP mode"));
-    connect(imgPushButton, &QPushButton::clicked, ppModeLabel, &QLabel::show);
-
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(2, 0, 2, 0);
     layout->setSpacing(5);
+
+    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
+    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402PpWidget::createDataLogger);
     layout->addWidget(dataLoggerPushButton);
+
+    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map PP to PDOs"));
+    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402PpWidget::mapDefaultObjects);
     layout->addWidget(mappingPdoPushButton);
+
+    QPushButton *imgPushButton = new QPushButton(tr("Diagram PP mode"));
+    connect(imgPushButton, &QPushButton::clicked, this, &P402PpWidget::showDiagram);
     layout->addWidget(imgPushButton);
 
     return layout;

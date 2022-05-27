@@ -56,8 +56,10 @@ private:
 
     void setZeroButton();
 
+    // Buttons actions
     void createDataLogger();
     void mapDefaultObjects();
+    void showDiagram();
 
     // Create widgets
     void createWidgets();

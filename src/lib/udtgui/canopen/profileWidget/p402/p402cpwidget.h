@@ -57,8 +57,10 @@ private:
     void sendAbsRel(bool ok);
     void absRelEvent(bool ok);
 
+    // Buttons actions
     void createDataLogger();
     void mapDefaultObjects();
+    void showDiagram();
 
     // Create widgets
     QFormLayout *_modeLayout;

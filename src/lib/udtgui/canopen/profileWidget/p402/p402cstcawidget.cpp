@@ -221,26 +221,17 @@ void P402CstcaWidget::createHomePolarityWidgets()
 
 QHBoxLayout *P402CstcaWidget::createButtonWidgets() const
 {
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402CstcaWidget::createDataLogger);
-
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map TQ to PDOs"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402CstcaWidget::mapDefaultObjects);
-
-    QPixmap tqModePixmap;
-    QLabel *tqModeLabel;
-    tqModeLabel = new QLabel();
-    tqModePixmap.load(":/diagram/img/diagrams/402TQDiagram.png");
-    tqModeLabel->setPixmap(tqModePixmap);
-    QPushButton *imgPushButton = new QPushButton(tr("Diagram TQ mode"));
-    connect(imgPushButton, &QPushButton::clicked, tqModeLabel, &QLabel::show);
-
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(2, 0, 2, 0);
     layout->setSpacing(5);
+
+    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
+    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402CstcaWidget::createDataLogger);
     layout->addWidget(dataLoggerPushButton);
+
+    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map TQ to PDOs"));
+    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402CstcaWidget::mapDefaultObjects);
     layout->addWidget(mappingPdoPushButton);
-    layout->addWidget(imgPushButton);
 
     return layout;
 }

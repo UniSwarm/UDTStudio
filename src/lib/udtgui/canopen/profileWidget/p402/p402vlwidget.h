@@ -64,8 +64,10 @@ private:
 
     void updateInformationLabel();
 
+    // Buttons actions
     void createDataLogger();
     void mapDefaultObjects();
+    void showDiagram();
 
     // Create widgets
     void createWidgets();

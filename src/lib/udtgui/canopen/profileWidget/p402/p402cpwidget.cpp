@@ -87,6 +87,18 @@ void P402CpWidget::mapDefaultObjects()
     _nodeProfile402->node()->tpdos().at(2)->writeMapping(cpTpdoObjectList);
 }
 
+void P402CpWidget::showDiagram()
+{
+    QPixmap cpModePixmap;
+    QLabel *cpModeLabel;
+    cpModeLabel = new QLabel();
+    cpModeLabel->setAttribute(Qt::WA_DeleteOnClose);
+    cpModePixmap.load(":/diagram/img/diagrams/402CPDiagram.png");
+    cpModeLabel->setPixmap(cpModePixmap);
+    cpModeLabel->setWindowTitle("402 CP Diagram");
+    cpModeLabel->show();
+}
+
 void P402CpWidget::createWidgets()
 {
     // Group Box CP mode
@@ -283,25 +295,20 @@ QGroupBox *P402CpWidget::createControlWordWidgets()
 
 QHBoxLayout *P402CpWidget::createButtonWidgets() const
 {
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402CpWidget::createDataLogger);
-
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map CP to PDOs"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402CpWidget::mapDefaultObjects);
-
-    QPixmap cpModePixmap;
-    QLabel *cpModeLabel;
-    cpModeLabel = new QLabel();
-    cpModePixmap.load(":/diagram/img/diagrams/402IPDiagram.png");
-    cpModeLabel->setPixmap(cpModePixmap);
-    QPushButton *imgPushButton = new QPushButton(tr("Diagram CP mode"));
-    connect(imgPushButton, &QPushButton::clicked, cpModeLabel, &QLabel::show);
-
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(2, 0, 2, 0);
     layout->setSpacing(5);
+
+    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
+    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402CpWidget::createDataLogger);
     layout->addWidget(dataLoggerPushButton);
+
+    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map CP to PDOs"));
+    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402CpWidget::mapDefaultObjects);
     layout->addWidget(mappingPdoPushButton);
+
+    QPushButton *imgPushButton = new QPushButton(tr("Diagram CP mode"));
+    connect(imgPushButton, &QPushButton::clicked, this, &P402CpWidget::showDiagram);
     layout->addWidget(imgPushButton);
 
     return layout;

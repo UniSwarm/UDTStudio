@@ -146,6 +146,18 @@ void P402DtyWidget::mapDefaultObjects()
     _nodeProfile402->node()->tpdos().at(0)->writeMapping(dtyTpdoObjectList);
 }
 
+void P402DtyWidget::showDiagram()
+{
+    QPixmap dtyModePixmap;
+    QLabel *dtyModeLabel;
+    dtyModeLabel = new QLabel();
+    dtyModeLabel->setAttribute(Qt::WA_DeleteOnClose);
+    dtyModePixmap.load(":/diagram/img/diagrams/402DTYDiagram.png");
+    dtyModeLabel->setPixmap(dtyModePixmap);
+    dtyModeLabel->setWindowTitle("402 DTY Diagram");
+    dtyModeLabel->show();
+}
+
 void P402DtyWidget::createWidgets()
 {
     QGroupBox *modeGroupBox = new QGroupBox(tr("Duty cycle mode"));
@@ -253,25 +265,20 @@ QGroupBox *P402DtyWidget::createControlWordWidgets()
 
 QHBoxLayout *P402DtyWidget::createButtonWidgets() const
 {
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402DtyWidget::createDataLogger);
-
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map DTY to PDOs"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402DtyWidget::mapDefaultObjects);
-
-    QPixmap dtyModePixmap;
-    QLabel *dtyModeLabel;
-    dtyModeLabel = new QLabel();
-    dtyModePixmap.load(":/diagram/img/diagrams/402TQDiagram.png");
-    dtyModeLabel->setPixmap(dtyModePixmap);
-    QPushButton *imgPushButton = new QPushButton(tr("Diagram DTY mode"));
-    connect(imgPushButton, &QPushButton::clicked, dtyModeLabel, &QLabel::show);
-
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(2, 0, 2, 0);
     layout->setSpacing(5);
+
+    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
+    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402DtyWidget::createDataLogger);
     layout->addWidget(dataLoggerPushButton);
+
+    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map DTY to PDOs"));
+    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402DtyWidget::mapDefaultObjects);
     layout->addWidget(mappingPdoPushButton);
+
+    QPushButton *imgPushButton = new QPushButton(tr("Diagram DTY mode"));
+    connect(imgPushButton, &QPushButton::clicked, this, &P402DtyWidget::showDiagram);
     layout->addWidget(imgPushButton);
 
     return layout;

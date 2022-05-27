@@ -300,6 +300,18 @@ void P402IpWidget::mapDefaultObjects()
     _nodeProfile402->node()->tpdos().at(0)->writeMapping(ipTpdoObjectList);
 }
 
+void P402IpWidget::showDiagram()
+{
+    QPixmap ipModePixmap;
+    QLabel *ipModeLabel;
+    ipModeLabel = new QLabel();
+    ipModeLabel->setAttribute(Qt::WA_DeleteOnClose);
+    ipModePixmap.load(":/diagram/img/diagrams/402IPDiagram.png");
+    ipModeLabel->setPixmap(ipModePixmap);
+    ipModeLabel->setWindowTitle("402 IP Diagram");
+    ipModeLabel->show();
+}
+
 void P402IpWidget::createWidgets()
 {
     // Group Box IP mode
@@ -509,25 +521,20 @@ QGroupBox *P402IpWidget::createControlWordWidgets()
 
 QHBoxLayout *P402IpWidget::createButtonWidgets() const
 {
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402IpWidget::createDataLogger);
-
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map IP to PDOs"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402IpWidget::mapDefaultObjects);
-
-    QPixmap ipModePixmap;
-    QLabel *ipModeLabel;
-    ipModeLabel = new QLabel();
-    ipModePixmap.load(":/diagram/img/diagrams/402IPDiagram.png");
-    ipModeLabel->setPixmap(ipModePixmap);
-    QPushButton *imgPushButton = new QPushButton(tr("Diagram IP mode"));
-    connect(imgPushButton, &QPushButton::clicked, ipModeLabel, &QLabel::show);
-
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(2, 0, 2, 0);
     layout->setSpacing(5);
+
+    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
+    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402IpWidget::createDataLogger);
     layout->addWidget(dataLoggerPushButton);
+
+    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map IP to PDOs"));
+    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402IpWidget::mapDefaultObjects);
     layout->addWidget(mappingPdoPushButton);
+
+    QPushButton *imgPushButton = new QPushButton(tr("Diagram IP mode"));
+    connect(imgPushButton, &QPushButton::clicked, this, &P402IpWidget::showDiagram);
     layout->addWidget(imgPushButton);
 
     return layout;

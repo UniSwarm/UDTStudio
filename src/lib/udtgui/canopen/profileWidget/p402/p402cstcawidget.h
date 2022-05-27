@@ -58,6 +58,7 @@ private:
 
     void setZeroButton();
 
+    // Buttons actions
     void createDataLogger();
     void mapDefaultObjects();
 

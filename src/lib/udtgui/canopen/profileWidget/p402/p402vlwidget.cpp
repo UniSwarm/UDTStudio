@@ -223,6 +223,18 @@ void P402VlWidget::updateInformationLabel()
     _infoLabel->setText(text);
 }
 
+void P402VlWidget::showDiagram()
+{
+    QPixmap vlModePixmap;
+    QLabel *vlModeLabel;
+    vlModeLabel = new QLabel();
+    vlModeLabel->setAttribute(Qt::WA_DeleteOnClose);
+    vlModePixmap.load(":/diagram/img/diagrams/402VLDiagram.png");
+    vlModeLabel->setPixmap(vlModePixmap);
+    vlModeLabel->setWindowTitle("402 VL Diagram");
+    vlModeLabel->show();
+}
+
 void P402VlWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
@@ -485,25 +497,20 @@ QGroupBox *P402VlWidget::createControlWordWidgets()
 
 QHBoxLayout *P402VlWidget::createButtonWidgets() const
 {
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402VlWidget::createDataLogger);
-
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map VL to PDOs"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402VlWidget::mapDefaultObjects);
-
-    QPixmap vlModePixmap;
-    QLabel *vlModeLabel;
-    vlModeLabel = new QLabel();
-    vlModePixmap.load(":/diagram/img/diagrams/402VLDiagram.png");
-    vlModeLabel->setPixmap(vlModePixmap);
-    QPushButton *imgPushButton = new QPushButton(tr("Diagram VL mode"));
-    connect(imgPushButton, &QPushButton::clicked, vlModeLabel, &QLabel::show);
-
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(2, 0, 2, 0);
     layout->setSpacing(5);
+
+    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
+    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402VlWidget::createDataLogger);
     layout->addWidget(dataLoggerPushButton);
+
+    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map VL to PDOs"));
+    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402VlWidget::mapDefaultObjects);
     layout->addWidget(mappingPdoPushButton);
+
+    QPushButton *imgPushButton = new QPushButton(tr("Diagram VL mode"));
+    connect(imgPushButton, &QPushButton::clicked, this, &P402VlWidget::showDiagram);
     layout->addWidget(imgPushButton);
 
     return layout;

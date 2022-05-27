@@ -155,6 +155,18 @@ void P402TqWidget::mapDefaultObjects()
     _nodeProfile402->node()->tpdos().at(0)->writeMapping(tqTpdoObjectList);
 }
 
+void P402TqWidget::showDiagram()
+{
+    QPixmap tqModePixmap;
+    QLabel *tqModeLabel;
+    tqModeLabel = new QLabel();
+    tqModeLabel->setAttribute(Qt::WA_DeleteOnClose);
+    tqModePixmap.load(":/diagram/img/diagrams/402TQDiagram.png");
+    tqModeLabel->setPixmap(tqModePixmap);
+    tqModeLabel->setWindowTitle("402 TQ Diagram");
+    tqModeLabel->show();
+}
+
 void P402TqWidget::createWidgets()
 {
     // Group Box TQ mode
@@ -252,25 +264,20 @@ void P402TqWidget::createSlopeWidgets()
 
 QHBoxLayout *P402TqWidget::createButtonWidgets() const
 {
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402TqWidget::createDataLogger);
-
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map TQ to PDOs"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402TqWidget::mapDefaultObjects);
-
-    QPixmap tqModePixmap;
-    QLabel *tqModeLabel;
-    tqModeLabel = new QLabel();
-    tqModePixmap.load(":/diagram/img/diagrams/402TQDiagram.png");
-    tqModeLabel->setPixmap(tqModePixmap);
-    QPushButton *imgPushButton = new QPushButton(tr("Diagram TQ mode"));
-    connect(imgPushButton, &QPushButton::clicked, tqModeLabel, &QLabel::show);
-
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(2, 0, 2, 0);
     layout->setSpacing(5);
+
+    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
+    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402TqWidget::createDataLogger);
     layout->addWidget(dataLoggerPushButton);
+
+    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map TQ to PDOs"));
+    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402TqWidget::mapDefaultObjects);
     layout->addWidget(mappingPdoPushButton);
+
+    QPushButton *imgPushButton = new QPushButton(tr("Diagram TQ mode"));
+    connect(imgPushButton, &QPushButton::clicked, this, &P402TqWidget::showDiagram);
     layout->addWidget(imgPushButton);
 
     return layout;
