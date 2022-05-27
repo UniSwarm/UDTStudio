@@ -82,7 +82,6 @@ void NodeManagerWidget::updateData()
     if (_node != nullptr)
     {
         _nodeNameEdit->setText(_node->name());
-        _nodeStatusLabel->setText(_node->statusStr());
 
         _edsFileNameLabel->setText(QFileInfo(_node->edsFileName()).fileName());
         _edsFileNameLabel->setToolTip(_node->edsFileName());
@@ -284,12 +283,9 @@ void NodeManagerWidget::createWidgets()
     layoutGroupBox->addRow(tr("Name:"), _nodeNameEdit);
     connect(_nodeNameEdit, &QLineEdit::returnPressed, this, &NodeManagerWidget::setNodeName);
 
-    _nodeStatusLabel = new QLabel();
-    layoutGroupBox->addRow(tr("Status:"), _nodeStatusLabel);
-
     _edsFileNameLabel = new QLabel();
     _edsFileNameLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    layoutGroupBox->addRow(tr("Eds file name:"), _edsFileNameLabel);
+    layoutGroupBox->addRow(tr("Eds file:"), _edsFileNameLabel);
 
     _groupBox->setLayout(layoutGroupBox);
     layout->addWidget(_groupBox);

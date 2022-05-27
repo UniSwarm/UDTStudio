@@ -85,7 +85,6 @@ protected:
     QGroupBox *_groupBox;
 
     QLineEdit *_nodeNameEdit;
-    QLabel *_nodeStatusLabel;
     QLabel *_edsFileNameLabel;
 
     QAction *_actionLoadEds;
