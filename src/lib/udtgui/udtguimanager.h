@@ -25,6 +25,8 @@
 
 #include <QMap>
 
+class QWidget;
+
 class Node;
 class NodeOdItemModel;
 class NodeOdTreeView;
