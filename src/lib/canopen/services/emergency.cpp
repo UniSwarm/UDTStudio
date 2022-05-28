@@ -19,6 +19,10 @@
 #include "emergency.h"
 #include "canopenbus.h"
 
+#include <QDataStream>
+#include <QDebug>
+#include <QIODevice>
+
 Emergency::Emergency(Node *node)
     : Service(node)
 {
@@ -38,5 +42,16 @@ QString Emergency::type() const
 
 void Emergency::parseFrame(const QCanBusFrame &frame)
 {
-    Q_UNUSED(frame)
+    uint16_t errorCode;
+    u_int8_t errorClass;
+    QByteArray errorDesc;
+
+    QByteArray payload = frame.payload();
+    QDataStream request(&payload, QIODevice::ReadOnly);
+    request.setByteOrder(QDataStream::LittleEndian);
+
+    request >> errorCode;
+    request >> errorClass;
+    errorDesc = payload.mid(3);
+    qDebug() << "Emergency" << errorCode << errorClass << errorDesc;
 }
