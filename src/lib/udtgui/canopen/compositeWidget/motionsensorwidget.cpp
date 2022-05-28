@@ -333,6 +333,7 @@ QToolBar *MotionSensorWidget::createToolBarWidgets()
     toolBar->addWidget(_logTimerSpinBox);
     connect(_logTimerSpinBox,
             QOverload<int>::of(&QSpinBox::valueChanged),
+            this,
             [=](int i)
             {
                 setLogTimer(i);
@@ -544,6 +545,7 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
     _thresholdModeComboBox->setItemData(_thresholdModeComboBox->count() - 1, tr("Keep the last valid value as output"), Qt::StatusTipRole);
     connect(_thresholdModeComboBox,
             qOverload<int>(&QComboBox::currentIndexChanged),
+            this,
             [=](int index)
             {
                 _thresholdMinSpinBox->setEnabled(index != 0);

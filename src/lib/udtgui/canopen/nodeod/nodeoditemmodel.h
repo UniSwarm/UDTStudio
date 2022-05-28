@@ -42,9 +42,6 @@ public:
     NodeIndex *nodeIndex(const QModelIndex &index) const;
     NodeSubIndex *nodeSubIndex(const QModelIndex &index) const;
 
-    bool isEditable() const;
-    void setEditable(bool editable);
-
     enum Column
     {
         OdIndex,

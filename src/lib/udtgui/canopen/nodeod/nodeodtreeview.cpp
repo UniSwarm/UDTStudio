@@ -28,26 +28,15 @@
 
 #include "node.h"
 
-#include <canopen/datalogger/dataloggersingleton.h>
+#include "udtguimanager.h"
+#include "canopen/datalogger/dataloggersingleton.h"
 
 NodeOdTreeView::NodeOdTreeView(QWidget *parent)
     : QTreeView(parent)
 {
-    _odModel = new NodeOdItemModel(this);
+    _odModel = nullptr;
     _odModelSorter = new NodeOdFilterProxyModel(this);
-    _odModelSorter->setSourceModel(_odModel);
     setModel(_odModelSorter);
-
-#if QT_VERSION >= 0x050B00
-    int w0 = QFontMetrics(font()).horizontalAdvance("0");
-#else
-    int w0 = QFontMetrics(font()).width("0");
-#endif
-    header()->resizeSection(0, 12 * w0);
-    header()->resizeSection(1, 40 * w0);
-    header()->resizeSection(2, 12 * w0);
-    header()->resizeSection(3, 10 * w0);
-    header()->resizeSection(4, 20 * w0);
 
     _odModelSorter->setDynamicSortFilter(true);
 
@@ -76,17 +65,19 @@ Node *NodeOdTreeView::node() const
 
 void NodeOdTreeView::setNode(Node *node)
 {
-    _odModel->setNode(node);
-}
+    _odModel = UdtGuiManager::nodeOdItemModel(node);
+    _odModelSorter->setSourceModel(_odModel);
 
-bool NodeOdTreeView::isEditable() const
-{
-    return _odModel->isEditable();
-}
-
-void NodeOdTreeView::setEditable(bool editable)
-{
-    _odModel->setEditable(editable);
+#if QT_VERSION >= 0x050B00
+    int w0 = QFontMetrics(font()).horizontalAdvance("0");
+#else
+    int w0 = QFontMetrics(font()).width("0");
+#endif
+    header()->resizeSection(0, 12 * w0);
+    header()->resizeSection(1, 40 * w0);
+    header()->resizeSection(2, 12 * w0);
+    header()->resizeSection(3, 10 * w0);
+    header()->resizeSection(4, 20 * w0);
 }
 
 QList<NodeObjectId> NodeOdTreeView::selectedNodeObjectIds() const

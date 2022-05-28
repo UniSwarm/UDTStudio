@@ -126,6 +126,7 @@ void DataLoggerManagerWidget::setChartWidget(DataLoggerChartsWidget *chartWidget
 
     connect(_chartWidget,
             &DataLoggerChartsWidget::useOpenGLChanged,
+            this,
             [=](bool changed)
             {
                 if (changed != _openGLAction->isChecked())
@@ -137,6 +138,7 @@ void DataLoggerManagerWidget::setChartWidget(DataLoggerChartsWidget *chartWidget
             });
     connect(_chartWidget,
             &DataLoggerChartsWidget::viewCrossChanged,
+            this,
             [=](bool changed)
             {
                 if (changed != _crossAction->isChecked())
@@ -148,6 +150,7 @@ void DataLoggerManagerWidget::setChartWidget(DataLoggerChartsWidget *chartWidget
             });
     connect(_chartWidget,
             &DataLoggerChartsWidget::rollingChanged,
+            this,
             [=](bool changed)
             {
                 if (changed != _rollAction->isChecked())
@@ -159,6 +162,7 @@ void DataLoggerManagerWidget::setChartWidget(DataLoggerChartsWidget *chartWidget
             });
     connect(_chartWidget,
             &DataLoggerChartsWidget::rollingTimeMsChanged,
+            this,
             [=](int timeMs)
             {
                 if (timeMs != _rollingTimeSpinBox->value())
@@ -192,6 +196,7 @@ void DataLoggerManagerWidget::createWidgets()
     connect(_startStopAction, &QAction::triggered, this, &DataLoggerManagerWidget::toggleStartLogger);
     connect(_logger,
             &DataLogger::startChanged,
+            this,
             [=](bool changed)
             {
                 if (changed != _startStopAction->isChecked())
@@ -210,6 +215,7 @@ void DataLoggerManagerWidget::createWidgets()
     _toolBar->addWidget(_logTimerSpinBox);
     connect(_logTimerSpinBox,
             QOverload<int>::of(&QSpinBox::valueChanged),
+            this,
             [=](int i)
             {
                 setLogTimerMs(i);
@@ -257,6 +263,7 @@ void DataLoggerManagerWidget::createWidgets()
     _toolBar->addWidget(_rollingTimeSpinBox);
     connect(_rollingTimeSpinBox,
             QOverload<int>::of(&QSpinBox::valueChanged),
+            this,
             [=](int i)
             {
                 setRollingTimeMs(i);

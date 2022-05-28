@@ -1002,6 +1002,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest fl
         if ((_modeStatus == NodeProfile402::MODE_CHANGING) && (_modeRequested != mode))
         {
             QTimer::singleShot(TIMER_READ_MODE_OPERATION_DISPLAY,
+                               this,
                                [=]()
                                {
                                    readModeOfOperationDisplay();

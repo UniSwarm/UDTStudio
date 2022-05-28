@@ -39,9 +39,6 @@ public:
     Node *node() const;
     void setNode(Node *node);
 
-    bool isEditable() const;
-    void setEditable(bool editable);
-
     QList<NodeObjectId> selectedNodeObjectIds() const;
 
 public slots:

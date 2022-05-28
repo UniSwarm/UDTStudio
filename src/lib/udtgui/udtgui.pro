@@ -77,7 +77,8 @@ HEADERS += \
     $$PWD/screen/nodescreensynchro.h \
     $$PWD/screen/nodescreenuio.h \
     $$PWD/screen/nodescreenuioled.h \
-    $$PWD/canopen/bootloaderWidget/bootloaderwidget.h
+    $$PWD/canopen/bootloaderWidget/bootloaderwidget.h \
+    $$PWD/udtguimanager.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \
@@ -145,7 +146,8 @@ SOURCES += \
     $$PWD/screen/nodescreensynchro.cpp \
     $$PWD/screen/nodescreenuio.cpp \
     $$PWD/screen/nodescreenuioled.cpp \
-    $$PWD/canopen/bootloaderWidget/bootloaderwidget.cpp
+    $$PWD/canopen/bootloaderWidget/bootloaderwidget.cpp \
+    $$PWD/udtguimanager.cpp
 
 LIBS += -L"$$PWD/../../../bin"
 android:LIBS += -lod_$${QT_ARCH} -lcanopen_$${QT_ARCH}

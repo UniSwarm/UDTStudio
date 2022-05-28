@@ -144,6 +144,7 @@ QWidget *NodeScreenHome::createSumaryWidget()
     updateFirmwareButton->setFixedWidth(200);
     connect(updateFirmwareButton,
             &QPushButton::released,
+            this,
             [=]()
             {
                 updateFirmware();
@@ -154,6 +155,7 @@ QWidget *NodeScreenHome::createSumaryWidget()
     resetHardwareButton->setFixedWidth(200);
     connect(resetHardwareButton,
             &QPushButton::released,
+            this,
             [=]()
             {
                 resetHardware();
@@ -220,6 +222,7 @@ QWidget *NodeScreenHome::createOdWidget()
     goODButton->setFixedWidth(200);
     connect(goODButton,
             &QPushButton::released,
+            this,
             [=]()
             {
                 screenWidget()->setActiveTab("od");
@@ -298,6 +301,7 @@ void NodeScreenHome::setNodeInternal(Node *node, uint8_t axis)
     {
         connect(node,
                 &Node::edsFileChanged,
+                this,
                 [=]()
                 {
                     updateInfos(node);

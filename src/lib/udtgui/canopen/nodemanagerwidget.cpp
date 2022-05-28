@@ -266,6 +266,7 @@ void NodeManagerWidget::createWidgets()
     _actionLoadEds->setStatusTip(tr("Load an eds file as object dictionary description"));
     connect(_actionLoadEds,
             &QAction::triggered,
+            this,
             [=]()
             {
                 loadEds();

@@ -39,6 +39,7 @@ void BusNodesModel::setCanOpen(CanOpen *canOpen)
         connect(_canOpen, &CanOpen::busAboutToBeRemoved, this, &BusNodesModel::removeBus);
         connect(_canOpen,
                 &CanOpen::busRemoved,
+                this,
                 [=]()
                 {
                     endRemoveRows();
@@ -90,36 +91,42 @@ void BusNodesModel::addBus(quint8 busId)
     }
     connect(bus,
             &CanOpenBus::nodeAboutToBeAdded,
+            this,
             [=](int nodeId)
             {
                 prepareAddNode(bus, nodeId);
             });
     connect(bus,
             &CanOpenBus::nodeAdded,
+            this,
             [=](int nodeId)
             {
                 addNode(bus, nodeId);
             });
     connect(bus,
             &CanOpenBus::nodeAboutToBeRemoved,
+            this,
             [=](int nodeId)
             {
                 removeNode(bus, nodeId);
             });
     connect(bus,
             &CanOpenBus::nodeRemoved,
+            this,
             [=]()
             {
                 endRemoveRows();
             });
     connect(bus,
             &CanOpenBus::busNameChanged,
+            this,
             [=]()
             {
                 updateBus(bus, Name);
             });
     connect(bus,
             &CanOpenBus::connectedChanged,
+            this,
             [=]()
             {
                 updateBus(bus, Status);
@@ -168,12 +175,14 @@ void BusNodesModel::addNode(CanOpenBus *bus, quint8 nodeId)
 
     connect(node,
             &Node::nameChanged,
+            this,
             [=]()
             {
                 updateNode(node, Name);
             });
     connect(node,
             &Node::statusChanged,
+            this,
             [=]()
             {
                 updateNode(node, Status);

@@ -199,6 +199,7 @@ void BusManagerWidget::createWidgets()
     _toolBar->addWidget(_syncTimerSpinBox);
     connect(_syncTimerSpinBox,
             &QSpinBox::editingFinished,
+            this,
             [=]()
             {
                 setSyncTimer(_syncTimerSpinBox->value());

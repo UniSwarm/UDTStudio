@@ -170,6 +170,7 @@ QGroupBox *P402OptionWidget::abortConnectionWidgets()
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_abortConnectionOptionGroup,
             QOverload<int>::of(&QButtonGroup::buttonClicked),
+            this,
             [=](int id)
             {
                 abortConnectionOptionClicked(id);
@@ -177,6 +178,7 @@ QGroupBox *P402OptionWidget::abortConnectionWidgets()
 #else
     connect(_abortConnectionOptionGroup,
             QOverload<int>::of(&QButtonGroup::idClicked),
+            this,
             [=](int id)
             {
                 abortConnectionOptionClicked(id);
@@ -218,6 +220,7 @@ QGroupBox *P402OptionWidget::quickStopWidgets()
 #else
     connect(_quickStopOptionGroup,
             QOverload<int>::of(&QButtonGroup::idPressed),
+            this,
             [=](int id)
             {
                 quickStopOptionClicked(id);
@@ -243,6 +246,7 @@ QGroupBox *P402OptionWidget::shutdownWidgets()
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_shutdownOptionGroup,
             QOverload<int>::of(&QButtonGroup::buttonPressed),
+            this,
             [=](int id)
             {
                 shutdownOptionClicked(id);
@@ -250,6 +254,7 @@ QGroupBox *P402OptionWidget::shutdownWidgets()
 #else
     connect(_shutdownOptionGroup,
             QOverload<int>::of(&QButtonGroup::idPressed),
+            this,
             [=](int id)
             {
                 shutdownOptionClicked(id);
@@ -275,6 +280,7 @@ QGroupBox *P402OptionWidget::disableWidgets()
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_disableOptionGroup,
             QOverload<int>::of(&QButtonGroup::buttonPressed),
+            this,
             [=](int id)
             {
                 disableOptionClicked(id);
@@ -282,6 +288,7 @@ QGroupBox *P402OptionWidget::disableWidgets()
 #else
     connect(_disableOptionGroup,
             QOverload<int>::of(&QButtonGroup::idPressed),
+            this,
             [=](int id)
             {
                 disableOptionClicked(id);
@@ -307,6 +314,7 @@ QGroupBox *P402OptionWidget::haltWidgets()
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_haltOptionGroup,
             QOverload<int>::of(&QButtonGroup::buttonClicked),
+            this,
             [=](int id)
             {
                 haltOptionClicked(id);
@@ -314,6 +322,7 @@ QGroupBox *P402OptionWidget::haltWidgets()
 #else
     connect(_haltOptionGroup,
             QOverload<int>::of(&QButtonGroup::idPressed),
+            this,
             [=](int id)
             {
                 haltOptionClicked(id);
@@ -342,6 +351,7 @@ QGroupBox *P402OptionWidget::faultReactionWidgets()
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_faultReactionOptionGroup,
             QOverload<int>::of(&QButtonGroup::buttonClicked),
+            this,
             [=](int id)
             {
                 faultReactionOptionClicked(id);
@@ -349,6 +359,7 @@ QGroupBox *P402OptionWidget::faultReactionWidgets()
 #else
     connect(_faultReactionOptionGroup,
             QOverload<int>::of(&QButtonGroup::idPressed),
+            this,
             [=](int id)
             {
                 faultReactionOptionClicked(id);

@@ -98,6 +98,7 @@ void P402Widget::setNode(Node *node, uint8_t axis)
         connect(_nodeProfile402, &NodeProfile402::supportedDriveModesUdpdated, this, &P402Widget::updateModeComboBox);
         connect(_modeComboBox,
                 QOverload<int>::of(&QComboBox::currentIndexChanged),
+                this,
                 [=](int id)
                 {
                     setModeIndex(id);
@@ -575,6 +576,7 @@ QToolBar *P402Widget::createToolBarWidgets()
     toolBar->addWidget(_logTimerSpinBox);
     connect(_logTimerSpinBox,
             QOverload<int>::of(&QSpinBox::valueChanged),
+            this,
             [=](int i)
             {
                 setLogTimer(i);
@@ -677,6 +679,7 @@ QGroupBox *P402Widget::createStateMachineWidgets()
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(_stateMachineButtonGroup,
             QOverload<int>::of(&QButtonGroup::buttonClicked),
+            this,
             [=](int id)
             {
                 stateMachineClicked(id);
@@ -684,6 +687,7 @@ QGroupBox *P402Widget::createStateMachineWidgets()
 #else
     connect(_stateMachineButtonGroup,
             QOverload<int>::of(&QButtonGroup::idClicked),
+            this,
             [=](int id)
             {
                 stateMachineClicked(id);

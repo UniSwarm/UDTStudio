@@ -125,12 +125,14 @@ void NodeOdItemModel::setNode(Node *node)
         _root = new NodeOdItem(_node->nodeOd());
         connect(_node,
                 &QObject::destroyed,
+                this,
                 [=]()
                 {
                     setNode(nullptr);
                 });
         connect(_node,
                 &Node::edsFileChanged,
+                this,
                 [=]()
                 {
                     Node *newNode = node;
@@ -143,16 +145,6 @@ void NodeOdItemModel::setNode(Node *node)
         _root = nullptr;
     }
     endResetModel();
-}
-
-bool NodeOdItemModel::isEditable() const
-{
-    return _editable;
-}
-
-void NodeOdItemModel::setEditable(bool editable)
-{
-    _editable = editable;
 }
 
 int NodeOdItemModel::columnCount(const QModelIndex &parent) const
@@ -387,7 +379,7 @@ QMimeData *NodeOdItemModel::mimeData(const QModelIndexList &indexes) const
     QMimeData *mimeData = new QMimeData();
     QByteArray encodedData;
 
-    foreach (QModelIndex index, indexes)
+    for (QModelIndex index : indexes)
     {
         if (index.isValid() && index.column() == OdIndex)
         {

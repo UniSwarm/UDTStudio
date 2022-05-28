@@ -86,6 +86,7 @@ void NodeScreenUio::createWidgets()
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
     connect(_logTimerSpinBox,
             QOverload<int>::of(&QSpinBox::valueChanged),
+            this,
             [=](int i)
             {
                 setLogTimer(i);

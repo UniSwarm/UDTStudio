@@ -266,6 +266,7 @@ void Bootloader::stopProgram()
     uint8_t data = PROGRAM_CONTROL_STOP;
     _node->writeObject(_programControlObjectId, data);
     QTimer::singleShot(TIMER_READ_STATUS_DISPLAY,
+                       this,
                        [=]()
                        {
                            readStatusProgram();
@@ -289,6 +290,7 @@ void Bootloader::clearProgram()
     uint8_t data = PROGRAM_CONTROL_CLEAR;
     _node->writeObject(_programControlObjectId, data);
     QTimer::singleShot(TIMER_READ_STATUS_DISPLAY,
+                       this,
                        [=]()
                        {
                            readStatusProgram();
@@ -438,6 +440,7 @@ void Bootloader::process()
             _node->writeObject(_bootloaderChecksumObjectId, _ufwUpdate->checksum());
             updateFinishedProgram();
             QTimer::singleShot(TIMER_READ_STATUS_DISPLAY,
+                               this,
                                [=]()
                                {
                                    readStatusBootloader();
@@ -460,6 +463,7 @@ void Bootloader::process()
             setStatus(STATUS_CHECKING_UPDATE);
             updateFinishedProgram();
             QTimer::singleShot(TIMER_READ_STATUS_DISPLAY,
+                               this,
                                [=]()
                                {
                                    qDebug() << "readStatusBootloader" << __LINE__;
@@ -561,6 +565,7 @@ void Bootloader::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
                 else
                 {
                     QTimer::singleShot(TIMER_READ_STATUS_DISPLAY,
+                                       this,
                                        [=]()
                                        {
                                            readStatusProgram();

@@ -117,6 +117,7 @@ QToolBar *NodeScreenSynchro::createToolBarWidgets()
     toolBar->addWidget(_logTimerSpinBox);
     connect(_logTimerSpinBox,
             QOverload<int>::of(&QSpinBox::valueChanged),
+            this,
             [=](int i)
             {
                 setLogTimer(i);

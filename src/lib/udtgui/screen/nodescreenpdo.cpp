@@ -39,8 +39,6 @@ void NodeScreenPDO::createWidgets()
 
     _nodeOdWidget = new NodeOdWidget();
     _nodeOdWidget->setFilter(NodeOdWidget::FilterPDO);
-    _nodeOdWidget->nodeOdTreeView()->hideColumn(NodeOdItemModel::RawValue);
-    _nodeOdWidget->nodeOdTreeView()->hideColumn(NodeOdItemModel::HexValue);
     _nodeOdWidget->layout()->setContentsMargins(2, 2, 4, 2);
     splitter->addWidget(_nodeOdWidget);
 
@@ -61,4 +59,6 @@ void NodeScreenPDO::setNodeInternal(Node *node, uint8_t axis)
 
     _nodeOdWidget->setNode(node);
     _nodePdoMappingWidget->setNode(node);
+    _nodeOdWidget->nodeOdTreeView()->hideColumn(NodeOdItemModel::RawValue);
+    _nodeOdWidget->nodeOdTreeView()->hideColumn(NodeOdItemModel::HexValue);
 }

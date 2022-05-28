@@ -122,6 +122,7 @@ void NodeOdWidget::createWidgets()
     _filterCombobox->insertSeparator(1);
     connect(_filterCombobox,
             QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this,
             [=](int index)
             {
                 this->selectFilter(index);

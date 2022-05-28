@@ -142,6 +142,7 @@ void BusNodesTreeView::addBus(quint8 busId)
     }
     connect(bus,
             &CanOpenBus::nodeAdded,
+            this,
             [=](int nodeId)
             {
                 addNode(bus, nodeId);

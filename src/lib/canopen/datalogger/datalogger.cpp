@@ -333,6 +333,7 @@ void DataLogger::addDlData(const NodeObjectId &mobjId)
 
     connect(dlData->node(),
             &QObject::destroyed,
+            this,
             [=]()
             {
                 removeData(mobjId);
