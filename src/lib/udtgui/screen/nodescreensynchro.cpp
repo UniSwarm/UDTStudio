@@ -89,9 +89,13 @@ void NodeScreenSynchro::createWidgets()
     splitter->setSizes(QList<int>() << 100 << 300);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
-    vBoxLayout->setContentsMargins(2, 2, 2, 2);
+    vBoxLayout->setContentsMargins(0, 0, 0, 0);
     vBoxLayout->setSpacing(0);
-    vBoxLayout->addWidget(createToolBarWidgets());
+
+    QLayout *toolBarLayout = new QVBoxLayout();
+    toolBarLayout->setContentsMargins(2, 2, 2, 0);
+    toolBarLayout->addWidget(createToolBarWidgets());
+    vBoxLayout->addItem(toolBarLayout);
     vBoxLayout->addWidget(splitter);
     setLayout(vBoxLayout);
 }

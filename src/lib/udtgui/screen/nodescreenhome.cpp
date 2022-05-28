@@ -60,11 +60,11 @@ void NodeScreenHome::resetHardware()
 
 void NodeScreenHome::createWidgets()
 {
-    QWidget *widget = new QWidget(this);
-    QLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
+    QLayout *glayout = new QVBoxLayout();
+    glayout->setContentsMargins(0, 0, 0, 0);
 
+    QLayout *toolBarLayout = new QVBoxLayout();
+    toolBarLayout->setContentsMargins(2, 2, 2, 0);
     QToolBar *toolBar = new QToolBar(tr("Node screen commands"));
     toolBar->setIconSize(QSize(20, 20));
 
@@ -75,17 +75,23 @@ void NodeScreenHome::createWidgets()
     actionReadMappings->setStatusTip(tr("Read all the objects of the current window"));
     connect(actionReadMappings, &QAction::triggered, this, &NodeScreenHome::readAll);
 
+    toolBarLayout->addWidget(toolBar);
+    glayout->addItem(toolBarLayout);
+
+    QScrollArea *scrollArea = new QScrollArea();
+    scrollArea->setWidgetResizable(true);
+
+    QWidget *widget = new QWidget(this);
+    QLayout *layout = new QVBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+
     layout->addWidget(createSumaryWidget());
     layout->addWidget(createStatusWidget());
     layout->addWidget(createOdWidget());
     widget->setLayout(layout);
-
-    QScrollArea *scrollArea = new QScrollArea();
     scrollArea->setWidget(widget);
-    scrollArea->setWidgetResizable(true);
-    QLayout *glayout = new QVBoxLayout();
-    glayout->setContentsMargins(2, 2, 2, 2);
-    glayout->addWidget(toolBar);
+
     glayout->addWidget(scrollArea);
     setLayout(glayout);
 }

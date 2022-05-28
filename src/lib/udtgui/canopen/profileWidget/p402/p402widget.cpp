@@ -543,9 +543,12 @@ void P402Widget::createWidgets()
     hBoxLayout->addWidget(_stackedWidget);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
-    vBoxLayout->setContentsMargins(2, 2, 2, 2);
+    vBoxLayout->setContentsMargins(0, 0, 0, 0);
     vBoxLayout->setSpacing(2);
-    vBoxLayout->addWidget(createToolBarWidgets());
+    QLayout *toolBarLayout = new QVBoxLayout();
+    toolBarLayout->setContentsMargins(2, 2, 2, 0);
+    toolBarLayout->addWidget(createToolBarWidgets());
+    vBoxLayout->addItem(toolBarLayout);
     vBoxLayout->addLayout(hBoxLayout);
     setLayout(vBoxLayout);
 }
