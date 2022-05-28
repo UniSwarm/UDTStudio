@@ -120,9 +120,7 @@ void NodeOdTreeView::selectNodeObjectId(const NodeObjectId &objId)
 {
     if (!objId.isValid())
     {
-        blockSignals(true);
         selectionModel()->clearSelection();
-        blockSignals(false);
         return;
     }
 
@@ -131,15 +129,14 @@ void NodeOdTreeView::selectNodeObjectId(const NodeObjectId &objId)
     {
         return;
     }
-    const QModelIndex &indexPart = _odModelSorter->mapFromSource(index);
-    if (!indexPart.isValid())
+    const QModelIndex &indexObjId = _odModelSorter->mapFromSource(index);
+    if (!indexObjId.isValid())
     {
         return;
     }
-    blockSignals(true);
-    selectionModel()->select(indexPart, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
-    blockSignals(false);
-    scrollTo(indexPart);
+    selectionModel()->select(indexObjId, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+    selectionModel()->setCurrentIndex(indexObjId, QItemSelectionModel::Rows);
+    scrollTo(indexObjId);
 }
 
 void NodeOdTreeView::setFilter(const QString &filterText)
