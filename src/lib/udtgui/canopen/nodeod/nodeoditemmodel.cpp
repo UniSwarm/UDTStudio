@@ -102,6 +102,24 @@ NodeSubIndex *NodeOdItemModel::nodeSubIndex(const QModelIndex &index) const
     return nullptr;
 }
 
+QModelIndex NodeOdItemModel::index(const NodeObjectId &objId)
+{
+    const QModelIndexList &list = match(this->index(0, 0, QModelIndex()), Qt::UserRole, objId.index());
+    if (list.isEmpty())
+    {
+        return QModelIndex();
+    }
+
+    const QModelIndex &index = list.first();
+    const QModelIndexList &listSub = match(this->index(0, 0, index), Qt::UserRole, objId.subIndex());
+    if (listSub.isEmpty())
+    {
+        return index;
+    }
+
+    return listSub.first();
+}
+
 void NodeOdItemModel::setNode(Node *node)
 {
     if (node == _node)

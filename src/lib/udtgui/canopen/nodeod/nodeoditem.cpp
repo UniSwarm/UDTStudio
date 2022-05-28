@@ -18,7 +18,6 @@
 
 #include "nodeoditem.h"
 
-#include <QDebug>
 #include <QFont>
 
 #include "node.h"
@@ -110,6 +109,9 @@ QVariant NodeOdItem::data(int column, int role) const
         case NodeOdItem::TIndex:
             switch (role)
             {
+                case Qt::UserRole:
+                    return QVariant(_index->index());
+
                 case Qt::DisplayRole:
                     switch (column)
                     {
@@ -225,6 +227,9 @@ QVariant NodeOdItem::data(int column, int role) const
         case NodeOdItem::TSubIndex:
             switch (role)
             {
+                case Qt::UserRole:
+                    return QVariant(_subIndex->subIndex());
+
                 case Qt::DisplayRole:
                     switch (column)
                     {

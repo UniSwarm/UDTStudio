@@ -41,6 +41,7 @@ public:
     NodeOdItem::Type typeIndex(const QModelIndex &index) const;
     NodeIndex *nodeIndex(const QModelIndex &index) const;
     NodeSubIndex *nodeSubIndex(const QModelIndex &index) const;
+    QModelIndex index(const NodeObjectId &objId);
 
     enum Column
     {
@@ -89,7 +90,6 @@ protected:
 private:
     NodeOdItem *_root;
     Node *_node;
-    bool _editable;
 };
 
 #endif  // NODEODITEMMODEL_H
