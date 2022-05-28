@@ -18,8 +18,12 @@
 
 #include "udtguimanager.h"
 
+#include <QStackedWidget>
+#include <QTabWidget>
+#include <QWidget>
+
+#include "canopen/nodeod/nodeodtreeview.h"
 #include "canopen/nodeod/nodeoditemmodel.h"
-#include "qdebug.h"
 
 UdtGuiManager *UdtGuiManager::_instance = nullptr;
 
@@ -44,6 +48,59 @@ NodeOdItemModel *UdtGuiManager::nodeOdItemModel(Node *node)
     model->setNode(node);
     UdtGuiManager::instance()->_nodeOdItemModels.insert(node, model);
     return model;
+}
+
+NodeOdTreeView *UdtGuiManager::nodeOdTreeView(Node *node)
+{
+    auto it = UdtGuiManager::instance()->_nodeOdTreeViews.constFind(node);
+    if (it != UdtGuiManager::instance()->_nodeOdTreeViews.constEnd())
+    {
+        return it.value();
+    }
+    return nullptr;
+}
+
+void UdtGuiManager::showWidgetRecursive(QWidget *widget)
+{
+    if (widget->parentWidget())
+    {
+        UdtGuiManager::showWidgetRecursive(widget->parentWidget());
+        QStackedWidget *stackWidget = qobject_cast<QStackedWidget *>(widget->parentWidget());
+        if (stackWidget != nullptr)
+        {
+            QTabWidget *tabWidget = qobject_cast<QTabWidget *>(stackWidget->parentWidget());
+            if (tabWidget)
+            {
+                tabWidget->setCurrentWidget(widget);
+            }
+        }
+    }
+    widget->raise();
+    widget->show();
+    widget->activateWindow();
+}
+
+void UdtGuiManager::locateInOdTreeView(const NodeObjectId &objId)
+{
+    Node *node = objId.node();
+    if (node == nullptr)
+    {
+        return;
+    }
+
+    NodeOdTreeView *odTreeView = nodeOdTreeView(node);
+    if (odTreeView == nullptr)
+    {
+        return;
+    }
+
+    UdtGuiManager::showWidgetRecursive(odTreeView);
+    odTreeView->selectNodeObjectId(objId);
+}
+
+void UdtGuiManager::setNodeOdTreeView(Node *node, NodeOdTreeView *nodeOdTreeView)
+{
+    UdtGuiManager::instance()->_nodeOdTreeViews.insert(node, nodeOdTreeView);
 }
 
 UdtGuiManager *UdtGuiManager::instance()

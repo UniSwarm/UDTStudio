@@ -18,6 +18,7 @@
 
 #include "abstractindexwidget.h"
 
+#include "udtguimanager.h"
 #include "canopen/datalogger/dataloggersingleton.h"
 #include "node.h"
 
@@ -494,11 +495,23 @@ QMenu *AbstractIndexWidget::createStandardContextMenu(QMenu *menu)
 #endif
     QObject::connect(readAction,
                      &QAction::triggered,
+                     readAction,
                      [=]()
                      {
                          requestReadValue();
                      });
     standardMenu->insertAction(firstAction, readAction);
+
+    // locate action
+    QAction *locateAction = new QAction(QObject::tr("Locate in OD"));
+    QObject::connect(locateAction,
+                     &QAction::triggered,
+                     locateAction,
+                     [=]()
+                     {
+                         UdtGuiManager::locateInOdTreeView(objId());
+                     });
+    standardMenu->insertAction(firstAction, locateAction);
 
     standardMenu->insertMenu(firstAction, DataLoggerSingleton::createAddToLoggerMenu(objId()));
 

@@ -21,17 +21,26 @@
 
 #include "udtgui_global.h"
 
+#include "nodeobjectid.h"
+
 #include <QMap>
 
 class Node;
 class NodeOdItemModel;
+class NodeOdTreeView;
 
 class UDTGUI_EXPORT UdtGuiManager
 {
     Q_DISABLE_COPY(UdtGuiManager)
 
 public:
+    // NodeOd
     static NodeOdItemModel *nodeOdItemModel(Node *node);
+    static NodeOdTreeView *nodeOdTreeView(Node *node);
+    static void locateInOdTreeView(const NodeObjectId &objId);
+    static void setNodeOdTreeView(Node *node, NodeOdTreeView *nodeOdTreeView);
+
+    static void showWidgetRecursive(QWidget *widget);
 
 protected:
     static UdtGuiManager *instance();
@@ -39,6 +48,7 @@ protected:
 
     static UdtGuiManager *_instance;
     QMap <Node *, NodeOdItemModel *> _nodeOdItemModels;
+    QMap <Node *, NodeOdTreeView *> _nodeOdTreeViews;
 };
 
 #endif // UDTGUIMANAGER_H
