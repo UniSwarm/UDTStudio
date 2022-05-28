@@ -116,6 +116,32 @@ QList<NodeObjectId> NodeOdTreeView::selectedNodeObjectIds() const
     return nodeObjIds;
 }
 
+void NodeOdTreeView::selectNodeObjectId(const NodeObjectId &objId)
+{
+    if (!objId.isValid())
+    {
+        blockSignals(true);
+        selectionModel()->clearSelection();
+        blockSignals(false);
+        return;
+    }
+
+    const QPersistentModelIndex &index = _odModel->index(objId);
+    if (!index.isValid())
+    {
+        return;
+    }
+    const QModelIndex &indexPart = _odModelSorter->mapFromSource(index);
+    if (!indexPart.isValid())
+    {
+        return;
+    }
+    blockSignals(true);
+    selectionModel()->select(indexPart, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+    blockSignals(false);
+    scrollTo(indexPart);
+}
+
 void NodeOdTreeView::setFilter(const QString &filterText)
 {
     static QRegularExpression filterRegExp("(?:pdo:(?<pdo>[^ ]*) *|type:(?<type>[^ ]*) *)*(.*)");

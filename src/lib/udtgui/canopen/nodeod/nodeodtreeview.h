@@ -40,6 +40,7 @@ public:
     void setNode(Node *node);
 
     QList<NodeObjectId> selectedNodeObjectIds() const;
+    void selectNodeObjectId(const NodeObjectId &objId);
 
 public slots:
     void setFilter(const QString &filterText);
