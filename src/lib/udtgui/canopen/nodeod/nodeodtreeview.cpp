@@ -31,9 +31,13 @@
 #include "udtguimanager.h"
 #include "canopen/datalogger/dataloggersingleton.h"
 
+#include "utils/headerview.h"
+
 NodeOdTreeView::NodeOdTreeView(QWidget *parent)
     : QTreeView(parent)
 {
+    setHeader(new HeaderView(Qt::Horizontal, this));
+
     _odModel = nullptr;
     _odModelSorter = new NodeOdFilterProxyModel(this);
     setModel(_odModelSorter);

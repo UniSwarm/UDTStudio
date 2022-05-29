@@ -78,7 +78,8 @@ HEADERS += \
     $$PWD/screen/nodescreenuio.h \
     $$PWD/screen/nodescreenuioled.h \
     $$PWD/canopen/bootloaderWidget/bootloaderwidget.h \
-    $$PWD/udtguimanager.h
+    $$PWD/udtguimanager.h \
+    $$PWD/utils/headerview.h
 
 SOURCES += \
     $$PWD/od/oditem.cpp \

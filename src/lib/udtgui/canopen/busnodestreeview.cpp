@@ -24,6 +24,8 @@
 #include <QMenu>
 #include <QSettings>
 
+#include "utils/headerview.h"
+
 BusNodesTreeView::BusNodesTreeView(QWidget *parent)
     : BusNodesTreeView(nullptr, parent)
 {
@@ -32,6 +34,8 @@ BusNodesTreeView::BusNodesTreeView(QWidget *parent)
 BusNodesTreeView::BusNodesTreeView(CanOpen *canOpen, QWidget *parent)
     : QTreeView(parent)
 {
+    setHeader(new HeaderView(Qt::Horizontal, this));
+
     _busNodesModel = new BusNodesModel(this);
 
     _sortFilterProxyModel = new QSortFilterProxyModel(this);

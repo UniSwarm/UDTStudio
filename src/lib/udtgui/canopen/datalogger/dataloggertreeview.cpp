@@ -30,9 +30,13 @@
 
 #include "node.h"
 
+#include "utils/headerview.h"
+
 DataLoggerTreeView::DataLoggerTreeView(QWidget *parent)
     : QTreeView(parent)
 {
+    setHeader(new HeaderView(Qt::Horizontal, this));
+
     _loggerModel = new DataLoggerModel(this);
     _sortProxy = new QSortFilterProxyModel(this);
     _sortProxy->setSourceModel(_loggerModel);
