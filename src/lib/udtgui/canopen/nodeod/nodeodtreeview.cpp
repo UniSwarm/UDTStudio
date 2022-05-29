@@ -36,7 +36,9 @@
 NodeOdTreeView::NodeOdTreeView(QWidget *parent)
     : QTreeView(parent)
 {
-    setHeader(new HeaderView(Qt::Horizontal, this));
+    HeaderView *headerView = new HeaderView(Qt::Horizontal, this);
+    headerView->addMandatorySection(NodeOdItemModel::OdIndex);
+    setHeader(headerView);
 
     _odModel = nullptr;
     _odModelSorter = new NodeOdFilterProxyModel(this);

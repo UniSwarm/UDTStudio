@@ -26,6 +26,11 @@ HeaderView::HeaderView(Qt::Orientation orientation, QWidget *parent)
 {
 }
 
+void HeaderView::addMandatorySection(int section)
+{
+    _mandatorySection.insert(section);
+}
+
 void HeaderView::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu menu;
@@ -35,6 +40,10 @@ void HeaderView::contextMenuEvent(QContextMenuEvent *event)
         QAction *action = menu.addAction(model()->headerData(col, orientation()).toString());
         action->setCheckable(true);
         action->setChecked(!isSectionHidden(col));
+        if (_mandatorySection.contains(col))
+        {
+            action->setDisabled(true);
+        }
         connect(action,
                 &QAction::triggered,
                 this,

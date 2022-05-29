@@ -29,6 +29,11 @@ class UDTGUI_EXPORT HeaderView : public QHeaderView
 public:
     HeaderView(Qt::Orientation orientation, QWidget *parent = nullptr);
 
+    void addMandatorySection(int section);
+
+private:
+    QSet<int> _mandatorySection;
+
     // QWidget interface
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;

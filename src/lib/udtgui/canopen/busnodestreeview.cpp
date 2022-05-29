@@ -34,7 +34,10 @@ BusNodesTreeView::BusNodesTreeView(QWidget *parent)
 BusNodesTreeView::BusNodesTreeView(CanOpen *canOpen, QWidget *parent)
     : QTreeView(parent)
 {
-    setHeader(new HeaderView(Qt::Horizontal, this));
+    HeaderView *headerView = new HeaderView(Qt::Horizontal, this);
+    headerView->addMandatorySection(BusNodesModel::NodeId);
+    headerView->addMandatorySection(BusNodesModel::Name);
+    setHeader(headerView);
 
     _busNodesModel = new BusNodesModel(this);
 

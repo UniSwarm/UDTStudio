@@ -35,7 +35,9 @@
 DataLoggerTreeView::DataLoggerTreeView(QWidget *parent)
     : QTreeView(parent)
 {
-    setHeader(new HeaderView(Qt::Horizontal, this));
+    HeaderView *headerView = new HeaderView(Qt::Horizontal, this);
+    headerView->addMandatorySection(DataLoggerModel::NodeName);
+    setHeader(headerView);
 
     _loggerModel = new DataLoggerModel(this);
     _sortProxy = new QSortFilterProxyModel(this);
