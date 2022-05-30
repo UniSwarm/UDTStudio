@@ -92,6 +92,16 @@ NodeManagerWidget *BusNodesManagerView::nodeManagerWidget() const
     return _nodeManagerWidget;
 }
 
+void BusNodesManagerView::saveState(QSettings &settings)
+{
+    _busNodeTreeView->saveState(settings);
+}
+
+void BusNodesManagerView::restoreState(QSettings &settings)
+{
+    _busNodeTreeView->restoreState(settings);
+}
+
 BusManagerWidget *BusNodesManagerView::busManagerWidget() const
 {
     return _busManagerWidget;

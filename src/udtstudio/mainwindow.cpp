@@ -252,6 +252,10 @@ void MainWindow::writeSettings()
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
     settings.endGroup();
+
+    settings.beginGroup("BusNodeManager");
+    _busNodesManagerView->saveState(settings);
+    settings.endGroup();
 }
 
 void MainWindow::readSettings()
@@ -262,6 +266,10 @@ void MainWindow::readSettings()
     settings.beginGroup("MainWindow");
     restoreGeometry(settings.value("geometry").toByteArray());
     restoreState(settings.value("windowState").toByteArray());
+    settings.endGroup();
+
+    settings.beginGroup("BusNodeManager");
+    _busNodesManagerView->restoreState(settings);
     settings.endGroup();
 }
 

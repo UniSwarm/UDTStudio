@@ -34,13 +34,7 @@ BusNodesTreeView::BusNodesTreeView(QWidget *parent)
 BusNodesTreeView::BusNodesTreeView(CanOpen *canOpen, QWidget *parent)
     : QTreeView(parent)
 {
-    HeaderView *headerView = new HeaderView(Qt::Horizontal, this);
-    headerView->addMandatorySection(BusNodesModel::NodeId);
-    headerView->addMandatorySection(BusNodesModel::Name);
-    setHeader(headerView);
-
     _busNodesModel = new BusNodesModel(this);
-
     _sortFilterProxyModel = new QSortFilterProxyModel(this);
     _sortFilterProxyModel->setSourceModel(_busNodesModel);
     setModel(_sortFilterProxyModel);
@@ -50,26 +44,7 @@ BusNodesTreeView::BusNodesTreeView(CanOpen *canOpen, QWidget *parent)
     connect(selectionModel(), &QItemSelectionModel::selectionChanged, this, &BusNodesTreeView::updateSelection);
     connect(this, &QAbstractItemView::doubleClicked, this, &BusNodesTreeView::indexDbClick);
 
-#if QT_VERSION >= 0x050B00
-    int w0 = QFontMetrics(font()).horizontalAdvance("0");
-#else
-    int w0 = QFontMetrics(font()).width("0");
-#endif
-    header()->resizeSection(BusNodesModel::NodeId, 12 * w0);
-    header()->resizeSection(BusNodesModel::Name, 14 * w0);
-    header()->resizeSection(BusNodesModel::Status, 8 * w0);
-
-    setSortingEnabled(true);
-    setSelectionBehavior(QAbstractItemView::SelectRows);
-    sortByColumn(0, Qt::AscendingOrder);
-
-    QSettings settings(QApplication::organizationName(), QApplication::applicationName());
-    settings.beginGroup("MainWindow");
-    int columns = settings.value("NodeTreeViewColumns", QVariant(1)).toInt();
-    if ((columns & 1) != 1)
-    {
-        header()->hideSection(BusNodesModel::Status);
-    }
+    createHeader();
 }
 
 BusNodesTreeView::~BusNodesTreeView()
@@ -114,6 +89,16 @@ void BusNodesTreeView::addBusAction(QAction *action)
 void BusNodesTreeView::addNodeAction(QAction *action)
 {
     _nodeActions.append(action);
+}
+
+void BusNodesTreeView::saveState(QSettings &settings)
+{
+    settings.setValue("header", header()->saveState());
+}
+
+void BusNodesTreeView::restoreState(QSettings &settings)
+{
+    header()->restoreState(settings.value("header").toByteArray());
 }
 
 void BusNodesTreeView::updateSelection()
@@ -170,6 +155,27 @@ void BusNodesTreeView::addNode(CanOpenBus *bus, quint8 nodeId)
             }
         }
     }
+}
+
+void BusNodesTreeView::createHeader()
+{
+    HeaderView *headerView = new HeaderView(Qt::Horizontal, this);
+    setHeader(headerView);
+    headerView->addMandatorySection(BusNodesModel::NodeId);
+    headerView->addMandatorySection(BusNodesModel::Name);
+    headerView->setStretchLastSection(true);
+#if QT_VERSION >= 0x050B00
+    int w0 = QFontMetrics(font()).horizontalAdvance("0");
+#else
+    int w0 = QFontMetrics(font()).width("0");
+#endif
+    headerView->resizeSection(BusNodesModel::NodeId, 12 * w0);
+    headerView->resizeSection(BusNodesModel::Name, 14 * w0);
+    headerView->resizeSection(BusNodesModel::Status, 8 * w0);
+
+    setSortingEnabled(true);
+    setSelectionBehavior(QAbstractItemView::SelectRows);
+    sortByColumn(0, Qt::AscendingOrder);
 }
 
 void BusNodesTreeView::contextMenuEvent(QContextMenuEvent *event)

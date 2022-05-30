@@ -44,6 +44,9 @@ public:
     BusManagerWidget *busManagerWidget() const;
     NodeManagerWidget *nodeManagerWidget() const;
 
+    void saveState(QSettings &settings);
+    void restoreState(QSettings &settings);
+
 signals:
     void busSelected(CanOpenBus *currentBus);
     void nodeSelected(Node *currentNode);

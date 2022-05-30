@@ -27,6 +27,7 @@
 
 #include <QAction>
 #include <QList>
+#include <QSettings>
 #include <QSortFilterProxyModel>
 
 class UDTGUI_EXPORT BusNodesTreeView : public QTreeView
@@ -46,6 +47,9 @@ public:
     void addBusAction(QAction *action);
     void addNodeAction(QAction *action);
 
+    void saveState(QSettings &settings);
+    void restoreState(QSettings &settings);
+
 signals:
     void busSelected(CanOpenBus *currentBus);
     void nodeSelected(Node *currentNode);
@@ -58,6 +62,7 @@ protected slots:
     void addNode(CanOpenBus *bus, quint8 nodeId);
 
 protected:
+    void createHeader();
     BusNodesModel *_busNodesModel;
     QSortFilterProxyModel *_sortFilterProxyModel;
 
