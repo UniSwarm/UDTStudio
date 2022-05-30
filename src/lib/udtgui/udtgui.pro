@@ -148,7 +148,8 @@ SOURCES += \
     $$PWD/screen/nodescreenuio.cpp \
     $$PWD/screen/nodescreenuioled.cpp \
     $$PWD/canopen/bootloaderWidget/bootloaderwidget.cpp \
-    $$PWD/udtguimanager.cpp
+    $$PWD/udtguimanager.cpp \
+    $$PWD/utils/headerview.cpp
 
 LIBS += -L"$$PWD/../../../bin"
 android:LIBS += -lod_$${QT_ARCH} -lcanopen_$${QT_ARCH}
