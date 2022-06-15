@@ -192,6 +192,13 @@ double ODIndexDb::scale(quint16 index, quint8 subIndex, quint16 profileNumber)
                 return 1 / 10.0;
             }
         }
+        if ((index & (quint16)0xF1FF) == 0x4082)
+        {
+            if (subIndex == 3 || subIndex == 4)  // Brake_duty
+            {
+                return 1 / 655.36;
+            }
+        }
     }
     return 1.0;
 }
@@ -331,6 +338,10 @@ QString ODIndexDb::unit(quint16 index, quint8 subIndex, quint16 profileNumber)
             if (subIndex == 2)  // Brake_excitation_time_ms
             {
                 return QString(" ms");
+            }
+            if (subIndex == 3 || subIndex == 4)  // Brake_duty
+            {
+                return QString("%");
             }
         }
     }

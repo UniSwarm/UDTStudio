@@ -99,6 +99,14 @@ protected:
     IndexLabel *_hallPhaseLabel;
     IndexLabel *_electricalAngleLabel;
 
+    // Brake Config
+    QGroupBox *createBrakeConfigWidgets();
+    QGroupBox *_brakeConfigGroupBox;
+    IndexComboBox *_brakeModeComboBox;
+    IndexSpinBox *_brakeExitationTimeSpinBox;
+    IndexSpinBox *_brakeExitationDutySpinBox;
+    IndexSpinBox *_brakeDutySpinBox;
+
     void updateNodeStatus(Node::Status status);
     void updateState();
     void readAllObjects();

@@ -129,6 +129,16 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _hallRawValueLabel->setNode(node);
     _hallPhaseLabel->setNode(node);
     _electricalAngleLabel->setNode(node);
+
+    // Brake config
+    _brakeModeComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_MODE, _axis));
+    _brakeExitationTimeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_EXITATION_TIME, _axis));
+    _brakeExitationDutySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_EXITATION_DUTY, _axis));
+    _brakeDutySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_ACTIVATED_DUTY, _axis));
+    _brakeModeComboBox->setNode(node);
+    _brakeExitationTimeSpinBox->setNode(node);
+    _brakeExitationDutySpinBox->setNode(node);
+    _brakeDutySpinBox->setNode(node);
 }
 
 void MotorWidget::updateNodeStatus(Node::Status status)
@@ -143,12 +153,14 @@ void MotorWidget::updateState()
     {
         _motorConfigGroupBox->setEnabled(false);
         _bldcConfigGroupBox->setEnabled(false);
+        _brakeConfigGroupBox->setEnabled(false);
         _lockAction->setChecked(true);
     }
     else
     {
         _motorConfigGroupBox->setEnabled(true);
         _bldcConfigGroupBox->setEnabled(true);
+        _brakeConfigGroupBox->setEnabled(true);
         _lockAction->setChecked(false);
     }
     _lockAction->blockSignals(false);
@@ -176,6 +188,8 @@ void MotorWidget::createWidgets()
     _bldcConfigGroupBox = createBldcConfigWidgets();
     actionLayout->addWidget(_bldcConfigGroupBox);
     actionLayout->addWidget(createBldcStatusWidgets());
+    _brakeConfigGroupBox = createBrakeConfigWidgets();
+    actionLayout->addWidget(_brakeConfigGroupBox);
 
     QScrollArea *motorScrollArea = new QScrollArea;
     motorScrollArea->setWidget(motorWidget);
@@ -436,6 +450,51 @@ QGroupBox *MotorWidget::createBldcStatusWidgets()
 
     statusGroupBox->setLayout(statusLayout);
     return statusGroupBox;
+}
+
+QGroupBox *MotorWidget::createBrakeConfigWidgets()
+{
+    QGroupBox *configGroupBox = new QGroupBox(tr("Brake config"));
+    QFormLayout *configLayout = new QFormLayout();
+    configLayout->setVerticalSpacing(3);
+    configLayout->setHorizontalSpacing(3);
+
+    _brakeModeComboBox = new IndexComboBox();
+    _brakeModeComboBox->addItem(tr("Disabled"), QVariant(static_cast<uint8_t>(0x00)));
+    _brakeModeComboBox->addItem(tr("Open drain, NC"), QVariant(static_cast<uint8_t>(0x02)));
+    _brakeModeComboBox->addItem(tr("Open drain, NO"), QVariant(static_cast<uint8_t>(0x03)));
+    _brakeModeComboBox->addItem(tr("Open source, NC"), QVariant(static_cast<uint8_t>(0x04)));
+    _brakeModeComboBox->addItem(tr("Open source, NO"), QVariant(static_cast<uint8_t>(0x05)));
+    _brakeModeComboBox->addItem(tr("Push-pull, NC"), QVariant(static_cast<uint8_t>(0x06)));
+    _brakeModeComboBox->addItem(tr("Push-pull, NO"), QVariant(static_cast<uint8_t>(0x07)));
+    configLayout->addRow(tr("&Brake mode"), _brakeModeComboBox);
+    _indexWidgets.append(_brakeModeComboBox);
+
+    QHBoxLayout *brakeExitationLayout = new QHBoxLayout();
+    brakeExitationLayout->setSpacing(0);
+
+    _brakeExitationDutySpinBox = new IndexSpinBox();
+    brakeExitationLayout->addWidget(_brakeExitationDutySpinBox);
+    _indexWidgets.append(_brakeExitationDutySpinBox);
+
+    QLabel *separatorLabel = new QLabel(tr("/"));
+    separatorLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    brakeExitationLayout->addWidget(separatorLabel);
+
+    _brakeExitationTimeSpinBox = new IndexSpinBox();
+    brakeExitationLayout->addWidget(_brakeExitationTimeSpinBox);
+    _indexWidgets.append(_brakeExitationTimeSpinBox);
+
+    QLabel *label = new QLabel(tr("&Excitation:"));
+    label->setBuddy(_burstCurrentSpinBox);
+    configLayout->addRow(label, brakeExitationLayout);
+
+    _brakeDutySpinBox = new IndexSpinBox();
+    configLayout->addRow(tr("Activated duty cycle:"), _brakeDutySpinBox);
+    _indexWidgets.append(_brakeDutySpinBox);
+
+    configGroupBox->setLayout(configLayout);
+    return configGroupBox;
 }
 
 void MotorWidget::lockUnlockConfig()
