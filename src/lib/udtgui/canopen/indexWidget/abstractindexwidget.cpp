@@ -161,6 +161,7 @@ void AbstractIndexWidget::updateObjId()
         {
             setUnit(nodeSubIndex->unit());
         }
+        _scale = nodeSubIndex->scale();
         updateToolTip();
     }
 }
