@@ -57,17 +57,24 @@ MainWindow::MainWindow(QWidget *parent)
     CanOpenBus *bus = nullptr;
 #ifdef Q_OS_UNIX
     bus = new CanOpenBus(new CanBusSocketCAN("can0"));
-#endif
     if (bus != nullptr)
     {
         bus->setBusName("Bus can0");
         CanOpen::addBus(bus);
         _canFrameListView->setBus(bus);
     }
+    bus = new CanOpenBus(new CanBusSocketCAN("can1"));
+    if (bus != nullptr)
+    {
+        bus->setBusName("Bus can1");
+        CanOpen::addBus(bus);
+        _canFrameListView->setBus(bus);
+    }
+#endif
 
-    bus = new CanOpenBus(new CanBusTcpUDT("192.168.1.80"));
+    /*bus = new CanOpenBus(new CanBusTcpUDT("192.168.1.80"));
     bus->setBusName("Bus net");
-    CanOpen::addBus(bus);
+    CanOpen::addBus(bus);*/
 
     bus = new CanOpenBus(new CanBusDriver(""));
     bus->setBusName("VBus eds");
