@@ -409,6 +409,16 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
         case OD_MS_BLDC_CONFIG_POLE_PAIR:
             return {static_cast<quint16>((0x4009 + axisDecal)), 0x1};
 
+        // ax_Brake_config
+        case OD_MS_BRAKE_MODE:
+            return {static_cast<quint16>((0x4082 + axisDecal)), 0x1};
+        case OD_MS_BRAKE_EXITATION_TIME:
+            return {static_cast<quint16>((0x4082 + axisDecal)), 0x2};
+        case OD_MS_BRAKE_EXITATION_DUTY:
+            return {static_cast<quint16>((0x4082 + axisDecal)), 0x3};
+        case OD_MS_BRAKE_ACTIVATED_DUTY:
+            return {static_cast<quint16>((0x4082 + axisDecal)), 0x4};
+
         // RANGE CONTROL LOOP TORQUE
         // ax_NNN_status_PID
         case OD_PID_INPUT:
@@ -506,11 +516,6 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
             return {static_cast<quint16>((0x4081 + axisDecal)), 0x3};
         case OD_MS_MOTOR_TEMP_CONFIG_PROTECTION_SCHMITT_TRIGGERS_HIGH:
             return {static_cast<quint16>((0x4081 + axisDecal)), 0x4};
-
-        case OD_MS_CONF_BRAKE_MAINTAIN:
-            return {static_cast<quint16>((0x4082 + axisDecal)), 0x1};
-        case OD_MS_CONF_BRAKE_PEAK:
-            return {static_cast<quint16>((0x4082 + axisDecal)), 0x2};
 
         // CONTINUOUS POSITION
         case OD_CP_POSITION_TARGET:
