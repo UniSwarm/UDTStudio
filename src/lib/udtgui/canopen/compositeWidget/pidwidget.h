@@ -83,11 +83,15 @@ protected:
     QList<AbstractIndexWidget *> _indexWidgets;
 
     void createWidgets();
+
+    // Toolbar
     QToolBar *createToolBarWidgets();
     QSpinBox *_logTimerSpinBox;
+    QAction *_lockAction;
 
+    // PID config
     QGroupBox *createPIDConfigWidgets();
-    QGroupBox *_pidGroupBox;
+    QGroupBox *_pidConfigGroupBox;
     IndexSpinBox *_pSpinBox;
     IndexSpinBox *_iSpinBox;
     IndexSpinBox *_dSpinBox;
@@ -99,6 +103,7 @@ protected:
     QLabel *_directCtrlLabel;
     IndexCheckBox *_directCtrlCheckBox;
 
+    // PID Status
     QGroupBox *createPIDStatusWidgets();
     QGroupBox *_pidStatusGroupBox;
     IndexLabel *_inputLabel;
@@ -106,6 +111,7 @@ protected:
     IndexLabel *_integratorLabel;
     IndexLabel *_outputLabel;
 
+    // PID Test
     QGroupBox *createPIDTestWidgets();
     QTimer _timerTest;
     QComboBox *_modeComboBox;
@@ -140,6 +146,9 @@ protected:
     void readStatus();
     void readAllObject();
     void statusNodeChanged(Node::Status status);
+
+    void updateState();
+    void lockUnlockConfig();
 };
 
 #endif  // PIDWIDGET_H

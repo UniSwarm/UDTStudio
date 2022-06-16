@@ -87,6 +87,7 @@ void PidWidget::setNode(Node *node, uint8_t axis)
 
     _axis = axis;
     _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
+    connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &PidWidget::updateState);
     connect(node, &Node::statusChanged, this, &PidWidget::statusNodeChanged);
     setIMode();
 
@@ -145,7 +146,7 @@ void PidWidget::setIMode()
         case MODE_PID_TORQUE:
             _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE, _axis);
             target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_DEMAND, _axis);
-            _pidGroupBox->setTitle(tr("Torque PID configuration"));
+            _pidConfigGroupBox->setTitle(tr("Torque PID configuration"));
             _pidStatusGroupBox->setTitle(tr("Torque PID status"));
             _pidTestGroupBox->setTitle(tr("Torque PID test"));
             _dataLoggerWidget->setTitle(tr("Node %1 axis %2 torque PID").arg(_nodeProfile402->nodeId()).arg(_axis));
@@ -157,7 +158,7 @@ void PidWidget::setIMode()
         case MODE_PID_VELOCITY:
             _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_ACTUAL_VALUE, _axis);
             target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_VL_VELOCITY_DEMAND, _axis);
-            _pidGroupBox->setTitle(tr("Velocity PID configuration"));
+            _pidConfigGroupBox->setTitle(tr("Velocity PID configuration"));
             _pidStatusGroupBox->setTitle(tr("Velocity PID status"));
             _pidTestGroupBox->setTitle(tr("Velocity PID test"));
             _dataLoggerWidget->setTitle(tr("Node %1 axis %2 velocity PID").arg(_nodeProfile402->nodeId()).arg(_axis));
@@ -167,7 +168,7 @@ void PidWidget::setIMode()
         case MODE_PID_POSITION:
             _actualValue_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, _axis);
             target_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, _axis);
-            _pidGroupBox->setTitle(tr("Position PID configuration"));
+            _pidConfigGroupBox->setTitle(tr("Position PID configuration"));
             _pidStatusGroupBox->setTitle(tr("Position PID status"));
             _pidTestGroupBox->setTitle(tr("Position PID test"));
             _dataLoggerWidget->setTitle(tr("Node %1 axis %2 position PID").arg(_nodeProfile402->nodeId()).arg(_axis));
@@ -457,8 +458,8 @@ void PidWidget::createWidgets()
     actionLayout->setContentsMargins(0, 0, 4, 0);
     actionLayout->setSpacing(0);
 
-    _pidGroupBox = createPIDConfigWidgets();
-    actionLayout->addWidget(_pidGroupBox);
+    _pidConfigGroupBox = createPIDConfigWidgets();
+    actionLayout->addWidget(_pidConfigGroupBox);
 
     _pidStatusGroupBox = createPIDStatusWidgets();
     actionLayout->addWidget(_pidStatusGroupBox);
@@ -536,6 +537,20 @@ QToolBar *PidWidget::createToolBarWidgets()
     readAllAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));
     connect(readAllAction, &QAction::triggered, this, &PidWidget::readAllObject);
+
+    toolBar->addSeparator();
+
+    // lock / unlock action
+    _lockAction = toolBar->addAction(tr("Lock/unlock config objects"));
+    _lockAction->setEnabled(false);
+    _lockAction->setCheckable(true);
+    QIcon iconLockUnlock;
+    iconLockUnlock.addFile(":/icons/img/icons8-lock.png", QSize(), QIcon::Normal, QIcon::On);
+    iconLockUnlock.addFile(":/icons/img/icons8-unlock.png", QSize(), QIcon::Normal, QIcon::Off);
+    _lockAction->setIcon(iconLockUnlock);
+    _lockAction->setShortcut(QKeySequence("Ctrl+L"));
+    _lockAction->setStatusTip(tr("Editing of config parameters is not possible in OE mode, goto to SO to unlock"));
+    connect(_lockAction, &QAction::triggered, this, &PidWidget::lockUnlockConfig);
 
     return toolBar;
 }
@@ -708,4 +723,36 @@ void PidWidget::statusNodeChanged(Node::Status status)
     {
         setEnabled(false);
     }
+}
+
+void PidWidget::updateState()
+{
+    _lockAction->blockSignals(true);
+    if (_nodeProfile402->currentState() == NodeProfile402::STATE_OperationEnabled)
+    {
+        _pidConfigGroupBox->setEnabled(false);
+        _lockAction->setChecked(true);
+    }
+    else
+    {
+        _pidConfigGroupBox->setEnabled(true);
+        _lockAction->setChecked(false);
+    }
+    _lockAction->blockSignals(false);
+    _lockAction->setEnabled((_nodeProfile402->status() == NodeProfile402::NODEPROFILE_STARTED));
+}
+
+void PidWidget::lockUnlockConfig()
+{
+    if (_lockAction->isChecked())
+    {
+        _nodeProfile402->goToState(NodeProfile402::STATE_OperationEnabled);
+    }
+    else
+    {
+        _nodeProfile402->goToState(NodeProfile402::STATE_SwitchedOn);
+    }
+    _lockAction->blockSignals(true);
+    _lockAction->setChecked(!_lockAction->isChecked());  // Keep action in the previous state
+    _lockAction->blockSignals(false);
 }
