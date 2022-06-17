@@ -166,7 +166,8 @@ void MotionSensorWidget::setIMode()
     // Config
     _sensorSelectComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_SELECT, _axis, odMode402));
     _frequencyDividerSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_FREQUENCY_DIVIDER, _axis, odMode402));
-    _configBitCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_CONFIG_BIT, _axis, odMode402));
+    _configQ15BitCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_CONFIG_BIT, _axis, odMode402));
+    _configResetBitCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_CONFIG_BIT, _axis, odMode402));
     _sensorParam0SpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_0, _axis, odMode402));
     _sensorParam1SpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_1, _axis, odMode402));
     _sensorParam2SpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_SENSOR_PARAM_2, _axis, odMode402));
@@ -429,10 +430,15 @@ QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
     formLayout->addRow(tr("S&ubsampling:"), _frequencyDividerSpinBox);
     _indexWidgets.append(_frequencyDividerSpinBox);
 
-    _configBitCheckBox = new IndexCheckBox();
-    _configBitCheckBox->setBitMask(32);
-    formLayout->addRow(tr("&Q15.16 (<<16):"), _configBitCheckBox);
-    _indexWidgets.append(_configBitCheckBox);
+    _configQ15BitCheckBox = new IndexCheckBox();
+    _configQ15BitCheckBox->setBitMask(32);
+    formLayout->addRow(tr("&Q15.16 (<<16):"), _configQ15BitCheckBox);
+    _indexWidgets.append(_configQ15BitCheckBox);
+
+    _configResetBitCheckBox = new IndexCheckBox();
+    _configResetBitCheckBox->setBitMask(1);
+    formLayout->addRow(tr("&Reset:"), _configResetBitCheckBox);
+    _indexWidgets.append(_configResetBitCheckBox);
 
     updateSensorParams(0);
     groupBox->setLayout(formLayout);
@@ -677,6 +683,7 @@ void MotionSensorWidget::updateSensorParams(int index)
     _sensorParam1SpinBox->setEnabled(false);
     _sensorParam2SpinBox->setEnabled(false);
     _sensorParam3SpinBox->setEnabled(false);
+    _configResetBitCheckBox->setEnabled(false);
 
     switch (_sensorSelectComboBox->currentData().toUInt())
     {
@@ -690,6 +697,15 @@ void MotionSensorWidget::updateSensorParams(int index)
             _sensorParamLabels.at(0)->setText(tr("Filter divider:"));
             _sensorParamLabels.at(0)->setEnabled(true);
             _sensorParam0SpinBox->setEnabled(true);
+            _configResetBitCheckBox->setEnabled(true);
+            break;
+
+        case 0x3102:  // QEI_CH2
+            _configResetBitCheckBox->setEnabled(true);
+            break;
+
+        case 0x1300:  // Motor position
+            _configResetBitCheckBox->setEnabled(true);
             break;
     }
 }

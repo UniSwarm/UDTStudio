@@ -105,7 +105,8 @@ protected:
     QGroupBox *_sensorConfigGroupBox;
     IndexComboBox *_sensorSelectComboBox;
     IndexSpinBox *_frequencyDividerSpinBox;
-    IndexCheckBox *_configBitCheckBox;
+    IndexCheckBox *_configQ15BitCheckBox;
+    IndexCheckBox *_configResetBitCheckBox;
     IndexSpinBox *_sensorParam0SpinBox;
     IndexSpinBox *_sensorParam1SpinBox;
     IndexSpinBox *_sensorParam2SpinBox;
