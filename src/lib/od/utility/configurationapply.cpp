@@ -47,32 +47,34 @@ bool ConfigurationApply::apply(DeviceModel *deviceModel, const QString &fileIniP
     for (const QString &childKey : childKeys)
     {
         SubIndex *subIndex = getSubIndex(deviceModel, childKey);
-        if (subIndex != nullptr)
+        if (subIndex == nullptr)
         {
-            QString strValue = settings.value(childKey).toString();
-            QVariant value = readData(subIndex->dataType(), strValue);
+            dbg() << "Configuration | Object does not exist: " << childKey;
+            return false;
+        }
 
-            if (subIndex->index()->objectType() == Index::ARRAY && subIndex->subIndex() == 0)
+        QString strValue = settings.value(childKey).toString();
+        QVariant value = readData(subIndex->dataType(), strValue);
+
+        if (subIndex->index()->objectType() == Index::ARRAY && subIndex->subIndex() == 0)
+        {
+            if (value.canConvert(QMetaType::Int) && value.toInt() <= 128 && subIndex->index()->subIndexesCount() >= 2)
             {
-                if (value.canConvert(QMetaType::UInt) && value.toUInt() <= 128 && subIndex->index()->subIndexesCount() >= 2)
+                int newSize = value.toInt();
+                if ((subIndex->index()->subIndexesCount() - 1) != newSize)
                 {
-                    resizeArray(subIndex->index(), value.toUInt());
-                }
-                else
-                {
-                    dbg() << "Invalid ARRAY for resize: " << childKey;
-                    return false;
+                    resizeArray(subIndex->index(), newSize);
                 }
             }
             else
             {
-                subIndex->setValue(value);
+                dbg() << "Invalid ARRAY for resize: " << childKey;
+                return false;
             }
         }
         else
         {
-            dbg() << "Configuration | Object does not exist: " << childKey;
-            return false;
+            subIndex->setValue(value);
         }
     }
 
