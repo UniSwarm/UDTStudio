@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
             nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
             if (nodeid == 0 || nodeid > 127)
             {
-                err << QCoreApplication::translate("cood", "error (2): invalid node id, nodeId > 0 && nodeId < 126") << cendl;
+                err << cliParser.value("nodeid").toUInt() << QCoreApplication::translate("cood", "error (2A): invalid node id, nodeId > 0 && nodeId < 126") << cendl;
                 return -2;
             }
         }
@@ -188,16 +188,9 @@ int main(int argc, char *argv[])
     {
         if (deviceConfiguration != nullptr)
         {
-            if (!ConfigurationApply::apply(deviceConfiguration, cfgFile))
-            {
-                return -6;
-            }
+            ConfigurationApply::apply(deviceConfiguration, cfgFile);
         }
-
-        if (!ConfigurationApply::apply(deviceDescription, cfgFile))
-        {
-            return -6;
-        }
+        ConfigurationApply::apply(deviceDescription, cfgFile);
     }
 
     uint8_t duplicate = 0;
@@ -209,6 +202,22 @@ int main(int argc, char *argv[])
             ProfileDuplicate::duplicate(deviceConfiguration, duplicate);
         }
         ProfileDuplicate::duplicate(deviceDescription, duplicate);
+    }
+
+    for (const QString &cfgFile : qAsConst(cfgFiles))
+    {
+        if (deviceConfiguration != nullptr)
+        {
+            if (!ConfigurationApply::apply(deviceConfiguration, cfgFile))
+            {
+                return -6;
+            }
+        }
+
+        if (!ConfigurationApply::apply(deviceDescription, cfgFile))
+        {
+            return -6;
+        }
     }
 
     /*if (deviceDescription)
