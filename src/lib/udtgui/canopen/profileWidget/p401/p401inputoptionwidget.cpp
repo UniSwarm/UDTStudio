@@ -63,19 +63,21 @@ void P401InputOptionWidget::createWidgets()
     _diSchmittTriggersLow->setScale(12.0 / 32767);
     _diSchmittTriggersLow->setUnit("V");
     hLayout->addWidget(_diSchmittTriggersLow);
-    QLabel *label = new QLabel(tr("-"));
-    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    hLayout->addWidget(label);
+
+    QLabel *separatorLabel = new QLabel(tr("-"));
+    separatorLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    hLayout->addWidget(separatorLabel);
 
     _diSchmittTriggersHigh = new IndexSpinBox();
     _diSchmittTriggersHigh->setDisplayHint(IndexSpinBox::DisplayFloat);
     _diSchmittTriggersHigh->setScale(12.0 / 32767);
     _diSchmittTriggersHigh->setUnit("V");
     hLayout->addWidget(_diSchmittTriggersHigh);
-    label = new QLabel(tr("&Schmitt Triggers:"));
-    label->setToolTip(tr("Low, High"));
-    label->setBuddy(_diSchmittTriggersHigh);
-    formLayout->addRow(label, hLayout);
+
+    QLabel *titleLabel = new QLabel(tr("&Schmitt triggers:"));
+    titleLabel->setToolTip(tr("Low, High"));
+    titleLabel->setBuddy(_diSchmittTriggersLow);
+    formLayout->addRow(titleLabel, hLayout);
 
     setLayout(formLayout);
 }

@@ -18,7 +18,8 @@
 
 #include "p401outputoptionwidget.h"
 
-#include "canopen/indexWidget/indexspinbox.h"
+#include "canopen/indexWidget/indexcombobox.h"
+
 #include "indexdb401.h"
 
 #include <QFormLayout>
@@ -32,7 +33,7 @@ P401OutputOptionWidget::P401OutputOptionWidget(uint8_t channel, QWidget *parent)
 
 void P401OutputOptionWidget::readAllObject()
 {
-    _doPwmFrequency->readObject();
+    _doPwmFrequencyComboBox->readObject();
 }
 
 void P401OutputOptionWidget::setNode(Node *node)
@@ -43,16 +44,24 @@ void P401OutputOptionWidget::setNode(Node *node)
     }
     _node = node;
 
-    _doPwmFrequency->setObjId(IndexDb401::getObjectId(IndexDb401::OD_MS_DO_PWM_FREQUENCY, _channel + 1));
-    _doPwmFrequency->setNode(_node);
+    _doPwmFrequencyComboBox->setObjId(IndexDb401::getObjectId(IndexDb401::OD_MS_DO_PWM_FREQUENCY, _channel + 1));
+    _doPwmFrequencyComboBox->setNode(_node);
 }
 
 void P401OutputOptionWidget::createWidgets()
 {
     QFormLayout *formLayout = new QFormLayout();
 
-    _doPwmFrequency = new IndexSpinBox();
-    formLayout->addRow(tr("Pwm Frequency"), _doPwmFrequency);
+    _doPwmFrequencyComboBox = new IndexComboBox();
+    _doPwmFrequencyComboBox->addItem(tr("50 kHz"), QVariant(static_cast<uint16_t>(0x0000)));
+    _doPwmFrequencyComboBox->addItem(tr("32 kHz"), QVariant(static_cast<uint16_t>(0x0001)));
+    _doPwmFrequencyComboBox->addItem(tr("25 kHz"), QVariant(static_cast<uint16_t>(0x0002)));
+    _doPwmFrequencyComboBox->addItem(tr("10 kHz"), QVariant(static_cast<uint16_t>(0x0003)));
+    _doPwmFrequencyComboBox->addItem(tr("5 kHz"), QVariant(static_cast<uint16_t>(0x0004)));
+    _doPwmFrequencyComboBox->addItem(tr("2 kHz"), QVariant(static_cast<uint16_t>(0x0005)));
+    _doPwmFrequencyComboBox->addItem(tr("1 kHz"), QVariant(static_cast<uint16_t>(0x0006)));
+    _doPwmFrequencyComboBox->addItem(tr("500 Hz"), QVariant(static_cast<uint16_t>(0x0007)));
+    formLayout->addRow(tr("Pwm &frequency"), _doPwmFrequencyComboBox);
 
     setLayout(formLayout);
 }

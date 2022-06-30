@@ -21,7 +21,7 @@
 
 #include <QWidget>
 
-class IndexSpinBox;
+class IndexComboBox;
 class Node;
 
 class P401OutputOptionWidget : public QWidget
@@ -38,7 +38,7 @@ private:
     uint8_t _channel;
     Node *_node;
 
-    IndexSpinBox *_doPwmFrequency;
+    IndexComboBox *_doPwmFrequencyComboBox;
 
     // Create widgets
     void createWidgets();
