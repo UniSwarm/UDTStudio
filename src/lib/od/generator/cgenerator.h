@@ -55,6 +55,9 @@ private:
     static QString accessToEnumString(uint8_t acces);
     static QString stringNameToString(const SubIndex *subIndex);
 
+    template <typename T>
+    static QString toUHex(T value);
+
     void writeRecordDefinitionH(Index *index, QTextStream &hFile);
     void writeArrayDefinitionH(Index *index, QTextStream &hFile);
     void writeIndexH(Index *index, QTextStream &hFile);

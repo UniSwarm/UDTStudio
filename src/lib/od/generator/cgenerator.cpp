@@ -718,7 +718,7 @@ void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile)
     }
 
     hFile << "typedef struct"
-          << "  // 0x" << QString::number(index->index(), 16).toUpper() << "\n{\n";
+          << "  // 0x" << toUHex(index->index()) << "\n{\n";
 
     QList<SubIndex *> recordFields;
     for (SubIndex *subIndex : index->subIndexes())
@@ -759,7 +759,7 @@ void CGenerator::writeArrayDefinitionH(Index *index, QTextStream &hFile)
     }
 
     hFile << "typedef struct"
-          << "  // 0x" << QString::number(index->index(), 16).toUpper() << "\n{\n";
+          << "  // 0x" << toUHex(index->index()) << "\n{\n";
     hFile << "    _od_align uint8_t sub0;"
           << "\n";
     hFile << "    _od_align " << typeToString(index->subIndex(1)->dataType()) << " data[" << index->subIndexesCount() - 1 << "];"
@@ -807,7 +807,7 @@ void CGenerator::writeIndexH(Index *index, QTextStream &hFile)
             break;
     }
 
-    hFile << "  // 0x" << QString::number(index->index(), 16).toUpper() << "\n";
+    hFile << "  // 0x" << toUHex(index->index()) << "\n";
 }
 
 /**
@@ -841,7 +841,7 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
             cFile << " = ";
             cFile << dataToString(index->subIndex(0));
             cFile << ";";
-            cFile << "  // 0x" << QString::number(index->index(), 16).toUpper();
+            cFile << "  // 0x" << toUHex(index->index());
             cFile << "\n";
             written++;
             break;
@@ -858,7 +858,7 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
                 cFile << " = ";
                 cFile << dataToString(subIndex);
                 cFile << ";";
-                cFile << "  // 0x" << QString::number(index->index(), 16).toUpper() << "." << subIndex->subIndex();
+                cFile << "  // 0x" << toUHex(index->index()) << "." << subIndex->subIndex();
                 cFile << "\n";
                 written++;
             }
@@ -889,7 +889,7 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
                 }
                 cFile << dataToString(index->subIndex(i));
                 cFile << ";";
-                cFile << "  // 0x" << QString::number(index->index(), 16).toUpper() << "." << i;
+                cFile << "  // 0x" << toUHex(index->index()) << "." << i;
                 cFile << "\n";
                 written++;
             }
@@ -908,7 +908,7 @@ int CGenerator::writeRamLineC(Index *index, QTextStream &cFile)
  */
 void CGenerator::writeSubentriesList(Index *index, QTextStream &cFile)
 {
-    cFile << "static const OD_entrySubIndex_t const od_Sub" << QString::number(index->index(), 16).toUpper().toUpper() << "[] =\n";
+    cFile << "static const OD_entrySubIndex_t od_Sub" << toUHex(index->index()) << "[] =\n";
     cFile << "{\n";
 
     switch (index->objectType())
@@ -1013,7 +1013,7 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
           << "{";
 
     // OD_entry_t.index
-    cFile << "0x" << QString::number(index->index(), 16).toUpper() << ", ";
+    cFile << "0x" << toUHex(index->index()) << ", ";
 
     // OD_entry_t.typeObject
     cFile << objectTypeToEnumString(index->objectType()).leftJustified(16, ' ') << ", ";
@@ -1022,7 +1022,7 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
     cFile << QString::number(index->subIndexesCount()).toUpper().rightJustified(3, ' ') << ", ";
 
     // OD_entry_t.subEntries
-    cFile << "od_Sub" << QString::number(index->index(), 16).toUpper();
+    cFile << "od_Sub" << toUHex(index->index());
 
     cFile << "},";
     cFile << "\n";
@@ -1099,38 +1099,37 @@ void CGenerator::writeDefineH(Index *index, QTextStream &hFile)
     {
         case Index::VAR:
             hFile << "#define OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
-            hFile << "#define OD_INDEX" << QString::number(index->index(), 16).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
+            hFile << "#define OD_INDEX" << toUHex(index->index()) << " OD_RAM." << varNameToString(index->name()) << "\n";
             break;
 
         case Index::ARRAY:
             hFile << "#define OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << ".data\n";
-            hFile << "#define OD_INDEX" << QString::number(index->index(), 16).toUpper() << " OD_RAM." << varNameToString(index->name()) << ".data\n";
+            hFile << "#define OD_INDEX" << toUHex(index->index()) << " OD_RAM." << varNameToString(index->name()) << ".data\n";
 
             hFile << "#define OD_" << varNameToString(index->name()).toUpper() << "_COUNT " << index->subIndexesCount() - 1 << "\n";
-            hFile << "#define OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_COUNT " << index->subIndexesCount() - 1 << "\n";
+            hFile << "#define OD_INDEX" << toUHex(index->index()) << "_COUNT " << index->subIndexesCount() - 1 << "\n";
             for (SubIndex *subIndex : index->subIndexes())
             {
                 uint8_t numSubIndex = subIndex->subIndex();
-
                 if (numSubIndex == 0)
                 {
                     continue;
                 }
 
-                hFile << "#define OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(numSubIndex, 16).toUpper();
-                hFile << " OD_INDEX" << QString::number(index->index(), 16).toUpper() << "[" << QString::number(numSubIndex - 1, 16).toUpper() << "]"
+                hFile << "#define OD_INDEX" << toUHex(index->index()) << "_" << toUHex(numSubIndex);
+                hFile << " OD_INDEX" << toUHex(index->index()) << "[" << toUHex(numSubIndex - 1) << "]"
                       << "\n";
             }
             break;
 
         case Index::RECORD:
             hFile << "#define OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
-            hFile << "#define OD_INDEX" << QString::number(index->index(), 16).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
+            hFile << "#define OD_INDEX" << toUHex(index->index()) << " OD_RAM." << varNameToString(index->name()) << "\n";
 
             for (SubIndex *subIndex : index->subIndexes())
             {
-                hFile << "#define OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(subIndex->subIndex(), 16).toUpper();
-                hFile << " OD_INDEX" << QString::number(index->index(), 16).toUpper() << "." << varNameToString(subIndex->name()) << "\n";
+                hFile << "#define OD_INDEX" << toUHex(index->index()) << "_" << toUHex(subIndex->subIndex()) << " OD_INDEX" << toUHex(index->index()) << "."
+                      << varNameToString(subIndex->name()) << "\n";
             }
             break;
 
@@ -1157,12 +1156,12 @@ void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextS
                 switch (index->objectType())
                 {
                     case Index::Object::VAR:
-                        cFile << "OD_INDEX" << QString::number(index->index(), 16).toUpper();
+                        cFile << "OD_INDEX" << toUHex(index->index());
                         break;
 
                     case Index::Object::RECORD:
                     case Index::Object::ARRAY:
-                        cFile << "OD_INDEX" << QString::number(index->index(), 16).toUpper() << "_" << QString::number(subIndex->subIndex(), 16);
+                        cFile << "OD_INDEX" << toUHex(index->index()) << "_" << QString::number(subIndex->subIndex(), 16);
                         break;
 
                     default:
@@ -1170,7 +1169,7 @@ void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextS
                 }
 
                 uint value = subIndex->value().toUInt() - deviceConfiguration->nodeId().toUInt();
-                cFile << " = 0x" << QString::number(value, 16).toUpper() << "u + "
+                cFile << " = 0x" << toUHex(value) << "u + "
                       << "nodeId";
 
                 cFile << ";  // " << index->name() << " : " << subIndex->name() << "\n";
@@ -1179,4 +1178,10 @@ void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextS
     }
 
     cFile << "}\n";
+}
+
+template <typename T>
+QString CGenerator::toUHex(T value)
+{
+    return QString::number(value, 16).toUpper() /*.rightJustified(sizeof(value) * 2, '0')*/;
 }
