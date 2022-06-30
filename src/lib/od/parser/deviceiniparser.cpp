@@ -95,6 +95,11 @@ void DeviceIniParser::readSubIndexes(DeviceModel *deviceModel) const
             matchedSub = matchSub.captured(1);
             uint16_t numIndex = static_cast<uint16_t>(matchedSub.toUInt(&ok, 16));
 
+            if (numIndex == 0x2040 && subIndex->subIndex() == 1)  // Communication_config.Node_ID
+            {
+                subIndex->setValue(0);
+            }
+
             if (deviceModel->indexExist(numIndex))
             {
                 Index *index = deviceModel->index(numIndex);

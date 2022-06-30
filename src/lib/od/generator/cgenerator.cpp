@@ -1147,6 +1147,11 @@ void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextS
 
     for (Index *index : deviceConfiguration->indexes())
     {
+        if (index->index() == 0x2040)  // Communication_config
+        {
+            continue;
+        }
+
         for (SubIndex *subIndex : index->subIndexes())
         {
             if (subIndex->hasNodeId())
