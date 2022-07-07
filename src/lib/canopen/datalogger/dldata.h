@@ -33,6 +33,7 @@ public:
     DLData(const NodeObjectId &objectId);
 
     const NodeObjectId &objectId() const;
+    NodeSubIndex *nodeSubIndex() const;
     quint64 key() const;
     Node *node() const;
 
@@ -77,10 +78,15 @@ public:
 
     void exportCSVData(const QString &fileName);
 
+    bool hasChanged() const;
+    void setHasChanged(bool hasChanged);
+
 protected:
     NodeObjectId _objectId;
+    NodeSubIndex *_nodeSubIndex;
     Node *_node;
     bool _active;
+    bool _hasChanged;
 
     QString _name;
     QColor _color;

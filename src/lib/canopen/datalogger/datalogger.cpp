@@ -29,6 +29,9 @@ DataLogger::DataLogger(QObject *parent)
 {
     _timer.setTimerType(Qt::PreciseTimer);
     connect(&_timer, &QTimer::timeout, this, &DataLogger::readData);
+
+    _timerNotify.setInterval(100);
+    connect(&_timerNotify, &QTimer::timeout, this, &DataLogger::notify);
 }
 
 DataLogger::~DataLogger()
@@ -209,7 +212,7 @@ void DataLogger::addDataValue(DLData *dlData, const QVariant &value, const QDate
 
     dlData->appendData(valueDouble, dateTime);
 
-    emit dataChanged(_dataList.indexOf(dlData));
+    dlData->setHasChanged(true);
 }
 
 void DataLogger::exportCSVData(const QString &fileName)
@@ -234,7 +237,6 @@ void DataLogger::exportCSVData(const QString &fileName)
     auto last = std::unique(timeStamps.begin(), timeStamps.end());
     timeStamps.erase(last, timeStamps.end());
 
-
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly))
     {
@@ -242,10 +244,12 @@ void DataLogger::exportCSVData(const QString &fileName)
     }
 
     QTextStream stream(&file);
-    stream << "Time (s)" << ";";
+    stream << "Time (s)"
+           << ";";
     for (DLData *dlData : _dataList)
     {
-        stream << dlData->name()  << " (" << dlData->unit() << ")" << ";";
+        stream << dlData->name() << " (" << dlData->unit() << ")"
+               << ";";
     }
     stream << '\n';
 
@@ -280,19 +284,21 @@ void DataLogger::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
         return;
     }
 
-    const QVariant &value = dlData->node()->nodeOd()->value(dlData->objectId());
-    const QDateTime &dateTime = dlData->node()->nodeOd()->lastModification(dlData->objectId());
+    const QVariant &value = dlData->nodeSubIndex()->value();
+    const QDateTime &dateTime = dlData->nodeSubIndex()->lastModification();
     addDataValue(dlData, value, dateTime);
 }
 
 void DataLogger::start(int ms)
 {
+    _timerNotify.start();
     _timer.start(ms);
     emit startChanged(true);
 }
 
 void DataLogger::stop()
 {
+    _timerNotify.stop();
     _timer.stop();
     emit startChanged(false);
 }
@@ -315,6 +321,18 @@ void DataLogger::readData()
         if ((dlData->node() != nullptr) && dlData->isActive())
         {
             dlData->node()->readObject(dlData->objectId());
+        }
+    }
+}
+
+void DataLogger::notify()
+{
+    for (DLData *dlData : qAsConst(_dataList))
+    {
+        if (dlData->hasChanged())
+        {
+            dlData->setHasChanged(false);
+            emit dataChanged(_dataList.indexOf(dlData));
         }
     }
 }

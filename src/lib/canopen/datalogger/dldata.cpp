@@ -32,18 +32,19 @@ DLData::DLData(const NodeObjectId &objectId)
     _active = false;
     _scale = 1.0;
     _q1516 = false;
+    _nodeSubIndex = nullptr;
 
     CanOpenBus *bus = CanOpen::bus(objectId.busId());
     if (bus != nullptr)
     {
         _node = bus->node(objectId.nodeId());
-        NodeSubIndex *nodeSubIndex = objectId.nodeSubIndex();
-        if (nodeSubIndex != nullptr)
+        _nodeSubIndex = objectId.nodeSubIndex();
+        if (_nodeSubIndex != nullptr)
         {
-            _name = nodeSubIndex->nodeIndex()->name() + "." + nodeSubIndex->name();
-            _q1516 = nodeSubIndex->isQ1516();
-            _scale = nodeSubIndex->scale();
-            _unit = nodeSubIndex->unit();
+            _name = _nodeSubIndex->nodeIndex()->name() + "." + _nodeSubIndex->name();
+            _q1516 = _nodeSubIndex->isQ1516();
+            _scale = _nodeSubIndex->scale();
+            _unit = _nodeSubIndex->unit();
         }
     }
 
@@ -53,6 +54,11 @@ DLData::DLData(const NodeObjectId &objectId)
 const NodeObjectId &DLData::objectId() const
 {
     return _objectId;
+}
+
+NodeSubIndex *DLData::nodeSubIndex() const
+{
+    return _nodeSubIndex;
 }
 
 quint64 DLData::key() const
@@ -126,7 +132,8 @@ void DLData::exportCSVData(const QString &fileName)
     quint64 firstDateTime = _times.first().toMSecsSinceEpoch();
 
     QTextStream stream(&file);
-    stream << "Time (s)" << ";" << _name  << " (" << _unit << ")" << '\n';
+    stream << "Time (s)"
+           << ";" << _name << " (" << _unit << ")" << '\n';
 
     int minCount = qMin(_values.count(), _times.count());
     for (int i = 0; i < minCount; i++)
@@ -135,6 +142,16 @@ void DLData::exportCSVData(const QString &fileName)
         stream << time / 1000.0 << ';' << QString::number(_values[i], 'f') << '\n';
     }
     file.close();
+}
+
+bool DLData::hasChanged() const
+{
+    return _hasChanged;
+}
+
+void DLData::setHasChanged(bool hasChanged)
+{
+    _hasChanged = hasChanged;
 }
 
 double DLData::firstValue() const

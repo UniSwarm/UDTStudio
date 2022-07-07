@@ -70,12 +70,14 @@ public slots:
 
 protected slots:
     void readData();
+    void notify();
 
 protected:
     void addDlData(const NodeObjectId &mobjId);
     QMap<quint64, DLData *> _dataMap;
     QList<DLData *> _dataList;
     QTimer _timer;
+    QTimer _timerNotify;
 
     QColor findFreeColor() const;
     bool isColorFree(const QColor &color) const;
