@@ -55,6 +55,7 @@ public:
     void exportCSVData(const QString &fileName);
 
 signals:
+    void valueChanged(int id);
     void dataChanged(int id);
     void dataAboutToBeAdded(int id);
     void dataAdded();

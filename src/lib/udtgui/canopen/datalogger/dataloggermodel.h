@@ -52,6 +52,7 @@ public:
 protected slots:
     void updateDataLoggerList();
     void updateDlData(int id);
+    void updateDlValue(int id);
 
     void addDataPrepare(int id);
     void addDataOk();

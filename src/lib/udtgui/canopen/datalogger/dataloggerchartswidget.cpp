@@ -69,7 +69,9 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
     _viewCross = false;
 
     connect(&_updateTimer, &QTimer::timeout, this, &DataLoggerChartsWidget::updateSeries);
-    _updateTimer.start(100);
+    _updateTimer.setSingleShot(true);
+    _updateTimer.setInterval(100);
+    _updateTimer.start();
 }
 
 DataLoggerChartsWidget::~DataLoggerChartsWidget()
@@ -92,7 +94,6 @@ void DataLoggerChartsWidget::setDataLogger(DataLogger *dataLogger)
             connect(dataLogger, &DataLogger::dataAdded, this, &DataLoggerChartsWidget::addDataOk);
             connect(dataLogger, &DataLogger::dataAboutToBeRemoved, this, &DataLoggerChartsWidget::removeDataPrepare);
             connect(dataLogger, &DataLogger::dataRemoved, this, &DataLoggerChartsWidget::removeDataOk);
-            // connect(dataLogger, &DataLogger::dataChanged, this, &DataLoggerChartsWidget::updateDlData);
         }
     }
     _dataLogger = dataLogger;
@@ -299,10 +300,12 @@ void DataLoggerChartsWidget::updateSeries()
 {
     if (_dataLogger == nullptr)
     {
+        _updateTimer.start();
         return;
     }
     if (!_dataLogger->isStarted())
     {
+        _updateTimer.start();
         return;
     }
 
@@ -342,6 +345,7 @@ void DataLoggerChartsWidget::updateSeries()
     }
 
     setUpdatesEnabled(true);
+    _updateTimer.start();
 }
 
 void DataLoggerChartsWidget::dropEvent(QDropEvent *event)

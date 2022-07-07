@@ -332,7 +332,7 @@ void DataLogger::notify()
         if (dlData->hasChanged())
         {
             dlData->setHasChanged(false);
-            emit dataChanged(_dataList.indexOf(dlData));
+            emit valueChanged(_dataList.indexOf(dlData));
         }
     }
 }

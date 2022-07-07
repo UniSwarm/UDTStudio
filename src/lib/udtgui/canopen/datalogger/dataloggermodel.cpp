@@ -47,7 +47,8 @@ void DataLoggerModel::setDataLogger(DataLogger *dataLogger)
         connect(dataLogger, &DataLogger::dataAdded, this, &DataLoggerModel::addDataOk);
         connect(dataLogger, &DataLogger::dataAboutToBeRemoved, this, &DataLoggerModel::removeDataPrepare);
         connect(dataLogger, &DataLogger::dataRemoved, this, &DataLoggerModel::removeDataOk);
-        connect(dataLogger, &DataLogger::dataChanged, this, &DataLoggerModel::updateDlData);
+        connect(dataLogger, &DataLogger::dataChanged, this, &DataLoggerModel::updateDlData, Qt::QueuedConnection);
+        connect(dataLogger, &DataLogger::valueChanged, this, &DataLoggerModel::updateDlValue, Qt::QueuedConnection);
     }
     _dataLogger = dataLogger;
     emit layoutChanged();
@@ -86,6 +87,16 @@ void DataLoggerModel::updateDlData(int id)
 {
     QModelIndex modelIndexTL = index(id, NodeName, QModelIndex());
     QModelIndex modelIndexBR = index(id, ColumnCount - 1, QModelIndex());
+    if (modelIndexTL.isValid() && modelIndexBR.isValid())
+    {
+        emit dataChanged(modelIndexTL, modelIndexBR);
+    }
+}
+
+void DataLoggerModel::updateDlValue(int id)
+{
+    QModelIndex modelIndexTL = index(id, Value, QModelIndex());
+    QModelIndex modelIndexBR = index(id, Max, QModelIndex());
     if (modelIndexTL.isValid() && modelIndexBR.isValid())
     {
         emit dataChanged(modelIndexTL, modelIndexBR);
@@ -175,7 +186,8 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
                     return QVariant(tr("Unknown"));
 
                 case Index:
-                    return QVariant(QString("0x%1.%2").arg(QString::number(dlData->objectId().index(), 16).toUpper(), QString::number(dlData->objectId().subIndex(), 16).toUpper()));
+                    return QVariant(
+                        QString("0x%1.%2").arg(QString::number(dlData->objectId().index(), 16).toUpper(), QString::number(dlData->objectId().subIndex(), 16).toUpper()));
 
                 case Name:
                     return QVariant(dlData->name());
@@ -301,7 +313,7 @@ QMimeData *DataLoggerModel::mimeData(const QModelIndexList &indexes) const
     QMimeData *mimeData = new QMimeData();
     QByteArray encodedData;
 
-    foreach (QModelIndex index, indexes)
+    for (QModelIndex index : indexes)
     {
         if (index.isValid() && index.column() == NodeName)
         {
