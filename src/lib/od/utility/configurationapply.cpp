@@ -61,10 +61,7 @@ bool ConfigurationApply::apply(DeviceModel *deviceModel, const QString &fileIniP
             if (value.canConvert(QMetaType::Int) && value.toInt() <= 128 && subIndex->index()->subIndexesCount() >= 2)
             {
                 int newSize = value.toInt();
-                if ((subIndex->index()->subIndexesCount() - 1) != newSize)
-                {
-                    resizeArray(subIndex->index(), newSize);
-                }
+                resizeArray(subIndex->index(), newSize);
             }
             else
             {
@@ -157,24 +154,34 @@ SubIndex *ConfigurationApply::getSubIndex(DeviceModel *deviceDescription, const 
 
 void ConfigurationApply::resizeArray(Index *index, int newSize)
 {
-    // remove all sub > 1
-    for (int sub = 2; sub <= index->subIndexesCount(); sub++)
+    if ((index->subIndexesCount() - 1) != newSize)
     {
-        index->removeSubIndex(sub);
-    }
+        // remove all sub > 1
+        for (int sub = 2; sub <= index->subIndexesCount(); sub++)
+        {
+            index->removeSubIndex(sub);
+        }
 
-    SubIndex *subIndex = index->subIndex(1);
-    for (int sub = 2; sub < newSize + 1; sub++)
+        SubIndex *subIndex = index->subIndex(1);
+        for (int sub = 2; sub < newSize + 1; sub++)
+        {
+            SubIndex *newSubIndex = new SubIndex(*subIndex);
+            newSubIndex->setSubIndex(sub);
+            newSubIndex->setName(renameItem(subIndex->name(), sub));
+            index->addSubIndex(newSubIndex);
+        }
+        subIndex->setName(renameItem(subIndex->name(), 1));
+
+        index->setMaxSubIndex(newSize + 1);
+        index->subIndex(0)->setValue(newSize);
+    }
+    else
     {
-        SubIndex *newSubIndex = new SubIndex(*subIndex);
-        newSubIndex->setSubIndex(sub);
-        newSubIndex->setName(renameItem(subIndex->name(), sub));
-        index->addSubIndex(newSubIndex);
+        for (SubIndex *subIndex : index->subIndexes())
+        {
+            subIndex->setName(renameItem(subIndex->name(), subIndex->subIndex()));
+        }
     }
-    subIndex->setName(renameItem(subIndex->name(), 1));
-
-    index->setMaxSubIndex(newSize + 1);
-    index->subIndex(0)->setValue(newSize);
 }
 
 QString ConfigurationApply::renameItem(const QString &name, int value)
