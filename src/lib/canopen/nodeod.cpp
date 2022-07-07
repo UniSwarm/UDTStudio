@@ -493,32 +493,32 @@ void NodeOd::unsubscribe(NodeOdSubscriber *object, quint16 notifyIndex, quint8 n
     }
 }
 
-void NodeOd::updateObjectFromDevice(quint16 indexDevice, quint8 subindexDevice, const QVariant &value, NodeOd::FlagsRequest flags, const QDateTime &modificationDate)
+void NodeOd::updateObjectFromDevice(quint16 index, quint8 subindex, const QVariant &value, NodeOd::FlagsRequest flags, const QDateTime &modificationDate)
 {
-    if (indexExist(indexDevice))
+    NodeSubIndex *nodeSubIndex = subIndex(index, subindex);
+    if (nodeSubIndex == nullptr)
     {
-        if (index(indexDevice)->subIndexExist(subindexDevice))
-        {
-            if ((flags & NodeOd::Error) == 0)
-            {
-                index(indexDevice)->subIndex(subindexDevice)->clearError();
-                index(indexDevice)->subIndex(subindexDevice)->setValue(value, modificationDate);
-            }
-            else
-            {
-                index(indexDevice)->subIndex(subindexDevice)->setError(static_cast<quint32>(value.toUInt()));
-            }
-        }
+        return;
     }
 
-    quint32 key = (static_cast<quint32>(indexDevice) << 8) + subindexDevice;
-    notifySubscribers(key, indexDevice, subindexDevice, flags);  // notify subscribers to index/subindex
+    if ((flags & NodeOd::Error) == 0)
+    {
+        nodeSubIndex->clearError();
+        nodeSubIndex->setValue(value, modificationDate);
+    }
+    else
+    {
+        nodeSubIndex->setError(static_cast<quint32>(value.toUInt()));
+    }
 
-    key = (static_cast<quint32>(indexDevice) << 8) + 0xFFU;
-    notifySubscribers(key, indexDevice, subindexDevice, flags);  // notify subscribers to index with all subindex
+    quint32 key = (static_cast<quint32>(index) << 8) + subindex;
+    notifySubscribers(key, index, subindex, flags);  // notify subscribers to index/subindex
+
+    key = (static_cast<quint32>(index) << 8) + 0xFFU;
+    notifySubscribers(key, index, subindex, flags);  // notify subscribers to index with all subindex
 
     key = (static_cast<quint32>(0xFFFFU) << 8) + 0xFFU;
-    notifySubscribers(key, indexDevice, subindexDevice, flags);  // notify subscribers to the full od
+    notifySubscribers(key, index, subindex, flags);  // notify subscribers to the full od
 }
 
 void NodeOd::createMandatoryObjects()
