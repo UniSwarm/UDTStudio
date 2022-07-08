@@ -194,8 +194,7 @@ void DataLoggerTreeView::createActions()
     _exportOneAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
     _exportOneAction->setShortcutContext(Qt::WidgetShortcut);
     _exportOneAction->setIcon(QIcon(":/icons/img/icons8-export.png"));
-    _exportOneAction->setStatusTip(tr("Exports CSV data in '%1' directory")
-                                    .arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/UDTStudio/"));
+    _exportOneAction->setStatusTip(tr("Exports CSV data in '%1' directory").arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/UDTStudio/"));
     _exportOneAction->setEnabled(false);
 #if QT_VERSION >= 0x050A00
     _exportOneAction->setShortcutVisibleInContextMenu(true);

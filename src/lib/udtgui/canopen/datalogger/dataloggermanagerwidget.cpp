@@ -48,6 +48,11 @@ void DataLoggerManagerWidget::setLogTimerMs(int ms)
     {
         _logger->start(ms);
     }
+    else
+    {
+        _startStopAction->setChecked(true);
+        _logger->start(ms);
+    }
 }
 
 void DataLoggerManagerWidget::setUseOpenGL(bool useOpenGL)
@@ -214,11 +219,11 @@ void DataLoggerManagerWidget::createWidgets()
     _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
     _toolBar->addWidget(_logTimerSpinBox);
     connect(_logTimerSpinBox,
-            QOverload<int>::of(&QSpinBox::valueChanged),
+            &QSpinBox::editingFinished,
             this,
-            [=](int i)
+            [=]()
             {
-                setLogTimerMs(i);
+                setLogTimerMs(_logTimerSpinBox->value());
             });
 
     // clear
@@ -232,7 +237,7 @@ void DataLoggerManagerWidget::createWidgets()
     // open gl
     _openGLAction = _toolBar->addAction(tr("Open-GL"));
     _openGLAction->setCheckable(true);
-    _openGLAction->setChecked(false);
+    _openGLAction->setChecked(true);
     _openGLAction->setIcon(QIcon(":/icons/img/icons8-speed.png"));
     _openGLAction->setStatusTip(tr("Sets render to open GL for fast rendering"));
     connect(_openGLAction, &QAction::triggered, this, &DataLoggerManagerWidget::setUseOpenGL);
@@ -240,7 +245,7 @@ void DataLoggerManagerWidget::createWidgets()
     // linechart
     _crossAction = _toolBar->addAction(tr("Cross"));
     _crossAction->setCheckable(true);
-    _crossAction->setEnabled(true);
+    _crossAction->setEnabled(false);
     _crossAction->setIcon(QIcon(":/icons/img/icons8-line-chart.png"));
     _crossAction->setStatusTip(tr("Adds cross to line chart"));
     connect(_crossAction, &QAction::triggered, this, &DataLoggerManagerWidget::setViewCross);
@@ -272,19 +277,19 @@ void DataLoggerManagerWidget::createWidgets()
     _toolBar->addSeparator();
 
     // export CSV
-    _exportCSVAction = _toolBar->addAction(tr("Screenshot"));
+    _exportCSVAction = _toolBar->addAction(tr("Export CSV data"));
     _exportCSVAction->setEnabled(true);
     _exportCSVAction->setIcon(QIcon(":/icons/img/icons8-export.png"));
-    _exportCSVAction->setStatusTip(tr("Exports all data entries in '%1' directory as a CSV file")
-                                    .arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/UDTStudio/"));
+    _exportCSVAction->setStatusTip(
+        tr("Exports all data entries in '%1' directory as a CSV file").arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/UDTStudio/"));
     connect(_exportCSVAction, &QAction::triggered, this, &DataLoggerManagerWidget::exportAllCSVData);
 
     // screenshot
     _screenShotAction = _toolBar->addAction(tr("Screenshot"));
     _screenShotAction->setEnabled(true);
     _screenShotAction->setIcon(QIcon(":/icons/img/icons8-screenshot.png"));
-    _screenShotAction->setStatusTip(tr("Takes a screenshot of the full datalogger window in '%1' directory")
-                                    .arg(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation) + "/UDTStudio/"));
+    _screenShotAction->setStatusTip(
+        tr("Takes a screenshot of the full datalogger window in '%1' directory").arg(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation) + "/UDTStudio/"));
     connect(_screenShotAction, &QAction::triggered, this, &DataLoggerManagerWidget::takeScreenShot);
 
     layout->addWidget(_toolBar);
