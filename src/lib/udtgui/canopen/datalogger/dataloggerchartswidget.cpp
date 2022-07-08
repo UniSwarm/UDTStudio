@@ -39,34 +39,40 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
     _dataLogger = nullptr;
     _rollingEnabled = false;
     _rollingTimeMs = 1000;
+    _useOpenGL = false;
+    _viewCross = false;
 
     setStyleSheet("QAbstractScrollArea {padding: 0px;}");
 
     _chart = new QChart();
-    _chart->legend()->hide();
-    //_chart->setTitle("Logger");
+
+    // legend
     _chart->legend()->setVisible(true);
     _chart->legend()->setAlignment(Qt::AlignBottom);
+    _chart->legend()->setShowToolTips(true);
+
+    // theme
     _chart->setTheme(QChart::ChartThemeBlueCerulean);
     setRenderHint(QPainter::Antialiasing);
-    _chart->layout()->setContentsMargins(0, 0, 0, 0);
     _chart->setBackgroundBrush(QColor(0x19232D));
+    _chart->setBackgroundRoundness(0);
+
+    // layout
+    _chart->layout()->setContentsMargins(0, 0, 0, 0);
+    _chart->setMargins(QMargins(2, 2, 2, 2));
     setChart(_chart);
 
+    // axis
     _axisX = new QDateTimeAxis();
     _axisX->setTickCount(11);
     _axisX->setFormat("hh:mm:ss");
-    //_axisX->setTitleText("Time");
-
     _axisY = new QValueAxis();
     _axisY->setLabelFormat("%g");
-    //_axisY->setTitleText("Value");
 
     setDataLogger(dataLogger);
     _idPending = -1;
 
-    _useOpenGL = false;
-    _viewCross = false;
+    setUseOpenGL(true);
 
     connect(&_updateTimer, &QTimer::timeout, this, &DataLoggerChartsWidget::updateSeries);
     _updateTimer.setSingleShot(true);
