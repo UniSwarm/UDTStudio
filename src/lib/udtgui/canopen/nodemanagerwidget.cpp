@@ -83,9 +83,6 @@ void NodeManagerWidget::updateData()
     {
         _nodeNameEdit->setText(_node->name());
 
-        _edsFileNameLabel->setText(QFileInfo(_node->edsFileName()).fileName());
-        _edsFileNameLabel->setToolTip(_node->edsFileName());
-
         // status button update
         _groupNmt->blockSignals(true);
         for (QAction *action : _groupNmt->actions())
@@ -101,6 +98,10 @@ void NodeManagerWidget::updateData()
         actionStatus->setCheckable(true);
         actionStatus->setChecked(true);
         _groupNmt->blockSignals(false);
+    }
+    else
+    {
+        _nodeNameEdit->setText("");
     }
 }
 
@@ -283,10 +284,6 @@ void NodeManagerWidget::createWidgets()
     _nodeNameEdit = new QLineEdit();
     layoutGroupBox->addRow(tr("Name:"), _nodeNameEdit);
     connect(_nodeNameEdit, &QLineEdit::returnPressed, this, &NodeManagerWidget::setNodeName);
-
-    _edsFileNameLabel = new QLabel();
-    _edsFileNameLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    layoutGroupBox->addRow(tr("Eds file:"), _edsFileNameLabel);
 
     _groupBox->setLayout(layoutGroupBox);
     layout->addWidget(_groupBox);
