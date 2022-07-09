@@ -58,63 +58,49 @@ void P402PpWidget::readAllObjects()
 
 void P402PpWidget::setNode(Node *node, uint8_t axis)
 {
-    if (node == nullptr)
+    if (node == nullptr || axis > 8)
     {
+        setNodeInterrest(nullptr);
+        _nodeProfile402 = nullptr;
+        _modePp = nullptr;
         return;
     }
 
-    if (axis > 8)
-    {
-        return;
-    }
+    setNodeInterrest(node);
 
-    if (node != nullptr)
-    {
-        setNodeInterrest(node);
+    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
+    _modePp = dynamic_cast<ModePp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::PP));
 
-        if (!node->profiles().isEmpty())
-        {
-            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
-            _modePp = dynamic_cast<ModePp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::PP));
+    connect(_modePp, &ModePp::changeSetImmediatelyEvent, this, &P402PpWidget::changeSetImmediatelyPointEvent);
+    connect(_modePp, &ModePp::absRelEvent, this, &P402PpWidget::absRelEvent);
+    connect(_modePp, &ModePp::changeOnSetPointEvent, this, &P402PpWidget::changeOnSetPointEvent);
 
-            connect(_modePp, &ModePp::changeSetImmediatelyEvent, this, &P402PpWidget::changeSetImmediatelyPointEvent);
-            connect(_modePp, &ModePp::absRelEvent, this, &P402PpWidget::absRelEvent);
-            connect(_modePp, &ModePp::changeOnSetPointEvent, this, &P402PpWidget::changeOnSetPointEvent);
+    changeSetImmediatelyPointEvent(_modePp->isChangeSetImmediately());
+    absRelEvent(_modePp->isAbsRel());
+    changeOnSetPointEvent(_modePp->isChangeOnSetPoint());
 
-            changeSetImmediatelyPointEvent(_modePp->isChangeSetImmediately());
-            absRelEvent(_modePp->isAbsRel());
-            changeOnSetPointEvent(_modePp->isChangeOnSetPoint());
+    _positionDemandValueLabel->setObjId(_modePp->positionDemandValueObjectId());
+    _positionActualValueLabel->setObjId(_modePp->positionActualValueObjectId());
 
-            _positionTargetObjectId = _modePp->targetObjectId();
-            registerObjId(_positionTargetObjectId);
+    _positionRangeLimitMinSpinBox->setObjId(_modePp->positionRangeLimitMinObjectId());
+    _positionRangeLimitMaxSpinBox->setObjId(_modePp->positionRangeLimitMaxObjectId());
+    registerObjId(_positionRangeLimitMaxSpinBox->objId());
+    _softwarePositionLimitMinSpinBox->setObjId(_modePp->softwarePositionLimitMinObjectId());
+    _softwarePositionLimitMaxSpinBox->setObjId(_modePp->softwarePositionLimitMaxObjectId());
 
-            _positionDemandValueObjectId = _modePp->positionDemandValueObjectId();
-            _positionDemandValueLabel->setObjId(_positionDemandValueObjectId);
+    _profileVelocitySpinBox->setObjId(_modePp->profileVelocityObjectId());
+    _maxProfileVelocitySpinBox->setObjId(_modePp->maxProfileVelocityObjectId());
+    _maxMotorSpeedSpinBox->setObjId(_modePp->maxMotorSpeedObjectId());
 
-            _positionActualValueObjectId = _modePp->positionActualValueObjectId();
-            _positionActualValueLabel->setObjId(_positionActualValueObjectId);
+    _profileAccelerationSpinBox->setObjId(_modePp->profileAccelerationObjectId());
+    _maxAccelerationSpinBox->setObjId(_modePp->maxAccelerationObjectId());
+    _profileDecelerationSpinBox->setObjId(_modePp->profileDecelerationObjectId());
+    _maxDecelerationSpinBox->setObjId(_modePp->maxDecelerationObjectId());
+    _quickStopDecelerationSpinBox->setObjId(_modePp->quickStopDecelerationObjectId());
 
-            _positionRangeLimitMinSpinBox->setObjId(_modePp->positionRangeLimitMinObjectId());
-            _positionRangeLimitMaxSpinBox->setObjId(_modePp->positionRangeLimitMaxObjectId());
-            registerObjId(_positionRangeLimitMaxSpinBox->objId());
-            _softwarePositionLimitMinSpinBox->setObjId(_modePp->softwarePositionLimitMinObjectId());
-            _softwarePositionLimitMaxSpinBox->setObjId(_modePp->softwarePositionLimitMaxObjectId());
+    _homeOffsetSpinBox->setObjId(_modePp->homeOffsetObjectId());
 
-            _profileVelocitySpinBox->setObjId(_modePp->profileVelocityObjectId());
-            _maxProfileVelocitySpinBox->setObjId(_modePp->maxProfileVelocityObjectId());
-            _maxMotorSpeedSpinBox->setObjId(_modePp->maxMotorSpeedObjectId());
-
-            _profileAccelerationSpinBox->setObjId(_modePp->profileAccelerationObjectId());
-            _maxAccelerationSpinBox->setObjId(_modePp->maxAccelerationObjectId());
-            _profileDecelerationSpinBox->setObjId(_modePp->profileDecelerationObjectId());
-            _maxDecelerationSpinBox->setObjId(_modePp->maxDecelerationObjectId());
-            _quickStopDecelerationSpinBox->setObjId(_modePp->quickStopDecelerationObjectId());
-
-            _homeOffsetSpinBox->setObjId(_modePp->homeOffsetObjectId());
-
-            _polarityCheckBox->setObjId(_nodeProfile402->fgPolaritybjectId());
-        }
-    }
+    _polarityCheckBox->setObjId(_nodeProfile402->fgPolaritybjectId());
 }
 
 void P402PpWidget::goOneLineEditFinished()
@@ -189,8 +175,8 @@ void P402PpWidget::createDataLogger()
     DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
     dataLoggerWidget->setTitle(tr("Node %1 axis %2 PP").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
 
-    dataLogger->addData(_positionDemandValueObjectId);
-    dataLogger->addData(_positionTargetObjectId);
+    dataLogger->addData(_modePp->positionDemandValueObjectId());
+    dataLogger->addData(_modePp->targetObjectId());
 
     dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
     connect(dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
@@ -203,11 +189,11 @@ void P402PpWidget::createDataLogger()
 void P402PpWidget::mapDefaultObjects()
 {
     NodeObjectId controlWordObjectId = _nodeProfile402->controlWordObjectId();
-    QList<NodeObjectId> ppRpdoObjectList = {controlWordObjectId, _positionTargetObjectId};
+    QList<NodeObjectId> ppRpdoObjectList = {controlWordObjectId, _modePp->targetObjectId()};
     _nodeProfile402->node()->rpdos().at(0)->writeMapping(ppRpdoObjectList);
 
     NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
-    QList<NodeObjectId> ppTpdoObjectList = {statusWordObjectId, _positionDemandValueObjectId};
+    QList<NodeObjectId> ppTpdoObjectList = {statusWordObjectId, _modePp->positionDemandValueObjectId()};
     _nodeProfile402->node()->tpdos().at(0)->writeMapping(ppTpdoObjectList);
 }
 
@@ -456,13 +442,6 @@ QHBoxLayout *P402PpWidget::createButtonWidgets() const
 
 void P402PpWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if ((flags & NodeOd::FlagsRequest::Error) != 0)
-    {
-        return;
-    }
-
-    if ((_nodeProfile402->node() == nullptr) || (_nodeProfile402->node()->status() != Node::STARTED))
-    {
-        return;
-    }
+    Q_UNUSED(objId)
+    Q_UNUSED(flags)
 }

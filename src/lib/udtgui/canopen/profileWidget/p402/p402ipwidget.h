@@ -46,13 +46,6 @@ public:
 private:
     ModeIp *_modeIp;
 
-    NodeObjectId _positionTargetObjectId;
-    NodeObjectId _bufferClearObjectId;
-    NodeObjectId _positionDemandValueObjectId;
-    NodeObjectId _positionActualValueObjectId;
-    NodeObjectId _timePeriodIndexObjectId;
-    NodeObjectId _timePeriodUnitsObjectId;
-
     int _iteratorForSendDataRecord;
     QStringList _listDataRecord;
 

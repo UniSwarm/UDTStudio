@@ -35,6 +35,62 @@ P402CpWidget::P402CpWidget(QWidget *parent)
     _nodeProfile402 = nullptr;
 }
 
+void P402CpWidget::readRealTimeObjects()
+{
+    _nodeProfile402->readRealTimeObjects();
+}
+
+void P402CpWidget::readAllObjects()
+{
+    _nodeProfile402->readAllObjects();
+}
+
+void P402CpWidget::setNode(Node *node, uint8_t axis)
+{
+    if (node == nullptr || axis > 8)
+    {
+        setNodeInterrest(nullptr);
+        _nodeProfile402 = nullptr;
+        _modeCp = nullptr;
+        return;
+    }
+
+    setNodeInterrest(node);
+
+    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
+    _modeCp = dynamic_cast<ModeCp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::CP));
+
+    connect(_modeCp, &ModeCp::absRelEvent, this, &P402CpWidget::absRelEvent);
+    absRelEvent(_modeCp->isAbsRel());
+
+    _positionTargetObjectId = _modeCp->targetObjectId();
+
+    _positionDemandValueObjectId = _modeCp->positionDemandValueObjectId();
+    _positionDemandValueLabel->setObjId(_positionDemandValueObjectId);
+
+    _positionActualValueObjectId = _modeCp->positionActualValueObjectId();
+    _positionActualValueLabel->setObjId(_positionActualValueObjectId);
+
+    _positionRangeLimitMinSpinBox->setObjId(_modeCp->positionRangeLimitMinObjectId());
+    _positionRangeLimitMaxSpinBox->setObjId(_modeCp->positionRangeLimitMaxObjectId());
+    registerObjId(_positionRangeLimitMaxSpinBox->objId());
+    _softwarePositionLimitMinSpinBox->setObjId(_modeCp->softwarePositionLimitMinObjectId());
+    _softwarePositionLimitMaxSpinBox->setObjId(_modeCp->softwarePositionLimitMaxObjectId());
+
+    _profileVelocitySpinBox->setObjId(_modeCp->profileVelocityObjectId());
+    _maxProfileVelocitySpinBox->setObjId(_modeCp->maxProfileVelocityObjectId());
+    _maxMotorSpeedSpinBox->setObjId(_modeCp->maxMotorSpeedObjectId());
+
+    _profileAccelerationSpinBox->setObjId(_modeCp->profileAccelerationObjectId());
+    _maxAccelerationSpinBox->setObjId(_modeCp->maxAccelerationObjectId());
+    _profileDecelerationSpinBox->setObjId(_modeCp->profileDecelerationObjectId());
+    _maxDecelerationSpinBox->setObjId(_modeCp->maxDecelerationObjectId());
+    _quickStopDecelerationSpinBox->setObjId(_modeCp->quickStopDecelerationObjectId());
+
+    _homeOffsetSpinBox->setObjId(_modeCp->homeOffsetObjectId());
+    _polarityCheckBox->setObjId(_nodeProfile402->fgPolaritybjectId());
+}
+
 void P402CpWidget::goOneLineEditFinished()
 {
     _nodeProfile402->setTarget(_goOneLineEdit->text().toInt());
@@ -316,72 +372,6 @@ QHBoxLayout *P402CpWidget::createButtonWidgets() const
 
 void P402CpWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
-    if ((flags & NodeOd::FlagsRequest::Error) != 0)
-    {
-        return;
-    }
-}
-
-void P402CpWidget::readRealTimeObjects()
-{
-    _nodeProfile402->readRealTimeObjects();
-}
-
-void P402CpWidget::readAllObjects()
-{
-    _nodeProfile402->readAllObjects();
-}
-
-void P402CpWidget::setNode(Node *node, uint8_t axis)
-{
-    if (node == nullptr)
-    {
-        return;
-    }
-
-    if (axis > 8)
-    {
-        return;
-    }
-
-    if (node != nullptr)
-    {
-        setNodeInterrest(node);
-
-        if (!node->profiles().isEmpty())
-        {
-            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
-            _modeCp = dynamic_cast<ModeCp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::CP));
-
-            connect(_modeCp, &ModeCp::absRelEvent, this, &P402CpWidget::absRelEvent);
-            absRelEvent(_modeCp->isAbsRel());
-
-            _positionTargetObjectId = _modeCp->targetObjectId();
-
-            _positionDemandValueObjectId = _modeCp->positionDemandValueObjectId();
-            _positionDemandValueLabel->setObjId(_positionDemandValueObjectId);
-
-            _positionActualValueObjectId = _modeCp->positionActualValueObjectId();
-            _positionActualValueLabel->setObjId(_positionActualValueObjectId);
-
-            _positionRangeLimitMinSpinBox->setObjId(_modeCp->positionRangeLimitMinObjectId());
-            _positionRangeLimitMaxSpinBox->setObjId(_modeCp->positionRangeLimitMaxObjectId());
-            registerObjId(_positionRangeLimitMaxSpinBox->objId());
-            _softwarePositionLimitMinSpinBox->setObjId(_modeCp->softwarePositionLimitMinObjectId());
-            _softwarePositionLimitMaxSpinBox->setObjId(_modeCp->softwarePositionLimitMaxObjectId());
-
-            _profileVelocitySpinBox->setObjId(_modeCp->profileVelocityObjectId());
-            _maxProfileVelocitySpinBox->setObjId(_modeCp->maxProfileVelocityObjectId());
-            _maxMotorSpeedSpinBox->setObjId(_modeCp->maxMotorSpeedObjectId());
-
-            _profileAccelerationSpinBox->setObjId(_modeCp->profileAccelerationObjectId());
-            _maxAccelerationSpinBox->setObjId(_modeCp->maxAccelerationObjectId());
-            _profileDecelerationSpinBox->setObjId(_modeCp->profileDecelerationObjectId());
-            _maxDecelerationSpinBox->setObjId(_modeCp->maxDecelerationObjectId());
-            _quickStopDecelerationSpinBox->setObjId(_modeCp->quickStopDecelerationObjectId());
-
-            _homeOffsetSpinBox->setObjId(_modeCp->homeOffsetObjectId());
-            _polarityCheckBox->setObjId(_nodeProfile402->fgPolaritybjectId());
-        }
-    }
+    Q_UNUSED(objId)
+    Q_UNUSED(flags)
 }

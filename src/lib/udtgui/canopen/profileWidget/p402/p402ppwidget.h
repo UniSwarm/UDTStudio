@@ -46,10 +46,6 @@ public:
 private:
     ModePp *_modePp;
 
-    NodeObjectId _positionTargetObjectId;
-    NodeObjectId _positionDemandValueObjectId;
-    NodeObjectId _positionActualValueObjectId;
-
     void goOneLineEditFinished();
     void twoOneLineEditFinished();
 

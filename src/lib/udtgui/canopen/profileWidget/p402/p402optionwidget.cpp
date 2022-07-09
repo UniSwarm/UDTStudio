@@ -43,12 +43,10 @@ void P402OptionWidget::readAllObjects()
 
 void P402OptionWidget::setNode(Node *node, uint8_t axis)
 {
-    if (node == nullptr)
+    if (node == nullptr || axis > 8)
     {
-        return;
-    }
-    if (axis > node->profilesCount())
-    {
+        setNodeInterrest(nullptr);
+        _nodeProfile402 = nullptr;
         return;
     }
 

@@ -58,57 +58,40 @@ void P402IpWidget::readAllObjects()
 
 void P402IpWidget::setNode(Node *node, uint8_t axis)
 {
-    if (node == nullptr)
+    if (node == nullptr || axis > 8)
     {
+        setNodeInterrest(nullptr);
+        _nodeProfile402 = nullptr;
+        _modeIp = nullptr;
         return;
     }
 
-    if (axis > 8)
-    {
-        return;
-    }
+    setNodeInterrest(node);
+    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
+    _modeIp = dynamic_cast<ModeIp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::IP));
+    connect(_modeIp, &ModeIp::enableRampEvent, this, &P402IpWidget::enableRampEvent);
+    enableRampEvent(_modeIp->isEnableRamp());
 
-    if (node != nullptr)
-    {
-        setNodeInterrest(node);
+    _positionDemandValueLabel->setObjId(_modeIp->positionDemandValueObjectId());
+    _positionAcualValueLabel->setObjId(_modeIp->positionActualValueObjectId());
 
-        if (!node->profiles().isEmpty())
-        {
-            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
-            _modeIp = dynamic_cast<ModeIp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::IP));
-            connect(_modeIp, &ModeIp::enableRampEvent, this, &P402IpWidget::enableRampEvent);
-            enableRampEvent(_modeIp->isEnableRamp());
+    _timePeriodIndexSpinBox->setObjId(_modeIp->timePeriodIndexObjectId());
+    _timePeriodUnitSpinBox->setObjId(_modeIp->timePeriodUnitsObjectId());
 
-            _positionTargetObjectId = _modeIp->targetObjectId();
-            registerObjId(_positionTargetObjectId);
-            _positionDemandValueObjectId = _modeIp->positionDemandValueObjectId();
-            _positionDemandValueLabel->setObjId(_positionDemandValueObjectId);
+    _positionRangeLimitMinSpinBox->setObjId(_modeIp->positionRangeLimitMinObjectId());
+    _positionRangeLimitMaxSpinBox->setObjId(_modeIp->positionRangeLimitMaxObjectId());
+    _softwarePositionLimitMinSpinBox->setObjId(_modeIp->softwarePositionLimitMinObjectId());
+    _softwarePositionLimitMaxSpinBox->setObjId(_modeIp->softwarePositionLimitMaxObjectId());
 
-            _positionActualValueObjectId = _modeIp->positionActualValueObjectId();
-            _positionAcualValueLabel->setObjId(_positionActualValueObjectId);
+    _maxProfileVelocitySpinBox->setObjId(_modeIp->maxProfileVelocityObjectId());
+    _maxMotorSpeedSpinBox->setObjId(_modeIp->maxMotorSpeedObjectId());
 
-            _timePeriodIndexObjectId = _modeIp->timePeriodIndexObjectId();
-            _timePeriodIndexSpinBox->setObjId(_timePeriodIndexObjectId);
+    _homeOffsetSpinBox->setObjId(_modeIp->homeOffsetObjectId());
 
-            _timePeriodUnitsObjectId = _modeIp->timePeriodUnitsObjectId();
-            _timePeriodUnitSpinBox->setObjId(_timePeriodUnitsObjectId);
+    _polarityCheckBox->setObjId(_nodeProfile402->fgPolaritybjectId());
 
-            _positionRangeLimitMinSpinBox->setObjId(_modeIp->positionRangeLimitMinObjectId());
-            _positionRangeLimitMaxSpinBox->setObjId(_modeIp->positionRangeLimitMaxObjectId());
-            _softwarePositionLimitMinSpinBox->setObjId(_modeIp->softwarePositionLimitMinObjectId());
-            _softwarePositionLimitMaxSpinBox->setObjId(_modeIp->softwarePositionLimitMaxObjectId());
-
-            _maxProfileVelocitySpinBox->setObjId(_modeIp->maxProfileVelocityObjectId());
-            _maxMotorSpeedSpinBox->setObjId(_modeIp->maxMotorSpeedObjectId());
-
-            _homeOffsetSpinBox->setObjId(_modeIp->homeOffsetObjectId());
-
-            _polarityCheckBox->setObjId(_nodeProfile402->fgPolaritybjectId());
-        }
-
-        connect(&_sendPointSinusoidalTimer, &QTimer::timeout, this, &P402IpWidget::sendDataRecordTargetWithSdo);
-        connect(_nodeProfile402->node()->bus()->sync(), &Sync::signalBeforeSync, this, &P402IpWidget::sendDataRecordTargetWithPdo);
-    }
+    connect(&_sendPointSinusoidalTimer, &QTimer::timeout, this, &P402IpWidget::sendDataRecordTargetWithSdo);
+    connect(_nodeProfile402->node()->bus()->sync(), &Sync::signalBeforeSync, this, &P402IpWidget::sendDataRecordTargetWithPdo);
 }
 
 void P402IpWidget::stop()
@@ -132,7 +115,7 @@ void P402IpWidget::sendDataRecord()
     while (!_listDataRecord.isEmpty())
     {
         qint32 value = _listDataRecord.first().toInt();
-        _nodeProfile402->node()->writeObject(_positionTargetObjectId, QVariant(value));
+        _nodeProfile402->node()->writeObject(_modeIp->targetObjectId(), QVariant(value));
         _listDataRecord.removeFirst();
     }
 
@@ -169,10 +152,10 @@ void P402IpWidget::startTargetPosition()
     qreal period = 0;
     qint32 target = 0;
 
-    qint32 initialPosition = _nodeProfile402->node()->nodeOd()->value(_positionDemandValueObjectId).toInt();
+    qint32 initialPosition = _nodeProfile402->node()->nodeOd()->value(_modeIp->positionDemandValueObjectId()).toInt();
 
-    unit = static_cast<quint8>(_nodeProfile402->node()->nodeOd()->value(_timePeriodUnitsObjectId).toUInt());
-    index = static_cast<qint8>(_nodeProfile402->node()->nodeOd()->value(_timePeriodIndexObjectId).toUInt());
+    unit = static_cast<quint8>(_nodeProfile402->node()->nodeOd()->value(_modeIp->timePeriodUnitsObjectId()).toUInt());
+    index = static_cast<qint8>(_nodeProfile402->node()->nodeOd()->value(_modeIp->timePeriodIndexObjectId()).toUInt());
     period = qPow(10, index);
     period = unit * period * 1000;
 
@@ -238,7 +221,7 @@ void P402IpWidget::sendDataRecordTargetWithPdo()
         stopTargetPosition();
         return;
     }
-    _nodeProfile402->node()->writeObject(_positionTargetObjectId, QVariant(_pointSinusoidalVector.at(0)));
+    _nodeProfile402->node()->writeObject(_modeIp->targetObjectId(), QVariant(_pointSinusoidalVector.at(0)));
     _pointSinusoidalVector.remove(0);
 }
 
@@ -257,7 +240,7 @@ void P402IpWidget::sendDataRecordTargetWithSdo()
         {
             break;
         }
-        _nodeProfile402->node()->writeObject(_positionTargetObjectId, QVariant(_pointSinusoidalVector.at(i)));
+        _nodeProfile402->node()->writeObject(_modeIp->targetObjectId(), QVariant(_pointSinusoidalVector.at(i)));
     }
     _pointSinusoidalVector.remove(0, i);
 }
@@ -278,8 +261,8 @@ void P402IpWidget::createDataLogger()
     DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
     dataLoggerWidget->setTitle(tr("Node %1 axis %2 IP").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
 
-    dataLogger->addData(_positionDemandValueObjectId);
-    dataLogger->addData(_positionActualValueObjectId);
+    dataLogger->addData(_modeIp->positionDemandValueObjectId());
+    dataLogger->addData(_modeIp->positionActualValueObjectId());
 
     dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
     connect(dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
@@ -292,11 +275,11 @@ void P402IpWidget::createDataLogger()
 void P402IpWidget::mapDefaultObjects()
 {
     NodeObjectId controlWordObjectId = _nodeProfile402->controlWordObjectId();
-    QList<NodeObjectId> ipRpdoObjectList = {controlWordObjectId, _positionTargetObjectId};
+    QList<NodeObjectId> ipRpdoObjectList = {controlWordObjectId, _modeIp->targetObjectId()};
     _nodeProfile402->node()->rpdos().at(0)->writeMapping(ipRpdoObjectList);
 
     NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
-    QList<NodeObjectId> ipTpdoObjectList = {statusWordObjectId, _positionDemandValueObjectId};
+    QList<NodeObjectId> ipTpdoObjectList = {statusWordObjectId, _modeIp->positionDemandValueObjectId()};
     _nodeProfile402->node()->tpdos().at(0)->writeMapping(ipTpdoObjectList);
 }
 

@@ -45,14 +45,8 @@ public:
 private:
     ModeVl *_modeVl;
 
-    NodeObjectId _velocityTargetObjectId;
-    NodeObjectId _velocityDemandObjectId;
-    NodeObjectId _velocityActualObjectId;
-
-    void targetVelocitySpinboxFinished();
-    void targetVelocitySliderChanged();
-    void updateMaxVelocityMinMaxAmount();
-    void setZeroButton();
+    void updateMinMaxVelocity();
+    void setTargetZero();
 
     void enableRampClicked(bool ok);
     void unlockRampClicked(bool ok);
