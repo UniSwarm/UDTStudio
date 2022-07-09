@@ -31,6 +31,7 @@
 
 class NodeProfile402;
 class IndexSpinBox;
+class IndexSlider;
 class IndexLabel;
 class P402ModeWidget;
 class ModeTq;
@@ -44,17 +45,7 @@ public:
 private:
     ModeTq *_modeTq;
 
-    NodeObjectId _torqueDemandObjectId;
-    NodeObjectId _torqueTargetObjectId;
-    NodeObjectId _torqueActualValueObjectId;
-    NodeObjectId _currentActualValueObjectId;
-    NodeObjectId _dcLinkVoltageObjectId;
-
-    void targetTorqueSpinboxFinished();
-    void targetTorqueSliderChanged();
-    void maxTorqueSpinboxFinished();
-
-    void setZeroButton();
+    void setTargetZero();
 
     // Buttons actions
     void createDataLogger();
@@ -66,8 +57,8 @@ private:
     QFormLayout *_modeLayout;
 
     void createTargetWidgets();
-    QSpinBox *_targetTorqueSpinBox;
-    QSlider *_targetTorqueSlider;
+    IndexSpinBox *_targetTorqueSpinBox;
+    IndexSlider *_targetTorqueSlider;
     QLabel *_sliderMinLabel;
     QLabel *_sliderMaxLabel;
 
@@ -89,6 +80,7 @@ private:
     IndexSpinBox *_targetSlopeSpinBox;
 
     QHBoxLayout *createButtonWidgets() const;
+    void updateMaxTorque();
 
     // NodeOdSubscriber interface
 protected:

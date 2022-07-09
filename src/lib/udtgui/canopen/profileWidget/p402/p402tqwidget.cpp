@@ -20,6 +20,7 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/indexWidget/indexlabel.h"
+#include "canopen/indexWidget/indexslider.h"
 #include "canopen/indexWidget/indexspinbox.h"
 
 #include "profile/p402/modetq.h"
@@ -59,69 +60,43 @@ void P402TqWidget::reset()
 
 void P402TqWidget::setNode(Node *node, uint8_t axis)
 {
-    if (node == nullptr)
+    if (node == nullptr || axis > 8)
     {
+        setNodeInterrest(nullptr);
+        _nodeProfile402 = nullptr;
+        _modeTq = nullptr;
         return;
     }
 
-    if (axis > 8)
-    {
-        return;
-    }
+    setNodeInterrest(node);
 
-    if (node != nullptr)
-    {
-        setNodeInterrest(node);
+    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
+    _modeTq = dynamic_cast<ModeTq *>(_nodeProfile402->mode(NodeProfile402::OperationMode::TQ));
 
-        if (!node->profiles().isEmpty())
-        {
-            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
-            _modeTq = dynamic_cast<ModeTq *>(_nodeProfile402->mode(NodeProfile402::OperationMode::TQ));
+    _targetTorqueSpinBox->setObjId(_modeTq->targetObjectId());
+    _targetTorqueSlider->setObjId(_modeTq->targetObjectId());
+    _torqueDemandLabel->setObjId(_modeTq->torqueDemandObjectId());
+    _torqueActualValueLabel->setObjId(_modeTq->torqueActualValueObjectId());
 
-            _torqueTargetObjectId = _modeTq->targetObjectId();
-            registerObjId(_torqueTargetObjectId);
+    _targetSlopeSpinBox->setObjId(_modeTq->targetSlopeObjectId());
+    _maxTorqueSpinBox->setObjId(_modeTq->maxTorqueObjectId());
 
-            _torqueDemandObjectId = _modeTq->torqueDemandObjectId();
-            _torqueDemandLabel->setObjId(_torqueDemandObjectId);
+    registerObjId(_modeTq->maxTorqueObjectId());
+    registerObjId(_modeTq->torqueDemandObjectId());
 
-            _torqueActualValueObjectId = _modeTq->torqueActualValueObjectId();
-            _torqueActualValueLabel->setObjId(_torqueActualValueObjectId);
-
-            _targetSlopeSpinBox->setObjId(_modeTq->targetSlopeObjectId());
-            _maxTorqueSpinBox->setObjId(_modeTq->maxTorqueObjectId());
-
-            int max = _nodeProfile402->node()->nodeOd()->value(_maxTorqueSpinBox->objId()).toInt();
-            _targetTorqueSlider->setRange(-max, max);
-            _targetTorqueSlider->setTickInterval(max / 10);
-            _sliderMinLabel->setNum(-max);
-            _sliderMaxLabel->setNum(max);
-        }
-
-        connect(_maxTorqueSpinBox, &QSpinBox::editingFinished, this, &P402TqWidget::maxTorqueSpinboxFinished);
-    }
+    updateMaxTorque();
 }
 
-void P402TqWidget::targetTorqueSpinboxFinished()
-{
-    qint16 value = static_cast<qint16>(_targetTorqueSpinBox->value());
-    _nodeProfile402->setTarget(value);
-}
-
-void P402TqWidget::targetTorqueSliderChanged()
-{
-    qint16 value = static_cast<qint16>(_targetTorqueSlider->value());
-    _nodeProfile402->setTarget(value);
-}
-
-void P402TqWidget::maxTorqueSpinboxFinished()
+void P402TqWidget::updateMaxTorque()
 {
     int max = _nodeProfile402->node()->nodeOd()->value(_maxTorqueSpinBox->objId()).toInt();
     _targetTorqueSlider->setRange(-max, max);
-    _sliderMinLabel->setNum(-max);
-    _sliderMaxLabel->setNum(max);
+    _targetTorqueSlider->setTickInterval(max / 10);
+    _sliderMinLabel->setText(QString("[-%1").arg(max));
+    _sliderMaxLabel->setText(QString("%1]").arg(max));
 }
 
-void P402TqWidget::setZeroButton()
+void P402TqWidget::setTargetZero()
 {
     _nodeProfile402->setTarget(0);
 }
@@ -132,9 +107,9 @@ void P402TqWidget::createDataLogger()
     DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
     dataLoggerWidget->setTitle(tr("Node %1 axis %2 TQ").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
 
-    dataLogger->addData(_torqueActualValueObjectId);
-    dataLogger->addData(_torqueTargetObjectId);
-    dataLogger->addData(_torqueDemandObjectId);
+    dataLogger->addData(_modeTq->torqueActualValueObjectId());
+    dataLogger->addData(_modeTq->targetObjectId());
+    dataLogger->addData(_modeTq->torqueDemandObjectId());
 
     dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
     connect(dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
@@ -147,11 +122,11 @@ void P402TqWidget::createDataLogger()
 void P402TqWidget::mapDefaultObjects()
 {
     NodeObjectId controlWordObjectId = _nodeProfile402->controlWordObjectId();
-    QList<NodeObjectId> tqRpdoObjectList = {controlWordObjectId, _torqueTargetObjectId};
+    QList<NodeObjectId> tqRpdoObjectList = {controlWordObjectId, _modeTq->targetObjectId()};
     _nodeProfile402->node()->rpdos().at(0)->writeMapping(tqRpdoObjectList);
 
     NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
-    QList<NodeObjectId> tqTpdoObjectList = {statusWordObjectId, _torqueDemandObjectId};
+    QList<NodeObjectId> tqTpdoObjectList = {statusWordObjectId, _modeTq->torqueDemandObjectId()};
     _nodeProfile402->node()->tpdos().at(0)->writeMapping(tqTpdoObjectList);
 }
 
@@ -207,8 +182,8 @@ void P402TqWidget::createWidgets()
 
 void P402TqWidget::createTargetWidgets()
 {
-    _targetTorqueSpinBox = new QSpinBox();
-    _targetTorqueSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
+    _targetTorqueSpinBox = new IndexSpinBox();
+    _targetTorqueSpinBox->setRangeValue(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
     _modeLayout->addRow(tr("&Target torque"), _targetTorqueSpinBox);
 
     QLayout *labelSliderLayout = new QHBoxLayout();
@@ -223,16 +198,13 @@ void P402TqWidget::createTargetWidgets()
     labelSliderLayout->addWidget(_sliderMaxLabel);
     _modeLayout->addRow(labelSliderLayout);
 
-    _targetTorqueSlider = new QSlider(Qt::Horizontal);
+    _targetTorqueSlider = new IndexSlider(Qt::Horizontal);
     _targetTorqueSlider->setTickPosition(QSlider::TicksBelow);
     _modeLayout->addRow(_targetTorqueSlider);
 
-    connect(_targetTorqueSlider, &QSlider::valueChanged, this, &P402TqWidget::targetTorqueSliderChanged);
-    connect(_targetTorqueSpinBox, &QSpinBox::editingFinished, this, &P402TqWidget::targetTorqueSpinboxFinished);
-
     QPushButton *setZeroButton = new QPushButton();
     setZeroButton->setText("Set to 0");
-    connect(setZeroButton, &QPushButton::clicked, this, &P402TqWidget::setZeroButton);
+    connect(setZeroButton, &QPushButton::clicked, this, &P402TqWidget::setTargetZero);
 
     QLayout *setZeroLayout = new QHBoxLayout();
     setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
@@ -290,25 +262,13 @@ void P402TqWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flag
         return;
     }
 
-    if ((_nodeProfile402->node() == nullptr) || (_nodeProfile402->node()->status() != Node::STARTED))
+    if (objId == _modeTq->maxTorqueObjectId())
     {
-        return;
+        updateMaxTorque();
     }
-
-    if (objId == _torqueTargetObjectId)
+    else if (objId == _modeTq->torqueDemandObjectId())
     {
         int value = _nodeProfile402->node()->nodeOd()->value(objId).toInt();
-        if (!_targetTorqueSpinBox->hasFocus())
-        {
-            _targetTorqueSpinBox->blockSignals(true);
-            _targetTorqueSpinBox->setValue(value);
-            _targetTorqueSpinBox->blockSignals(false);
-        }
-        if (!_targetTorqueSlider->isSliderDown())
-        {
-            _targetTorqueSlider->blockSignals(true);
-            _targetTorqueSlider->setValue(value);
-            _targetTorqueSlider->blockSignals(false);
-        }
+        _targetTorqueSlider->setFeedBackValue(value);
     }
 }
