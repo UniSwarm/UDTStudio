@@ -20,6 +20,7 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/indexWidget/indexlabel.h"
+#include "canopen/indexWidget/indexslider.h"
 #include "canopen/indexWidget/indexspinbox.h"
 
 #include "profile/p402/modedty.h"
@@ -53,67 +54,44 @@ void P402DtyWidget::reset()
 
 void P402DtyWidget::setNode(Node *node, uint8_t axis)
 {
-    if (node == nullptr)
+    if (node == nullptr || axis > 8)
     {
+        setNodeInterrest(nullptr);
+        _nodeProfile402 = nullptr;
+        _modeDty = nullptr;
         return;
     }
 
-    if (axis > 8)
-    {
-        return;
-    }
+    setNodeInterrest(node);
 
-    if (node != nullptr)
-    {
-        setNodeInterrest(node);
+    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
+    _modeDty = dynamic_cast<ModeDty *>(_nodeProfile402->mode(NodeProfile402::OperationMode::DTY));
+    connect(_enableRampCheckBox, &QCheckBox::clicked, _modeDty, &ModeDty::setEnableRamp);
 
-        if (!node->profiles().isEmpty())
-        {
-            _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
-            _modeDty = dynamic_cast<ModeDty *>(_nodeProfile402->mode(NodeProfile402::OperationMode::DTY));
-            connect(_enableRampCheckBox, &QCheckBox::clicked, _modeDty, &ModeDty::setEnableRamp);
+    _targetSpinBox->setObjId(_modeDty->targetObjectId());
+    _targetSlider->setObjId(_modeDty->targetObjectId());
 
-            _targetObjectId = _modeDty->targetObjectId();
-            registerObjId(_targetObjectId);
+    _demandLabel->setObjId(_modeDty->demandObjectId());
+    registerObjId(_modeDty->demandObjectId());
 
-            _demandObjectId = _modeDty->demandObjectId();
-            _demandLabel->setObjId(_demandObjectId);
+    _slopeSpinBox->setObjId(_modeDty->slopeObjectId());
+    _maxSpinBox->setObjId(_modeDty->maxObjectId());
+    registerObjId(_modeDty->maxObjectId());
 
-            _slopeSpinBox->setObjId(_modeDty->slopeObjectId());
-            _maxSpinBox->setObjId(_modeDty->maxObjectId());
-
-            int max = _nodeProfile402->node()->nodeOd()->value(_maxSpinBox->objId()).toInt();
-            _targetSlider->setRange(-max, max);
-            _targetSlider->setTickInterval(max / 10);
-            _sliderMinLabel->setNum(-max);
-            _sliderMaxLabel->setNum(max);
-        }
-
-        connect(_maxSpinBox, &QSpinBox::editingFinished, this, &P402DtyWidget::updateMaxDty);
-    }
-}
-
-void P402DtyWidget::updateFromSpinbox()
-{
-    qint16 value = static_cast<qint16>(_targetSpinBox->value());
-    _modeDty->setTarget(value);
-}
-
-void P402DtyWidget::updateTargetFromSlider()
-{
-    qint16 value = static_cast<qint16>(_targetSlider->value());
-    _modeDty->setTarget(value);
+    updateMaxDty();
 }
 
 void P402DtyWidget::updateMaxDty()
 {
     int max = _nodeProfile402->node()->nodeOd()->value(_maxSpinBox->objId()).toInt();
     _targetSlider->setRange(-max, max);
-    _sliderMinLabel->setNum(-max);
-    _sliderMaxLabel->setNum(max);
+    _targetSpinBox->setRangeValue(-max, max);
+    _targetSlider->setTickInterval(max / 10);
+    _sliderMinLabel->setText(QString("[-%1").arg(max));
+    _sliderMaxLabel->setText(QString("%1]").arg(max));
 }
 
-void P402DtyWidget::setZeroButton()
+void P402DtyWidget::setTargetZero()
 {
     _nodeProfile402->setTarget(0);
 }
@@ -124,8 +102,8 @@ void P402DtyWidget::createDataLogger()
     DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
     dataLoggerWidget->setTitle(tr("Node %1 axis %2 DTY").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
 
-    dataLogger->addData(_targetObjectId);
-    dataLogger->addData(_demandObjectId);
+    dataLogger->addData(_modeDty->targetObjectId());
+    dataLogger->addData(_modeDty->demandObjectId());
 
     dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
     connect(dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
@@ -138,11 +116,11 @@ void P402DtyWidget::createDataLogger()
 void P402DtyWidget::mapDefaultObjects()
 {
     NodeObjectId controlWordObjectId = _nodeProfile402->controlWordObjectId();
-    QList<NodeObjectId> dtyRpdoObjectList = {controlWordObjectId, _targetObjectId};
+    QList<NodeObjectId> dtyRpdoObjectList = {controlWordObjectId, _modeDty->targetObjectId()};
     _nodeProfile402->node()->rpdos().at(0)->writeMapping(dtyRpdoObjectList);
 
     NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
-    QList<NodeObjectId> dtyTpdoObjectList = {statusWordObjectId, _demandObjectId};
+    QList<NodeObjectId> dtyTpdoObjectList = {statusWordObjectId, _modeDty->demandObjectId()};
     _nodeProfile402->node()->tpdos().at(0)->writeMapping(dtyTpdoObjectList);
 }
 
@@ -197,8 +175,8 @@ void P402DtyWidget::createWidgets()
 
 void P402DtyWidget::createTargetWidgets()
 {
-    _targetSpinBox = new QSpinBox();
-    _targetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
+    _targetSpinBox = new IndexSpinBox();
+    _targetSpinBox->setRangeValue(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
     _modeLayout->addRow(tr("&Target"), _targetSpinBox);
 
     QLayout *labelSliderLayout = new QHBoxLayout();
@@ -213,16 +191,13 @@ void P402DtyWidget::createTargetWidgets()
     labelSliderLayout->addWidget(_sliderMaxLabel);
     _modeLayout->addRow(labelSliderLayout);
 
-    _targetSlider = new QSlider(Qt::Horizontal);
+    _targetSlider = new IndexSlider(Qt::Horizontal);
     _targetSlider->setTickPosition(QSlider::TicksBelow);
     _modeLayout->addRow(_targetSlider);
 
-    connect(_targetSlider, &QSlider::valueChanged, this, &P402DtyWidget::updateTargetFromSlider);
-    connect(_targetSpinBox, &QSpinBox::editingFinished, this, &P402DtyWidget::updateFromSpinbox);
-
     QPushButton *setZeroButton = new QPushButton();
     setZeroButton->setText("Set to 0");
-    connect(setZeroButton, &QPushButton::clicked, this, &P402DtyWidget::setZeroButton);
+    connect(setZeroButton, &QPushButton::clicked, this, &P402DtyWidget::setTargetZero);
 
     QLayout *setZeroLayout = new QHBoxLayout();
     setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
@@ -291,25 +266,13 @@ void P402DtyWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest fla
         return;
     }
 
-    if ((_nodeProfile402->node() == nullptr) || (_nodeProfile402->node()->status() != Node::STARTED))
+    if (objId == _modeDty->maxObjectId())
     {
-        return;
+        updateMaxDty();
     }
-
-    if (objId == _targetObjectId)
+    else if (objId == _modeDty->demandObjectId())
     {
         int value = _nodeProfile402->node()->nodeOd()->value(objId).toInt();
-        if (!_targetSpinBox->hasFocus())
-        {
-            _targetSpinBox->blockSignals(true);
-            _targetSpinBox->setValue(value);
-            _targetSpinBox->blockSignals(false);
-        }
-        if (!_targetSlider->isSliderDown())
-        {
-            _targetSlider->blockSignals(true);
-            _targetSlider->setValue(value);
-            _targetSlider->blockSignals(false);
-        }
+        _targetSlider->setFeedBackValue(value);
     }
 }

@@ -33,6 +33,7 @@
 class Node;
 class NodeProfile402;
 class IndexSpinBox;
+class IndexSlider;
 class IndexLabel;
 class P402ModeWidget;
 class ModeDty;
@@ -49,14 +50,8 @@ public:
 private:
     ModeDty *_modeDty;
 
-    NodeObjectId _demandObjectId;
-    NodeObjectId _targetObjectId;
-
-    void updateFromSpinbox();
-    void updateTargetFromSlider();
     void updateMaxDty();
-
-    void setZeroButton();
+    void setTargetZero();
 
     // Buttons actions
     void createDataLogger();
@@ -68,8 +63,8 @@ private:
     void createWidgets();
 
     void createTargetWidgets();
-    QSpinBox *_targetSpinBox;
-    QSlider *_targetSlider;
+    IndexSpinBox *_targetSpinBox;
+    IndexSlider *_targetSlider;
     QLabel *_sliderMinLabel;
     QLabel *_sliderMaxLabel;
 
