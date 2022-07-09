@@ -31,6 +31,7 @@
 
 class NodeProfile402;
 class IndexSpinBox;
+class IndexSlider;
 class IndexLabel;
 class IndexCheckBox;
 class P402ModeWidget;
@@ -41,22 +42,11 @@ class UDTGUI_EXPORT P402CstcaWidget : public P402ModeWidget
 public:
     P402CstcaWidget(QWidget *parent = nullptr);
 
-signals:
-
 private:
     ModeCstca *_modeCstca;
 
-    NodeObjectId _torqueDemandObjectId;
-    NodeObjectId _torqueTargetObjectId;
-    NodeObjectId _torqueActualValueObjectId;
-    NodeObjectId _currentActualValueObjectId;
-    NodeObjectId _dcLinkVoltageObjectId;
-
-    void targetTorqueSpinboxFinished();
-    void targetTorqueSliderChanged();
-    void maxTorqueSpinboxFinished();
-
-    void setZeroButton();
+    void updateMaxTorque();
+    void setTargetZero();
 
     // Buttons actions
     void createDataLogger();
@@ -67,8 +57,8 @@ private:
     QFormLayout *_modeLayout;
 
     void createTargetWidgets();
-    QSpinBox *_targetTorqueSpinBox;
-    QSlider *_targetTorqueSlider;
+    IndexSpinBox *_targetTorqueSpinBox;
+    IndexSlider *_targetTorqueSlider;
     QLabel *_sliderMinLabel;
     QLabel *_sliderMaxLabel;
 
