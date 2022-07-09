@@ -22,21 +22,30 @@
 #include "../../udtgui_global.h"
 
 #include "abstractindexwidget.h"
-#include <QWidget>
+#include <QSlider>
+#include <QStyle>
 
-class QSlider;
-
-class UDTGUI_EXPORT IndexSlider : public QWidget, public AbstractIndexWidget
+class UDTGUI_EXPORT IndexSlider : public QSlider, public AbstractIndexWidget
 {
     Q_OBJECT
 public:
+    IndexSlider(QWidget *parent);
     IndexSlider(const NodeObjectId &objId = NodeObjectId());
+    IndexSlider(Qt::Orientation orientation, QWidget *parent = nullptr, const NodeObjectId &objId = NodeObjectId());
+
+    int feedBackValue() const;
+    void setFeedBackValue(int feedBackValue);
 
 protected:
-    QSlider *_slider;
-
     bool _internalUpdate;
     void applyValue(int value);
+
+    int _feedBackValue;
+    bool _hasFeedBack;
+
+    void initStyle();
+    int _pressedControl;
+    int _hoverControl;
 
     // AbstractIndexWidget interface
 protected:
@@ -47,6 +56,15 @@ protected:
     // QWidget interface
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+
+    // QObject interface
+public:
+    bool event(QEvent *event) override;
+
+protected:
 };
 
 #endif  // INDEXSLIDER_H
