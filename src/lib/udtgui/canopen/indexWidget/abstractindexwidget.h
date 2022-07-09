@@ -52,7 +52,7 @@ public:
     DisplayHint hint() const;
     void setDisplayHint(DisplayHint hint);
 
-    QVariant value() const;
+    QVariant indexValue() const;
     QString stringValue() const;
 
     // Range

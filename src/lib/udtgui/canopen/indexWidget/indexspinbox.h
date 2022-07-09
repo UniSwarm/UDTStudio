@@ -30,6 +30,8 @@ class UDTGUI_EXPORT IndexSpinBox : public QAbstractSpinBox, public AbstractIndex
 public:
     IndexSpinBox(const NodeObjectId &objId = NodeObjectId());
 
+    double value();
+
 protected:
     void setTextEditValue(const QVariant &value);
     QVariant textEditValue() const;

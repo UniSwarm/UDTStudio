@@ -18,9 +18,9 @@
 
 #include "abstractindexwidget.h"
 
-#include "udtguimanager.h"
 #include "canopen/datalogger/dataloggersingleton.h"
 #include "node.h"
+#include "udtguimanager.h"
 
 #include <QApplication>
 #include <QDrag>
@@ -163,7 +163,7 @@ void AbstractIndexWidget::updateObjId()
         }
         if (_scale == 1)
         {
-            _scale = nodeSubIndex->scale();
+            setScale(nodeSubIndex->scale());
         }
         updateToolTip();
     }
@@ -332,6 +332,10 @@ void AbstractIndexWidget::setScale(double scale)
         scale = 1.0;
     }
     _scale = scale;
+    if (_scale != (int)_scale)
+    {
+        setDisplayHint(AbstractIndexWidget::DisplayFloat);
+    }
 }
 
 double AbstractIndexWidget::offset() const
@@ -373,14 +377,14 @@ void AbstractIndexWidget::setDisplayHint(const AbstractIndexWidget::DisplayHint 
     }
 }
 
-QVariant AbstractIndexWidget::value() const
+QVariant AbstractIndexWidget::indexValue() const
 {
     return pValue(_lastValue, _hint);
 }
 
 QString AbstractIndexWidget::stringValue() const
 {
-    return pstringValue(value(), _hint);
+    return pstringValue(indexValue(), _hint);
 }
 
 void AbstractIndexWidget::readObject()

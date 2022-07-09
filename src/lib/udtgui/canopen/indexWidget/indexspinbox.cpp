@@ -31,6 +31,11 @@ IndexSpinBox::IndexSpinBox(const NodeObjectId &objId)
     _widget = this;
 }
 
+double IndexSpinBox::value()
+{
+    return textEditValue().toDouble();
+}
+
 void IndexSpinBox::setDisplayValue(const QVariant &value, DisplayAttribute flags)
 {
     if (flags == DisplayAttribute::Error)
