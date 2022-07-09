@@ -29,6 +29,8 @@
 
 #include <QPushButton>
 
+#include "canopen/indexWidget/indexslider.h"
+
 P402VlWidget::P402VlWidget(QWidget *parent)
     : P402ModeWidget(parent)
 {
@@ -88,21 +90,22 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
 
             _velocityTargetObjectId = _modeVl->targetObjectId();
             _velocityTargetObjectId.setDataType(QMetaType::Type::Short);
-            registerObjId(_velocityTargetObjectId);
+            _targetVelocitySlider->setObjId(_velocityTargetObjectId);
+            _targetVelocitySpinBox->setObjId(_velocityTargetObjectId);
 
             _velocityDemandObjectId = _modeVl->velocityDemandObjectId();
             _velocityDemandObjectId.setDataType(QMetaType::Type::Short);
             _velocityDemandLabel->setObjId(_velocityDemandObjectId);
+            registerObjId(_velocityDemandObjectId);
 
             _velocityActualObjectId = _modeVl->velocityActualObjectId();
             _velocityActualObjectId.setDataType(QMetaType::Type::Short);
             _velocityActualLabel->setObjId(_velocityActualObjectId);
 
             _minVelocityMinMaxAmountSpinBox->setObjId(_modeVl->minVelocityMinMaxAmountObjectId());
-
-            _maxVelocityMinMaxAmountObjectId = _modeVl->maxVelocityMinMaxAmountObjectId();
-            _maxVelocityMinMaxAmountSpinBox->setObjId(_maxVelocityMinMaxAmountObjectId);
-            registerObjId(_maxVelocityMinMaxAmountObjectId);
+            _maxVelocityMinMaxAmountSpinBox->setObjId(_modeVl->maxVelocityMinMaxAmountObjectId());
+            registerObjId(_modeVl->minVelocityMinMaxAmountObjectId());
+            registerObjId(_modeVl->maxVelocityMinMaxAmountObjectId());
 
             _accelerationDeltaSpeedSpinBox->setObjId(_modeVl->accelerationDeltaSpeedObjectId());
             _accelerationDeltaTimeSpinBox->setObjId(_modeVl->accelerationDeltaTimeObjectId());
@@ -115,9 +118,7 @@ void P402VlWidget::setNode(Node *node, uint8_t axis)
             _dimensionFactorNumeratorSpinBox->setObjId(_modeVl->dimensionFactorNumeratorObjectId());
             _dimensionFactorDenominatorSpinBox->setObjId(_modeVl->dimensionFactorDenominatorObjectId());
 
-            int max = _nodeProfile402->node()->nodeOd()->value(_maxVelocityMinMaxAmountSpinBox->objId()).toInt();
-            _targetVelocitySlider->setValue(_nodeProfile402->node()->nodeOd()->value(_velocityTargetObjectId).toInt());
-            _targetVelocitySlider->setRange(-max, max);
+            updateMaxVelocityMinMaxAmount();
         }
     }
 }
@@ -136,10 +137,19 @@ void P402VlWidget::targetVelocitySliderChanged()
 
 void P402VlWidget::updateMaxVelocityMinMaxAmount()
 {
-    int max = _nodeProfile402->node()->nodeOd()->value(_maxVelocityMinMaxAmountSpinBox->objId()).toInt();
+    int min = _nodeProfile402->node()->nodeOd()->value(_modeVl->minVelocityMinMaxAmountObjectId()).toInt();
+    int max = _nodeProfile402->node()->nodeOd()->value(_modeVl->maxVelocityMinMaxAmountObjectId()).toInt();
     _targetVelocitySlider->setRange(-max, max);
-    _sliderMinLabel->setNum(-max);
-    _sliderMaxLabel->setNum(max);
+    _sliderMinLabel->setText(QString("[-%1").arg(max));
+    _sliderMaxLabel->setText(QString("%1]").arg(max));
+    if (min == 0)
+    {
+        _sliderCenterLabel->setText("0");
+    }
+    else
+    {
+        _sliderCenterLabel->setText(QString("]-%1 ; %1[").arg(min));
+    }
 }
 
 void P402VlWidget::setZeroButton()
@@ -312,26 +322,24 @@ void P402VlWidget::createWidgets()
 
 void P402VlWidget::createTargetWidgets()
 {
-    _targetVelocitySpinBox = new QSpinBox();
-    _targetVelocitySpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
+    _targetVelocitySpinBox = new IndexSpinBox();
+    _targetVelocitySpinBox->setRangeValue(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
     _modeLayout->addRow(tr("&Target velocity:"), _targetVelocitySpinBox);
 
     QLayout *labelSliderLayout = new QHBoxLayout();
     _sliderMinLabel = new QLabel("min");
     labelSliderLayout->addWidget(_sliderMinLabel);
     labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
-    labelSliderLayout->addWidget(new QLabel("0"));
+    _sliderCenterLabel = new QLabel("0");
+    labelSliderLayout->addWidget(_sliderCenterLabel);
     labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
     _sliderMaxLabel = new QLabel("max");
     labelSliderLayout->addWidget(_sliderMaxLabel);
     _modeLayout->addRow(labelSliderLayout);
 
-    _targetVelocitySlider = new QSlider(Qt::Horizontal);
+    _targetVelocitySlider = new IndexSlider(Qt::Horizontal);
     _targetVelocitySlider->setTickPosition(QSlider::TicksBothSides);
     _modeLayout->addRow(_targetVelocitySlider);
-
-    connect(_targetVelocitySlider, &QSlider::valueChanged, this, &P402VlWidget::targetVelocitySliderChanged);
-    connect(_targetVelocitySpinBox, &QSpinBox::editingFinished, this, &P402VlWidget::targetVelocitySpinboxFinished);
 
     QPushButton *setZeroButton = new QPushButton();
     setZeroButton->setText("Set to 0");
@@ -523,24 +531,14 @@ void P402VlWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flag
         return;
     }
 
-    if (objId == _velocityTargetObjectId)
-    {
-        int value = _nodeProfile402->node()->nodeOd()->value(objId).toInt();
-        if (!_targetVelocitySpinBox->hasFocus())
-        {
-            _targetVelocitySpinBox->blockSignals(true);
-            _targetVelocitySpinBox->setValue(value);
-            _targetVelocitySpinBox->blockSignals(false);
-        }
-        if (!_targetVelocitySlider->isSliderDown())
-        {
-            _targetVelocitySlider->blockSignals(true);
-            _targetVelocitySlider->setValue(value);
-            _targetVelocitySlider->blockSignals(false);
-        }
-    }
-    else if (objId == _maxVelocityMinMaxAmountObjectId)
+    if (objId == _modeVl->maxVelocityMinMaxAmountObjectId()
+          || objId == _modeVl->minVelocityMinMaxAmountObjectId())
     {
         updateMaxVelocityMinMaxAmount();
+    }
+    else if (objId == _velocityDemandObjectId)
+    {
+        int value = _nodeProfile402->node()->nodeOd()->value(objId).toInt();
+        _targetVelocitySlider->setFeedBackValue(value);
     }
 }

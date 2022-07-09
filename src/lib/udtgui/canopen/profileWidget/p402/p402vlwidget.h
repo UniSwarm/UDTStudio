@@ -34,6 +34,7 @@ class NodeProfile402;
 class ModeVl;
 class IndexSpinBox;
 class IndexLabel;
+class IndexSlider;
 
 class UDTGUI_EXPORT P402VlWidget : public P402ModeWidget
 {
@@ -47,7 +48,6 @@ private:
     NodeObjectId _velocityTargetObjectId;
     NodeObjectId _velocityDemandObjectId;
     NodeObjectId _velocityActualObjectId;
-    NodeObjectId _maxVelocityMinMaxAmountObjectId;
 
     void targetVelocitySpinboxFinished();
     void targetVelocitySliderChanged();
@@ -74,9 +74,10 @@ private:
     QFormLayout *_modeLayout;
 
     void createTargetWidgets();
-    QSpinBox *_targetVelocitySpinBox;
-    QSlider *_targetVelocitySlider;
+    IndexSpinBox *_targetVelocitySpinBox;
+    IndexSlider *_targetVelocitySlider;
     QLabel *_sliderMinLabel;
+    QLabel *_sliderCenterLabel;
     QLabel *_sliderMaxLabel;
 
     void createInformationWidgets();
