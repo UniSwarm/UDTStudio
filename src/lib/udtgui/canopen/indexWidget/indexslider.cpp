@@ -152,8 +152,6 @@ void IndexSlider::paintEvent(QPaintEvent *event)
 
     opt.subControls = QStyle::SC_SliderHandle;
     style()->drawComplexControl(QStyle::CC_Slider, &opt, &p, this);
-
-    QSlider::paintEvent(event);
 }
 
 void IndexSlider::mousePressEvent(QMouseEvent *event)
