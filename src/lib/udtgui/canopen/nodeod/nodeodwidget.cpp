@@ -59,8 +59,8 @@ void NodeOdWidget::setFilter(NodeOdWidget::Filter filter)
     if (_filter == FilterPDO)
     {
         QSignalBlocker block(_filterLineEdit);
-        _filterLineEdit->setText("pdo:pdo");
-        _nodeOdTreeView->setFilter("pdo:pdo");
+        _filterLineEdit->setText("pdo:pdo ");
+        _nodeOdTreeView->setFilter("pdo:pdo ");
     }
 }
 
@@ -177,9 +177,9 @@ void NodeOdWidget::createDefaultFilters(uint profile)
 
             _filterCombobox->addItem(tr("TORQUE MODE"));
             dynamic_cast<QStandardItemModel *>(_filterCombobox->model())->item(_filterCombobox->count() - 1)->setEnabled(false);
-            _filterCombobox->addItem(tr("402 tq (Torque profile)"), QVariant("0x[6-A][08](7[1-9]|8[7-8])"));
-            _filterCombobox->addItem(tr("402 cst (Cyclic synchronous torque)"), QVariant("0x[6-A][08](7[17]|B2)"));
-            _filterCombobox->addItem(tr("402 cstca (Cyclic synchronous torque with commutation angle)"), QVariant("0x[6-A][08](7[17]|B2|EA)"));
+            _filterCombobox->addItem(tr("402 tq (Torque)"), QVariant("0x[6-A][08](7[1-9]|8[7-8])"));
+            _filterCombobox->addItem(tr("402 cst (Cyclic Synchronous Torque)"), QVariant("0x[6-A][08](7[17]|B2)"));
+            _filterCombobox->addItem(tr("402 cstca (CST with Commutation Angle)"), QVariant("0x[6-A][08](7[17]|B2|EA)"));
 
             _filterCombobox->addItem(tr("VELOCITY MODE"));
             dynamic_cast<QStandardItemModel *>(_filterCombobox->model())->item(_filterCombobox->count() - 1)->setEnabled(false);
