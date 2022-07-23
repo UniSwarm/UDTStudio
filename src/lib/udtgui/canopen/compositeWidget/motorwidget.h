@@ -59,6 +59,8 @@ protected:
     // Creation widgets
     void createWidgets();
     QList<AbstractIndexWidget *> _indexWidgets;
+
+    // Toolbar
     QToolBar *createToolBarWidgets();
     QAction *_lockAction;
 

@@ -22,6 +22,7 @@
 #include "canopen/indexWidget/indexbar.h"
 #include "canopen/indexWidget/indexcheckbox.h"
 #include "canopen/indexWidget/indexcombobox.h"
+#include "canopen/indexWidget/indexformlayout.h"
 #include "canopen/indexWidget/indexlabel.h"
 #include "canopen/indexWidget/indexspinbox.h"
 
@@ -250,9 +251,7 @@ QToolBar *MotorWidget::createToolBarWidgets()
 QGroupBox *MotorWidget::createMotorConfigWidgets()
 {
     QGroupBox *motorConfigGroupBox = new QGroupBox(tr("Motor config"));
-    QFormLayout *configLayout = new QFormLayout();
-    configLayout->setVerticalSpacing(3);
-    configLayout->setHorizontalSpacing(3);
+    IndexFormLayout *configLayout = new IndexFormLayout();
 
     _motorTypeComboBox = new IndexComboBox();
     _motorTypeComboBox->addItem(tr("No motor"), QVariant(static_cast<uint16_t>(0x0000)));
@@ -271,78 +270,37 @@ QGroupBox *MotorWidget::createMotorConfigWidgets()
     configLayout->addRow(tr("&Motor type:"), _motorTypeComboBox);
     _indexWidgets.append(_motorTypeComboBox);
 
-    QFrame *frame = new QFrame();
-    frame->setFrameStyle(QFrame::HLine);
-    frame->setFrameShadow(QFrame::Sunken);
-    configLayout->addRow(frame);
+    configLayout->addLineSeparator();
 
     _peakCurrentSpinBox = new IndexSpinBox();
-    _peakCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayFloat);
-    _peakCurrentSpinBox->setUnit(" A");
-    _peakCurrentSpinBox->setScale(1.0 / 100);
     configLayout->addRow(tr("P&eak current:"), _peakCurrentSpinBox);
     _indexWidgets.append(_peakCurrentSpinBox);
 
-    QHBoxLayout *burstCurrentLayout = new QHBoxLayout();
-    burstCurrentLayout->setSpacing(0);
-
     _burstCurrentSpinBox = new IndexSpinBox();
-    _burstCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayFloat);
-    _burstCurrentSpinBox->setUnit(" A");
-    _burstCurrentSpinBox->setScale(1.0 / 100);
-    burstCurrentLayout->addWidget(_burstCurrentSpinBox);
     _indexWidgets.append(_burstCurrentSpinBox);
-
-    QLabel *label = new QLabel(tr("/"));
-    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    burstCurrentLayout->addWidget(label);
-
     _burstDurationSpinBox = new IndexSpinBox();
-    _burstDurationSpinBox->setUnit(" ms");
-    burstCurrentLayout->addWidget(_burstDurationSpinBox);
-    label = new QLabel(tr("Burst &current:"));
-    label->setBuddy(_burstDurationSpinBox);
-    configLayout->addRow(label, burstCurrentLayout);
     _indexWidgets.append(_burstDurationSpinBox);
+    configLayout->addDualRow(tr("Burst &current:"), _burstCurrentSpinBox, _burstDurationSpinBox, tr("/"));
 
     _sustainedCurrentSpinBox = new IndexSpinBox();
-    _sustainedCurrentSpinBox->setDisplayHint(AbstractIndexWidget::DisplayFloat);
-    _sustainedCurrentSpinBox->setUnit(" A");
-    _sustainedCurrentSpinBox->setScale(1.0 / 100);
     configLayout->addRow(tr("&Sustained current:"), _sustainedCurrentSpinBox);
     _indexWidgets.append(_sustainedCurrentSpinBox);
 
     _currentConstantSpinBox = new IndexSpinBox();
-    _currentConstantSpinBox->setUnit(" Nm/A");
-    _currentConstantSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     configLayout->addRow(tr("C&urrent constant:"), _currentConstantSpinBox);
     _indexWidgets.append(_currentConstantSpinBox);
 
-    frame = new QFrame();
-    frame->setFrameStyle(QFrame::HLine);
-    frame->setFrameShadow(QFrame::Sunken);
-    configLayout->addRow(frame);
+    configLayout->addLineSeparator();
 
     _maxVelocitySpinBox = new IndexSpinBox();
-    _maxVelocitySpinBox->setUnit(" rpm");
     configLayout->addRow(tr("M&ax velocity:"), _maxVelocitySpinBox);
     _indexWidgets.append(_maxVelocitySpinBox);
 
     _velocityConstantSpinBox = new IndexSpinBox();
-    _velocityConstantSpinBox->setUnit(" V/rpm");
-    _velocityConstantSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     configLayout->addRow(tr("Ve&locity constant:"), _velocityConstantSpinBox);
     _indexWidgets.append(_velocityConstantSpinBox);
 
-    frame = new QFrame();
-    frame->setFrameStyle(QFrame::HLine);
-    frame->setFrameShadow(QFrame::Sunken);
-    configLayout->addRow(frame);
-
-    _brakeBypassCheckBox = new IndexCheckBox();
-    _brakeBypassCheckBox->setBitMask(1);
-    configLayout->addRow(tr("&Brake override:"), _brakeBypassCheckBox);
-    _indexWidgets.append(_brakeBypassCheckBox);
+    configLayout->addLineSeparator();
 
     _reverseMotorPolarityCheckBox = new IndexCheckBox();
     _reverseMotorPolarityCheckBox->setBitMask(1);
@@ -356,52 +314,40 @@ QGroupBox *MotorWidget::createMotorConfigWidgets()
 QGroupBox *MotorWidget::createMotorStatusWidgets()
 {
     QGroupBox *statusGroupBox = new QGroupBox(tr("Motor status"));
-    QFormLayout *statusLayout = new QFormLayout();
-    statusLayout->setVerticalSpacing(3);
-    statusLayout->setHorizontalSpacing(3);
+    IndexFormLayout *statusLayout = new IndexFormLayout();
 
     _bridgeCommandBar = new IndexBar();
     statusLayout->addRow(tr("Command duty cycle:"), _bridgeCommandBar);
-    _bridgeCommandBar->setUnit("%");
-    _bridgeCommandBar->setScale(100.0 / 32768.0);
+     _bridgeCommandBar->setUnit("%");
+     _bridgeCommandBar->setScale(100.0 / 32768.0);
     _bridgeCommandBar->setRange(-100, 100);
     _indexWidgets.append(_bridgeCommandBar);
 
     _motorCurrentLabel = new IndexLabel();
-    _motorCurrentLabel->setDisplayHint(AbstractIndexWidget::DisplayFloat);
-    _motorCurrentLabel->setScale(1.0 / 100.0);
-    _motorCurrentLabel->setUnit(" A");
     statusLayout->addRow(tr("Current"), _motorCurrentLabel);
     _indexWidgets.append(_motorCurrentLabel);
 
     _motorTorqueLabel = new IndexLabel();
-    _motorTorqueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    _motorTorqueLabel->setUnit(" Nm");
+    // _motorTorqueLabel->setUnit(" Nm");
     statusLayout->addRow(tr("Torque"), _motorTorqueLabel);
     _indexWidgets.append(_motorTorqueLabel);
 
     _motorVelocityLabel = new IndexLabel();
-    _motorVelocityLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    _motorVelocityLabel->setUnit(" rpm");
+    // _motorVelocityLabel->setUnit(" rpm");
     statusLayout->addRow(tr("Velocity"), _motorVelocityLabel);
     _indexWidgets.append(_motorVelocityLabel);
 
     _motorPositionLabel = new IndexLabel();
-    _motorPositionLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    _motorPositionLabel->setUnit(" tr");
+    // _motorPositionLabel->setUnit(" tr");
     statusLayout->addRow(tr("Position"), _motorPositionLabel);
     _indexWidgets.append(_motorPositionLabel);
 
     _bridgeTemp1Label = new IndexLabel();
     statusLayout->addRow(tr("Temperature bridge 1:"), _bridgeTemp1Label);
-    _bridgeTemp1Label->setScale(1.0 / 10.0);
-    _bridgeTemp1Label->setUnit(" °C");
     _indexWidgets.append(_bridgeTemp1Label);
 
     _bridgeTemp2Label = new IndexLabel();
     statusLayout->addRow(tr("Temperature bridge 2:"), _bridgeTemp2Label);
-    _bridgeTemp2Label->setScale(1.0 / 10.0);
-    _bridgeTemp2Label->setUnit(" °C");
     _indexWidgets.append(_bridgeTemp2Label);
 
     statusGroupBox->setLayout(statusLayout);
@@ -411,9 +357,7 @@ QGroupBox *MotorWidget::createMotorStatusWidgets()
 QGroupBox *MotorWidget::createBldcConfigWidgets()
 {
     QGroupBox *configGroupBox = new QGroupBox(tr("BLDC config"));
-    QFormLayout *configLayout = new QFormLayout();
-    configLayout->setVerticalSpacing(3);
-    configLayout->setHorizontalSpacing(3);
+    IndexFormLayout *configLayout = new IndexFormLayout();
 
     _polePairSpinBox = new IndexSpinBox();
     configLayout->addRow(tr("P&ole pair:"), _polePairSpinBox);
@@ -431,9 +375,7 @@ QGroupBox *MotorWidget::createBldcConfigWidgets()
 QGroupBox *MotorWidget::createBldcStatusWidgets()
 {
     QGroupBox *statusGroupBox = new QGroupBox(tr("BLDC status"));
-    QFormLayout *statusLayout = new QFormLayout();
-    statusLayout->setVerticalSpacing(3);
-    statusLayout->setHorizontalSpacing(3);
+    IndexFormLayout *statusLayout = new IndexFormLayout();
 
     _hallRawValueLabel = new IndexLabel();
     statusLayout->addRow(tr("Hall raw:"), _hallRawValueLabel);
@@ -445,7 +387,6 @@ QGroupBox *MotorWidget::createBldcStatusWidgets()
 
     _electricalAngleLabel = new IndexLabel();
     statusLayout->addRow(tr("Electrical angle:"), _electricalAngleLabel);
-    _electricalAngleLabel->setUnit("°");
     _indexWidgets.append(_electricalAngleLabel);
 
     statusGroupBox->setLayout(statusLayout);
@@ -455,9 +396,7 @@ QGroupBox *MotorWidget::createBldcStatusWidgets()
 QGroupBox *MotorWidget::createBrakeConfigWidgets()
 {
     QGroupBox *configGroupBox = new QGroupBox(tr("Brake config"));
-    QFormLayout *configLayout = new QFormLayout();
-    configLayout->setVerticalSpacing(3);
-    configLayout->setHorizontalSpacing(3);
+    IndexFormLayout *configLayout = new IndexFormLayout();
 
     _brakeModeComboBox = new IndexComboBox();
     _brakeModeComboBox->addItem(tr("Disabled"), QVariant(static_cast<uint8_t>(0x00)));
@@ -470,24 +409,11 @@ QGroupBox *MotorWidget::createBrakeConfigWidgets()
     configLayout->addRow(tr("&Brake mode"), _brakeModeComboBox);
     _indexWidgets.append(_brakeModeComboBox);
 
-    QHBoxLayout *brakeExitationLayout = new QHBoxLayout();
-    brakeExitationLayout->setSpacing(0);
-
     _brakeExitationDutySpinBox = new IndexSpinBox();
-    brakeExitationLayout->addWidget(_brakeExitationDutySpinBox);
     _indexWidgets.append(_brakeExitationDutySpinBox);
-
-    QLabel *separatorLabel = new QLabel(tr("/"));
-    separatorLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    brakeExitationLayout->addWidget(separatorLabel);
-
     _brakeExitationTimeSpinBox = new IndexSpinBox();
-    brakeExitationLayout->addWidget(_brakeExitationTimeSpinBox);
     _indexWidgets.append(_brakeExitationTimeSpinBox);
-
-    QLabel *label = new QLabel(tr("&Excitation:"));
-    label->setBuddy(_burstCurrentSpinBox);
-    configLayout->addRow(label, brakeExitationLayout);
+    configLayout->addDualRow(tr("&Excitation:"), _brakeExitationDutySpinBox, _brakeExitationTimeSpinBox, tr("/"));
 
     _brakeDutySpinBox = new IndexSpinBox();
     configLayout->addRow(tr("Activated duty cycle:"), _brakeDutySpinBox);
