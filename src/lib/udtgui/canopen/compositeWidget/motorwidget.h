@@ -76,7 +76,6 @@ protected:
     IndexSpinBox *_maxVelocitySpinBox;
     IndexSpinBox *_velocityConstantSpinBox;
     IndexSpinBox *_currentConstantSpinBox;
-    IndexCheckBox *_brakeBypassCheckBox;
     IndexCheckBox *_reverseMotorPolarityCheckBox;
     IndexCheckBox *_reverseHallPolarityCheckBox;
 
@@ -108,6 +107,11 @@ protected:
     IndexSpinBox *_brakeExitationTimeSpinBox;
     IndexSpinBox *_brakeExitationDutySpinBox;
     IndexSpinBox *_brakeDutySpinBox;
+    IndexSpinBox *_brakeReleaseDelaySpinBox;
+    IndexSpinBox *_brakeReleaseToOESpinBox;
+    IndexSpinBox *_brakeClosingDelaySpinBox;
+    IndexSpinBox *_brakeClosingToIdleSpinBox;
+    IndexCheckBox *_brakeBypassCheckBox;
 
     void updateNodeStatus(Node::Status status);
     void updateState();

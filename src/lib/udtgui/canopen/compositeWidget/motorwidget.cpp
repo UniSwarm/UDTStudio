@@ -88,7 +88,6 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _currentConstantSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_CURRENT_CONSTANT, _axis));
     _maxVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_MAX_VELOCITY, _axis));
     _velocityConstantSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_VELOCITY_CONSTANT, _axis));
-    _brakeBypassCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_DIGITAL_OUTPUTS_PHYSICAL_OUTPUTS, _axis));
     _reverseMotorPolarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_FLAGS, _axis));
     _motorTypeComboBox->setNode(node);
     _peakCurrentSpinBox->setNode(node);
@@ -98,7 +97,6 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _currentConstantSpinBox->setNode(node);
     _maxVelocitySpinBox->setNode(node);
     _velocityConstantSpinBox->setNode(node);
-    _brakeBypassCheckBox->setNode(node);
     _reverseMotorPolarityCheckBox->setNode(node);
 
     // motor status
@@ -136,10 +134,20 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _brakeExitationTimeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_EXITATION_TIME, _axis));
     _brakeExitationDutySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_EXITATION_DUTY, _axis));
     _brakeDutySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_ACTIVATED_DUTY, _axis));
+    _brakeReleaseDelaySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_RELEASE_DELAY, _axis));
+    _brakeReleaseToOESpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_RELEASE_TO_OE, _axis));
+    _brakeClosingDelaySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_CLOSING_DELAY, _axis));
+    _brakeClosingToIdleSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_CLOSING_TO_IDLE, _axis));
+    _brakeBypassCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_DIGITAL_OUTPUTS_PHYSICAL_OUTPUTS, _axis));
     _brakeModeComboBox->setNode(node);
     _brakeExitationTimeSpinBox->setNode(node);
     _brakeExitationDutySpinBox->setNode(node);
     _brakeDutySpinBox->setNode(node);
+    _brakeReleaseDelaySpinBox->setNode(node);
+    _brakeReleaseToOESpinBox->setNode(node);
+    _brakeClosingDelaySpinBox->setNode(node);
+    _brakeClosingToIdleSpinBox->setNode(node);
+    _brakeBypassCheckBox->setNode(node);
 }
 
 void MotorWidget::updateNodeStatus(Node::Status status)
@@ -318,8 +326,8 @@ QGroupBox *MotorWidget::createMotorStatusWidgets()
 
     _bridgeCommandBar = new IndexBar();
     statusLayout->addRow(tr("Command duty cycle:"), _bridgeCommandBar);
-     _bridgeCommandBar->setUnit("%");
-     _bridgeCommandBar->setScale(100.0 / 32768.0);
+    _bridgeCommandBar->setUnit("%");
+    _bridgeCommandBar->setScale(100.0 / 32768.0);
     _bridgeCommandBar->setRange(-100, 100);
     _indexWidgets.append(_bridgeCommandBar);
 
@@ -418,6 +426,23 @@ QGroupBox *MotorWidget::createBrakeConfigWidgets()
     _brakeDutySpinBox = new IndexSpinBox();
     configLayout->addRow(tr("Activated duty cycle:"), _brakeDutySpinBox);
     _indexWidgets.append(_brakeDutySpinBox);
+
+    _brakeReleaseDelaySpinBox = new IndexSpinBox();
+    _indexWidgets.append(_brakeReleaseDelaySpinBox);
+    _brakeReleaseToOESpinBox = new IndexSpinBox();
+    _indexWidgets.append(_brakeReleaseToOESpinBox);
+    configLayout->addDualRow(tr("&Release delays:"), _brakeReleaseDelaySpinBox, _brakeReleaseToOESpinBox, tr("-"));
+
+    _brakeClosingDelaySpinBox = new IndexSpinBox();
+    _indexWidgets.append(_brakeClosingDelaySpinBox);
+    _brakeClosingToIdleSpinBox = new IndexSpinBox();
+    _indexWidgets.append(_brakeClosingToIdleSpinBox);
+    configLayout->addDualRow(tr("&Closing delays:"), _brakeClosingDelaySpinBox, _brakeClosingToIdleSpinBox, tr("-"));
+
+    _brakeBypassCheckBox = new IndexCheckBox();
+    _brakeBypassCheckBox->setBitMask(1);
+    configLayout->addRow(tr("&Brake override:"), _brakeBypassCheckBox);
+    _indexWidgets.append(_brakeBypassCheckBox);
 
     configGroupBox->setLayout(configLayout);
     return configGroupBox;
