@@ -165,6 +165,10 @@ void AbstractIndexWidget::updateObjId()
         {
             setScale(nodeSubIndex->scale());
         }
+        if (nodeSubIndex->isQ1516())
+        {
+            _hint = DisplayQ15_16;
+        }
         updateToolTip();
     }
 }
