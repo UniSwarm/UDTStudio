@@ -381,6 +381,18 @@ void AbstractIndexWidget::setDisplayHint(const AbstractIndexWidget::DisplayHint 
     }
 }
 
+void AbstractIndexWidget::setQ1516View(bool q1516)
+{
+    if (q1516)
+    {
+        setDisplayHint(DisplayQ15_16);
+    }
+    else
+    {
+        setDisplayHint(DisplayDirectValue);
+    }
+}
+
 QVariant AbstractIndexWidget::indexValue() const
 {
     return pValue(_lastValue, _hint);

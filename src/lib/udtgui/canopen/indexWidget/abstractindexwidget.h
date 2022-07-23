@@ -51,6 +51,7 @@ public:
     };
     DisplayHint hint() const;
     void setDisplayHint(DisplayHint hint);
+    void setQ1516View(bool q1516);
 
     QVariant indexValue() const;
     QString stringValue() const;
