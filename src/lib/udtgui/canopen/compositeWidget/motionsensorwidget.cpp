@@ -21,6 +21,7 @@
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/indexWidget/indexcheckbox.h"
 #include "canopen/indexWidget/indexcombobox.h"
+#include "canopen/indexWidget/indexformlayout.h"
 #include "canopen/indexWidget/indexlabel.h"
 #include "canopen/indexWidget/indexspinbox.h"
 
@@ -389,9 +390,7 @@ QToolBar *MotionSensorWidget::createToolBarWidgets()
 QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Sensor config"));
-    QFormLayout *formLayout = new QFormLayout();
-    formLayout->setVerticalSpacing(3);
-    formLayout->setHorizontalSpacing(3);
+    IndexFormLayout *formLayout = new IndexFormLayout();
 
     _sensorSelectComboBox = new IndexComboBox();
     formLayout->addRow(tr("&Sensor select:"), _sensorSelectComboBox);
@@ -448,9 +447,7 @@ QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
 QGroupBox *MotionSensorWidget::createSensorFilterWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Sensor filter"));
-    QFormLayout *formLayout = new QFormLayout();
-    formLayout->setVerticalSpacing(3);
-    formLayout->setHorizontalSpacing(3);
+    IndexFormLayout *formLayout = new IndexFormLayout();
 
     _filterSelectComboBox = new IndexComboBox();
     _filterSelectComboBox->addItem(tr("OFF"), QVariant(static_cast<uint16_t>(0x0000)));
@@ -464,28 +461,24 @@ QGroupBox *MotionSensorWidget::createSensorFilterWidgets()
     _indexWidgets.append(_filterSelectComboBox);
 
     _filterParam0SpinBox = new IndexSpinBox();
-    _filterParam0SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     _filterParamLabels.append(new QLabel(tr("param 0:")));
     _filterParamLabels.last()->setIndent(indentLabel);
     formLayout->addRow(_filterParamLabels.last(), _filterParam0SpinBox);
     _indexWidgets.append(_filterParam0SpinBox);
 
     _filterParam1SpinBox = new IndexSpinBox();
-    _filterParam1SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     _filterParamLabels.append(new QLabel(tr("param 1:")));
     _filterParamLabels.last()->setIndent(indentLabel);
     formLayout->addRow(_filterParamLabels.last(), _filterParam1SpinBox);
     _indexWidgets.append(_filterParam1SpinBox);
 
     _filterParam2SpinBox = new IndexSpinBox();
-    _filterParam2SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     _filterParamLabels.append(new QLabel(tr("param 2:")));
     _filterParamLabels.last()->setIndent(indentLabel);
     formLayout->addRow(_filterParamLabels.last(), _filterParam2SpinBox);
     _indexWidgets.append(_filterParam2SpinBox);
 
     _filterParam3SpinBox = new IndexSpinBox();
-    _filterParam3SpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     _filterParamLabels.append(new QLabel(tr("param 3:")));
     _filterParamLabels.last()->setIndent(indentLabel);
     formLayout->addRow(_filterParamLabels.last(), _filterParam3SpinBox);
@@ -499,44 +492,27 @@ QGroupBox *MotionSensorWidget::createSensorFilterWidgets()
 QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Sensor conditioning"));
-    QFormLayout *formLayout = new QFormLayout();
-    formLayout->setVerticalSpacing(3);
-    formLayout->setHorizontalSpacing(3);
+    IndexFormLayout *formLayout = new IndexFormLayout();
 
     _preOffsetSpinBox = new IndexSpinBox();
-    _preOffsetSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("Pre &offset:"), _preOffsetSpinBox);
     _indexWidgets.append(_preOffsetSpinBox);
 
     _scaleSpinBox = new IndexSpinBox();
-    _scaleSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("S&cale:"), _scaleSpinBox);
     _indexWidgets.append(_scaleSpinBox);
 
     _postOffsetSpinBox = new IndexSpinBox();
-    _postOffsetSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("&Post offset:"), _postOffsetSpinBox);
     _indexWidgets.append(_postOffsetSpinBox);
 
     formLayout->addItem(new QSpacerItem(0, 6));
 
-    QLayout *errorRangelayout = new QHBoxLayout();
-    errorRangelayout->setSpacing(0);
     _errorMinSpinBox = new IndexSpinBox();
-    _errorMinSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    errorRangelayout->addWidget(_errorMinSpinBox);
     _indexWidgets.append(_errorMinSpinBox);
-    QLabel *errorRangeSepLabel = new QLabel(tr("-"));
-    errorRangeSepLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    errorRangelayout->addWidget(errorRangeSepLabel);
-    errorRangeSepLabel->setIndent(2);
     _errorMaxSpinBox = new IndexSpinBox();
-    _errorMaxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
-    errorRangelayout->addWidget(_errorMaxSpinBox);
     _indexWidgets.append(_errorMaxSpinBox);
-    QLabel *errorRangeLabel = new QLabel(tr("&Error range:"));
-    errorRangeLabel->setBuddy(_errorMinSpinBox);
-    formLayout->addRow(errorRangeLabel, errorRangelayout);
+    formLayout->addDualRow(tr("&Error range:"), _errorMinSpinBox, _errorMaxSpinBox, tr("-"));
 
     formLayout->addItem(new QSpacerItem(0, 6));
 
@@ -560,26 +536,13 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
     formLayout->addRow(tr("Th&reshold:"), _thresholdModeComboBox);
     _indexWidgets.append(_thresholdModeComboBox);
 
-    QLayout *thresholdlayout = new QHBoxLayout();
-    thresholdlayout->setSpacing(0);
     _thresholdMinSpinBox = new IndexSpinBox();
-    _thresholdMinSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     _thresholdMinSpinBox->setEnabled(false);
-    thresholdlayout->addWidget(_thresholdMinSpinBox);
     _indexWidgets.append(_thresholdMinSpinBox);
-    QLabel *thresholdSepLabel = new QLabel(tr("-"));
-    thresholdSepLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    thresholdSepLabel->setIndent(2);
-    thresholdlayout->addWidget(thresholdSepLabel);
     _thresholdMaxSpinBox = new IndexSpinBox();
-    _thresholdMaxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     _thresholdMaxSpinBox->setEnabled(false);
-    thresholdlayout->addWidget(_thresholdMaxSpinBox);
     _indexWidgets.append(_thresholdMaxSpinBox);
-    QLabel *thresholdLabel = new QLabel();
-    thresholdLabel->setBuddy(_thresholdMinSpinBox);
-    formLayout->addRow(thresholdLabel, thresholdlayout);
-    _indexWidgets.append(_filterParam3SpinBox);
+    formLayout->addDualRow("", _thresholdMinSpinBox, _thresholdMaxSpinBox, tr("-"));
 
     groupBox->setLayout(formLayout);
     return groupBox;
@@ -588,12 +551,9 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
 QGroupBox *MotionSensorWidget::createSensorStatusWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("Sensor status"));
-    QFormLayout *formLayout = new QFormLayout();
-    formLayout->setVerticalSpacing(3);
-    formLayout->setHorizontalSpacing(3);
+    IndexFormLayout *formLayout = new IndexFormLayout();
 
     _rawDataValueLabel = new IndexLabel();
-    _rawDataValueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("Raw data:"), _rawDataValueLabel);
     _indexWidgets.append(_rawDataValueLabel);
 
@@ -602,7 +562,6 @@ QGroupBox *MotionSensorWidget::createSensorStatusWidgets()
     _indexWidgets.append(_flagLabel);
 
     _valueLabel = new IndexLabel();
-    _valueLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("Value:"), _valueLabel);
     _indexWidgets.append(_valueLabel);
 

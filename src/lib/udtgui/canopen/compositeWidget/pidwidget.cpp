@@ -20,6 +20,7 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/indexWidget/indexcheckbox.h"
+#include "canopen/indexWidget/indexformlayout.h"
 #include "canopen/indexWidget/indexlabel.h"
 #include "canopen/indexWidget/indexspinbox.h"
 #include "indexdb402.h"
@@ -558,22 +559,17 @@ QToolBar *PidWidget::createToolBarWidgets()
 QGroupBox *PidWidget::createPIDConfigWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("PID"));
-    QFormLayout *formLayout = new QFormLayout();
-    formLayout->setVerticalSpacing(3);
-    formLayout->setHorizontalSpacing(3);
+    IndexFormLayout *formLayout = new IndexFormLayout();
 
     _pSpinBox = new IndexSpinBox();
-    _pSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("&P:"), _pSpinBox);
     _indexWidgets.append(_pSpinBox);
 
     _iSpinBox = new IndexSpinBox();
-    _iSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("&I:"), _iSpinBox);
     _indexWidgets.append(_iSpinBox);
 
     _dSpinBox = new IndexSpinBox();
-    _dSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("&D:"), _dSpinBox);
     _indexWidgets.append(_dSpinBox);
 
@@ -582,7 +578,6 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
     QLayout *minMaxlayout = new QHBoxLayout();
     minMaxlayout->setSpacing(0);
     _minSpinBox = new IndexSpinBox();
-    _minSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     minMaxlayout->addWidget(_minSpinBox);
     _indexWidgets.append(_minSpinBox);
 
@@ -591,7 +586,6 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
     errorRangeSepLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     minMaxlayout->addWidget(errorRangeSepLabel);
     _maxSpinBox = new IndexSpinBox();
-    _maxSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     minMaxlayout->addWidget(_maxSpinBox);
     _indexWidgets.append(_maxSpinBox);
 
@@ -600,7 +594,6 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
     formLayout->addRow(errorRangeLabel, minMaxlayout);
 
     _thresholdSpinBox = new IndexSpinBox();
-    _thresholdSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     _thresholdSpinBox->setMinValue(0);
     formLayout->addRow(tr("&Threshold:"), _thresholdSpinBox);
     _indexWidgets.append(_thresholdSpinBox);
@@ -629,27 +622,21 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
 QGroupBox *PidWidget::createPIDStatusWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("PID status"));
-    QFormLayout *formLayout = new QFormLayout();
-    formLayout->setVerticalSpacing(3);
-    formLayout->setHorizontalSpacing(3);
+    IndexFormLayout *formLayout = new IndexFormLayout();
 
     _inputLabel = new IndexLabel();
-    _inputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("Input:"), _inputLabel);
     _indexWidgets.append(_inputLabel);
 
     _errorLabel = new IndexLabel();
-    _errorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("Error:"), _errorLabel);
     _indexWidgets.append(_errorLabel);
 
     _integratorLabel = new IndexLabel();
-    _integratorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("Integrator:"), _integratorLabel);
     _indexWidgets.append(_integratorLabel);
 
     _outputLabel = new IndexLabel();
-    _outputLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     formLayout->addRow(tr("Output:"), _outputLabel);
     _indexWidgets.append(_outputLabel);
 
@@ -660,9 +647,7 @@ QGroupBox *PidWidget::createPIDStatusWidgets()
 QGroupBox *PidWidget::createPIDTestWidgets()
 {
     QGroupBox *groupBox = new QGroupBox(tr("PID test"));
-    QFormLayout *formLayout = new QFormLayout();
-    formLayout->setVerticalSpacing(3);
-    formLayout->setHorizontalSpacing(3);
+    IndexFormLayout *formLayout = new IndexFormLayout();
 
     _modeComboBox = new QComboBox();
     formLayout->addRow(new QLabel(tr("Mode:")), _modeComboBox);
