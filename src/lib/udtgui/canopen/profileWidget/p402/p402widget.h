@@ -59,7 +59,7 @@ protected slots:
     void updateNodeStatus();
     void updateState();
     void setEvent(quint8 event);
-    void updateMode(uint8_t axis, NodeProfile402::OperationMode mode);
+    void updateMode(NodeProfile402::OperationMode mode);
     void updateModeComboBox();
     void setModeIndex(int id);
 

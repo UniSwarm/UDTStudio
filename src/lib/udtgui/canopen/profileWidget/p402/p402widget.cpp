@@ -449,7 +449,7 @@ void P402Widget::updateModeComboBox()
             _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
         }
     }
-    updateMode(_axis, _nodeProfile402->actualMode());
+    updateMode(_nodeProfile402->actualMode());
     _modeComboBox->blockSignals(false);
 }
 
@@ -457,7 +457,7 @@ void P402Widget::displayOption402()
 {
     if (_stackedWidget->currentWidget() == _modes[NodeProfile402::NoMode])
     {
-        updateMode(_axis, _nodeProfile402->actualMode());
+        updateMode(_nodeProfile402->actualMode());
     }
     else
     {

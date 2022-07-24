@@ -142,7 +142,7 @@ public:
     void readOptionObjects() const;
 
 signals:
-    void modeChanged(uint8_t axis, NodeProfile402::OperationMode modeNew);
+    void modeChanged(NodeProfile402::OperationMode modeNew);
     void stateChanged();
     void isHalted(bool state);
     void eventHappened(quint8 event402);

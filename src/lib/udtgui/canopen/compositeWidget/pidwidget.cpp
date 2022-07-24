@@ -222,7 +222,7 @@ void PidWidget::changeMode402()
         return;
     }
 
-    connect(_nodeProfile402, &NodeProfile402::modeChanged, this, &PidWidget::mode402Changed);
+    connect(_nodeProfile402, &NodeProfile402::modeChanged, this, &PidWidget::updateMode);
 
     switch (_modePid)
     {
@@ -237,7 +237,7 @@ void PidWidget::changeMode402()
             }
             else
             {
-                mode402Changed(_axis, _nodeProfile402->actualMode());
+                updateMode(_nodeProfile402->actualMode());
             }
             break;
 
@@ -250,7 +250,7 @@ void PidWidget::changeMode402()
             }
             else
             {
-                mode402Changed(_axis, _nodeProfile402->actualMode());
+                updateMode(_nodeProfile402->actualMode());
             }
             break;
 
@@ -263,7 +263,7 @@ void PidWidget::changeMode402()
             }
             else
             {
-                mode402Changed(_axis, _nodeProfile402->actualMode());
+                updateMode(_nodeProfile402->actualMode());
             }
             break;
     }
@@ -272,14 +272,9 @@ void PidWidget::changeMode402()
     _startTargetPushButton->setEnabled(false);
 }
 
-void PidWidget::mode402Changed(uint8_t axis, NodeProfile402::OperationMode mode)
+void PidWidget::updateMode(NodeProfile402::OperationMode mode)
 {
     if (_nodeProfile402 == nullptr)
-    {
-        return;
-    }
-
-    if (_axis != axis)
     {
         return;
     }
@@ -430,7 +425,7 @@ void PidWidget::stopDataLogger()
     _dataLogger->stop();
     _savePushButton->setEnabled(true);
     _startTargetPushButton->setEnabled(true);
-    disconnect(_nodeProfile402, &NodeProfile402::modeChanged, this, &PidWidget::mode402Changed);
+    disconnect(_nodeProfile402, &NodeProfile402::modeChanged, this, &PidWidget::updateMode);
 }
 
 void PidWidget::readStatus()

@@ -977,7 +977,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest fl
         {
             _modeRequested = _modeCurrent;
             _modeStatus = NodeProfile402::MODE_CHANGED;
-            emit modeChanged(_axisId, _modeCurrent);
+            emit modeChanged(_modeCurrent);
             _node->readObject(_supportedDriveModesObjectId);
             return;
         }
@@ -1012,7 +1012,7 @@ void NodeProfile402::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest fl
         if (_modeCurrent != mode)
         {
             _modeCurrent = mode;
-            emit modeChanged(_axisId, _modeCurrent);
+            emit modeChanged(_modeCurrent);
         }
 
         _modeRequested = _modeCurrent;
