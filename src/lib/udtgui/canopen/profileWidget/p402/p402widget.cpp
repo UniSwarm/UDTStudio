@@ -37,19 +37,18 @@
 #include <QSplitter>
 #include <QStandardItemModel>
 
-P402Widget::P402Widget(Node *node, uint8_t axis, QWidget *parent)
+P402Widget::P402Widget(NodeProfile402 *profile, QWidget *parent)
     : QWidget(parent)
-    , _node(nullptr)
-    , _axis(0)
+    , _nodeProfile402(nullptr)
 {
     createWidgets();
 
-    setNode(node, axis);
+    setProfile(profile);
 }
 
 Node *P402Widget::node() const
 {
-    return _node;
+    return _nodeProfile402->node();
 }
 
 QString P402Widget::title() const
@@ -57,108 +56,86 @@ QString P402Widget::title() const
     return QString("Motion control");
 }
 
-void P402Widget::setNode(Node *node, uint8_t axis)
+void P402Widget::setProfile(NodeProfile402 *profile)
 {
-    if (node == nullptr)
+    if (profile == nullptr)
     {
         return;
     }
-    _node = node;
+    _nodeProfile402 = profile;
+    _nodeProfile402->init();
 
-    if ((node->profileNumber() != 402) || node->profiles().isEmpty())
+    _controlWordLabel->setObjId(_nodeProfile402->controlWordObjectId());
+    _statusWordLabel->setObjId(_nodeProfile402->statusWordObjectId());
+
+    setCheckableStateMachine(2);
+    updateModeComboBox();
+
+    connect(node(), &Node::statusChanged, this, &P402Widget::updateNodeStatus);
+    connect(_nodeProfile402, &NodeProfile402::modeChanged, this, &P402Widget::updateMode);
+    connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &P402Widget::updateState);
+    connect(_nodeProfile402, &NodeProfile402::isHalted, _haltPushButton, &QPushButton::setChecked);
+    connect(_nodeProfile402, &NodeProfile402::eventHappened, this, &P402Widget::setEvent);
+    connect(_nodeProfile402, &NodeProfile402::supportedDriveModesUdpdated, this, &P402Widget::updateModeComboBox);
+    connect(_modeComboBox,
+            QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this,
+            [=](int id)
+            {
+                setModeIndex(id);
+            });
+
+    for (P402ModeWidget *mode : qAsConst(_modes))
     {
-        return;
+        mode->setNode(node(), _nodeProfile402->axisId()); // TODO
     }
 
-    if (axis > 8)
-    {
-        return;
-    }
-    _axis = axis;
+    updateNodeStatus();
+    updateMode(_nodeProfile402->actualMode());
+    updateState();
 
-    if (_node != nullptr)
-    {
-        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
-        _nodeProfile402->init();
-
-        _controlWordObjectId = _nodeProfile402->controlWordObjectId();
-        _controlWordLabel->setObjId(_controlWordObjectId);
-
-        _statusWordObjectId = _nodeProfile402->statusWordObjectId();
-        _statusWordLabel->setObjId(_statusWordObjectId);
-
-        setCheckableStateMachine(2);
-        updateModeComboBox();
-
-        connect(_node, &Node::statusChanged, this, &P402Widget::updateNodeStatus);
-        connect(_nodeProfile402, &NodeProfile402::modeChanged, this, &P402Widget::updateMode);
-        connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &P402Widget::updateState);
-        connect(_nodeProfile402, &NodeProfile402::isHalted, _haltPushButton, &QPushButton::setChecked);
-        connect(_nodeProfile402, &NodeProfile402::eventHappened, this, &P402Widget::setEvent);
-        connect(_nodeProfile402, &NodeProfile402::supportedDriveModesUdpdated, this, &P402Widget::updateModeComboBox);
-        connect(_modeComboBox,
-                QOverload<int>::of(&QComboBox::currentIndexChanged),
-                this,
-                [=](int id)
-                {
-                    setModeIndex(id);
-                });
-
-        for (P402ModeWidget *mode : qAsConst(_modes))
-        {
-            mode->setNode(_node, axis);
-        }
-
-        updateNodeStatus();
-        updateMode(_axis, _nodeProfile402->actualMode());
-        updateState();
-
-        _modeOfOperationLabel->setText(tr("Modes of operation (0x%1):").arg(QString::number(_nodeProfile402->modesOfOperationObjectId().index(), 16)));
-        _controlWordGroupBox->setTitle(tr("Control word (0x%1)").arg(QString::number(_nodeProfile402->controlWordObjectId().index(), 16)));
-        _statusWordGroupBox->setTitle(tr("Status word (0x%1)").arg(QString::number(_nodeProfile402->statusWordObjectId().index(), 16)));
-    }
+    _modeOfOperationLabel->setText(tr("Modes of operation (0x%1):").arg(QString::number(_nodeProfile402->modesOfOperationObjectId().index(), 16)));
+    _controlWordGroupBox->setTitle(tr("Control word (0x%1)").arg(QString::number(_nodeProfile402->controlWordObjectId().index(), 16)));
+    _statusWordGroupBox->setTitle(tr("Status word (0x%1)").arg(QString::number(_nodeProfile402->statusWordObjectId().index(), 16)));
 }
 
 void P402Widget::updateNodeStatus()
 {
-    if (_node != nullptr)
-    {
-        if (_node->status() == Node::STARTED)
-        {
-            updateMode(_axis, _nodeProfile402->actualMode());
-            _stackedWidget->setEnabled(false);
-            _modeGroupBox->setEnabled(true);
-        }
-        else
-        {
-            setStartLogger(false);
-        }
-    }
-}
-
-void P402Widget::updateMode(uint8_t axis, NodeProfile402::OperationMode mode)
-{
-    if (_axis != axis)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }
 
-    if ((mode == NodeProfile402::IP) || (mode == NodeProfile402::VL) || (mode == NodeProfile402::TQ) || (mode == NodeProfile402::PP) || (mode == NodeProfile402::DTY)
-        || (mode == NodeProfile402::CP) || (mode == NodeProfile402::CSTCA))
+    if (node()->status() == Node::STARTED)
+    {
+        updateMode(_nodeProfile402->actualMode());
+        _stackedWidget->setEnabled(false);
+        _modeGroupBox->setEnabled(true);
+    }
+    else
+    {
+        setStartLogger(false);
+    }
+}
+
+void P402Widget::updateMode(NodeProfile402::OperationMode mode)
+{
+    /*if ((mode == NodeProfile402::IP) || (mode == NodeProfile402::VL) || (mode == NodeProfile402::TQ) || (mode == NodeProfile402::PP) || (mode == NodeProfile402::DTY)
+        || (mode == NodeProfile402::CP) || (mode == NodeProfile402::CSTCA))*/
     {
         P402ModeWidget *mode402 = dynamic_cast<P402ModeWidget *>(_stackedWidget->currentWidget());
         // reset : Patch because the widget Tarqet torque and velocity are not an IndexSpinbox so not read automaticaly
         mode402->reset();
 
-        _option402Action->setChecked(false);
+        //_option402Action->setChecked(false);
         _stackedWidget->setCurrentWidget(_modes[mode]);
         _modeComboBox->setCurrentText(_nodeProfile402->modeStr(mode));
     }
-    else
+    /*else
     {
         _option402Action->setChecked(true);
         _stackedWidget->setCurrentWidget(_modes[NodeProfile402::NoMode]);
-    }
+    }*/
 
     _modeComboBox->setEnabled(true);
     _modeLabel->clear();
@@ -253,7 +230,7 @@ void P402Widget::updateState()
 
 void P402Widget::setModeIndex(int id)
 {
-    if (_node == nullptr)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }
@@ -276,7 +253,7 @@ void P402Widget::gotoStateOEClicked()
 
 void P402Widget::setStartLogger(bool start)
 {
-    if (_node == nullptr)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }
@@ -288,9 +265,9 @@ void P402Widget::setStartLogger(bool start)
             return;
         }
 
-        if (_node->status() != Node::STARTED)
+        if (node()->status() != Node::STARTED)
         {
-            _node->sendStart();
+            node()->sendStart();
         }
 
         _nodeProfile402->start(_logTimerSpinBox->value());
@@ -324,16 +301,18 @@ void P402Widget::setLogTimer(int ms)
 
 void P402Widget::readAllObjects()
 {
-    if (_node != nullptr)
+    if (_nodeProfile402 == nullptr)
     {
-        if (_stackedWidget->currentWidget() == _modes[NodeProfile402::NoMode])
-        {
-            _modes[NodeProfile402::NoMode]->readAllObjects();
-        }
-        else
-        {
-            _nodeProfile402->readAllObjects();
-        }
+        return;
+    }
+
+    if (_stackedWidget->currentWidget() == _modes[NodeProfile402::NoMode])
+    {
+        _modes[NodeProfile402::NoMode]->readAllObjects();
+    }
+    else
+    {
+        _nodeProfile402->readAllObjects();
     }
 }
 
@@ -468,7 +447,7 @@ void P402Widget::displayOption402()
 
 void P402Widget::stateMachineClicked(int id)
 {
-    if (_node == nullptr)
+    if (_nodeProfile402 == nullptr)
     {
         return;
     }
@@ -483,7 +462,7 @@ void P402Widget::haltClicked()
 
 void P402Widget::setCheckableStateMachine(int id)
 {
-    for (int i = 1; i <= 8; i++)
+    for (int i = 1; i <= _stateMachineButtonGroup->buttons().count(); i++)
     {
         _stateMachineButtonGroup->button(i)->setCheckable(false);
     }

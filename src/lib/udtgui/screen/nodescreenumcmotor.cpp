@@ -87,10 +87,10 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)
     {
         return;
     }
-
     _axis = axis;
+    NodeProfile402 *nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
 
-    _p402Widget->setNode(node, axis);
+    _p402Widget->setProfile(nodeProfile402);
     _tabWidget->addTab(_p402Widget, " " + _p402Widget->title() + " ");
 
     if (node->manufacturerId() == 0x04A2)  // UniSwarm

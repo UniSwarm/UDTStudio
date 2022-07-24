@@ -42,14 +42,14 @@ class UDTGUI_EXPORT P402Widget : public QWidget
 {
     Q_OBJECT
 public:
-    P402Widget(Node *node = nullptr, uint8_t axis = 0, QWidget *parent = nullptr);
+    P402Widget(NodeProfile402 *profile = nullptr, QWidget *parent = nullptr);
 
     Node *node() const;
 
     QString title() const;
 
 public slots:
-    void setNode(Node *node, uint8_t axis = 0);
+    void setProfile(NodeProfile402 *profile);
     void gotoStateOEClicked();
 
 protected slots:
@@ -72,14 +72,9 @@ protected slots:
     void readAllObjects();
 
 private:
-    Node *_node;
     NodeProfile402 *_nodeProfile402;
-    uint8_t _axis;
 
     QMap<NodeProfile402::OperationMode, P402ModeWidget *> _modes;
-
-    NodeObjectId _controlWordObjectId;
-    NodeObjectId _statusWordObjectId;
 
     // Create widgets
     void createWidgets();
