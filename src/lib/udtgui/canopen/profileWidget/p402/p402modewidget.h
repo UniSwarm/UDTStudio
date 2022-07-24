@@ -32,13 +32,17 @@ class UDTGUI_EXPORT P402ModeWidget : public QWidget, public NodeOdSubscriber
 public:
     P402ModeWidget(QWidget *parent);
 
+    NodeProfile402 *nodeProfile402() const;
+    void setProfile(NodeProfile402 *nodeProfile402);
+
+    Node *node() const;
+    uint axis() const;
+
     virtual void readRealTimeObjects();
-    virtual void readAllObjects() = 0;
+    virtual void readAllObjects();
     virtual void reset();
     virtual void stop();
-
-public slots:
-    virtual void setNode(Node *value, uint8_t axis = 0) = 0;
+    virtual void setIProfile(NodeProfile402 *nodeProfile402) = 0;
 
 protected:
     NodeProfile402 *_nodeProfile402;

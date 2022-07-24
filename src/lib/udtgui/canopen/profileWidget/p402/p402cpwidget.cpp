@@ -45,19 +45,13 @@ void P402CpWidget::readAllObjects()
     _nodeProfile402->readAllObjects();
 }
 
-void P402CpWidget::setNode(Node *node, uint8_t axis)
+void P402CpWidget::setIProfile(NodeProfile402 *nodeProfile402)
 {
-    if (node == nullptr || axis > 8)
+    if (nodeProfile402 == nullptr)
     {
-        setNodeInterrest(nullptr);
-        _nodeProfile402 = nullptr;
         _modeCp = nullptr;
         return;
     }
-
-    setNodeInterrest(node);
-
-    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
     _modeCp = dynamic_cast<ModeCp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::CP));
 
     connect(_modeCp, &ModeCp::absRelEvent, this, &P402CpWidget::absRelEvent);

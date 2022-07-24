@@ -33,7 +33,7 @@ enum ControlWordIP : quint16
 ModePp::ModePp(NodeProfile402 *nodeProfile402)
     : ModePc(nodeProfile402)
 {
-    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_PP_POSITION_TARGET, _nodeProfile402->axisId());
+    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_PP_POSITION_TARGET, _nodeProfile402->axis());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 
     _mode = NodeProfile402::OperationMode::PP;

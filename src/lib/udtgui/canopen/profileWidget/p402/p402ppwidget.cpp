@@ -56,19 +56,13 @@ void P402PpWidget::readAllObjects()
     }
 }
 
-void P402PpWidget::setNode(Node *node, uint8_t axis)
+void P402PpWidget::setIProfile(NodeProfile402 *nodeProfile402)
 {
-    if (node == nullptr || axis > 8)
+    if (nodeProfile402 == nullptr)
     {
-        setNodeInterrest(nullptr);
-        _nodeProfile402 = nullptr;
         _modePp = nullptr;
         return;
     }
-
-    setNodeInterrest(node);
-
-    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
     _modePp = dynamic_cast<ModePp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::PP));
 
     connect(_modePp, &ModePp::changeSetImmediatelyEvent, this, &P402PpWidget::changeSetImmediatelyPointEvent);
@@ -173,7 +167,7 @@ void P402PpWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    dataLoggerWidget->setTitle(tr("Node %1 axis %2 PP").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
+    dataLoggerWidget->setTitle(tr("Node %1 axis %2 PP").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axis()));
 
     dataLogger->addData(_modePp->positionDemandValueObjectId());
     dataLogger->addData(_modePp->targetObjectId());

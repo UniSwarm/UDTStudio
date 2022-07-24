@@ -23,7 +23,34 @@ P402ModeWidget::P402ModeWidget(QWidget *parent)
 {
 }
 
+NodeProfile402 *P402ModeWidget::nodeProfile402() const
+{
+    return _nodeProfile402;
+}
+
+Node *P402ModeWidget::node() const
+{
+    if (_nodeProfile402 == nullptr)
+    {
+        return nullptr;
+    }
+    return _nodeProfile402->node();
+}
+
+uint P402ModeWidget::axis() const
+{
+    if (_nodeProfile402 == nullptr)
+    {
+        return 0;
+    }
+    return _nodeProfile402->axis();
+}
+
 void P402ModeWidget::readRealTimeObjects()
+{
+}
+
+void P402ModeWidget::readAllObjects()
 {
 }
 
@@ -33,4 +60,18 @@ void P402ModeWidget::reset()
 
 void P402ModeWidget::stop()
 {
+}
+
+void P402ModeWidget::setProfile(NodeProfile402 *nodeProfile402)
+{
+    _nodeProfile402 = nodeProfile402;
+    if (nodeProfile402 == nullptr)
+    {
+        setNodeInterrest(nullptr);
+        setIProfile(nullptr);
+        return;
+    }
+
+    setNodeInterrest(nodeProfile402->node());
+    setIProfile(nodeProfile402);
 }

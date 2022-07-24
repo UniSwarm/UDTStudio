@@ -65,7 +65,6 @@ public:
         CSTCA = 11,  // Cyclic sync torque mode with commutation angle
         Reserved = 12
     };
-
     OperationMode actualMode() const;
     bool setMode(OperationMode mode);
     QString modeStr(NodeProfile402::OperationMode mode) const;
@@ -73,6 +72,7 @@ public:
     const QList<OperationMode> &modesSupported() const;
     QList<OperationMode> modesSupportedByType(IndexDb402::OdMode402) const;
     Mode *mode(OperationMode mode) const;
+
     enum ModeStatus
     {
         MODE_CHANGED = 0,

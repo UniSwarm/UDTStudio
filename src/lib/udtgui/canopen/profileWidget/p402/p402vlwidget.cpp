@@ -59,19 +59,13 @@ void P402VlWidget::reset()
     _modeVl->reset();
 }
 
-void P402VlWidget::setNode(Node *node, uint8_t axis)
+void P402VlWidget::setIProfile(NodeProfile402 *nodeProfile402)
 {
-    if (node == nullptr || axis > 8)
+    if (nodeProfile402 == nullptr)
     {
-        setNodeInterrest(nullptr);
-        _nodeProfile402 = nullptr;
         _modeVl = nullptr;
         return;
     }
-
-    setNodeInterrest(node);
-
-    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
     _modeVl = dynamic_cast<ModeVl *>(_nodeProfile402->mode(NodeProfile402::OperationMode::VL));
 
     connect(_modeVl, &ModeVl::enableRampEvent, this, &P402VlWidget::enableRampEvent);
@@ -223,7 +217,7 @@ void P402VlWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    dataLoggerWidget->setTitle(tr("Node %1 axis %2 VL").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
+    dataLoggerWidget->setTitle(tr("Node %1 axis %2 VL").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axis()));
 
     dataLogger->addData(_modeVl->velocityActualObjectId());
     dataLogger->addData(_modeVl->targetObjectId());

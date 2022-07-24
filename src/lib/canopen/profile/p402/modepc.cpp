@@ -25,47 +25,47 @@
 ModePc::ModePc(NodeProfile402 *nodeProfile402)
     : ModeHm(nodeProfile402)
 {
-    _positionDemandValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, _nodeProfile402->axisId());
+    _positionDemandValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_DEMAND_VALUE, _nodeProfile402->axis());
     _positionDemandValueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _positionActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, _nodeProfile402->axisId());
+    _positionActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_ACTUAL_VALUE, _nodeProfile402->axis());
     _positionActualValueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _positionRangeLimitMinObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MIN, _nodeProfile402->axisId());
+    _positionRangeLimitMinObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MIN, _nodeProfile402->axis());
     _positionRangeLimitMinObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
-    _positionRangeLimitMaxObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MAX, _nodeProfile402->axisId());
+    _positionRangeLimitMaxObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_POSITION_RANGE_LIMIT_MAX, _nodeProfile402->axis());
     _positionRangeLimitMaxObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _softwarePositionLimitMinObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MIN, _nodeProfile402->axisId());
+    _softwarePositionLimitMinObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MIN, _nodeProfile402->axis());
     _softwarePositionLimitMinObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
-    _softwarePositionLimitMaxObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MAX, _nodeProfile402->axisId());
+    _softwarePositionLimitMaxObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_SOFTWARE_POSITION_LIMIT_MAX, _nodeProfile402->axis());
     _softwarePositionLimitMaxObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _profileVelocityObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_VELOCITY, _nodeProfile402->axisId());
+    _profileVelocityObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_VELOCITY, _nodeProfile402->axis());
     _profileVelocityObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _endVelocityObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_END_VELOCITY, _nodeProfile402->axisId());
+    _endVelocityObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_END_VELOCITY, _nodeProfile402->axis());
     _endVelocityObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _maxProfileVelocityObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_PROFILE_VELOCITY, _nodeProfile402->axisId());
+    _maxProfileVelocityObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_PROFILE_VELOCITY, _nodeProfile402->axis());
     _maxProfileVelocityObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _maxMotorSpeedObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_MOTOR_SPEED, _nodeProfile402->axisId());
+    _maxMotorSpeedObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_MOTOR_SPEED, _nodeProfile402->axis());
     _maxMotorSpeedObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _profileAccelerationObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_ACCELERATION, _nodeProfile402->axisId());
+    _profileAccelerationObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_ACCELERATION, _nodeProfile402->axis());
     _profileAccelerationObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _maxAccelerationObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_ACCELERATION, _nodeProfile402->axisId());
+    _maxAccelerationObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_ACCELERATION, _nodeProfile402->axis());
     _maxAccelerationObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _profileDecelerationObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_DECELERATION, _nodeProfile402->axisId());
+    _profileDecelerationObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_PROFILE_DECELERATION, _nodeProfile402->axis());
     _profileDecelerationObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _maxDecelerationObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_DECELERATION, _nodeProfile402->axisId());
+    _maxDecelerationObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_DECELERATION, _nodeProfile402->axis());
     _maxDecelerationObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _quickStopDecelerationObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_QUICK_STOP_DECELERATION, _nodeProfile402->axisId());
+    _quickStopDecelerationObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_QUICK_STOP_DECELERATION, _nodeProfile402->axis());
     _quickStopDecelerationObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 }
 
@@ -158,7 +158,6 @@ void ModePc::readRealTimeObjects()
 
 void ModePc::readAllObjects()
 {
-    readRealTimeObjects();
     _nodeProfile402->node()->readObject(_positionRangeLimitMinObjectId);
     _nodeProfile402->node()->readObject(_positionRangeLimitMaxObjectId);
     _nodeProfile402->node()->readObject(_softwarePositionLimitMinObjectId);
@@ -171,5 +170,6 @@ void ModePc::readAllObjects()
     _nodeProfile402->node()->readObject(_profileDecelerationObjectId);
     _nodeProfile402->node()->readObject(_maxDecelerationObjectId);
     _nodeProfile402->node()->readObject(_quickStopDecelerationObjectId);
+    readRealTimeObjects();
     ModeHm::readAllObjects();
 }

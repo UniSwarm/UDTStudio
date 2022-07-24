@@ -87,7 +87,7 @@ void P402Widget::setProfile(NodeProfile402 *profile)
 
     for (P402ModeWidget *mode : qAsConst(_modes))
     {
-        mode->setNode(node(), _nodeProfile402->axisId()); // TODO
+        mode->setProfile(_nodeProfile402);
     }
 
     updateNodeStatus();

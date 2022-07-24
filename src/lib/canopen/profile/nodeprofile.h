@@ -30,13 +30,13 @@ class Node;
 class CANOPEN_EXPORT NodeProfile : public QObject, public NodeOdSubscriber
 {
 public:
-    NodeProfile(Node *node);
+    NodeProfile(Node *node, quint8 axis = 0);
 
     quint8 busId() const;
     quint8 nodeId() const;
     Node *node() const;
 
-    quint8 axisId() const;
+    quint8 axis() const;
 
     virtual void start(int msec) = 0;
     virtual void stop() = 0;
@@ -49,7 +49,7 @@ public:
 
 protected:
     Node *_node;
-    quint8 _axisId;
+    quint8 _axis;
 };
 
 #endif  // NODEPROFILE_H

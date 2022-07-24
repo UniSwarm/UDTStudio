@@ -32,7 +32,7 @@ ModeCp::ModeCp(NodeProfile402 *nodeProfile402)
 {
     _cmdControlWordFlag = 0;
 
-    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_CP_POSITION_TARGET, _nodeProfile402->axisId());
+    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_CP_POSITION_TARGET, _nodeProfile402->axis());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 
     _mode = NodeProfile402::OperationMode::CP;

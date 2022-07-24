@@ -59,19 +59,13 @@ void P402CstcaWidget::reset()
     _modeCstca->reset();
 }
 
-void P402CstcaWidget::setNode(Node *node, uint8_t axis)
+void P402CstcaWidget::setIProfile(NodeProfile402 *nodeProfile402)
 {
-    if (node == nullptr || axis > 8)
+    if (nodeProfile402 == nullptr)
     {
-        setNodeInterrest(nullptr);
-        _nodeProfile402 = nullptr;
         _modeCstca = nullptr;
         return;
     }
-
-    setNodeInterrest(node);
-
-    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
     _modeCstca = dynamic_cast<ModeCstca *>(_nodeProfile402->mode(NodeProfile402::OperationMode::CSTCA));
 
     _targetTorqueSpinBox->setObjId(_modeCstca->targetObjectId());
@@ -110,7 +104,7 @@ void P402CstcaWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    dataLoggerWidget->setTitle(tr("Node %1 axis %2 TQ").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
+    dataLoggerWidget->setTitle(tr("Node %1 axis %2 TQ").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axis()));
 
     dataLogger->addData(_modeCstca->torqueActualValueObjectId());
     dataLogger->addData(_modeCstca->targetObjectId());

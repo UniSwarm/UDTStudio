@@ -56,18 +56,13 @@ void P402IpWidget::readAllObjects()
     }
 }
 
-void P402IpWidget::setNode(Node *node, uint8_t axis)
+void P402IpWidget::setIProfile(NodeProfile402 *nodeProfile402)
 {
-    if (node == nullptr || axis > 8)
+    if (nodeProfile402 == nullptr)
     {
-        setNodeInterrest(nullptr);
-        _nodeProfile402 = nullptr;
         _modeIp = nullptr;
         return;
     }
-
-    setNodeInterrest(node);
-    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
     _modeIp = dynamic_cast<ModeIp *>(_nodeProfile402->mode(NodeProfile402::OperationMode::IP));
     connect(_modeIp, &ModeIp::enableRampEvent, this, &P402IpWidget::enableRampEvent);
     enableRampEvent(_modeIp->isEnableRamp());
@@ -259,7 +254,7 @@ void P402IpWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    dataLoggerWidget->setTitle(tr("Node %1 axis %2 IP").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
+    dataLoggerWidget->setTitle(tr("Node %1 axis %2 IP").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axis()));
 
     dataLogger->addData(_modeIp->positionDemandValueObjectId());
     dataLogger->addData(_modeIp->positionActualValueObjectId());

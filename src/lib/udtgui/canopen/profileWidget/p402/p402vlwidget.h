@@ -113,9 +113,7 @@ public:
     void readRealTimeObjects() override;
     void readAllObjects() override;
     void reset() override;
-
-public slots:
-    void setNode(Node *node, uint8_t axis) override;
+    void setIProfile(NodeProfile402 *nodeProfile402) override;
 };
 
 #endif  // P402VLWIDGET_H

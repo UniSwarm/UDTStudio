@@ -25,31 +25,31 @@
 ModeTc::ModeTc(NodeProfile402 *nodeProfile402)
     : ModeHm(nodeProfile402)
 {
-    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_TARGET, _nodeProfile402->axisId());
+    _targetObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_TARGET, _nodeProfile402->axis());
     _targetObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 
-    _torqueDemandObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_DEMAND, _nodeProfile402->axisId());
+    _torqueDemandObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_DEMAND, _nodeProfile402->axis());
     _torqueDemandObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _torqueActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE, _nodeProfile402->axisId());
+    _torqueActualValueObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_ACTUAL_VALUE, _nodeProfile402->axis());
     _torqueActualValueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _targetSlopeObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_SLOPE, _nodeProfile402->axisId());
+    _targetSlopeObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_TORQUE_SLOPE, _nodeProfile402->axis());
     _targetSlopeObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _maxTorqueObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_MAX_TORQUE, _nodeProfile402->axisId());
+    _maxTorqueObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_MAX_TORQUE, _nodeProfile402->axis());
     _maxTorqueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _commutationAngleObjectId = IndexDb402::getObjectId(IndexDb402::OD_CSTCA_COMMUTATION_ANGLE, _nodeProfile402->axisId());
+    _commutationAngleObjectId = IndexDb402::getObjectId(IndexDb402::OD_CSTCA_COMMUTATION_ANGLE, _nodeProfile402->axis());
     _commutationAngleObjectId.setBusIdNodeId(_nodeProfile402->busId(), _nodeProfile402->nodeId());
 
-    _torqueOffsetObjectId = IndexDb402::getObjectId(IndexDb402::OD_CSP_TORQUE_OFFSET, _nodeProfile402->axisId());
+    _torqueOffsetObjectId = IndexDb402::getObjectId(IndexDb402::OD_CSP_TORQUE_OFFSET, _nodeProfile402->axis());
     _torqueOffsetObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _maxMotorSpeedObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_MOTOR_SPEED, _nodeProfile402->axisId());
+    _maxMotorSpeedObjectId = IndexDb402::getObjectId(IndexDb402::OD_PC_MAX_MOTOR_SPEED, _nodeProfile402->axis());
     _maxMotorSpeedObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 
-    _motorRatedTorqueObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_TORQUE, _nodeProfile402->axisId());
+    _motorRatedTorqueObjectId = IndexDb402::getObjectId(IndexDb402::OD_TQ_MOTOR_RATED_TORQUE, _nodeProfile402->axis());
     _motorRatedTorqueObjectId.setBusIdNodeId(_nodeProfile402->node()->busId(), _nodeProfile402->node()->nodeId());
 }
 

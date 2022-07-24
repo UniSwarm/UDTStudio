@@ -95,14 +95,8 @@ enum SupportedDriveModes : quint32
 };
 
 NodeProfile402::NodeProfile402(Node *node, quint8 axis)
-    : NodeProfile(node)
+    : NodeProfile(node, axis)
 {
-    if (axis > 8)
-    {
-        return;
-    }
-
-    _axisId = axis;
     _modeCurrent = NoMode;
     _modeRequested = NoMode;
     _modeStatus = MODE_CHANGED;
@@ -525,61 +519,61 @@ NodeProfile402::State NodeProfile402::state() const
 
 void NodeProfile402::initializeObjectsId()
 {
-    _modesOfOperationObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, _axisId);
+    _modesOfOperationObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION, _axis);
     _modesOfOperationObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_modesOfOperationObjectId);
 
-    _modesOfOperationDisplayObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION_DISPLAY, _axisId);
+    _modesOfOperationDisplayObjectId = IndexDb402::getObjectId(IndexDb402::OD_MODES_OF_OPERATION_DISPLAY, _axis);
     _modesOfOperationDisplayObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_modesOfOperationDisplayObjectId);
 
-    _supportedDriveModesObjectId = IndexDb402::getObjectId(IndexDb402::OD_SUPPORTED_DRIVE_MODES, _axisId);
+    _supportedDriveModesObjectId = IndexDb402::getObjectId(IndexDb402::OD_SUPPORTED_DRIVE_MODES, _axis);
     _supportedDriveModesObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     _supportedDriveModesObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_supportedDriveModesObjectId);
 
-    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, _axisId);
+    _controlWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_CONTROLWORD, _axis);
     _controlWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     _controlWordObjectId.setDataType(QMetaType::Type::UShort);
     registerObjId(_controlWordObjectId);
 
-    _statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD, _axisId);
+    _statusWordObjectId = IndexDb402::getObjectId(IndexDb402::OD_STATUSWORD, _axis);
     _statusWordObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     _statusWordObjectId.setDataType(QMetaType::Type::UShort);
     registerObjId(_statusWordObjectId);
 
     // Specific
-    _fgPolaritybjectId = IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY, _axisId);
+    _fgPolaritybjectId = IndexDb402::getObjectId(IndexDb402::OD_FG_POLARITY, _axis);
     _fgPolaritybjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_fgPolaritybjectId);
     _optionObjectIds.append(_fgPolaritybjectId);
 
-    _abortConnectionObjectId = IndexDb402::getObjectId(IndexDb402::OD_ABORT_CONNECTION_OPTION, _axisId);
+    _abortConnectionObjectId = IndexDb402::getObjectId(IndexDb402::OD_ABORT_CONNECTION_OPTION, _axis);
     _abortConnectionObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_abortConnectionObjectId);
     _optionObjectIds.append(_abortConnectionObjectId);
 
-    _quickStopObjectId = IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION, _axisId);
+    _quickStopObjectId = IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION, _axis);
     _quickStopObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_quickStopObjectId);
     _optionObjectIds.append(_quickStopObjectId);
 
-    _shutdownObjectId = IndexDb402::getObjectId(IndexDb402::OD_SHUTDOWN_OPTION, _axisId);
+    _shutdownObjectId = IndexDb402::getObjectId(IndexDb402::OD_SHUTDOWN_OPTION, _axis);
     _shutdownObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_shutdownObjectId);
     _optionObjectIds.append(_shutdownObjectId);
 
-    _disableObjectId = IndexDb402::getObjectId(IndexDb402::OD_DISABLE_OPERATION_OPTION, _axisId);
+    _disableObjectId = IndexDb402::getObjectId(IndexDb402::OD_DISABLE_OPERATION_OPTION, _axis);
     _disableObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_disableObjectId);
     _optionObjectIds.append(_disableObjectId);
 
-    _haltObjectId = IndexDb402::getObjectId(IndexDb402::OD_HALT_OPTION, _axisId);
+    _haltObjectId = IndexDb402::getObjectId(IndexDb402::OD_HALT_OPTION, _axis);
     _haltObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_haltObjectId);
     _optionObjectIds.append(_haltObjectId);
 
-    _faultReactionObjectId = IndexDb402::getObjectId(IndexDb402::OD_FAULT_REACTION_OPTION, _axisId);
+    _faultReactionObjectId = IndexDb402::getObjectId(IndexDb402::OD_FAULT_REACTION_OPTION, _axis);
     _faultReactionObjectId.setBusIdNodeId(_node->busId(), _node->nodeId());
     registerObjId(_faultReactionObjectId);
     _optionObjectIds.append(_faultReactionObjectId);
@@ -690,7 +684,7 @@ void NodeProfile402::changeStateMachine(const State402 state)
             {
                 _controlWord = (_controlWord & ~CW_Mask);
                 _controlWord |= (CW_EnableVoltage);
-                qint16 quickStopOption = static_cast<qint16>(_node->nodeOd()->value(IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION, _axisId)).toUInt());
+                qint16 quickStopOption = static_cast<qint16>(_node->nodeOd()->value(IndexDb402::getObjectId(IndexDb402::OD_QUICK_STOP_OPTION, _axis)).toUInt());
                 if ((quickStopOption == 1) || (quickStopOption == 2))
                 {
                     _stateMachineRequested = STATE_SwitchOnDisabled;

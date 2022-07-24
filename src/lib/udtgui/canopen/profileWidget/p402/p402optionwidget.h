@@ -71,9 +71,7 @@ protected:
     // P402Mode interface
 public:
     void readAllObjects() override;
-
-public slots:
-    void setNode(Node *node, uint8_t axis) override;
+    void setIProfile(NodeProfile402 *nodeProfile402) override;
 };
 
 #endif  // P402OPTIONWIDGET_H

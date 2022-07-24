@@ -58,19 +58,13 @@ void P402TqWidget::reset()
     _modeTq->reset();
 }
 
-void P402TqWidget::setNode(Node *node, uint8_t axis)
+void P402TqWidget::setIProfile(NodeProfile402 *nodeProfile402)
 {
-    if (node == nullptr || axis > 8)
+    if (nodeProfile402 == nullptr)
     {
-        setNodeInterrest(nullptr);
-        _nodeProfile402 = nullptr;
         _modeTq = nullptr;
         return;
     }
-
-    setNodeInterrest(node);
-
-    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
     _modeTq = dynamic_cast<ModeTq *>(_nodeProfile402->mode(NodeProfile402::OperationMode::TQ));
 
     _targetTorqueSpinBox->setObjId(_modeTq->targetObjectId());
@@ -105,7 +99,7 @@ void P402TqWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    dataLoggerWidget->setTitle(tr("Node %1 axis %2 TQ").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
+    dataLoggerWidget->setTitle(tr("Node %1 axis %2 TQ").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axis()));
 
     dataLogger->addData(_modeTq->torqueActualValueObjectId());
     dataLogger->addData(_modeTq->targetObjectId());

@@ -41,18 +41,13 @@ void P402OptionWidget::readAllObjects()
     }
 }
 
-void P402OptionWidget::setNode(Node *node, uint8_t axis)
+void P402OptionWidget::setIProfile(NodeProfile402 *nodeProfile402)
 {
-    if (node == nullptr || axis > 8)
+    if (nodeProfile402 == nullptr)
     {
-        setNodeInterrest(nullptr);
-        _nodeProfile402 = nullptr;
         return;
     }
 
-    setNodeInterrest(node);
-
-    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
     registerObjId(_nodeProfile402->abortConnectionObjectId());
     registerObjId(_nodeProfile402->quickStopObjectId());
     registerObjId(_nodeProfile402->shutdownObjectId());

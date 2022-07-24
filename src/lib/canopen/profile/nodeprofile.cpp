@@ -20,10 +20,9 @@
 
 #include "node.h"
 
-NodeProfile::NodeProfile(Node *node)
-    : _node(node)
+NodeProfile::NodeProfile(Node *node, quint8 axis)
+    : _node(node), _axis(axis)
 {
-    _axisId = 0;
 }
 
 quint8 NodeProfile::busId() const
@@ -41,9 +40,9 @@ Node *NodeProfile::node() const
     return _node;
 }
 
-quint8 NodeProfile::axisId() const
+quint8 NodeProfile::axis() const
 {
-    return _axisId;
+    return _axis;
 }
 
 bool NodeProfile::status() const
