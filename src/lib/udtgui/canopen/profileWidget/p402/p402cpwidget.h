@@ -47,10 +47,6 @@ public:
 private:
     ModeCp *_modeCp;
 
-    NodeObjectId _positionTargetObjectId;
-    NodeObjectId _positionDemandValueObjectId;
-    NodeObjectId _positionActualValueObjectId;
-
     void goOneLineEditFinished();
     void twoOneLineEditFinished();
 
@@ -113,9 +109,7 @@ protected:
 public:
     void readRealTimeObjects() override;
     void readAllObjects() override;
-
-public slots:
-    void setNode(Node *node, uint8_t axis) override;
+    void setIProfile(NodeProfile402 *nodeProfile402) override;
 };
 
 #endif  // P402CPWIDGET_H

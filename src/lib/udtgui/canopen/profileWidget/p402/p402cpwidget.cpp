@@ -57,13 +57,8 @@ void P402CpWidget::setIProfile(NodeProfile402 *nodeProfile402)
     connect(_modeCp, &ModeCp::absRelEvent, this, &P402CpWidget::absRelEvent);
     absRelEvent(_modeCp->isAbsRel());
 
-    _positionTargetObjectId = _modeCp->targetObjectId();
-
-    _positionDemandValueObjectId = _modeCp->positionDemandValueObjectId();
-    _positionDemandValueLabel->setObjId(_positionDemandValueObjectId);
-
-    _positionActualValueObjectId = _modeCp->positionActualValueObjectId();
-    _positionActualValueLabel->setObjId(_positionActualValueObjectId);
+    _positionDemandValueLabel->setObjId(_modeCp->positionDemandValueObjectId());
+    _positionActualValueLabel->setObjId(_modeCp->positionActualValueObjectId());
 
     _positionRangeLimitMinSpinBox->setObjId(_modeCp->positionRangeLimitMinObjectId());
     _positionRangeLimitMaxSpinBox->setObjId(_modeCp->positionRangeLimitMaxObjectId());
@@ -112,10 +107,10 @@ void P402CpWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    dataLoggerWidget->setTitle(tr("Node %1 axis %2 DTY").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axisId()));
+    dataLoggerWidget->setTitle(tr("Node %1 axis %2 DTY").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axis()));
 
-    dataLogger->addData(_positionDemandValueObjectId);
-    dataLogger->addData(_positionTargetObjectId);
+    dataLogger->addData(_modeCp->positionDemandValueObjectId());
+    dataLogger->addData(_modeCp->targetObjectId());
 
     dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
     connect(dataLoggerWidget, &QObject::destroyed, dataLogger, &DataLogger::deleteLater);
@@ -130,10 +125,10 @@ void P402CpWidget::mapDefaultObjects()
     NodeObjectId controlWordObjectId = _nodeProfile402->controlWordObjectId();
     NodeObjectId statusWordObjectId = _nodeProfile402->statusWordObjectId();
 
-    QList<NodeObjectId> cpRpdoObjectList = {controlWordObjectId, _positionTargetObjectId};
+    QList<NodeObjectId> cpRpdoObjectList = {controlWordObjectId, _modeCp->targetObjectId()};
     _nodeProfile402->node()->rpdos().at(0)->writeMapping(cpRpdoObjectList);
 
-    QList<NodeObjectId> cpTpdoObjectList = {statusWordObjectId, _positionDemandValueObjectId};
+    QList<NodeObjectId> cpTpdoObjectList = {statusWordObjectId, _modeCp->positionDemandValueObjectId()};
     _nodeProfile402->node()->tpdos().at(2)->writeMapping(cpTpdoObjectList);
 }
 
