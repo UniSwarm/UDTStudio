@@ -71,6 +71,8 @@ protected:
     // P402Mode interface
 public:
     void setIProfile(NodeProfile402 *nodeProfile402) override;
+
+    void readAllObjects() override;
 };
 
 #endif  // P402OPTIONWIDGET_H

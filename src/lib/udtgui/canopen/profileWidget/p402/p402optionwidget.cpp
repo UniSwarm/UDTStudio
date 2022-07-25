@@ -48,6 +48,16 @@ void P402OptionWidget::setIProfile(NodeProfile402 *nodeProfile402)
     registerObjId(_nodeProfile402->faultReactionObjectId());
 }
 
+void P402OptionWidget::readAllObjects()
+{
+    readObject(_nodeProfile402->abortConnectionObjectId());
+    readObject(_nodeProfile402->quickStopObjectId());
+    readObject(_nodeProfile402->shutdownObjectId());
+    readObject(_nodeProfile402->disableObjectId());
+    readObject(_nodeProfile402->haltObjectId());
+    readObject(_nodeProfile402->faultReactionObjectId());
+}
+
 void P402OptionWidget::abortConnectionOptionClicked(int id)
 {
     if (_nodeProfile402 == nullptr)

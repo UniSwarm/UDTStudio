@@ -445,7 +445,7 @@ void P402Widget::displayOption402()
     else
     {
         _modes[NodeProfile402::NoMode]->readAllObjects();
-        _stackedWidget->setCurrentWidget(_modes[NodeProfile402::NoMode]);
+        setCurrentWidget(NodeProfile402::NoMode);
     }
 }
 
