@@ -48,11 +48,6 @@ void DataLoggerManagerWidget::setLogTimerMs(int ms)
     {
         _logger->start(ms);
     }
-    else
-    {
-        _startStopAction->setChecked(true);
-        _logger->start(ms);
-    }
 }
 
 void DataLoggerManagerWidget::setUseOpenGL(bool useOpenGL)
