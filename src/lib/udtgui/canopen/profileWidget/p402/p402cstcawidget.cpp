@@ -34,24 +34,9 @@
 P402CstcaWidget::P402CstcaWidget(QWidget *parent)
     : P402ModeWidget(parent)
 {
+    _modeCstca = nullptr;
+
     createWidgets();
-    _nodeProfile402 = nullptr;
-}
-
-void P402CstcaWidget::readRealTimeObjects()
-{
-    if (_nodeProfile402 != nullptr)
-    {
-        _nodeProfile402->readRealTimeObjects();
-    }
-}
-
-void P402CstcaWidget::readAllObjects()
-{
-    if (_nodeProfile402 != nullptr)
-    {
-        _nodeProfile402->readAllObjects();
-    }
 }
 
 void P402CstcaWidget::reset()

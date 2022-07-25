@@ -33,18 +33,9 @@
 P402DtyWidget::P402DtyWidget(QWidget *parent)
     : P402ModeWidget(parent)
 {
+    _modeDty = nullptr;
+
     createWidgets();
-    _nodeProfile402 = nullptr;
-}
-
-void P402DtyWidget::readRealTimeObjects()
-{
-    _nodeProfile402->readRealTimeObjects();
-}
-
-void P402DtyWidget::readAllObjects()
-{
-    _nodeProfile402->readAllObjects();
 }
 
 void P402DtyWidget::reset()

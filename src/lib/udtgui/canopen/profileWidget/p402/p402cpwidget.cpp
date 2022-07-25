@@ -31,18 +31,9 @@
 P402CpWidget::P402CpWidget(QWidget *parent)
     : P402ModeWidget(parent)
 {
+    _modeCp = nullptr;
+
     createWidgets();
-    _nodeProfile402 = nullptr;
-}
-
-void P402CpWidget::readRealTimeObjects()
-{
-    _nodeProfile402->readRealTimeObjects();
-}
-
-void P402CpWidget::readAllObjects()
-{
-    _nodeProfile402->readAllObjects();
 }
 
 void P402CpWidget::setIProfile(NodeProfile402 *nodeProfile402)
@@ -62,7 +53,6 @@ void P402CpWidget::setIProfile(NodeProfile402 *nodeProfile402)
 
     _positionRangeLimitMinSpinBox->setObjId(_modeCp->positionRangeLimitMinObjectId());
     _positionRangeLimitMaxSpinBox->setObjId(_modeCp->positionRangeLimitMaxObjectId());
-    registerObjId(_positionRangeLimitMaxSpinBox->objId());
     _softwarePositionLimitMinSpinBox->setObjId(_modeCp->softwarePositionLimitMinObjectId());
     _softwarePositionLimitMaxSpinBox->setObjId(_modeCp->softwarePositionLimitMaxObjectId());
 
@@ -107,7 +97,7 @@ void P402CpWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
-    dataLoggerWidget->setTitle(tr("Node %1 axis %2 DTY").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axis()));
+    dataLoggerWidget->setTitle(tr("Node %1 axis %2 CP").arg(_nodeProfile402->nodeId()).arg(_nodeProfile402->axis()));
 
     dataLogger->addData(_modeCp->positionDemandValueObjectId());
     dataLogger->addData(_modeCp->targetObjectId());

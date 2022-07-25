@@ -33,24 +33,9 @@
 P402TqWidget::P402TqWidget(QWidget *parent)
     : P402ModeWidget(parent)
 {
+    _modeTq = nullptr;
+
     createWidgets();
-    _nodeProfile402 = nullptr;
-}
-
-void P402TqWidget::readRealTimeObjects()
-{
-    if (_nodeProfile402 != nullptr)
-    {
-        _nodeProfile402->readRealTimeObjects();
-    }
-}
-
-void P402TqWidget::readAllObjects()
-{
-    if (_nodeProfile402 != nullptr)
-    {
-        _nodeProfile402->readAllObjects();
-    }
 }
 
 void P402TqWidget::reset()

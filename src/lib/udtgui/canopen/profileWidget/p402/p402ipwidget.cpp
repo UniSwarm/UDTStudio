@@ -36,24 +36,9 @@
 P402IpWidget::P402IpWidget(QWidget *parent)
     : P402ModeWidget(parent)
 {
-    _nodeProfile402 = nullptr;
+    _modeIp = nullptr;
+
     createWidgets();
-}
-
-void P402IpWidget::readRealTimeObjects()
-{
-    if (_nodeProfile402 != nullptr)
-    {
-        _modeIp->readRealTimeObjects();
-    }
-}
-
-void P402IpWidget::readAllObjects()
-{
-    if (_nodeProfile402 != nullptr)
-    {
-        _modeIp->readAllObjects();
-    }
 }
 
 void P402IpWidget::setIProfile(NodeProfile402 *nodeProfile402)

@@ -33,14 +33,6 @@ P402OptionWidget::P402OptionWidget(QWidget *parent)
     createWidgets();
 }
 
-void P402OptionWidget::readAllObjects()
-{
-    if (_nodeProfile402 != nullptr)
-    {
-        _nodeProfile402->readOptionObjects();
-    }
-}
-
 void P402OptionWidget::setIProfile(NodeProfile402 *nodeProfile402)
 {
     if (nodeProfile402 == nullptr)

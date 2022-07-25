@@ -21,6 +21,7 @@
 P402ModeWidget::P402ModeWidget(QWidget *parent)
     : QWidget(parent)
 {
+    _nodeProfile402 = nullptr;
 }
 
 NodeProfile402 *P402ModeWidget::nodeProfile402() const
@@ -48,10 +49,18 @@ uint P402ModeWidget::axis() const
 
 void P402ModeWidget::readRealTimeObjects()
 {
+    if (_nodeProfile402 != nullptr)
+    {
+        _nodeProfile402->readRealTimeObjects();
+    }
 }
 
 void P402ModeWidget::readAllObjects()
 {
+    if (_nodeProfile402 != nullptr)
+    {
+        _nodeProfile402->readAllObjects();
+    }
 }
 
 void P402ModeWidget::reset()

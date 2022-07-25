@@ -107,8 +107,6 @@ protected:
 
     // P402Mode interface
 public:
-    void readRealTimeObjects() override;
-    void readAllObjects() override;
     void setIProfile(NodeProfile402 *nodeProfile402) override;
 };
 

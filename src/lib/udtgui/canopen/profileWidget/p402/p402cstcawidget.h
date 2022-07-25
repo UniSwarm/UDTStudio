@@ -89,8 +89,6 @@ protected:
 
     // P402ModeWidget interface
 public:
-    void readRealTimeObjects() override;
-    void readAllObjects() override;
     void reset() override;
     void setIProfile(NodeProfile402 *nodeProfile402) override;
 };
