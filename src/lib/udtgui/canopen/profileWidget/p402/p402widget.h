@@ -63,6 +63,8 @@ protected slots:
     void updateModeComboBox();
     void setModeIndex(int id);
 
+    void setCurrentWidget(NodeProfile402::OperationMode mode);
+
     void displayOption402();
     void haltClicked();
 
@@ -80,6 +82,7 @@ private:
     void createWidgets();
     QStackedWidget *_stackedWidget;
 
+    QToolBar *_toolBar;
     QToolBar *createToolBarWidgets();
     QSpinBox *_logTimerSpinBox;
     QAction *_startStopAction;
@@ -106,6 +109,8 @@ private:
     QLabel *_statusWordStateLabel;
     QLabel *_informationLabel;
     QLabel *_warningLabel;
+
+    QList<QAction *> _modeActions;
 };
 
 #endif  // P402WIDGET_H

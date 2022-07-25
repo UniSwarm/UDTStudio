@@ -37,6 +37,7 @@ P402CstcaWidget::P402CstcaWidget(QWidget *parent)
     _modeCstca = nullptr;
 
     createWidgets();
+    createActions();
 }
 
 void P402CstcaWidget::reset()
@@ -83,6 +84,11 @@ void P402CstcaWidget::updateMaxTorque()
 void P402CstcaWidget::setTargetZero()
 {
     _nodeProfile402->setTarget(0);
+}
+
+void P402CstcaWidget::createActions()
+{
+    createDefaultActions();
 }
 
 void P402CstcaWidget::createDataLogger()
@@ -145,9 +151,8 @@ void P402CstcaWidget::createWidgets()
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
-    vBoxLayout->addWidget(scrollArea);
-    vBoxLayout->addLayout(createButtonWidgets());
     vBoxLayout->setContentsMargins(0, 0, 0, 0);
+    vBoxLayout->addWidget(scrollArea);
     setLayout(vBoxLayout);
 }
 
@@ -236,23 +241,6 @@ void P402CstcaWidget::createHomePolarityWidgets()
     _polarityCheckBox = new IndexCheckBox();
     _polarityCheckBox->setBitMask(NodeProfile402::FgPolarity::MASK_POLARITY_POSITION);
     _modeLayout->addRow(tr("Polarity:"), _polarityCheckBox);
-}
-
-QHBoxLayout *P402CstcaWidget::createButtonWidgets() const
-{
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->setContentsMargins(2, 0, 2, 0);
-    layout->setSpacing(5);
-
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402CstcaWidget::createDataLogger);
-    layout->addWidget(dataLoggerPushButton);
-
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map TQ to PDOs"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402CstcaWidget::mapDefaultObjects);
-    layout->addWidget(mappingPdoPushButton);
-
-    return layout;
 }
 
 void P402CstcaWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)

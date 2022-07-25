@@ -39,6 +39,7 @@ P402IpWidget::P402IpWidget(QWidget *parent)
     _modeIp = nullptr;
 
     createWidgets();
+    createActions();
 }
 
 void P402IpWidget::setIProfile(NodeProfile402 *nodeProfile402)
@@ -235,6 +236,11 @@ void P402IpWidget::updateInformationLabel()
     _infoLabel->setText(text);
 }
 
+void P402IpWidget::createActions()
+{
+    createDefaultActions();
+}
+
 void P402IpWidget::createDataLogger()
 {
     DataLogger *dataLogger = new DataLogger();
@@ -316,9 +322,8 @@ void P402IpWidget::createWidgets()
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
-    vBoxLayout->addWidget(scrollArea);
-    vBoxLayout->addLayout(createButtonWidgets());
     vBoxLayout->setContentsMargins(0, 0, 0, 0);
+    vBoxLayout->addWidget(scrollArea);
     setLayout(vBoxLayout);
 }
 
@@ -480,27 +485,6 @@ QGroupBox *P402IpWidget::createControlWordWidgets()
     groupBox->setLayout(layout);
 
     return groupBox;
-}
-
-QHBoxLayout *P402IpWidget::createButtonWidgets() const
-{
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->setContentsMargins(2, 0, 2, 0);
-    layout->setSpacing(5);
-
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402IpWidget::createDataLogger);
-    layout->addWidget(dataLoggerPushButton);
-
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map IP to PDOs"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402IpWidget::mapDefaultObjects);
-    layout->addWidget(mappingPdoPushButton);
-
-    QPushButton *imgPushButton = new QPushButton(tr("Diagram IP mode"));
-    connect(imgPushButton, &QPushButton::clicked, this, &P402IpWidget::showDiagram);
-    layout->addWidget(imgPushButton);
-
-    return layout;
 }
 
 void P402IpWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)

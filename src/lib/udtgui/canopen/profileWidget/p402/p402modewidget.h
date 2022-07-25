@@ -44,8 +44,16 @@ public:
     virtual void stop();
     virtual void setIProfile(NodeProfile402 *nodeProfile402) = 0;
 
+    // Actions functions
+    const QList<QAction *> &modeActions() const;
+    virtual void createDataLogger();
+    virtual void mapDefaultObjects();
+    virtual void showDiagram();
+    void createDefaultActions();
+
 protected:
     NodeProfile402 *_nodeProfile402;
+    QList<QAction *> _modeActions;
 };
 
 #endif  // P402MODEWIDGET_H

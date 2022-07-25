@@ -53,10 +53,7 @@ private:
     void updateMaxDty();
     void setTargetZero();
 
-    // Buttons actions
-    void createDataLogger();
-    void mapDefaultObjects();
-    void showDiagram();
+    void createActions();
 
     // Create widgets
     QFormLayout *_modeLayout;
@@ -80,8 +77,6 @@ private:
     QGroupBox *createControlWordWidgets();
     QCheckBox *_enableRampCheckBox;
 
-    QHBoxLayout *createButtonWidgets() const;
-
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;
@@ -90,6 +85,10 @@ protected:
 public:
     void reset() override;
     void setIProfile(NodeProfile402 *nodeProfile402) override;
+
+    void createDataLogger() override;
+    void mapDefaultObjects() override;
+    void showDiagram() override;
 };
 
 #endif  // P402DCWIDGET_H

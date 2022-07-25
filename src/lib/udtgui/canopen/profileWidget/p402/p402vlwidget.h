@@ -58,10 +58,7 @@ private:
 
     void updateInformationLabel();
 
-    // Buttons actions
-    void createDataLogger();
-    void mapDefaultObjects();
-    void showDiagram();
+    void createActions();
 
     // Create widgets
     void createWidgets();
@@ -102,8 +99,6 @@ private:
     QCheckBox *_unlockRampCheckBox;
     QCheckBox *_referenceRampCheckBox;
 
-    QHBoxLayout *createButtonWidgets() const;
-
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;
@@ -112,6 +107,10 @@ protected:
 public:
     void reset() override;
     void setIProfile(NodeProfile402 *nodeProfile402) override;
+
+    void createDataLogger() override;
+    void mapDefaultObjects() override;
+    void showDiagram() override;
 };
 
 #endif  // P402VLWIDGET_H

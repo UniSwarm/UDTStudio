@@ -53,10 +53,7 @@ private:
     void sendAbsRel(bool ok);
     void absRelEvent(bool ok);
 
-    // Buttons actions
-    void createDataLogger();
-    void mapDefaultObjects();
-    void showDiagram();
+    void createActions();
 
     // Create widgets
     QFormLayout *_modeLayout;
@@ -99,8 +96,6 @@ private:
     QGroupBox *createControlWordWidgets();
     QCheckBox *_absRelCheckBox;
 
-    QHBoxLayout *createButtonWidgets() const;
-
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;
@@ -108,6 +103,10 @@ protected:
     // P402Mode interface
 public:
     void setIProfile(NodeProfile402 *nodeProfile402) override;
+
+    void createDataLogger() override;
+    void mapDefaultObjects() override;
+    void showDiagram() override;
 };
 
 #endif  // P402CPWIDGET_H

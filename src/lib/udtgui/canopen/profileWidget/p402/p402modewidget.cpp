@@ -18,6 +18,8 @@
 
 #include "p402modewidget.h"
 
+#include <QAction>
+
 P402ModeWidget::P402ModeWidget(QWidget *parent)
     : QWidget(parent)
 {
@@ -71,6 +73,11 @@ void P402ModeWidget::stop()
 {
 }
 
+const QList<QAction *> &P402ModeWidget::modeActions() const
+{
+    return _modeActions;
+}
+
 void P402ModeWidget::setProfile(NodeProfile402 *nodeProfile402)
 {
     _nodeProfile402 = nodeProfile402;
@@ -83,4 +90,36 @@ void P402ModeWidget::setProfile(NodeProfile402 *nodeProfile402)
 
     setNodeInterrest(nodeProfile402->node());
     setIProfile(nodeProfile402);
+}
+
+void P402ModeWidget::createDataLogger()
+{
+}
+
+void P402ModeWidget::mapDefaultObjects()
+{
+}
+
+void P402ModeWidget::showDiagram()
+{
+}
+
+void P402ModeWidget::createDefaultActions()
+{
+    QAction *action;
+
+    action = new QAction(tr("Datalogger"), this);
+    action->setIcon(QIcon(":/icons/img/icons8-statistics.png"));
+    connect(action, &QAction::triggered, this, &P402ModeWidget::createDataLogger);
+    _modeActions.append(action);
+
+    action = new QAction(tr("Map to PDOs"), this);
+    action->setIcon(QIcon(":/icons/img/icons8-pdo-transfer.png"));
+    connect(action, &QAction::triggered, this, &P402ModeWidget::mapDefaultObjects);
+    _modeActions.append(action);
+
+    action = new QAction(tr("Diagram"), this);
+    action->setIcon(QIcon(":/icons/img/icons8-diagram.png"));
+    connect(action, &QAction::triggered, this, &P402ModeWidget::showDiagram);
+    _modeActions.append(action);
 }

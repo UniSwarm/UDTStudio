@@ -37,6 +37,7 @@ P402VlWidget::P402VlWidget(QWidget *parent)
     _modeVl = nullptr;
 
     createWidgets();
+    createActions();
 }
 
 void P402VlWidget::reset()
@@ -186,6 +187,11 @@ void P402VlWidget::updateInformationLabel()
     _infoLabel->setText(text);
 }
 
+void P402VlWidget::createActions()
+{
+    createDefaultActions();
+}
+
 void P402VlWidget::showDiagram()
 {
     QPixmap vlModePixmap;
@@ -267,9 +273,8 @@ void P402VlWidget::createWidgets()
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
-    vBoxLayout->addWidget(scrollArea);
-    vBoxLayout->addLayout(createButtonWidgets());
     vBoxLayout->setContentsMargins(0, 0, 0, 0);
+    vBoxLayout->addWidget(scrollArea);
     setLayout(vBoxLayout);
 }
 
@@ -454,27 +459,6 @@ QGroupBox *P402VlWidget::createControlWordWidgets()
     groupBox->setLayout(layout);
 
     return groupBox;
-}
-
-QHBoxLayout *P402VlWidget::createButtonWidgets() const
-{
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->setContentsMargins(2, 0, 2, 0);
-    layout->setSpacing(5);
-
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402VlWidget::createDataLogger);
-    layout->addWidget(dataLoggerPushButton);
-
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map VL to PDOs"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402VlWidget::mapDefaultObjects);
-    layout->addWidget(mappingPdoPushButton);
-
-    QPushButton *imgPushButton = new QPushButton(tr("Diagram VL mode"));
-    connect(imgPushButton, &QPushButton::clicked, this, &P402VlWidget::showDiagram);
-    layout->addWidget(imgPushButton);
-
-    return layout;
 }
 
 void P402VlWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)

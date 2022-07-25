@@ -36,6 +36,7 @@ P402TqWidget::P402TqWidget(QWidget *parent)
     _modeTq = nullptr;
 
     createWidgets();
+    createActions();
 }
 
 void P402TqWidget::reset()
@@ -78,6 +79,11 @@ void P402TqWidget::updateMaxTorque()
 void P402TqWidget::setTargetZero()
 {
     _nodeProfile402->setTarget(0);
+}
+
+void P402TqWidget::createActions()
+{
+    createDefaultActions();
 }
 
 void P402TqWidget::createDataLogger()
@@ -153,9 +159,8 @@ void P402TqWidget::createWidgets()
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
-    vBoxLayout->addWidget(scrollArea);
-    vBoxLayout->addLayout(createButtonWidgets());
     vBoxLayout->setContentsMargins(0, 0, 0, 0);
+    vBoxLayout->addWidget(scrollArea);
     setLayout(vBoxLayout);
 }
 
@@ -211,27 +216,6 @@ void P402TqWidget::createSlopeWidgets()
 {
     _targetSlopeSpinBox = new IndexSpinBox();
     _modeLayout->addRow(tr("Target &slope "), _targetSlopeSpinBox);
-}
-
-QHBoxLayout *P402TqWidget::createButtonWidgets() const
-{
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->setContentsMargins(2, 0, 2, 0);
-    layout->setSpacing(5);
-
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402TqWidget::createDataLogger);
-    layout->addWidget(dataLoggerPushButton);
-
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map TQ to PDOs"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402TqWidget::mapDefaultObjects);
-    layout->addWidget(mappingPdoPushButton);
-
-    QPushButton *imgPushButton = new QPushButton(tr("Diagram TQ mode"));
-    connect(imgPushButton, &QPushButton::clicked, this, &P402TqWidget::showDiagram);
-    layout->addWidget(imgPushButton);
-
-    return layout;
 }
 
 void P402TqWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)

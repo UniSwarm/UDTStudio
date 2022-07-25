@@ -120,22 +120,8 @@ void P402Widget::updateNodeStatus()
 
 void P402Widget::updateMode(NodeProfile402::OperationMode mode)
 {
-    /*if ((mode == NodeProfile402::IP) || (mode == NodeProfile402::VL) || (mode == NodeProfile402::TQ) || (mode == NodeProfile402::PP) || (mode == NodeProfile402::DTY)
-        || (mode == NodeProfile402::CP) || (mode == NodeProfile402::CSTCA))*/
-    {
-        P402ModeWidget *mode402 = dynamic_cast<P402ModeWidget *>(_stackedWidget->currentWidget());
-        // reset : Patch because the widget Tarqet torque and velocity are not an IndexSpinbox so not read automaticaly
-        mode402->reset();
-
-        //_option402Action->setChecked(false);
-        _stackedWidget->setCurrentWidget(_modes[mode]);
-        _modeComboBox->setCurrentText(_nodeProfile402->modeStr(mode));
-    }
-    /*else
-    {
-        _option402Action->setChecked(true);
-        _stackedWidget->setCurrentWidget(_modes[NodeProfile402::NoMode]);
-    }*/
+    setCurrentWidget(mode);
+    _modeComboBox->setCurrentText(_nodeProfile402->modeStr(mode));
 
     _modeComboBox->setEnabled(true);
     _modeLabel->clear();
@@ -243,6 +229,24 @@ void P402Widget::setModeIndex(int id)
     _modeLabel->setText("Mode change in progress");
     NodeProfile402::OperationMode mode = static_cast<NodeProfile402::OperationMode>(_modeComboBox->currentData().toInt());
     _nodeProfile402->setMode(mode);
+}
+
+void P402Widget::setCurrentWidget(NodeProfile402::OperationMode mode)
+{
+    P402ModeWidget *oldModeWidget = dynamic_cast<P402ModeWidget *>(_stackedWidget->currentWidget());
+    const QList<QAction *> &oldModeActions = oldModeWidget->modeActions();
+    for (QAction *action : oldModeActions)
+    {
+        _toolBar->removeAction(action);
+    }
+
+    P402ModeWidget *newModeWidget = _modes[mode];
+    const QList<QAction *> &newModeActions = newModeWidget->modeActions();
+    for (QAction *action : newModeActions)
+    {
+        _toolBar->addAction(action);
+    }
+    _stackedWidget->setCurrentWidget(newModeWidget);
 }
 
 void P402Widget::gotoStateOEClicked()
@@ -527,7 +531,8 @@ void P402Widget::createWidgets()
     vBoxLayout->setSpacing(2);
     QLayout *toolBarLayout = new QVBoxLayout();
     toolBarLayout->setContentsMargins(2, 2, 2, 0);
-    toolBarLayout->addWidget(createToolBarWidgets());
+    _toolBar = createToolBarWidgets();
+    toolBarLayout->addWidget(_toolBar);
     vBoxLayout->addItem(toolBarLayout);
     vBoxLayout->addLayout(hBoxLayout);
     setLayout(vBoxLayout);
@@ -577,6 +582,8 @@ QToolBar *P402Widget::createToolBarWidgets()
     readAllObjectAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllObjectAction->setStatusTip(tr("Read all the objects of the current window"));
     connect(readAllObjectAction, &QAction::triggered, this, &P402Widget::readAllObjects);
+
+    toolBar->addSeparator();
 
     return toolBar;
 }

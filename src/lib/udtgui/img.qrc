@@ -37,6 +37,9 @@
         <file>img/icons8-screenshot.png</file>
         <file>img/icons8-lock.png</file>
         <file>img/icons8-unlock.png</file>
+        <file>img/icons8-statistics.png</file>
+        <file>img/icons8-pdo-transfer.png</file>
+        <file>img/icons8-diagram.png</file>
     </qresource>
     <qresource prefix="/diagram">
         <file>img/diagrams/402VLDiagram.png</file>

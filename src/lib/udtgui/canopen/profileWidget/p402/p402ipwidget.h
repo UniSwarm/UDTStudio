@@ -68,10 +68,7 @@ private:
 
     void updateInformationLabel();
 
-    // Buttons actions
-    void createDataLogger();
-    void mapDefaultObjects();
-    void showDiagram();
+    void createActions();
 
     // Create widgets
     void createWidgets();
@@ -112,8 +109,6 @@ private:
     QGroupBox *createControlWordWidgets();
     QCheckBox *_enableRampCheckBox;
 
-    QHBoxLayout *createButtonWidgets() const;
-
     // P402Mode interface
 public:
     void stop() override;
@@ -122,6 +117,10 @@ public:
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;
+
+    void createDataLogger() override;
+    void mapDefaultObjects() override;
+    void showDiagram() override;
 };
 
 #endif  // P402IPWIDGET_H

@@ -36,6 +36,7 @@ P402DtyWidget::P402DtyWidget(QWidget *parent)
     _modeDty = nullptr;
 
     createWidgets();
+    createActions();
 }
 
 void P402DtyWidget::reset()
@@ -79,6 +80,11 @@ void P402DtyWidget::updateMaxDty()
 void P402DtyWidget::setTargetZero()
 {
     _nodeProfile402->setTarget(0);
+}
+
+void P402DtyWidget::createActions()
+{
+    createDefaultActions();
 }
 
 void P402DtyWidget::createDataLogger()
@@ -152,9 +158,8 @@ void P402DtyWidget::createWidgets()
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
-    vBoxLayout->addWidget(scrollArea);
-    vBoxLayout->addLayout(createButtonWidgets());
     vBoxLayout->setContentsMargins(0, 0, 0, 0);
+    vBoxLayout->addWidget(scrollArea);
     setLayout(vBoxLayout);
 }
 
@@ -221,27 +226,6 @@ QGroupBox *P402DtyWidget::createControlWordWidgets()
     groupBox->setLayout(layout);
 
     return groupBox;
-}
-
-QHBoxLayout *P402DtyWidget::createButtonWidgets() const
-{
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->setContentsMargins(2, 0, 2, 0);
-    layout->setSpacing(5);
-
-    QPushButton *dataLoggerPushButton = new QPushButton(tr("Data logger"));
-    connect(dataLoggerPushButton, &QPushButton::clicked, this, &P402DtyWidget::createDataLogger);
-    layout->addWidget(dataLoggerPushButton);
-
-    QPushButton *mappingPdoPushButton = new QPushButton(tr("Map DTY to PDOs"));
-    connect(mappingPdoPushButton, &QPushButton::clicked, this, &P402DtyWidget::mapDefaultObjects);
-    layout->addWidget(mappingPdoPushButton);
-
-    QPushButton *imgPushButton = new QPushButton(tr("Diagram DTY mode"));
-    connect(imgPushButton, &QPushButton::clicked, this, &P402DtyWidget::showDiagram);
-    layout->addWidget(imgPushButton);
-
-    return layout;
 }
 
 void P402DtyWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)

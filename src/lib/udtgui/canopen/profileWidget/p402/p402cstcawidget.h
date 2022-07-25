@@ -48,9 +48,7 @@ private:
     void updateMaxTorque();
     void setTargetZero();
 
-    // Buttons actions
-    void createDataLogger();
-    void mapDefaultObjects();
+    void createActions();
 
     // Create widgets
     void createWidgets();
@@ -81,8 +79,6 @@ private:
     IndexSpinBox *_homeOffsetSpinBox;
     IndexCheckBox *_polarityCheckBox;
 
-    QHBoxLayout *createButtonWidgets() const;
-
     // NodeOdSubscriber interface
 protected:
     void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;
@@ -91,6 +87,10 @@ protected:
 public:
     void reset() override;
     void setIProfile(NodeProfile402 *nodeProfile402) override;
+
+    void createDataLogger() override;
+    void mapDefaultObjects() override;
+    // void showDiagram() override;
 };
 
 #endif  // P402CSTCAWIDGET_H

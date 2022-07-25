@@ -47,10 +47,7 @@ private:
 
     void setTargetZero();
 
-    // Buttons actions
-    void createDataLogger();
-    void mapDefaultObjects();
-    void showDiagram();
+    void createActions();
 
     // Create widgets
     void createWidgets();
@@ -79,7 +76,6 @@ private:
     void createSlopeWidgets();
     IndexSpinBox *_targetSlopeSpinBox;
 
-    QHBoxLayout *createButtonWidgets() const;
     void updateMaxTorque();
 
     // NodeOdSubscriber interface
@@ -90,6 +86,10 @@ protected:
 public:
     void reset() override;
     void setIProfile(NodeProfile402 *nodeProfile402) override;
+
+    void createDataLogger() override;
+    void mapDefaultObjects() override;
+    void showDiagram() override;
 };
 
 #endif  // P402TQWIDGET_H
