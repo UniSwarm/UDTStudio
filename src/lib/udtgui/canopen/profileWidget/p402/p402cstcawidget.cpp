@@ -20,6 +20,7 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/indexWidget/indexcheckbox.h"
+#include "canopen/indexWidget/indexformlayout.h"
 #include "canopen/indexWidget/indexlabel.h"
 #include "canopen/indexWidget/indexslider.h"
 #include "canopen/indexWidget/indexspinbox.h"
@@ -123,20 +124,17 @@ void P402CstcaWidget::mapDefaultObjects()
 void P402CstcaWidget::createWidgets()
 {
     QGroupBox *modeGroupBox = new QGroupBox(tr("Cyclic sync torque with angle mode"));
-    _modeLayout = new QFormLayout();
+    IndexFormLayout *indexLayout = new IndexFormLayout();
 
-    createTargetWidgets();
-    createInformationWidgets();
-    createLimitWidgets();
+    createTargetWidgets(indexLayout);
+    createInformationWidgets(indexLayout);
+    createLimitWidgets(indexLayout);
 
-    QFrame *frame = new QFrame();
-    frame->setFrameStyle(QFrame::HLine);
-    frame->setFrameShadow(QFrame::Sunken);
-    _modeLayout->addRow(frame);
+    indexLayout->addLineSeparator();
 
-    createAngleWidgets();
+    createAngleWidgets(indexLayout);
 
-    modeGroupBox->setLayout(_modeLayout);
+    modeGroupBox->setLayout(indexLayout);
 
     // Create interface
     QWidget *widget = new QWidget(this);
@@ -156,11 +154,11 @@ void P402CstcaWidget::createWidgets()
     setLayout(vBoxLayout);
 }
 
-void P402CstcaWidget::createTargetWidgets()
+void P402CstcaWidget::createTargetWidgets(IndexFormLayout *indexLayout)
 {
     _targetTorqueSpinBox = new IndexSpinBox();
     _targetTorqueSpinBox->setRangeValue(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    _modeLayout->addRow(tr("&Target torque"), _targetTorqueSpinBox);
+    indexLayout->addRow(tr("&Target torque"), _targetTorqueSpinBox);
 
     QLayout *labelSliderLayout = new QHBoxLayout();
 
@@ -172,11 +170,11 @@ void P402CstcaWidget::createTargetWidgets()
 
     _sliderMaxLabel = new QLabel("max");
     labelSliderLayout->addWidget(_sliderMaxLabel);
-    _modeLayout->addRow(labelSliderLayout);
+    indexLayout->addRow(labelSliderLayout);
 
     _targetTorqueSlider = new IndexSlider(Qt::Horizontal);
     _targetTorqueSlider->setTickPosition(QSlider::TicksBelow);
-    _modeLayout->addRow(_targetTorqueSlider);
+    indexLayout->addRow(_targetTorqueSlider);
 
     QPushButton *setZeroButton = new QPushButton();
     setZeroButton->setText("Set to 0");
@@ -186,61 +184,46 @@ void P402CstcaWidget::createTargetWidgets()
     setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
     setZeroLayout->addWidget(setZeroButton);
     setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
-    _modeLayout->addRow(setZeroLayout);
+    indexLayout->addRow(setZeroLayout);
 }
 
-void P402CstcaWidget::createAngleWidgets()
+void P402CstcaWidget::createAngleWidgets(IndexFormLayout *indexLayout)
 {
     _angleSpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("&Angle"), _angleSpinBox);
+    indexLayout->addRow(tr("&Angle"), _angleSpinBox);
 }
 
-void P402CstcaWidget::createInformationWidgets()
+void P402CstcaWidget::createInformationWidgets(IndexFormLayout *indexLayout)
 {
     _torqueDemandLabel = new IndexLabel();
-    _modeLayout->addRow(tr("Torque demand:"), _torqueDemandLabel);
+    indexLayout->addRow(tr("Torque demand:"), _torqueDemandLabel);
 
     _torqueActualValueLabel = new IndexLabel();
-    _modeLayout->addRow(tr("Torque actual value:"), _torqueActualValueLabel);
+    indexLayout->addRow(tr("Torque actual value:"), _torqueActualValueLabel);
 }
 
-void P402CstcaWidget::createLimitWidgets()
+void P402CstcaWidget::createLimitWidgets(IndexFormLayout *indexLayout)
 {
     _maxTorqueSpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("Ma&x torque "), _maxTorqueSpinBox);
+    indexLayout->addRow(tr("Ma&x torque "), _maxTorqueSpinBox);
 }
 
-void P402CstcaWidget::createInterpolationWidgets()
+void P402CstcaWidget::createInterpolationWidgets(IndexFormLayout *indexLayout)
 {
-    QLayout *ipTimePeriodlayout = new QHBoxLayout();
-    ipTimePeriodlayout->setSpacing(0);
-
     _timePeriodUnitSpinBox = new IndexSpinBox();
-    ipTimePeriodlayout->addWidget(_timePeriodUnitSpinBox);
-
-    QLabel *label = new QLabel(tr("unit.10<sup>index</sup>"));
-    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    ipTimePeriodlayout->addWidget(label);
-
     _timePeriodIndexSpinBox = new IndexSpinBox();
-    _timePeriodIndexSpinBox->setDisplayHint(AbstractIndexWidget::DisplayHint::DisplayDirectValue);
-    ipTimePeriodlayout->addWidget(_timePeriodIndexSpinBox);
-
-    label = new QLabel(tr("&Interpolation time period:"));
-    label->setToolTip(tr("unit, index (unit*10^index)"));
-    label->setBuddy(_timePeriodUnitSpinBox);
-
-    _modeLayout->addRow(label, ipTimePeriodlayout);
+    //_timePeriodIndexSpinBox->setDisplayHint(AbstractIndexWidget::DisplayHint::DisplayDirectValue);
+    indexLayout->addDualRow(tr("&Interpolation time period:"), _timePeriodUnitSpinBox, _timePeriodIndexSpinBox);
 }
 
-void P402CstcaWidget::createHomePolarityWidgets()
+void P402CstcaWidget::createHomePolarityWidgets(IndexFormLayout *indexLayout)
 {
     _homeOffsetSpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("Home offset:"), _homeOffsetSpinBox);
+    indexLayout->addRow(tr("Home offset:"), _homeOffsetSpinBox);
 
     _polarityCheckBox = new IndexCheckBox();
     _polarityCheckBox->setBitMask(NodeProfile402::FgPolarity::MASK_POLARITY_POSITION);
-    _modeLayout->addRow(tr("Polarity:"), _polarityCheckBox);
+    indexLayout->addRow(tr("Polarity:"), _polarityCheckBox);
 }
 
 void P402CstcaWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)

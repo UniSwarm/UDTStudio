@@ -35,6 +35,7 @@ class IndexSlider;
 class IndexLabel;
 class IndexCheckBox;
 class P402ModeWidget;
+class IndexFormLayout;
 
 class UDTGUI_EXPORT P402CstcaWidget : public P402ModeWidget
 {
@@ -52,30 +53,29 @@ private:
 
     // Create widgets
     void createWidgets();
-    QFormLayout *_modeLayout;
 
-    void createTargetWidgets();
+    void createTargetWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_targetTorqueSpinBox;
     IndexSlider *_targetTorqueSlider;
     QLabel *_sliderMinLabel;
     QLabel *_sliderMaxLabel;
 
-    void createAngleWidgets();
+    void createAngleWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_angleSpinBox;
 
-    void createInformationWidgets();
+    void createInformationWidgets(IndexFormLayout *indexLayout);
     IndexLabel *_torqueDemandLabel;
     IndexLabel *_torqueActualValueLabel;
     // IndexLabel *_currentActualValueLabel;
 
-    void createLimitWidgets();
+    void createLimitWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_maxTorqueSpinBox;
 
-    void createInterpolationWidgets();
+    void createInterpolationWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_timePeriodUnitSpinBox;
     IndexSpinBox *_timePeriodIndexSpinBox;
 
-    void createHomePolarityWidgets();
+    void createHomePolarityWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_homeOffsetSpinBox;
     IndexCheckBox *_polarityCheckBox;
 

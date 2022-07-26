@@ -20,6 +20,7 @@
 
 #include "indexdb402.h"
 #include "node.h"
+
 #include "profile/p402/nodeprofile402.h"
 
 #include <QFormLayout>

@@ -35,6 +35,7 @@ class IndexSlider;
 class IndexLabel;
 class P402ModeWidget;
 class ModeTq;
+class IndexFormLayout;
 
 class UDTGUI_EXPORT P402TqWidget : public P402ModeWidget
 {
@@ -51,20 +52,19 @@ private:
 
     // Create widgets
     void createWidgets();
-    QFormLayout *_modeLayout;
 
-    void createTargetWidgets();
+    void createTargetWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_targetTorqueSpinBox;
     IndexSlider *_targetTorqueSlider;
     QLabel *_sliderMinLabel;
     QLabel *_sliderMaxLabel;
 
-    void createInformationWidgets();
+    void createInformationWidgets(IndexFormLayout *indexLayout);
     IndexLabel *_torqueDemandLabel;
     IndexLabel *_torqueActualValueLabel;
     // IndexLabel *_currentActualValueLabel;
 
-    void createLimitWidgets();
+    void createLimitWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_maxTorqueSpinBox;
 
     // IndexSpinBox *_torqueProfileTypeSpinBox;
@@ -73,7 +73,7 @@ private:
     // IndexSpinBox *_motorRatedCurrentSpinBox;
     // IndexLabel *_dcLinkVoltageLabel;
 
-    void createSlopeWidgets();
+    void createSlopeWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_targetSlopeSpinBox;
 
     void updateMaxTorque();

@@ -35,6 +35,7 @@ class ModeVl;
 class IndexSpinBox;
 class IndexLabel;
 class IndexSlider;
+class IndexFormLayout;
 
 class UDTGUI_EXPORT P402VlWidget : public P402ModeWidget
 {
@@ -62,25 +63,24 @@ private:
 
     // Create widgets
     void createWidgets();
-    QFormLayout *_modeLayout;
 
-    void createTargetWidgets();
+    void createTargetWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_targetVelocitySpinBox;
     IndexSlider *_targetVelocitySlider;
     QLabel *_sliderMinLabel;
     QLabel *_sliderCenterLabel;
     QLabel *_sliderMaxLabel;
 
-    void createInformationWidgets();
+    void createInformationWidgets(IndexFormLayout *indexLayout);
     QLabel *_infoLabel;
     IndexLabel *_velocityDemandLabel;
     IndexLabel *_velocityActualLabel;
 
-    void createLimitWidgets();
+    void createLimitWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_minVelocityMinMaxAmountSpinBox;
     IndexSpinBox *_maxVelocityMinMaxAmountSpinBox;
 
-    void createAccelDeccelWidgets();
+    void createAccelDeccelWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_accelerationDeltaSpeedSpinBox;
     IndexSpinBox *_accelerationDeltaTimeSpinBox;
     IndexSpinBox *_decelerationDeltaSpeedSpinBox;
@@ -88,7 +88,7 @@ private:
     IndexSpinBox *_quickStopDeltaSpeedSpinBox;
     IndexSpinBox *_quickStopDeltaTimeSpinBox;
 
-    void createFactorWidgets();
+    void createFactorWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_setPointFactorNumeratorSpinBox;
     IndexSpinBox *_setPointFactorDenominatorSpinBox;
     IndexSpinBox *_dimensionFactorNumeratorSpinBox;

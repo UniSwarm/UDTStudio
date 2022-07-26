@@ -20,6 +20,7 @@
 
 #include "canopen/datalogger/dataloggerwidget.h"
 #include "canopen/indexWidget/indexcheckbox.h"
+#include "canopen/indexWidget/indexformlayout.h"
 #include "canopen/indexWidget/indexlabel.h"
 #include "canopen/indexWidget/indexspinbox.h"
 
@@ -285,27 +286,21 @@ void P402IpWidget::createWidgets()
 {
     // Group Box IP mode
     QGroupBox *modeGroupBox = new QGroupBox(tr("Interpolated position mode"));
-    _modeLayout = new QFormLayout();
+    IndexFormLayout *indexLayout = new IndexFormLayout();
 
-    createTargetWidgets();
-    createInformationWidgets();
-    createLimitWidgets();
+    createTargetWidgets(indexLayout);
+    createInformationWidgets(indexLayout);
+    createLimitWidgets(indexLayout);
 
-    QFrame *frame = new QFrame();
-    frame->setFrameStyle(QFrame::HLine);
-    frame->setFrameShadow(QFrame::Sunken);
-    _modeLayout->addRow(frame);
+    indexLayout->addLineSeparator();
 
-    createSlopeWidgets();
+    createSlopeWidgets(indexLayout);
 
-    frame = new QFrame();
-    frame->setFrameStyle(QFrame::HLine);
-    frame->setFrameShadow(QFrame::Sunken);
-    _modeLayout->addRow(frame);
+    indexLayout->addLineSeparator();
 
-    createHomePolarityWidgets();
+    createHomePolarityWidgets(indexLayout);
 
-    modeGroupBox->setLayout(_modeLayout);
+    modeGroupBox->setLayout(indexLayout);
 
     // Create interface
     QWidget *widget = new QWidget(this);
@@ -327,7 +322,7 @@ void P402IpWidget::createWidgets()
     setLayout(vBoxLayout);
 }
 
-void P402IpWidget::createTargetWidgets()
+void P402IpWidget::createTargetWidgets(IndexFormLayout *indexLayout)
 {
     QLayout *dataRecordlayout = new QHBoxLayout();
     _dataRecordLineEdit = new QLineEdit();
@@ -339,101 +334,61 @@ void P402IpWidget::createTargetWidgets()
 
     dataRecordlayout->addWidget(_dataRecordLineEdit);
     dataRecordlayout->addWidget(_clearBufferPushButton);
-    _modeLayout->addRow(tr("Data record "), dataRecordlayout);
+    indexLayout->addRow(tr("Data record "), dataRecordlayout);
 }
 
-void P402IpWidget::createInformationWidgets()
+void P402IpWidget::createInformationWidgets(IndexFormLayout *indexLayout)
 {
     _infoLabel = new QLabel();
     _infoLabel->setStyleSheet("QLabel { color : red; }");
-    _modeLayout->addRow(tr("Information:"), _infoLabel);
+    indexLayout->addRow(tr("Information:"), _infoLabel);
 
     _positionDemandValueLabel = new IndexLabel();
-    _modeLayout->addRow(tr("Position demand value:"), _positionDemandValueLabel);
+    indexLayout->addRow(tr("Position demand value:"), _positionDemandValueLabel);
 
     _positionAcualValueLabel = new IndexLabel();
-    _modeLayout->addRow(tr("Position actual value:"), _positionAcualValueLabel);
+    indexLayout->addRow(tr("Position actual value:"), _positionAcualValueLabel);
 }
 
-void P402IpWidget::createLimitWidgets()
+void P402IpWidget::createLimitWidgets(IndexFormLayout *indexLayout)
 {
     // POSITION RANGE LIMIT
-    QLayout *positionLayout = new QHBoxLayout();
-    positionLayout->setSpacing(0);
-
     _positionRangeLimitMinSpinBox = new IndexSpinBox();
-    positionLayout->addWidget(_positionRangeLimitMinSpinBox);
-    QLabel *label = new QLabel(tr(":"));
-    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    positionLayout->addWidget(label);
-
     _positionRangeLimitMaxSpinBox = new IndexSpinBox();
-    positionLayout->addWidget(_positionRangeLimitMaxSpinBox);
-    label = new QLabel(tr("&Position range limit:"));
-    label->setToolTip(tr("Min, Max"));
-    label->setBuddy(_positionRangeLimitMinSpinBox);
-    _modeLayout->addRow(label, positionLayout);
+    indexLayout->addDualRow(tr("&Position range limits:"), _positionRangeLimitMinSpinBox, _positionRangeLimitMaxSpinBox, tr("-"));
 
     // SOFTWARE RANGE LIMIT
-    QLayout *softwareLayout = new QHBoxLayout();
-    softwareLayout->setSpacing(0);
-
     _softwarePositionLimitMinSpinBox = new IndexSpinBox();
-    softwareLayout->addWidget(_softwarePositionLimitMinSpinBox);
-    label = new QLabel(tr(":"));
-    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    softwareLayout->addWidget(label);
-
     _softwarePositionLimitMaxSpinBox = new IndexSpinBox();
-    softwareLayout->addWidget(_softwarePositionLimitMaxSpinBox);
-    label = new QLabel(tr("&Software position limit:"));
-    label->setToolTip(tr("Min, Max"));
-    label->setBuddy(_softwarePositionLimitMinSpinBox);
-
-    _modeLayout->addRow(label, softwareLayout);
+    indexLayout->addDualRow(tr("Software position limits:"), _softwarePositionLimitMinSpinBox, _softwarePositionLimitMaxSpinBox, tr("-"));
 
     // Max profile velocity (0x607F)
     _maxProfileVelocitySpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("Max profile velocity:"), _maxProfileVelocitySpinBox);
+    indexLayout->addRow(tr("Max profile velocity:"), _maxProfileVelocitySpinBox);
 
     // Max motor speed (0x6080)
     _maxMotorSpeedSpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("Max motor speed:"), _maxMotorSpeedSpinBox);
+    indexLayout->addRow(tr("Max motor speed:"), _maxMotorSpeedSpinBox);
 }
 
-void P402IpWidget::createSlopeWidgets()
+void P402IpWidget::createSlopeWidgets(IndexFormLayout *indexLayout)
 {
-    QLayout *ipTimePeriodlayout = new QHBoxLayout();
-    ipTimePeriodlayout->setSpacing(0);
-
     _timePeriodUnitSpinBox = new IndexSpinBox();
-    ipTimePeriodlayout->addWidget(_timePeriodUnitSpinBox);
-
-    QLabel *label = new QLabel(tr("unit.10<sup>index</sup>"));
-    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    ipTimePeriodlayout->addWidget(label);
-
     _timePeriodIndexSpinBox = new IndexSpinBox();
     _timePeriodIndexSpinBox->setDisplayHint(AbstractIndexWidget::DisplayHint::DisplayDirectValue);
-    ipTimePeriodlayout->addWidget(_timePeriodIndexSpinBox);
-
-    label = new QLabel(tr("&Interpolation time period:"));
-    label->setToolTip(tr("unit, index (unit*10^index)"));
-    label->setBuddy(_timePeriodUnitSpinBox);
-
-    _modeLayout->addRow(label, ipTimePeriodlayout);
+    indexLayout->addDualRow(tr("&Interpolation time period:"), _timePeriodUnitSpinBox, _timePeriodIndexSpinBox, tr("unit.10<sup>index</sup>"));
 }
 
-void P402IpWidget::createHomePolarityWidgets()
+void P402IpWidget::createHomePolarityWidgets(IndexFormLayout *indexLayout)
 {
     // Home offset (0x607C)
     _homeOffsetSpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("Home offset:"), _homeOffsetSpinBox);
+    indexLayout->addRow(tr("Home offset:"), _homeOffsetSpinBox);
 
     // Polarity (0x607E)
     _polarityCheckBox = new IndexCheckBox();
     _polarityCheckBox->setBitMask(NodeProfile402::FgPolarity::MASK_POLARITY_POSITION);
-    _modeLayout->addRow(tr("Polarity:"), _polarityCheckBox);
+    indexLayout->addRow(tr("Polarity:"), _polarityCheckBox);
 }
 
 QGroupBox *P402IpWidget::createSinusoidalMotionProfileWidgets()

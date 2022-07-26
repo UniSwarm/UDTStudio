@@ -19,6 +19,7 @@
 #include "p402tqwidget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
+#include "canopen/indexWidget/indexformlayout.h"
 #include "canopen/indexWidget/indexlabel.h"
 #include "canopen/indexWidget/indexslider.h"
 #include "canopen/indexWidget/indexspinbox.h"
@@ -131,20 +132,17 @@ void P402TqWidget::createWidgets()
 {
     // Group Box TQ mode
     QGroupBox *modeGroupBox = new QGroupBox(tr("Torque mode"));
-    _modeLayout = new QFormLayout();
+    IndexFormLayout *indexLayout = new IndexFormLayout();
 
-    createTargetWidgets();
-    createInformationWidgets();
-    createLimitWidgets();
+    createTargetWidgets(indexLayout);
+    createInformationWidgets(indexLayout);
+    createLimitWidgets(indexLayout);
 
-    QFrame *frame = new QFrame();
-    frame->setFrameStyle(QFrame::HLine);
-    frame->setFrameShadow(QFrame::Sunken);
-    _modeLayout->addRow(frame);
+    indexLayout->addLineSeparator();
 
-    createSlopeWidgets();
+    createSlopeWidgets(indexLayout);
 
-    modeGroupBox->setLayout(_modeLayout);
+    modeGroupBox->setLayout(indexLayout);
 
     // Create interface
     QWidget *widget = new QWidget(this);
@@ -164,11 +162,11 @@ void P402TqWidget::createWidgets()
     setLayout(vBoxLayout);
 }
 
-void P402TqWidget::createTargetWidgets()
+void P402TqWidget::createTargetWidgets(IndexFormLayout *indexLayout)
 {
     _targetTorqueSpinBox = new IndexSpinBox();
     _targetTorqueSpinBox->setRangeValue(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    _modeLayout->addRow(tr("&Target torque"), _targetTorqueSpinBox);
+    indexLayout->addRow(tr("&Target torque"), _targetTorqueSpinBox);
 
     QLayout *labelSliderLayout = new QHBoxLayout();
 
@@ -180,11 +178,11 @@ void P402TqWidget::createTargetWidgets()
 
     _sliderMaxLabel = new QLabel("max");
     labelSliderLayout->addWidget(_sliderMaxLabel);
-    _modeLayout->addRow(labelSliderLayout);
+    indexLayout->addRow(labelSliderLayout);
 
     _targetTorqueSlider = new IndexSlider(Qt::Horizontal);
     _targetTorqueSlider->setTickPosition(QSlider::TicksBelow);
-    _modeLayout->addRow(_targetTorqueSlider);
+    indexLayout->addRow(_targetTorqueSlider);
 
     QPushButton *setZeroButton = new QPushButton();
     setZeroButton->setText("Set to 0");
@@ -194,28 +192,28 @@ void P402TqWidget::createTargetWidgets()
     setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
     setZeroLayout->addWidget(setZeroButton);
     setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
-    _modeLayout->addRow(setZeroLayout);
+    indexLayout->addRow(setZeroLayout);
 }
 
-void P402TqWidget::createInformationWidgets()
+void P402TqWidget::createInformationWidgets(IndexFormLayout *indexLayout)
 {
     _torqueDemandLabel = new IndexLabel();
-    _modeLayout->addRow(tr("Torque demand:"), _torqueDemandLabel);
+    indexLayout->addRow(tr("Torque demand:"), _torqueDemandLabel);
 
     _torqueActualValueLabel = new IndexLabel();
-    _modeLayout->addRow(tr("Torque actual value:"), _torqueActualValueLabel);
+    indexLayout->addRow(tr("Torque actual value:"), _torqueActualValueLabel);
 }
 
-void P402TqWidget::createLimitWidgets()
+void P402TqWidget::createLimitWidgets(IndexFormLayout *indexLayout)
 {
     _maxTorqueSpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("Ma&x torque "), _maxTorqueSpinBox);
+    indexLayout->addRow(tr("Ma&x torque "), _maxTorqueSpinBox);
 }
 
-void P402TqWidget::createSlopeWidgets()
+void P402TqWidget::createSlopeWidgets(IndexFormLayout *indexLayout)
 {
     _targetSlopeSpinBox = new IndexSpinBox();
-    _modeLayout->addRow(tr("Target &slope "), _targetSlopeSpinBox);
+    indexLayout->addRow(tr("Target &slope "), _targetSlopeSpinBox);
 }
 
 void P402TqWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)

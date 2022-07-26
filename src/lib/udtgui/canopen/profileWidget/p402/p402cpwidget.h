@@ -37,6 +37,7 @@ class ModeCp;
 class IndexSpinBox;
 class IndexLabel;
 class IndexCheckBox;
+class IndexFormLayout;
 
 class UDTGUI_EXPORT P402CpWidget : public P402ModeWidget
 {
@@ -56,40 +57,39 @@ private:
     void createActions();
 
     // Create widgets
-    QFormLayout *_modeLayout;
     void createWidgets();
 
-    void createTargetWidgets();
+    void createTargetWidgets(IndexFormLayout *indexLayout);
     QLineEdit *_targetPositionLineEdit;
     QLineEdit *_goOneLineEdit;
     QLineEdit *_goTwoLineEdit;
     QPushButton *_goOnePushButton;
     QPushButton *_goTwoPushButton;
 
-    void createInformationWidgets();
+    void createInformationWidgets(IndexFormLayout *indexLayout);
     QLabel *_infoLabel;
     IndexLabel *_positionDemandValueLabel;
     IndexLabel *_positionActualValueLabel;
 
-    void createLimitWidgets();
+    void createLimitWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_positionRangeLimitMinSpinBox;
     IndexSpinBox *_positionRangeLimitMaxSpinBox;
     IndexSpinBox *_softwarePositionLimitMinSpinBox;
     IndexSpinBox *_softwarePositionLimitMaxSpinBox;
 
-    void createVelocityWidgets();
+    void createVelocityWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_profileVelocitySpinBox;
     IndexSpinBox *_maxProfileVelocitySpinBox;
     IndexSpinBox *_maxMotorSpeedSpinBox;
 
-    void createAccelDeccelWidgets();
+    void createAccelDeccelWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_profileAccelerationSpinBox;
     IndexSpinBox *_maxAccelerationSpinBox;
     IndexSpinBox *_profileDecelerationSpinBox;
     IndexSpinBox *_maxDecelerationSpinBox;
     IndexSpinBox *_quickStopDecelerationSpinBox;
 
-    void createHomePolarityWidgets();
+    void createHomePolarityWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_homeOffsetSpinBox;
     IndexCheckBox *_polarityCheckBox;
 

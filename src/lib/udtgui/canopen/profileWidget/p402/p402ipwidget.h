@@ -36,6 +36,7 @@ class ModeIp;
 class IndexSpinBox;
 class IndexLabel;
 class IndexCheckBox;
+class IndexFormLayout;
 
 class UDTGUI_EXPORT P402IpWidget : public P402ModeWidget
 {
@@ -72,18 +73,17 @@ private:
 
     // Create widgets
     void createWidgets();
-    QFormLayout *_modeLayout;
 
-    void createTargetWidgets();
+    void createTargetWidgets(IndexFormLayout *indexLayout);
     QLineEdit *_dataRecordLineEdit;
     QPushButton *_clearBufferPushButton;
 
-    void createInformationWidgets();
+    void createInformationWidgets(IndexFormLayout *indexLayout);
     IndexLabel *_positionDemandValueLabel;
     IndexLabel *_positionAcualValueLabel;
     QLabel *_infoLabel;
 
-    void createLimitWidgets();
+    void createLimitWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_positionRangeLimitMinSpinBox;
     IndexSpinBox *_positionRangeLimitMaxSpinBox;
     IndexSpinBox *_softwarePositionLimitMinSpinBox;
@@ -91,11 +91,11 @@ private:
     IndexSpinBox *_maxProfileVelocitySpinBox;
     IndexSpinBox *_maxMotorSpeedSpinBox;
 
-    void createSlopeWidgets();
+    void createSlopeWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_timePeriodUnitSpinBox;
     IndexSpinBox *_timePeriodIndexSpinBox;
 
-    void createHomePolarityWidgets();
+    void createHomePolarityWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_homeOffsetSpinBox;
     IndexCheckBox *_polarityCheckBox;
 

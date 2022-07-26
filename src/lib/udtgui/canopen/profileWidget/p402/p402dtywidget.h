@@ -37,6 +37,7 @@ class IndexSlider;
 class IndexLabel;
 class P402ModeWidget;
 class ModeDty;
+class IndexFormLayout;
 
 class UDTGUI_EXPORT P402DtyWidget : public P402ModeWidget
 {
@@ -56,22 +57,21 @@ private:
     void createActions();
 
     // Create widgets
-    QFormLayout *_modeLayout;
     void createWidgets();
 
-    void createTargetWidgets();
+    void createTargetWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_targetSpinBox;
     IndexSlider *_targetSlider;
     QLabel *_sliderMinLabel;
     QLabel *_sliderMaxLabel;
 
-    void createDemandWidgets();
+    void createDemandWidgets(IndexFormLayout *indexLayout);
     IndexLabel *_demandLabel;
 
-    void createLimitWidgets();
+    void createLimitWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_maxSpinBox;
 
-    void createSlopeWidgets();
+    void createSlopeWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_slopeSpinBox;
 
     QGroupBox *createControlWordWidgets();
