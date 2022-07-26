@@ -54,7 +54,10 @@ private:
     void sendAbsRel(bool ok);
     void absRelEvent(bool ok);
 
+    void setQ15Position(bool q15);
+
     void createActions();
+    QAction *_q15Action;
 
     // Create widgets
     void createWidgets();

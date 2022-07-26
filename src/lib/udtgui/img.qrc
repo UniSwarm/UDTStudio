@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/icons">
         <file>img/udtstudio.ico</file>
+        <file>img/q15option.png</file>
         <file>img/icons8-cancel.png</file>
         <file>img/icons8-checked-checkbox.png</file>
         <file>img/icons8-unchecked-checkbox.png</file>

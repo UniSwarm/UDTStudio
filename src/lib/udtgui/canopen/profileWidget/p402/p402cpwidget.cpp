@@ -74,12 +74,26 @@ void P402CpWidget::setIProfile(NodeProfile402 *nodeProfile402)
 
 void P402CpWidget::goOneLineEditFinished()
 {
-    _nodeProfile402->setTarget(_goOneLineEdit->text().toInt());
+    if (_q15Action->isChecked())
+    {
+        _nodeProfile402->setTarget(_goOneLineEdit->text().toDouble() * 65536);
+    }
+    else
+    {
+        _nodeProfile402->setTarget(_goOneLineEdit->text().toInt());
+    }
 }
 
 void P402CpWidget::twoOneLineEditFinished()
 {
-    _nodeProfile402->setTarget(_goTwoLineEdit->text().toInt());
+    if (_q15Action->isChecked())
+    {
+        _nodeProfile402->setTarget(_goTwoLineEdit->text().toDouble() * 65536);
+    }
+    else
+    {
+        _nodeProfile402->setTarget(_goTwoLineEdit->text().toInt());
+    }
 }
 
 void P402CpWidget::sendAbsRel(bool ok)
@@ -93,6 +107,25 @@ void P402CpWidget::sendAbsRel(bool ok)
 void P402CpWidget::absRelEvent(bool ok)
 {
     _absRelCheckBox->setChecked(ok);
+}
+
+void P402CpWidget::setQ15Position(bool q15)
+{
+    _positionDemandValueLabel->setQ1516View(q15);
+    _positionActualValueLabel->setQ1516View(q15);
+    _positionRangeLimitMinSpinBox->setQ1516View(q15);
+    _positionRangeLimitMaxSpinBox->setQ1516View(q15);
+    _softwarePositionLimitMinSpinBox->setQ1516View(q15);
+    _softwarePositionLimitMaxSpinBox->setQ1516View(q15);
+    _profileVelocitySpinBox->setQ1516View(q15);
+    _maxProfileVelocitySpinBox->setQ1516View(q15);
+    _maxMotorSpeedSpinBox->setQ1516View(q15);
+    _profileAccelerationSpinBox->setQ1516View(q15);
+    _maxAccelerationSpinBox->setQ1516View(q15);
+    _profileDecelerationSpinBox->setQ1516View(q15);
+    _maxDecelerationSpinBox->setQ1516View(q15);
+    _quickStopDecelerationSpinBox->setQ1516View(q15);
+    _homeOffsetSpinBox->setQ1516View(q15);
 }
 
 void P402CpWidget::createDataLogger()
@@ -138,7 +171,20 @@ void P402CpWidget::showDiagram()
 
 void P402CpWidget::createActions()
 {
+    QAction *action;
+
     createDefaultActions();
+
+    action = new QAction(this);
+    action->setSeparator(true);
+    _modeActions.append(action);
+
+    _q15Action = new QAction(tr("Q1516 position"), this);
+    _q15Action->setIcon(QIcon(":/icons/img/q15option.png"));
+    _q15Action->setCheckable(true);
+    _q15Action->setStatusTip(tr("Set all position widgets with Q15.16 attribute"));
+    _modeActions.append(_q15Action);
+    connect(_q15Action, &QAction::triggered, this, &P402CpWidget::setQ15Position);
 }
 
 void P402CpWidget::createWidgets()
