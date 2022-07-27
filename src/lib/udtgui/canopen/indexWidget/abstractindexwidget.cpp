@@ -167,7 +167,7 @@ void AbstractIndexWidget::updateObjId()
         }
         if (nodeSubIndex->isQ1516())
         {
-            _hint = DisplayQ15_16;
+            setDisplayHint(DisplayHint::DisplayQ15_16);
         }
         updateToolTip();
     }
@@ -378,6 +378,18 @@ void AbstractIndexWidget::setDisplayHint(const AbstractIndexWidget::DisplayHint 
             return;
         }
         setDisplayValue(pValue(_lastValue, _hint), DisplayAttribute::Normal);
+
+        NodeSubIndex *nodeSubIndex = _objId.nodeSubIndex();
+        if (hint == DisplayHint::DisplayQ15_16 || hint == DisplayHint::DisplayQ1_15)
+        {
+            _minType = nodeSubIndex->minType() / 65536.0;
+            _maxType = nodeSubIndex->maxType() / 65536.0;
+        }
+        else
+        {
+            _minType = nodeSubIndex->minType();
+            _maxType = nodeSubIndex->maxType();
+        }
     }
 }
 
