@@ -570,23 +570,11 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
 
     formLayout->addItem(new QSpacerItem(0, 6));
 
-    QLayout *minMaxlayout = new QHBoxLayout();
-    minMaxlayout->setSpacing(0);
     _minSpinBox = new IndexSpinBox();
-    minMaxlayout->addWidget(_minSpinBox);
     _indexWidgets.append(_minSpinBox);
-
-    QLabel *errorRangeSepLabel = new QLabel(tr("-"));
-    errorRangeSepLabel->setIndent(2);
-    errorRangeSepLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    minMaxlayout->addWidget(errorRangeSepLabel);
     _maxSpinBox = new IndexSpinBox();
-    minMaxlayout->addWidget(_maxSpinBox);
     _indexWidgets.append(_maxSpinBox);
-
-    QLabel *errorRangeLabel = new QLabel(tr("&Min - max:"));
-    errorRangeLabel->setBuddy(errorRangeLabel);
-    formLayout->addRow(errorRangeLabel, minMaxlayout);
+    formLayout->addDualRow(tr("&Min - max:"), _minSpinBox, _maxSpinBox, tr("-"));
 
     _thresholdSpinBox = new IndexSpinBox();
     _thresholdSpinBox->setMinValue(0);
