@@ -452,8 +452,6 @@ QGroupBox *MotionSensorWidget::createSensorFilterWidgets()
     _filterSelectComboBox = new IndexComboBox();
     _filterSelectComboBox->addItem(tr("OFF"), QVariant(static_cast<uint16_t>(0x0000)));
     _filterSelectComboBox->setItemData(_filterSelectComboBox->count() - 1, tr("No filter active, direct raw value"), Qt::StatusTipRole);
-    _filterSelectComboBox->addItem(tr("Low pass"), QVariant(static_cast<uint16_t>(0x1000)));
-    _filterSelectComboBox->setItemData(_filterSelectComboBox->count() - 1, tr("Low pass filter"), Qt::StatusTipRole);
     _filterSelectComboBox->addItem(tr("Averaging"), QVariant(static_cast<uint16_t>(0x2000)));
     _filterSelectComboBox->setItemData(_filterSelectComboBox->count() - 1, tr("Averaging value from 'N' samples"), Qt::StatusTipRole);
     connect(_filterSelectComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &MotionSensorWidget::updateFilterParams);
@@ -650,6 +648,7 @@ void MotionSensorWidget::updateSensorParams(int index)
             _sensorParamLabels.at(0)->setText(tr("Window size:"));
             _sensorParamLabels.at(0)->setEnabled(true);
             _sensorParam0SpinBox->setEnabled(true);
+            _sensorParam0SpinBox->setRangeValue(1, 64);
             break;
 
         case 0x3101:  // QEI_CH1
@@ -692,6 +691,7 @@ void MotionSensorWidget::updateFilterParams(int index)
             _filterParamLabels.at(0)->setText(tr("Sample count:"));
             _filterParamLabels.at(0)->setEnabled(true);
             _filterParam0SpinBox->setEnabled(true);
+            _filterParam0SpinBox->setRangeValue(2, 256);
             break;
     }
 }
