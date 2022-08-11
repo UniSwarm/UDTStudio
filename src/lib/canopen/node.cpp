@@ -411,3 +411,8 @@ void Node::sendResetNode()
 {
     _nmt->sendResetNode();
 }
+
+void Node::sendStatusReq()
+{
+    _nmt->sendNodeGuarding();
+}

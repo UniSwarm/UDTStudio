@@ -36,6 +36,7 @@ public:
     void sendStop();
     void sendResetComm();
     void sendResetNode();
+    void sendNodeGuarding();
 
     QString type() const override;
 

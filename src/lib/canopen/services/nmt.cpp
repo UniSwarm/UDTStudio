@@ -76,6 +76,14 @@ void NMT::sendResetNode()
     sendNmt(NMT_CS_RESET_NODE);
 }
 
+void NMT::sendNodeGuarding()
+{
+    QCanBusFrame frameNodeGuarding;
+    frameNodeGuarding.setFrameId(0x700 + _nodeId);
+    frameNodeGuarding.setFrameType(QCanBusFrame::RemoteRequestFrame);
+    bus()->writeFrame(frameNodeGuarding);
+}
+
 void NMT::parseFrame(const QCanBusFrame &frame)
 {
     Q_UNUSED(frame)

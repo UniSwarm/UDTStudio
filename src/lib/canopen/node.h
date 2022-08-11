@@ -126,6 +126,7 @@ public slots:
     void sendStop();
     void sendResetComm();
     void sendResetNode();
+    void sendStatusReq();
 
 signals:
     void nameChanged(const QString &);
