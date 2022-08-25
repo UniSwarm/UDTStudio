@@ -247,16 +247,16 @@ QString ODIndexDb::unit(quint16 index, quint8 subIndex, quint16 profileNumber)
             return QString(" µs");
         }
     }
+    if (index == 0x2041)  // Board under/overvoltage
+    {
+        if (subIndex > 0)
+        {
+            return QString(" V");
+        }
+    }
 
     if (profileNumber == 402)
     {
-        if (index == 0x2041)  // Board under/overvoltage
-        {
-            if (subIndex > 0)
-            {
-                return QString(" V");
-            }
-        }
         if (index == 0x2801)  // bridge temps
         {
             if (subIndex > 0)
@@ -335,13 +335,25 @@ QString ODIndexDb::unit(quint16 index, quint8 subIndex, quint16 profileNumber)
         }
         if ((index & (quint16)0xF1FF) == 0x4082)
         {
-            if (subIndex == 2)  // Brake_excitation_time_ms
+            if (subIndex == 2 || (subIndex >= 5 && subIndex <= 8))  // Brake_excitation_time_ms and delays
             {
                 return QString(" ms");
             }
             if (subIndex == 3 || subIndex == 4)  // Brake_duty
             {
                 return QString("%");
+            }
+        }
+
+        if (index > 0x6000 && index < 0xB000)
+        {
+            uint16_t indexAxis = (index & 0x00FF) + 0x6000;
+            if (indexAxis == 0x6048 || indexAxis == 0x6049 || indexAxis == 0x604A)  // Vl acc, dec, qudec
+            {
+                if (subIndex == 2)  // Delta_time
+                {
+                    return QString(" ms");
+                }
             }
         }
     }
