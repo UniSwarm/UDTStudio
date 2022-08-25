@@ -55,6 +55,7 @@ private:
     QString formatNameIndexForTex(Index *index, bool generic);
     QString formatNameSubIndexForTex(QString nameSubIndex);
     QString formatIndex(Index *index, bool generic);
+    QString toCamelCase(QString &name);
 
     QString dataTypeStr(SubIndex *subIndex) const;
     QString accessStr(int access) const;

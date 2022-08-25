@@ -700,6 +700,7 @@ void TexGenerator::writeUnit(const SubIndex *subIndex, QTextStream *out) const
     QString unit = ODIndexDb::unit(subIndex->index()->index(), subIndex->subIndex(), static_cast<quint16>(_profile));
     unit.replace("°", "$^{\\circ}$");
     unit.replace("µ", "$\\mu$");
+    unit.replace("%", "\\%");
     unit = unit.trimmed();
 
     if (unit.isEmpty() && scaleDiv.isEmpty())
@@ -787,6 +788,7 @@ QString TexGenerator::formatNameIndexForTex(Index *index, bool generic)
     {
         nameForTex.append("X");
     }
+    nameForTex = toCamelCase(nameForTex);
 
     nameForTex.remove(QRegularExpression("^[a][0-9]"));
     nameForTex = formatNameSubIndexForTex(nameForTex);
@@ -795,6 +797,8 @@ QString TexGenerator::formatNameIndexForTex(Index *index, bool generic)
 
 QString TexGenerator::formatNameSubIndexForTex(QString nameSubIndex)
 {
+    nameSubIndex = toCamelCase(nameSubIndex);
+
     nameSubIndex.remove("_");
     nameSubIndex.remove(" ");
     nameSubIndex.remove("-");
@@ -834,6 +838,16 @@ QString TexGenerator::formatIndex(Index *index, bool generic)
     }
 
     return str;
+}
+
+QString TexGenerator::toCamelCase(QString &name)
+{
+    QStringList parts = name.split('_', Qt::SkipEmptyParts);
+    for (int i=1; i<parts.size(); ++i)
+    {
+        parts[i].replace(0, 1, parts[i][0].toUpper());
+    }
+    return parts.join("");
 }
 
 QString TexGenerator::dataTypeStr(SubIndex *subIndex) const
