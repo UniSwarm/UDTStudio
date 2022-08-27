@@ -49,7 +49,7 @@ bool ConfigurationApply::apply(DeviceModel *deviceModel, const QString &fileIniP
         SubIndex *subIndex = getSubIndex(deviceModel, childKey);
         if (subIndex == nullptr)
         {
-            dbg() << "Configuration | Object does not exist: " << childKey;
+            dbg() << objectFileDetail(fileIniPath, childKey) << "Configuration | Object does not exist: " << childKey;
             return false;
         }
 
@@ -273,4 +273,24 @@ QVariant ConfigurationApply::readData(SubIndex::DataType dataType, const QString
         default:
             return QVariant();
     }
+}
+
+QString ConfigurationApply::objectFileDetail(const QString &filePath, const QString &childKey)
+{
+    QFile file(filePath);
+    file.open(QIODevice::ReadOnly);
+    QTextStream stream(&file);
+
+    int line = 1;
+    while (!stream.atEnd())
+    {
+        QString text(stream.readLine());
+        if (text.contains(childKey))
+        {
+            return QString("%1:%2: ").arg(filePath).arg(line);
+        }
+        line++;
+    }
+
+    return QString();
 }

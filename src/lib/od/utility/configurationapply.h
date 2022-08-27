@@ -35,6 +35,8 @@ private:
     static QString renameItem(const QString &name, int value);
 
     static QVariant readData(SubIndex::DataType dataType, const QString &stringValue);
+
+    static QString objectFileDetail(const QString &filePath, const QString &childKey);
 };
 
 #endif  // CONFIGURATIONAPPLY_H
