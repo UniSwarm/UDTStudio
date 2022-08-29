@@ -68,7 +68,6 @@ MainWindow::MainWindow(QWidget *parent)
     {
         bus->setBusName("Bus can1");
         CanOpen::addBus(bus);
-        _canFrameListView->setBus(bus);
     }
 #endif
 

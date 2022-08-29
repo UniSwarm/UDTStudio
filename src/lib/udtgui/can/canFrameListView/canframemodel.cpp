@@ -61,6 +61,10 @@ CanOpenBus *CanFrameModel::bus() const
 void CanFrameModel::setBus(CanOpenBus *bus)
 {
     emit layoutAboutToBeChanged();
+    if (_bus != nullptr)
+    {
+        disconnect(_bus, &CanOpenBus::frameAvailable, this, &CanFrameModel::updateFrames);
+    }
     _bus = bus;
     _frameId = _bus->canFramesLog().count();
     connect(bus, &CanOpenBus::frameAvailable, this, &CanFrameModel::updateFrames);
