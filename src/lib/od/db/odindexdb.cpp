@@ -56,7 +56,7 @@ bool ODIndexDb::isQ1516(quint16 index, quint8 subIndex, quint16 profileNumber)
         }
         if ((index & (quint16)0xF1FF) == 0x4020 || (index & (quint16)0xF1FF) == 0x4040 || (index & (quint16)0xF1FF) == 0x4060)
         {
-            if (subIndex >= 1 && subIndex <= 4)
+            if (subIndex >= 1 && subIndex <= 5)
             {
                 return true;
             }
