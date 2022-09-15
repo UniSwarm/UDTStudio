@@ -7,8 +7,8 @@ EDSVersion=4.0
 FileName=umc1bds32.eds
 FileRevision=3
 FileVersion=1
-ModificationDate=07-18-2022
-ModificationTime=12:52PM
+ModificationDate=09-15-2022
+ModificationTime=02:11PM
 ModifiedBy=UniSwarm SASU
 
 [DeviceInfo]
@@ -56,7 +56,7 @@ SupportedObjects=3
 3=0x1018
 
 [1000]
-ParameterName=Device Type
+ParameterName=Device_type
 ObjectType=0x7
 DataType=0x0007
 AccessType=ro
@@ -64,19 +64,19 @@ DefaultValue=402
 PDOMapping=0
 
 [1001]
-ParameterName=Error Register
+ParameterName=Error_register
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
 PDOMapping=1
 
 [1018]
-ParameterName=Identity Object
+ParameterName=Identity_object
 ObjectType=0x9
 SubNumber=5
 
 [1018sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -84,7 +84,7 @@ DefaultValue=4
 PDOMapping=0
 
 [1018sub1]
-ParameterName=Vendor Id
+ParameterName=Vendor_ID
 ObjectType=0x7
 DataType=0x0007
 AccessType=ro
@@ -92,7 +92,7 @@ DefaultValue=0x000004A2
 PDOMapping=0
 
 [1018sub2]
-ParameterName=Product Code
+ParameterName=Product_code
 ObjectType=0x7
 DataType=0x0007
 AccessType=ro
@@ -100,7 +100,7 @@ DefaultValue=0x00001001
 PDOMapping=0
 
 [1018sub3]
-ParameterName=Revision number
+ParameterName=Revision_number
 ObjectType=0x7
 DataType=0x0007
 AccessType=ro
@@ -108,7 +108,7 @@ DefaultValue=0x01000003
 PDOMapping=0
 
 [1018sub4]
-ParameterName=Serial number
+ParameterName=Serial_number
 ObjectType=0x7
 DataType=0x0007
 AccessType=ro
@@ -351,12 +351,12 @@ SupportedObjects=232
 232=0x6FFF
 
 [1003]
-ParameterName=Predefined Error Field
+ParameterName=Predefined_error_field
 ObjectType=0x8
 SubNumber=2
 
 [1003sub0]
-ParameterName=Number of Errors
+ParameterName=Number_of_errors
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -364,14 +364,14 @@ DefaultValue=0
 PDOMapping=0
 
 [1003sub1]
-ParameterName=Standard Error Field
+ParameterName=Standard_error_field
 ObjectType=0x7
 DataType=0x0007
 AccessType=ro
 PDOMapping=0
 
 [1005]
-ParameterName=COB ID SYNC
+ParameterName=COB_ID_SYNC
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -379,7 +379,7 @@ DefaultValue=128
 PDOMapping=0
 
 [1008]
-ParameterName=Manufacturer Device Name
+ParameterName=Manufacturer_device_name
 ObjectType=0x7
 DataType=0x0009
 AccessType=ro
@@ -387,7 +387,7 @@ DefaultValue="UMC1BDS32 motion controller"
 PDOMapping=0
 
 [1009]
-ParameterName=Manufacturer Hardware Version
+ParameterName=Manufacturer_hardware_version
 ObjectType=0x7
 DataType=0x000B
 AccessType=ro
@@ -395,7 +395,7 @@ DefaultValue="vXX.XX.XXX"
 PDOMapping=0
 
 [100A]
-ParameterName=Manufacturer Software Version
+ParameterName=Manufacturer_software_version
 ObjectType=0x7
 DataType=0x0009
 AccessType=ro
@@ -403,7 +403,7 @@ DefaultValue="__DEVICE_SOFT_VERSION__"
 PDOMapping=0
 
 [100C]
-ParameterName=Guard Time
+ParameterName=Guard_time
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -413,7 +413,7 @@ LowLimit=0
 HighLimit=65535
 
 [100D]
-ParameterName=Life Time Factor
+ParameterName=Life_time_factor
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -423,12 +423,12 @@ LowLimit=0
 HighLimit=255
 
 [1010]
-ParameterName=Store Parameters
+ParameterName=Store_parameters
 ObjectType=0x8
 SubNumber=5
 
 [1010sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -436,7 +436,7 @@ DefaultValue=4
 PDOMapping=0
 
 [1010sub1]
-ParameterName=Save all Parameters
+ParameterName=Save_all_parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -444,7 +444,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1010sub2]
-ParameterName=Save Communication Parameters
+ParameterName=Save_communication_parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -452,7 +452,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1010sub3]
-ParameterName=Save Standardized Parameters
+ParameterName=Save_standardized_parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -460,7 +460,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1010sub4]
-ParameterName=Save Manufacturer Parameters
+ParameterName=Save_manufacturer_parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -468,12 +468,12 @@ DefaultValue=0
 PDOMapping=0
 
 [1011]
-ParameterName=Restore Default Parameters
+ParameterName=Restore_default_parameters
 ObjectType=0x8
 SubNumber=9
 
 [1011sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -481,7 +481,7 @@ DefaultValue=8
 PDOMapping=0
 
 [1011sub1]
-ParameterName=Restore all Factory Parameters
+ParameterName=Restore_all_factory_parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -489,7 +489,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1011sub2]
-ParameterName=Restore Factory Communication Parameters
+ParameterName=Restore_factory_communication_parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -497,7 +497,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1011sub3]
-ParameterName=Restore Factory Standardized Parameters
+ParameterName=Restore_factory_standardized_parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -505,7 +505,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1011sub4]
-ParameterName=Restore Factory Manufacturer Parameters
+ParameterName=Restore_factory_manufacturer_parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -513,7 +513,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1011sub5]
-ParameterName=Restore all saved Parameters
+ParameterName=Restore_all_saved_parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -521,7 +521,7 @@ DefaultValue=1
 PDOMapping=0
 
 [1011sub6]
-ParameterName=Restore saved Communication Parameters
+ParameterName=Restore_saved_communication_parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -529,7 +529,7 @@ DefaultValue=1
 PDOMapping=0
 
 [1011sub7]
-ParameterName=Restore saved Standardized Parameters
+ParameterName=Restore_saved_standardized_parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -537,7 +537,7 @@ DefaultValue=1
 PDOMapping=0
 
 [1011sub8]
-ParameterName=Restore saved Manufacturer Parameters
+ParameterName=Restore_saved_manufacturer_parameters
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -545,7 +545,7 @@ DefaultValue=1
 PDOMapping=0
 
 [1014]
-ParameterName=COB ID EMCY
+ParameterName=COB_ID_EMCY
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -553,12 +553,12 @@ DefaultValue=$NODEID+0x00000080
 PDOMapping=0
 
 [1016]
-ParameterName=Consumer Heartbeat
+ParameterName=Consumer_heartbeat
 ObjectType=0x8
 SubNumber=11
 
 [1016sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -566,7 +566,7 @@ DefaultValue=10
 PDOMapping=0
 
 [1016sub1]
-ParameterName=Consumer 01
+ParameterName=Consumer_1
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -576,7 +576,7 @@ LowLimit=0x0
 HighLimit=0x007FFFFF
 
 [1016sub2]
-ParameterName=Consumer 02
+ParameterName=Consumer_2
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -586,7 +586,7 @@ LowLimit=0x0
 HighLimit=0x007FFFFF
 
 [1016sub3]
-ParameterName=Consumer 03
+ParameterName=Consumer_3
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -596,7 +596,7 @@ LowLimit=0x0
 HighLimit=0x007FFFFF
 
 [1016sub4]
-ParameterName=Consumer 04
+ParameterName=Consumer_4
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -606,7 +606,7 @@ LowLimit=0x0
 HighLimit=0x007FFFFF
 
 [1016sub5]
-ParameterName=Consumer 05
+ParameterName=Consumer_5
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -616,7 +616,7 @@ LowLimit=0x0
 HighLimit=0x007FFFFF
 
 [1016sub6]
-ParameterName=Consumer 06
+ParameterName=Consumer_6
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -626,7 +626,7 @@ LowLimit=0x0
 HighLimit=0x007FFFFF
 
 [1016sub7]
-ParameterName=Consumer 07
+ParameterName=Consumer_7
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -636,7 +636,7 @@ LowLimit=0x0
 HighLimit=0x007FFFFF
 
 [1016sub8]
-ParameterName=Consumer 08
+ParameterName=Consumer_8
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -646,7 +646,7 @@ LowLimit=0x0
 HighLimit=0x007FFFFF
 
 [1016sub9]
-ParameterName=Consumer 09
+ParameterName=Consumer_9
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -656,7 +656,7 @@ LowLimit=0x0
 HighLimit=0x007FFFFF
 
 [1016subA]
-ParameterName=Consumer 10
+ParameterName=Consumer_10
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -666,7 +666,7 @@ LowLimit=0x0
 HighLimit=0x007FFFFF
 
 [1017]
-ParameterName=Producer Heartbeat Time
+ParameterName=Producer_heartbeat_time
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -676,12 +676,12 @@ LowLimit=0
 HighLimit=65535
 
 [1029]
-ParameterName=Error Behaviour
+ParameterName=Error_behaviour
 ObjectType=0x8
 SubNumber=2
 
 [1029sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -689,7 +689,7 @@ DefaultValue=1
 PDOMapping=0
 
 [1029sub1]
-ParameterName=Communication Error
+ParameterName=Communication_error
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -699,12 +699,12 @@ LowLimit=0
 HighLimit=2
 
 [1200]
-ParameterName=Server SDO Parameter 0
+ParameterName=Server_SDO_parameter_0
 ObjectType=0x9
 SubNumber=3
 
 [1200sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -714,7 +714,7 @@ LowLimit=0x02
 HighLimit=0x02
 
 [1200sub1]
-ParameterName=COB ID Client to Server
+ParameterName=COB_ID_client_to_server
 ObjectType=0x7
 DataType=0x0007
 AccessType=ro
@@ -722,7 +722,7 @@ DefaultValue=$NODEID+0x00000600
 PDOMapping=0
 
 [1200sub2]
-ParameterName=COB ID Server to Client
+ParameterName=COB_ID_server_to_client
 ObjectType=0x7
 DataType=0x0007
 AccessType=ro
@@ -730,12 +730,12 @@ DefaultValue=$NODEID+0x00000580
 PDOMapping=0
 
 [1400]
-ParameterName=RPDO Parameter 1
+ParameterName=RPDO_parameter_1
 ObjectType=0x9
 SubNumber=5
 
 [1400sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -743,7 +743,7 @@ DefaultValue=5
 PDOMapping=0
 
 [1400sub1]
-ParameterName=COB ID
+ParameterName=COB_ID
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -753,7 +753,7 @@ LowLimit=0x00000080
 HighLimit=0xFFFFFFFF
 
 [1400sub2]
-ParameterName=Transmission Type
+ParameterName=Transmission_type
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -761,7 +761,7 @@ DefaultValue=1
 PDOMapping=0
 
 [1400sub3]
-ParameterName=Inhibit Time
+ParameterName=Inhibit_time
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -769,7 +769,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1400sub5]
-ParameterName=Event timer
+ParameterName=Event_timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -777,12 +777,12 @@ DefaultValue=0
 PDOMapping=0
 
 [1401]
-ParameterName=RPDO Parameter 2
+ParameterName=RPDO_parameter_2
 ObjectType=0x9
 SubNumber=5
 
 [1401sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -790,7 +790,7 @@ DefaultValue=5
 PDOMapping=0
 
 [1401sub1]
-ParameterName=COB ID
+ParameterName=COB_ID
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -800,7 +800,7 @@ LowLimit=0x00000080
 HighLimit=0xFFFFFFFF
 
 [1401sub2]
-ParameterName=Transmission Type
+ParameterName=Transmission_type
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -808,7 +808,7 @@ DefaultValue=1
 PDOMapping=0
 
 [1401sub3]
-ParameterName=Inhibit Time
+ParameterName=Inhibit_time
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -816,7 +816,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1401sub5]
-ParameterName=Event timer
+ParameterName=Event_timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -824,12 +824,12 @@ DefaultValue=0
 PDOMapping=0
 
 [1402]
-ParameterName=RPDO Parameter 3
+ParameterName=RPDO_parameter_3
 ObjectType=0x9
 SubNumber=5
 
 [1402sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -837,7 +837,7 @@ DefaultValue=5
 PDOMapping=0
 
 [1402sub1]
-ParameterName=COB ID
+ParameterName=COB_ID
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -847,7 +847,7 @@ LowLimit=0x00000080
 HighLimit=0xFFFFFFFF
 
 [1402sub2]
-ParameterName=Transmission Type
+ParameterName=Transmission_type
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -855,7 +855,7 @@ DefaultValue=1
 PDOMapping=0
 
 [1402sub3]
-ParameterName=Inhibit Time
+ParameterName=Inhibit_time
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -863,7 +863,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1402sub5]
-ParameterName=Event timer
+ParameterName=Event_timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -871,12 +871,12 @@ DefaultValue=0
 PDOMapping=0
 
 [1403]
-ParameterName=RPDO Parameter 4
+ParameterName=RPDO_parameter_4
 ObjectType=0x9
 SubNumber=5
 
 [1403sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -884,7 +884,7 @@ DefaultValue=5
 PDOMapping=0
 
 [1403sub1]
-ParameterName=COB ID
+ParameterName=COB_ID
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -894,7 +894,7 @@ LowLimit=0x00000080
 HighLimit=0xFFFFFFFF
 
 [1403sub2]
-ParameterName=Transmission Type
+ParameterName=Transmission_type
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -902,7 +902,7 @@ DefaultValue=1
 PDOMapping=0
 
 [1403sub3]
-ParameterName=Inhibit Time
+ParameterName=Inhibit_time
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -910,7 +910,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1403sub5]
-ParameterName=Event timer
+ParameterName=Event_timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -918,12 +918,12 @@ DefaultValue=0
 PDOMapping=0
 
 [1600]
-ParameterName=RPDO Mapping 1
+ParameterName=RPDO_mapping_1
 ObjectType=0x9
 SubNumber=9
 
 [1600sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -933,7 +933,7 @@ LowLimit=0
 HighLimit=8
 
 [1600sub1]
-ParameterName=PDO Mapping Entry_1
+ParameterName=PDO_mapping_entry_1
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -941,7 +941,7 @@ DefaultValue=0x60400010
 PDOMapping=0
 
 [1600sub2]
-ParameterName=PDO Mapping Entry_2
+ParameterName=PDO_mapping_entry_2
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -949,7 +949,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1600sub3]
-ParameterName=PDO Mapping Entry_3
+ParameterName=PDO_mapping_entry_3
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -957,7 +957,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1600sub4]
-ParameterName=PDO Mapping Entry_4
+ParameterName=PDO_mapping_entry_4
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -965,7 +965,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1600sub5]
-ParameterName=PDO Mapping Entry_5
+ParameterName=PDO_mapping_entry_5
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -973,7 +973,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1600sub6]
-ParameterName=PDO Mapping Entry_6
+ParameterName=PDO_mapping_entry_6
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -981,7 +981,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1600sub7]
-ParameterName=PDO Mapping Entry_7
+ParameterName=PDO_mapping_entry_7
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -989,7 +989,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1600sub8]
-ParameterName=PDO Mapping Entry_8
+ParameterName=PDO_mapping_entry_8
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -997,12 +997,12 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1601]
-ParameterName=RPDO Mapping 2
+ParameterName=RPDO_mapping_2
 ObjectType=0x9
 SubNumber=9
 
 [1601sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -1012,7 +1012,7 @@ LowLimit=0
 HighLimit=8
 
 [1601sub1]
-ParameterName=PDO Mapping Entry_1
+ParameterName=PDO_mapping_entry_1
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1020,7 +1020,7 @@ DefaultValue=0x60400010
 PDOMapping=0
 
 [1601sub2]
-ParameterName=PDO Mapping Entry_2
+ParameterName=PDO_mapping_entry_2
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1028,7 +1028,7 @@ DefaultValue=0x60600008
 PDOMapping=0
 
 [1601sub3]
-ParameterName=PDO Mapping Entry_3
+ParameterName=PDO_mapping_entry_3
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1036,7 +1036,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1601sub4]
-ParameterName=PDO Mapping Entry_4
+ParameterName=PDO_mapping_entry_4
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1044,7 +1044,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1601sub5]
-ParameterName=PDO Mapping Entry_5
+ParameterName=PDO_mapping_entry_5
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1052,7 +1052,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1601sub6]
-ParameterName=PDO Mapping Entry_6
+ParameterName=PDO_mapping_entry_6
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1060,7 +1060,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1601sub7]
-ParameterName=PDO Mapping Entry_7
+ParameterName=PDO_mapping_entry_7
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1068,7 +1068,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1601sub8]
-ParameterName=PDO Mapping Entry_8
+ParameterName=PDO_mapping_entry_8
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1076,12 +1076,12 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1602]
-ParameterName=RPDO Mapping 3
+ParameterName=RPDO_mapping_3
 ObjectType=0x9
 SubNumber=9
 
 [1602sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -1091,7 +1091,7 @@ LowLimit=0
 HighLimit=8
 
 [1602sub1]
-ParameterName=PDO Mapping Entry_1
+ParameterName=PDO_mapping_entry_1
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1099,7 +1099,7 @@ DefaultValue=0x60400010
 PDOMapping=0
 
 [1602sub2]
-ParameterName=PDO Mapping Entry_2
+ParameterName=PDO_mapping_entry_2
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1107,7 +1107,7 @@ DefaultValue=0x607A0020
 PDOMapping=0
 
 [1602sub3]
-ParameterName=PDO Mapping Entry_3
+ParameterName=PDO_mapping_entry_3
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1115,7 +1115,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1602sub4]
-ParameterName=PDO Mapping Entry_4
+ParameterName=PDO_mapping_entry_4
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1123,7 +1123,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1602sub5]
-ParameterName=PDO Mapping Entry_5
+ParameterName=PDO_mapping_entry_5
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1131,7 +1131,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1602sub6]
-ParameterName=PDO Mapping Entry_6
+ParameterName=PDO_mapping_entry_6
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1139,7 +1139,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1602sub7]
-ParameterName=PDO Mapping Entry_7
+ParameterName=PDO_mapping_entry_7
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1147,7 +1147,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1602sub8]
-ParameterName=PDO Mapping Entry_8
+ParameterName=PDO_mapping_entry_8
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1155,12 +1155,12 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1603]
-ParameterName=RPDO Mapping 4
+ParameterName=RPDO_mapping_4
 ObjectType=0x9
 SubNumber=9
 
 [1603sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -1170,7 +1170,7 @@ LowLimit=0
 HighLimit=8
 
 [1603sub1]
-ParameterName=PDO Mapping Entry_1
+ParameterName=PDO_mapping_entry_1
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1178,7 +1178,7 @@ DefaultValue=0x60400010
 PDOMapping=0
 
 [1603sub2]
-ParameterName=PDO Mapping Entry_2
+ParameterName=PDO_mapping_entry_2
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1186,7 +1186,7 @@ DefaultValue=0x60FF0020
 PDOMapping=0
 
 [1603sub3]
-ParameterName=PDO Mapping Entry_3
+ParameterName=PDO_mapping_entry_3
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1194,7 +1194,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1603sub4]
-ParameterName=PDO Mapping Entry_4
+ParameterName=PDO_mapping_entry_4
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1202,7 +1202,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1603sub5]
-ParameterName=PDO Mapping Entry_5
+ParameterName=PDO_mapping_entry_5
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1210,7 +1210,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1603sub6]
-ParameterName=PDO Mapping Entry_6
+ParameterName=PDO_mapping_entry_6
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1218,7 +1218,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1603sub7]
-ParameterName=PDO Mapping Entry_7
+ParameterName=PDO_mapping_entry_7
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1226,7 +1226,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1603sub8]
-ParameterName=PDO Mapping Entry_8
+ParameterName=PDO_mapping_entry_8
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1234,12 +1234,12 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1800]
-ParameterName=TPDO Parameter 1
+ParameterName=TPDO_parameter_1
 ObjectType=0x9
 SubNumber=6
 
 [1800sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -1249,7 +1249,7 @@ LowLimit=0x02
 HighLimit=0x06
 
 [1800sub1]
-ParameterName=COB ID
+ParameterName=COB_ID
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1259,7 +1259,7 @@ LowLimit=0x00000080
 HighLimit=0xFFFFFFFF
 
 [1800sub2]
-ParameterName=Transmission Type
+ParameterName=Transmission_type
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -1267,7 +1267,7 @@ DefaultValue=1
 PDOMapping=0
 
 [1800sub3]
-ParameterName=Inhibit Time
+ParameterName=Inhibit_time
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -1275,7 +1275,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1800sub5]
-ParameterName=Event timer
+ParameterName=Event_timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -1283,7 +1283,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1800sub6]
-ParameterName=SYNC start value
+ParameterName=SYNC_start_value
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -1291,12 +1291,12 @@ DefaultValue=0
 PDOMapping=0
 
 [1801]
-ParameterName=TPDO Parameter 2
+ParameterName=TPDO_parameter_2
 ObjectType=0x9
 SubNumber=6
 
 [1801sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -1306,7 +1306,7 @@ LowLimit=2
 HighLimit=6
 
 [1801sub1]
-ParameterName=COB ID
+ParameterName=COB_ID
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1316,7 +1316,7 @@ LowLimit=0x00000080
 HighLimit=0xFFFFFFFF
 
 [1801sub2]
-ParameterName=Transmission Type
+ParameterName=Transmission_type
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -1324,7 +1324,7 @@ DefaultValue=1
 PDOMapping=0
 
 [1801sub3]
-ParameterName=Inhibit Time
+ParameterName=Inhibit_time
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -1332,7 +1332,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1801sub5]
-ParameterName=Event timer
+ParameterName=Event_timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -1340,7 +1340,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1801sub6]
-ParameterName=SYNC start value
+ParameterName=SYNC_start_value
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -1348,12 +1348,12 @@ DefaultValue=0
 PDOMapping=0
 
 [1802]
-ParameterName=TPDO Parameter 3
+ParameterName=TPDO_parameter_3
 ObjectType=0x9
 SubNumber=6
 
 [1802sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -1363,7 +1363,7 @@ LowLimit=0x02
 HighLimit=0x06
 
 [1802sub1]
-ParameterName=COB ID
+ParameterName=COB_ID
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1373,7 +1373,7 @@ LowLimit=0x00000080
 HighLimit=0xFFFFFFFF
 
 [1802sub2]
-ParameterName=Transmission Type
+ParameterName=Transmission_type
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -1381,7 +1381,7 @@ DefaultValue=1
 PDOMapping=0
 
 [1802sub3]
-ParameterName=Inhibit Time
+ParameterName=Inhibit_time
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -1389,7 +1389,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1802sub5]
-ParameterName=Event timer
+ParameterName=Event_timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -1397,7 +1397,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1802sub6]
-ParameterName=SYNC start value
+ParameterName=SYNC_start_value
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -1405,12 +1405,12 @@ DefaultValue=0
 PDOMapping=0
 
 [1803]
-ParameterName=TPDO Parameter 4
+ParameterName=TPDO_parameter_4
 ObjectType=0x9
 SubNumber=6
 
 [1803sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -1420,7 +1420,7 @@ LowLimit=0x02
 HighLimit=0x06
 
 [1803sub1]
-ParameterName=COB ID
+ParameterName=COB_ID
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1430,7 +1430,7 @@ LowLimit=0x00000080
 HighLimit=0xFFFFFFFF
 
 [1803sub2]
-ParameterName=Transmission Type
+ParameterName=Transmission_type
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -1438,7 +1438,7 @@ DefaultValue=1
 PDOMapping=0
 
 [1803sub3]
-ParameterName=Inhibit Time
+ParameterName=Inhibit_time
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -1446,7 +1446,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1803sub5]
-ParameterName=Event timer
+ParameterName=Event_timer
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
@@ -1454,7 +1454,7 @@ DefaultValue=0
 PDOMapping=0
 
 [1803sub6]
-ParameterName=SYNC start value
+ParameterName=SYNC_start_value
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -1462,12 +1462,12 @@ DefaultValue=0
 PDOMapping=0
 
 [1A00]
-ParameterName=TPDO Mapping 1
+ParameterName=TPDO_mapping_1
 ObjectType=0x9
 SubNumber=9
 
 [1A00sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -1477,7 +1477,7 @@ LowLimit=0
 HighLimit=8
 
 [1A00sub1]
-ParameterName=PDO Mapping Entry_1
+ParameterName=PDO_mapping_entry_1
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1485,7 +1485,7 @@ DefaultValue=0x60410010
 PDOMapping=0
 
 [1A00sub2]
-ParameterName=PDO Mapping Entry_2
+ParameterName=PDO_mapping_entry_2
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1493,7 +1493,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A00sub3]
-ParameterName=PDO Mapping Entry_3
+ParameterName=PDO_mapping_entry_3
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1501,7 +1501,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A00sub4]
-ParameterName=PDO Mapping Entry_4
+ParameterName=PDO_mapping_entry_4
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1509,7 +1509,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A00sub5]
-ParameterName=PDO Mapping Entry_5
+ParameterName=PDO_mapping_entry_5
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1517,7 +1517,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A00sub6]
-ParameterName=PDO Mapping Entry_6
+ParameterName=PDO_mapping_entry_6
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1525,7 +1525,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A00sub7]
-ParameterName=PDO Mapping Entry_7
+ParameterName=PDO_mapping_entry_7
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1533,7 +1533,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A00sub8]
-ParameterName=PDO Mapping Entry_8
+ParameterName=PDO_mapping_entry_8
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1541,12 +1541,12 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A01]
-ParameterName=TPDO Mapping 2
+ParameterName=TPDO_mapping_2
 ObjectType=0x9
 SubNumber=9
 
 [1A01sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -1556,7 +1556,7 @@ LowLimit=0
 HighLimit=8
 
 [1A01sub1]
-ParameterName=PDO Mapping Entry_1
+ParameterName=PDO_mapping_entry_1
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1564,7 +1564,7 @@ DefaultValue=0x60410010
 PDOMapping=0
 
 [1A01sub2]
-ParameterName=PDO Mapping Entry_2
+ParameterName=PDO_mapping_entry_2
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1572,7 +1572,7 @@ DefaultValue=0x60610008
 PDOMapping=0
 
 [1A01sub3]
-ParameterName=PDO Mapping Entry_3
+ParameterName=PDO_mapping_entry_3
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1580,7 +1580,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A01sub4]
-ParameterName=PDO Mapping Entry_4
+ParameterName=PDO_mapping_entry_4
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1588,7 +1588,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A01sub5]
-ParameterName=PDO Mapping Entry_5
+ParameterName=PDO_mapping_entry_5
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1596,7 +1596,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A01sub6]
-ParameterName=PDO Mapping Entry_6
+ParameterName=PDO_mapping_entry_6
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1604,7 +1604,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A01sub7]
-ParameterName=PDO Mapping Entry_7
+ParameterName=PDO_mapping_entry_7
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1612,7 +1612,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A01sub8]
-ParameterName=PDO Mapping Entry_8
+ParameterName=PDO_mapping_entry_8
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1620,12 +1620,12 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A02]
-ParameterName=TPDO Mapping 3
+ParameterName=TPDO_mapping_3
 ObjectType=0x9
 SubNumber=9
 
 [1A02sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -1635,7 +1635,7 @@ LowLimit=0
 HighLimit=8
 
 [1A02sub1]
-ParameterName=PDO Mapping Entry_1
+ParameterName=PDO_mapping_entry_1
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1643,7 +1643,7 @@ DefaultValue=0x60410010
 PDOMapping=0
 
 [1A02sub2]
-ParameterName=PDO Mapping Entry_2
+ParameterName=PDO_mapping_entry_2
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1651,7 +1651,7 @@ DefaultValue=0x60640020
 PDOMapping=0
 
 [1A02sub3]
-ParameterName=PDO Mapping Entry_3
+ParameterName=PDO_mapping_entry_3
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1659,7 +1659,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A02sub4]
-ParameterName=PDO Mapping Entry_4
+ParameterName=PDO_mapping_entry_4
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1667,7 +1667,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A02sub5]
-ParameterName=PDO Mapping Entry_5
+ParameterName=PDO_mapping_entry_5
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1675,7 +1675,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A02sub6]
-ParameterName=PDO Mapping Entry_6
+ParameterName=PDO_mapping_entry_6
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1683,7 +1683,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A02sub7]
-ParameterName=PDO Mapping Entry_7
+ParameterName=PDO_mapping_entry_7
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1691,7 +1691,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A02sub8]
-ParameterName=PDO Mapping Entry_8
+ParameterName=PDO_mapping_entry_8
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1699,12 +1699,12 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A03]
-ParameterName=TPDO Mapping 4
+ParameterName=TPDO_mapping_4
 ObjectType=0x9
 SubNumber=9
 
 [1A03sub0]
-ParameterName=Number of entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
@@ -1714,7 +1714,7 @@ LowLimit=0
 HighLimit=8
 
 [1A03sub1]
-ParameterName=PDO Mapping Entry_1
+ParameterName=PDO_mapping_entry_1
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1722,7 +1722,7 @@ DefaultValue=0x60410010
 PDOMapping=0
 
 [1A03sub2]
-ParameterName=PDO Mapping Entry_2
+ParameterName=PDO_mapping_entry_2
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1730,7 +1730,7 @@ DefaultValue=0x606C0020
 PDOMapping=0
 
 [1A03sub3]
-ParameterName=PDO Mapping Entry_3
+ParameterName=PDO_mapping_entry_3
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1738,7 +1738,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A03sub4]
-ParameterName=PDO Mapping Entry_4
+ParameterName=PDO_mapping_entry_4
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1746,7 +1746,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A03sub5]
-ParameterName=PDO Mapping Entry_5
+ParameterName=PDO_mapping_entry_5
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1754,7 +1754,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A03sub6]
-ParameterName=PDO Mapping Entry_6
+ParameterName=PDO_mapping_entry_6
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1762,7 +1762,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A03sub7]
-ParameterName=PDO Mapping Entry_7
+ParameterName=PDO_mapping_entry_7
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1770,7 +1770,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1A03sub8]
-ParameterName=PDO Mapping Entry_8
+ParameterName=PDO_mapping_entry_8
 ObjectType=0x7
 DataType=0x0007
 AccessType=rw
@@ -1778,12 +1778,12 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [1F51]
-ParameterName=Program control
+ParameterName=Program_control
 ObjectType=0x8
 SubNumber=2
 
 [1F51sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -1799,12 +1799,12 @@ DefaultValue=0
 PDOMapping=0
 
 [1F55]
-ParameterName=Expected program software identification
+ParameterName=Expected_program_software_identification
 ObjectType=0x8
 SubNumber=2
 
 [1F55sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -1820,12 +1820,12 @@ DefaultValue=0
 PDOMapping=0
 
 [1F56]
-ParameterName=Program software identification
+ParameterName=Program_software_identification
 ObjectType=0x8
 SubNumber=2
 
 [1F56sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -1841,12 +1841,12 @@ DefaultValue=0
 PDOMapping=0
 
 [1F57]
-ParameterName=Flash status identification
+ParameterName=Flash_status_identification
 ObjectType=0x8
 SubNumber=2
 
 [1F57sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -1909,12 +1909,12 @@ AccessType=ro
 PDOMapping=1
 
 [6046]
-ParameterName=a1_vl_Min_Max
+ParameterName=a1_vl_Min_max
 ObjectType=0x8
 SubNumber=3
 
 [6046sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -1936,7 +1936,7 @@ ParameterName=Max
 ObjectType=0x7
 DataType=0x0007
 AccessType=rww
-DefaultValue=1500
+DefaultValue=1000
 PDOMapping=1
 LowLimit=0
 HighLimit=0xFFFFFFFF
@@ -1947,7 +1947,7 @@ ObjectType=0x9
 SubNumber=3
 
 [6048sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -1980,7 +1980,7 @@ ObjectType=0x9
 SubNumber=3
 
 [6049sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -2013,7 +2013,7 @@ ObjectType=0x9
 SubNumber=3
 
 [604Asub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -2046,7 +2046,7 @@ ObjectType=0x8
 SubNumber=3
 
 [604Bsub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -2079,7 +2079,7 @@ ObjectType=0x8
 SubNumber=3
 
 [604Csub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -2201,7 +2201,7 @@ ParameterName=a1_pc_Following_error_window
 ObjectType=0x7
 DataType=0x0007
 AccessType=rww
-DefaultValue=0
+DefaultValue=131072
 PDOMapping=1
 
 [6066]
@@ -2209,7 +2209,7 @@ ParameterName=a1_pc_Following_error_time_out
 ObjectType=0x7
 DataType=0x0006
 AccessType=rww
-DefaultValue=0
+DefaultValue=500
 PDOMapping=1
 
 [6067]
@@ -2217,7 +2217,7 @@ ParameterName=a1_pc_Position_window
 ObjectType=0x7
 DataType=0x0007
 AccessType=rww
-DefaultValue=0
+DefaultValue=16384
 PDOMapping=1
 
 [6068]
@@ -2225,7 +2225,7 @@ ParameterName=a1_pc_Position_window_time
 ObjectType=0x7
 DataType=0x0006
 AccessType=rww
-DefaultValue=0
+DefaultValue=10
 PDOMapping=1
 
 [6069]
@@ -2371,7 +2371,7 @@ ObjectType=0x8
 SubNumber=3
 
 [607Bsub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -2383,7 +2383,7 @@ ParameterName=Min
 ObjectType=0x7
 DataType=0x0004
 AccessType=rww
-DefaultValue=-262143
+DefaultValue=-2147483648
 PDOMapping=1
 
 [607Bsub2]
@@ -2391,7 +2391,7 @@ ParameterName=Max
 ObjectType=0x7
 DataType=0x0004
 AccessType=rww
-DefaultValue=262144
+DefaultValue=2147483647
 PDOMapping=1
 
 [607C]
@@ -2403,12 +2403,12 @@ DefaultValue=0
 PDOMapping=1
 
 [607D]
-ParameterName=a1_pc_Software_position_Limit
+ParameterName=a1_pc_Software_position_limit
 ObjectType=0x8
 SubNumber=3
 
 [607Dsub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -2420,7 +2420,7 @@ ParameterName=Min
 ObjectType=0x7
 DataType=0x0004
 AccessType=rww
-DefaultValue=-262143
+DefaultValue=-2147483648
 PDOMapping=1
 
 [607Dsub2]
@@ -2428,7 +2428,7 @@ ParameterName=Max
 ObjectType=0x7
 DataType=0x0004
 AccessType=rww
-DefaultValue=262144
+DefaultValue=2147483647
 PDOMapping=1
 
 [607E]
@@ -2444,7 +2444,7 @@ ParameterName=a1_pc_Max_profile_velocity
 ObjectType=0x7
 DataType=0x0007
 AccessType=rww
-DefaultValue=1
+DefaultValue=16384
 PDOMapping=1
 
 [6080]
@@ -2452,7 +2452,7 @@ ParameterName=a1_pc_Max_motor_speed
 ObjectType=0x7
 DataType=0x0007
 AccessType=rww
-DefaultValue=1
+DefaultValue=16384
 PDOMapping=1
 
 [6081]
@@ -2460,7 +2460,7 @@ ParameterName=a1_pc_Profile_velocity
 ObjectType=0x7
 DataType=0x0007
 AccessType=rww
-DefaultValue=1
+DefaultValue=16384
 PDOMapping=1
 
 [6082]
@@ -2525,7 +2525,7 @@ ObjectType=0x8
 SubNumber=3
 
 [608Fsub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -2554,7 +2554,7 @@ ObjectType=0x8
 SubNumber=3
 
 [6090sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -2583,7 +2583,7 @@ ObjectType=0x8
 SubNumber=3
 
 [6091sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -2612,7 +2612,7 @@ ObjectType=0x8
 SubNumber=3
 
 [6092sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -2649,7 +2649,7 @@ ObjectType=0x8
 SubNumber=3
 
 [6099sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -2694,7 +2694,7 @@ ObjectType=0x8
 SubNumber=7
 
 [60A4sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -2817,7 +2817,7 @@ AccessType=ro
 PDOMapping=0
 
 [60C0]
-ParameterName=a1_ip_Sub_Mode_Select
+ParameterName=a1_ip_Sub_mode_select
 ObjectType=0x7
 DataType=0x0003
 AccessType=rww
@@ -2827,12 +2827,12 @@ LowLimit=-32768
 HighLimit=0
 
 [60C1]
-ParameterName=a1_ip_Data_Record
+ParameterName=a1_ip_Data_record
 ObjectType=0x8
 SubNumber=2
 
 [60C1sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -2852,12 +2852,12 @@ LowLimit=-0x7FFFFFFF
 HighLimit=0x7FFFFFFF
 
 [60C2]
-ParameterName=a1_ip_Time_Period
+ParameterName=a1_ip_Time_period
 ObjectType=0x9
 SubNumber=3
 
 [60C2sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -2885,12 +2885,12 @@ LowLimit=-3
 HighLimit=63
 
 [60C4]
-ParameterName=a1_ip_Data_Configuration
+ParameterName=a1_ip_Data_configuration
 ObjectType=0x9
 SubNumber=7
 
 [60C4sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -3024,7 +3024,7 @@ ObjectType=0x8
 SubNumber=3
 
 [60FEsub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -3176,12 +3176,12 @@ AccessType=ro
 PDOMapping=1
 
 [6846]
-ParameterName=a2_vl_Min_Max
+ParameterName=a2_vl_Min_max
 ObjectType=0x8
 SubNumber=3
 
 [6846sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -3203,7 +3203,7 @@ ParameterName=Max
 ObjectType=0x7
 DataType=0x0007
 AccessType=rww
-DefaultValue=1500
+DefaultValue=1000
 PDOMapping=1
 LowLimit=0
 HighLimit=0xFFFFFFFF
@@ -3214,7 +3214,7 @@ ObjectType=0x9
 SubNumber=3
 
 [6848sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -3247,7 +3247,7 @@ ObjectType=0x9
 SubNumber=3
 
 [6849sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -3280,7 +3280,7 @@ ObjectType=0x9
 SubNumber=3
 
 [684Asub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -3313,7 +3313,7 @@ ObjectType=0x8
 SubNumber=3
 
 [684Bsub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -3346,7 +3346,7 @@ ObjectType=0x8
 SubNumber=3
 
 [684Csub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -3468,7 +3468,7 @@ ParameterName=a2_pc_Following_error_window
 ObjectType=0x7
 DataType=0x0007
 AccessType=rww
-DefaultValue=0
+DefaultValue=131072
 PDOMapping=1
 
 [6866]
@@ -3476,7 +3476,7 @@ ParameterName=a2_pc_Following_error_time_out
 ObjectType=0x7
 DataType=0x0006
 AccessType=rww
-DefaultValue=0
+DefaultValue=500
 PDOMapping=1
 
 [6867]
@@ -3484,7 +3484,7 @@ ParameterName=a2_pc_Position_window
 ObjectType=0x7
 DataType=0x0007
 AccessType=rww
-DefaultValue=0
+DefaultValue=16384
 PDOMapping=1
 
 [6868]
@@ -3492,7 +3492,7 @@ ParameterName=a2_pc_Position_window_time
 ObjectType=0x7
 DataType=0x0006
 AccessType=rww
-DefaultValue=0
+DefaultValue=10
 PDOMapping=1
 
 [6869]
@@ -3638,7 +3638,7 @@ ObjectType=0x8
 SubNumber=3
 
 [687Bsub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -3650,7 +3650,7 @@ ParameterName=Min
 ObjectType=0x7
 DataType=0x0004
 AccessType=rww
-DefaultValue=-262143
+DefaultValue=-2147483648
 PDOMapping=1
 
 [687Bsub2]
@@ -3658,7 +3658,7 @@ ParameterName=Max
 ObjectType=0x7
 DataType=0x0004
 AccessType=rww
-DefaultValue=262144
+DefaultValue=2147483647
 PDOMapping=1
 
 [687C]
@@ -3670,12 +3670,12 @@ DefaultValue=0
 PDOMapping=1
 
 [687D]
-ParameterName=a2_pc_Software_position_Limit
+ParameterName=a2_pc_Software_position_limit
 ObjectType=0x8
 SubNumber=3
 
 [687Dsub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -3687,7 +3687,7 @@ ParameterName=Min
 ObjectType=0x7
 DataType=0x0004
 AccessType=rww
-DefaultValue=-262143
+DefaultValue=-2147483648
 PDOMapping=1
 
 [687Dsub2]
@@ -3695,7 +3695,7 @@ ParameterName=Max
 ObjectType=0x7
 DataType=0x0004
 AccessType=rww
-DefaultValue=262144
+DefaultValue=2147483647
 PDOMapping=1
 
 [687E]
@@ -3711,7 +3711,7 @@ ParameterName=a2_pc_Max_profile_velocity
 ObjectType=0x7
 DataType=0x0007
 AccessType=rww
-DefaultValue=1
+DefaultValue=16384
 PDOMapping=1
 
 [6880]
@@ -3719,7 +3719,7 @@ ParameterName=a2_pc_Max_motor_speed
 ObjectType=0x7
 DataType=0x0007
 AccessType=rww
-DefaultValue=1
+DefaultValue=16384
 PDOMapping=1
 
 [6881]
@@ -3727,7 +3727,7 @@ ParameterName=a2_pc_Profile_velocity
 ObjectType=0x7
 DataType=0x0007
 AccessType=rww
-DefaultValue=1
+DefaultValue=16384
 PDOMapping=1
 
 [6882]
@@ -3792,7 +3792,7 @@ ObjectType=0x8
 SubNumber=3
 
 [688Fsub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -3821,7 +3821,7 @@ ObjectType=0x8
 SubNumber=3
 
 [6890sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -3850,7 +3850,7 @@ ObjectType=0x8
 SubNumber=3
 
 [6891sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -3879,7 +3879,7 @@ ObjectType=0x8
 SubNumber=3
 
 [6892sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -3916,7 +3916,7 @@ ObjectType=0x8
 SubNumber=3
 
 [6899sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -3961,7 +3961,7 @@ ObjectType=0x8
 SubNumber=7
 
 [68A4sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -4084,7 +4084,7 @@ AccessType=ro
 PDOMapping=0
 
 [68C0]
-ParameterName=a2_ip_Sub_Mode_Select
+ParameterName=a2_ip_Sub_mode_select
 ObjectType=0x7
 DataType=0x0003
 AccessType=rww
@@ -4094,12 +4094,12 @@ LowLimit=-32768
 HighLimit=0
 
 [68C1]
-ParameterName=a2_ip_Data_Record
+ParameterName=a2_ip_Data_record
 ObjectType=0x8
 SubNumber=2
 
 [68C1sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -4119,12 +4119,12 @@ LowLimit=-0x7FFFFFFF
 HighLimit=0x7FFFFFFF
 
 [68C2]
-ParameterName=a2_ip_Time_Period
+ParameterName=a2_ip_Time_period
 ObjectType=0x9
 SubNumber=3
 
 [68C2sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -4152,12 +4152,12 @@ LowLimit=-3
 HighLimit=63
 
 [68C4]
-ParameterName=a2_ip_Data_Configuration
+ParameterName=a2_ip_Data_configuration
 ObjectType=0x9
 SubNumber=7
 
 [68C4sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -4291,7 +4291,7 @@ ObjectType=0x8
 SubNumber=3
 
 [68FEsub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=const
@@ -4396,7 +4396,7 @@ AccessType=ro
 PDOMapping=0
 
 [ManufacturerObjects]
-SupportedObjects=84
+SupportedObjects=85
 1=0x2000
 2=0x2001
 3=0x2002
@@ -4411,76 +4411,77 @@ SupportedObjects=84
 12=0x2040
 13=0x2041
 14=0x2050
-15=0x2801
-16=0x2802
-17=0x2803
-18=0x2804
-19=0x2805
-20=0x2810
-21=0x2A00
-22=0x2A01
-23=0x4000
-24=0x4006
-25=0x4007
-26=0x4008
-27=0x4009
-28=0x4020
-29=0x4021
-30=0x4022
-31=0x4023
-32=0x4024
-33=0x4025
-34=0x4040
-35=0x4041
-36=0x4042
-37=0x4043
-38=0x4044
-39=0x4045
-40=0x4060
-41=0x4061
-42=0x4062
-43=0x4063
-44=0x4064
-45=0x4065
-46=0x4081
-47=0x4082
-48=0x4083
-49=0x41F0
-50=0x41FA
-51=0x41FB
-52=0x41FC
-53=0x41FD
-54=0x4200
-55=0x4206
-56=0x4207
-57=0x4208
-58=0x4209
-59=0x4220
-60=0x4221
-61=0x4222
-62=0x4223
-63=0x4224
-64=0x4225
-65=0x4240
-66=0x4241
-67=0x4242
-68=0x4243
-69=0x4244
-70=0x4245
-71=0x4260
-72=0x4261
-73=0x4262
-74=0x4263
-75=0x4264
-76=0x4265
-77=0x4281
-78=0x4282
-79=0x4283
-80=0x43F0
-81=0x43FA
-82=0x43FB
-83=0x43FC
-84=0x43FD
+15=0x2800
+16=0x2801
+17=0x2802
+18=0x2803
+19=0x2804
+20=0x2805
+21=0x2810
+22=0x2A00
+23=0x2A01
+24=0x4000
+25=0x4006
+26=0x4007
+27=0x4008
+28=0x4009
+29=0x4020
+30=0x4021
+31=0x4022
+32=0x4023
+33=0x4024
+34=0x4025
+35=0x4040
+36=0x4041
+37=0x4042
+38=0x4043
+39=0x4044
+40=0x4045
+41=0x4060
+42=0x4061
+43=0x4062
+44=0x4063
+45=0x4064
+46=0x4065
+47=0x4081
+48=0x4082
+49=0x4083
+50=0x41F0
+51=0x41FA
+52=0x41FB
+53=0x41FC
+54=0x41FD
+55=0x4200
+56=0x4206
+57=0x4207
+58=0x4208
+59=0x4209
+60=0x4220
+61=0x4221
+62=0x4222
+63=0x4223
+64=0x4224
+65=0x4225
+66=0x4240
+67=0x4241
+68=0x4242
+69=0x4243
+70=0x4244
+71=0x4245
+72=0x4260
+73=0x4261
+74=0x4262
+75=0x4263
+76=0x4264
+77=0x4265
+78=0x4281
+79=0x4282
+80=0x4283
+81=0x43F0
+82=0x43FA
+83=0x43FB
+84=0x43FC
+85=0x43FD
 
 [2000]
 ParameterName=Board_voltage
@@ -4488,7 +4489,7 @@ ObjectType=0x8
 SubNumber=2
 
 [2000sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -4535,12 +4536,12 @@ DefaultValue=1
 PDOMapping=0
 
 [2020]
-ParameterName=cpu_Temperature
+ParameterName=CPU_temperature
 ObjectType=0x8
 SubNumber=3
 
 [2020sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -4548,26 +4549,26 @@ DefaultValue=2
 PDOMapping=0
 
 [2020sub1]
-ParameterName=cpu1_Temperature
+ParameterName=CPU1_temperature
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
 [2020sub2]
-ParameterName=cpu2_Temperature
+ParameterName=CPU2_temperature
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
 [2021]
-ParameterName=cpu_Life_cycle
+ParameterName=CPU_life_cycle
 ObjectType=0x8
 SubNumber=3
 
 [2021sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -4575,26 +4576,26 @@ DefaultValue=2
 PDOMapping=0
 
 [2021sub1]
-ParameterName=cpu1_Life_cycle
+ParameterName=CPU1_life_cycle
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
 PDOMapping=1
 
 [2021sub2]
-ParameterName=cpu2_Life_cycle
+ParameterName=CPU2_life_cycle
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
 PDOMapping=1
 
 [2022]
-ParameterName=cpu_Error
+ParameterName=CPU_error
 ObjectType=0x8
 SubNumber=3
 
 [2022sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -4602,26 +4603,26 @@ DefaultValue=2
 PDOMapping=0
 
 [2022sub1]
-ParameterName=cpu1_Error
+ParameterName=CPU1_error
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
 PDOMapping=0
 
 [2022sub2]
-ParameterName=cpu2_Error
+ParameterName=CPU2_error
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
 PDOMapping=0
 
 [2023]
-ParameterName=cpu_Min_cycle_us
+ParameterName=CPU_min_cycle_us
 ObjectType=0x8
 SubNumber=3
 
 [2023sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -4629,26 +4630,26 @@ DefaultValue=2
 PDOMapping=0
 
 [2023sub1]
-ParameterName=cpu1_Min_cycle_us
+ParameterName=CPU1_min_cycle_us
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
 PDOMapping=0
 
 [2023sub2]
-ParameterName=cpu2_Min_cycle_us
+ParameterName=CPU2_min_cycle_us
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
 PDOMapping=0
 
 [2024]
-ParameterName=cpu_Max_cycle_us
+ParameterName=CPU_max_cycle_us
 ObjectType=0x8
 SubNumber=3
 
 [2024sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -4656,26 +4657,26 @@ DefaultValue=2
 PDOMapping=0
 
 [2024sub1]
-ParameterName=cpu1_Max_cycle_us
+ParameterName=CPU1_max_cycle_us
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
 PDOMapping=0
 
 [2024sub2]
-ParameterName=cpu2_Max_cycle_us
+ParameterName=CPU2_max_cycle_us
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
 PDOMapping=0
 
 [2025]
-ParameterName=cpu_Mean_cycle_us
+ParameterName=CPU_mean_cycle_us
 ObjectType=0x8
 SubNumber=3
 
 [2025sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -4683,14 +4684,14 @@ DefaultValue=2
 PDOMapping=0
 
 [2025sub1]
-ParameterName=cpu1_Mean_cycle_us
+ParameterName=CPU1_mean_cycle_us
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
 PDOMapping=0
 
 [2025sub2]
-ParameterName=cpu2_Mean_cycle_us
+ParameterName=CPU2_mean_cycle_us
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
@@ -4702,7 +4703,7 @@ ObjectType=0x9
 SubNumber=3
 
 [2040sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -4731,7 +4732,7 @@ ObjectType=0x9
 SubNumber=3
 
 [2041sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
@@ -4760,7 +4761,7 @@ ObjectType=0x9
 SubNumber=4
 
 [2050sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -4788,13 +4789,33 @@ DataType=0x0005
 AccessType=ro
 PDOMapping=0
 
+[2800]
+ParameterName=Board_status
+ObjectType=0x9
+SubNumber=2
+
+[2800sub0]
+ParameterName=Number_of_entries
+ObjectType=0x7
+DataType=0x0005
+AccessType=ro
+DefaultValue=1
+PDOMapping=0
+
+[2800sub1]
+ParameterName=Error
+ObjectType=0x7
+DataType=0x0006
+AccessType=ro
+PDOMapping=1
+
 [2801]
 ParameterName=Driver_temperature
 ObjectType=0x8
 SubNumber=5
 
 [2801sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -4835,7 +4856,7 @@ ObjectType=0x8
 SubNumber=5
 
 [2802sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -4876,7 +4897,7 @@ ObjectType=0x8
 SubNumber=5
 
 [2803sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -4917,7 +4938,7 @@ ObjectType=0x8
 SubNumber=5
 
 [2804sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -4958,7 +4979,7 @@ ObjectType=0x8
 SubNumber=5
 
 [2805sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -4999,7 +5020,7 @@ ObjectType=0x9
 SubNumber=3
 
 [2810sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5115,7 +5136,7 @@ ObjectType=0x9
 SubNumber=2
 
 [4000sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5135,7 +5156,7 @@ ObjectType=0x9
 SubNumber=8
 
 [4006sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5197,7 +5218,7 @@ ObjectType=0x9
 SubNumber=10
 
 [4007sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5209,7 +5230,7 @@ ParameterName=Type
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=514
+DefaultValue=0
 PDOMapping=0
 
 [4007sub2]
@@ -5282,7 +5303,7 @@ ObjectType=0x9
 SubNumber=4
 
 [4008sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5316,7 +5337,7 @@ ObjectType=0x9
 SubNumber=2
 
 [4009sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5328,16 +5349,16 @@ ParameterName=Pole_pair
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=6
+DefaultValue=1
 PDOMapping=0
 
 [4020]
 ParameterName=a1_Torque_PID_status
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [4020sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5372,13 +5393,20 @@ DataType=0x0004
 AccessType=ro
 PDOMapping=1
 
+[4020sub5]
+ParameterName=Target
+ObjectType=0x7
+DataType=0x0004
+AccessType=ro
+PDOMapping=1
+
 [4021]
 ParameterName=a1_Torque_PID_config
 ObjectType=0x9
 SubNumber=9
 
 [4021sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5455,7 +5483,7 @@ ObjectType=0x9
 SubNumber=4
 
 [4022sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5463,7 +5491,7 @@ DefaultValue=3
 PDOMapping=0
 
 [4022sub1]
-ParameterName=Raw_Data
+ParameterName=Raw_data
 ObjectType=0x7
 DataType=0x0004
 AccessType=ro
@@ -5489,7 +5517,7 @@ ObjectType=0x9
 SubNumber=8
 
 [4023sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5558,7 +5586,7 @@ ObjectType=0x9
 SubNumber=6
 
 [4024sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5611,7 +5639,7 @@ ObjectType=0x9
 SubNumber=9
 
 [4025sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5685,10 +5713,10 @@ PDOMapping=0
 [4040]
 ParameterName=a1_Velocity_PID_status
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [4040sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5723,13 +5751,20 @@ DataType=0x0004
 AccessType=ro
 PDOMapping=1
 
+[4040sub5]
+ParameterName=Target
+ObjectType=0x7
+DataType=0x0004
+AccessType=ro
+PDOMapping=1
+
 [4041]
 ParameterName=a1_Velocity_PID_config
 ObjectType=0x9
 SubNumber=9
 
 [4041sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5741,7 +5776,7 @@ ParameterName=P
 ObjectType=0x7
 DataType=0x0004
 AccessType=rw
-DefaultValue=655360
+DefaultValue=0
 PDOMapping=0
 
 [4041sub2]
@@ -5749,7 +5784,7 @@ ParameterName=I
 ObjectType=0x7
 DataType=0x0004
 AccessType=rw
-DefaultValue=16384
+DefaultValue=0
 PDOMapping=0
 
 [4041sub3]
@@ -5797,7 +5832,7 @@ ParameterName=PID_flags
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=256
+DefaultValue=0
 PDOMapping=0
 
 [4042]
@@ -5806,7 +5841,7 @@ ObjectType=0x9
 SubNumber=4
 
 [4042sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5814,7 +5849,7 @@ DefaultValue=3
 PDOMapping=0
 
 [4042sub1]
-ParameterName=Raw_Data
+ParameterName=Raw_data
 ObjectType=0x7
 DataType=0x0004
 AccessType=ro
@@ -5840,7 +5875,7 @@ ObjectType=0x9
 SubNumber=8
 
 [4043sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5852,7 +5887,7 @@ ParameterName=Sensor_select
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=8960
+DefaultValue=0
 PDOMapping=0
 
 [4043sub2]
@@ -5868,7 +5903,7 @@ ParameterName=Sensor_flags
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=32
+DefaultValue=0
 PDOMapping=0
 
 [4043sub4]
@@ -5876,7 +5911,7 @@ ParameterName=Param_0
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=32
+DefaultValue=0
 PDOMapping=0
 
 [4043sub5]
@@ -5909,7 +5944,7 @@ ObjectType=0x9
 SubNumber=6
 
 [4044sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5962,7 +5997,7 @@ ObjectType=0x9
 SubNumber=9
 
 [4045sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -5982,7 +6017,7 @@ ParameterName=Scale
 ObjectType=0x7
 DataType=0x0004
 AccessType=rw
-DefaultValue=0x00076B85
+DefaultValue=0x00010000
 PDOMapping=0
 
 [4045sub3]
@@ -6036,10 +6071,10 @@ PDOMapping=0
 [4060]
 ParameterName=a1_Position_PID_status
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [4060sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6074,13 +6109,20 @@ DataType=0x0004
 AccessType=ro
 PDOMapping=1
 
+[4060sub5]
+ParameterName=Target
+ObjectType=0x7
+DataType=0x0004
+AccessType=ro
+PDOMapping=1
+
 [4061]
 ParameterName=a1_Position_PID_config
 ObjectType=0x9
 SubNumber=9
 
 [4061sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6157,7 +6199,7 @@ ObjectType=0x9
 SubNumber=4
 
 [4062sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6165,7 +6207,7 @@ DefaultValue=3
 PDOMapping=0
 
 [4062sub1]
-ParameterName=Raw_Data
+ParameterName=Raw_data
 ObjectType=0x7
 DataType=0x0004
 AccessType=ro
@@ -6191,7 +6233,7 @@ ObjectType=0x9
 SubNumber=8
 
 [4063sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6203,7 +6245,7 @@ ParameterName=Sensor_select
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=12545
+DefaultValue=0
 PDOMapping=0
 
 [4063sub2]
@@ -6260,7 +6302,7 @@ ObjectType=0x9
 SubNumber=6
 
 [4064sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6313,7 +6355,7 @@ ObjectType=0x9
 SubNumber=9
 
 [4065sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6390,7 +6432,7 @@ ObjectType=0x9
 SubNumber=5
 
 [4081sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6435,7 +6477,7 @@ ObjectType=0x9
 SubNumber=9
 
 [4082sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6447,7 +6489,7 @@ ParameterName=Brake_mode
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=6
+DefaultValue=0
 PDOMapping=0
 
 [4082sub2]
@@ -6512,7 +6554,7 @@ ObjectType=0x9
 SubNumber=7
 
 [4083sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6568,7 +6610,7 @@ DefaultValue=0
 PDOMapping=0
 
 [41F0]
-ParameterName=a1_cp_Target
+ParameterName=a1_cp_target
 ObjectType=0x7
 DataType=0x0004
 AccessType=rww
@@ -6576,7 +6618,7 @@ DefaultValue=0
 PDOMapping=1
 
 [41FA]
-ParameterName=a1_dty_Target
+ParameterName=a1_dty_target
 ObjectType=0x7
 DataType=0x0003
 AccessType=rww
@@ -6584,14 +6626,14 @@ DefaultValue=0
 PDOMapping=1
 
 [41FB]
-ParameterName=a1_dty_Demand
+ParameterName=a1_dty_demand
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
 [41FC]
-ParameterName=a1_dty_Max
+ParameterName=a1_dty_max
 ObjectType=0x7
 DataType=0x0006
 AccessType=rww
@@ -6599,7 +6641,7 @@ DefaultValue=30000
 PDOMapping=1
 
 [41FD]
-ParameterName=a1_dty_Slope
+ParameterName=a1_dty_slope
 ObjectType=0x7
 DataType=0x0006
 AccessType=rww
@@ -6612,7 +6654,7 @@ ObjectType=0x9
 SubNumber=2
 
 [4200sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6632,7 +6674,7 @@ ObjectType=0x9
 SubNumber=8
 
 [4206sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6694,7 +6736,7 @@ ObjectType=0x9
 SubNumber=10
 
 [4207sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6779,7 +6821,7 @@ ObjectType=0x9
 SubNumber=4
 
 [4208sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6813,7 +6855,7 @@ ObjectType=0x9
 SubNumber=2
 
 [4209sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6825,16 +6867,16 @@ ParameterName=Pole_pair
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=6
+DefaultValue=1
 PDOMapping=0
 
 [4220]
 ParameterName=a2_Torque_PID_status
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [4220sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6869,13 +6911,20 @@ DataType=0x0004
 AccessType=ro
 PDOMapping=1
 
+[4220sub5]
+ParameterName=Target
+ObjectType=0x7
+DataType=0x0004
+AccessType=ro
+PDOMapping=1
+
 [4221]
 ParameterName=a2_Torque_PID_config
 ObjectType=0x9
 SubNumber=9
 
 [4221sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6952,7 +7001,7 @@ ObjectType=0x9
 SubNumber=4
 
 [4222sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -6960,7 +7009,7 @@ DefaultValue=3
 PDOMapping=0
 
 [4222sub1]
-ParameterName=Raw_Data
+ParameterName=Raw_data
 ObjectType=0x7
 DataType=0x0004
 AccessType=ro
@@ -6986,7 +7035,7 @@ ObjectType=0x9
 SubNumber=8
 
 [4223sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7055,7 +7104,7 @@ ObjectType=0x9
 SubNumber=6
 
 [4224sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7108,7 +7157,7 @@ ObjectType=0x9
 SubNumber=9
 
 [4225sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7182,10 +7231,10 @@ PDOMapping=0
 [4240]
 ParameterName=a2_Velocity_PID_status
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [4240sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7220,13 +7269,20 @@ DataType=0x0004
 AccessType=ro
 PDOMapping=1
 
+[4240sub5]
+ParameterName=Target
+ObjectType=0x7
+DataType=0x0004
+AccessType=ro
+PDOMapping=1
+
 [4241]
 ParameterName=a2_Velocity_PID_config
 ObjectType=0x9
 SubNumber=9
 
 [4241sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7238,7 +7294,7 @@ ParameterName=P
 ObjectType=0x7
 DataType=0x0004
 AccessType=rw
-DefaultValue=655360
+DefaultValue=0
 PDOMapping=0
 
 [4241sub2]
@@ -7246,7 +7302,7 @@ ParameterName=I
 ObjectType=0x7
 DataType=0x0004
 AccessType=rw
-DefaultValue=16384
+DefaultValue=0
 PDOMapping=0
 
 [4241sub3]
@@ -7294,7 +7350,7 @@ ParameterName=PID_flags
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=256
+DefaultValue=0
 PDOMapping=0
 
 [4242]
@@ -7303,7 +7359,7 @@ ObjectType=0x9
 SubNumber=4
 
 [4242sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7311,7 +7367,7 @@ DefaultValue=3
 PDOMapping=0
 
 [4242sub1]
-ParameterName=Raw_Data
+ParameterName=Raw_data
 ObjectType=0x7
 DataType=0x0004
 AccessType=ro
@@ -7337,7 +7393,7 @@ ObjectType=0x9
 SubNumber=8
 
 [4243sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7349,7 +7405,7 @@ ParameterName=Sensor_select
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=8960
+DefaultValue=0
 PDOMapping=0
 
 [4243sub2]
@@ -7365,7 +7421,7 @@ ParameterName=Sensor_flags
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=32
+DefaultValue=0
 PDOMapping=0
 
 [4243sub4]
@@ -7373,7 +7429,7 @@ ParameterName=Param_0
 ObjectType=0x7
 DataType=0x0003
 AccessType=rw
-DefaultValue=32
+DefaultValue=0
 PDOMapping=0
 
 [4243sub5]
@@ -7406,7 +7462,7 @@ ObjectType=0x9
 SubNumber=6
 
 [4244sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7459,7 +7515,7 @@ ObjectType=0x9
 SubNumber=9
 
 [4245sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7479,7 +7535,7 @@ ParameterName=Scale
 ObjectType=0x7
 DataType=0x0004
 AccessType=rw
-DefaultValue=0x00076B85
+DefaultValue=0x00010000
 PDOMapping=0
 
 [4245sub3]
@@ -7533,10 +7589,10 @@ PDOMapping=0
 [4260]
 ParameterName=a2_Position_PID_status
 ObjectType=0x9
-SubNumber=5
+SubNumber=6
 
 [4260sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7571,13 +7627,20 @@ DataType=0x0004
 AccessType=ro
 PDOMapping=1
 
+[4260sub5]
+ParameterName=Target
+ObjectType=0x7
+DataType=0x0004
+AccessType=ro
+PDOMapping=1
+
 [4261]
 ParameterName=a2_Position_PID_config
 ObjectType=0x9
 SubNumber=9
 
 [4261sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7654,7 +7717,7 @@ ObjectType=0x9
 SubNumber=4
 
 [4262sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7662,7 +7725,7 @@ DefaultValue=3
 PDOMapping=0
 
 [4262sub1]
-ParameterName=Raw_Data
+ParameterName=Raw_data
 ObjectType=0x7
 DataType=0x0004
 AccessType=ro
@@ -7688,7 +7751,7 @@ ObjectType=0x9
 SubNumber=8
 
 [4263sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7700,7 +7763,7 @@ ParameterName=Sensor_select
 ObjectType=0x7
 DataType=0x0006
 AccessType=rw
-DefaultValue=12545
+DefaultValue=0
 PDOMapping=0
 
 [4263sub2]
@@ -7757,7 +7820,7 @@ ObjectType=0x9
 SubNumber=6
 
 [4264sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7810,7 +7873,7 @@ ObjectType=0x9
 SubNumber=9
 
 [4265sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7887,7 +7950,7 @@ ObjectType=0x9
 SubNumber=5
 
 [4281sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7932,7 +7995,7 @@ ObjectType=0x9
 SubNumber=9
 
 [4282sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -7944,7 +8007,7 @@ ParameterName=Brake_mode
 ObjectType=0x7
 DataType=0x0005
 AccessType=rw
-DefaultValue=6
+DefaultValue=0
 PDOMapping=0
 
 [4282sub2]
@@ -8009,7 +8072,7 @@ ObjectType=0x9
 SubNumber=7
 
 [4283sub0]
-ParameterName=Number of Entries
+ParameterName=Number_of_entries
 ObjectType=0x7
 DataType=0x0005
 AccessType=ro
@@ -8065,7 +8128,7 @@ DefaultValue=0
 PDOMapping=0
 
 [43F0]
-ParameterName=a2_cp_Target
+ParameterName=a2_cp_target
 ObjectType=0x7
 DataType=0x0004
 AccessType=rww
@@ -8073,7 +8136,7 @@ DefaultValue=0
 PDOMapping=1
 
 [43FA]
-ParameterName=a2_dty_Target
+ParameterName=a2_dty_target
 ObjectType=0x7
 DataType=0x0003
 AccessType=rww
@@ -8081,14 +8144,14 @@ DefaultValue=0
 PDOMapping=1
 
 [43FB]
-ParameterName=a2_dty_Demand
+ParameterName=a2_dty_demand
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
 PDOMapping=1
 
 [43FC]
-ParameterName=a2_dty_Max
+ParameterName=a2_dty_max
 ObjectType=0x7
 DataType=0x0006
 AccessType=rww
@@ -8096,7 +8159,7 @@ DefaultValue=30000
 PDOMapping=1
 
 [43FD]
-ParameterName=a2_dty_Slope
+ParameterName=a2_dty_slope
 ObjectType=0x7
 DataType=0x0006
 AccessType=rww
