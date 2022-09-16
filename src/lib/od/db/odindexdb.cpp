@@ -157,7 +157,7 @@ double ODIndexDb::scale(quint16 index, quint8 subIndex, quint16 profileNumber)
         {
             if (subIndex > 0)
             {
-                return 1 / 10.0;
+                return 1 / 100.0;
             }
         }
         if (index == 0x2810)  // driver temperature protection
