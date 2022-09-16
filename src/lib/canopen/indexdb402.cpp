@@ -419,6 +419,8 @@ NodeObjectId IndexDb402::getObjectIdMs(IndexDb402::OdObject object, uint axis, u
             return {static_cast<quint16>((0x4020 + axisDecal + modeDecal)), 0x3};
         case OD_PID_OUTPUT:
             return {static_cast<quint16>((0x4020 + axisDecal + modeDecal)), 0x4};
+        case OD_PID_TARGET:
+            return {static_cast<quint16>((0x4020 + axisDecal + modeDecal)), 0x5};
 
         // ax_NNN_config_PID
         case OD_PID_P:

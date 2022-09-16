@@ -102,6 +102,7 @@ public:
         OD_PID_ERROR,
         OD_PID_INTEGRATOR,
         OD_PID_OUTPUT,
+        OD_PID_TARGET,
         OD_PID_P,
         OD_PID_I,
         OD_PID_D,
