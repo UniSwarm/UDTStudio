@@ -110,6 +110,7 @@ protected:
     IndexLabel *_errorLabel;
     IndexLabel *_integratorLabel;
     IndexLabel *_outputLabel;
+    IndexLabel *_targetLabel;
 
     // PID Test
     QGroupBox *createPIDTestWidgets();

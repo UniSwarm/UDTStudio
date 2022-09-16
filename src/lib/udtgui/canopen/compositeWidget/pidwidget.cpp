@@ -131,6 +131,7 @@ void PidWidget::setIMode()
     NodeObjectId pidErrorStatus_ObjId;
     NodeObjectId pidIntegratorStatus_ObjId;
     NodeObjectId pidOutputStatus_ObjId;
+    NodeObjectId pidTargetStatus_ObjId;
 
     if (_nodeProfile402 == nullptr)
     {
@@ -191,10 +192,12 @@ void PidWidget::setIMode()
     pidErrorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_ERROR, _axis, odMode402);
     pidIntegratorStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_INTEGRATOR, _axis, odMode402);
     pidOutputStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_OUTPUT, _axis, odMode402);
+    pidTargetStatus_ObjId = IndexDb402::getObjectId(IndexDb402::OD_PID_TARGET, _axis, odMode402);
     _inputLabel->setObjId(pidInputStatus_ObjId);
     _errorLabel->setObjId(pidErrorStatus_ObjId);
     _integratorLabel->setObjId(pidIntegratorStatus_ObjId);
     _outputLabel->setObjId(pidOutputStatus_ObjId);
+    _targetLabel->setObjId(pidTargetStatus_ObjId);
 
     _modeComboBox->clear();
     QList<NodeProfile402::OperationMode> supportedModeList = _nodeProfile402->modesSupportedByType(odMode402);
@@ -208,6 +211,7 @@ void PidWidget::setIMode()
     pidErrorStatus_ObjId.setBusIdNodeId(node()->busId(), node()->nodeId());
     pidIntegratorStatus_ObjId.setBusIdNodeId(node()->busId(), node()->nodeId());
     pidOutputStatus_ObjId.setBusIdNodeId(node()->busId(), node()->nodeId());
+    pidTargetStatus_ObjId.setBusIdNodeId(node()->busId(), node()->nodeId());
     target_ObjId.setBusIdNodeId(node()->busId(), node()->nodeId());
     _dataLogger->removeAllData();
     _dataLogger->addData(pidInputStatus_ObjId);
@@ -435,6 +439,7 @@ void PidWidget::readStatus()
     _errorLabel->readObject();
     _integratorLabel->readObject();
     _outputLabel->readObject();
+    _targetLabel->readObject();
 }
 
 void PidWidget::readAllObject()
@@ -607,8 +612,12 @@ QGroupBox *PidWidget::createPIDStatusWidgets()
     QGroupBox *groupBox = new QGroupBox(tr("PID status"));
     IndexFormLayout *formLayout = new IndexFormLayout();
 
+    _targetLabel = new IndexLabel();
+    formLayout->addRow(tr("Target:"), _targetLabel);
+    _indexWidgets.append(_targetLabel);
+
     _inputLabel = new IndexLabel();
-    formLayout->addRow(tr("Input:"), _inputLabel);
+    formLayout->addRow(tr("Input sensor:"), _inputLabel);
     _indexWidgets.append(_inputLabel);
 
     _errorLabel = new IndexLabel();
