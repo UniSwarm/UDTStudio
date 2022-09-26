@@ -205,6 +205,23 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
                     return QVariant();
             }
 
+        case Qt::TextAlignmentRole:
+            switch (index.column())
+            {
+                case NodeName:
+                case Index:
+                case Name:
+                    return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
+
+                case Value:
+                case Min:
+                case Max:
+                    return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+
+                default:
+                    return QVariant();
+            }
+
         case Qt::DecorationRole:
             if (index.column() == NodeName)
             {

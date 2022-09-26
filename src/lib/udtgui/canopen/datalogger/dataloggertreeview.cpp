@@ -52,14 +52,15 @@ DataLoggerTreeView::DataLoggerTreeView(QWidget *parent)
     header()->resizeSection(DataLoggerModel::NodeName, 22 * w0);
     header()->resizeSection(DataLoggerModel::Index, 10 * w0);
     header()->resizeSection(DataLoggerModel::Name, 20 * w0);
-    header()->resizeSection(DataLoggerModel::Value, 8 * w0);
-    header()->resizeSection(DataLoggerModel::Min, 8 * w0);
-    header()->resizeSection(DataLoggerModel::Max, 8 * w0);
+    header()->resizeSection(DataLoggerModel::Value, 10 * w0);
+    header()->resizeSection(DataLoggerModel::Min, 10 * w0);
+    header()->resizeSection(DataLoggerModel::Max, 10 * w0);
 
     setSelectionMode(QAbstractItemView::ExtendedSelection);
     setDragEnabled(true);
     setDragDropMode(QAbstractItemView::DragDrop);
     setSortingEnabled(true);
+    sortByColumn(0, Qt::AscendingOrder);
 
     createActions();
     connect(selectionModel(), &QItemSelectionModel::selectionChanged, this, &DataLoggerTreeView::updateSelect);
