@@ -125,8 +125,8 @@ int diff(const QString &fileA, const QString &fileB)
 
     env.insert("TERM", "xterm");
 
-    QProcess *_process = new QProcess();
-    _process->setProcessEnvironment(env);
+    QProcess *process = new QProcess();
+    process->setProcessEnvironment(env);
     QString path = QStandardPaths::findExecutable("hexdump", env.value("PATH").split(listSep));
 
     HexParser hexFileA(fileA);
@@ -136,12 +136,12 @@ int diff(const QString &fileA, const QString &fileB)
     fileBinA.write(hexFileA.prog());
     fileBinA.close();
 
-    _process->start(path,
-                    QStringList() << "-C"
-                                  << "-v" << QString("%1").arg(fileA + ".bin"));
-    _process->waitForFinished(-1);
-    QByteArray stdOut = _process->readAllStandardOutput();  // Reads standard output
-    _process->terminate();
+    process->start(path,
+                   QStringList() << "-C"
+                                 << "-v" << QString("%1").arg(fileA + ".bin"));
+    process->waitForFinished(-1);
+    QByteArray stdOut = process->readAllStandardOutput();  // Reads standard output
+    process->terminate();
 
     QString fileAHexDump = fileA.split(".").at(0) + ".hexdump";
     fileBinA.setFileName(fileAHexDump);
@@ -159,13 +159,13 @@ int diff(const QString &fileA, const QString &fileB)
     fileBinB.write(hexFileB.prog());
     fileBinB.close();
 
-    _process = new QProcess();
-    _process->start(path,
-                    QStringList() << "-C"
-                                  << "-v" << QString("%1").arg(fileB + ".bin"));
-    _process->waitForFinished(-1);
-    stdOut = _process->readAllStandardOutput();  // Reads standard output
-    _process->terminate();
+    process = new QProcess();
+    process->start(path,
+                   QStringList() << "-C"
+                                 << "-v" << QString("%1").arg(fileB + ".bin"));
+    process->waitForFinished(-1);
+    stdOut = process->readAllStandardOutput();  // Reads standard output
+    process->terminate();
 
     QString fileBHexDump = fileB.split(".").at(0) + ".hexdump";
     fileBinB.setFileName(fileBHexDump);
@@ -176,8 +176,8 @@ int diff(const QString &fileA, const QString &fileB)
     dir.remove(fileB + ".bin");
 
     path = QStandardPaths::findExecutable("meld", env.value("PATH").split(listSep));
-    _process->start(path, QStringList() << QString("%1").arg(fileAHexDump) << QString("%1").arg(fileBHexDump));
-    _process->waitForFinished(-1);
+    process->start(path, QStringList() << QString("%1").arg(fileAHexDump) << QString("%1").arg(fileBHexDump));
+    process->waitForFinished(-1);
 
     dir.remove(fileAHexDump);
     dir.remove(fileBHexDump);
@@ -370,11 +370,15 @@ int main(int argc, char *argv[])
     }
     else if (argument.at(0) == "diff")
     {
-        int ret = 0;
-        ret = diff(argument.at(1), argument.at(2));
+        if (argument.count() != 3)
+        {
+            err << QCoreApplication::translate("ubl", "error (1): miss arguments to compare two files") << "\n";
+            cliParser.showHelp(-1);
+        }
+        int ret = diff(argument.at(1), argument.at(2));
         if (ret < 0)
         {
-            err << QCoreApplication::translate("ubl", "error (1): miss file to compare two file") << "\n";
+            err << QCoreApplication::translate("ubl", "error (1): miss file to compare two files") << "\n";
             cliParser.showHelp(-1);
         }
 
@@ -532,7 +536,16 @@ int main(int argc, char *argv[])
         MainConsole *mainConsole = new MainConsole(node);
 
         QObject::connect(node->bootloader(), &Bootloader::statusEvent, mainConsole, &MainConsole::updateStatus);
-        QObject::connect(mainConsole, &MainConsole::finished, &app, &QCoreApplication::exit);
+        QObject::connect(mainConsole,
+                         &MainConsole::finished,
+                         [=]()
+                         {
+                             QTimer::singleShot(5000,
+                                                [=]()
+                                                {
+                                                    qApp->exit();
+                                                });
+                         });
 
         bool ok;
         uint32_t adr = static_cast<uint32_t>(cliParser.value(aOption).toInt(&ok, 16));
