@@ -20,6 +20,7 @@
 
 #include "parser/edsparser.h"
 
+#include <QCollator>
 #include <QCoreApplication>
 #include <QCryptographicHash>
 #include <QDirIterator>
@@ -105,6 +106,9 @@ void OdDb::searchFile(const QString &directory)
 
         delete deviceDescription;
     }
+
+    QCollator order;
+    std::sort(_edsFiles.begin(), _edsFiles.end(), order);
 }
 
 QString OdDb::file(quint32 deviceType, quint32 vendorID, quint32 productCode, quint32 revisionNumber)
