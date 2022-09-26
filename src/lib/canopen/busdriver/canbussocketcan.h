@@ -26,6 +26,7 @@
 #include <QMutex>
 #include <QSocketNotifier>
 #include <QThread>
+
 class CanBusSocketCANNotifierThead;
 
 class CANOPEN_EXPORT CanBusSocketCAN : public CanBusDriver

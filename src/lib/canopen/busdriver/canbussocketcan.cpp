@@ -32,8 +32,6 @@
 #include <iostream>
 using namespace std;
 
-#include <QDebug>
-
 int createSocketCan(const QString &adress)
 {
     struct ifreq ifr;
@@ -60,11 +58,14 @@ int createSocketCan(const QString &adress)
 
     fcntl(can_socket, F_SETFL, O_NONBLOCK);
 
+#ifndef Q_OS_ANDROID
+    // TODO find a way to do that...
     if (bind(can_socket, (struct sockaddr *)&addr, sizeof(addr)) < 0)
     {
         close(can_socket);
         return -1;
     }
+#endif
 
     return can_socket;
 }
