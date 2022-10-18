@@ -842,8 +842,13 @@ QString TexGenerator::formatIndex(Index *index, bool generic)
 
 QString TexGenerator::toCamelCase(QString &name)
 {
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    QStringList parts = name.split('_', QString::SkipEmptyParts);
+#else
     QStringList parts = name.split('_', Qt::SkipEmptyParts);
-    for (int i=1; i<parts.size(); ++i)
+#endif
+    for (int i = 1; i < parts.size(); ++i)
     {
         parts[i].replace(0, 1, parts[i][0].toUpper());
     }
