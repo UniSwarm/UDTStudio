@@ -102,6 +102,22 @@ bool CanOpenBus::existNode(quint8 nodeId)
     return _nodesMap.contains(nodeId);
 }
 
+QList<Node *> CanOpenBus::nodesFiltered(quint32 vendorId, quint32 productCode) const
+{
+    QList<Node *> nodes;
+    for (Node *node : _nodes)
+    {
+        if (node->vendorId() == vendorId)
+        {
+            if (productCode == 0xFFFFFFFF || node->productCode() == productCode)
+            {
+                nodes.append(node);
+            }
+        }
+    }
+    return nodes;
+}
+
 void CanOpenBus::addNode(Node *node)
 {
     emit nodeAboutToBeAdded(node->nodeId());

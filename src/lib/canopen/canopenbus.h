@@ -48,6 +48,7 @@ public:
     void addNode(Node *node);
     void removeNode(Node *node);
     bool existNode(quint8 nodeId);
+    QList<Node *> nodesFiltered(quint32 vendorId, quint32 productCode = 0xFFFFFFFF) const;
 
     CanBusDriver *canBusDriver() const;
     void setCanBusDriver(CanBusDriver *canBusDriver);
