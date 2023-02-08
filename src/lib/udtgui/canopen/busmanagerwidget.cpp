@@ -26,8 +26,8 @@ BusManagerWidget::BusManagerWidget(QWidget *parent)
 }
 
 BusManagerWidget::BusManagerWidget(CanOpenBus *bus, QWidget *parent)
-    : QWidget(parent)
-    , _bus(nullptr)
+    : QWidget(parent),
+      _bus(nullptr)
 {
     createWidgets();
     setBus(bus);
@@ -109,6 +109,13 @@ void BusManagerWidget::exploreBus()
     if (_bus != nullptr)
     {
         _bus->exploreBus();
+        connect(_bus,
+                &CanOpenBus::exploreFinished,
+                this,
+                [=]()
+                {
+                    _actionExplore->setEnabled(true);
+                });
     }
 }
 
@@ -182,7 +189,14 @@ void BusManagerWidget::createWidgets()
     _actionExplore->setIcon(QIcon(":/icons/img/icons8-search-database.png"));
     _actionExplore->setShortcut(QKeySequence("Ctrl+E"));
     _actionExplore->setStatusTip(tr("Explore bus for new nodes"));
-    connect(_actionExplore, &QAction::triggered, this, &BusManagerWidget::exploreBus);
+    connect(_actionExplore,
+            &QAction::triggered,
+            this,
+            [=]()
+            {
+                exploreBus();
+                _actionExplore->setEnabled(false);
+            });
 
     // Sync one
     _actionSyncOne = _toolBar->addAction(tr("Sync one"));
