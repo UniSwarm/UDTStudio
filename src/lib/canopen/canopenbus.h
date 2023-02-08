@@ -76,6 +76,8 @@ signals:
     void connectedChanged(bool);
     void busNameChanged(const QString &);
 
+    void exploreFinished();
+
 protected slots:
     void canFrameRec();
     void notifyForNewFrames();

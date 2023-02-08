@@ -39,6 +39,7 @@ CanOpenBus::CanOpenBus(CanBusDriver *canBusDriver)
 
     _nodeDiscover = new NodeDiscover(this);
     _serviceDispatcher->addService(_nodeDiscover);
+    connect(_nodeDiscover, &NodeDiscover::exploreFinished, this, &CanOpenBus::exploreFinished);
 
     // can frame logger
     _canFrameLogId = 0;

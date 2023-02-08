@@ -42,6 +42,8 @@
 #endif
 #include "busdriver/canbustcpudt.h"
 
+#include "db/oddb.h"
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {

@@ -25,6 +25,8 @@
 #include "../profile/nodeprofilefactory.h"
 #include "canopenbus.h"
 
+#include "db/oddb.h"
+
 NodeDiscover::NodeDiscover(CanOpenBus *bus)
     : Service(bus)
 {
@@ -123,6 +125,7 @@ void NodeDiscover::exploreBusNext()
     {
         _exploreBusNodeId = 0;
         _exploreBusTimer.stop();
+        emit exploreFinished();
         return;
     }
 

@@ -26,8 +26,6 @@
 #include <QQueue>
 #include <QTimer>
 
-#include "db/oddb.h"
-
 class CANOPEN_EXPORT NodeDiscover : public Service
 {
     Q_OBJECT
@@ -41,6 +39,9 @@ public:
 
     void exploreBus();
     void exploreNode(quint8 nodeId);
+
+signals:
+    void exploreFinished();
 
 protected slots:
     void exploreBusNext();
