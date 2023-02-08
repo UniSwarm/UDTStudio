@@ -70,7 +70,7 @@ QString NodeScreenUmcMotor::title() const
 
 QIcon NodeScreenUmcMotor::icon() const
 {
-    if (_node->manufacturerId() == 0x04A2)  // UniSwarm
+    if (_node->vendorId() == 0x04A2)  // UniSwarm
     {
         return QIcon(":/uBoards/umc.png");
     }
@@ -93,7 +93,7 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)
     _p402Widget->setProfile(nodeProfile402);
     _tabWidget->addTab(_p402Widget, " " + _p402Widget->title() + " ");
 
-    if (node->manufacturerId() == 0x04A2)  // UniSwarm
+    if (node->vendorId() == 0x04A2)  // UniSwarm
     {
         _motorConfigWidget->setNode(node, axis);
         _tabWidget->addTab(_motorConfigWidget, " " + _motorConfigWidget->title() + " ");

@@ -334,7 +334,7 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
                 if (index.column() == NodeId)
                 {
                     QPixmap pixmap;
-                    if (node->manufacturerId() == 0x04A2)  // UniSwarm
+                    if (node->vendorId() == 0x04A2)  // UniSwarm
                     {
                         switch (node->profileNumber())
                         {

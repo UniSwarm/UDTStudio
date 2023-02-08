@@ -63,7 +63,7 @@ public:
     void setStatus(Status status);
 
     const QString &name() const;
-    quint16 manufacturerId() const;
+    quint32 vendorId() const;
     quint16 productCode() const;
     quint16 profileNumber() const;
 

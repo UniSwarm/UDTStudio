@@ -240,7 +240,7 @@ void NodeScreenHome::updateInfos(Node *node)
     if (node != nullptr)
     {
         _summaryProfileLabel->setText(QString("DS%1").arg(node->profileNumber()));
-        if (node->manufacturerId() == 0x04A2)  // UniSwarm
+        if (node->vendorId() == 0x04A2)  // UniSwarm
         {
             switch (node->profileNumber())
             {
