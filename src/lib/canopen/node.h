@@ -64,7 +64,7 @@ public:
 
     const QString &name() const;
     quint32 vendorId() const;
-    quint16 productCode() const;
+    quint32 productCode() const;
     quint16 profileNumber() const;
 
     // store / restore
