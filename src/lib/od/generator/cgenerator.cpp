@@ -1117,7 +1117,7 @@ void CGenerator::writeDefineH(Index *index, QTextStream &hFile)
                 }
 
                 hFile << "#define OD_INDEX" << toUHex(index->index()) << "_" << toUHex(numSubIndex);
-                hFile << " OD_INDEX" << toUHex(index->index()) << "[" << toUHex(numSubIndex - 1) << "]"
+                hFile << " OD_INDEX" << toUHex(index->index()) << "[0x" << toUHex(numSubIndex - 1) << "]"
                       << "\n";
             }
             break;
