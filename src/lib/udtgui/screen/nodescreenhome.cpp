@@ -87,7 +87,8 @@ void NodeScreenHome::createWidgets()
     layout->setSpacing(0);
 
     layout->addWidget(createSumaryWidget());
-    layout->addWidget(createStatusWidget());
+    _statusWidget = createStatusWidget();
+    layout->addWidget(_statusWidget);
     layout->addWidget(createOdWidget());
     widget->setLayout(layout);
     scrollArea->setWidget(widget);
@@ -237,40 +238,7 @@ QWidget *NodeScreenHome::createOdWidget()
 
 void NodeScreenHome::updateInfos(Node *node)
 {
-    if (node != nullptr)
-    {
-        _summaryProfileLabel->setText(QString("DS%1").arg(node->profileNumber()));
-        if (node->vendorId() == 0x04A2)  // UniSwarm
-        {
-            switch (node->profileNumber())
-            {
-                case 401:
-                case 428:
-                    _summaryIconLabel->setPixmap(QPixmap(":/uBoards/uio.png"));
-                    break;
-
-                case 402:
-                    _summaryIconLabel->setPixmap(QPixmap(":/uBoards/umc.png"));
-                    break;
-            }
-        }
-        _odEdsFileLabel->setText(node->edsFileName());
-
-        QString fileInfos;
-        fileInfos.append("<table><tbody>");
-        QMapIterator<QString, QString> i(node->nodeOd()->edsFileInfos());
-        while (i.hasNext())
-        {
-            i.next();
-            fileInfos.append("<tr><td>" + i.key() + ": </td><td>" + i.value() + "</td></tr>");
-        }
-        fileInfos.append("</tbody></table>");
-        _odFileInfosLabel->setText(fileInfos);
-
-        _odCountLabel->setNum(node->nodeOd()->indexCount());
-        _odSubIndexCountLabel->setNum(node->nodeOd()->subIndexCount());
-    }
-    else
+    if (node == nullptr)
     {
         _summaryProfileLabel->clear();
         _summaryIconLabel->clear();
@@ -279,7 +247,54 @@ void NodeScreenHome::updateInfos(Node *node)
         _odFileInfosLabel->clear();
         _odCountLabel->clear();
         _odSubIndexCountLabel->clear();
+
+        _statusWidget->setEnabled(false);
+        return;
     }
+
+    _summaryProfileLabel->setText(QString("DS%1").arg(node->profileNumber()));
+    if (node->vendorId() == 0x04A2)  // UniSwarm
+    {
+        _statusWidget->setEnabled(true);
+        switch (node->profileNumber())
+        {
+            case 401:
+            case 428:
+                _summaryIconLabel->setPixmap(QPixmap(":/uBoards/uio.png"));
+                break;
+
+            case 402:
+                _summaryIconLabel->setPixmap(QPixmap(":/uBoards/umc.png"));
+                break;
+        }
+    }
+    else
+    {
+        _statusWidget->setEnabled(false);
+    }
+
+    if (!node->edsFileName().isEmpty())
+    {
+        _odEdsFileLabel->setText(node->edsFileName());
+    }
+    else
+    {
+        _odEdsFileLabel->setText(tr("<span style='color:red'>No eds file found</span>"));
+    }
+
+    QString fileInfos;
+    fileInfos.append("<table><tbody>");
+    QMapIterator<QString, QString> i(node->nodeOd()->edsFileInfos());
+    while (i.hasNext())
+    {
+        i.next();
+        fileInfos.append("<tr><td>" + i.key() + ": </td><td>" + i.value() + "</td></tr>");
+    }
+    fileInfos.append("</tbody></table>");
+    _odFileInfosLabel->setText(fileInfos);
+
+    _odCountLabel->setNum(node->nodeOd()->indexCount());
+    _odSubIndexCountLabel->setNum(node->nodeOd()->subIndexCount());
 }
 
 QString NodeScreenHome::title() const

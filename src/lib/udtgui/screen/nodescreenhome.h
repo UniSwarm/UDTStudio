@@ -48,6 +48,7 @@ protected:
     QLabel *_summaryProfileLabel;
 
     QWidget *createStatusWidget();
+    QWidget *_statusWidget;
 
     QWidget *createOdWidget();
     QLabel *_odEdsFileLabel;
