@@ -40,6 +40,7 @@ public:
     static NodeOdItemModel *nodeOdItemModel(Node *node);
     static NodeOdTreeView *nodeOdTreeView(Node *node);
     static void locateInOdTreeView(const NodeObjectId &objId);
+    static bool haveOdTreeView(const NodeObjectId &objId);
     static void setNodeOdTreeView(Node *node, NodeOdTreeView *nodeOdTreeView);
 
     static void showWidgetRecursive(QWidget *widget);
@@ -49,8 +50,8 @@ protected:
     UdtGuiManager();
 
     static UdtGuiManager *_instance;
-    QMap <Node *, NodeOdItemModel *> _nodeOdItemModels;
-    QMap <Node *, NodeOdTreeView *> _nodeOdTreeViews;
+    QMap<Node *, NodeOdItemModel *> _nodeOdItemModels;
+    QMap<Node *, NodeOdTreeView *> _nodeOdTreeViews;
 };
 
-#endif // UDTGUIMANAGER_H
+#endif  // UDTGUIMANAGER_H

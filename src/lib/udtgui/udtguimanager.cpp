@@ -22,8 +22,8 @@
 #include <QTabWidget>
 #include <QWidget>
 
-#include "canopen/nodeod/nodeodtreeview.h"
 #include "canopen/nodeod/nodeoditemmodel.h"
+#include "canopen/nodeod/nodeodtreeview.h"
 
 UdtGuiManager *UdtGuiManager::_instance = nullptr;
 
@@ -96,6 +96,18 @@ void UdtGuiManager::locateInOdTreeView(const NodeObjectId &objId)
 
     UdtGuiManager::showWidgetRecursive(odTreeView);
     odTreeView->selectNodeObjectId(objId);
+}
+
+bool UdtGuiManager::haveOdTreeView(const NodeObjectId &objId)
+{
+    Node *node = objId.node();
+    if (node == nullptr)
+    {
+        return false;
+    }
+
+    NodeOdTreeView *odTreeView = nodeOdTreeView(node);
+    return (odTreeView != nullptr);
 }
 
 void UdtGuiManager::setNodeOdTreeView(Node *node, NodeOdTreeView *nodeOdTreeView)

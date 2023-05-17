@@ -539,16 +539,20 @@ QMenu *AbstractIndexWidget::createStandardContextMenu(QMenu *menu)
     standardMenu->insertAction(firstAction, readAction);
 
     // locate action
-    QAction *locateAction = new QAction(QObject::tr("Locate in OD"));
-    QObject::connect(locateAction,
-                     &QAction::triggered,
-                     locateAction,
-                     [=]()
-                     {
-                         UdtGuiManager::locateInOdTreeView(objId());
-                     });
-    standardMenu->insertAction(firstAction, locateAction);
+    if (UdtGuiManager::haveOdTreeView(objId()))
+    {
+        QAction *locateAction = new QAction(QObject::tr("Locate in OD"));
+        QObject::connect(locateAction,
+                         &QAction::triggered,
+                         locateAction,
+                         [=]()
+                         {
+                             UdtGuiManager::locateInOdTreeView(objId());
+                         });
+        standardMenu->insertAction(firstAction, locateAction);
+    }
 
+    // loggers sub-actions
     standardMenu->insertMenu(firstAction, DataLoggerSingleton::createAddToLoggerMenu(objId()));
 
     if (menu != nullptr)
