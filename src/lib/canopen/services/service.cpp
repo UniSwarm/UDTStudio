@@ -21,14 +21,14 @@
 #include "canopenbus.h"
 
 Service::Service(CanOpenBus *bus)
-    : _bus(bus)
-    , _node(nullptr)
+    : _bus(bus),
+      _node(nullptr)
 {
 }
 
 Service::Service(Node *node)
-    : _bus(node->bus())
-    , _node(node)
+    : _bus(node->bus()),
+      _node(node)
 {
 }
 

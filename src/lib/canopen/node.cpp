@@ -16,8 +16,8 @@
  ** along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "indexdb.h"
 #include "node.h"
+#include "indexdb.h"
 
 #include "bootloader/bootloader.h"
 #include "canopenbus.h"

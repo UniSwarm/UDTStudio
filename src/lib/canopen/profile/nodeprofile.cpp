@@ -21,7 +21,8 @@
 #include "node.h"
 
 NodeProfile::NodeProfile(Node *node, quint8 axis)
-    : _node(node), _axis(axis)
+    : _node(node),
+      _axis(axis)
 {
 }
 

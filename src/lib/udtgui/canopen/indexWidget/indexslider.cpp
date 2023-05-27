@@ -27,8 +27,8 @@
 #include <QtGlobal>
 
 IndexSlider::IndexSlider(Qt::Orientation orientation, QWidget *parent, const NodeObjectId &objId)
-    : QSlider(orientation, parent)
-    , AbstractIndexWidget(objId)
+    : QSlider(orientation, parent),
+      AbstractIndexWidget(objId)
 {
     _internalUpdate = false;
     _feedBackValue = 0;

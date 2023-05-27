@@ -128,7 +128,8 @@ int main(int argc, char *argv[])
             nodeid = static_cast<uint8_t>(cliParser.value("nodeid").toUInt());
             if (nodeid == 0 || nodeid > 127)
             {
-                err << cliParser.value("nodeid").toUInt() << QCoreApplication::translate("cood", "error (2A): invalid node id, nodeId > 0 && nodeId < 126") << cendl;
+                err << cliParser.value("nodeid").toUInt() << QCoreApplication::translate("cood", "error (2A): invalid node id, nodeId > 0 && nodeId < 126")
+                    << cendl;
                 return -2;
             }
         }

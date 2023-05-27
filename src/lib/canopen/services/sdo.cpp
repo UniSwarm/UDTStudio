@@ -230,7 +230,8 @@ void SDO::processingFrameFromServer(const QCanBusFrame &frame)
         {
             SDOAbortCodes error = static_cast<SDOAbortCodes>(arrangeDataUpload(frame.payload().mid(4, 4), QMetaType::Type::UInt).toUInt());
             qDebug() << "ABORT received : Index :" << QString::number(indexFromFrame(frame), 16).toUpper()
-                     << ", SubIndex :" << QString::number(subIndexFromFrame(frame), 16).toUpper() << ", abort :" << QString::number(error, 16).toUpper() << sdoAbort(error);
+                     << ", SubIndex :" << QString::number(subIndexFromFrame(frame), 16).toUpper() << ", abort :" << QString::number(error, 16).toUpper()
+                     << sdoAbort(error);
 
             setErrorToObject(error);
             break;
@@ -1059,8 +1060,10 @@ void SDO::endRequest()
 {
     if (_requestCurrent->state == STATE_UPLOAD)
     {
-        _node->nodeOd()->updateObjectFromDevice(
-            _requestCurrent->index, _requestCurrent->subIndex, arrangeDataUpload(_requestCurrent->dataByte, _requestCurrent->dataType), NodeOd::FlagsRequest::Read);
+        _node->nodeOd()->updateObjectFromDevice(_requestCurrent->index,
+                                                _requestCurrent->subIndex,
+                                                arrangeDataUpload(_requestCurrent->dataByte, _requestCurrent->dataType),
+                                                NodeOd::FlagsRequest::Read);
     }
     else if (_requestCurrent->state == STATE_DOWNLOAD)
     {

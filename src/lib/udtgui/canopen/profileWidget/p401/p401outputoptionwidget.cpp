@@ -25,8 +25,8 @@
 #include <QFormLayout>
 
 P401OutputOptionWidget::P401OutputOptionWidget(uint8_t channel, QWidget *parent)
-    : QWidget(parent)
-    , _channel(channel)
+    : QWidget(parent),
+      _channel(channel)
 {
     createWidgets();
 }

@@ -24,29 +24,29 @@
 #include "canopen.h"
 
 NodeObjectId::NodeObjectId()
-    : _busId(0xFF)
-    , _nodeId(0xFF)
-    , _index(0xFFFF)
-    , _subIndex(0xFF)
-    , _dataType(QMetaType::Type::UnknownType)
+    : _busId(0xFF),
+      _nodeId(0xFF),
+      _index(0xFFFF),
+      _subIndex(0xFF),
+      _dataType(QMetaType::Type::UnknownType)
 {
 }
 
 NodeObjectId::NodeObjectId(quint8 busId, quint8 nodeId, quint16 index, quint8 subIndex, QMetaType::Type dataType)
-    : _busId(busId)
-    , _nodeId(nodeId)
-    , _index(index)
-    , _subIndex(subIndex)
-    , _dataType(dataType)
+    : _busId(busId),
+      _nodeId(nodeId),
+      _index(index),
+      _subIndex(subIndex),
+      _dataType(dataType)
 {
 }
 
 NodeObjectId::NodeObjectId(quint16 index, quint8 subIndex, QMetaType::Type dataType)
-    : _busId(0xFF)
-    , _nodeId(0xFF)
-    , _index(index)
-    , _subIndex(subIndex)
-    , _dataType(dataType)
+    : _busId(0xFF),
+      _nodeId(0xFF),
+      _index(index),
+      _subIndex(subIndex),
+      _dataType(dataType)
 {
 }
 

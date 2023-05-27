@@ -29,8 +29,8 @@ DataLoggerWidget::DataLoggerWidget(QWidget *parent)
 }
 
 DataLoggerWidget::DataLoggerWidget(DataLogger *dataLogger, Qt::Orientation orientation, QWidget *parent)
-    : QWidget(parent)
-    , _dataLogger(dataLogger)
+    : QWidget(parent),
+      _dataLogger(dataLogger)
 {
     _type = UserType;
 

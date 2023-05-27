@@ -183,8 +183,9 @@ void NodeProfile402::setDefaultValueOfMode()
 
 NodeProfile402::OperationMode NodeProfile402::actualMode() const
 {
-    if ((_modeCurrent == CP) || (_modeCurrent == DTY) || (_modeCurrent == NoMode) || (_modeCurrent == PP) || (_modeCurrent == VL) || (_modeCurrent == PV) || (_modeCurrent == TQ)
-        || (_modeCurrent == HM) || (_modeCurrent == IP) || (_modeCurrent == CSP) || (_modeCurrent == CSV) || (_modeCurrent == CST) || (_modeCurrent == CSTCA))
+    if ((_modeCurrent == CP) || (_modeCurrent == DTY) || (_modeCurrent == NoMode) || (_modeCurrent == PP) || (_modeCurrent == VL) || (_modeCurrent == PV)
+        || (_modeCurrent == TQ) || (_modeCurrent == HM) || (_modeCurrent == IP) || (_modeCurrent == CSP) || (_modeCurrent == CSV) || (_modeCurrent == CST)
+        || (_modeCurrent == CSTCA))
     {
         return static_cast<OperationMode>(_modeCurrent);
     }
@@ -290,16 +291,19 @@ QList<NodeProfile402::OperationMode> NodeProfile402::modesSupportedByType(IndexD
     QList<NodeProfile402::OperationMode> modes;
     for (const OperationMode &modesupported : qAsConst(_modesSupported))
     {
-        if (mode == IndexDb402::MODE402_TORQUE && (modesupported == OperationMode::TQ || modesupported == OperationMode::CST || modesupported == OperationMode::CSTCA))
+        if (mode == IndexDb402::MODE402_TORQUE
+            && (modesupported == OperationMode::TQ || modesupported == OperationMode::CST || modesupported == OperationMode::CSTCA))
         {
             modes.append(modesupported);
         }
-        else if (mode == IndexDb402::MODE402_VELOCITY && (modesupported == OperationMode::VL || modesupported == OperationMode::PV || modesupported == OperationMode::CSV))
+        else if (mode == IndexDb402::MODE402_VELOCITY
+                 && (modesupported == OperationMode::VL || modesupported == OperationMode::PV || modesupported == OperationMode::CSV))
         {
             modes.append(modesupported);
         }
         else if (mode == IndexDb402::MODE402_POSITION
-                 && (modesupported == OperationMode::PP || modesupported == OperationMode::IP || modesupported == OperationMode::CP || modesupported == OperationMode::CSP))
+                 && (modesupported == OperationMode::PP || modesupported == OperationMode::IP || modesupported == OperationMode::CP
+                     || modesupported == OperationMode::CSP))
         {
             modes.append(modesupported);
         }

@@ -23,9 +23,9 @@
  * @param 16 bits index number
  */
 Index::Index(uint16_t index)
-    : _index(index)
-    , _maxSubIndex(0)
-    , _objectType(VAR)
+    : _index(index),
+      _maxSubIndex(0),
+      _objectType(VAR)
 {
 }
 
@@ -34,10 +34,10 @@ Index::Index(uint16_t index)
  * @param other
  */
 Index::Index(const Index &other)
-    : _index(other.index())
-    , _maxSubIndex(other.maxSubIndex())
-    , _objectType(other.objectType())
-    , _name(other.name())
+    : _index(other.index()),
+      _maxSubIndex(other.maxSubIndex()),
+      _objectType(other.objectType()),
+      _name(other.name())
 {
 
     for (SubIndex *subIndex : other._subIndexes)

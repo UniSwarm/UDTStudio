@@ -426,7 +426,8 @@ int main(int argc, char *argv[])
 
         bool ok;
         UfwWriter *createBinary = new UfwWriter();
-        createBinary->create(static_cast<uint16_t>(type.toUInt(&ok, 16)), cliParser.value(softwareVersionOption), cliParser.value(dateOption), segmentList, hex->prog());
+        createBinary->create(
+            static_cast<uint16_t>(type.toUInt(&ok, 16)), cliParser.value(softwareVersionOption), cliParser.value(dateOption), segmentList, hex->prog());
 
         // Save file
         QString outputFile = cliParser.value("out");

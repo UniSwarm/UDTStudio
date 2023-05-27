@@ -34,8 +34,8 @@ enum
 };
 
 PDO::PDO(Node *node, quint8 number)
-    : Service(node)
-    , _pdoNumber(number)
+    : Service(node),
+      _pdoNumber(number)
 {
     _statusPdo = STATE_NONE;
     _stateMapping = STATE_FREE;
@@ -258,7 +258,8 @@ void PDO::setEnabled(bool enabled)
     }
     else
     {
-        _node->writeObject(object.index(), object.subIndex(), QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toUInt() | COBID_VALID_NOT_VALID));
+        _node->writeObject(
+            object.index(), object.subIndex(), QVariant(_node->nodeOd()->value(_objectCommList[PDO_COMM_COB_ID]).toUInt() | COBID_VALID_NOT_VALID));
     }
 }
 

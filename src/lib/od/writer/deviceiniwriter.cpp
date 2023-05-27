@@ -26,8 +26,8 @@
  * @param file
  */
 DeviceIniWriter::DeviceIniWriter(QTextStream *file)
-    : _file(file)
-    , _isDescription(false)
+    : _file(file),
+      _isDescription(false)
 {
 }
 

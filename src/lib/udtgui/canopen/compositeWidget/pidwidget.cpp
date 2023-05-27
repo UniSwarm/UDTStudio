@@ -260,7 +260,8 @@ void PidWidget::changeMode402()
 
         case MODE_PID_POSITION:
             _nodeProfile402->setDefaultValueOfMode();
-            if (_nodeProfile402->actualMode() != NodeProfile402::PP || _nodeProfile402->actualMode() != NodeProfile402::IP || _nodeProfile402->actualMode() != NodeProfile402::CP)
+            if (_nodeProfile402->actualMode() != NodeProfile402::PP || _nodeProfile402->actualMode() != NodeProfile402::IP
+                || _nodeProfile402->actualMode() != NodeProfile402::CP)
             {
                 NodeProfile402::OperationMode mode = static_cast<NodeProfile402::OperationMode>(_modeComboBox->currentData().toInt());
                 _nodeProfile402->setMode(mode);

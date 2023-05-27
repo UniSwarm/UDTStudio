@@ -28,8 +28,8 @@
 
 #include "node.h"
 
-#include "udtguimanager.h"
 #include "canopen/datalogger/dataloggersingleton.h"
+#include "udtguimanager.h"
 
 #include "utils/headerview.h"
 

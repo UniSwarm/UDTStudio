@@ -140,8 +140,9 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
             switch (index.column())
             {
                 case Time:
-                    return QVariant(
-                        QString("%1.%2").arg(canFrame.timeStamp().seconds() - _startTime).arg(QString::number(canFrame.timeStamp().microSeconds() / 1000).rightJustified(3, '0')));
+                    return QVariant(QString("%1.%2")
+                                        .arg(canFrame.timeStamp().seconds() - _startTime)
+                                        .arg(QString::number(canFrame.timeStamp().microSeconds() / 1000).rightJustified(3, '0')));
 
                 case CanId:
                     return QVariant(QString("0x%1 (%2)").arg(QString::number(canFrame.frameId(), 16)).arg(canFrame.frameId()));

@@ -30,8 +30,8 @@
 #include "bootloader/model/ufwmodel.h"
 
 UfwUpdate::UfwUpdate(Node *node, UfwModel *ufwModel)
-    : _node(node)
-    , _ufwModel(ufwModel)
+    : _node(node),
+      _ufwModel(ufwModel)
 {
     _programDataObjectId = IndexDb::getObjectId(IndexDb::OD_PROGRAM_DATA_1);
     setNodeInterrest(_node);

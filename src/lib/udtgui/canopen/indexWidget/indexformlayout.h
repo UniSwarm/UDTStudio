@@ -34,4 +34,4 @@ public:
     void addLineSeparator();
 };
 
-#endif // INDEXFORMLAYOUT_H
+#endif  // INDEXFORMLAYOUT_H

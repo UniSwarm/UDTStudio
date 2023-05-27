@@ -23,8 +23,8 @@
 #include <QStandardPaths>
 
 DataLoggerManagerWidget::DataLoggerManagerWidget(DataLogger *logger, QWidget *parent)
-    : QWidget(parent)
-    , _logger(logger)
+    : QWidget(parent),
+      _logger(logger)
 {
     createWidgets();
     _chartWidget = nullptr;
@@ -275,16 +275,16 @@ void DataLoggerManagerWidget::createWidgets()
     _exportCSVAction = _toolBar->addAction(tr("Export CSV data"));
     _exportCSVAction->setEnabled(true);
     _exportCSVAction->setIcon(QIcon(":/icons/img/icons8-export.png"));
-    _exportCSVAction->setStatusTip(
-        tr("Exports all data entries in '%1' directory as a CSV file").arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/UDTStudio/"));
+    _exportCSVAction->setStatusTip(tr("Exports all data entries in '%1' directory as a CSV file")
+                                       .arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/UDTStudio/"));
     connect(_exportCSVAction, &QAction::triggered, this, &DataLoggerManagerWidget::exportAllCSVData);
 
     // screenshot
     _screenShotAction = _toolBar->addAction(tr("Screenshot"));
     _screenShotAction->setEnabled(true);
     _screenShotAction->setIcon(QIcon(":/icons/img/icons8-screenshot.png"));
-    _screenShotAction->setStatusTip(
-        tr("Takes a screenshot of the full datalogger window in '%1' directory").arg(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation) + "/UDTStudio/"));
+    _screenShotAction->setStatusTip(tr("Takes a screenshot of the full datalogger window in '%1' directory")
+                                        .arg(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation) + "/UDTStudio/"));
     connect(_screenShotAction, &QAction::triggered, this, &DataLoggerManagerWidget::takeScreenShot);
 
     layout->addWidget(_toolBar);

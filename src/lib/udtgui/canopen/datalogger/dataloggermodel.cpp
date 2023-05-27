@@ -186,8 +186,8 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
                     return QVariant(tr("Unknown"));
 
                 case Index:
-                    return QVariant(
-                        QString("0x%1.%2").arg(QString::number(dlData->objectId().index(), 16).toUpper(), QString::number(dlData->objectId().subIndex(), 16).toUpper()));
+                    return QVariant(QString("0x%1.%2").arg(QString::number(dlData->objectId().index(), 16).toUpper(),
+                                                           QString::number(dlData->objectId().subIndex(), 16).toUpper()));
 
                 case Name:
                     return QVariant(dlData->name());

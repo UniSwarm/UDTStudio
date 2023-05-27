@@ -422,8 +422,8 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
         paraCommand.prepend(nameForTex);
         paraCommand.prepend("\\para");
 
-        lineRecordSubIndex.append("\\displayLineRecordSubIndex{" + subIndexSubCommand + "}" + "{\\hyperref[" + indexCommand + subIndexSubCommand + "]{" + nameSubCommand + "}}"
-                                  + "{" + dataTypeStr(subIndex) + "}%\n");
+        lineRecordSubIndex.append("\\displayLineRecordSubIndex{" + subIndexSubCommand + "}" + "{\\hyperref[" + indexCommand + subIndexSubCommand + "]{"
+                                  + nameSubCommand + "}}" + "{" + dataTypeStr(subIndex) + "}%\n");
 
         QString dispIndexSubSubCommand = nameSubForTex;
         dispIndexSubSubCommand.prepend(nameForTex);
@@ -460,14 +460,16 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
         *out << "{" << nameSubCommand << "}}%";
         *out << "\n";
 
-        // Line 6 : \newcommand{\dispIndexSubNameMotorstatusXCommand}{\displayIndexSubName{\indexMotorstatusX}{\subIndexMotorstatusXCommand}{\nameMotorstatusXCommand}}%
+        // Line 6 :
+        // \newcommand{\dispIndexSubNameMotorstatusXCommand}{\displayIndexSubName{\indexMotorstatusX}{\subIndexMotorstatusXCommand}{\nameMotorstatusXCommand}}%
         *out << "\\newcommand{" << dispIndexSubSubCommand << "}";
         *out << "{\\displayIndexSub";
         *out << "{" << indexCommand << "}";
         *out << "{" << subIndexSubCommand << "}}%";
         *out << "\n";
 
-        // Line 7 : \newcommand{\dispIndexSubNameMotionstatusXError}{\displayIndexSubName{\indexMotionstatusX}{\subIndexMotionstatusXError}{\nameMotionstatusXError}}%
+        // Line 7 :
+        // \newcommand{\dispIndexSubNameMotionstatusXError}{\displayIndexSubName{\indexMotionstatusX}{\subIndexMotionstatusXError}{\nameMotionstatusXError}}%
         *out << "\\newcommand{" << dispIndexNameSubCommand << "}";
         *out << "{\\displayIndexSubName";
         *out << "{" << indexCommand << "}";

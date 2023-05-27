@@ -38,8 +38,8 @@
 #include <QStandardItemModel>
 
 P402Widget::P402Widget(NodeProfile402 *profile, QWidget *parent)
-    : QWidget(parent)
-    , _nodeProfile402(nullptr)
+    : QWidget(parent),
+      _nodeProfile402(nullptr)
 {
     createWidgets();
 

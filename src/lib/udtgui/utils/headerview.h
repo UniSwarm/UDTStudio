@@ -39,4 +39,4 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
-#endif // HEADERVIEW_H
+#endif  // HEADERVIEW_H

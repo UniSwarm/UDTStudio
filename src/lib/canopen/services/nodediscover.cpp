@@ -173,7 +173,8 @@ void NodeDiscover::exploreNodeNext()
     }
     else
     {
-        if ((_exploreNodeState >= 1 && (!node->nodeOd()->value(objectsId[_exploreNodeState - 1]).isValid() || node->nodeOd()->errorObject(objectsId[_exploreNodeState - 1]) != 0)))
+        if ((_exploreNodeState >= 1
+             && (!node->nodeOd()->value(objectsId[_exploreNodeState - 1]).isValid() || node->nodeOd()->errorObject(objectsId[_exploreNodeState - 1]) != 0)))
         {
             _nodeIdToExplore.enqueue(_exploreNodeCurrentId);
             _exploreNodeCurrentId = _nodeIdToExplore.dequeue();

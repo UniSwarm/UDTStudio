@@ -495,7 +495,8 @@ void AbstractIndexWidget::updateToolTip()
         }
 
         toolTip.append(QObject::tr("<b>Index</b>: 0x%1.%2", "AbstractIndexWidget")
-                           .arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
+                           .arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'),
+                                QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
 
         if (nodeSubIndex != nullptr)
         {

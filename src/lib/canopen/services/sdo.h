@@ -187,8 +187,8 @@ private:
     bool sdoBlockUpload(const QCanBusFrame &frame);
     bool sdoBlockUploadSubBlock(const QCanBusFrame &frame);
 
-    bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex);                              // SDO upload initiate
-    bool sendSdoRequest(quint8 cmd);                                                              // SDO upload segment, SDO block upload initiate, SDO block upload ends
+    bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex);  // SDO upload initiate
+    bool sendSdoRequest(quint8 cmd);                                  // SDO upload segment, SDO block upload initiate, SDO block upload ends
     bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QByteArray &data);      // SDO download initiate, SDO block download initiate
     bool sendSdoRequest(quint8 cmd, const QByteArray &data);                                      // SDO download segment
     bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blksize, quint8 pst);  // SDO block upload initiate

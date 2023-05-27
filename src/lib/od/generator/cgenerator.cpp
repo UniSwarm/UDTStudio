@@ -738,7 +738,8 @@ void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile)
               });*/
     for (SubIndex *subIndex : recordFields)
     {
-        hFile << "    _od_align " << typeToString(subIndex->dataType()) << " " << varNameToString(subIndex->name()) << ";  // sub" << subIndex->subIndex() << "\n";
+        hFile << "    _od_align " << typeToString(subIndex->dataType()) << " " << varNameToString(subIndex->name()) << ";  // sub" << subIndex->subIndex()
+              << "\n";
     }
     hFile << "} " << structName << ";\n\n";
 
@@ -962,7 +963,8 @@ void CGenerator::writeSubentry(const SubIndex *subIndex, QTextStream &cFile)
     switch (subIndex->index()->objectType())
     {
         case Index::VAR:
-            if (subIndex->dataType() == SubIndex::VISIBLE_STRING || subIndex->dataType() == SubIndex::OCTET_STRING || subIndex->dataType() == SubIndex::UNICODE_STRING)
+            if (subIndex->dataType() == SubIndex::VISIBLE_STRING || subIndex->dataType() == SubIndex::OCTET_STRING
+                || subIndex->dataType() == SubIndex::UNICODE_STRING)
             {
                 cFile << "(void*)" << varNameToString(subIndex->name()) << "Str";
             }
@@ -1079,7 +1081,8 @@ void CGenerator::writeInitRamC(const QList<Index *> &indexes, QTextStream &cFile
     int written = 1;
     for (Index *index : indexes)
     {
-        if ((index->objectType() != lastObjectType || index->objectType() == Index::Object::RECORD || index->objectType() == Index::Object::ARRAY) && written != 0)
+        if ((index->objectType() != lastObjectType || index->objectType() == Index::Object::RECORD || index->objectType() == Index::Object::ARRAY)
+            && written != 0)
         {
             cFile << "\n";
         }
