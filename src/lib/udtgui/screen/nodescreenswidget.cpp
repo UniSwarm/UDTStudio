@@ -22,6 +22,9 @@
 #include "nodescreenhome.h"
 #include "nodescreenod.h"
 #include "nodescreenpdo.h"
+#include "nodescreennmt.h"
+#include "nodescreenerror.h"
+
 #include "nodescreensynchro.h"
 #include "nodescreenuio.h"
 #include "nodescreenuioled.h"
@@ -116,6 +119,18 @@ void NodeScreensWidget::addNode(Node *node)
 
     QApplication::processEvents();
     screen = new NodeScreenPDO();
+    screen->setNode(node);
+    screen->setScreenWidget(this);
+    nodeScreens.screens.append(screen);
+
+    QApplication::processEvents();
+    screen = new NodeScreenNMT();
+    screen->setNode(node);
+    screen->setScreenWidget(this);
+    nodeScreens.screens.append(screen);
+
+    QApplication::processEvents();
+    screen = new NodeScreenError();
     screen->setNode(node);
     screen->setScreenWidget(this);
     nodeScreens.screens.append(screen);
