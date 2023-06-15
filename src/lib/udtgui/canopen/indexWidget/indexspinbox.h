@@ -32,6 +32,9 @@ public:
 
     double value();
 
+signals:
+    void valueChanged(double value);
+
 protected:
     void setTextEditValue(const QVariant &value);
     QVariant textEditValue() const;

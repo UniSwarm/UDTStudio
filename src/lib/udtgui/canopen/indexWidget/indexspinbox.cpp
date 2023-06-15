@@ -51,6 +51,7 @@ void IndexSpinBox::setDisplayValue(const QVariant &value, DisplayAttribute flags
         lineEdit()->setFont(mfont);
     }
     setTextEditValue(value);
+    emit valueChanged(value.toDouble());
 }
 
 bool IndexSpinBox::isEditing() const
