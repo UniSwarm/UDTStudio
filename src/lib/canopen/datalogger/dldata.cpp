@@ -41,7 +41,11 @@ DLData::DLData(const NodeObjectId &objectId)
         _nodeSubIndex = objectId.nodeSubIndex();
         if (_nodeSubIndex != nullptr)
         {
-            _name = _nodeSubIndex->nodeIndex()->name() + "." + _nodeSubIndex->name();
+            _name = _nodeSubIndex->nodeIndex()->name();
+            if (objectId.subIndex() != 0)
+            {
+                _name += "." + _nodeSubIndex->name();
+            }
             _q1516 = _nodeSubIndex->isQ1516();
             _scale = _nodeSubIndex->scale();
             _unit = _nodeSubIndex->unit();
