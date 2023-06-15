@@ -23,11 +23,21 @@
 
 #include "nodescreen.h"
 
+class AbstractIndexWidget;
+
 class UDTGUI_EXPORT NodeScreenNMT : public NodeScreen
 {
     Q_OBJECT
 public:
     NodeScreenNMT();
+
+    void readAll();
+
+protected:
+    void createWidgets();
+    QWidget *createProducerHeartBeatWidget();
+
+    QList<AbstractIndexWidget *> _indexWidgets;
 
     // NodeScreen interface
 public:
