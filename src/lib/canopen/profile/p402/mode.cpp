@@ -37,6 +37,7 @@ void Mode::readRealTimeObjects()
 
 void Mode::readAllObjects()
 {
+    _nodeProfile402->node()->readObject(_controlWordObjectId);
 }
 
 void Mode::reset()

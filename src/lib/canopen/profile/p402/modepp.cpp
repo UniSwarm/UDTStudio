@@ -148,6 +148,7 @@ void ModePp::setCwDefaultflag()
 
 void ModePp::readAllObjects()
 {
+    Mode::readAllObjects();
     ModePc::readAllObjects();
     _nodeProfile402->node()->readObject(_targetObjectId);
 }

@@ -234,6 +234,7 @@ void ModeVl::readRealTimeObjects()
 
 void ModeVl::readAllObjects()
 {
+    Mode::readAllObjects();
     readRealTimeObjects();
     _nodeProfile402->node()->readObject(_minVelocityMinMaxAmountObjectId);
     _nodeProfile402->node()->readObject(_maxVelocityMinMaxAmountObjectId);
@@ -267,8 +268,8 @@ void ModeVl::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
         quint16 controlWord = static_cast<quint16>(_nodeProfile402->node()->nodeOd()->value(_controlWordObjectId).toUInt());
         _cmdControlWordFlag = controlWord & CW_Mask;
 
-        emit enableRampEvent(((_cmdControlWordFlag & CW_VL_EnableRamp) >> 4) != 0);
-        emit referenceRampEvent(((_cmdControlWordFlag & CW_VL_ReferenceRamp) >> 6) != 0);
-        emit unlockRampEvent(((_cmdControlWordFlag & CW_VL_UnlockRamp) >> 5) != 0);
+        emit enableRampEvent((_cmdControlWordFlag & CW_VL_EnableRamp) != 0);
+        emit referenceRampEvent((_cmdControlWordFlag & CW_VL_ReferenceRamp) != 0);
+        emit unlockRampEvent((_cmdControlWordFlag & CW_VL_UnlockRamp) != 0);
     }
 }

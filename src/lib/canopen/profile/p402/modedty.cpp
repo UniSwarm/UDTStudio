@@ -107,6 +107,7 @@ void ModeDty::readRealTimeObjects()
 
 void ModeDty::readAllObjects()
 {
+    Mode::readAllObjects();
     readRealTimeObjects();
     _nodeProfile402->node()->readObject(_targetObjectId);
     _nodeProfile402->node()->readObject(_slopeObjectId);
