@@ -207,6 +207,16 @@ QVariant NodeOdItem::data(int column, int role) const
                     {
                         case NodeOdItemModel::OdIndex:
                             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+
+                        case NodeOdItemModel::Value:
+                        case NodeOdItemModel::RawValue:
+                            if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
+                            {
+                                if (_index->subIndex(0)->isNumeric())
+                                {
+                                    return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+                                }
+                            }
                     }
                     break;
 
@@ -300,7 +310,15 @@ QVariant NodeOdItem::data(int column, int role) const
                     switch (column)
                     {
                         case NodeOdItemModel::OdIndex:
-                            return QVariant(Qt::AlignRight);
+                            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+
+                        case NodeOdItemModel::Value:
+                        case NodeOdItemModel::RawValue:
+                            if (_subIndex->isNumeric())
+                            {
+                                return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+                            }
+                            return QVariant();
                     }
                     break;
 
