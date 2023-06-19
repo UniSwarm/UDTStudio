@@ -19,11 +19,11 @@
 #include "nodescreenswidget.h"
 
 #include "indexdb.h"
+#include "nodescreenerror.h"
 #include "nodescreenhome.h"
+#include "nodescreennmt.h"
 #include "nodescreenod.h"
 #include "nodescreenpdo.h"
-#include "nodescreennmt.h"
-#include "nodescreenerror.h"
 
 #include "nodescreensynchro.h"
 #include "nodescreenuio.h"

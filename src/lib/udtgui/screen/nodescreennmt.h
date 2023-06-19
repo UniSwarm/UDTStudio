@@ -36,6 +36,7 @@ public:
 protected:
     void createWidgets();
     QWidget *createProducerHeartBeatWidget();
+    QWidget *createConsumerHeartBeatWidget();
 
     QList<AbstractIndexWidget *> _indexWidgets;
 

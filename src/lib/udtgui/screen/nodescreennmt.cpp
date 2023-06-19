@@ -18,13 +18,14 @@
 
 #include "nodescreennmt.h"
 
+#include <QFormLayout>
 #include <QGroupBox>
 #include <QHBoxLayout>
-#include <QFormLayout>
+#include <QLabel>
 #include <QScrollArea>
 #include <QToolBar>
-#include <QLabel>
 
+#include "canopen/indexWidget/indexconsumerheartbeat.h"
 #include "canopen/indexWidget/indexspinbox.h"
 
 NodeScreenNMT::NodeScreenNMT()
@@ -69,6 +70,7 @@ void NodeScreenNMT::createWidgets()
     layout->setSpacing(0);
 
     layout->addWidget(createProducerHeartBeatWidget());
+    layout->addWidget(createConsumerHeartBeatWidget());
     widget->setLayout(layout);
     scrollArea->setWidget(widget);
 
@@ -87,18 +89,40 @@ QWidget *NodeScreenNMT::createProducerHeartBeatWidget()
     _indexWidgets.append(indexSpinBox);
 
     QLabel *producerStatusLabel = new QLabel();
-    connect(indexSpinBox, &IndexSpinBox::valueChanged, this, [=](double value)
-    {
-        if (value == 0)
-        {
-            producerStatusLabel->setText(tr("Producer heartbeat disabled"));
-        }
-        else
-        {
-            producerStatusLabel->setText(tr("Producer heartbeat emited each %n milisecond(s)", nullptr, value));
-        }
-    });
+    connect(indexSpinBox,
+            &IndexSpinBox::valueChanged,
+            this,
+            [=](double value)
+            {
+                if (value == 0)
+                {
+                    producerStatusLabel->setText(tr("Producer heartbeat disabled"));
+                }
+                else
+                {
+                    producerStatusLabel->setText(tr("Producer heartbeat emited each %n milisecond(s)", nullptr, static_cast<int>(value)));
+                }
+            });
     formLayout->addWidget(producerStatusLabel);
+
+    return groupBox;
+}
+
+QWidget *NodeScreenNMT::createConsumerHeartBeatWidget()
+{
+    QGroupBox *groupBox = new QGroupBox(tr("Consumer heartbeat"));
+    QGridLayout *gridLayout = new QGridLayout(groupBox);
+
+    gridLayout->addWidget(new QLabel(tr("Node ID")), 0, 1);
+    gridLayout->addWidget(new QLabel(tr("Dead time")), 0, 2);
+
+    int row = 1;
+    gridLayout->addWidget(new QLabel(QString("%1").arg(row)), row, 0);
+
+    IndexConsumerHeartBeat *indexConsumerSpinBox;
+    indexConsumerSpinBox = new IndexConsumerHeartBeat(NodeObjectId(0x1016, row));
+    gridLayout->addWidget(indexConsumerSpinBox, row, 1, 1, 2);
+    _indexWidgets.append(indexConsumerSpinBox);
 
     return groupBox;
 }
@@ -110,6 +134,7 @@ QString NodeScreenNMT::title() const
 
 void NodeScreenNMT::setNodeInternal(Node *node, uint8_t axis)
 {
+    Q_UNUSED(axis)
     for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
     {
         indexWidget->setNode(node);
