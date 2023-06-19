@@ -44,6 +44,7 @@ HEADERS += \
     $$PWD/canopen/indexWidget/indexcheckbox.h \
     $$PWD/canopen/indexWidget/indexcombobox.h \
     $$PWD/canopen/indexWidget/indexformlayout.h \
+    $$PWD/canopen/indexWidget/indexconsumerheartbeat.h \
     $$PWD/canopen/indexWidget/indexlabel.h \
     $$PWD/canopen/indexWidget/indexlcdnumber.h \
     $$PWD/canopen/indexWidget/indexslider.h \
@@ -117,6 +118,7 @@ SOURCES += \
     $$PWD/canopen/indexWidget/indexcheckbox.cpp \
     $$PWD/canopen/indexWidget/indexcombobox.cpp \
     $$PWD/canopen/indexWidget/indexformlayout.cpp \
+    $$PWD/canopen/indexWidget/indexconsumerheartbeat.cpp \
     $$PWD/canopen/indexWidget/indexlabel.cpp \
     $$PWD/canopen/indexWidget/indexlcdnumber.cpp \
     $$PWD/canopen/indexWidget/indexslider.cpp \
