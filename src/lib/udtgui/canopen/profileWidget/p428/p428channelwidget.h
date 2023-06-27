@@ -54,6 +54,7 @@ private:
     IndexComboBox *_effectComboBox;
     IndexSlider *_dimmerSlider;
     IndexSlider *_speedSlider;
+    IndexSlider *_valueSlider;
     IndexSlider *_rSlider;
     IndexSlider *_gSlider;
     IndexSlider *_bSlider;

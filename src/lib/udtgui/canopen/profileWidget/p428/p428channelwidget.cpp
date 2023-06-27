@@ -106,6 +106,12 @@ void P428ChannelWidget::createWidgets()
     formLayout->addRow(tr("Dimmer:"), _dimmerSlider);
     _indexWidgets.append(_dimmerSlider);
 
+    _valueSlider = new IndexSlider();
+    _valueSlider->setObjId(NodeObjectId(0x6010 + 0x100 * _channel, 0));
+    _valueSlider->setRangeValue(0, 65535);
+    formLayout->addRow(tr("Value:"), _valueSlider);
+    _indexWidgets.append(_valueSlider);
+
     _speedSlider = new IndexSlider();
     _speedSlider->setObjId(NodeObjectId(0x6013 + 0x100 * _channel, 0));
     _speedSlider->setRangeValue(0, 255);
