@@ -39,6 +39,7 @@ IndexSlider::IndexSlider(Qt::Orientation orientation, QWidget *parent, const Nod
 
     initStyle();
 
+    _widget = this;
     setObjId(objId);
     connect(this, &QSlider::valueChanged, this, &IndexSlider::applyValue);
 }
