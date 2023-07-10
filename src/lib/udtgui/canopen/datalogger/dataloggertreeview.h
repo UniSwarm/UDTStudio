@@ -45,6 +45,7 @@ public slots:
     void removeCurrent();
     void setColorCurrent();
     void exportOneCurrent() const;
+    void locateODCurrent();
 
 protected slots:
     void updateSelect(const QItemSelection &selected, const QItemSelection &deselected);
@@ -57,6 +58,7 @@ protected:
     QAction *_removeAction;
     QAction *_setColorAction;
     QAction *_exportOneAction;
+    QAction *_locadeODAction;
 
     // QWidget interface
 protected:

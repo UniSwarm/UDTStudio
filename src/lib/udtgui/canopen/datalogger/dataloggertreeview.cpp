@@ -28,8 +28,7 @@
 #include <QMessageBox>
 #include <QStandardPaths>
 
-#include "node.h"
-
+#include "udtguimanager.h"
 #include "utils/headerview.h"
 
 DataLoggerTreeView::DataLoggerTreeView(QWidget *parent)
@@ -158,6 +157,17 @@ void DataLoggerTreeView::exportOneCurrent() const
     dlData->exportCSVData(path + QString("export_%1.csv").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz")));
 }
 
+void DataLoggerTreeView::locateODCurrent()
+{
+    DLData *dlData = currentData();
+    if (dlData == nullptr)
+    {
+        return;
+    }
+
+    UdtGuiManager::locateInOdTreeView(dlData->objectId());
+}
+
 void DataLoggerTreeView::updateSelect(const QItemSelection &selected, const QItemSelection &deselected)
 {
     Q_UNUSED(selected)
@@ -167,6 +177,7 @@ void DataLoggerTreeView::updateSelect(const QItemSelection &selected, const QIte
     _removeAction->setEnabled(!selectionEmpty);
     _setColorAction->setEnabled(!selectionEmpty);
     _exportOneAction->setEnabled(!selectionEmpty);
+    _locadeODAction->setEnabled(!selectionEmpty);
 }
 
 void DataLoggerTreeView::createActions()
@@ -192,7 +203,7 @@ void DataLoggerTreeView::createActions()
 
     _exportOneAction = new QAction(this);
     _exportOneAction->setText(tr("&Export"));
-    _exportOneAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
+    _exportOneAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
     _exportOneAction->setShortcutContext(Qt::WidgetShortcut);
     _exportOneAction->setIcon(QIcon(":/icons/img/icons8-export.png"));
     _exportOneAction->setStatusTip(
@@ -203,6 +214,17 @@ void DataLoggerTreeView::createActions()
 #endif
     connect(_exportOneAction, &QAction::triggered, this, &DataLoggerTreeView::exportOneCurrent);
     addAction(_exportOneAction);
+
+    _locadeODAction = new QAction(this);
+    _locadeODAction->setText(tr("&Locate in OD"));
+    _locadeODAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_L));
+    _locadeODAction->setShortcutContext(Qt::WidgetShortcut);
+    _locadeODAction->setEnabled(false);
+#if QT_VERSION >= 0x050A00
+    _locadeODAction->setShortcutVisibleInContextMenu(true);
+#endif
+    connect(_locadeODAction, &QAction::triggered, this, &DataLoggerTreeView::locateODCurrent);
+    addAction(_locadeODAction);
 }
 
 QAction *DataLoggerTreeView::removeAction() const
@@ -216,5 +238,6 @@ void DataLoggerTreeView::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(_removeAction);
     menu.addAction(_setColorAction);
     menu.addAction(_exportOneAction);
+    menu.addAction(_locadeODAction);
     menu.exec(event->globalPos());
 }
