@@ -44,8 +44,7 @@ MotorWidget::MotorWidget(QWidget *parent)
     _node = nullptr;
     _axis = 0;
     _nodeProfile402 = nullptr;
-
-    createWidgets();
+    _created = false;
 }
 
 Node *MotorWidget::node() const
@@ -72,14 +71,24 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     }
     _axis = axis;
 
+    setINode();
+}
+
+void MotorWidget::setINode()
+{
+    if (_node == nullptr || !_created)
+    {
+        return;
+    }
+
     connect(_node, &Node::statusChanged, this, &MotorWidget::updateNodeStatus);
     if (!_node->profiles().isEmpty())
     {
-        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[_axis]);
         connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &MotorWidget::updateState);
     }
 
-    // motor config
+            // motor config
     _motorTypeComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_TYPE, _axis));
     _peakCurrentSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_PEAK_CURRENT, _axis));
     _burstCurrentSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_BURST_CURRENT, _axis));
@@ -89,47 +98,47 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _maxVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_MAX_VELOCITY, _axis));
     _velocityConstantSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_VELOCITY_CONSTANT, _axis));
     _reverseMotorPolarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_FLAGS, _axis));
-    _motorTypeComboBox->setNode(node);
-    _peakCurrentSpinBox->setNode(node);
-    _burstCurrentSpinBox->setNode(node);
-    _burstDurationSpinBox->setNode(node);
-    _sustainedCurrentSpinBox->setNode(node);
-    _currentConstantSpinBox->setNode(node);
-    _maxVelocitySpinBox->setNode(node);
-    _velocityConstantSpinBox->setNode(node);
-    _reverseMotorPolarityCheckBox->setNode(node);
+    _motorTypeComboBox->setNode(_node);
+    _peakCurrentSpinBox->setNode(_node);
+    _burstCurrentSpinBox->setNode(_node);
+    _burstDurationSpinBox->setNode(_node);
+    _sustainedCurrentSpinBox->setNode(_node);
+    _currentConstantSpinBox->setNode(_node);
+    _maxVelocitySpinBox->setNode(_node);
+    _velocityConstantSpinBox->setNode(_node);
+    _reverseMotorPolarityCheckBox->setNode(_node);
 
-    // motor status
+            // motor status
     _bridgeTemp1Label->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_DRIVER_TEMPERATURE, _axis, 0));
     _bridgeTemp2Label->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_DRIVER_TEMPERATURE, _axis, 1));
-    _bridgeTemp1Label->setNode(node);
-    _bridgeTemp2Label->setNode(node);
+    _bridgeTemp1Label->setNode(_node);
+    _bridgeTemp2Label->setNode(_node);
     _bridgeCommandBar->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_COMMAND, _axis));
     _motorCurrentLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_CURRENT, _axis));
     _motorTorqueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_TORQUE, _axis));
     _motorVelocityLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_VELOCITY, _axis));
     _motorPositionLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_POSITION, _axis));
-    _bridgeCommandBar->setNode(node);
-    _motorCurrentLabel->setNode(node);
-    _motorTorqueLabel->setNode(node);
-    _motorVelocityLabel->setNode(node);
-    _motorPositionLabel->setNode(node);
+    _bridgeCommandBar->setNode(_node);
+    _motorCurrentLabel->setNode(_node);
+    _motorTorqueLabel->setNode(_node);
+    _motorVelocityLabel->setNode(_node);
+    _motorPositionLabel->setNode(_node);
 
-    // BLDC config
+            // BLDC config
     _polePairSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_CONFIG_POLE_PAIR, _axis));
     _reverseHallPolarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_FLAGS, _axis));
-    _polePairSpinBox->setNode(node);
-    _reverseHallPolarityCheckBox->setNode(node);
+    _polePairSpinBox->setNode(_node);
+    _reverseHallPolarityCheckBox->setNode(_node);
 
-    // BLDC status
+            // BLDC status
     _hallRawValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_STATUS_HALL_RAW, _axis));
     _hallPhaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_STATUS_HALL_PHASE, _axis));
     _electricalAngleLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_STATUS_ELECTRICAL_ANGLE, _axis));
-    _hallRawValueLabel->setNode(node);
-    _hallPhaseLabel->setNode(node);
-    _electricalAngleLabel->setNode(node);
+    _hallRawValueLabel->setNode(_node);
+    _hallPhaseLabel->setNode(_node);
+    _electricalAngleLabel->setNode(_node);
 
-    // Brake config
+            // Brake config
     _brakeModeComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_MODE, _axis));
     _brakeExitationTimeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_EXITATION_TIME, _axis));
     _brakeExitationDutySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_EXITATION_DUTY, _axis));
@@ -139,15 +148,15 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
     _brakeClosingDelaySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_CLOSING_DELAY, _axis));
     _brakeClosingToIdleSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_CLOSING_TO_IDLE, _axis));
     _brakeBypassCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_DIGITAL_OUTPUTS_PHYSICAL_OUTPUTS, _axis));
-    _brakeModeComboBox->setNode(node);
-    _brakeExitationTimeSpinBox->setNode(node);
-    _brakeExitationDutySpinBox->setNode(node);
-    _brakeDutySpinBox->setNode(node);
-    _brakeReleaseDelaySpinBox->setNode(node);
-    _brakeReleaseToOESpinBox->setNode(node);
-    _brakeClosingDelaySpinBox->setNode(node);
-    _brakeClosingToIdleSpinBox->setNode(node);
-    _brakeBypassCheckBox->setNode(node);
+    _brakeModeComboBox->setNode(_node);
+    _brakeExitationTimeSpinBox->setNode(_node);
+    _brakeExitationDutySpinBox->setNode(_node);
+    _brakeDutySpinBox->setNode(_node);
+    _brakeReleaseDelaySpinBox->setNode(_node);
+    _brakeReleaseToOESpinBox->setNode(_node);
+    _brakeClosingDelaySpinBox->setNode(_node);
+    _brakeClosingToIdleSpinBox->setNode(_node);
+    _brakeBypassCheckBox->setNode(_node);
 }
 
 void MotorWidget::updateNodeStatus(Node::Status status)
@@ -213,6 +222,8 @@ void MotorWidget::createWidgets()
     vBoxLayout->addItem(toolBarLayout);
     vBoxLayout->addWidget(motorScrollArea);
     setLayout(vBoxLayout);
+
+    _created = true;
 }
 
 QToolBar *MotorWidget::createToolBarWidgets()
@@ -512,4 +523,15 @@ void MotorWidget::monitorCurrents()
     dataLoggerWidgetLL->show();
     dataLoggerWidgetLL->raise();
     dataLoggerWidgetLL->activateWindow();
+}
+
+void MotorWidget::showEvent(QShowEvent *event)
+{
+    Q_UNUSED(event)
+
+    if (!_created)
+    {
+        createWidgets();
+        setINode();
+    }
 }

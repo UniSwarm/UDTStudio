@@ -56,8 +56,11 @@ protected:
     uint8_t _axis;
     NodeProfile402 *_nodeProfile402;
 
+    void setINode();
+
     // Creation widgets
     void createWidgets();
+    bool _created;
     QList<AbstractIndexWidget *> _indexWidgets;
 
     // Toolbar
@@ -120,6 +123,10 @@ protected:
 
     void mapCurrents();
     void monitorCurrents();
+
+    // QWidget interface
+protected:
+    void showEvent(QShowEvent *event) override;
 };
 
 #endif  // MOTORCONFIG_H
