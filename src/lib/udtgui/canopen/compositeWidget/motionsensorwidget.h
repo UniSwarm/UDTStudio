@@ -97,6 +97,7 @@ protected:
 
     // Creation widgets
     void createWidgets();
+    bool _created;
     QToolBar *createToolBarWidgets();
     QSpinBox *_logTimerSpinBox;
     QAction *_lockAction;
@@ -142,6 +143,10 @@ protected:
     QList<AbstractIndexWidget *> _indexWidgets;
 
     void lockUnlockConfig();
+
+    // QWidget interface
+protected:
+    void showEvent(QShowEvent *event) override;
 };
 
 #endif  // MOTIONSENSORWIDGET_H

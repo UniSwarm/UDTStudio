@@ -44,7 +44,7 @@ MotionSensorWidget::MotionSensorWidget(QWidget *parent)
     _nodeProfile402 = nullptr;
     _dataLogger = new DataLogger();
 
-    createWidgets();
+    _created = false;
     _state = NONE;
     _mode = MODE_SENSOR_NONE;
 }
@@ -87,20 +87,7 @@ void MotionSensorWidget::setNode(Node *node, uint8_t axis)
     }
     _axis = axis;
 
-    _dataLogger->removeAllData();
-
-    connect(_node, &Node::statusChanged, this, &MotionSensorWidget::statusNodeChanged);
-    if (!_node->profiles().isEmpty())
-    {
-        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
-        connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &MotionSensorWidget::stateChanged);
-    }
     setIMode();
-
-    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
-    {
-        indexWidget->setNode(node);
-    }
 }
 
 void MotionSensorWidget::setMode(MotionSensorWidget::ModeSensor mode)
@@ -123,9 +110,16 @@ void MotionSensorWidget::setIMode()
     NodeObjectId flagLabel_ObjId;
     NodeObjectId valueLabel_ObjId;
 
-    if (_nodeProfile402 == nullptr)
+    if (_node == nullptr || !_created)
     {
         return;
+    }
+
+    connect(_node, &Node::statusChanged, this, &MotionSensorWidget::statusNodeChanged);
+    if (!_node->profiles().isEmpty())
+    {
+        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[_axis]);
+        connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &MotionSensorWidget::stateChanged);
     }
 
     IndexDb402::OdMode402 odMode402 = IndexDb402::MODE402_TORQUE;
@@ -208,6 +202,11 @@ void MotionSensorWidget::setIMode()
     _dataLogger->addData(rawDataValueLabel_ObjId);
     _dataLogger->data(0)->setActive(false);
     _dataLogger->addData(valueLabel_ObjId);
+
+    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
+    {
+        indexWidget->setNode(_node);
+    }
 }
 
 void MotionSensorWidget::fillSensorSelect()
@@ -316,6 +315,8 @@ void MotionSensorWidget::createWidgets()
     vBoxLayout->addItem(toolBarLayout);
     vBoxLayout->addWidget(splitter);
     setLayout(vBoxLayout);
+
+    _created = true;
 }
 
 QToolBar *MotionSensorWidget::createToolBarWidgets()
@@ -613,7 +614,7 @@ void MotionSensorWidget::stateChanged()
         _lockAction->setChecked(false);
     }
     _lockAction->blockSignals(false);
-    _lockAction->setEnabled((_nodeProfile402->status() == NodeProfile402::NODEPROFILE_STARTED));
+    _lockAction->setEnabled(_nodeProfile402->status() == NodeProfile402::NODEPROFILE_STARTED);
 }
 
 void MotionSensorWidget::readAllObject()
@@ -693,5 +694,16 @@ void MotionSensorWidget::updateFilterParams(int index)
             _filterParam0SpinBox->setEnabled(true);
             _filterParam0SpinBox->setRangeValue(2, 256);
             break;
+    }
+}
+
+void MotionSensorWidget::showEvent(QShowEvent *event)
+{
+    Q_UNUSED(event)
+
+    if (!_created)
+    {
+        createWidgets();
+        setIMode();
     }
 }
