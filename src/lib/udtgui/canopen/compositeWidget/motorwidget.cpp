@@ -250,7 +250,7 @@ QToolBar *MotorWidget::createToolBarWidgets()
     iconLockUnlock.addFile(":/icons/img/icons8-unlock.png", QSize(), QIcon::Normal, QIcon::Off);
     _lockAction->setIcon(iconLockUnlock);
     _lockAction->setShortcut(QKeySequence("Ctrl+L"));
-    _lockAction->setStatusTip(tr("Editing of config parameters is not possible in OE mode, goto to SO to unlock"));
+    _lockAction->setStatusTip(tr("Editing of config parameters is not possible in OE mode, go to SO to unlock"));
     connect(_lockAction, &QAction::triggered, this, &MotorWidget::lockUnlockConfig);
 
     toolBar->addSeparator();
