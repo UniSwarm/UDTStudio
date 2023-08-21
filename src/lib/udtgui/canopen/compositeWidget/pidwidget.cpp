@@ -37,10 +37,12 @@
 PidWidget::PidWidget(QWidget *parent)
     : QWidget(parent)
 {
+    _node = nullptr;
+    _axis = 0;
     _nodeProfile402 = nullptr;
-    createWidgets();
-    connect(&_timerTest, &QTimer::timeout, this, &PidWidget::manageMeasurement);
-    connect(&_readStatusTimer, &QTimer::timeout, this, &PidWidget::readStatus);
+
+    _created = false;
+
     _state = NONE;
     _modePid = MODE_PID_NONE;
 }
@@ -71,6 +73,7 @@ QString PidWidget::title() const
 
 void PidWidget::setNode(Node *node, uint8_t axis)
 {
+    _node = node;
     if (node == nullptr)
     {
         return;
@@ -79,7 +82,6 @@ void PidWidget::setNode(Node *node, uint8_t axis)
     {
         return;
     }
-    _dataLogger->removeAllData();
 
     if (node->profiles().isEmpty())
     {
@@ -87,15 +89,8 @@ void PidWidget::setNode(Node *node, uint8_t axis)
     }
 
     _axis = axis;
-    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node->profiles()[axis]);
-    connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &PidWidget::updateState);
-    connect(node, &Node::statusChanged, this, &PidWidget::statusNodeChanged);
-    setIMode();
 
-    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
-    {
-        indexWidget->setNode(node);
-    }
+    setIMode();
 }
 
 void PidWidget::setMode(PidWidget::ModePid mode)
@@ -133,10 +128,14 @@ void PidWidget::setIMode()
     NodeObjectId pidOutputStatus_ObjId;
     NodeObjectId pidTargetStatus_ObjId;
 
-    if (_nodeProfile402 == nullptr)
+    if (_node == nullptr || !_created)
     {
         return;
     }
+
+    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[_axis]);
+    connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &PidWidget::updateState);
+    connect(_node, &Node::statusChanged, this, &PidWidget::statusNodeChanged);
 
     IndexDb402::OdMode402 odMode402 = IndexDb402::MODE402_TORQUE;
 
@@ -217,6 +216,11 @@ void PidWidget::setIMode()
     _dataLogger->addData(pidInputStatus_ObjId);
     _dataLogger->addData(pidErrorStatus_ObjId);
     _dataLogger->addData(target_ObjId);
+
+    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
+    {
+        indexWidget->setNode(_node);
+    }
 }
 
 void PidWidget::changeMode402()
@@ -498,6 +502,11 @@ void PidWidget::createWidgets()
     vBoxLayout->addItem(toolBarLayout);
     vBoxLayout->addWidget(splitter);
     setLayout(vBoxLayout);
+
+    connect(&_timerTest, &QTimer::timeout, this, &PidWidget::manageMeasurement);
+    connect(&_readStatusTimer, &QTimer::timeout, this, &PidWidget::readStatus);
+
+    _created = true;
 }
 
 QToolBar *PidWidget::createToolBarWidgets()
@@ -733,4 +742,15 @@ void PidWidget::lockUnlockConfig()
     _lockAction->blockSignals(true);
     _lockAction->setChecked(!_lockAction->isChecked());  // Keep action in the previous state
     _lockAction->blockSignals(false);
+}
+
+void PidWidget::showEvent(QShowEvent *event)
+{
+    Q_UNUSED(event)
+
+    if (!_created)
+    {
+        createWidgets();
+        setIMode();
+    }
 }

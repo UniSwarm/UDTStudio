@@ -69,9 +69,10 @@ protected slots:
     void setLogTimer(int ms);
 
 protected:
+    Node *_node;
     uint8_t _axis;
-    NodeProfile402 *_nodeProfile402;
     ModePid _modePid;
+    NodeProfile402 *_nodeProfile402;
 
     QTimer _readStatusTimer;
 
@@ -83,6 +84,7 @@ protected:
     QList<AbstractIndexWidget *> _indexWidgets;
 
     void createWidgets();
+    bool _created;
 
     // Toolbar
     QToolBar *createToolBarWidgets();
@@ -150,6 +152,10 @@ protected:
 
     void updateState();
     void lockUnlockConfig();
+
+    // QWidget interface
+protected:
+    void showEvent(QShowEvent *event) override;
 };
 
 #endif  // PIDWIDGET_H
