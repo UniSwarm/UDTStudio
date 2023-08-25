@@ -85,9 +85,9 @@ void P402Widget::setProfile(NodeProfile402 *profile)
                 setModeIndex(id);
             });
 
-    for (P402ModeWidget *mode : qAsConst(_modes))
+    for (P402ModeWidget *modeWidget : qAsConst(_modeWidgets))
     {
-        mode->setProfile(_nodeProfile402);
+        modeWidget->setProfile(_nodeProfile402);
     }
 
     updateNodeStatus();
@@ -240,7 +240,7 @@ void P402Widget::setCurrentWidget(NodeProfile402::OperationMode mode)
         _toolBar->removeAction(action);
     }
 
-    P402ModeWidget *newModeWidget = _modes[mode];
+    P402ModeWidget *newModeWidget = _modeWidgets[mode];
     const QList<QAction *> &newModeActions = newModeWidget->modeActions();
     for (QAction *action : newModeActions)
     {
@@ -310,9 +310,9 @@ void P402Widget::readAllObjects()
         return;
     }
 
-    if (_stackedWidget->currentWidget() == _modes[NodeProfile402::NoMode])
+    if (_stackedWidget->currentWidget() == _modeWidgets[NodeProfile402::NoMode])
     {
-        _modes[NodeProfile402::NoMode]->readAllObjects();
+        _modeWidgets[NodeProfile402::NoMode]->readAllObjects();
     }
     else
     {
@@ -438,13 +438,13 @@ void P402Widget::updateModeComboBox()
 
 void P402Widget::displayOption402()
 {
-    if (_stackedWidget->currentWidget() == _modes[NodeProfile402::NoMode])
+    if (_stackedWidget->currentWidget() == _modeWidgets[NodeProfile402::NoMode])
     {
         updateMode(_nodeProfile402->actualMode());
     }
     else
     {
-        _modes[NodeProfile402::NoMode]->readAllObjects();
+        _modeWidgets[NodeProfile402::NoMode]->readAllObjects();
         setCurrentWidget(NodeProfile402::NoMode);
     }
 }
@@ -477,18 +477,18 @@ void P402Widget::setCheckableStateMachine(int id)
 void P402Widget::createWidgets()
 {
     // Widget P402
-    _modes.insert(NodeProfile402::VL, new P402VlWidget());
-    _modes.insert(NodeProfile402::IP, new P402IpWidget());
-    _modes.insert(NodeProfile402::TQ, new P402TqWidget());
-    _modes.insert(NodeProfile402::PP, new P402PpWidget());
-    _modes.insert(NodeProfile402::DTY, new P402DtyWidget());
-    _modes.insert(NodeProfile402::CP, new P402CpWidget());
-    _modes.insert(NodeProfile402::CSTCA, new P402CstcaWidget());
-    _modes.insert(NodeProfile402::NoMode, new P402OptionWidget());
+    _modeWidgets.insert(NodeProfile402::VL, new P402VlWidget());
+    _modeWidgets.insert(NodeProfile402::IP, new P402IpWidget());
+    _modeWidgets.insert(NodeProfile402::TQ, new P402TqWidget());
+    _modeWidgets.insert(NodeProfile402::PP, new P402PpWidget());
+    _modeWidgets.insert(NodeProfile402::DTY, new P402DtyWidget());
+    _modeWidgets.insert(NodeProfile402::CP, new P402CpWidget());
+    _modeWidgets.insert(NodeProfile402::CSTCA, new P402CstcaWidget());
+    _modeWidgets.insert(NodeProfile402::NoMode, new P402OptionWidget());
 
     // Stacked Widget
     _stackedWidget = new QStackedWidget;
-    for (P402ModeWidget *mode : qAsConst(_modes))
+    for (P402ModeWidget *mode : qAsConst(_modeWidgets))
     {
         _stackedWidget->addWidget(mode);
     }

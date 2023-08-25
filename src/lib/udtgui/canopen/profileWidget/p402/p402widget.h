@@ -76,7 +76,7 @@ protected slots:
 private:
     NodeProfile402 *_nodeProfile402;
 
-    QMap<NodeProfile402::OperationMode, P402ModeWidget *> _modes;
+    QMap<NodeProfile402::OperationMode, P402ModeWidget *> _modeWidgets;
 
     // Create widgets
     void createWidgets();
