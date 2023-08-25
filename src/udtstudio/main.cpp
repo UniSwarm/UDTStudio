@@ -19,11 +19,11 @@
 #include "mainwindow.h"
 
 #include <QApplication>
-#include <QTextStream>
-#include <QTranslator>
+#include <QFile>
 #include <QLibraryInfo>
 #include <QSettings>
-#include <QFile>
+#include <QTextStream>
+#include <QTranslator>
 
 int main(int argc, char *argv[])
 {
@@ -35,12 +35,22 @@ int main(int argc, char *argv[])
     // translate app
     QSettings settings(QApplication::organizationName(), QApplication::applicationName());
     QString lang = settings.value("language", "en").toString();
+
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+    const QString path = QLibraryInfo::path(QLibraryInfo::TranslationsPath);
+#else
+    const QString path = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
+#endif
     QTranslator qtTranslator;
-    qtTranslator.load("qt_" + lang, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    QApplication::installTranslator(&qtTranslator);
+    if (qtTranslator.load("qt_" + lang, path))
+    {
+        QApplication::installTranslator(&qtTranslator);
+    }
     QTranslator udtstudioTranslator;
-    udtstudioTranslator.load("udtstudio_" + lang, ":/translations");
-    QApplication::installTranslator(&udtstudioTranslator);
+    if (udtstudioTranslator.load("udtstudio_" + lang, ":/translations"))
+    {
+        QApplication::installTranslator(&udtstudioTranslator);
+    }
 
     MainWindow w;
     // apply dark style
