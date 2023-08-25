@@ -662,7 +662,7 @@ void TexGenerator::writeArray(Index *index, QTextStream *out, bool generic)
 
         // Line 2 : \newcommand{\subIndexMotionstatusXError}{1}%
         *out << "\\newcommand{" << subIndexSubCommand << "}";
-        *out << "{" << QString::number(subIndex->subIndex(), base).toUpper() << "}%\n";
+        *out << "{" << QString::number(subIndex->subIndex()).toUpper() << "}%\n";
 
         // Line 3 : \newcommand{\nameMotionstatusXError}{Error}%
         *out << "\\newcommand{" << nameSubCommand << "}";
