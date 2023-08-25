@@ -82,46 +82,81 @@
 <context>
     <name>BootloaderWidget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="134"/>
-        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="236"/>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="83"/>
+        <source>Update firmware for Node %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="147"/>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="255"/>
         <source>Open firmware</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="134"/>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="147"/>
         <source>Firmware File (*.ufw)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="198"/>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="187"/>
+        <source>Start update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="196"/>
+        <source>Stop program</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="199"/>
+        <source>Start program</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="202"/>
+        <source>Reset program</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="205"/>
+        <source>Clear program</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="208"/>
+        <source>Send Key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="217"/>
         <source>Node Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="209"/>
-        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="249"/>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="228"/>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="268"/>
         <source>&amp;Product Code:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="215"/>
-        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="254"/>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="234"/>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="273"/>
         <source>&amp;Software version:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="221"/>
-        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="259"/>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="240"/>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="278"/>
         <source>Software &amp;build date:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="232"/>
-        <source>File Information</source>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="251"/>
+        <source>File informations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="244"/>
+        <location filename="../src/lib/udtgui/canopen/bootloaderWidget/bootloaderwidget.cpp" line="263"/>
         <source>&amp;File:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -135,62 +170,62 @@
     </message>
     <message>
         <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="66"/>
-        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="171"/>
+        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="178"/>
         <source>Connect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="162"/>
+        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="169"/>
         <source>Bus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="167"/>
+        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="174"/>
         <source>Bus commands</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="177"/>
+        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="184"/>
         <source>Connect/disconnect bus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="181"/>
+        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="188"/>
         <source>Explore</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="184"/>
+        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="191"/>
         <source>Explore bus for new nodes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="188"/>
+        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="202"/>
         <source>Sync one</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="190"/>
+        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="204"/>
         <source>Send one sync command</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="198"/>
+        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="212"/>
         <source>Sets the interval of sync timer in ms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="207"/>
+        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="222"/>
         <source>Start / stop sync</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="210"/>
+        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="225"/>
         <source>Start / stop sync timer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="217"/>
+        <location filename="../src/lib/udtgui/canopen/busmanagerwidget.cpp" line="232"/>
         <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -198,27 +233,27 @@
 <context>
     <name>BusNodesModel</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busnodesmodel.cpp" line="225"/>
+        <location filename="../src/lib/udtgui/canopen/busnodesmodel.cpp" line="234"/>
         <source>Id</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busnodesmodel.cpp" line="228"/>
+        <location filename="../src/lib/udtgui/canopen/busnodesmodel.cpp" line="237"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busnodesmodel.cpp" line="231"/>
+        <location filename="../src/lib/udtgui/canopen/busnodesmodel.cpp" line="240"/>
         <source>Status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busnodesmodel.cpp" line="260"/>
+        <location filename="../src/lib/udtgui/canopen/busnodesmodel.cpp" line="269"/>
         <source>connected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/busnodesmodel.cpp" line="260"/>
+        <location filename="../src/lib/udtgui/canopen/busnodesmodel.cpp" line="269"/>
         <source>unconnected</source>
         <translation type="unfinished"></translation>
     </message>
@@ -239,47 +274,47 @@
 <context>
     <name>CanFrameModel</name>
     <message>
-        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="95"/>
+        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="99"/>
         <source>Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="97"/>
+        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="101"/>
         <source>CanId</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="99"/>
+        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="103"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="101"/>
+        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="105"/>
         <source>DataByte</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="149"/>
+        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="154"/>
         <source>unk</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="151"/>
+        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="156"/>
         <source>Dat(%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="153"/>
+        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="158"/>
         <source>Err</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="155"/>
+        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="160"/>
         <source>RTR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="157"/>
+        <location filename="../src/lib/udtgui/can/canFrameListView/canframemodel.cpp" line="162"/>
         <source>NV</source>
         <translation type="unfinished"></translation>
     </message>
@@ -287,83 +322,87 @@
 <context>
     <name>DataLoggerManagerWidget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="181"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="185"/>
         <source>Data logger commands</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="185"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="189"/>
         <source>Start / stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="191"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="195"/>
         <source>Start or stop the data logger</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="209"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="214"/>
         <source>Sets the interval of log timer in ms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="219"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="225"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="221"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="227"/>
         <source>Clear all data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="227"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="233"/>
         <source>Open-GL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="231"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="237"/>
         <source>Sets render to open GL for fast rendering</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="235"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="241"/>
         <source>Cross</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="239"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="245"/>
         <source>Adds cross to line chart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="245"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="251"/>
         <source>Rolling mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="249"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="255"/>
         <source>Enable the rolling mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="256"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="262"/>
         <source>Sets the rolling mode time in ms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="268"/>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="276"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="275"/>
+        <source>Export CSV data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="283"/>
         <source>Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="271"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="278"/>
         <source>Exports all data entries in &apos;%1&apos; directory as a CSV file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="279"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermanagerwidget.cpp" line="286"/>
         <source>Takes a screenshot of the full datalogger window in &apos;%1&apos; directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -371,37 +410,37 @@
 <context>
     <name>DataLoggerModel</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermodel.cpp" line="133"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermodel.cpp" line="144"/>
         <source>Node</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermodel.cpp" line="135"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermodel.cpp" line="146"/>
         <source>Index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermodel.cpp" line="137"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermodel.cpp" line="148"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermodel.cpp" line="139"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermodel.cpp" line="150"/>
         <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermodel.cpp" line="141"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermodel.cpp" line="152"/>
         <source>Min</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermodel.cpp" line="143"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermodel.cpp" line="154"/>
         <source>Max</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermodel.cpp" line="175"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggermodel.cpp" line="186"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
@@ -409,57 +448,82 @@
 <context>
     <name>DataLoggerSingleton</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggersingleton.cpp" line="59"/>
-        <source>Data loggers</source>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggersingleton.cpp" line="58"/>
+        <source>Add to logger...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggersingleton.cpp" line="74"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggersingleton.cpp" line="88"/>
+        <source>Add to new logger</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggersingleton.cpp" line="103"/>
+        <source>Data &amp;loggers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggersingleton.cpp" line="137"/>
+        <source>Create a new logger window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggersingleton.cpp" line="140"/>
         <source>Stop all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggersingleton.cpp" line="77"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggersingleton.cpp" line="143"/>
         <source>Loggers list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggersingleton.cpp" line="87"/>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggersingleton.cpp" line="96"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggersingleton.cpp" line="155"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggersingleton.cpp" line="164"/>
         <source> (Running)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggersingleton.cpp" line="194"/>
+        <source>Logger window %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DataLoggerTreeView</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggertreeview.cpp" line="114"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggertreeview.cpp" line="120"/>
         <source>Remove log?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggertreeview.cpp" line="114"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggertreeview.cpp" line="120"/>
         <source>Do you realy want to remove theses %1 logs?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggertreeview.cpp" line="168"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggertreeview.cpp" line="186"/>
         <source>&amp;Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggertreeview.cpp" line="180"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggertreeview.cpp" line="198"/>
         <source>&amp;Set color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggertreeview.cpp" line="187"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggertreeview.cpp" line="205"/>
         <source>&amp;Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggertreeview.cpp" line="191"/>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggertreeview.cpp" line="210"/>
         <source>Exports CSV data in &apos;%1&apos; directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/datalogger/dataloggertreeview.cpp" line="219"/>
+        <source>&amp;Locate in OD</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -517,8 +581,16 @@
 <context>
     <name>IndexCheckBox</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/indexWidget/indexcheckbox.cpp" line="24"/>
+        <location filename="../src/lib/udtgui/canopen/indexWidget/indexcheckbox.cpp" line="29"/>
         <source>Enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>IndexConsumerHeartBeat</name>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/indexWidget/indexconsumerheartbeat.cpp" line="42"/>
+        <source> ms</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -538,19 +610,19 @@
     </message>
     <message>
         <location filename="../src/tools/ubl/mainwindow.cpp" line="193"/>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="160"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="168"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/tools/ubl/mainwindow.cpp" line="195"/>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="169"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="178"/>
         <source>E&amp;xit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/tools/ubl/mainwindow.cpp" line="196"/>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="171"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="180"/>
         <source>Exits UDTStudio</source>
         <translation type="unfinished"></translation>
     </message>
@@ -611,112 +683,112 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="48"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="50"/>
         <source>UniSwarm UDTStudio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="101"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="109"/>
         <source>Save configuration file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="101"/>
-        <source>Configuration file (*.conf)</source>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="109"/>
+        <source>Configuration file (*.cfg)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="114"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="122"/>
         <source>Save DCF File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="114"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="122"/>
         <source>Device File Configuration (*.dcf)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="125"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="133"/>
         <source>Bus nodes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="131"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="139"/>
         <source>Can frames</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="138"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="146"/>
         <source>Data logger</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="141"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="149"/>
         <source>Dockable data logger</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="162"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="171"/>
         <source>&amp;Stop all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="164"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="173"/>
         <source>Stop all nodes in all buses</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="177"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="186"/>
         <source>&amp;Bus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="184"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="193"/>
         <source>&amp;Node</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="198"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="207"/>
         <source>Export DCF file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="205"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="214"/>
         <source>Save conf file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="218"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="227"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="221"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="230"/>
         <source>View/hide node manager dock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="225"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="234"/>
         <source>View/hide CAN frame viewer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="229"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="238"/>
         <source>View/hide data logger</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="233"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="242"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="235"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="244"/>
         <source>&amp;About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/udtstudio/mainwindow.cpp" line="240"/>
+        <location filename="../src/udtstudio/mainwindow.cpp" line="249"/>
         <source>About &amp;Qt</source>
         <translation type="unfinished"></translation>
     </message>
@@ -744,456 +816,441 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="139"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="133"/>
         <source>Torque sensor configuration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="140"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="134"/>
         <source>Torque filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="141"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="135"/>
         <source>Torque conditioning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="142"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="136"/>
         <source>Torque sensor status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="143"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="137"/>
         <source>Node %1 axis %2 torque motion sensor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="148"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="142"/>
         <source>Velocity sensor configuration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="149"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="143"/>
         <source>Velocity filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="150"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="144"/>
         <source>Velocity conditioning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="151"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="145"/>
         <source>Velocity sensor status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="152"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="146"/>
         <source>Node %1 axis %2 velocity motion sensor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="157"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="151"/>
         <source>Position sensor configuration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="158"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="152"/>
         <source>Position filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="159"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="153"/>
         <source>Position conditioning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="160"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="154"/>
         <source>Position sensor status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="161"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="155"/>
         <source>Node %1 axis %2 position motion sensor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="215"/>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="459"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="216"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="454"/>
         <source>OFF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="216"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="217"/>
         <source>No source sensor selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="219"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="220"/>
         <source>Motor data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="223"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="224"/>
         <source>Motor torque</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="224"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="225"/>
         <source>Torque computed from motor current and Ki constant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="228"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="229"/>
         <source>Motor velocity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="229"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="230"/>
         <source>Velocity computed from motor bach EMF or hall sensor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="233"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="234"/>
         <source>Motor position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="234"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="235"/>
         <source>Position computed from motor hall</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="240"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="241"/>
         <source>From another sensor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="244"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="245"/>
         <source>Velocity from position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="245"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="246"/>
         <source>Integrated position from the velocity sensor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="251"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="252"/>
         <source>Encoders</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="253"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="254"/>
         <source>QEI CH1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="254"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="255"/>
         <source>Quadrature incremental encoder channel 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="255"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="256"/>
         <source>QEI CH2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="256"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="257"/>
         <source>Quadrature incremental encoder channel 2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="257"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="258"/>
         <source>SSI CH1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="258"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="259"/>
         <source>SSI absolute encoder channel 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="259"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="260"/>
         <source>SSI CH2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="260"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="261"/>
         <source>SSI absolute encoder channel 2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="264"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="265"/>
         <source>Analog inputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="266"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="267"/>
         <source>AN1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="267"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="268"/>
         <source>Analog input channel 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="268"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="269"/>
         <source>AN2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="269"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="270"/>
         <source>Analog input channel 2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="320"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="325"/>
         <source>Data logger commands</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="330"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="335"/>
         <source>Sets the interval of log timer in ms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="341"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="347"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="343"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="349"/>
         <source>Clear all data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="349"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="355"/>
+        <source>Lock/unlock config objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="363"/>
+        <source>Editing of config parameters is not possible in OE mode, go to SO to unlock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="369"/>
         <source>Read all objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="352"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="372"/>
         <source>Read all the objects of the current window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="373"/>
-        <source>Information</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="383"/>
-        <source>Unlock config (SO)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="387"/>
-        <source>Restart (OE)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="399"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="393"/>
         <source>Sensor config</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="405"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="397"/>
         <source>&amp;Sensor select:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="410"/>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="471"/>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="662"/>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="695"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="402"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="463"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="632"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="676"/>
         <source>param 0:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="416"/>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="478"/>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="663"/>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="696"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="408"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="469"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="633"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="677"/>
         <source>param 1:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="422"/>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="485"/>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="664"/>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="697"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="414"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="475"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="634"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="678"/>
         <source>param 2:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="428"/>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="492"/>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="665"/>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="698"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="420"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="481"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="635"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="679"/>
         <source>param 3:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="438"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="430"/>
         <source>S&amp;ubsampling:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="443"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="435"/>
         <source>&amp;Q15.16 (&lt;&lt;16):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="453"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="440"/>
+        <source>&amp;Reset:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="450"/>
         <source>Sensor filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="460"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="455"/>
         <source>No filter active, direct raw value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="461"/>
-        <source>Low pass</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="462"/>
-        <source>Low pass filter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="463"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="456"/>
         <source>Averaging</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="464"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="457"/>
         <source>Averaging value from &apos;N&apos; samples</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="466"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="459"/>
         <source>&amp;Filter select:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="504"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="493"/>
         <source>Sensor conditioning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="511"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="497"/>
         <source>Pre &amp;offset:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="516"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="501"/>
         <source>S&amp;cale:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="521"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="505"/>
         <source>&amp;Post offset:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="532"/>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="572"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="514"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="544"/>
         <source>-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="540"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="514"/>
         <source>&amp;Error range:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="547"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="519"/>
         <source>No threshold</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="548"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="520"/>
         <source>No threshold active, direct value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="549"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="521"/>
         <source>Min-max</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="550"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="522"/>
         <source>Limit output range from min to max</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="551"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="523"/>
         <source>Modulo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="552"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="524"/>
         <source>Apply a modulo to keep value in range from min to max</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="553"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="525"/>
         <source>Last valid value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="554"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="526"/>
         <source>Keep the last valid value as output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="562"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="535"/>
         <source>Th&amp;reshold:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="592"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="552"/>
         <source>Sensor status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="599"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="556"/>
         <source>Raw data:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="603"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="560"/>
         <source>Flag:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="608"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="564"/>
         <source>Value:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="637"/>
-        <source>Not available in &quot;Operation Enabled&quot;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="678"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="649"/>
         <source>Window size:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="684"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="656"/>
         <source>Filter divider:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="711"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motionsensorwidget.cpp" line="692"/>
         <source>Sample count:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1206,217 +1263,284 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="146"/>
-        <source>Not available in &quot;Operation Enabled&quot;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="196"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="232"/>
         <source>Motor commands</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="200"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="236"/>
         <source>Read all objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="203"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="239"/>
         <source>Read all the objects of the current window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="209"/>
-        <source>Map currents</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="213"/>
-        <source>Logger currents</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="222"/>
-        <source>Information</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="230"/>
-        <source>Unlock config, Go to &quot;Switched On&quot;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="240"/>
-        <source>Motor config</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="246"/>
-        <source>No motor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="249"/>
-        <source>DC brushed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="251"/>
-        <source>DC motor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="254"/>
-        <source>BLDC brushless</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="256"/>
-        <source>BLDC trapezoidal with hall</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="257"/>
-        <source>BLDC sinusoidal with hall</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="258"/>
-        <source>BLDC sinusoidal with incremental encoder</source>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="245"/>
+        <source>Lock/unlock config objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="259"/>
-        <source>&amp;Motor type:</source>
+        <source>Map currents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="270"/>
-        <source>P&amp;eak current:</source>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="263"/>
+        <source>Logger currents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="282"/>
-        <source>/</source>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="272"/>
+        <source>Motor config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="276"/>
+        <source>No motor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="279"/>
+        <source>DC brushed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="281"/>
+        <source>DC motor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="284"/>
+        <source>BLDC brushless</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="286"/>
+        <source>BLDC trapezoidal with hall</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="287"/>
+        <source>BLDC sinusoidal with hall</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="288"/>
+        <source>BLDC sinusoidal with incremental encoder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="289"/>
+        <source>&amp;Motor type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="295"/>
+        <source>P&amp;eak current:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="302"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="435"/>
+        <source>/</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="302"/>
         <source>Burst &amp;current:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="296"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="305"/>
         <source>&amp;Sustained current:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="301"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="309"/>
         <source>C&amp;urrent constant:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="310"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="315"/>
         <source>M&amp;ax velocity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="315"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="319"/>
         <source>Ve&amp;locity constant:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="325"/>
-        <source>&amp;Brake override:</source>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="417"/>
+        <source>Brake config</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="330"/>
-        <source>&amp;Invert motor direction:</source>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="421"/>
+        <source>Disabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="339"/>
-        <source>Motor status</source>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="422"/>
+        <source>Open drain, NC</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="345"/>
-        <source>Command duty cycle:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="355"/>
-        <source>Current</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="361"/>
-        <source>Torque</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="367"/>
-        <source>Velocity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="373"/>
-        <source>Position</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="377"/>
-        <source>Temperature bridge 1:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="383"/>
-        <source>Temperature bridge 2:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="394"/>
-        <source>BLDC config</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="400"/>
-        <source>P&amp;ole pair:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="405"/>
-        <source>Invert &amp;hall polarity:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="414"/>
-        <source>BLDC status</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="420"/>
-        <source>Hall raw:</source>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="423"/>
+        <source>Open drain, NO</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="424"/>
-        <source>Hall phase:</source>
+        <source>Open source, NC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="425"/>
+        <source>Open source, NO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="426"/>
+        <source>Push-pull, NC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="427"/>
+        <source>Push-pull, NO</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="428"/>
+        <source>&amp;Brake mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="435"/>
+        <source>&amp;Excitation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="438"/>
+        <source>Activated duty cycle:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="445"/>
+        <source>&amp;Release delays:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="445"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="451"/>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="451"/>
+        <source>&amp;Closing delays:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="455"/>
+        <source>&amp;Brake override:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="326"/>
+        <source>&amp;Invert motor direction:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="253"/>
+        <source>Editing of config parameters is not possible in OE mode, go to SO to unlock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="335"/>
+        <source>Motor status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="339"/>
+        <source>Command duty cycle:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="346"/>
+        <source>Current</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="351"/>
+        <source>Torque</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="356"/>
+        <source>Velocity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="361"/>
+        <source>Position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="365"/>
+        <source>Temperature bridge 1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="369"/>
+        <source>Temperature bridge 2:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="378"/>
+        <source>BLDC config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="382"/>
+        <source>P&amp;ole pair:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="387"/>
+        <source>Invert &amp;hall polarity:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="396"/>
+        <source>BLDC status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="400"/>
+        <source>Hall raw:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="404"/>
+        <source>Hall phase:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="408"/>
         <source>Electrical angle:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="473"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="509"/>
         <source>HL currents node %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="483"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/motorwidget.cpp" line="519"/>
         <source>LL currents node %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1424,27 +1548,27 @@
 <context>
     <name>Node</name>
     <message>
-        <location filename="../src/lib/canopen/node.cpp" line="140"/>
+        <location filename="../src/lib/canopen/node.cpp" line="143"/>
         <source>unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/node.cpp" line="143"/>
+        <location filename="../src/lib/canopen/node.cpp" line="146"/>
         <source>init</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/node.cpp" line="146"/>
+        <location filename="../src/lib/canopen/node.cpp" line="149"/>
         <source>preop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/node.cpp" line="149"/>
+        <location filename="../src/lib/canopen/node.cpp" line="152"/>
         <source>started</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/node.cpp" line="152"/>
+        <location filename="../src/lib/canopen/node.cpp" line="155"/>
         <source>stopped</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1452,165 +1576,155 @@
 <context>
     <name>NodeManagerWidget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="175"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="176"/>
         <source>Choose eds file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="175"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="176"/>
         <source>Eds file (*.eds)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="207"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="208"/>
         <source>Node</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="213"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="214"/>
         <source>Node commands</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="219"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="220"/>
         <source>Pre operationnal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="222"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="223"/>
         <source>Request node to go in preop mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="225"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="226"/>
         <source>Start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="228"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="229"/>
         <source>Request node to go in started mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="231"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="232"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="234"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="235"/>
         <source>Request node to go in stop mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="237"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="238"/>
         <source>Reset communication</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="240"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="241"/>
         <source>Request node to reset com. parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="243"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="244"/>
         <source>Reset node</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="246"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="247"/>
         <source>Request node to reset all values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="252"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="253"/>
         <source>Remove node</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="254"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="255"/>
         <source>Remove the current node from the bus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="258"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="259"/>
         <source>Update firmware</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="260"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="261"/>
         <source>Launch a firmware update to the node</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="264"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="265"/>
         <source>Load eds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="266"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="267"/>
         <source>Load an eds file as object dictionary description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="274"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="276"/>
         <source>Reload eds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="276"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="278"/>
         <source>Reload the current eds file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="283"/>
+        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="285"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="287"/>
-        <source>Status:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/nodemanagerwidget.cpp" line="291"/>
-        <source>Eds file name:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>NodeOdItemModel</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeoditemmodel.cpp" line="176"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeoditemmodel.cpp" line="186"/>
         <source>Index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeoditemmodel.cpp" line="179"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeoditemmodel.cpp" line="189"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeoditemmodel.cpp" line="182"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeoditemmodel.cpp" line="192"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeoditemmodel.cpp" line="185"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeoditemmodel.cpp" line="195"/>
         <source>Access</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeoditemmodel.cpp" line="188"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeoditemmodel.cpp" line="198"/>
         <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeoditemmodel.cpp" line="191"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeoditemmodel.cpp" line="201"/>
         <source>Raw</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeoditemmodel.cpp" line="194"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeoditemmodel.cpp" line="204"/>
         <source>Hex</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1618,27 +1732,27 @@
 <context>
     <name>NodeOdTreeView</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodtreeview.cpp" line="196"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodtreeview.cpp" line="253"/>
         <source>&amp;Read</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodtreeview.cpp" line="208"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodtreeview.cpp" line="265"/>
         <source>Read &amp;all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodtreeview.cpp" line="219"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodtreeview.cpp" line="276"/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodtreeview.cpp" line="230"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodtreeview.cpp" line="287"/>
         <source>&amp;Expand all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodtreeview.cpp" line="235"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodtreeview.cpp" line="292"/>
         <source>&amp;Collapse all</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1686,117 +1800,117 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="159"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="160"/>
         <source>401 DI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="160"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="161"/>
         <source>401 DO</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="161"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="162"/>
         <source>401 AI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="162"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="163"/>
         <source>401 AO</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="166"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="167"/>
         <source>402</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="168"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="169"/>
         <source>402 FSA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="169"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="170"/>
         <source>402 tp (Touch probe)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="170"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="171"/>
         <source>402 hm (Homming)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="171"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="172"/>
         <source>402 fg factors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="173"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="174"/>
         <source>OTHER MODE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="175"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="176"/>
         <source>402 dty (Duty cycle)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="177"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="178"/>
         <source>TORQUE MODE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="179"/>
-        <source>402 tq (Torque profile)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="180"/>
-        <source>402 cst (Cyclic synchronous torque)</source>
+        <source>402 tq (Torque)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="181"/>
-        <source>402 cstca (Cyclic synchronous torque with commutation angle)</source>
+        <source>402 cst (Cyclic Synchronous Torque)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="183"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="182"/>
+        <source>402 cstca (CST with Commutation Angle)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="184"/>
         <source>VELOCITY MODE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="185"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="186"/>
         <source>402 vl (Velocity)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="186"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="187"/>
         <source>402 pv (Profile Velocity)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="188"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="189"/>
         <source>POSITION MODE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="190"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="191"/>
         <source>402 pc (Position Control)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="191"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="192"/>
         <source>402 pp (Profile Position)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="192"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="193"/>
         <source>402 ip (Interpolated Position)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="193"/>
+        <location filename="../src/lib/udtgui/canopen/nodeod/nodeodwidget.cpp" line="194"/>
         <source>402 cp (Continuous Position)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1832,118 +1946,118 @@
 <context>
     <name>NodeProfile402</name>
     <message>
-        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="225"/>
+        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="222"/>
         <source>Continuous position (CP)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="228"/>
+        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="225"/>
         <source>Duty cycle (DTY)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="231"/>
+        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="228"/>
         <source>No mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="234"/>
+        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="231"/>
         <source>Profile position (PP)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="237"/>
+        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="234"/>
         <source>Velocity (VL)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="240"/>
+        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="237"/>
         <source>Profile velocity (PV)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="243"/>
+        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="240"/>
         <source>Torque profile(TQ)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="246"/>
+        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="243"/>
         <source>Homing (HM)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="249"/>
+        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="246"/>
         <source>Interpolated position (IP)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="252"/>
+        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="249"/>
         <source>Cyclic sync position (CSP)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="255"/>
+        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="252"/>
         <source>Cyclic sync velocity (CSV)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="258"/>
+        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="255"/>
         <source>Cyclic sync torque (CST)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="261"/>
+        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="258"/>
         <source>Cyclic sync torque with angle (CSTCA)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="266"/>
+        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="263"/>
         <source>Manufacturer-specific</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="270"/>
+        <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="267"/>
         <source>Reserved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="349"/>
-        <source>1_Not ready to switch on</source>
+        <source>1. Not ready to switch on</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="352"/>
-        <source>2_Switch on disabled</source>
+        <source>2. Switch on disabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="355"/>
-        <source>3_Ready to switch on</source>
+        <source>3. Ready to switch on</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="358"/>
-        <source>4_Switched on</source>
+        <source>4. Switched on</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="361"/>
-        <source>5_Operation enabled</source>
+        <source>5. Operation enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="364"/>
-        <source>6_Quick stop active</source>
+        <source>6. Quick stop active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="367"/>
-        <source>7_Fault reaction active</source>
+        <source>7. Fault reaction active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/canopen/profile/p402/nodeprofile402.cpp" line="370"/>
-        <source>8_Fault</source>
+        <source>8. Fault</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1993,6 +2107,14 @@
     </message>
 </context>
 <context>
+    <name>NodeScreenError</name>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreenerror.cpp" line="27"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>NodeScreenHome</name>
     <message>
         <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="69"/>
@@ -2010,131 +2132,241 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="96"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="103"/>
         <source>Summary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="108"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="115"/>
         <source>Device name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="112"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="119"/>
         <source>Profile:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="115"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="122"/>
         <source>Hardware version:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="119"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="126"/>
         <source>Manufacture date:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="123"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="130"/>
         <source>Serial number:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="127"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="134"/>
         <source>Software version:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="131"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="138"/>
         <source>Software build:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="138"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="145"/>
         <source>&amp;Update firmware</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="148"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="156"/>
         <source>&amp;Reset hardware</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="168"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="177"/>
         <source>Status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="175"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="184"/>
         <source>Board voltage:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="182"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="191"/>
         <source>CPU temperature:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="191"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="200"/>
         <source>Object dictionary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="198"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="207"/>
         <source>Eds file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="203"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="212"/>
         <source>Eds file infos:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="206"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="215"/>
         <source>Index count:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="209"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="218"/>
         <source>Sub index count:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="214"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="223"/>
         <source>Go to OD tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="279"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="283"/>
+        <source>&lt;span style=&apos;color:red&apos;&gt;No eds file found&lt;/span&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreenhome.cpp" line="303"/>
         <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>NodeScreenNMT</name>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreennmt.cpp" line="51"/>
+        <source>Node screen commands</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreennmt.cpp" line="55"/>
+        <source>Read all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreennmt.cpp" line="58"/>
+        <source>Read all the objects of the current window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreennmt.cpp" line="83"/>
+        <source>Producer heartbeat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreennmt.cpp" line="88"/>
+        <source>Delay:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreennmt.cpp" line="99"/>
+        <source>Producer heartbeat disabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/lib/udtgui/screen/nodescreennmt.cpp" line="103"/>
+        <source>Producer heartbeat emited each %n milisecond(s)</source>
+        <translation type="unfinished">
+            <numerusform>Producer heartbeat emited each %n milisecond</numerusform>
+            <numerusform>Producer heartbeat emited each %n miliseconds</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreennmt.cpp" line="113"/>
+        <source>Consumer heartbeat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreennmt.cpp" line="116"/>
+        <source>Node ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreennmt.cpp" line="117"/>
+        <source>Dead time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreennmt.cpp" line="133"/>
+        <source>NMT</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>NodeScreenOD</name>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="48"/>
-        <source>Store/Restore</source>
+        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="50"/>
+        <source>Store / restore</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="94"/>
-        <source>Store</source>
+        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="57"/>
+        <source>Save all parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="94"/>
-        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="107"/>
-        <source>Signature:</source>
+        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="58"/>
+        <source>Save communication parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="107"/>
-        <source>Restore</source>
+        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="59"/>
+        <source>Save application parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="132"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="60"/>
+        <source>Save manufacturer parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="71"/>
+        <source>Restore all factory parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="72"/>
+        <source>Restore factory communication parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="73"/>
+        <source>Restore factory application parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="74"/>
+        <source>Restore factory manufacturer parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="75"/>
+        <source>Restore all saved parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="76"/>
+        <source>Restore saved communication parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="77"/>
+        <source>Restore saved application parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="78"/>
+        <source>Restore saved manufacturer parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/screen/nodescreenod.cpp" line="120"/>
         <source>OD</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2142,7 +2374,7 @@
 <context>
     <name>NodeScreenPDO</name>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenpdo.cpp" line="55"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenpdo.cpp" line="53"/>
         <source>PDO</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2150,92 +2382,92 @@
 <context>
     <name>NodeScreenSynchro</name>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="102"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="106"/>
         <source>Data logger commands</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="112"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="116"/>
         <source>Sets the interval of log timer in ms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="123"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="128"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="125"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="130"/>
         <source>Clear all data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="131"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="136"/>
         <source>Read all objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="134"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="139"/>
         <source>Read all the objects of the current window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="142"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="147"/>
         <source>Synchro config</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="150"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="155"/>
         <source>&amp;Mode:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="154"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="159"/>
         <source>Ma&amp;x diff:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="158"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="163"/>
         <source>&amp;Coeff:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="162"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="167"/>
         <source>&amp;Window:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="166"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="171"/>
         <source>&amp;Offset:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="174"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="179"/>
         <source>Synchro status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="180"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="185"/>
         <source>Flag:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="184"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="189"/>
         <source>Error:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="188"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="193"/>
         <source>Corrector:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="196"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="201"/>
         <source>Synchro %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="249"/>
+        <location filename="../src/lib/udtgui/screen/nodescreensynchro.cpp" line="254"/>
         <source>Node %1 axis %2 sync mode</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2286,27 +2518,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenuio.cpp" line="99"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenuio.cpp" line="100"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenuio.cpp" line="104"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenuio.cpp" line="105"/>
         <source>Read all objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenuio.cpp" line="107"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenuio.cpp" line="108"/>
         <source>Read all the objects of the current window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenuio.cpp" line="114"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenuio.cpp" line="115"/>
         <source>Data logger</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/screen/nodescreenuio.cpp" line="126"/>
+        <location filename="../src/lib/udtgui/screen/nodescreenuio.cpp" line="127"/>
         <source>UIO</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2373,17 +2605,17 @@
 <context>
     <name>P401InputOptionWidget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401inputoptionwidget.cpp" line="66"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401inputoptionwidget.cpp" line="67"/>
         <source>-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401inputoptionwidget.cpp" line="75"/>
-        <source>&amp;Schmitt Triggers:</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401inputoptionwidget.cpp" line="77"/>
+        <source>&amp;Schmitt triggers:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401inputoptionwidget.cpp" line="76"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401inputoptionwidget.cpp" line="78"/>
         <source>Low, High</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2391,8 +2623,48 @@
 <context>
     <name>P401OutputOptionWidget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401outputoptionwidget.cpp" line="55"/>
-        <source>Pwm Frequency</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401outputoptionwidget.cpp" line="56"/>
+        <source>50 kHz</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401outputoptionwidget.cpp" line="57"/>
+        <source>32 kHz</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401outputoptionwidget.cpp" line="58"/>
+        <source>25 kHz</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401outputoptionwidget.cpp" line="59"/>
+        <source>10 kHz</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401outputoptionwidget.cpp" line="60"/>
+        <source>5 kHz</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401outputoptionwidget.cpp" line="61"/>
+        <source>2 kHz</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401outputoptionwidget.cpp" line="62"/>
+        <source>1 kHz</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401outputoptionwidget.cpp" line="63"/>
+        <source>500 Hz</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p401/p401outputoptionwidget.cpp" line="64"/>
+        <source>Pwm &amp;frequency</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2407,546 +2679,487 @@
 <context>
     <name>P402CpWidget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="65"/>
-        <source>Node %1 axis %2 DTY</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="93"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="193"/>
         <source>Continuous position mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="148"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="235"/>
         <source>Target one</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="150"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="237"/>
         <source>Go one</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="156"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="243"/>
         <source>Target two</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="158"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="245"/>
         <source>Go two</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="163"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="250"/>
         <source>Position &amp;target:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="172"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="259"/>
         <source>Information:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="175"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="262"/>
         <source>Position demand value:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="178"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="265"/>
         <source>Position actual value:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="189"/>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="206"/>
-        <source>:</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="135"/>
+        <source>Node %1 axis %2 CP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="195"/>
-        <source>&amp;Position range limit:</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="182"/>
+        <source>Q1516 position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="196"/>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="213"/>
-        <source>Min, max</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="212"/>
-        <source>&amp;Software position limit:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="222"/>
-        <source>Profile velocity:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="225"/>
-        <source>Max profile velocity:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="228"/>
-        <source>Max motor speed:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="240"/>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="251"/>
-        <source>Max:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="244"/>
-        <source>Profile acceleration:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="255"/>
-        <source>Profile deceleration:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="258"/>
-        <source>Quick stop deceleration:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="264"/>
-        <source>Home offset:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="268"/>
-        <source>Polarity:</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="185"/>
+        <source>Set all position widgets with Q15.16 attribute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="273"/>
-        <source>Control word</source>
+        <source>&amp;Position range limits:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="277"/>
-        <source>Abs / rel (bit 6):</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="273"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="278"/>
+        <source>-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="286"/>
-        <source>Data logger</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="278"/>
+        <source>Software position limits:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="289"/>
-        <source>Map CP to PDOs</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="284"/>
+        <source>Profile velocity:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="287"/>
+        <source>Max profile velocity:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="290"/>
+        <source>Max motor speed:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="297"/>
-        <source>Diagram CP mode</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="301"/>
+        <source>Max:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="297"/>
+        <source>Profile acceleration:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="301"/>
+        <source>Profile deceleration:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="304"/>
+        <source>Quick stop deceleration:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="310"/>
+        <source>Home offset:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="314"/>
+        <source>Polarity:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="319"/>
+        <source>Control word</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cpwidget.cpp" line="323"/>
+        <source>Abs / rel (bit 6):</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>P402CstcaWidget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="69"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="99"/>
         <source>Node %1 axis %2 TQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="96"/>
-        <source>Torque mode</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="126"/>
+        <source>Cyclic sync torque with angle mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="136"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="161"/>
         <source>&amp;Target torque</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="171"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="193"/>
         <source>&amp;Angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="177"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="199"/>
         <source>Torque demand:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="180"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="202"/>
         <source>Torque actual value:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="186"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="208"/>
         <source>Ma&amp;x torque </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="197"/>
-        <source>unit.10&lt;sup&gt;index&lt;/sup&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="205"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="216"/>
         <source>&amp;Interpolation time period:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="206"/>
-        <source>unit, index (unit*10^index)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="215"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="222"/>
         <source>Home offset:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="219"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="226"/>
         <source>Polarity:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="224"/>
-        <source>Data logger</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="227"/>
-        <source>Map TQ to PDOs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402cstcawidget.cpp" line="235"/>
-        <source>Diagram TQ mode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>P402DtyWidget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="125"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="95"/>
         <source>Node %1 axis %2 DTY</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="151"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="133"/>
         <source>Duty cycle mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="190"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="168"/>
         <source>&amp;Target</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="225"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="200"/>
         <source>Demand:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="231"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="206"/>
         <source>Ma&amp;x </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="237"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="212"/>
         <source>Target &amp;slope </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="243"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="218"/>
         <source>Control word:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="248"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="223"/>
         <source>Enable ramp (bit 4):</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="256"/>
-        <source>Data logger</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="259"/>
-        <source>Map DTY to PDOs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402dtywidget.cpp" line="267"/>
-        <source>Diagram DTY mode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>P402IpWidget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="275"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="249"/>
         <source>Node %1 axis %2 IP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="302"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="288"/>
         <source>Interpolated position mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="353"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="332"/>
         <source>Clear Fifo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="358"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="337"/>
         <source>Data record </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="365"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="344"/>
         <source>Information:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="368"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="347"/>
         <source>Position demand value:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="371"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="350"/>
         <source>Position actual value:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="382"/>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="399"/>
-        <source>:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="388"/>
-        <source>&amp;Position range limit:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="389"/>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="406"/>
-        <source>Min, Max</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="405"/>
-        <source>&amp;Software position limit:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="413"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="367"/>
         <source>Max profile velocity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="417"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="371"/>
         <source>Max motor speed:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="428"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="379"/>
         <source>unit.10&lt;sup&gt;index&lt;/sup&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="436"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="379"/>
         <source>&amp;Interpolation time period:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="437"/>
-        <source>unit, index (unit*10^index)</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="358"/>
+        <source>&amp;Position range limits:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="447"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="358"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="363"/>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="363"/>
+        <source>Software position limits:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="386"/>
         <source>Home offset:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="452"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="391"/>
         <source>Polarity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="457"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="396"/>
         <source>Sinusoidal motion Profile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="466"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="405"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="471"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="410"/>
         <source>Start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="477"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="416"/>
         <source>Target position:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="480"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="419"/>
         <source>Relative target position:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="483"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="422"/>
         <source>Duration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="495"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="434"/>
         <source>Control word</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="499"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="438"/>
         <source>Enable interpolation (bit 4):</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>P402ModeWidget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="508"/>
-        <source>Data logger</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402modewidget.cpp" line="111"/>
+        <source>Datalogger</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="511"/>
-        <source>Map IP to PDOs</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402modewidget.cpp" line="116"/>
+        <source>Map to PDOs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ipwidget.cpp" line="519"/>
-        <source>Diagram IP mode</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402modewidget.cpp" line="121"/>
+        <source>Diagram</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>P402OptionWidget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="153"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="149"/>
         <source>Abort connection option (0x6n07)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="157"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="153"/>
         <source>0 No action</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="160"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="156"/>
         <source>1 Fault signal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="163"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="159"/>
         <source>2 Disable voltage command</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="166"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="162"/>
         <source>3 Quick stop command</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="191"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="189"/>
         <source>Quick stop option (0x6n5A)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="195"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="193"/>
         <source>0 Disable drive function</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="198"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="196"/>
         <source>1 Slow down on slow down ramp and transit into switch on disabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="201"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="199"/>
         <source>2 Slow down on quick stop ramp and transit into switch on disabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="204"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="202"/>
         <source>5 Slow down on slow down ramp and stay in quick stop active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="207"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="205"/>
         <source>6 Slow down on quick stop ramp and stay in quick stop active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="232"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="231"/>
         <source>Shutdown option code (0x6n5B)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="236"/>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="268"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="235"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="269"/>
         <source>0 Disable drive function (switch-off the drive power stage)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="239"/>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="271"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="238"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="272"/>
         <source>1 Slow down with slow down ramp; disable of the drive function</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="264"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="265"/>
         <source>Disable operation option code (0x6n5C)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="296"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="299"/>
         <source>Halt option (0x6n5D)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="300"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="303"/>
         <source>1 Slow down on slow down ramp and stay in operation enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="303"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="306"/>
         <source>2 Slow down on quick stop ramp and stay in operation enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="328"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="333"/>
         <source>Fault reaction option (0x6n5E)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="332"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="337"/>
         <source>0 Disable drive function, motor is free to rotate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="335"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="340"/>
         <source>1 Slow down on slow down ramp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="338"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402optionwidget.cpp" line="343"/>
         <source>2 Slow down on quick stop ramp</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2954,438 +3167,387 @@
 <context>
     <name>P402PpWidget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="190"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="156"/>
         <source>Node %1 axis %2 PP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="217"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="200"/>
         <source>Profile position mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="272"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="242"/>
         <source>Target one</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="274"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="244"/>
         <source>Go one</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="280"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="250"/>
         <source>Target two</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="282"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="252"/>
         <source>Go two</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="287"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="257"/>
         <source>Position &amp;target:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="296"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="266"/>
         <source>Information:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="299"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="269"/>
         <source>Position demand value:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="302"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="272"/>
         <source>Position actual value:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="313"/>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="330"/>
-        <source>:</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="280"/>
+        <source>&amp;Position range limits:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="319"/>
-        <source>&amp;Position range limit:</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="280"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="285"/>
+        <source>-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="320"/>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="337"/>
-        <source>Min, max</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="285"/>
+        <source>Software position limits:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="336"/>
-        <source>&amp;Software position limit:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="347"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="292"/>
         <source>Profile velocity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="354"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="299"/>
         <source>Max profile velocity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="357"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="302"/>
         <source>Max motor speed:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="372"/>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="386"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="309"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="313"/>
         <source>Max:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="376"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="309"/>
         <source>Profile acceleration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="390"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="313"/>
         <source>Profile deceleration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="394"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="316"/>
         <source>Quick stop deceleration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="400"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="322"/>
         <source>Home offset:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="404"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="326"/>
         <source>Polarity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="409"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="331"/>
         <source>Control word</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="413"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="335"/>
         <source>Change set immediately (bit 5):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="418"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="339"/>
         <source>Abs / rel (bit 6):</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="426"/>
-        <source>Data logger</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="429"/>
-        <source>Map PP to PDOs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402ppwidget.cpp" line="437"/>
-        <source>Diagram PP mode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>P402TqWidget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="133"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="94"/>
         <source>Node %1 axis %2 TQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="161"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="134"/>
         <source>Torque mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="200"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="169"/>
         <source>&amp;Target torque</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="235"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="201"/>
         <source>Torque demand:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="238"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="204"/>
         <source>Torque actual value:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="244"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="210"/>
         <source>Ma&amp;x torque </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="250"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="216"/>
         <source>Target &amp;slope </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="255"/>
-        <source>Data logger</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="258"/>
-        <source>Map TQ to PDOs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402tqwidget.cpp" line="266"/>
-        <source>Diagram TQ mode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>P402VlWidget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="230"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="211"/>
         <source>Node %1 axis %2 VL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="258"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="239"/>
         <source>Velocity mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="305"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="279"/>
         <source>&amp;Target velocity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="338"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="310"/>
         <source>Information:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="341"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="313"/>
         <source>Velocity demand </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="344"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="316"/>
         <source>Velocity actual value </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="356"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="323"/>
         <source>-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="362"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="323"/>
         <source>Min / max amo&amp;unt:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="379"/>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="396"/>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="413"/>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="435"/>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="452"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="331"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="336"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="341"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="349"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="354"/>
         <source>/</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="385"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="331"/>
         <source>&amp;Acceleration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="402"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="336"/>
         <source>&amp;Deceleration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="419"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="341"/>
         <source>&amp;Quick stop deceleration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="441"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="349"/>
         <source>&amp;Set-point factor:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="458"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="354"/>
         <source>D&amp;imension factor:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="467"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="360"/>
         <source>Control word:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="471"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="364"/>
         <source>Enable ramp (bit 4):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="475"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="368"/>
         <source>Unlock ramp (bit 5):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="479"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="372"/>
         <source>Not set ramp to zero (bit 6):</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="488"/>
-        <source>Data logger</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="491"/>
-        <source>Map VL to PDOs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402vlwidget.cpp" line="499"/>
-        <source>Diagram VL mode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>P402Widget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="407"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="97"/>
+        <source>Modes of operation (0x%1):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="98"/>
+        <source>Control word (0x%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="99"/>
+        <source>Status word (0x%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="392"/>
         <source>OTHER</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="419"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="404"/>
         <source>TORQUE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="431"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="416"/>
         <source>VELOCITY</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="443"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="428"/>
         <source>POSITION</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="554"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="543"/>
         <source>Axis commands</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="557"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="546"/>
         <source>Start / stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="563"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="552"/>
         <source>Start or stop the data logger</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="570"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="559"/>
         <source>Sets the interval of timer in ms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="581"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="571"/>
         <source>Options code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="584"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="574"/>
         <source>Show options code settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="590"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="580"/>
         <source>Read all objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="593"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="583"/>
         <source>Read all the objects of the current window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="601"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="593"/>
         <source>Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="605"/>
-        <source>Modes of operation (0x6n60):</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="610"/>
+        <source>State machine</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="617"/>
-        <source>State Machine</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="694"/>
-        <source>Control word (0x6n40)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="697"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="692"/>
         <source>Halt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="706"/>
-        <source>ControlWord sended:</source>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="701"/>
+        <source>Control word sent:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="708"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="703"/>
         <source>Operation enabled quickly</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="718"/>
-        <source>Status Word (0x6n41)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="723"/>
         <source>Raw:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="726"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="721"/>
         <source>State:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="729"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="724"/>
         <source>Information:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="733"/>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p402/p402widget.cpp" line="728"/>
         <source>Warning:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3459,21 +3621,26 @@
     </message>
     <message>
         <location filename="../src/lib/udtgui/canopen/profileWidget/p428/p428channelwidget.cpp" line="112"/>
-        <source>Speed:</source>
+        <source>Value:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/udtgui/canopen/profileWidget/p428/p428channelwidget.cpp" line="118"/>
-        <source>R:</source>
+        <source>Speed:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/udtgui/canopen/profileWidget/p428/p428channelwidget.cpp" line="124"/>
-        <source>G:</source>
+        <source>R:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/udtgui/canopen/profileWidget/p428/p428channelwidget.cpp" line="130"/>
+        <source>G:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/profileWidget/p428/p428channelwidget.cpp" line="136"/>
         <source>B:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3509,228 +3676,275 @@
 <context>
     <name>PidWidget</name>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="57"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="60"/>
         <source>None</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="60"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="63"/>
         <source>Torque PID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="63"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="66"/>
         <source>Velocity PID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="66"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="69"/>
         <source>Position PID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="148"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="150"/>
         <source>Torque PID configuration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="149"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="151"/>
         <source>Torque PID status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="150"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="152"/>
         <source>Torque PID test</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="151"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="153"/>
         <source>Node %1 axis %2 torque PID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="160"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="162"/>
         <source>Velocity PID configuration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="161"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="163"/>
         <source>Velocity PID status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="162"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="164"/>
         <source>Velocity PID test</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="163"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="165"/>
         <source>Node %1 axis %2 velocity PID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="170"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="172"/>
         <source>Position PID configuration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="171"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="173"/>
         <source>Position PID status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="172"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="174"/>
         <source>Position PID test</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="173"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="175"/>
         <source>Node %1 axis %2 position PID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="507"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="515"/>
         <source>Data logger commands</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="518"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="526"/>
         <source>Sets the interval of log timer in ms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="529"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="538"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="531"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="540"/>
         <source>Clear all data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="537"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="546"/>
         <source>Read all objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="540"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="549"/>
         <source>Read all the objects of the current window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="548"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="555"/>
+        <source>Lock/unlock config objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="563"/>
+        <source>Editing of config parameters is not possible in OE mode, go to SO to unlock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="571"/>
         <source>PID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="555"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="575"/>
         <source>&amp;P:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="560"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="579"/>
         <source>&amp;I:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="565"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="583"/>
         <source>&amp;D:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="577"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="592"/>
         <source>-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="586"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="592"/>
         <source>&amp;Min - max:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="593"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="596"/>
         <source>&amp;Threshold:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="598"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="601"/>
         <source>&amp;Subsampling:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="603"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="606"/>
         <source>&amp;Anti reverse:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="608"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="611"/>
         <source>Direct &amp;control:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="619"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="622"/>
         <source>PID status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="626"/>
-        <source>Input:</source>
+        <source>Target:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="631"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="630"/>
+        <source>Input sensor:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="634"/>
         <source>Error:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="636"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="638"/>
         <source>Integrator:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="641"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="642"/>
         <source>Output:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="650"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="651"/>
         <source>PID test</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="656"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="655"/>
         <source>Mode:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="669"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="668"/>
         <source>First Target:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="682"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="681"/>
         <source>Second Target:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="688"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="687"/>
         <source>&amp;End time:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="691"/>
-        <source>&amp;Screenshot logger</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="695"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="690"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="699"/>
+        <location filename="../src/lib/udtgui/canopen/compositeWidget/pidwidget.cpp" line="694"/>
         <source>Start</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/indexWidget/abstractindexwidget.cpp" line="499"/>
+        <source>&lt;b&gt;Name&lt;/b&gt;: %1&lt;br/&gt;</source>
+        <comment>AbstractIndexWidget</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/indexWidget/abstractindexwidget.cpp" line="503"/>
+        <source>&lt;b&gt;Index&lt;/b&gt;: 0x%1.%2</source>
+        <comment>AbstractIndexWidget</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/indexWidget/abstractindexwidget.cpp" line="508"/>
+        <source>&lt;br/&gt;&lt;b&gt;Access&lt;/b&gt;: %1</source>
+        <comment>AbstractIndexWidget</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/indexWidget/abstractindexwidget.cpp" line="509"/>
+        <source>&lt;br/&gt;&lt;b&gt;Type&lt;/b&gt;: %1</source>
+        <comment>AbstractIndexWidget</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/indexWidget/abstractindexwidget.cpp" line="530"/>
+        <source>Read</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/udtgui/canopen/indexWidget/abstractindexwidget.cpp" line="549"/>
+        <source>Locate in OD</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3783,27 +3997,27 @@
     </message>
     <message>
         <location filename="../src/tools/cood/cood.cpp" line="131"/>
-        <source>error (2): invalid node id, nodeId &gt; 0 &amp;&amp; nodeId &lt; 126</source>
+        <source>error (2A): invalid node id, nodeId &gt; 0 &amp;&amp; nodeId &lt; 126</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/cood/cood.cpp" line="146"/>
-        <location filename="../src/tools/cood/cood.cpp" line="176"/>
+        <location filename="../src/tools/cood/cood.cpp" line="147"/>
+        <location filename="../src/tools/cood/cood.cpp" line="177"/>
         <source>error (5): invalid eds file or file does not exist &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/cood/cood.cpp" line="158"/>
+        <location filename="../src/tools/cood/cood.cpp" line="159"/>
         <source>error (3): invalid input file format, .eds or .dcf accepted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/cood/cood.cpp" line="257"/>
+        <location filename="../src/tools/cood/cood.cpp" line="267"/>
         <source>error (4): invalid range option value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/cood/cood.cpp" line="328"/>
+        <location filename="../src/tools/cood/cood.cpp" line="338"/>
         <source>error (4): invalid output file format, .c, .h, .dcf, .eds, .csv or .tex accepted</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3811,196 +4025,201 @@
 <context>
     <name>ubl</name>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="192"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="192"/>
         <source>error (1): option -a, -b, -t or -k is needed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="205"/>
-        <location filename="../src/tools/ubl/main.cpp" line="350"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="205"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="350"/>
         <source>error (1): input file is needed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="213"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="213"/>
         <source>error (1): merge process</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="260"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="260"/>
         <source>UBL.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="265"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="265"/>
         <source>-afileA -bfileB -a start:end ... -b start:end ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="267"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="267"/>
         <source>file -n nodeId</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="269"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="269"/>
         <source>-h file.hex -t type -s start:end ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="271"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="271"/>
         <source>fileA fileB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="273"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="273"/>
         <source>fileA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="276"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="276"/>
         <source>-n nodeId -a adress -d&quot;XXXX/XX/XX hh:mm:ss&quot; -t typeDevice -s SerialNumber -i HardVersion -e eds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="281"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="281"/>
         <source>Output directory or file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="285"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="285"/>
         <source>FileHex A and memory segment of FileHex A</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="287"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="287"/>
         <source>FileHex B and memory segment of FileHex B</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="290"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="290"/>
         <source>Adress of key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="296"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="296"/>
         <source>EDS File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="302"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="302"/>
         <source>CANOpen Node Id.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="307"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="307"/>
         <source>CAN bus.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="312"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="312"/>
         <source>CAN Speed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="319"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="319"/>
         <source>hex file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="325"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="325"/>
         <source>type device</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="331"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="331"/>
         <source>Memory segment of hex file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="336"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="336"/>
         <source>Software version.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="341"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="341"/>
         <source>Date.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="357"/>
-        <location filename="../src/tools/ubl/main.cpp" line="365"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="357"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="365"/>
         <source>error (1): miss file .bin </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="377"/>
-        <source>error (1): miss file to compare two file</source>
+        <location filename="../src/tools/ubl/ubl.cpp" line="375"/>
+        <source>error (1): miss arguments to compare two files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="397"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="381"/>
+        <source>error (1): miss file to compare two files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tools/ubl/ubl.cpp" line="401"/>
         <source>error (1): type of device is needed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="404"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="408"/>
         <source>error (1): segment is needed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="411"/>
-        <location filename="../src/tools/ubl/main.cpp" line="436"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="415"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="441"/>
         <source>error (1): Hex file is needed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="419"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="423"/>
         <source>error (1): Hex file not present</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="450"/>
-        <location filename="../src/tools/ubl/main.cpp" line="486"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="455"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="489"/>
         <source>error (2): invalid node id, nodeId &gt; 0 &amp;&amp; nodeId &lt; 126</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="456"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="461"/>
         <source>error (3): invalid bus id, busId &gt; 0 &amp;&amp; busId &lt; 126</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="470"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="475"/>
         <source>error (1): Binary file is needed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="515"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="518"/>
         <source>error (1): eds is needed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="521"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="524"/>
         <source>error (1): date is needed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="527"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="530"/>
         <source>error (1): hardware version is needed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="546"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="558"/>
         <source>error (1):Adress, type or serial is needed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="557"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="569"/>
         <source>error (6): invalid number of hex inputs file, need more than one</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tools/ubl/main.cpp" line="558"/>
+        <location filename="../src/tools/ubl/ubl.cpp" line="570"/>
         <source>error (1): input file is needed for update</source>
         <translation type="unfinished"></translation>
     </message>
