@@ -36,6 +36,13 @@ BootloaderWidget::BootloaderWidget(QWidget *parent)
 {
     setWindowTitle("UniSwarm UDTStudio - Update Node");
     createWidgets();
+    connect(&_progressTimer,
+            &QTimer::timeout,
+            this,
+            [this]()
+            {
+                _updateProgressBar->setValue(_node->bootloader()->updateProgress());
+            });
 }
 
 BootloaderWidget::BootloaderWidget(Node *node, QWidget *parent)
@@ -63,8 +70,8 @@ void BootloaderWidget::setNode(Node *node)
 
     _node = node;
 
-    connect(_updateButton, &QPushButton::clicked, this, &BootloaderWidget::updateProgram);
     connect(_node->bootloader(), &Bootloader::statusEvent, this, &BootloaderWidget::updateStatus);
+
 #ifdef DEBUG_BOOT
     connect(_stopButton, &QPushButton::clicked, _node->bootloader(), &Bootloader::stopProgram);
     connect(_startButton, &QPushButton::clicked, _node->bootloader(), &Bootloader::startProgram);
@@ -73,7 +80,7 @@ void BootloaderWidget::setNode(Node *node)
     connect(_sendKeyButton, &QPushButton::clicked, this, &BootloaderWidget::sendKeyButton);
 #endif
 
-    _infoLabel->setText(QString("Update firmware for Node %1").arg(_node->nodeId()));
+    _infoLabel->setText(tr("Update firmware for Node %1").arg(_node->nodeId()));
     readAll();
 }
 
@@ -92,6 +99,7 @@ void BootloaderWidget::sendKeyButton()
 
 void BootloaderWidget::updateProgram()
 {
+    _progressTimer.start(100);
     _node->bootloader()->startUpdate();
 }
 
@@ -115,6 +123,11 @@ void BootloaderWidget::updateStatus()
         _deviceTypeUfwLabel->setText("0x" + QString::number(_node->bootloader()->deviceType(), 16));
         _versionSoftwareUfwLabel->setText(_node->bootloader()->versionSoftware());
         _buildDateUfwLabel->setText(_node->bootloader()->buildDate());
+    }
+    if (status == Bootloader::Status::STATUS_UPDATE_SUCCESSFUL || status == Bootloader::Status::STATUS_ERROR_UPDATE_FAILED)
+    {
+        readAll();
+        _progressTimer.stop();
     }
 
     if (status > Bootloader::Status::STATUS_CHECK_FILE_AND_DEVICE)
@@ -171,25 +184,31 @@ void BootloaderWidget::createWidgets()
     layout->addRow("Status:", _statusLabel);
     vLayout->addLayout(layout);
 
-    _updateButton = new QPushButton("Start update");
+    _updateButton = new QPushButton(tr("Start update"));
     _updateButton->setEnabled(false);
     vLayout->addWidget(_updateButton);
+    connect(_updateButton, &QPushButton::clicked, this, &BootloaderWidget::updateProgram);
+
+    _updateProgressBar = new QProgressBar();
+    vLayout->addWidget(_updateProgressBar);
+
 #ifdef DEBUG_BOOT
-    _stopButton = new QPushButton("Stop program");
+    _stopButton = new QPushButton(tr("Stop program"));
     vLayout->addWidget(_stopButton);
 
-    _startButton = new QPushButton("Start program");
+    _startButton = new QPushButton(tr("Start program"));
     vLayout->addWidget(_startButton);
 
-    _resetButton = new QPushButton("Reset program");
+    _resetButton = new QPushButton(tr("Reset program"));
     vLayout->addWidget(_resetButton);
 
-    _clearButton = new QPushButton("Clear program");
+    _clearButton = new QPushButton(tr("Clear program"));
     vLayout->addWidget(_clearButton);
 
-    _sendKeyButton = new QPushButton("Send Key");
+    _sendKeyButton = new QPushButton(tr("Send Key"));
     vLayout->addWidget(_sendKeyButton);
 #endif
+
     setLayout(vLayout);
 }
 
@@ -229,7 +248,7 @@ QGroupBox *BootloaderWidget::informationDeviceWidget()
 
 QGroupBox *BootloaderWidget::informationFileWidget()
 {
-    QGroupBox *groupBox = new QGroupBox(tr("File Information"));
+    QGroupBox *groupBox = new QGroupBox(tr("File informations"));
 
     QFormLayout *fileLayout = new QFormLayout();
 

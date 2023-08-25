@@ -24,7 +24,9 @@
 #include <QDialog>
 #include <QGroupBox>
 #include <QLabel>
+#include <QProgressBar>
 #include <QPushButton>
+#include <QTimer>
 
 #include "canopen/indexWidget/abstractindexwidget.h"
 
@@ -60,9 +62,7 @@ private:
     Node *_node;
 
     QLabel *_infoLabel;
-    QPushButton *_updateButton;
     QString _fileName;
-    QLabel *_statusLabel;
 
 #ifdef DEBUG_BOOT
     QPushButton *_stopButton;
@@ -75,16 +75,21 @@ private:
     // Create widgets
     void createWidgets();
 
+    QList<AbstractIndexWidget *> _indexWidgets;
+
+    QGroupBox *informationDeviceWidget();
+
+    QGroupBox *informationFileWidget();
     QPushButton *_openButton;
     QLabel *_fileUfwLabel;
     QLabel *_deviceTypeUfwLabel;
     QLabel *_versionSoftwareUfwLabel;
     QLabel *_buildDateUfwLabel;
 
-    QList<AbstractIndexWidget *> _indexWidgets;
-
-    QGroupBox *informationDeviceWidget();
-    QGroupBox *informationFileWidget();
+    QLabel *_statusLabel;
+    QPushButton *_updateButton;
+    QProgressBar *_updateProgressBar;
+    QTimer _progressTimer;
 };
 
 #endif  // BOOTLOADERWIDGET_H
