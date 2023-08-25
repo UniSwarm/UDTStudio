@@ -30,6 +30,7 @@ IndexConsumerHeartBeat::IndexConsumerHeartBeat(const NodeObjectId &objId)
 void IndexConsumerHeartBeat::createWidgets()
 {
     QHBoxLayout *layout = new QHBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
 
     _nodeSpinBox = new QSpinBox();
     _nodeSpinBox->setRange(0, 125);

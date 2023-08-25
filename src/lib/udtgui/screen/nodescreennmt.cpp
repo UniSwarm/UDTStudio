@@ -116,13 +116,14 @@ QWidget *NodeScreenNMT::createConsumerHeartBeatWidget()
     gridLayout->addWidget(new QLabel(tr("Node ID")), 0, 1);
     gridLayout->addWidget(new QLabel(tr("Dead time")), 0, 2);
 
-    int row = 1;
-    gridLayout->addWidget(new QLabel(QString("%1").arg(row)), row, 0);
+    for (int row = 1; row <= 10; row++)
+    {
+        gridLayout->addWidget(new QLabel(QString("%1").arg(row)), row, 0);
 
-    IndexConsumerHeartBeat *indexConsumerSpinBox;
-    indexConsumerSpinBox = new IndexConsumerHeartBeat(NodeObjectId(0x1016, row));
-    gridLayout->addWidget(indexConsumerSpinBox, row, 1, 1, 2);
-    _indexWidgets.append(indexConsumerSpinBox);
+        IndexConsumerHeartBeat *indexConsumerSpinBox = new IndexConsumerHeartBeat(NodeObjectId(0x1016, row));
+        gridLayout->addWidget(indexConsumerSpinBox, row, 1, 1, 2);
+        _indexWidgets.append(indexConsumerSpinBox);
+    }
 
     return groupBox;
 }
