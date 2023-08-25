@@ -153,24 +153,26 @@ void AbstractIndexWidget::updateRange()
 void AbstractIndexWidget::updateObjId()
 {
     NodeSubIndex *nodeSubIndex = _objId.nodeSubIndex();
-    if (nodeSubIndex != nullptr)
+    if (nodeSubIndex == nullptr)
     {
-        _minType = nodeSubIndex->minType();
-        _maxType = nodeSubIndex->maxType();
-        if (_unit.isEmpty())
-        {
-            setUnit(nodeSubIndex->unit());
-        }
-        if (_scale == 1)
-        {
-            setScale(nodeSubIndex->scale());
-        }
-        if (nodeSubIndex->isQ1516())
-        {
-            setDisplayHint(DisplayHint::DisplayQ15_16);
-        }
-        updateToolTip();
+        return;
     }
+
+    _minType = nodeSubIndex->minType();
+    _maxType = nodeSubIndex->maxType();
+    if (_unit.isEmpty())
+    {
+        setUnit(nodeSubIndex->unit());
+    }
+    if (_scale == 1)
+    {
+        setScale(nodeSubIndex->scale());
+    }
+    if (nodeSubIndex->isQ1516())
+    {
+        setDisplayHint(DisplayHint::DisplayQ15_16);
+    }
+    updateToolTip();
 }
 
 QVariant AbstractIndexWidget::pValue(const QVariant &value, const AbstractIndexWidget::DisplayHint hint) const
@@ -485,27 +487,29 @@ void AbstractIndexWidget::clearStatus()
 
 void AbstractIndexWidget::updateToolTip()
 {
-    if (_widget != nullptr)
+    if (_widget == nullptr)
     {
-        QString toolTip;
-        NodeSubIndex *nodeSubIndex = _objId.nodeSubIndex();
-        if (nodeSubIndex != nullptr)
-        {
-            toolTip.append(QObject::tr("<b>Name</b>: %1<br/>", "AbstractIndexWidget").arg(nodeSubIndex->name()));
-        }
-
-        toolTip.append(QObject::tr("<b>Index</b>: 0x%1.%2", "AbstractIndexWidget")
-                           .arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'),
-                                QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
-
-        if (nodeSubIndex != nullptr)
-        {
-            toolTip.append(QObject::tr("<br/><b>Access</b>: %1", "AbstractIndexWidget").arg(nodeSubIndex->accessString()));
-            toolTip.append(QObject::tr("<br/><b>Type</b>: %1", "AbstractIndexWidget").arg(NodeSubIndex::dataTypeStr(nodeSubIndex->dataType())));
-        }
-
-        _widget->setToolTip(toolTip);
+        return;
     }
+
+    QString toolTip;
+    NodeSubIndex *nodeSubIndex = _objId.nodeSubIndex();
+    if (nodeSubIndex != nullptr)
+    {
+        toolTip.append(QObject::tr("<b>Name</b>: %1<br/>", "AbstractIndexWidget").arg(nodeSubIndex->name()));
+    }
+
+    toolTip.append(
+        QObject::tr("<b>Index</b>: 0x%1.%2", "AbstractIndexWidget")
+            .arg(QString::number(objId().index(), 16).toUpper().rightJustified(4, '0'), QString::number(objId().subIndex()).toUpper().rightJustified(2, '0')));
+
+    if (nodeSubIndex != nullptr)
+    {
+        toolTip.append(QObject::tr("<br/><b>Access</b>: %1", "AbstractIndexWidget").arg(nodeSubIndex->accessString()));
+        toolTip.append(QObject::tr("<br/><b>Type</b>: %1", "AbstractIndexWidget").arg(NodeSubIndex::dataTypeStr(nodeSubIndex->dataType())));
+    }
+
+    _widget->setToolTip(toolTip);
 }
 
 QMenu *AbstractIndexWidget::createStandardContextMenu(QMenu *menu)
