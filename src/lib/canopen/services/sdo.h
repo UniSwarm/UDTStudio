@@ -48,7 +48,9 @@ public:
     quint32 cobIdClientToServer() const;
     quint32 cobIdServerToClient() const;
 
+    // Status
     bool hasRequestPending() const;
+    qint32 currentRequestStay() const;
 
     bool uploadData(quint16 index, quint8 subindex, QMetaType::Type dataType);
     bool downloadData(quint16 index, quint8 subindex, const QVariant &data);
@@ -158,7 +160,7 @@ private:
         quint8 attemptCount;
     };
 
-    RequestSdo *_requestCurrent;
+    RequestSdo *_currentRequest;
     QQueue<RequestSdo *> _requestQueue;
     Status _status;
 
@@ -192,9 +194,9 @@ private:
     bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, const QByteArray &data);      // SDO download initiate, SDO block download initiate
     bool sendSdoRequest(quint8 cmd, const QByteArray &data);                                      // SDO download segment
     bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint8 blksize, quint8 pst);  // SDO block upload initiate
-    bool sendSdoRequest(quint8 cmd, quint8 &ackseq, quint8 blksize);                              // SDO block upload sub-block
+    bool sendSdoRequest(quint8 cmd, quint8 ackseq, quint8 blksize);                               // SDO block upload sub-block
     bool sendSdoRequest(bool moreSegments, quint8 seqno, const QByteArray &segData);              // SDO block download sub-block
-    bool sendSdoRequest(quint8 cmd, quint16 &crc);                                                // SDO block download end
+    bool sendSdoRequest(quint8 cmd, quint16 crc);                                                 // SDO block download end
     bool sendSdoRequest(quint8 cmd, quint16 index, quint8 subindex, quint32 error);               // SDO abort transfer
     quint8 calculateBlockSize(quint32 size);
 

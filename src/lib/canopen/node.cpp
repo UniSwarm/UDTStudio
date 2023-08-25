@@ -296,6 +296,11 @@ const QString &Node::edsFileName() const
     return _nodeOd->edsFileName();
 }
 
+QList<SDO *> Node::sdoClients() const
+{
+    return _sdoClients;
+}
+
 void Node::addProfile(NodeProfile *nodeProfile)
 {
     _nodeProfiles.append(nodeProfile);

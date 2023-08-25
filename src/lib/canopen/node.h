@@ -100,6 +100,9 @@ public:
     void loadEds(const QString &fileName);
     const QString &edsFileName() const;
 
+    // SDO
+    QList<SDO *> sdoClients() const;
+
     // Profiles
     void addProfile(NodeProfile *nodeProfile);
     const QList<NodeProfile *> &profiles() const;
