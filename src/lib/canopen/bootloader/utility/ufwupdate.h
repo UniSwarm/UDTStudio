@@ -43,20 +43,25 @@ public:
 
     uint8_t checksum() const;
 
+    double progress() const;
+
 signals:
     void finished(bool ok);
 
 private:
     Node *_node;
     UfwModel *_ufwModel;
-    uint8_t _checksum;
+
     NodeObjectId _programDataObjectId;
 
+    uint8_t _checksum;
     int _indexList;
     QList<QByteArray> _byteArrayList;
     void process();
     uint32_t sumByte(const QByteArray &prog);
     void removeByte(QByteArray &prog);
+
+    uint32_t _transferSize;
 
     // NodeOdSubscriber interface
 protected:

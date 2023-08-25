@@ -36,6 +36,10 @@ UfwUpdate::UfwUpdate(Node *node, UfwModel *ufwModel)
     _programDataObjectId = IndexDb::getObjectId(IndexDb::OD_PROGRAM_DATA_1);
     setNodeInterrest(_node);
     registerObjId({0x1F50, 1});
+
+    _checksum = 0;
+    _indexList = -1;
+    _transferSize = 0;
 }
 
 void UfwUpdate::setUfw(UfwModel *ufwModel)
@@ -59,11 +63,11 @@ void UfwUpdate::update()
 
     char buffer[4];
     uint32_t sum = 0;
-    _checksum = 0;
-    for (auto i : _ufwModel->segmentList())
+    uint32_t transferSize = 0;
+    for (UfwModel::Segment segment : _ufwModel->segmentList())
     {
-        uint32_t start = i.start;
-        uint32_t end = i.end;
+        uint32_t start = segment.start;
+        uint32_t end = segment.end;
 
         QByteArray prog = _ufwModel->prog().mid(static_cast<int>(start), static_cast<int>(end) - static_cast<int>(start));
 
@@ -77,8 +81,10 @@ void UfwUpdate::update()
         progRemove.prepend(buffer, sizeof(start));
 
         _byteArrayList.append(progRemove);
+        transferSize += progRemove.size();
     }
 
+    _transferSize = transferSize;
     _checksum = (~(sum % 256) + 1) & 0xFF;
     _indexList = _byteArrayList.size();
 
@@ -108,10 +114,9 @@ void UfwUpdate::process()
 uint32_t UfwUpdate::sumByte(const QByteArray &prog)
 {
     uint32_t checksum = 0;
-    int i = 0;
-    for (i = 0; i < prog.size(); i++)
+    for (char byte : prog)
     {
-        checksum += static_cast<uint8_t>(prog[i]);
+        checksum += static_cast<uint8_t>(byte);
     }
     return checksum;
 }
@@ -134,6 +139,25 @@ void UfwUpdate::removeByte(QByteArray &prog)
     }
 }
 
+double UfwUpdate::progress() const
+{
+    if (_byteArrayList.isEmpty())
+    {
+        return 0;
+    }
+
+    int byteSent = 0;
+    for (int index = _byteArrayList.size() - 1; index >= _indexList; index--)
+    {
+        byteSent += _byteArrayList.at(index).size();
+    }
+
+    int currentTransfertStay = _node->sdoClients().first()->currentRequestStay();
+    byteSent -= currentTransfertStay;
+
+    return static_cast<double>(byteSent) / _transferSize * 100.0;
+}
+
 void UfwUpdate::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
 {
     if (_byteArrayList.isEmpty())
@@ -145,9 +169,9 @@ void UfwUpdate::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
     {
         if ((flags & NodeOd::FlagsRequest::Error) == NodeOd::FlagsRequest::Error)
         {
-            emit finished(false);
             _indexList = 0;
             _byteArrayList.clear();
+            emit finished(false);
         }
         else if (flags == NodeOd::FlagsRequest::Write)
         {

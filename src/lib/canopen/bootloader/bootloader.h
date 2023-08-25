@@ -62,6 +62,7 @@ public:
     Status status() const;
     QString statusStr(Status status) const;
     quint32 error() const;
+    double updateProgress() const;
 
     bool openUfw(const QString &fileName);
 

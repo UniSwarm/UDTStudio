@@ -127,7 +127,7 @@ QString Bootloader::statusStr(Status status) const
             return QString(tr("File analyzed ok"));
         case Bootloader::STATUS_UPDATE_ALREADY_IN_PROGRESS:
             return QString(tr("Update already in progress"));
-        case STATUS_MEMORY_ALREADY_WRITTEN:
+        case Bootloader::STATUS_MEMORY_ALREADY_WRITTEN:
             return QString(tr("Error : Memory already written"));
         case Bootloader::STATUS_CHECK_FILE_AND_DEVICE:
             return QString(tr("Checking the settings"));
@@ -135,7 +135,7 @@ QString Bootloader::statusStr(Status status) const
             return QString(tr("Device stop in progress"));
         case Bootloader::STATUS_DEVICE_CLEAR_IN_PROGRESS:
             return QString(tr("Device clear in progress"));
-        case STATUS_DEVICE_WRITING_OTP_IN_PROGRESS:
+        case Bootloader::STATUS_DEVICE_WRITING_OTP_IN_PROGRESS:
             return QString(tr("Device writing otp in progress"));
         case Bootloader::STATUS_DEVICE_UPDATE_IN_PROGRESS:
             return QString(tr("Device update in progress"));
@@ -150,6 +150,15 @@ QString Bootloader::statusStr(Status status) const
 quint32 Bootloader::error() const
 {
     return _error;
+}
+
+double Bootloader::updateProgress() const
+{
+    if (_ufwUpdate != nullptr)
+    {
+        return _ufwUpdate->progress();
+    }
+    return 0;
 }
 
 bool Bootloader::openUfw(const QString &fileName)
