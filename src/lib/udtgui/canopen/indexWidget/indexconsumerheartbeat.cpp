@@ -34,13 +34,13 @@ void IndexConsumerHeartBeat::createWidgets()
 
     _nodeSpinBox = new QSpinBox();
     _nodeSpinBox->setRange(0, 125);
-    connect(_nodeSpinBox, &QSpinBox::valueChanged, this, &IndexConsumerHeartBeat::sendValue);
+    connect(_nodeSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &IndexConsumerHeartBeat::sendValue);
     layout->addWidget(_nodeSpinBox);
 
     _timeSpinBox = new QSpinBox();
     _timeSpinBox->setRange(0, 0xFFFF);
     _timeSpinBox->setSuffix(tr(" ms"));
-    connect(_timeSpinBox, &QSpinBox::valueChanged, this, &IndexConsumerHeartBeat::sendValue);
+    connect(_timeSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &IndexConsumerHeartBeat::sendValue);
     layout->addWidget(_timeSpinBox);
 
     setLayout(layout);
