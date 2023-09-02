@@ -30,7 +30,7 @@ class NodeOd;
 class CANOPEN_EXPORT NodeIndex
 {
 public:
-    NodeIndex(const quint16 &index);
+    NodeIndex(quint16 index);
     NodeIndex(const NodeIndex &other);
     ~NodeIndex();
 
@@ -41,7 +41,7 @@ public:
     NodeObjectId objectId() const;
 
     quint16 index() const;
-    void setIndex(const quint16 &index);
+    void setIndex(quint16 index);
 
     const QString &name() const;
     void setName(const QString &name);

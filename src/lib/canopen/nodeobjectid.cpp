@@ -167,7 +167,7 @@ NodeSubIndex *NodeObjectId::nodeSubIndex() const
 
 QString NodeObjectId::mimeData() const
 {
-    return QString("%1.%2.%3.%4")
+    return QString(QStringLiteral("%1.%2.%3.%4"))
         .arg(QString::number(_busId, 16).rightJustified(2, '0'),
              QString::number(_nodeId, 16).rightJustified(2, '0'),
              QString::number(_index, 16).rightJustified(4, '0'),

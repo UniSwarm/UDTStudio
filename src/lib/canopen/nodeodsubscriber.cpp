@@ -18,9 +18,6 @@
 
 #include "nodeodsubscriber.h"
 
-#include <QDebug>
-
-#include "canopen.h"
 #include "node.h"
 
 NodeOdSubscriber::NodeOdSubscriber()

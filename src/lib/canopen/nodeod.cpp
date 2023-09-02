@@ -82,7 +82,7 @@ bool NodeOd::loadEds(const QString &fileName)
     DeviceConfiguration *deviceConfiguration = DeviceConfiguration::fromDeviceDescription(deviceDescription, _node->nodeId());
     _edsFileName = mfileName;
 
-    for (Index *odIndex : deviceConfiguration->indexes())
+    for (Index *odIndex : qAsConst(deviceConfiguration->indexes()))
     {
         NodeIndex *nodeIndex;
         nodeIndex = index(odIndex->index());
@@ -138,7 +138,7 @@ bool NodeOd::exportDcf(const QString &fileName) const
     {
         return false;
     }
-    if (!mfileName.endsWith(".dcf"))
+    if (!mfileName.endsWith(QStringLiteral(".dcf")))
     {
         mfileName.append(".dcf");
     }
@@ -184,7 +184,7 @@ bool NodeOd::exportConf(const QString &fileName) const
     {
         return false;
     }
-    if (!mfileName.endsWith(".conf"))
+    if (!mfileName.endsWith(QStringLiteral(".conf")))
     {
         mfileName.append(".conf");
     }
@@ -524,47 +524,47 @@ void NodeOd::updateObjectFromDevice(quint16 index, quint8 subindex, const QVaria
 void NodeOd::createMandatoryObjects()
 {
     NodeIndex *deviceType = new NodeIndex(0x1000);
-    deviceType->setName("Device type");
+    deviceType->setName(QStringLiteral("Device type"));
     deviceType->setObjectType(NodeIndex::VAR);
     deviceType->addSubIndex(new NodeSubIndex(0));
     deviceType->subIndex(0)->setAccessType(NodeSubIndex::READ);
     deviceType->subIndex(0)->setDataType(NodeSubIndex::UNSIGNED32);
-    deviceType->subIndex(0)->setName("Device type");
+    deviceType->subIndex(0)->setName(QStringLiteral("Device type"));
     addIndex(deviceType);
 
     NodeIndex *identityObject = new NodeIndex(0x1018);
-    identityObject->setName("Identity object");
+    identityObject->setName(QStringLiteral("Identity object"));
     identityObject->setObjectType(NodeIndex::RECORD);
 
     NodeSubIndex *subIndex;
     subIndex = new NodeSubIndex(0);
     subIndex->setDataType(NodeSubIndex::UNSIGNED8);
-    subIndex->setName("Highest sub-index supported");
+    subIndex->setName(QStringLiteral("Highest sub-index supported"));
     subIndex->setAccessType(NodeSubIndex::READ);
     subIndex->setValue(QVariant(static_cast<uint>(4)));
     identityObject->addSubIndex(subIndex);
 
     subIndex = new NodeSubIndex(1);
     subIndex->setDataType(NodeSubIndex::UNSIGNED32);
-    subIndex->setName("Vendor-ID");
+    subIndex->setName(QStringLiteral("Vendor-ID"));
     subIndex->setAccessType(NodeSubIndex::READ);
     identityObject->addSubIndex(subIndex);
 
     subIndex = new NodeSubIndex(2);
     subIndex->setDataType(NodeSubIndex::UNSIGNED32);
-    subIndex->setName("Product code");
+    subIndex->setName(QStringLiteral("Product code"));
     subIndex->setAccessType(NodeSubIndex::READ);
     identityObject->addSubIndex(subIndex);
 
     subIndex = new NodeSubIndex(3);
     subIndex->setDataType(NodeSubIndex::UNSIGNED32);
-    subIndex->setName("Revision number");
+    subIndex->setName(QStringLiteral("Revision number"));
     subIndex->setAccessType(NodeSubIndex::READ);
     identityObject->addSubIndex(subIndex);
 
     subIndex = new NodeSubIndex(4);
     subIndex->setDataType(NodeSubIndex::UNSIGNED32);
-    subIndex->setName("Serial number");
+    subIndex->setName(QStringLiteral("Serial number"));
     subIndex->setAccessType(NodeSubIndex::READ);
     identityObject->addSubIndex(subIndex);
 
@@ -574,7 +574,7 @@ void NodeOd::createMandatoryObjects()
 void NodeOd::createBootloaderObjects()
 {
     NodeIndex *versionHard = new NodeIndex(0x1009);
-    versionHard->setName("Manufacturer Hardware Version");
+    versionHard->setName(QStringLiteral("Manufacturer Hardware Version"));
     versionHard->setObjectType(NodeIndex::VAR);
     versionHard->addSubIndex(new NodeSubIndex(0));
     versionHard->subIndex(0)->setDataType(NodeSubIndex::VISIBLE_STRING);
@@ -582,7 +582,7 @@ void NodeOd::createBootloaderObjects()
     addIndex(versionHard);
 
     NodeIndex *version = new NodeIndex(0x100A);
-    version->setName("Manufacturer Software Version");
+    version->setName(QStringLiteral("Manufacturer Software Version"));
     version->setObjectType(NodeIndex::VAR);
     version->addSubIndex(new NodeSubIndex(0));
     version->subIndex(0)->setDataType(NodeSubIndex::VISIBLE_STRING);
@@ -590,39 +590,39 @@ void NodeOd::createBootloaderObjects()
     addIndex(version);
 
     NodeIndex *program = new NodeIndex(0x1F50);
-    program->setName("Program");
+    program->setName(QStringLiteral("Program"));
     program->setObjectType(NodeIndex::RECORD);
 
     NodeSubIndex *subIndex;
     subIndex = new NodeSubIndex(0);
     subIndex->setDataType(NodeSubIndex::UNSIGNED8);
-    subIndex->setName("Number of Entries");
+    subIndex->setName(QStringLiteral("Number of Entries"));
     subIndex->setValue(1);
     subIndex->setAccessType(NodeSubIndex::READ);
     program->addSubIndex(subIndex);
 
     subIndex = new NodeSubIndex(1);
     subIndex->setDataType(NodeSubIndex::DDOMAIN);
-    subIndex->setName("Program_1");
+    subIndex->setName(QStringLiteral("Program_1"));
     subIndex->setAccessType(static_cast<NodeSubIndex::AccessType>(NodeSubIndex::READ | NodeSubIndex::WRITE));
     program->addSubIndex(subIndex);
     addIndex(program);
 
     NodeIndex *programControl = new NodeIndex(0x1F51);
-    programControl->setName("Program control");
+    programControl->setName(QStringLiteral("Program control"));
     programControl->setObjectType(NodeIndex::RECORD);
 
     NodeSubIndex *subIndexProgramControl;
     subIndexProgramControl = new NodeSubIndex(0);
     subIndexProgramControl->setDataType(NodeSubIndex::UNSIGNED8);
-    subIndexProgramControl->setName("Number of Entries");
+    subIndexProgramControl->setName(QStringLiteral("Number of Entries"));
     subIndexProgramControl->setValue(1);
     subIndexProgramControl->setAccessType(NodeSubIndex::READ);
     programControl->addSubIndex(subIndexProgramControl);
 
     subIndexProgramControl = new NodeSubIndex(1);
     subIndexProgramControl->setDataType(NodeSubIndex::UNSIGNED8);
-    subIndexProgramControl->setName("Program_1");
+    subIndexProgramControl->setName(QStringLiteral("Program_1"));
     subIndexProgramControl->setAccessType(static_cast<NodeSubIndex::AccessType>(NodeSubIndex::READ | NodeSubIndex::WRITE));
     programControl->addSubIndex(subIndexProgramControl);
     addIndex(programControl);
@@ -632,18 +632,18 @@ void NodeOd::createBootloaderObjects()
     date->setObjectType(NodeIndex::VAR);
     date->addSubIndex(new NodeSubIndex(0));
     date->subIndex(0)->setDataType(NodeSubIndex::VISIBLE_STRING);
-    date->subIndex(0)->setName("Firmware_build_date");
+    date->subIndex(0)->setName(QStringLiteral("Firmware_build_date"));
     date->subIndex(0)->setAccessType(NodeSubIndex::READ);
     addIndex(date);
 
     NodeIndex *conf = new NodeIndex(0x2040);
-    conf->setName("Comunication_config");
+    conf->setName(QStringLiteral("Comunication_config"));
     conf->setObjectType(NodeIndex::ARRAY);
 
     NodeSubIndex *subIndexconf;
     subIndexconf = new NodeSubIndex(0);
     subIndexconf->setDataType(NodeSubIndex::UNSIGNED8);
-    subIndexconf->setName("Number of Entries");
+    subIndexconf->setName(QStringLiteral("Number of Entries"));
     subIndexconf->setValue(1);
     subIndexconf->setAccessType(NodeSubIndex::READ);
     conf->addSubIndex(subIndexconf);
@@ -651,13 +651,13 @@ void NodeOd::createBootloaderObjects()
     subIndexconf = new NodeSubIndex(1);
     subIndexconf->setDataType(NodeSubIndex::UNSIGNED8);
     subIndexconf->setAccessType(static_cast<NodeSubIndex::AccessType>(NodeSubIndex::READ | NodeSubIndex::WRITE));
-    subIndexconf->setName("Node_ID");
+    subIndexconf->setName(QStringLiteral("Node_ID"));
     conf->addSubIndex(subIndexconf);
 
     subIndexconf = new NodeSubIndex(2);
     subIndexconf->setDataType(NodeSubIndex::UNSIGNED8);
     subIndexconf->setAccessType(static_cast<NodeSubIndex::AccessType>(NodeSubIndex::READ | NodeSubIndex::WRITE));
-    subIndexconf->setName("Bit_rate");
+    subIndexconf->setName(QStringLiteral("Bit_rate"));
     conf->addSubIndex(subIndexconf);
 
     if (!indexExist(conf->_index))
@@ -666,13 +666,13 @@ void NodeOd::createBootloaderObjects()
     }
 
     NodeIndex *bootloader = new NodeIndex(0x2050);
-    bootloader->setName("Bootloader");
+    bootloader->setName(QStringLiteral("Bootloader"));
     bootloader->setObjectType(NodeIndex::RECORD);
 
     NodeSubIndex *subIndexbootloader;
     subIndexbootloader = new NodeSubIndex(0);
     subIndexbootloader->setDataType(NodeSubIndex::UNSIGNED8);
-    subIndexbootloader->setName("Highest sub-index supported");
+    subIndexbootloader->setName(QStringLiteral("Highest sub-index supported"));
     subIndexbootloader->setValue(1);
     subIndexbootloader->setAccessType(NodeSubIndex::AccessType::READ);
     bootloader->addSubIndex(subIndexbootloader);
@@ -680,19 +680,19 @@ void NodeOd::createBootloaderObjects()
     subIndexbootloader = new NodeSubIndex(1);
     subIndexbootloader->setDataType(NodeSubIndex::UNSIGNED16);
     subIndexbootloader->setAccessType(NodeSubIndex::AccessType::WRITE);
-    subIndexbootloader->setName("Key");
+    subIndexbootloader->setName(QStringLiteral("Key"));
     bootloader->addSubIndex(subIndexbootloader);
 
     subIndexbootloader = new NodeSubIndex(2);
     subIndexbootloader->setDataType(NodeSubIndex::UNSIGNED8);
     subIndexbootloader->setAccessType(NodeSubIndex::AccessType::WRITE);
-    subIndexbootloader->setName("Checksum");
+    subIndexbootloader->setName(QStringLiteral("Checksum"));
     bootloader->addSubIndex(subIndexbootloader);
 
     subIndexbootloader = new NodeSubIndex(3);
     subIndexbootloader->setDataType(NodeSubIndex::UNSIGNED8);
     subIndexbootloader->setAccessType(NodeSubIndex::AccessType::READ);
-    subIndexbootloader->setName("Status");
+    subIndexbootloader->setName(QStringLiteral("Status"));
     bootloader->addSubIndex(subIndexbootloader);
 
     if (!indexExist(bootloader->_index))

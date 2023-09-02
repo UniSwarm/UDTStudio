@@ -21,11 +21,8 @@
 
 #include "bootloader/bootloader.h"
 #include "canopenbus.h"
-#include "model/deviceconfiguration.h"
-#include "parser/edsparser.h"
+#include "profile/nodeprofile.h"
 #include "profile/nodeprofilefactory.h"
-#include "profile/p402/nodeprofile402.h"
-#include "services/services.h"
 
 Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
     : _nodeId(nodeId)
@@ -36,7 +33,7 @@ Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
 
     if (name.isEmpty())
     {
-        _name = QString("Node %1").arg(_nodeId);
+        _name = QStringLiteral("Node %1").arg(_nodeId);
     }
     else
     {
@@ -248,19 +245,17 @@ void Node::writeObject(const NodeObjectId &id, const QVariant &data)
 
 void Node::writeObject(quint16 index, quint8 subindex, const QVariant &data)
 {
-    if (_status == STOPPED || _status == UNKNOWN)
+    if (_status == STOPPED /*|| _status == UNKNOWN*/)
     {
         return;
     }
+    // qDebug().nospace() << " > Node::writeObject 0x" << QString::number(index, 16) << "." << subindex << data;
 
     QVariant mdata = data;
     QMetaType::Type mdataType = _nodeOd->dataType(index, subindex);
-    if (mdataType != QMetaType::Type::UnknownType)
+    if (mdataType != QMetaType::Type::UnknownType && mdataType != QMetaType::Type(data.type()))
     {
-        if (mdataType != QMetaType::Type(data.type()))
-        {
-            mdata.convert(mdataType);
-        }
+        mdata.convert(mdataType);
     }
 
     NodeObjectId object(busId(), nodeId(), index, subindex);

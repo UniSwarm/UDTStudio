@@ -213,19 +213,19 @@ QString NodeSubIndex::accessString() const
 
     if ((_accessType & READ) != 0)
     {
-        acces += "R";
+        acces += QStringLiteral("R");
     }
     if ((_accessType & WRITE) != 0)
     {
-        acces += "W";
+        acces += QStringLiteral("W");
     }
     if ((_accessType & TPDO) != 0)
     {
-        acces += " TPDO";
+        acces += QStringLiteral(" TPDO");
     }
     if ((_accessType & RPDO) != 0)
     {
-        acces += " RPDO";
+        acces += QStringLiteral(" RPDO");
     }
 
     return acces;
@@ -350,59 +350,59 @@ QString NodeSubIndex::dataTypeStr(DataType dataType)
     switch (dataType)
     {
         case NONE:
-            return QString("NONE");
+            return QStringLiteral("NONE");
         case BOOLEAN:
-            return QString("BOOLEAN");
+            return QStringLiteral("BOOLEAN");
         case INTEGER8:
-            return QString("INT8");
+            return QStringLiteral("INT8");
         case INTEGER16:
-            return QString("INT16");
+            return QStringLiteral("INT16");
         case INTEGER32:
-            return QString("INT32");
+            return QStringLiteral("INT32");
         case UNSIGNED8:
-            return QString("UINT8");
+            return QStringLiteral("UINT8");
         case UNSIGNED16:
-            return QString("UINT16");
+            return QStringLiteral("UINT16");
         case UNSIGNED32:
-            return QString("UINT32");
+            return QStringLiteral("UINT32");
         case REAL32:
-            return QString("REAL32");
+            return QStringLiteral("REAL32");
         case VISIBLE_STRING:
-            return QString("VSTRING");
+            return QStringLiteral("VSTRING");
         case OCTET_STRING:
-            return QString("OSTRING");
+            return QStringLiteral("OSTRING");
         case UNICODE_STRING:
-            return QString("USTRING");
+            return QStringLiteral("USTRING");
         case TIME_OF_DAY:
-            return QString("DAYTIME");
+            return QStringLiteral("DAYTIME");
         case TIME_DIFFERENCE:
-            return QString("TIMEDIFF");
+            return QStringLiteral("TIMEDIFF");
         case DDOMAIN:
-            return QString("DOMAIN");
+            return QStringLiteral("DOMAIN");
         case INTEGER24:
-            return QString("INT24");
+            return QStringLiteral("INT24");
         case REAL64:
-            return QString("REAL64");
+            return QStringLiteral("REAL64");
         case INTEGER40:
-            return QString("INT40");
+            return QStringLiteral("INT40");
         case INTEGER48:
-            return QString("INT48");
+            return QStringLiteral("INT48");
         case INTEGER56:
-            return QString("INT56");
+            return QStringLiteral("INT56");
         case INTEGER64:
-            return QString("INT64");
+            return QStringLiteral("INT64");
         case UNSIGNED24:
-            return QString("UINT24");
+            return QStringLiteral("UINT24");
         case UNSIGNED40:
-            return QString("UINT40");
+            return QStringLiteral("UINT40");
         case UNSIGNED48:
-            return QString("UINT48");
+            return QStringLiteral("UINT48");
         case UNSIGNED56:
-            return QString("UINT56");
+            return QStringLiteral("UINT56");
         case UNSIGNED64:
-            return QString("UINT64");
+            return QStringLiteral("UINT64");
     }
-    return QString();
+    return QStringLiteral("");
 }
 
 bool NodeSubIndex::isNumeric() const
@@ -697,7 +697,7 @@ double NodeSubIndex::maxType() const
             return ((int64_t)1 << 47) - 1;
 
         case NodeSubIndex::INTEGER56:
-            return ((int64_t)1 << 55) - 1;
+            return static_cast<double>(((int64_t)1 << 55) - 1);
 
         case NodeSubIndex::INTEGER64:
             return static_cast<double>(std::numeric_limits<int64_t>::max());
@@ -721,7 +721,7 @@ double NodeSubIndex::maxType() const
             return ((int64_t)1 << 48) - 1;
 
         case NodeSubIndex::UNSIGNED56:
-            return ((int64_t)1 << 56) - 1;
+            return static_cast<double>(((int64_t)1 << 56) - 1);
 
         case NodeSubIndex::UNSIGNED64:
             return static_cast<double>(std::numeric_limits<uint64_t>::max());
