@@ -18,7 +18,6 @@
 
 #include "p402optionwidget.h"
 
-#include "indexdb402.h"
 #include "node.h"
 
 #include "profile/p402/nodeprofile402.h"

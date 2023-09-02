@@ -64,14 +64,8 @@ private:
     IndexSlider *_targetSlider;
     QLabel *_sliderMinLabel;
     QLabel *_sliderMaxLabel;
-
-    void createDemandWidgets(IndexFormLayout *indexLayout);
     IndexLabel *_demandLabel;
-
-    void createLimitWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_maxSpinBox;
-
-    void createSlopeWidgets(IndexFormLayout *indexLayout);
     IndexSpinBox *_slopeSpinBox;
 
     QGroupBox *createControlWordWidgets();

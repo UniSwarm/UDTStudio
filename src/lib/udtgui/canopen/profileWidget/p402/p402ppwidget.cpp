@@ -136,6 +136,7 @@ void P402PpWidget::changeOnSetPointCheckBoxRampClicked(bool ok)
 
 void P402PpWidget::changeOnSetPointEvent(bool ok)
 {
+    Q_UNUSED(ok);
     //_changeOnSetPointCheckBox->setChecked(ok);
 }
 
@@ -183,9 +184,9 @@ void P402PpWidget::showDiagram()
     QLabel *ppModeLabel;
     ppModeLabel = new QLabel();
     ppModeLabel->setAttribute(Qt::WA_DeleteOnClose);
-    ppModePixmap.load(":/diagram/img/diagrams/402PPDiagram.png");
+    ppModePixmap.load(QStringLiteral(":/diagram/img/diagrams/402PPDiagram.png"));
     ppModeLabel->setPixmap(ppModePixmap);
-    ppModeLabel->setWindowTitle("402 PP Diagram");
+    ppModeLabel->setWindowTitle(tr("402 PP Diagram"));
     ppModeLabel->show();
 }
 
@@ -262,7 +263,7 @@ void P402PpWidget::createTargetWidgets(IndexFormLayout *indexLayout)
 void P402PpWidget::createInformationWidgets(IndexFormLayout *indexLayout)
 {
     _infoLabel = new QLabel();
-    _infoLabel->setStyleSheet("QLabel { color : red; }");
+    _infoLabel->setStyleSheet(QStringLiteral("QLabel { color : red; }"));
     indexLayout->addRow(tr("Information:"), _infoLabel);
 
     _positionDemandValueLabel = new IndexLabel();

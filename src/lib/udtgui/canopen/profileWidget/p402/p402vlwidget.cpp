@@ -94,15 +94,15 @@ void P402VlWidget::updateMinMaxVelocity()
     int min = _nodeProfile402->node()->nodeOd()->value(_modeVl->minVelocityMinMaxAmountObjectId()).toInt();
     int max = _nodeProfile402->node()->nodeOd()->value(_modeVl->maxVelocityMinMaxAmountObjectId()).toInt();
     _targetVelocitySlider->setRange(-max, max);
-    _sliderMinLabel->setText(QString("[-%1").arg(max));
-    _sliderMaxLabel->setText(QString("%1]").arg(max));
+    _sliderMinLabel->setText(QStringLiteral("[-%1").arg(max));
+    _sliderMaxLabel->setText(QStringLiteral("%1]").arg(max));
     if (min == 0)
     {
-        _sliderCenterLabel->setText("0");
+        _sliderCenterLabel->setText(QStringLiteral("0"));
     }
     else
     {
-        _sliderCenterLabel->setText(QString("]-%1 ; %1[").arg(min));
+        _sliderCenterLabel->setText(QStringLiteral("]-%1 ; %1[").arg(min));
     }
 }
 
@@ -166,7 +166,7 @@ void P402VlWidget::updateInformationLabel()
     QString text;
     if (!_enableRampCheckBox->isChecked())
     {
-        text = "Ramp is disabled";
+        text = QStringLiteral("Ramp is disabled");
     }
     if (!_unlockRampCheckBox->isChecked())
     {
@@ -174,7 +174,7 @@ void P402VlWidget::updateInformationLabel()
         {
             text.append(" & ");
         }
-        text += "Ramp is locked";
+        text += QStringLiteral("Ramp is locked");
     }
     if (!_referenceRampCheckBox->isChecked())
     {
@@ -182,7 +182,7 @@ void P402VlWidget::updateInformationLabel()
         {
             text.append(" & ");
         }
-        text += "Ramp set to 0";
+        text += QStringLiteral("Ramp set to 0");
     }
     _infoLabel->setText(text);
 }
@@ -198,9 +198,9 @@ void P402VlWidget::showDiagram()
     QLabel *vlModeLabel;
     vlModeLabel = new QLabel();
     vlModeLabel->setAttribute(Qt::WA_DeleteOnClose);
-    vlModePixmap.load(":/diagram/img/diagrams/402VLDiagram.png");
+    vlModePixmap.load(QStringLiteral(":/diagram/img/diagrams/402VLDiagram.png"));
     vlModeLabel->setPixmap(vlModePixmap);
-    vlModeLabel->setWindowTitle("402 VL Diagram");
+    vlModeLabel->setWindowTitle(tr("402 VL Diagram"));
     vlModeLabel->show();
 }
 
@@ -279,13 +279,13 @@ void P402VlWidget::createTargetWidgets(IndexFormLayout *indexLayout)
     indexLayout->addRow(tr("&Target velocity:"), _targetVelocitySpinBox);
 
     QLayout *labelSliderLayout = new QHBoxLayout();
-    _sliderMinLabel = new QLabel("min");
+    _sliderMinLabel = new QLabel(QStringLiteral("min"));
     labelSliderLayout->addWidget(_sliderMinLabel);
     labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
-    _sliderCenterLabel = new QLabel("0");
+    _sliderCenterLabel = new QLabel(QStringLiteral("0"));
     labelSliderLayout->addWidget(_sliderCenterLabel);
     labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
-    _sliderMaxLabel = new QLabel("max");
+    _sliderMaxLabel = new QLabel(QStringLiteral("max"));
     labelSliderLayout->addWidget(_sliderMaxLabel);
     indexLayout->addRow(labelSliderLayout);
 
@@ -294,7 +294,7 @@ void P402VlWidget::createTargetWidgets(IndexFormLayout *indexLayout)
     indexLayout->addRow(_targetVelocitySlider);
 
     QPushButton *setZeroButton = new QPushButton();
-    setZeroButton->setText("Set to 0");
+    setZeroButton->setText(tr("Set to 0"));
     connect(setZeroButton, &QPushButton::clicked, this, &P402VlWidget::setTargetZero);
     QLayout *setZeroLayout = new QHBoxLayout();
     setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
@@ -306,14 +306,14 @@ void P402VlWidget::createTargetWidgets(IndexFormLayout *indexLayout)
 void P402VlWidget::createInformationWidgets(IndexFormLayout *indexLayout)
 {
     _infoLabel = new QLabel();
-    _infoLabel->setStyleSheet("QLabel { color : red; }");
+    _infoLabel->setStyleSheet(QStringLiteral("QLabel { color : red; }"));
     indexLayout->addRow(tr("Information:"), _infoLabel);
 
     _velocityDemandLabel = new IndexLabel();
-    indexLayout->addRow(tr("Velocity demand "), _velocityDemandLabel);
+    indexLayout->addRow(tr("Velocity demand:"), _velocityDemandLabel);
 
     _velocityActualLabel = new IndexLabel();
-    indexLayout->addRow(tr("Velocity actual value "), _velocityActualLabel);
+    indexLayout->addRow(tr("Velocity actual value:"), _velocityActualLabel);
 }
 
 void P402VlWidget::createLimitWidgets(IndexFormLayout *indexLayout)

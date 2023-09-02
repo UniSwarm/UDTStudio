@@ -88,7 +88,7 @@ void MotorWidget::setINode()
         connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &MotorWidget::updateState);
     }
 
-            // motor config
+    // motor config
     _motorTypeComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_TYPE, _axis));
     _peakCurrentSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_PEAK_CURRENT, _axis));
     _burstCurrentSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_BURST_CURRENT, _axis));
@@ -108,7 +108,7 @@ void MotorWidget::setINode()
     _velocityConstantSpinBox->setNode(_node);
     _reverseMotorPolarityCheckBox->setNode(_node);
 
-            // motor status
+    // motor status
     _bridgeTemp1Label->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_DRIVER_TEMPERATURE, _axis, 0));
     _bridgeTemp2Label->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_DRIVER_TEMPERATURE, _axis, 1));
     _bridgeTemp1Label->setNode(_node);
@@ -124,13 +124,13 @@ void MotorWidget::setINode()
     _motorVelocityLabel->setNode(_node);
     _motorPositionLabel->setNode(_node);
 
-            // BLDC config
+    // BLDC config
     _polePairSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_CONFIG_POLE_PAIR, _axis));
     _reverseHallPolarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_FLAGS, _axis));
     _polePairSpinBox->setNode(_node);
     _reverseHallPolarityCheckBox->setNode(_node);
 
-            // BLDC status
+    // BLDC status
     _hallRawValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_STATUS_HALL_RAW, _axis));
     _hallPhaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_STATUS_HALL_PHASE, _axis));
     _electricalAngleLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_STATUS_ELECTRICAL_ANGLE, _axis));
@@ -138,7 +138,7 @@ void MotorWidget::setINode()
     _hallPhaseLabel->setNode(_node);
     _electricalAngleLabel->setNode(_node);
 
-            // Brake config
+    // Brake config
     _brakeModeComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_MODE, _axis));
     _brakeExitationTimeSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_EXITATION_TIME, _axis));
     _brakeExitationDutySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_EXITATION_DUTY, _axis));
@@ -343,22 +343,22 @@ QGroupBox *MotorWidget::createMotorStatusWidgets()
     _indexWidgets.append(_bridgeCommandBar);
 
     _motorCurrentLabel = new IndexLabel();
-    statusLayout->addRow(tr("Current"), _motorCurrentLabel);
+    statusLayout->addRow(tr("Current:"), _motorCurrentLabel);
     _indexWidgets.append(_motorCurrentLabel);
 
     _motorTorqueLabel = new IndexLabel();
     // _motorTorqueLabel->setUnit(" Nm");
-    statusLayout->addRow(tr("Torque"), _motorTorqueLabel);
+    statusLayout->addRow(tr("Torque:"), _motorTorqueLabel);
     _indexWidgets.append(_motorTorqueLabel);
 
     _motorVelocityLabel = new IndexLabel();
     // _motorVelocityLabel->setUnit(" rpm");
-    statusLayout->addRow(tr("Velocity"), _motorVelocityLabel);
+    statusLayout->addRow(tr("Velocity:"), _motorVelocityLabel);
     _indexWidgets.append(_motorVelocityLabel);
 
     _motorPositionLabel = new IndexLabel();
     // _motorPositionLabel->setUnit(" tr");
-    statusLayout->addRow(tr("Position"), _motorPositionLabel);
+    statusLayout->addRow(tr("Position:"), _motorPositionLabel);
     _indexWidgets.append(_motorPositionLabel);
 
     _bridgeTemp1Label = new IndexLabel();
@@ -425,7 +425,7 @@ QGroupBox *MotorWidget::createBrakeConfigWidgets()
     _brakeModeComboBox->addItem(tr("Open source, NO"), QVariant(static_cast<uint8_t>(0x05)));
     _brakeModeComboBox->addItem(tr("Push-pull, NC"), QVariant(static_cast<uint8_t>(0x06)));
     _brakeModeComboBox->addItem(tr("Push-pull, NO"), QVariant(static_cast<uint8_t>(0x07)));
-    configLayout->addRow(tr("&Brake mode"), _brakeModeComboBox);
+    configLayout->addRow(tr("&Brake mode:"), _brakeModeComboBox);
     _indexWidgets.append(_brakeModeComboBox);
 
     _brakeExitationDutySpinBox = new IndexSpinBox();

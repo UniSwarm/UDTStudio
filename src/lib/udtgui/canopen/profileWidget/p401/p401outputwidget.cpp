@@ -18,7 +18,6 @@
 
 #include "p401outputwidget.h"
 
-#include "canopen/indexWidget/indexcheckbox.h"
 #include "indexdb401.h"
 
 #include <QFormLayout>
@@ -109,11 +108,11 @@ void P401OutputWidget::digitalPushButtonClicked(bool clicked)
 
     if (clicked)
     {
-        _digitalPushButton->setText("On");
+        _digitalPushButton->setText(tr("On"));
     }
     else
     {
-        _digitalPushButton->setText("Off");
+        _digitalPushButton->setText(tr("Off"));
     }
 }
 
@@ -196,7 +195,7 @@ QWidget *P401OutputWidget::analogWidgets()
     connect(_analogSpinBox, &QSpinBox::editingFinished, this, &P401OutputWidget::analogSpinboxFinished);
 
     _typeCheckBox = new QCheckBox();
-    _typeCheckBox->setText("Percent");
+    _typeCheckBox->setText(tr("Percent"));
     connect(_typeCheckBox, &QCheckBox::clicked, this, &P401OutputWidget::typeCheckBoxClicked);
 
     _analogSlider = new QSlider(Qt::Horizontal);
@@ -204,7 +203,7 @@ QWidget *P401OutputWidget::analogWidgets()
     connect(_analogSlider, &QSlider::valueChanged, this, &P401OutputWidget::analogSliderChanged);
 
     _setZeroButton = new QPushButton();
-    _setZeroButton->setText("Set to 0");
+    _setZeroButton->setText(tr("Set to 0"));
     connect(_setZeroButton, &QPushButton::clicked, this, &P401OutputWidget::setZeroButton);
 
     gridLayout->addWidget(_analogSpinBox, 0, 0);
@@ -220,12 +219,12 @@ QWidget *P401OutputWidget::digitalWidgets()
     QWidget *widget = new QWidget();
     QVBoxLayout *digitalLayout = new QVBoxLayout(widget);
 
-    _digitalPushButton = new QPushButton("Off");
+    _digitalPushButton = new QPushButton(tr("Off"));
     _digitalPushButton->setCheckable(true);
-    _digitalPushButton->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
+    _digitalPushButton->setStyleSheet(QStringLiteral("QPushButton:checked { background-color : #148CD2; }"));
     QIcon icon;
-    icon.addFile(":/icons/img/icons8-stop.png", QSize(), QIcon::Normal, QIcon::Off);
-    icon.addFile(":/icons/img/icons8-play.png", QSize(), QIcon::Normal, QIcon::On);
+    icon.addFile(QStringLiteral(":/icons/img/icons8-stop.png"), QSize(), QIcon::Normal, QIcon::Off);
+    icon.addFile(QStringLiteral(":/icons/img/icons8-play.png"), QSize(), QIcon::Normal, QIcon::On);
     _digitalPushButton->setIcon(icon);
 
     connect(_digitalPushButton, &QPushButton::clicked, this, &P401OutputWidget::digitalPushButtonClicked);

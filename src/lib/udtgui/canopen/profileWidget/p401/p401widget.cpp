@@ -19,11 +19,9 @@
 #include "p401widget.h"
 
 #include "canopen/datalogger/dataloggerwidget.h"
-#include "canopen/indexWidget/indexcombobox.h"
 #include "node.h"
 #include "p401channelwidget.h"
 #include "p401inputwidget.h"
-#include "p401outputwidget.h"
 
 #include <QFormLayout>
 #include <QFrame>
@@ -108,9 +106,9 @@ void P401Widget::createWidgets()
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
 
-    QLabel *laneLabel = new QLabel("Channel");
-    QLabel *inputLabel = new QLabel("Input");
-    QLabel *outputLabel = new QLabel("Output");
+    QLabel *laneLabel = new QLabel(tr("Channel"));
+    QLabel *inputLabel = new QLabel(tr("Input"));
+    QLabel *outputLabel = new QLabel(tr("Output"));
 
     QHBoxLayout *commun = new QHBoxLayout();
     commun->setContentsMargins(0, 0, 0, 0);

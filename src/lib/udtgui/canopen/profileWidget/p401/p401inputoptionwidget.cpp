@@ -61,7 +61,7 @@ void P401InputOptionWidget::createWidgets()
     _diSchmittTriggersLow = new IndexSpinBox();
     _diSchmittTriggersLow->setDisplayHint(IndexSpinBox::DisplayFloat);
     _diSchmittTriggersLow->setScale(12.0 / 32767);
-    _diSchmittTriggersLow->setUnit("V");
+    _diSchmittTriggersLow->setUnit(tr("V"));
     hLayout->addWidget(_diSchmittTriggersLow);
 
     QLabel *separatorLabel = new QLabel(tr("-"));
@@ -71,7 +71,7 @@ void P401InputOptionWidget::createWidgets()
     _diSchmittTriggersHigh = new IndexSpinBox();
     _diSchmittTriggersHigh->setDisplayHint(IndexSpinBox::DisplayFloat);
     _diSchmittTriggersHigh->setScale(12.0 / 32767);
-    _diSchmittTriggersHigh->setUnit("V");
+    _diSchmittTriggersHigh->setUnit(tr("V"));
     hLayout->addWidget(_diSchmittTriggersHigh);
 
     QLabel *titleLabel = new QLabel(tr("&Schmitt triggers:"));

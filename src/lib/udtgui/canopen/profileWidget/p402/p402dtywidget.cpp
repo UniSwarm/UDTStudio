@@ -74,8 +74,8 @@ void P402DtyWidget::updateMaxDty()
     _targetSlider->setRange(-max, max);
     _targetSpinBox->setRangeValue(-max, max);
     _targetSlider->setTickInterval(max / 10);
-    _sliderMinLabel->setText(QString("[-%1").arg(max));
-    _sliderMaxLabel->setText(QString("%1]").arg(max));
+    _sliderMinLabel->setText(QStringLiteral("[-%1").arg(max));
+    _sliderMaxLabel->setText(QStringLiteral("%1]").arg(max));
 }
 
 void P402DtyWidget::setTargetZero()
@@ -122,9 +122,9 @@ void P402DtyWidget::showDiagram()
     QLabel *dtyModeLabel;
     dtyModeLabel = new QLabel();
     dtyModeLabel->setAttribute(Qt::WA_DeleteOnClose);
-    dtyModePixmap.load(":/diagram/img/diagrams/402DTYDiagram.png");
+    dtyModePixmap.load(QStringLiteral(":/diagram/img/diagrams/402DTYDiagram.png"));
     dtyModeLabel->setPixmap(dtyModePixmap);
-    dtyModeLabel->setWindowTitle("402 DTY Diagram");
+    dtyModeLabel->setWindowTitle(tr("402 DTY Diagram"));
     dtyModeLabel->show();
 }
 
@@ -134,12 +134,6 @@ void P402DtyWidget::createWidgets()
     IndexFormLayout *indexLayout = new IndexFormLayout();
 
     createTargetWidgets(indexLayout);
-    createDemandWidgets(indexLayout);
-    createLimitWidgets(indexLayout);
-
-    indexLayout->addLineSeparator();
-
-    createSlopeWidgets(indexLayout);
 
     modeGroupBox->setLayout(indexLayout);
 
@@ -165,17 +159,17 @@ void P402DtyWidget::createTargetWidgets(IndexFormLayout *indexLayout)
 {
     _targetSpinBox = new IndexSpinBox();
     _targetSpinBox->setRangeValue(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    indexLayout->addRow(tr("&Target"), _targetSpinBox);
+    indexLayout->addRow(tr("&Target:"), _targetSpinBox);
 
     QLayout *labelSliderLayout = new QHBoxLayout();
 
-    _sliderMinLabel = new QLabel("min");
+    _sliderMinLabel = new QLabel(QStringLiteral("min"));
     labelSliderLayout->addWidget(_sliderMinLabel);
     labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
-    labelSliderLayout->addWidget(new QLabel("0"));
+    labelSliderLayout->addWidget(new QLabel(QStringLiteral("0")));
     labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
 
-    _sliderMaxLabel = new QLabel("max");
+    _sliderMaxLabel = new QLabel(QStringLiteral("max"));
     labelSliderLayout->addWidget(_sliderMaxLabel);
     indexLayout->addRow(labelSliderLayout);
 
@@ -184,7 +178,7 @@ void P402DtyWidget::createTargetWidgets(IndexFormLayout *indexLayout)
     indexLayout->addRow(_targetSlider);
 
     QPushButton *setZeroButton = new QPushButton();
-    setZeroButton->setText("Set to 0");
+    setZeroButton->setText(tr("Set to 0"));
     connect(setZeroButton, &QPushButton::clicked, this, &P402DtyWidget::setTargetZero);
 
     QLayout *setZeroLayout = new QHBoxLayout();
@@ -192,29 +186,21 @@ void P402DtyWidget::createTargetWidgets(IndexFormLayout *indexLayout)
     setZeroLayout->addWidget(setZeroButton);
     setZeroLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
     indexLayout->addRow(setZeroLayout);
-}
 
-void P402DtyWidget::createDemandWidgets(IndexFormLayout *indexLayout)
-{
     _demandLabel = new IndexLabel();
     indexLayout->addRow(tr("Demand:"), _demandLabel);
-}
 
-void P402DtyWidget::createLimitWidgets(IndexFormLayout *indexLayout)
-{
     _maxSpinBox = new IndexSpinBox();
-    indexLayout->addRow(tr("Ma&x "), _maxSpinBox);
-}
+    indexLayout->addRow(tr("Ma&x:"), _maxSpinBox);
 
-void P402DtyWidget::createSlopeWidgets(IndexFormLayout *indexLayout)
-{
+    indexLayout->addLineSeparator();
+
     _slopeSpinBox = new IndexSpinBox();
-    indexLayout->addRow(tr("Target &slope "), _slopeSpinBox);
+    indexLayout->addRow(tr("Target &slope:"), _slopeSpinBox);
 }
 
 QGroupBox *P402DtyWidget::createControlWordWidgets()
 {
-    // Group Box CONTROL WORD
     QGroupBox *groupBox = new QGroupBox(tr("Control word:"));
     QFormLayout *layout = new QFormLayout();
 

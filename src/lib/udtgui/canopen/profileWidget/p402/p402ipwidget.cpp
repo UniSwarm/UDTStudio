@@ -209,13 +209,13 @@ void P402IpWidget::sendDataRecordTargetWithPdo()
 
 void P402IpWidget::sendDataRecordTargetWithSdo()
 {
-    int i = 0;
     if (_pointSinusoidalVector.isEmpty())
     {
         stopTargetPosition();
         return;
     }
 
+    int i = 0;
     for (i = 0; i < 5; i++)
     {
         if (i > (_pointSinusoidalVector.size() - 1))
@@ -232,7 +232,7 @@ void P402IpWidget::updateInformationLabel()
     QString text;
     if (!_enableRampCheckBox->isChecked())
     {
-        text = "Interpolation is disabled";
+        text = QStringLiteral("Interpolation is disabled");
     }
     _infoLabel->setText(text);
 }
@@ -276,9 +276,9 @@ void P402IpWidget::showDiagram()
     QLabel *ipModeLabel;
     ipModeLabel = new QLabel();
     ipModeLabel->setAttribute(Qt::WA_DeleteOnClose);
-    ipModePixmap.load(":/diagram/img/diagrams/402IPDiagram.png");
+    ipModePixmap.load(QStringLiteral(":/diagram/img/diagrams/402IPDiagram.png"));
     ipModeLabel->setPixmap(ipModePixmap);
-    ipModeLabel->setWindowTitle("402 IP Diagram");
+    ipModeLabel->setWindowTitle(tr("402 IP Diagram"));
     ipModeLabel->show();
 }
 
@@ -326,7 +326,7 @@ void P402IpWidget::createTargetWidgets(IndexFormLayout *indexLayout)
 {
     QLayout *dataRecordlayout = new QHBoxLayout();
     _dataRecordLineEdit = new QLineEdit();
-    _dataRecordLineEdit->setToolTip("Separated by ,");
+    _dataRecordLineEdit->setToolTip(tr("Separated by ,"));
     connect(_dataRecordLineEdit, &QLineEdit::editingFinished, this, &P402IpWidget::dataRecordLineEditFinished);
 
     _clearBufferPushButton = new QPushButton(tr("Clear Fifo"));
@@ -334,13 +334,13 @@ void P402IpWidget::createTargetWidgets(IndexFormLayout *indexLayout)
 
     dataRecordlayout->addWidget(_dataRecordLineEdit);
     dataRecordlayout->addWidget(_clearBufferPushButton);
-    indexLayout->addRow(tr("Data record "), dataRecordlayout);
+    indexLayout->addRow(tr("Data record:"), dataRecordlayout);
 }
 
 void P402IpWidget::createInformationWidgets(IndexFormLayout *indexLayout)
 {
     _infoLabel = new QLabel();
-    _infoLabel->setStyleSheet("QLabel { color : red; }");
+    _infoLabel->setStyleSheet(QStringLiteral("QLabel { color : red; }"));
     indexLayout->addRow(tr("Information:"), _infoLabel);
 
     _positionDemandValueLabel = new IndexLabel();
@@ -420,7 +420,7 @@ QGroupBox *P402IpWidget::createSinusoidalMotionProfileWidgets()
 
     _durationSpinBox = new QSpinBox();
     layout->addRow(tr("Duration:"), _durationSpinBox);
-    _durationSpinBox->setSuffix(" ms");
+    _durationSpinBox->setSuffix(tr(" ms"));
     _durationSpinBox->setRange(0, std::numeric_limits<int>::max());
 
     groupBox->setLayout(layout);

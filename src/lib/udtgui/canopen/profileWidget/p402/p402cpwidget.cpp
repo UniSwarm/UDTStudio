@@ -163,9 +163,9 @@ void P402CpWidget::showDiagram()
     QLabel *cpModeLabel;
     cpModeLabel = new QLabel();
     cpModeLabel->setAttribute(Qt::WA_DeleteOnClose);
-    cpModePixmap.load(":/diagram/img/diagrams/402CPDiagram.png");
+    cpModePixmap.load(QStringLiteral(":/diagram/img/diagrams/402CPDiagram.png"));
     cpModeLabel->setPixmap(cpModePixmap);
-    cpModeLabel->setWindowTitle("402 CP Diagram");
+    cpModeLabel->setWindowTitle(tr("402 CP Diagram"));
     cpModeLabel->show();
 }
 
@@ -232,7 +232,7 @@ void P402CpWidget::createTargetWidgets(IndexFormLayout *indexLayout)
 
     QHBoxLayout *goLayout = new QHBoxLayout();
     _goOneLineEdit = new QLineEdit();
-    _goOneLineEdit->setPlaceholderText(tr("Target one"));
+    _goOneLineEdit->setPlaceholderText(tr("Target one:"));
     goLayout->addWidget(_goOneLineEdit);
     _goOnePushButton = new QPushButton(tr("Go one"));
     connect(_goOneLineEdit, &QLineEdit::returnPressed, this, &P402CpWidget::goOneLineEditFinished);
@@ -240,7 +240,7 @@ void P402CpWidget::createTargetWidgets(IndexFormLayout *indexLayout)
     goLayout->addWidget(_goOnePushButton);
 
     _goTwoLineEdit = new QLineEdit();
-    _goTwoLineEdit->setPlaceholderText(tr("Target two"));
+    _goTwoLineEdit->setPlaceholderText(tr("Target two:"));
     goLayout->addWidget(_goTwoLineEdit);
     _goTwoPushButton = new QPushButton(tr("Go two"));
     connect(_goTwoLineEdit, &QLineEdit::returnPressed, this, &P402CpWidget::twoOneLineEditFinished);
@@ -255,7 +255,7 @@ void P402CpWidget::createTargetWidgets(IndexFormLayout *indexLayout)
 void P402CpWidget::createInformationWidgets(IndexFormLayout *indexLayout)
 {
     _infoLabel = new QLabel();
-    _infoLabel->setStyleSheet("QLabel { color : red; }");
+    _infoLabel->setStyleSheet(QStringLiteral("QLabel { color : red; }"));
     indexLayout->addRow(tr("Information:"), _infoLabel);
 
     _positionDemandValueLabel = new IndexLabel();

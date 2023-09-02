@@ -185,7 +185,7 @@ void P402TqWidget::createTargetWidgets(IndexFormLayout *indexLayout)
     indexLayout->addRow(_targetTorqueSlider);
 
     QPushButton *setZeroButton = new QPushButton();
-    setZeroButton->setText("Set to 0");
+    setZeroButton->setText(tr("Set to 0"));
     connect(setZeroButton, &QPushButton::clicked, this, &P402TqWidget::setTargetZero);
 
     QLayout *setZeroLayout = new QHBoxLayout();

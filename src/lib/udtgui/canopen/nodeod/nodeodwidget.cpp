@@ -97,12 +97,13 @@ void NodeOdWidget::createWidgets()
 {
     QLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(5);
 
     // >> toolbar creation
     _toolBar = new QToolBar(tr("Node commands"));
 
     // filter preset combo
-    QLabel *filterLabel = new QLabel(tr("Filter "));
+    QLabel *filterLabel = new QLabel(tr("Filter:"));
     filterLabel->setStyleSheet("QLabel {background: none}");
     _toolBar->addWidget(filterLabel);
     _filterCombobox = new QComboBox();

@@ -18,7 +18,6 @@
 
 #include "p401inputwidget.h"
 
-#include "canopen/indexWidget/indexcheckbox.h"
 #include "canopen/indexWidget/indexlcdnumber.h"
 #include "indexdb401.h"
 
@@ -72,19 +71,19 @@ void P401InputWidget::createWidgets()
     _digitalLabel = new QLabel();
     _digitalLabel->setMinimumWidth(44);
     _digitalLabel->setAlignment(Qt::AlignHCenter);
-    _digitalLabel->setStyleSheet("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px");
+    _digitalLabel->setStyleSheet(QStringLiteral("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px"));
     _digitalLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     hlayout->addWidget(_digitalLabel);
 
     _analogLcdNumber = new IndexLCDNumber();
-    _analogLcdNumber->setUnit("V");
+    _analogLcdNumber->setUnit(tr("V"));
     _analogLcdNumber->setScale(12.0 / std::numeric_limits<qint16>::max());
     _analogLcdNumber->setDisplayHint(IndexLCDNumber::DisplayFloat);
     hlayout->addWidget(_analogLcdNumber);
 
     _analogProgressBar = new QProgressBar();
     _analogProgressBar->setRange(0, std::numeric_limits<qint16>::max());
-    _analogProgressBar->setFormat("%v");
+    _analogProgressBar->setFormat(tr("%v"));
     hlayout->addWidget(_analogProgressBar);
 
     setLayout(hlayout);
@@ -100,11 +99,6 @@ void P401InputWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest f
     if (objId == _analogObjectId)
     {
         int value = _node->nodeOd()->value(_analogObjectId).toInt();
-        double val = 0.0;
-        if (value != 0)
-        {
-            val = (value * 12.0) / std::numeric_limits<qint16>::max();
-        }
 
         _analogProgressBar->setValue(value);
 
@@ -113,13 +107,13 @@ void P401InputWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest f
 
         if (act)
         {
-            _digitalLabel->setText("High");
-            _digitalLabel->setStyleSheet("background-color: #1464A0;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px");
+            _digitalLabel->setText(tr("High"));
+            _digitalLabel->setStyleSheet(QStringLiteral("background-color: #1464A0;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px"));
         }
         else
         {
-            _digitalLabel->setText("Low");
-            _digitalLabel->setStyleSheet("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px");
+            _digitalLabel->setText(tr("Low"));
+            _digitalLabel->setStyleSheet(QStringLiteral("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px"));
         }
     }
 }

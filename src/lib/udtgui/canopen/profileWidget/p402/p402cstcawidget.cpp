@@ -78,8 +78,8 @@ void P402CstcaWidget::updateMaxTorque()
     int max = _nodeProfile402->node()->nodeOd()->value(_maxTorqueSpinBox->objId()).toInt();
     _targetTorqueSlider->setRange(-max, max);
     _targetTorqueSlider->setTickInterval(max / 10);
-    _sliderMinLabel->setText(QString("[-%1").arg(max));
-    _sliderMaxLabel->setText(QString("%1]").arg(max));
+    _sliderMinLabel->setText(QStringLiteral("[-%1").arg(max));
+    _sliderMaxLabel->setText(QStringLiteral("%1]").arg(max));
 }
 
 void P402CstcaWidget::setTargetZero()
@@ -158,17 +158,17 @@ void P402CstcaWidget::createTargetWidgets(IndexFormLayout *indexLayout)
 {
     _targetTorqueSpinBox = new IndexSpinBox();
     _targetTorqueSpinBox->setRangeValue(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
-    indexLayout->addRow(tr("&Target torque"), _targetTorqueSpinBox);
+    indexLayout->addRow(tr("&Target:"), _targetTorqueSpinBox);
 
     QLayout *labelSliderLayout = new QHBoxLayout();
 
-    _sliderMinLabel = new QLabel("min");
+    _sliderMinLabel = new QLabel(QStringLiteral("min"));
     labelSliderLayout->addWidget(_sliderMinLabel);
     labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
-    labelSliderLayout->addWidget(new QLabel("0"));
+    labelSliderLayout->addWidget(new QLabel(QStringLiteral("0")));
     labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
 
-    _sliderMaxLabel = new QLabel("max");
+    _sliderMaxLabel = new QLabel(QStringLiteral("max"));
     labelSliderLayout->addWidget(_sliderMaxLabel);
     indexLayout->addRow(labelSliderLayout);
 
@@ -177,7 +177,7 @@ void P402CstcaWidget::createTargetWidgets(IndexFormLayout *indexLayout)
     indexLayout->addRow(_targetTorqueSlider);
 
     QPushButton *setZeroButton = new QPushButton();
-    setZeroButton->setText("Set to 0");
+    setZeroButton->setText(tr("Set to 0"));
     connect(setZeroButton, &QPushButton::clicked, this, &P402CstcaWidget::setTargetZero);
 
     QLayout *setZeroLayout = new QHBoxLayout();
@@ -190,7 +190,7 @@ void P402CstcaWidget::createTargetWidgets(IndexFormLayout *indexLayout)
 void P402CstcaWidget::createAngleWidgets(IndexFormLayout *indexLayout)
 {
     _angleSpinBox = new IndexSpinBox();
-    indexLayout->addRow(tr("&Angle"), _angleSpinBox);
+    indexLayout->addRow(tr("&Angle:"), _angleSpinBox);
 }
 
 void P402CstcaWidget::createInformationWidgets(IndexFormLayout *indexLayout)
@@ -205,7 +205,7 @@ void P402CstcaWidget::createInformationWidgets(IndexFormLayout *indexLayout)
 void P402CstcaWidget::createLimitWidgets(IndexFormLayout *indexLayout)
 {
     _maxTorqueSpinBox = new IndexSpinBox();
-    indexLayout->addRow(tr("Ma&x torque "), _maxTorqueSpinBox);
+    indexLayout->addRow(tr("Ma&x torque:"), _maxTorqueSpinBox);
 }
 
 void P402CstcaWidget::createInterpolationWidgets(IndexFormLayout *indexLayout)
