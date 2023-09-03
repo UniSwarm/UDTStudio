@@ -67,6 +67,7 @@ void NodeDiscover::parseFrame(const QCanBusFrame &frame)
                 {
                     case 0:  // Bootup
                         node->setStatus(Node::Status::INIT);
+                        node->setStatus(Node::Status::PREOP);
                         break;
 
                     case 4:  // Stopped
