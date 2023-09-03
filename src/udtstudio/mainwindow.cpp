@@ -65,12 +65,15 @@ MainWindow::MainWindow(QWidget *parent)
         CanOpen::addBus(bus);
         _canFrameListView->setBus(bus);
     }
+    QTimer::singleShot(100, bus, &CanOpenBus::exploreBus);
+
     bus = new CanOpenBus(new CanBusSocketCAN("can1"));
     if (bus != nullptr)
     {
         bus->setBusName("Bus can1");
         CanOpen::addBus(bus);
     }
+    QTimer::singleShot(100, bus, &CanOpenBus::exploreBus);
 #endif
 
     /*bus = new CanOpenBus(new CanBusTcpUDT("192.168.1.80"));
