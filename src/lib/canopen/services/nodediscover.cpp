@@ -99,6 +99,10 @@ void NodeDiscover::exploreBus()
     {
         return;
     }
+    if (!bus()->canWrite())
+    {
+        return;
+    }
     _exploreBusNodeId = 1;
     _exploreBusTimer.start(8);
 }
