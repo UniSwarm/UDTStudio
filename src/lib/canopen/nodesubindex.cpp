@@ -247,24 +247,7 @@ const QVariant &NodeSubIndex::value() const
 void NodeSubIndex::setValue(const QVariant &value, const QDateTime &modificationDate)
 {
     _value.setValue(value);
-    if (modificationDate.isNull())
-    {
-        _lastModification = QDateTime::currentDateTime();
-    }
-    else
-    {
-        _lastModification = modificationDate;
-    }
-}
-
-/**
- * @brief _value setter
- * @param new sub-index value
- */
-void NodeSubIndex::clearValue()
-{
-    _value.clear();
-    _lastModification = QDateTime::currentDateTime();
+    _lastModification = modificationDate;
 }
 
 /**
@@ -289,10 +272,10 @@ void NodeSubIndex::setDefaultValue(const QVariant &value)
  * @brief Reset Value with defalut value
  * @param new sub-index value
  */
-void NodeSubIndex::resetValue()
+void NodeSubIndex::resetValue(const QDateTime &modificationDate)
 {
     _value.setValue(_defaultValue);
-    _lastModification = QDateTime::currentDateTime();
+    _lastModification = modificationDate;
 }
 
 /**

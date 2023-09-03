@@ -70,11 +70,10 @@ public:
 
     const QVariant &value() const;
     void setValue(const QVariant &value, const QDateTime &modificationDate = QDateTime());
-    void clearValue();
 
     const QVariant &defaultValue() const;
     void setDefaultValue(const QVariant &value);
-    void resetValue();
+    void resetValue(const QDateTime &modificationDate = QDateTime());
 
     quint32 error() const;
     void setError(quint32 error);

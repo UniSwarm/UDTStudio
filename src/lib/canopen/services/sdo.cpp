@@ -1054,7 +1054,7 @@ void SDO::setErrorToObject(SDOAbortCodes error)
         flags += NodeOd::FlagsRequest::Write;
     }
 
-    _node->nodeOd()->updateObjectFromDevice(_currentRequest->index, _currentRequest->subIndex, QVariant(error), static_cast<NodeOd::FlagsRequest>(flags));
+    _node->nodeOd()->updateObjectFromDevice(_currentRequest->index, _currentRequest->subIndex, QVariant(error), static_cast<NodeOd::FlagsRequest>(flags), QDateTime::currentDateTime());
 
     _status = SDO_STATE_FREE;
     _currentRequest->state = STATE_FREE;
@@ -1072,11 +1072,11 @@ void SDO::endRequest()
         _node->nodeOd()->updateObjectFromDevice(_currentRequest->index,
                                                 _currentRequest->subIndex,
                                                 arrangeDataUpload(_currentRequest->dataByte, _currentRequest->dataType),
-                                                NodeOd::FlagsRequest::Read);
+                                                NodeOd::FlagsRequest::Read, QDateTime::currentDateTime());
     }
     else if (_currentRequest->state == STATE_DOWNLOAD)
     {
-        _node->nodeOd()->updateObjectFromDevice(_currentRequest->index, _currentRequest->subIndex, _currentRequest->data, NodeOd::FlagsRequest::Write);
+        _node->nodeOd()->updateObjectFromDevice(_currentRequest->index, _currentRequest->subIndex, _currentRequest->data, NodeOd::FlagsRequest::Write, QDateTime::currentDateTime());
     }
 
     _status = SDO_STATE_FREE;
