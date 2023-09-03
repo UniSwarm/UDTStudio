@@ -33,14 +33,6 @@ NodeScreenNMT::NodeScreenNMT()
     createWidgets();
 }
 
-void NodeScreenNMT::readAll()
-{
-    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
-    {
-        indexWidget->readObject();
-    }
-}
-
 void NodeScreenNMT::createWidgets()
 {
     QLayout *glayout = new QVBoxLayout();
@@ -86,7 +78,7 @@ QWidget *NodeScreenNMT::createProducerHeartBeatWidget()
     IndexSpinBox *indexSpinBox;
     indexSpinBox = new IndexSpinBox(NodeObjectId(0x1017, 0));
     formLayout->addRow(tr("Delay:"), indexSpinBox);
-    _indexWidgets.append(indexSpinBox);
+    addIndexWidget(indexSpinBox);
 
     QLabel *producerStatusLabel = new QLabel();
     connect(indexSpinBox,
@@ -122,7 +114,7 @@ QWidget *NodeScreenNMT::createConsumerHeartBeatWidget()
 
         IndexConsumerHeartBeat *indexConsumerSpinBox = new IndexConsumerHeartBeat(NodeObjectId(0x1016, row));
         gridLayout->addWidget(indexConsumerSpinBox, row, 1, 1, 2);
-        _indexWidgets.append(indexConsumerSpinBox);
+        addIndexWidget(indexConsumerSpinBox);
     }
 
     return groupBox;
@@ -136,8 +128,4 @@ QString NodeScreenNMT::title() const
 void NodeScreenNMT::setNodeInternal(Node *node, uint8_t axis)
 {
     Q_UNUSED(axis)
-    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
-    {
-        indexWidget->setNode(node);
-    }
 }

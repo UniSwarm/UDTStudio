@@ -42,6 +42,7 @@ protected:
     void createWidgets();
     QTabWidget *_tabWidget;
 
+    P402Widget *_p402Widget;
     MotorWidget *_motorConfigWidget;
 
     PidWidget *_pidTorqueWidget;
@@ -52,8 +53,6 @@ protected:
 
     PidWidget *_pidPositionWidget;
     MotionSensorWidget *_motionSensorPositionWidget;
-
-    P402Widget *_p402Widget;
 
     // NodeScreen interface
 public:

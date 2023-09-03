@@ -91,20 +91,20 @@ QWidget *NodeScreenOD::createStoreWidget()
 void NodeScreenOD::store()
 {
     Node::StoreSegment segment = static_cast<Node::StoreSegment>(_storeComboBox->currentData().toInt());
-    _node->store(segment);
+    node()->store(segment);
 }
 
 void NodeScreenOD::restore()
 {
     Node::RestoreSegment segment = static_cast<Node::RestoreSegment>(_restoreComboBox->currentData().toInt());
-    _node->restore(segment);
+    node()->restore(segment);
 }
 
 void NodeScreenOD::updateStatusNode()
 {
-    if (_node != nullptr)
+    if (node() != nullptr)
     {
-        if (_node->status() == Node::STARTED || _node->status() == Node::STOPPED)
+        if (node()->status() == Node::STARTED || node()->status() == Node::STOPPED)
         {
             _storeRestoreGroupBox->setEnabled(false);
         }

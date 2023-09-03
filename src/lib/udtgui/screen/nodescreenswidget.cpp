@@ -18,7 +18,6 @@
 
 #include "nodescreenswidget.h"
 
-#include "indexdb.h"
 #include "nodescreenerror.h"
 #include "nodescreenhome.h"
 #include "nodescreennmt.h"

@@ -31,14 +31,10 @@ class UDTGUI_EXPORT NodeScreenNMT : public NodeScreen
 public:
     NodeScreenNMT();
 
-    void readAll();
-
 protected:
     void createWidgets();
     QWidget *createProducerHeartBeatWidget();
     QWidget *createConsumerHeartBeatWidget();
-
-    QList<AbstractIndexWidget *> _indexWidgets;
 
     // NodeScreen interface
 public:

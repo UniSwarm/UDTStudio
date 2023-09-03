@@ -37,7 +37,6 @@ public:
     NodeScreenHome();
 
 public:
-    void readAll();
     void updateFirmware();
     void resetHardware();
 
@@ -56,9 +55,7 @@ protected:
     QLabel *_odCountLabel;
     QLabel *_odSubIndexCountLabel;
 
-    QList<AbstractIndexWidget *> _indexWidgets;
-
-    void updateInfos(Node *node);
+    void updateInfos();
 
     // NodeScreen interface
 public:

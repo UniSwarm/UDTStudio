@@ -29,5 +29,4 @@ QString NodeScreenError::title() const
 
 void NodeScreenError::setNodeInternal(Node *node, uint8_t axis)
 {
-
 }

@@ -26,7 +26,6 @@
 #include <QPushButton>
 #include <QScrollArea>
 
-#include "canopen/indexWidget/indexcombobox.h"
 #include "canopen/indexWidget/indexlabel.h"
 #include "screen/nodescreenswidget.h"
 
@@ -39,23 +38,15 @@ NodeScreenHome::NodeScreenHome()
     createWidgets();
 }
 
-void NodeScreenHome::readAll()
-{
-    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
-    {
-        indexWidget->readObject();
-    }
-}
-
 void NodeScreenHome::updateFirmware()
 {
-    BootloaderWidget bootloaderWidget(_node, this);
+    BootloaderWidget bootloaderWidget(node(), this);
     bootloaderWidget.exec();
 }
 
 void NodeScreenHome::resetHardware()
 {
-    _node->bootloader()->resetProgram();
+    node()->bootloader()->resetProgram();
 }
 
 void NodeScreenHome::createWidgets()
@@ -112,30 +103,30 @@ QWidget *NodeScreenHome::createSumaryWidget()
     IndexLabel *indexLabel;
     indexLabel = new IndexLabel(NodeObjectId(0x1008, 0));
     sumaryLayout->addRow(tr("Device name:"), indexLabel);
-    _indexWidgets.append(indexLabel);
+    addIndexWidget(indexLabel);
 
     _summaryProfileLabel = new QLabel();
     sumaryLayout->addRow(tr("Profile:"), _summaryProfileLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x1009, 0));
     sumaryLayout->addRow(tr("Hardware version:"), indexLabel);
-    _indexWidgets.append(indexLabel);
+    addIndexWidget(indexLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x2001, 0));
     sumaryLayout->addRow(tr("Manufacture date:"), indexLabel);
-    _indexWidgets.append(indexLabel);
+    addIndexWidget(indexLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x1018, 4));
     sumaryLayout->addRow(tr("Serial number:"), indexLabel);
-    _indexWidgets.append(indexLabel);
+    addIndexWidget(indexLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x100A, 0));
     sumaryLayout->addRow(tr("Software version:"), indexLabel);
-    _indexWidgets.append(indexLabel);
+    addIndexWidget(indexLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x2003, 0));
     sumaryLayout->addRow(tr("Software build:"), indexLabel);
-    _indexWidgets.append(indexLabel);
+    addIndexWidget(indexLabel);
 
     hlayout->addItem(sumaryLayout);
 
@@ -181,14 +172,14 @@ QWidget *NodeScreenHome::createStatusWidget()
     indexLabel->setScale(1.0 / 100.0);
     indexLabel->setUnit(" V");
     sumaryLayout->addRow(tr("Board voltage:"), indexLabel);
-    _indexWidgets.append(indexLabel);
+    addIndexWidget(indexLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x2020, 1));
     indexLabel->setDisplayHint(AbstractIndexWidget::DisplayFloat);
     indexLabel->setScale(1.0 / 10.0);
     indexLabel->setUnit(" °C");
     sumaryLayout->addRow(tr("CPU temperature:"), indexLabel);
-    _indexWidgets.append(indexLabel);
+    addIndexWidget(indexLabel);
 
     groupBox->setLayout(sumaryLayout);
     return groupBox;
@@ -236,9 +227,9 @@ QWidget *NodeScreenHome::createOdWidget()
     return groupBox;
 }
 
-void NodeScreenHome::updateInfos(Node *node)
+void NodeScreenHome::updateInfos()
 {
-    if (node == nullptr)
+    if (node() == nullptr)
     {
         _summaryProfileLabel->clear();
         _summaryIconLabel->clear();
@@ -252,11 +243,11 @@ void NodeScreenHome::updateInfos(Node *node)
         return;
     }
 
-    _summaryProfileLabel->setText(QString("DS%1").arg(node->profileNumber()));
-    if (node->vendorId() == 0x04A2)  // UniSwarm
+    _summaryProfileLabel->setText(QString("DS%1").arg(node()->profileNumber()));
+    if (node()->vendorId() == 0x04A2)  // UniSwarm
     {
         _statusWidget->setEnabled(true);
-        switch (node->profileNumber())
+        switch (node()->profileNumber())
         {
             case 401:
             case 428:
@@ -273,9 +264,9 @@ void NodeScreenHome::updateInfos(Node *node)
         _statusWidget->setEnabled(false);
     }
 
-    if (!node->edsFileName().isEmpty())
+    if (!node()->edsFileName().isEmpty())
     {
-        _odEdsFileLabel->setText(node->edsFileName());
+        _odEdsFileLabel->setText(node()->edsFileName());
     }
     else
     {
@@ -284,7 +275,7 @@ void NodeScreenHome::updateInfos(Node *node)
 
     QString fileInfos;
     fileInfos.append("<table><tbody>");
-    QMapIterator<QString, QString> i(node->nodeOd()->edsFileInfos());
+    QMapIterator<QString, QString> i(node()->nodeOd()->edsFileInfos());
     while (i.hasNext())
     {
         i.next();
@@ -293,8 +284,8 @@ void NodeScreenHome::updateInfos(Node *node)
     fileInfos.append("</tbody></table>");
     _odFileInfosLabel->setText(fileInfos);
 
-    _odCountLabel->setNum(node->nodeOd()->indexCount());
-    _odSubIndexCountLabel->setNum(node->nodeOd()->subIndexCount());
+    _odCountLabel->setNum(node()->nodeOd()->indexCount());
+    _odSubIndexCountLabel->setNum(node()->nodeOd()->subIndexCount());
 }
 
 QString NodeScreenHome::title() const
@@ -305,21 +296,11 @@ QString NodeScreenHome::title() const
 void NodeScreenHome::setNodeInternal(Node *node, uint8_t axis)
 {
     Q_UNUSED(axis)
-    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
-    {
-        indexWidget->setNode(node);
-    }
 
-    updateInfos(node);
+    updateInfos();
 
     if (node != nullptr)
     {
-        connect(node,
-                &Node::edsFileChanged,
-                this,
-                [=]()
-                {
-                    updateInfos(node);
-                });
+        connect(node, &Node::edsFileChanged, this, &NodeScreenHome::updateInfos);
     }
 }

@@ -23,7 +23,7 @@ protected:
 
     void updateObjects();
 
-protected:
+private:
     Node *_node;
     QList<AbstractIndexWidget *> _indexWidgets;
     QList<AbstractIndexWidget *> _dynamicIndexWidgets;

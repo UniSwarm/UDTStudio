@@ -48,6 +48,8 @@ void NodeScreenUmcMotor::createWidgets()
     ");
     layout->addWidget(_tabWidget);
 
+    _p402Widget = new P402Widget();
+
     _motorConfigWidget = new MotorWidget();
 
     _pidVelocityWidget = new PidWidget();
@@ -57,8 +59,6 @@ void NodeScreenUmcMotor::createWidgets()
     _motionSensorVelocityWidget = new MotionSensorWidget();
     _motionSensorPositionWidget = new MotionSensorWidget();
     _motionSensorTorqueWidget = new MotionSensorWidget();
-
-    _p402Widget = new P402Widget();
 
     setLayout(layout);
 }
@@ -70,7 +70,7 @@ QString NodeScreenUmcMotor::title() const
 
 QIcon NodeScreenUmcMotor::icon() const
 {
-    if (_node->vendorId() == 0x04A2)  // UniSwarm
+    if (node()->vendorId() == 0x04A2)  // UniSwarm
     {
         return QIcon(":/uBoards/umc.png");
     }
@@ -88,7 +88,7 @@ void NodeScreenUmcMotor::setNodeInternal(Node *node, uint8_t axis)
         return;
     }
     _axis = axis;
-    NodeProfile402 *nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[axis]);
+    NodeProfile402 *nodeProfile402 = dynamic_cast<NodeProfile402 *>(this->node()->profiles()[axis]);
 
     _p402Widget->setProfile(nodeProfile402);
     _tabWidget->addTab(_p402Widget, " " + _p402Widget->title() + " ");

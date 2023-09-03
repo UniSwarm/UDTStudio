@@ -153,22 +153,27 @@ QGroupBox *NodeScreenSynchro::createSynchroConfigurationWidgets()
     _modeSynchroComboBox->addItem("OFF", QVariant(static_cast<uint16_t>(0x0000)));
     _modeSynchroComboBox->addItem("Position", QVariant(static_cast<uint16_t>(0x0001)));
     layout->addRow(tr("&Mode:"), _modeSynchroComboBox);
+    addIndexWidget(_modeSynchroComboBox);
 
     _maxDiffSpinBox = new IndexSpinBox();
     _maxDiffSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     layout->addRow(tr("Ma&x diff:"), _maxDiffSpinBox);
+    addIndexWidget(_maxDiffSpinBox);
 
     _coeffSpinBox = new IndexSpinBox();
     _coeffSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     layout->addRow(tr("&Coeff:"), _coeffSpinBox);
+    addIndexWidget(_coeffSpinBox);
 
     _windowSpinBox = new IndexSpinBox();
     _windowSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     layout->addRow(tr("&Window:"), _windowSpinBox);
+    addIndexWidget(_windowSpinBox);
 
     _offsetSpinBox = new IndexSpinBox();
     _offsetSpinBox->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     layout->addRow(tr("&Offset:"), _offsetSpinBox);
+    addIndexWidget(_offsetSpinBox);
 
     groupBox->setLayout(layout);
     return groupBox;
@@ -183,14 +188,17 @@ QGroupBox *NodeScreenSynchro::createSynchroStatusWidgets()
 
     _flagLabel = new IndexLabel();
     layout->addRow(tr("Flag:"), _flagLabel);
+    adddynamicIndexWidget(_flagLabel);
 
     _erorLabel = new IndexLabel();
     _erorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     layout->addRow(tr("Error:"), _erorLabel);
+    adddynamicIndexWidget(_erorLabel);
 
     _correctorLabel = new IndexLabel();
     _correctorLabel->setDisplayHint(AbstractIndexWidget::DisplayQ15_16);
     layout->addRow(tr("Corrector:"), _correctorLabel);
+    adddynamicIndexWidget(_correctorLabel);
 
     groupBox->setLayout(layout);
     return groupBox;
@@ -234,22 +242,12 @@ void NodeScreenSynchro::setNodeInternal(Node *node, uint8_t axis)
     _erorLabel->setObjId(erorLabel_ObjId);
     _correctorLabel->setObjId(correctorLabel_ObjId);
 
-    _modeSynchroComboBox->setNode(node);
-    _maxDiffSpinBox->setNode(node);
-    _coeffSpinBox->setNode(node);
-    _windowSpinBox->setNode(node);
-    _offsetSpinBox->setNode(node);
-
-    _flagLabel->setNode(node);
-    _erorLabel->setNode(node);
-    _correctorLabel->setNode(node);
-
     // Datalogger
-    erorLabel_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    correctorLabel_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    erorLabel_ObjId.setBusIdNodeId(this->node()->busId(), this->node()->nodeId());
+    correctorLabel_ObjId.setBusIdNodeId(this->node()->busId(), this->node()->nodeId());
     _dataLogger->removeData(erorLabel_ObjId);
     _dataLogger->removeData(correctorLabel_ObjId);
     _dataLogger->addData(erorLabel_ObjId);
     _dataLogger->addData(correctorLabel_ObjId);
-    _dataLoggerWidget->setTitle(tr("Node %1 axis %2 sync mode").arg(_node->nodeId()).arg(_axis));
+    _dataLoggerWidget->setTitle(tr("Node %1 axis %2 sync mode").arg(this->node()->nodeId()).arg(_axis));
 }

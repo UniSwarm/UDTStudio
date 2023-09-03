@@ -21,19 +21,18 @@
 
 #include "udtgui_global.h"
 
-#include <QWidget>
+#include "utils/nodewidget.h"
 
 #include <node.h>
 
 class NodeScreensWidget;
 
-class UDTGUI_EXPORT NodeScreen : public QWidget
+class UDTGUI_EXPORT NodeScreen : public NodeWidget
 {
     Q_OBJECT
 public:
     NodeScreen(QWidget *parent = nullptr);
 
-    Node *node() const;
     virtual QString title() const = 0;
     virtual QIcon icon() const;
 
@@ -44,7 +43,6 @@ public slots:
     void setNode(Node *node, uint8_t axis = 0);
 
 protected:
-    Node *_node;
     virtual void setNodeInternal(Node *node, uint8_t axis = 0) = 0;
 
     NodeScreensWidget *_screenWidget;

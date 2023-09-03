@@ -30,7 +30,7 @@ NodeScreenUio::NodeScreenUio(QWidget *parent)
 
 void NodeScreenUio::toggleStartLogger(bool start)
 {
-    if (_node == nullptr)
+    if (node() == nullptr)
     {
         return;
     }

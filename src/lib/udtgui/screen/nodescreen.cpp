@@ -21,14 +21,13 @@
 #include <QIcon>
 
 NodeScreen::NodeScreen(QWidget *parent)
-    : QWidget(parent)
+    : NodeWidget(parent)
 {
-    _node = nullptr;
 }
 
 void NodeScreen::setNode(Node *node, uint8_t axis)
 {
-    _node = node;
+    NodeWidget::setNode(node);
     setNodeInternal(node, axis);
 }
 
@@ -40,11 +39,6 @@ NodeScreensWidget *NodeScreen::screenWidget() const
 void NodeScreen::setScreenWidget(NodeScreensWidget *screenWidget)
 {
     _screenWidget = screenWidget;
-}
-
-Node *NodeScreen::node() const
-{
-    return _node;
 }
 
 QIcon NodeScreen::icon() const
