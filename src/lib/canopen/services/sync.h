@@ -40,11 +40,7 @@ public:
         STARTED,
         STOPPED
     };
-
     Status status();
-    QString type() const override;
-
-    void parseFrame(const QCanBusFrame &frame) override;
 
 public slots:
     void sendSyncOne();
@@ -63,6 +59,11 @@ private:
     QTimer *_syncTimer;
     QTimer *_signalBeforeSync;
     uint32_t _syncCobId;
+
+    // Service interface
+public:
+    QString type() const override;
+    void parseFrame(const QCanBusFrame &frame) override;
 };
 
 #endif  // SYNC_H

@@ -33,10 +33,6 @@ public:
     NodeDiscover(CanOpenBus *bus);
     ~NodeDiscover() override;
 
-    QString type() const override;
-
-    void parseFrame(const QCanBusFrame &frame) override;
-
     void exploreBus();
     void exploreNode(quint8 nodeId);
 
@@ -57,6 +53,11 @@ protected:
     quint8 _exploreNodeCurrentId;
     QTimer _exploreNodeTimer;
     int _exploreNodeState;
+
+    // Service interface
+public:
+    QString type() const override;
+    void parseFrame(const QCanBusFrame &frame) override;
 };
 
 #endif  // NODEDISCOVER_H

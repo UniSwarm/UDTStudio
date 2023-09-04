@@ -209,6 +209,7 @@ private:
     int _timeoutMs;
 
     // Service interface
+public:
     QString type() const override;
     void reset() override;
     void parseFrame(const QCanBusFrame &frame) override;

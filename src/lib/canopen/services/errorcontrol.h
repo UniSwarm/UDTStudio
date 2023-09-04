@@ -24,8 +24,6 @@
 #include "nodeodsubscriber.h"
 #include "service.h"
 
-#include "nodeod.h"
-
 class CANOPEN_EXPORT ErrorControl : public Service, public NodeOdSubscriber
 {
     Q_OBJECT
@@ -33,10 +31,6 @@ public:
     ErrorControl(Node *node);
 
     uint32_t cobId();
-
-    QString type() const override;
-
-    void parseFrame(const QCanBusFrame &frame) override;
 
 private slots:
     void sendNodeGuarding();
@@ -53,6 +47,11 @@ private:
     quint16 _lifeTime;
     QTimer *_guardTimeTimer;
     QTimer *_lifeTimeTimer;
+
+    // Service interface
+public:
+    QString type() const override;
+    void parseFrame(const QCanBusFrame &frame) override;
 
     // NodeOdSubscriber interface
 public:

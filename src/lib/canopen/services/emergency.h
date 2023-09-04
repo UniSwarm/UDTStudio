@@ -31,8 +31,9 @@ public:
 
     uint32_t cobId() const;
 
+    // Service interface
+public:
     QString type() const override;
-
     void parseFrame(const QCanBusFrame &frame) override;
 
 private:

@@ -29,8 +29,9 @@ class CANOPEN_EXPORT TimeStamp : public Service
 public:
     TimeStamp(CanOpenBus *bus);
 
+    // Service interface
+public:
     QString type() const override;
-
     void parseFrame(const QCanBusFrame &frame) override;
 };
 

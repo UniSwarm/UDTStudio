@@ -38,14 +38,15 @@ public:
     void sendResetNode();
     void sendNodeGuarding();
 
-    QString type() const override;
-
-    void parseFrame(const QCanBusFrame &frame) override;
-
 private:
     uint32_t _cobId;
     quint8 _nodeId;
     void sendNmt(quint8 cmd);
+
+    // Service interface
+public:
+    QString type() const override;
+    void parseFrame(const QCanBusFrame &frame) override;
 };
 
 #endif  // NMT_H

@@ -32,15 +32,16 @@ public:
     ServiceDispatcher(CanOpenBus *bus);
     ~ServiceDispatcher() override;
 
-    QString type() const override;
-
     void addService(Service *service);
     void removeService(Service *service);
 
-    void parseFrame(const QCanBusFrame &frame) override;
-
 protected:
     QMultiMap<quint32, Service *> _servicesMap;
+
+    // Service interface
+public:
+    QString type() const override;
+    void parseFrame(const QCanBusFrame &frame) override;
 };
 
 #endif  // SERVICEDISPATCHER_H
