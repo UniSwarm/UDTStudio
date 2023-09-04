@@ -28,6 +28,17 @@ DataLoggerManagerWidget::DataLoggerManagerWidget(DataLogger *logger, QWidget *pa
 {
     createWidgets();
     _chartWidget = nullptr;
+
+    connect(_logger,
+            &DataLogger::dataAdded,
+            this,
+            [this]()
+            {
+                if (!_logger->isStarted() && _logger->dataList().count() == 1)
+                {
+                    _logger->start(_logTimerSpinBox->value());
+                }
+            });
 }
 
 void DataLoggerManagerWidget::toggleStartLogger(bool start)
