@@ -88,7 +88,7 @@ Node::~Node()
     delete _errorControl;
     delete _bootloader;
 
-    delete _nodeOd;
+    _nodeOd->deleteLater();
 }
 
 void Node::setBus(CanOpenBus *bus)
