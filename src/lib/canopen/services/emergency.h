@@ -31,13 +31,16 @@ public:
 
     uint32_t cobId() const;
 
+signals:
+    void emergencyHappened(uint16_t errorCode, uint8_t errorClass, QByteArray errorDesc);
+
+private:
+    uint32_t _cobId;
+
     // Service interface
 public:
     QString type() const override;
     void parseFrame(const QCanBusFrame &frame) override;
-
-private:
-    uint32_t _cobId;
 };
 
 #endif  // EMERGENCY_H

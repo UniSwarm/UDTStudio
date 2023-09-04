@@ -54,5 +54,8 @@ void Emergency::parseFrame(const QCanBusFrame &frame)
     request >> errorCode;
     request >> errorClass;
     errorDesc = payload.mid(3);
-    qDebug() << "Emergency" << errorCode << errorClass << errorDesc;
+    qDebug().noquote().nospace() << "Emergency from node " << _node->nodeId() << " code 0x" << QString::number(errorCode, 16).toUpper().rightJustified(4, '0')
+                                 << " in class " << errorClass << errorDesc;
+
+    emit emergencyHappened(errorCode, errorClass, errorDesc);
 }
