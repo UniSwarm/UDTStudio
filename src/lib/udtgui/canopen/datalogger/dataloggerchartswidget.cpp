@@ -82,7 +82,6 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
 
 DataLoggerChartsWidget::~DataLoggerChartsWidget()
 {
-    delete _chart;
 }
 
 DataLogger *DataLoggerChartsWidget::dataLogger() const
