@@ -429,7 +429,7 @@ QModelIndex BusNodesModel::parent(const QModelIndex &child) const
     Node *node = qobject_cast<Node *>(static_cast<QObject *>(child.internalPointer()));
     if (node != nullptr)
     {
-        QModelIndex index = createIndex(node->bus()->nodes().indexOf(node), 0, node->bus());
+        QModelIndex index = createIndex(CanOpen::buses().indexOf(node->bus()), 0, node->bus());
         return index;
     }
 
