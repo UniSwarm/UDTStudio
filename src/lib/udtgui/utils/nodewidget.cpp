@@ -61,10 +61,14 @@ void NodeWidget::updateObjects()
         return;
     }
 
-    if (_node->nodeOd()->subIndex(_indexWidgets.first()->objId())->lastModification().isNull()
-        && (_node->status() == Node::Status::PREOP || _node->status() == Node::Status::STARTED) && isVisible())
+    NodeSubIndex *subIndex = _node->nodeOd()->subIndex(_indexWidgets.first()->objId());
+    if (subIndex != nullptr)
     {
-        QTimer::singleShot(100, this, &NodeWidget::readAll);
+        if (subIndex->lastModification().isNull()
+            && (_node->status() == Node::Status::PREOP || _node->status() == Node::Status::STARTED) && isVisible())
+        {
+            QTimer::singleShot(100, this, &NodeWidget::readAll);
+        }
     }
 }
 
