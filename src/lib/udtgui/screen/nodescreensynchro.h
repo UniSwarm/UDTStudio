@@ -48,8 +48,6 @@ protected:
     DataLogger *_dataLogger;
     DataLoggerWidget *_dataLoggerWidget;
 
-    void readAllObject();
-
     void createWidgets();
     QToolBar *createToolBarWidgets();
     QSpinBox *_logTimerSpinBox;

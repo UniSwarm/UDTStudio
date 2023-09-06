@@ -44,19 +44,6 @@ void NodeScreenSynchro::setLogTimer(int ms)
     }
 }
 
-void NodeScreenSynchro::readAllObject()
-{
-    _modeSynchroComboBox->readObject();
-    _maxDiffSpinBox->readObject();
-    _coeffSpinBox->readObject();
-    _windowSpinBox->readObject();
-    _offsetSpinBox->readObject();
-
-    _flagLabel->readObject();
-    _erorLabel->readObject();
-    _correctorLabel->readObject();
-}
-
 void NodeScreenSynchro::createWidgets()
 {
     _dataLogger = new DataLogger();
@@ -137,7 +124,7 @@ QToolBar *NodeScreenSynchro::createToolBarWidgets()
     readAllAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
     readAllAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));
-    connect(readAllAction, &QAction::triggered, this, &NodeScreenSynchro::readAllObject);
+    connect(readAllAction, &QAction::triggered, this, &NodeScreenSynchro::readAll);
 
     return toolBar;
 }
