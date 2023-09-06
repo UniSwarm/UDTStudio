@@ -26,8 +26,8 @@ DataLoggerManagerWidget::DataLoggerManagerWidget(DataLogger *logger, QWidget *pa
     : QWidget(parent),
       _logger(logger)
 {
-    createWidgets();
     _chartWidget = nullptr;
+    createWidgets();
 
     connect(_logger,
             &DataLogger::dataAdded,
@@ -40,6 +40,81 @@ DataLoggerManagerWidget::DataLoggerManagerWidget(DataLogger *logger, QWidget *pa
                 }
             });
 }
+
+DataLoggerChartsWidget *DataLoggerManagerWidget::chartWidget() const
+{
+    return _chartWidget;
+}
+
+void DataLoggerManagerWidget::setChartWidget(DataLoggerChartsWidget *chartWidget)
+{
+    _chartWidget = chartWidget;
+
+    connect(_chartWidget,
+            &DataLoggerChartsWidget::useOpenGLChanged,
+            this,
+            [=](bool changed)
+            {
+                if (changed != _openGLAction->isChecked())
+                {
+                    _openGLAction->blockSignals(true);
+                    _openGLAction->setChecked(changed);
+                    _openGLAction->blockSignals(false);
+                }
+            });
+    connect(_chartWidget,
+            &DataLoggerChartsWidget::viewCrossChanged,
+            this,
+            [=](bool changed)
+            {
+                if (changed != _crossAction->isChecked())
+                {
+                    _crossAction->blockSignals(true);
+                    _crossAction->setChecked(changed);
+                    _crossAction->blockSignals(false);
+                }
+            });
+    connect(_chartWidget,
+            &DataLoggerChartsWidget::rollingChanged,
+            this,
+            [=](bool changed)
+            {
+                if (changed != _rollAction->isChecked())
+                {
+                    _rollAction->blockSignals(true);
+                    _rollAction->setChecked(changed);
+                    _rollAction->blockSignals(false);
+                }
+            });
+    connect(_chartWidget,
+            &DataLoggerChartsWidget::rollingTimeMsChanged,
+            this,
+            [=](int timeMs)
+            {
+                if (timeMs != _rollingTimeSpinBox->value())
+                {
+                    _rollingTimeSpinBox->blockSignals(true);
+                    _rollingTimeSpinBox->setValue(timeMs);
+                    _rollingTimeSpinBox->blockSignals(false);
+                }
+            });
+}
+
+bool DataLoggerManagerWidget::autoStart() const
+{
+    return _autoStart;
+}
+
+void DataLoggerManagerWidget::setAutoStart(bool autoStart)
+{
+    _autoStart = autoStart;
+}
+
+QAction *DataLoggerManagerWidget::startStopAction() const
+{
+    return _startStopAction;
+}
+
 
 void DataLoggerManagerWidget::toggleStartLogger(bool start)
 {
@@ -124,65 +199,6 @@ void DataLoggerManagerWidget::exportAllCSVData()
     path += QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss");
     path += "_data.csv";
     _logger->exportCSVData(path);
-}
-
-DataLoggerChartsWidget *DataLoggerManagerWidget::chartWidget() const
-{
-    return _chartWidget;
-}
-
-void DataLoggerManagerWidget::setChartWidget(DataLoggerChartsWidget *chartWidget)
-{
-    _chartWidget = chartWidget;
-
-    connect(_chartWidget,
-            &DataLoggerChartsWidget::useOpenGLChanged,
-            this,
-            [=](bool changed)
-            {
-                if (changed != _openGLAction->isChecked())
-                {
-                    _openGLAction->blockSignals(true);
-                    _openGLAction->setChecked(changed);
-                    _openGLAction->blockSignals(false);
-                }
-            });
-    connect(_chartWidget,
-            &DataLoggerChartsWidget::viewCrossChanged,
-            this,
-            [=](bool changed)
-            {
-                if (changed != _crossAction->isChecked())
-                {
-                    _crossAction->blockSignals(true);
-                    _crossAction->setChecked(changed);
-                    _crossAction->blockSignals(false);
-                }
-            });
-    connect(_chartWidget,
-            &DataLoggerChartsWidget::rollingChanged,
-            this,
-            [=](bool changed)
-            {
-                if (changed != _rollAction->isChecked())
-                {
-                    _rollAction->blockSignals(true);
-                    _rollAction->setChecked(changed);
-                    _rollAction->blockSignals(false);
-                }
-            });
-    connect(_chartWidget,
-            &DataLoggerChartsWidget::rollingTimeMsChanged,
-            this,
-            [=](int timeMs)
-            {
-                if (timeMs != _rollingTimeSpinBox->value())
-                {
-                    _rollingTimeSpinBox->blockSignals(true);
-                    _rollingTimeSpinBox->setValue(timeMs);
-                    _rollingTimeSpinBox->blockSignals(false);
-                }
-            });
 }
 
 void DataLoggerManagerWidget::createWidgets()
@@ -305,9 +321,4 @@ void DataLoggerManagerWidget::createWidgets()
     layout->addWidget(_dataLoggerTreeView);
 
     setLayout(layout);
-}
-
-QAction *DataLoggerManagerWidget::startStopAction() const
-{
-    return _startStopAction;
 }
