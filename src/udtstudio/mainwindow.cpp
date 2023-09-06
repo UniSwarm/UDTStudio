@@ -152,6 +152,7 @@ void MainWindow::createDocks()
     _dataLoggerWidget->setTitle(tr("Dockable data logger"));
     _dataLoggerWidget->chartView()->setRollingTimeMs(10000);
     _dataLoggerWidget->chartView()->setRollingEnabled(true);
+    _dataLoggerWidget->managerWidget()->setAutoStart(true);
     _dataLoggerDock->setWidget(_dataLoggerWidget);
     addDockWidget(Qt::BottomDockWidgetArea, _dataLoggerDock);
 

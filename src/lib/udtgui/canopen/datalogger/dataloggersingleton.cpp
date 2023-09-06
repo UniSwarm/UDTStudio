@@ -191,6 +191,7 @@ DataLoggerWidget *DataLoggerSingleton::createNewLoggerWindow()
 {
     DataLogger *dataLogger = new DataLogger();
     DataLoggerWidget *dataLoggerWidget = new DataLoggerWidget(dataLogger);
+    dataLoggerWidget->managerWidget()->setAutoStart(true);
     dataLoggerWidget->setTitle(tr("Logger window %1").arg(_loggerWindowCount++));
 
     dataLoggerWidget->setAttribute(Qt::WA_DeleteOnClose);
