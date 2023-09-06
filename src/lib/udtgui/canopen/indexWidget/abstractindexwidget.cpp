@@ -433,6 +433,7 @@ const NodeObjectId &AbstractIndexWidget::objId() const
 
 void AbstractIndexWidget::setObjId(const NodeObjectId &objId)
 {
+    Node *oldNode = _objId.node();
     if (_objId.isValid())
     {
         unRegisterObjId(_objId);
@@ -449,6 +450,13 @@ void AbstractIndexWidget::setObjId(const NodeObjectId &objId)
         setNode(node);
         return;
     }
+
+    if (oldNode != nullptr)
+    {
+        setNode(oldNode);
+        return;
+    }
+
     this->updateObjId();
 }
 
