@@ -263,7 +263,7 @@ void NodeOdTreeView::createActions()
 
     _readAllAction = new QAction(this);
     _readAllAction->setText(tr("Read &all"));
-    _readAllAction->setShortcut(QKeySequence(Qt::SHIFT, Qt::Key_F5));
+    _readAllAction->setShortcut(QKeyCombination(Qt::SHIFT, Qt::Key_F5));
     _readAllAction->setShortcutContext(Qt::WidgetShortcut);
     _readAllAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
 #if QT_VERSION >= 0x050A00
