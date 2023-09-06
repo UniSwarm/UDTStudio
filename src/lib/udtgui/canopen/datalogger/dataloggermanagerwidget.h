@@ -38,6 +38,9 @@ public:
     DataLoggerChartsWidget *chartWidget() const;
     void setChartWidget(DataLoggerChartsWidget *chartWidget);
 
+    bool autoStart() const;
+    void setAutoStart(bool autoStart);
+
     QAction *startStopAction() const;
 
 protected slots:
@@ -56,6 +59,7 @@ protected slots:
 protected:
     DataLogger *_logger;
     DataLoggerChartsWidget *_chartWidget;
+    bool _autoStart;
 
     void createWidgets();
     QToolBar *_toolBar;

@@ -27,6 +27,7 @@ DataLoggerManagerWidget::DataLoggerManagerWidget(DataLogger *logger, QWidget *pa
       _logger(logger)
 {
     _chartWidget = nullptr;
+    _autoStart = false;
     createWidgets();
 
     connect(_logger,
@@ -34,7 +35,7 @@ DataLoggerManagerWidget::DataLoggerManagerWidget(DataLogger *logger, QWidget *pa
             this,
             [this]()
             {
-                if (!_logger->isStarted() && _logger->dataList().count() == 1)
+                if (!_logger->isStarted() && _logger->dataList().count() == 1 && _autoStart)
                 {
                     _logger->start(_logTimerSpinBox->value());
                 }
@@ -114,7 +115,6 @@ QAction *DataLoggerManagerWidget::startStopAction() const
 {
     return _startStopAction;
 }
-
 
 void DataLoggerManagerWidget::toggleStartLogger(bool start)
 {
