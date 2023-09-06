@@ -153,7 +153,7 @@ QVariant CanFrameModel::data(const QModelIndex &index, int role) const
                         case QCanBusFrame::UnknownFrame:
                             return QVariant(tr("unk"));
                         case QCanBusFrame::DataFrame:
-                            return QVariant(tr("Dat(%1)").arg(canFrame.payload().count()));
+                            return QVariant(tr("Dat(%1)").arg(canFrame.payload().size()));
                         case QCanBusFrame::ErrorFrame:
                             return QVariant(tr("Err"));
                         case QCanBusFrame::RemoteRequestFrame:

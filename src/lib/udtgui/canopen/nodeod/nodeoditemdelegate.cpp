@@ -39,7 +39,7 @@ bool NodeOdItemDelegate::eventFilter(QObject *editor, QEvent *event)
     if (event->type() == QEvent::FocusIn)
     {
         QLineEdit *lineEdit = qobject_cast<QLineEdit *>(editor);
-        lineEdit->setSelection(0, lineEdit->text().count() - _currentEditUnit.count());
+        lineEdit->setSelection(0, lineEdit->text().size() - _currentEditUnit.size());
         return false;
     }
     return QItemDelegate::eventFilter(editor, event);

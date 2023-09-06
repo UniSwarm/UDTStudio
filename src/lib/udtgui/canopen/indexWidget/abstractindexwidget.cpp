@@ -39,6 +39,8 @@ AbstractIndexWidget::AbstractIndexWidget(const NodeObjectId &objId)
     _bitMask = 0xFFFFFFFFFFFFFFFF;
     _offset = 0.0;
     _scale = 1.0;
+    _minType = std::numeric_limits<double>::min();
+    _maxType = std::numeric_limits<double>::max();
 
     _requestRead = false;
 
@@ -97,7 +99,7 @@ void AbstractIndexWidget::requestWriteValue(const QVariant &value)
             break;
     }
 
-    if (_scale != 0 && _pendingValue.canConvert(QMetaType::Double))
+    if (_scale != 0 && _pendingValue.canConvert(QMetaType(QMetaType::Double)))
     {
         _pendingValue = _pendingValue.toDouble() / _scale;
     }
