@@ -138,19 +138,22 @@ protected:
     };
     State _state;
 
+    void updateMode(NodeProfile402::OperationMode mode);
     void setIMode();
     void changeMode402();
-    void updateMode(NodeProfile402::OperationMode mode);
+
+    void updateNodeStatus(Node::Status status);
+    void updateState();
+
     void manageMeasurement();
     void stopFirstMeasurement();
     void stopSecondMeasurement();
     void stopMeasurement();
     void stopDataLogger();
+
     void readStatus();
     void readAllObject();
-    void statusNodeChanged(Node::Status status);
 
-    void updateState();
     void lockUnlockConfig();
 
     // QWidget interface

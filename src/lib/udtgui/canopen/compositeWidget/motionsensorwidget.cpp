@@ -115,11 +115,11 @@ void MotionSensorWidget::setIMode()
         return;
     }
 
-    connect(_node, &Node::statusChanged, this, &MotionSensorWidget::statusNodeChanged);
+    connect(_node, &Node::statusChanged, this, &MotionSensorWidget::updateNodeStatus);
     if (!_node->profiles().isEmpty())
     {
         _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[_axis]);
-        connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &MotionSensorWidget::stateChanged);
+        connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &MotionSensorWidget::updateState);
     }
 
     IndexDb402::OdMode402 odMode402 = IndexDb402::MODE402_TORQUE;
@@ -207,6 +207,9 @@ void MotionSensorWidget::setIMode()
     {
         indexWidget->setNode(_node);
     }
+
+    updateNodeStatus(_node->status());
+    updateState();
 }
 
 void MotionSensorWidget::fillSensorSelect()
@@ -584,7 +587,7 @@ void MotionSensorWidget::lockUnlockConfig()
     _lockAction->blockSignals(false);
 }
 
-void MotionSensorWidget::statusNodeChanged(Node::Status status)
+void MotionSensorWidget::updateNodeStatus(Node::Status status)
 {
     if (status == Node::STOPPED)
     {
@@ -596,7 +599,7 @@ void MotionSensorWidget::statusNodeChanged(Node::Status status)
     }
 }
 
-void MotionSensorWidget::stateChanged()
+void MotionSensorWidget::updateState()
 {
     _lockAction->blockSignals(true);
     if (_nodeProfile402->currentState() == NodeProfile402::STATE_OperationEnabled)

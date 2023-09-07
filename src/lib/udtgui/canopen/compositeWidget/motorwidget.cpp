@@ -157,6 +157,9 @@ void MotorWidget::setINode()
     _brakeClosingDelaySpinBox->setNode(_node);
     _brakeClosingToIdleSpinBox->setNode(_node);
     _brakeBypassCheckBox->setNode(_node);
+
+    updateNodeStatus(_node->status());
+    updateState();
 }
 
 void MotorWidget::updateNodeStatus(Node::Status status)

@@ -66,8 +66,8 @@ public slots:
 protected slots:
     void setLogTimer(int ms);
 
-    void statusNodeChanged(Node::Status status);
-    void stateChanged();
+    void updateNodeStatus(Node::Status status);
+    void updateState();
     void readAllObject();
 
     void updateSensorParams(int index);

@@ -135,7 +135,7 @@ void PidWidget::setIMode()
 
     _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[_axis]);
     connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &PidWidget::updateState);
-    connect(_node, &Node::statusChanged, this, &PidWidget::statusNodeChanged);
+    connect(_node, &Node::statusChanged, this, &PidWidget::updateNodeStatus);
 
     IndexDb402::OdMode402 odMode402 = IndexDb402::MODE402_TORQUE;
 
@@ -221,6 +221,9 @@ void PidWidget::setIMode()
     {
         indexWidget->setNode(_node);
     }
+
+    updateNodeStatus(_node->status());
+    updateState();
 }
 
 void PidWidget::changeMode402()
@@ -700,7 +703,7 @@ QGroupBox *PidWidget::createPIDTestWidgets()
     return groupBox;
 }
 
-void PidWidget::statusNodeChanged(Node::Status status)
+void PidWidget::updateNodeStatus(Node::Status status)
 {
     if (status != Node::STOPPED)
     {
