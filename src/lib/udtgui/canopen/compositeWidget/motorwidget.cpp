@@ -39,7 +39,7 @@
 #include <QWidget>
 
 MotorWidget::MotorWidget(QWidget *parent)
-    : QWidget(parent)
+    : NodeWidget(parent)
 {
     _node = nullptr;
     _axis = 0;
@@ -59,6 +59,8 @@ QString MotorWidget::title() const
 
 void MotorWidget::setNode(Node *node, uint8_t axis)
 {
+    NodeWidget::setNode(node);
+
     _node = node;
     if (_node == nullptr)
     {
@@ -188,14 +190,6 @@ void MotorWidget::updateState()
     _lockAction->setEnabled((_nodeProfile402->status() == NodeProfile402::NODEPROFILE_STARTED));
 }
 
-void MotorWidget::readAllObjects()
-{
-    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
-    {
-        indexWidget->readObject();
-    }
-}
-
 void MotorWidget::createWidgets()
 {
     QWidget *motorWidget = new QWidget(this);
@@ -240,7 +234,7 @@ QToolBar *MotorWidget::createToolBarWidgets()
     readAllAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
     readAllAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));
-    connect(readAllAction, &QAction::triggered, this, &MotorWidget::readAllObjects);
+    connect(readAllAction, &QAction::triggered, this, &MotorWidget::readAll);
 
     toolBar->addSeparator();
 
@@ -290,44 +284,44 @@ QGroupBox *MotorWidget::createMotorConfigWidgets()
     _motorTypeComboBox->addItem(tr("BLDC sinusoidal with hall"), QVariant(static_cast<uint16_t>(0x0202)));
     _motorTypeComboBox->addItem(tr("BLDC sinusoidal with incremental encoder"), QVariant(static_cast<uint16_t>(0x0203)));
     configLayout->addRow(tr("&Motor type:"), _motorTypeComboBox);
-    _indexWidgets.append(_motorTypeComboBox);
+    addIndexWidget(_motorTypeComboBox);
 
     configLayout->addLineSeparator();
 
     _peakCurrentSpinBox = new IndexSpinBox();
     configLayout->addRow(tr("P&eak current:"), _peakCurrentSpinBox);
-    _indexWidgets.append(_peakCurrentSpinBox);
+    addIndexWidget(_peakCurrentSpinBox);
 
     _burstCurrentSpinBox = new IndexSpinBox();
-    _indexWidgets.append(_burstCurrentSpinBox);
+    addIndexWidget(_burstCurrentSpinBox);
     _burstDurationSpinBox = new IndexSpinBox();
-    _indexWidgets.append(_burstDurationSpinBox);
+    addIndexWidget(_burstDurationSpinBox);
     configLayout->addDualRow(tr("Burst &current:"), _burstCurrentSpinBox, _burstDurationSpinBox, tr("/"));
 
     _sustainedCurrentSpinBox = new IndexSpinBox();
     configLayout->addRow(tr("&Sustained current:"), _sustainedCurrentSpinBox);
-    _indexWidgets.append(_sustainedCurrentSpinBox);
+    addIndexWidget(_sustainedCurrentSpinBox);
 
     _currentConstantSpinBox = new IndexSpinBox();
     configLayout->addRow(tr("C&urrent constant:"), _currentConstantSpinBox);
-    _indexWidgets.append(_currentConstantSpinBox);
+    addIndexWidget(_currentConstantSpinBox);
 
     configLayout->addLineSeparator();
 
     _maxVelocitySpinBox = new IndexSpinBox();
     configLayout->addRow(tr("M&ax velocity:"), _maxVelocitySpinBox);
-    _indexWidgets.append(_maxVelocitySpinBox);
+    addIndexWidget(_maxVelocitySpinBox);
 
     _velocityConstantSpinBox = new IndexSpinBox();
     configLayout->addRow(tr("Ve&locity constant:"), _velocityConstantSpinBox);
-    _indexWidgets.append(_velocityConstantSpinBox);
+    addIndexWidget(_velocityConstantSpinBox);
 
     configLayout->addLineSeparator();
 
     _reverseMotorPolarityCheckBox = new IndexCheckBox();
     _reverseMotorPolarityCheckBox->setBitMask(1);
     configLayout->addRow(tr("&Invert motor direction:"), _reverseMotorPolarityCheckBox);
-    _indexWidgets.append(_reverseMotorPolarityCheckBox);
+    addIndexWidget(_reverseMotorPolarityCheckBox);
 
     motorConfigGroupBox->setLayout(configLayout);
     return motorConfigGroupBox;
@@ -343,34 +337,34 @@ QGroupBox *MotorWidget::createMotorStatusWidgets()
     _bridgeCommandBar->setUnit("%");
     _bridgeCommandBar->setScale(100.0 / 32768.0);
     _bridgeCommandBar->setRange(-100, 100);
-    _indexWidgets.append(_bridgeCommandBar);
+    adddynamicIndexWidget(_bridgeCommandBar);
 
     _motorCurrentLabel = new IndexLabel();
     statusLayout->addRow(tr("Current:"), _motorCurrentLabel);
-    _indexWidgets.append(_motorCurrentLabel);
+    adddynamicIndexWidget(_motorCurrentLabel);
 
     _motorTorqueLabel = new IndexLabel();
     // _motorTorqueLabel->setUnit(" Nm");
     statusLayout->addRow(tr("Torque:"), _motorTorqueLabel);
-    _indexWidgets.append(_motorTorqueLabel);
+    adddynamicIndexWidget(_motorTorqueLabel);
 
     _motorVelocityLabel = new IndexLabel();
     // _motorVelocityLabel->setUnit(" rpm");
     statusLayout->addRow(tr("Velocity:"), _motorVelocityLabel);
-    _indexWidgets.append(_motorVelocityLabel);
+    adddynamicIndexWidget(_motorVelocityLabel);
 
     _motorPositionLabel = new IndexLabel();
     // _motorPositionLabel->setUnit(" tr");
     statusLayout->addRow(tr("Position:"), _motorPositionLabel);
-    _indexWidgets.append(_motorPositionLabel);
+    adddynamicIndexWidget(_motorPositionLabel);
 
     _bridgeTemp1Label = new IndexLabel();
     statusLayout->addRow(tr("Temperature bridge 1:"), _bridgeTemp1Label);
-    _indexWidgets.append(_bridgeTemp1Label);
+    adddynamicIndexWidget(_bridgeTemp1Label);
 
     _bridgeTemp2Label = new IndexLabel();
     statusLayout->addRow(tr("Temperature bridge 2:"), _bridgeTemp2Label);
-    _indexWidgets.append(_bridgeTemp2Label);
+    adddynamicIndexWidget(_bridgeTemp2Label);
 
     statusGroupBox->setLayout(statusLayout);
     return statusGroupBox;
@@ -383,12 +377,12 @@ QGroupBox *MotorWidget::createBldcConfigWidgets()
 
     _polePairSpinBox = new IndexSpinBox();
     configLayout->addRow(tr("P&ole pair:"), _polePairSpinBox);
-    _indexWidgets.append(_polePairSpinBox);
+    addIndexWidget(_polePairSpinBox);
 
     _reverseHallPolarityCheckBox = new IndexCheckBox();
     _reverseHallPolarityCheckBox->setBitMask(2);
     configLayout->addRow(tr("Invert &hall polarity:"), _reverseHallPolarityCheckBox);
-    _indexWidgets.append(_reverseHallPolarityCheckBox);
+    addIndexWidget(_reverseHallPolarityCheckBox);
 
     configGroupBox->setLayout(configLayout);
     return configGroupBox;
@@ -401,15 +395,15 @@ QGroupBox *MotorWidget::createBldcStatusWidgets()
 
     _hallRawValueLabel = new IndexLabel();
     statusLayout->addRow(tr("Hall raw:"), _hallRawValueLabel);
-    _indexWidgets.append(_hallRawValueLabel);
+    adddynamicIndexWidget(_hallRawValueLabel);
 
     _hallPhaseLabel = new IndexLabel();
     statusLayout->addRow(tr("Hall phase:"), _hallPhaseLabel);
-    _indexWidgets.append(_hallPhaseLabel);
+    adddynamicIndexWidget(_hallPhaseLabel);
 
     _electricalAngleLabel = new IndexLabel();
     statusLayout->addRow(tr("Electrical angle:"), _electricalAngleLabel);
-    _indexWidgets.append(_electricalAngleLabel);
+    adddynamicIndexWidget(_electricalAngleLabel);
 
     statusGroupBox->setLayout(statusLayout);
     return statusGroupBox;
@@ -429,34 +423,34 @@ QGroupBox *MotorWidget::createBrakeConfigWidgets()
     _brakeModeComboBox->addItem(tr("Push-pull, NC"), QVariant(static_cast<uint8_t>(0x06)));
     _brakeModeComboBox->addItem(tr("Push-pull, NO"), QVariant(static_cast<uint8_t>(0x07)));
     configLayout->addRow(tr("&Brake mode:"), _brakeModeComboBox);
-    _indexWidgets.append(_brakeModeComboBox);
+    addIndexWidget(_brakeModeComboBox);
 
     _brakeExitationDutySpinBox = new IndexSpinBox();
-    _indexWidgets.append(_brakeExitationDutySpinBox);
+    addIndexWidget(_brakeExitationDutySpinBox);
     _brakeExitationTimeSpinBox = new IndexSpinBox();
-    _indexWidgets.append(_brakeExitationTimeSpinBox);
+    addIndexWidget(_brakeExitationTimeSpinBox);
     configLayout->addDualRow(tr("&Excitation:"), _brakeExitationDutySpinBox, _brakeExitationTimeSpinBox, tr("/"));
 
     _brakeDutySpinBox = new IndexSpinBox();
     configLayout->addRow(tr("Activated duty cycle:"), _brakeDutySpinBox);
-    _indexWidgets.append(_brakeDutySpinBox);
+    addIndexWidget(_brakeDutySpinBox);
 
     _brakeReleaseDelaySpinBox = new IndexSpinBox();
-    _indexWidgets.append(_brakeReleaseDelaySpinBox);
+    addIndexWidget(_brakeReleaseDelaySpinBox);
     _brakeReleaseToOESpinBox = new IndexSpinBox();
-    _indexWidgets.append(_brakeReleaseToOESpinBox);
+    addIndexWidget(_brakeReleaseToOESpinBox);
     configLayout->addDualRow(tr("&Release delays:"), _brakeReleaseDelaySpinBox, _brakeReleaseToOESpinBox, tr("-"));
 
     _brakeClosingDelaySpinBox = new IndexSpinBox();
-    _indexWidgets.append(_brakeClosingDelaySpinBox);
+    addIndexWidget(_brakeClosingDelaySpinBox);
     _brakeClosingToIdleSpinBox = new IndexSpinBox();
-    _indexWidgets.append(_brakeClosingToIdleSpinBox);
+    addIndexWidget(_brakeClosingToIdleSpinBox);
     configLayout->addDualRow(tr("&Closing delays:"), _brakeClosingDelaySpinBox, _brakeClosingToIdleSpinBox, tr("-"));
 
     _brakeBypassCheckBox = new IndexCheckBox();
     _brakeBypassCheckBox->setBitMask(1);
     configLayout->addRow(tr("&Brake override:"), _brakeBypassCheckBox);
-    _indexWidgets.append(_brakeBypassCheckBox);
+    addIndexWidget(_brakeBypassCheckBox);
 
     configGroupBox->setLayout(configLayout);
     return configGroupBox;
@@ -537,4 +531,6 @@ void MotorWidget::showEvent(QShowEvent *event)
         createWidgets();
         setINode();
     }
+
+    NodeWidget::showEvent(event);
 }

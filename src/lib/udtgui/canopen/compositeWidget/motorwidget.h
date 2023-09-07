@@ -21,7 +21,7 @@
 
 #include "../../udtgui_global.h"
 
-#include <QWidget>
+#include "utils/nodewidget.h"
 
 #include "profile/p402/nodeprofile402.h"
 
@@ -39,7 +39,7 @@ class IndexComboBox;
 class IndexCheckBox;
 class IndexBar;
 
-class UDTGUI_EXPORT MotorWidget : public QWidget
+class UDTGUI_EXPORT MotorWidget : public NodeWidget
 {
     Q_OBJECT
 public:
@@ -61,7 +61,6 @@ protected:
     // Creation widgets
     void createWidgets();
     bool _created;
-    QList<AbstractIndexWidget *> _indexWidgets;
 
     // Toolbar
     QToolBar *createToolBarWidgets();
@@ -118,7 +117,6 @@ protected:
 
     void updateNodeStatus(Node::Status status);
     void updateState();
-    void readAllObjects();
     void lockUnlockConfig();
 
     void mapCurrents();
