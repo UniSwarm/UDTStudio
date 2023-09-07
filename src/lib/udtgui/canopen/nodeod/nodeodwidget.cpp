@@ -76,7 +76,8 @@ void NodeOdWidget::setNode(Node *node)
 
 void NodeOdWidget::selectFilter(int index)
 {
-    QSignalBlocker block(_filterLineEdit);
+    QSignalBlocker blockLine(_filterLineEdit);
+    QSignalBlocker blockCombo(_filterCombobox);
     QString filterString = _filterCombobox->itemData(index).toString();
     if (_filter == FilterPDO)
     {
@@ -84,6 +85,7 @@ void NodeOdWidget::selectFilter(int index)
     }
     _filterLineEdit->setText(filterString);
     _nodeOdTreeView->setFilter(filterString);
+    _filterCombobox->setCurrentIndex(index);
 }
 
 void NodeOdWidget::applyFilterCustom(const QString &filterText)
@@ -139,6 +141,12 @@ void NodeOdWidget::createWidgets()
 NodeOdTreeView *NodeOdWidget::nodeOdTreeView() const
 {
     return _nodeOdTreeView;
+}
+
+void NodeOdWidget::selectNodeObjectId(const NodeObjectId &objId)
+{
+    selectFilter(0);
+    _nodeOdTreeView->selectNodeObjectId(objId);
 }
 
 void NodeOdWidget::createDefaultFilters(uint profile)

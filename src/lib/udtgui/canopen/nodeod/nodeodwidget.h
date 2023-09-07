@@ -24,6 +24,7 @@
 #include <QWidget>
 
 #include "nodeodtreeview.h"
+
 #include <QComboBox>
 #include <QLineEdit>
 #include <QToolBar>
@@ -47,6 +48,7 @@ public:
     void setFilter(Filter filter);
 
     NodeOdTreeView *nodeOdTreeView() const;
+    void selectNodeObjectId(const NodeObjectId &objId);
 
 public slots:
     void setNode(Node *node);

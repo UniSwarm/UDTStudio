@@ -126,5 +126,5 @@ void NodeScreenOD::setNodeInternal(Node *node, uint8_t axis)
     _nodeOdWidget->setNode(node);
     connect(node, &Node::statusChanged, this, &NodeScreenOD::updateStatusNode);
     updateStatusNode();
-    UdtGuiManager::setNodeOdTreeView(node, _nodeOdWidget->nodeOdTreeView());
+    UdtGuiManager::setNodeOdWidget(node, _nodeOdWidget);
 }

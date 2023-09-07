@@ -554,7 +554,7 @@ QMenu *AbstractIndexWidget::createStandardContextMenu(QMenu *menu)
     standardMenu->insertAction(firstAction, readAction);
 
     // locate action
-    if (UdtGuiManager::haveOdTreeView(objId()))
+    if (UdtGuiManager::haveOdWidget(objId()))
     {
         QAction *locateAction = new QAction(QObject::tr("Locate in OD"));
         QObject::connect(locateAction,

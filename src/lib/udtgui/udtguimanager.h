@@ -29,7 +29,7 @@ class QWidget;
 
 class Node;
 class NodeOdItemModel;
-class NodeOdTreeView;
+class NodeOdWidget;
 
 class UDTGUI_EXPORT UdtGuiManager
 {
@@ -38,10 +38,10 @@ class UDTGUI_EXPORT UdtGuiManager
 public:
     // NodeOd
     static NodeOdItemModel *nodeOdItemModel(Node *node);
-    static NodeOdTreeView *nodeOdTreeView(Node *node);
+    static NodeOdWidget *nodeOdWidget(Node *node);
     static void locateInOdTreeView(const NodeObjectId &objId);
-    static bool haveOdTreeView(const NodeObjectId &objId);
-    static void setNodeOdTreeView(Node *node, NodeOdTreeView *nodeOdTreeView);
+    static bool haveOdWidget(const NodeObjectId &objId);
+    static void setNodeOdWidget(Node *node, NodeOdWidget *nodeOdWidget);
 
     static void showWidgetRecursive(QWidget *widget);
 
@@ -51,7 +51,7 @@ protected:
 
     static UdtGuiManager *_instance;
     QMap<Node *, NodeOdItemModel *> _nodeOdItemModels;
-    QMap<Node *, NodeOdTreeView *> _nodeOdTreeViews;
+    QMap<Node *, NodeOdWidget *> _nodeOdWidgets;
 };
 
 #endif  // UDTGUIMANAGER_H

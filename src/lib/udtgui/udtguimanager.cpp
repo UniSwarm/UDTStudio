@@ -23,7 +23,7 @@
 #include <QWidget>
 
 #include "canopen/nodeod/nodeoditemmodel.h"
-#include "canopen/nodeod/nodeodtreeview.h"
+#include "canopen/nodeod/nodeodwidget.h"
 
 UdtGuiManager *UdtGuiManager::_instance = nullptr;
 
@@ -50,10 +50,10 @@ NodeOdItemModel *UdtGuiManager::nodeOdItemModel(Node *node)
     return model;
 }
 
-NodeOdTreeView *UdtGuiManager::nodeOdTreeView(Node *node)
+NodeOdWidget *UdtGuiManager::nodeOdWidget(Node *node)
 {
-    auto it = UdtGuiManager::instance()->_nodeOdTreeViews.constFind(node);
-    if (it != UdtGuiManager::instance()->_nodeOdTreeViews.constEnd())
+    auto it = UdtGuiManager::instance()->_nodeOdWidgets.constFind(node);
+    if (it != UdtGuiManager::instance()->_nodeOdWidgets.constEnd())
     {
         return it.value();
     }
@@ -88,17 +88,17 @@ void UdtGuiManager::locateInOdTreeView(const NodeObjectId &objId)
         return;
     }
 
-    NodeOdTreeView *odTreeView = nodeOdTreeView(node);
-    if (odTreeView == nullptr)
+    NodeOdWidget *odWidget = nodeOdWidget(node);
+    if (odWidget == nullptr)
     {
         return;
     }
 
-    UdtGuiManager::showWidgetRecursive(odTreeView);
-    odTreeView->selectNodeObjectId(objId);
+    UdtGuiManager::showWidgetRecursive(odWidget);
+    odWidget->selectNodeObjectId(objId);
 }
 
-bool UdtGuiManager::haveOdTreeView(const NodeObjectId &objId)
+bool UdtGuiManager::haveOdWidget(const NodeObjectId &objId)
 {
     Node *node = objId.node();
     if (node == nullptr)
@@ -106,13 +106,13 @@ bool UdtGuiManager::haveOdTreeView(const NodeObjectId &objId)
         return false;
     }
 
-    NodeOdTreeView *odTreeView = nodeOdTreeView(node);
-    return (odTreeView != nullptr);
+    NodeOdWidget *odWidget = nodeOdWidget(node);
+    return (odWidget != nullptr);
 }
 
-void UdtGuiManager::setNodeOdTreeView(Node *node, NodeOdTreeView *nodeOdTreeView)
+void UdtGuiManager::setNodeOdWidget(Node *node, NodeOdWidget *nodeOdWidget)
 {
-    UdtGuiManager::instance()->_nodeOdTreeViews.insert(node, nodeOdTreeView);
+    UdtGuiManager::instance()->_nodeOdWidgets.insert(node, nodeOdWidget);
 }
 
 UdtGuiManager *UdtGuiManager::instance()
