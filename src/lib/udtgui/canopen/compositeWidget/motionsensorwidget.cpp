@@ -354,6 +354,15 @@ QToolBar *MotionSensorWidget::createToolBarWidgets()
 
     toolBar->addSeparator();
 
+    // read all action
+    QAction *readAllAction = toolBar->addAction(tr("Read all objects"));
+    readAllAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
+    readAllAction->setShortcut(QKeySequence("Ctrl+R"));
+    readAllAction->setStatusTip(tr("Read all the objects of the current window"));
+    connect(readAllAction, &QAction::triggered, this, &MotionSensorWidget::readAllObject);
+
+    toolBar->addSeparator();
+
     // lock / unlock action
     _lockAction = toolBar->addAction(tr("Lock/unlock config objects"));
     _lockAction->setEnabled(false);
@@ -366,15 +375,7 @@ QToolBar *MotionSensorWidget::createToolBarWidgets()
     _lockAction->setStatusTip(tr("Editing of config parameters is not possible in OE mode, go to SO to unlock"));
     connect(_lockAction, &QAction::triggered, this, &MotionSensorWidget::lockUnlockConfig);
 
-    toolBar->addSeparator();
-
-    // read all action
-    QAction *readAllAction = toolBar->addAction(tr("Read all objects"));
-    readAllAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
-    readAllAction->setShortcut(QKeySequence("Ctrl+R"));
-    readAllAction->setStatusTip(tr("Read all the objects of the current window"));
-    connect(readAllAction, &QAction::triggered, this, &MotionSensorWidget::readAllObject);
-
+    /*
     QWidget *spacerWidget = new QLabel(this);
     spacerWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     spacerWidget->setStyleSheet("QLabel {background: none}");
@@ -387,6 +388,7 @@ QToolBar *MotionSensorWidget::createToolBarWidgets()
     // revert color style for QSlider in toolbar
     setStyleSheet("QSlider {background-color: #32414B;}\
                    QSlider::groove:horizontal {background-color: #19232D;}");
+    */
 
     return toolBar;
 }
