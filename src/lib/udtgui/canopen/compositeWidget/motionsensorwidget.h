@@ -21,7 +21,7 @@
 
 #include "../../udtgui_global.h"
 
-#include <QWidget>
+#include "utils/nodewidget.h"
 
 #include "profile/p402/nodeprofile402.h"
 
@@ -42,13 +42,12 @@ class IndexComboBox;
 class IndexCheckBox;
 class AbstractIndexWidget;
 
-class UDTGUI_EXPORT MotionSensorWidget : public QWidget
+class UDTGUI_EXPORT MotionSensorWidget : public NodeWidget
 {
     Q_OBJECT
 public:
     explicit MotionSensorWidget(QWidget *parent = nullptr);
 
-    Node *node() const;
     QString title() const;
 
     enum ModeSensor
@@ -68,13 +67,11 @@ protected slots:
 
     void updateNodeStatus(Node::Status status);
     void updateState();
-    void readAllObject();
 
     void updateSensorParams(int index);
     void updateFilterParams(int index);
 
 protected:
-    Node *_node;
     uint8_t _axis;
     ModeSensor _mode;
     NodeProfile402 *_nodeProfile402;
@@ -139,8 +136,6 @@ protected:
     IndexLabel *_rawDataValueLabel;
     IndexLabel *_flagLabel;
     IndexLabel *_valueLabel;
-
-    QList<AbstractIndexWidget *> _indexWidgets;
 
     void lockUnlockConfig();
 

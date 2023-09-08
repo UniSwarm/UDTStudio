@@ -38,20 +38,14 @@
 const int indentLabel = 18;
 
 MotionSensorWidget::MotionSensorWidget(QWidget *parent)
-    : QWidget(parent)
+    : NodeWidget(parent)
 {
-    _node = nullptr;
     _nodeProfile402 = nullptr;
     _dataLogger = new DataLogger();
 
     _created = false;
     _state = NONE;
     _mode = MODE_SENSOR_NONE;
-}
-
-Node *MotionSensorWidget::node() const
-{
-    return _node;
 }
 
 QString MotionSensorWidget::title() const
@@ -75,8 +69,8 @@ QString MotionSensorWidget::title() const
 
 void MotionSensorWidget::setNode(Node *node, uint8_t axis)
 {
-    _node = node;
-    if (_node == nullptr)
+    NodeWidget::setNode(node);
+    if (node == nullptr)
     {
         return;
     }
@@ -110,15 +104,15 @@ void MotionSensorWidget::setIMode()
     NodeObjectId flagLabel_ObjId;
     NodeObjectId valueLabel_ObjId;
 
-    if (_node == nullptr || !_created)
+    if (node() == nullptr || !_created)
     {
         return;
     }
 
-    connect(_node, &Node::statusChanged, this, &MotionSensorWidget::updateNodeStatus);
-    if (!_node->profiles().isEmpty())
+    connect(node(), &Node::statusChanged, this, &MotionSensorWidget::updateNodeStatus);
+    if (!node()->profiles().isEmpty())
     {
-        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[_axis]);
+        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node()->profiles()[_axis]);
         connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &MotionSensorWidget::updateState);
     }
 
@@ -134,7 +128,7 @@ void MotionSensorWidget::setIMode()
             _filterGroupBox->setTitle(tr("Torque filter"));
             _conditioningGroupBox->setTitle(tr("Torque conditioning"));
             _statusGroupBox->setTitle(tr("Torque sensor status"));
-            _dataLoggerWidget->setTitle(tr("Node %1 axis %2 torque motion sensor").arg(_node->nodeId()).arg(_axis));
+            _dataLoggerWidget->setTitle(tr("Node %1 axis %2 torque motion sensor").arg(node()->nodeId()).arg(_axis));
             odMode402 = IndexDb402::MODE402_TORQUE;
             break;
 
@@ -143,7 +137,7 @@ void MotionSensorWidget::setIMode()
             _filterGroupBox->setTitle(tr("Velocity filter"));
             _conditioningGroupBox->setTitle(tr("Velocity conditioning"));
             _statusGroupBox->setTitle(tr("Velocity sensor status"));
-            _dataLoggerWidget->setTitle(tr("Node %1 axis %2 velocity motion sensor").arg(_node->nodeId()).arg(_axis));
+            _dataLoggerWidget->setTitle(tr("Node %1 axis %2 velocity motion sensor").arg(node()->nodeId()).arg(_axis));
             odMode402 = IndexDb402::MODE402_VELOCITY;
             break;
 
@@ -152,7 +146,7 @@ void MotionSensorWidget::setIMode()
             _filterGroupBox->setTitle(tr("Position filter"));
             _conditioningGroupBox->setTitle(tr("Position conditioning"));
             _statusGroupBox->setTitle(tr("Position sensor status"));
-            _dataLoggerWidget->setTitle(tr("Node %1 axis %2 position motion sensor").arg(_node->nodeId()).arg(_axis));
+            _dataLoggerWidget->setTitle(tr("Node %1 axis %2 position motion sensor").arg(node()->nodeId()).arg(_axis));
             odMode402 = IndexDb402::MODE402_POSITION;
             break;
     }
@@ -193,9 +187,9 @@ void MotionSensorWidget::setIMode()
     _rawDataValueLabel->setObjId(rawDataValueLabel_ObjId);
     _flagLabel->setObjId(flagLabel_ObjId);
     _valueLabel->setObjId(valueLabel_ObjId);
-    rawDataValueLabel_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    flagLabel_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
-    valueLabel_ObjId.setBusIdNodeId(_node->busId(), _node->nodeId());
+    rawDataValueLabel_ObjId.setBusIdNodeId(node()->busId(), node()->nodeId());
+    flagLabel_ObjId.setBusIdNodeId(node()->busId(), node()->nodeId());
+    valueLabel_ObjId.setBusIdNodeId(node()->busId(), node()->nodeId());
 
     // Datalogger
     _dataLogger->removeAllData();
@@ -203,12 +197,8 @@ void MotionSensorWidget::setIMode()
     _dataLogger->data(0)->setActive(false);
     _dataLogger->addData(valueLabel_ObjId);
 
-    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
-    {
-        indexWidget->setNode(_node);
-    }
-
-    updateNodeStatus(_node->status());
+    NodeWidget::setNode(node());
+    updateNodeStatus(node()->status());
     updateState();
 }
 
@@ -359,7 +349,7 @@ QToolBar *MotionSensorWidget::createToolBarWidgets()
     readAllAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
     readAllAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));
-    connect(readAllAction, &QAction::triggered, this, &MotionSensorWidget::readAllObject);
+    connect(readAllAction, &QAction::triggered, this, &MotionSensorWidget::readAll);
 
     toolBar->addSeparator();
 
@@ -401,31 +391,31 @@ QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
     _sensorSelectComboBox = new IndexComboBox();
     formLayout->addRow(tr("&Sensor select:"), _sensorSelectComboBox);
     connect(_sensorSelectComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &MotionSensorWidget::updateSensorParams);
-    _indexWidgets.append(_sensorSelectComboBox);
+    addIndexWidget(_sensorSelectComboBox);
 
     _sensorParam0SpinBox = new IndexSpinBox();
     _sensorParamLabels.append(new QLabel(tr("param 0:")));
     _sensorParamLabels.last()->setIndent(indentLabel);
     formLayout->addRow(_sensorParamLabels.last(), _sensorParam0SpinBox);
-    _indexWidgets.append(_sensorParam0SpinBox);
+    addIndexWidget(_sensorParam0SpinBox);
 
     _sensorParam1SpinBox = new IndexSpinBox();
     _sensorParamLabels.append(new QLabel(tr("param 1:")));
     _sensorParamLabels.last()->setIndent(indentLabel);
     formLayout->addRow(_sensorParamLabels.last(), _sensorParam1SpinBox);
-    _indexWidgets.append(_sensorParam1SpinBox);
+    addIndexWidget(_sensorParam1SpinBox);
 
     _sensorParam2SpinBox = new IndexSpinBox();
     _sensorParamLabels.append(new QLabel(tr("param 2:")));
     _sensorParamLabels.last()->setIndent(indentLabel);
     formLayout->addRow(_sensorParamLabels.last(), _sensorParam2SpinBox);
-    _indexWidgets.append(_sensorParam2SpinBox);
+    addIndexWidget(_sensorParam2SpinBox);
 
     _sensorParam3SpinBox = new IndexSpinBox();
     _sensorParamLabels.append(new QLabel(tr("param 3:")));
     _sensorParamLabels.last()->setIndent(indentLabel);
     formLayout->addRow(_sensorParamLabels.last(), _sensorParam3SpinBox);
-    _indexWidgets.append(_sensorParam3SpinBox);
+    addIndexWidget(_sensorParam3SpinBox);
 
     formLayout->addItem(new QSpacerItem(0, 5));
 
@@ -433,17 +423,17 @@ QGroupBox *MotionSensorWidget::createSensorConfigurationWidgets()
     _frequencyDividerSpinBox->setDisplayHint(AbstractIndexWidget::DisplayDirectValue);
     _frequencyDividerSpinBox->setRangeValue(1, 1000);
     formLayout->addRow(tr("S&ubsampling:"), _frequencyDividerSpinBox);
-    _indexWidgets.append(_frequencyDividerSpinBox);
+    addIndexWidget(_frequencyDividerSpinBox);
 
     _configQ15BitCheckBox = new IndexCheckBox();
     _configQ15BitCheckBox->setBitMask(32);
     formLayout->addRow(tr("&Q15.16 (<<16):"), _configQ15BitCheckBox);
-    _indexWidgets.append(_configQ15BitCheckBox);
+    addIndexWidget(_configQ15BitCheckBox);
 
     _configResetBitCheckBox = new IndexCheckBox();
     _configResetBitCheckBox->setBitMask(1);
     formLayout->addRow(tr("&Reset:"), _configResetBitCheckBox);
-    _indexWidgets.append(_configResetBitCheckBox);
+    addIndexWidget(_configResetBitCheckBox);
 
     updateSensorParams(0);
     groupBox->setLayout(formLayout);
@@ -462,31 +452,31 @@ QGroupBox *MotionSensorWidget::createSensorFilterWidgets()
     _filterSelectComboBox->setItemData(_filterSelectComboBox->count() - 1, tr("Averaging value from 'N' samples"), Qt::StatusTipRole);
     connect(_filterSelectComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &MotionSensorWidget::updateFilterParams);
     formLayout->addRow(tr("&Filter select:"), _filterSelectComboBox);
-    _indexWidgets.append(_filterSelectComboBox);
+    addIndexWidget(_filterSelectComboBox);
 
     _filterParam0SpinBox = new IndexSpinBox();
     _filterParamLabels.append(new QLabel(tr("param 0:")));
     _filterParamLabels.last()->setIndent(indentLabel);
     formLayout->addRow(_filterParamLabels.last(), _filterParam0SpinBox);
-    _indexWidgets.append(_filterParam0SpinBox);
+    addIndexWidget(_filterParam0SpinBox);
 
     _filterParam1SpinBox = new IndexSpinBox();
     _filterParamLabels.append(new QLabel(tr("param 1:")));
     _filterParamLabels.last()->setIndent(indentLabel);
     formLayout->addRow(_filterParamLabels.last(), _filterParam1SpinBox);
-    _indexWidgets.append(_filterParam1SpinBox);
+    addIndexWidget(_filterParam1SpinBox);
 
     _filterParam2SpinBox = new IndexSpinBox();
     _filterParamLabels.append(new QLabel(tr("param 2:")));
     _filterParamLabels.last()->setIndent(indentLabel);
     formLayout->addRow(_filterParamLabels.last(), _filterParam2SpinBox);
-    _indexWidgets.append(_filterParam2SpinBox);
+    addIndexWidget(_filterParam2SpinBox);
 
     _filterParam3SpinBox = new IndexSpinBox();
     _filterParamLabels.append(new QLabel(tr("param 3:")));
     _filterParamLabels.last()->setIndent(indentLabel);
     formLayout->addRow(_filterParamLabels.last(), _filterParam3SpinBox);
-    _indexWidgets.append(_filterParam3SpinBox);
+    addIndexWidget(_filterParam3SpinBox);
 
     updateFilterParams(0);
     groupBox->setLayout(formLayout);
@@ -500,22 +490,22 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
 
     _preOffsetSpinBox = new IndexSpinBox();
     formLayout->addRow(tr("Pre &offset:"), _preOffsetSpinBox);
-    _indexWidgets.append(_preOffsetSpinBox);
+    addIndexWidget(_preOffsetSpinBox);
 
     _scaleSpinBox = new IndexSpinBox();
     formLayout->addRow(tr("S&cale:"), _scaleSpinBox);
-    _indexWidgets.append(_scaleSpinBox);
+    addIndexWidget(_scaleSpinBox);
 
     _postOffsetSpinBox = new IndexSpinBox();
     formLayout->addRow(tr("&Post offset:"), _postOffsetSpinBox);
-    _indexWidgets.append(_postOffsetSpinBox);
+    addIndexWidget(_postOffsetSpinBox);
 
     formLayout->addItem(new QSpacerItem(0, 6));
 
     _errorMinSpinBox = new IndexSpinBox();
-    _indexWidgets.append(_errorMinSpinBox);
+    addIndexWidget(_errorMinSpinBox);
     _errorMaxSpinBox = new IndexSpinBox();
-    _indexWidgets.append(_errorMaxSpinBox);
+    addIndexWidget(_errorMaxSpinBox);
     formLayout->addDualRow(tr("&Error range:"), _errorMinSpinBox, _errorMaxSpinBox, tr("-"));
 
     formLayout->addItem(new QSpacerItem(0, 6));
@@ -538,14 +528,14 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
                 _thresholdMaxSpinBox->setEnabled(index != 0);
             });
     formLayout->addRow(tr("Th&reshold:"), _thresholdModeComboBox);
-    _indexWidgets.append(_thresholdModeComboBox);
+    addIndexWidget(_thresholdModeComboBox);
 
     _thresholdMinSpinBox = new IndexSpinBox();
     _thresholdMinSpinBox->setEnabled(false);
-    _indexWidgets.append(_thresholdMinSpinBox);
+    addIndexWidget(_thresholdMinSpinBox);
     _thresholdMaxSpinBox = new IndexSpinBox();
     _thresholdMaxSpinBox->setEnabled(false);
-    _indexWidgets.append(_thresholdMaxSpinBox);
+    addIndexWidget(_thresholdMaxSpinBox);
     formLayout->addDualRow("", _thresholdMinSpinBox, _thresholdMaxSpinBox, tr("-"));
 
     groupBox->setLayout(formLayout);
@@ -559,15 +549,15 @@ QGroupBox *MotionSensorWidget::createSensorStatusWidgets()
 
     _rawDataValueLabel = new IndexLabel();
     formLayout->addRow(tr("Raw data:"), _rawDataValueLabel);
-    _indexWidgets.append(_rawDataValueLabel);
+    adddynamicIndexWidget(_rawDataValueLabel);
 
     _flagLabel = new IndexLabel();
     formLayout->addRow(tr("Flag:"), _flagLabel);
-    _indexWidgets.append(_flagLabel);
+    adddynamicIndexWidget(_flagLabel);
 
     _valueLabel = new IndexLabel();
     formLayout->addRow(tr("Value:"), _valueLabel);
-    _indexWidgets.append(_valueLabel);
+    adddynamicIndexWidget(_valueLabel);
 
     groupBox->setLayout(formLayout);
 
@@ -620,14 +610,6 @@ void MotionSensorWidget::updateState()
     }
     _lockAction->blockSignals(false);
     _lockAction->setEnabled(_nodeProfile402->status() == NodeProfile402::NODEPROFILE_STARTED);
-}
-
-void MotionSensorWidget::readAllObject()
-{
-    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
-    {
-        indexWidget->readObject();
-    }
 }
 
 void MotionSensorWidget::updateSensorParams(int index)
@@ -711,4 +693,6 @@ void MotionSensorWidget::showEvent(QShowEvent *event)
         createWidgets();
         setIMode();
     }
+
+    NodeWidget::showEvent(event);
 }
