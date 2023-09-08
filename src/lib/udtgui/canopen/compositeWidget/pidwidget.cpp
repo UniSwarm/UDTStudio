@@ -35,9 +35,8 @@
 #include <QWidget>
 
 PidWidget::PidWidget(QWidget *parent)
-    : QWidget(parent)
+    : NodeWidget(parent)
 {
-    _node = nullptr;
     _axis = 0;
     _nodeProfile402 = nullptr;
 
@@ -45,11 +44,6 @@ PidWidget::PidWidget(QWidget *parent)
 
     _state = NONE;
     _modePid = MODE_PID_NONE;
-}
-
-Node *PidWidget::node() const
-{
-    return _nodeProfile402->node();
 }
 
 QString PidWidget::title() const
@@ -73,7 +67,7 @@ QString PidWidget::title() const
 
 void PidWidget::setNode(Node *node, uint8_t axis)
 {
-    _node = node;
+    NodeWidget::setNode(node);
     if (node == nullptr)
     {
         return;
@@ -128,14 +122,14 @@ void PidWidget::setIMode()
     NodeObjectId pidOutputStatus_ObjId;
     NodeObjectId pidTargetStatus_ObjId;
 
-    if (_node == nullptr || !_created)
+    if (node() == nullptr || !_created)
     {
         return;
     }
 
-    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[_axis]);
+    _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node()->profiles()[_axis]);
     connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &PidWidget::updateState);
-    connect(_node, &Node::statusChanged, this, &PidWidget::updateNodeStatus);
+    connect(node(), &Node::statusChanged, this, &PidWidget::updateNodeStatus);
 
     IndexDb402::OdMode402 odMode402 = IndexDb402::MODE402_TORQUE;
 
@@ -217,12 +211,8 @@ void PidWidget::setIMode()
     _dataLogger->addData(pidErrorStatus_ObjId);
     _dataLogger->addData(target_ObjId);
 
-    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
-    {
-        indexWidget->setNode(_node);
-    }
-
-    updateNodeStatus(_node->status());
+    NodeWidget::setNode(node());
+    updateNodeStatus(node()->status());
     updateState();
 }
 
@@ -450,14 +440,6 @@ void PidWidget::readStatus()
     _targetLabel->readObject();
 }
 
-void PidWidget::readAllObject()
-{
-    for (AbstractIndexWidget *indexWidget : qAsConst(_indexWidgets))
-    {
-        indexWidget->readObject();
-    }
-}
-
 void PidWidget::createWidgets()
 {
     _dataLogger = new DataLogger();
@@ -550,7 +532,7 @@ QToolBar *PidWidget::createToolBarWidgets()
     readAllAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
     readAllAction->setShortcut(QKeySequence("Ctrl+R"));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));
-    connect(readAllAction, &QAction::triggered, this, &PidWidget::readAllObject);
+    connect(readAllAction, &QAction::triggered, this, &PidWidget::readAll);
 
     toolBar->addSeparator();
 
@@ -576,45 +558,45 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
 
     _pSpinBox = new IndexSpinBox();
     formLayout->addRow(tr("&P:"), _pSpinBox);
-    _indexWidgets.append(_pSpinBox);
+    addIndexWidget(_pSpinBox);
 
     _iSpinBox = new IndexSpinBox();
     formLayout->addRow(tr("&I:"), _iSpinBox);
-    _indexWidgets.append(_iSpinBox);
+    addIndexWidget(_iSpinBox);
 
     _dSpinBox = new IndexSpinBox();
     formLayout->addRow(tr("&D:"), _dSpinBox);
-    _indexWidgets.append(_dSpinBox);
+    addIndexWidget(_dSpinBox);
 
     formLayout->addItem(new QSpacerItem(0, 6));
 
     _minSpinBox = new IndexSpinBox();
-    _indexWidgets.append(_minSpinBox);
+    addIndexWidget(_minSpinBox);
     _maxSpinBox = new IndexSpinBox();
-    _indexWidgets.append(_maxSpinBox);
+    addIndexWidget(_maxSpinBox);
     formLayout->addDualRow(tr("&Min - max:"), _minSpinBox, _maxSpinBox, tr("-"));
 
     _thresholdSpinBox = new IndexSpinBox();
     _thresholdSpinBox->setMinValue(0);
     formLayout->addRow(tr("&Threshold:"), _thresholdSpinBox);
-    _indexWidgets.append(_thresholdSpinBox);
+    addIndexWidget(_thresholdSpinBox);
 
     _freqDividerSpinBox = new IndexSpinBox();
     _freqDividerSpinBox->setRangeValue(1, 1000);
     formLayout->addRow(tr("&Subsampling:"), _freqDividerSpinBox);
-    _indexWidgets.append(_freqDividerSpinBox);
+    addIndexWidget(_freqDividerSpinBox);
 
     _antiReverseCheckBox = new IndexCheckBox();
     _antiReverseCheckBox->setBitMask(1);
     formLayout->addRow(tr("&Anti reverse:"), _antiReverseCheckBox);
-    _indexWidgets.append(_antiReverseCheckBox);
+    addIndexWidget(_antiReverseCheckBox);
 
     _directCtrlCheckBox = new IndexCheckBox();
     _directCtrlCheckBox->setBitMask(1 << 8);
     _directCtrlLabel = new QLabel(tr("Direct &control:"));
     _directCtrlLabel->setBuddy(_directCtrlCheckBox);
     formLayout->addRow(_directCtrlLabel, _directCtrlCheckBox);
-    _indexWidgets.append(_directCtrlCheckBox);
+    addIndexWidget(_directCtrlCheckBox);
 
     groupBox->setLayout(formLayout);
     return groupBox;
@@ -627,23 +609,23 @@ QGroupBox *PidWidget::createPIDStatusWidgets()
 
     _targetLabel = new IndexLabel();
     formLayout->addRow(tr("Target:"), _targetLabel);
-    _indexWidgets.append(_targetLabel);
+    adddynamicIndexWidget(_targetLabel);
 
     _inputLabel = new IndexLabel();
     formLayout->addRow(tr("Input sensor:"), _inputLabel);
-    _indexWidgets.append(_inputLabel);
+    adddynamicIndexWidget(_inputLabel);
 
     _errorLabel = new IndexLabel();
     formLayout->addRow(tr("Error:"), _errorLabel);
-    _indexWidgets.append(_errorLabel);
+    adddynamicIndexWidget(_errorLabel);
 
     _integratorLabel = new IndexLabel();
     formLayout->addRow(tr("Integrator:"), _integratorLabel);
-    _indexWidgets.append(_integratorLabel);
+    adddynamicIndexWidget(_integratorLabel);
 
     _outputLabel = new IndexLabel();
     formLayout->addRow(tr("Output:"), _outputLabel);
-    _indexWidgets.append(_outputLabel);
+    adddynamicIndexWidget(_outputLabel);
 
     groupBox->setLayout(formLayout);
     return groupBox;
@@ -756,4 +738,6 @@ void PidWidget::showEvent(QShowEvent *event)
         createWidgets();
         setIMode();
     }
+
+    NodeWidget::showEvent(event);
 }

@@ -21,7 +21,7 @@
 
 #include "../../udtgui_global.h"
 
-#include <QWidget>
+#include "utils/nodewidget.h"
 
 #include "profile/p402/nodeprofile402.h"
 
@@ -43,13 +43,12 @@ class IndexLabel;
 class IndexCheckBox;
 class AbstractIndexWidget;
 
-class UDTGUI_EXPORT PidWidget : public QWidget
+class UDTGUI_EXPORT PidWidget : public NodeWidget
 {
     Q_OBJECT
 public:
     explicit PidWidget(QWidget *parent = nullptr);
 
-    Node *node() const;
     QString title() const;
 
     enum ModePid
@@ -69,7 +68,6 @@ protected slots:
     void setLogTimer(int ms);
 
 protected:
-    Node *_node;
     uint8_t _axis;
     ModePid _modePid;
     NodeProfile402 *_nodeProfile402;
@@ -80,8 +78,6 @@ protected:
     DataLoggerWidget *_dataLoggerWidget;
 
     NodeObjectId _actualValue_ObjId;
-
-    QList<AbstractIndexWidget *> _indexWidgets;
 
     void createWidgets();
     bool _created;
@@ -152,8 +148,6 @@ protected:
     void stopDataLogger();
 
     void readStatus();
-    void readAllObject();
-
     void lockUnlockConfig();
 
     // QWidget interface
