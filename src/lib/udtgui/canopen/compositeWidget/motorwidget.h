@@ -45,14 +45,12 @@ class UDTGUI_EXPORT MotorWidget : public NodeWidget
 public:
     explicit MotorWidget(QWidget *parent = nullptr);
 
-    Node *node() const;
     QString title() const;
 
 public slots:
     void setNode(Node *node, uint8_t axis = 0);
 
 protected:
-    Node *_node;
     uint8_t _axis;
     NodeProfile402 *_nodeProfile402;
 

@@ -41,15 +41,9 @@
 MotorWidget::MotorWidget(QWidget *parent)
     : NodeWidget(parent)
 {
-    _node = nullptr;
     _axis = 0;
     _nodeProfile402 = nullptr;
     _created = false;
-}
-
-Node *MotorWidget::node() const
-{
-    return _node;
 }
 
 QString MotorWidget::title() const
@@ -60,9 +54,7 @@ QString MotorWidget::title() const
 void MotorWidget::setNode(Node *node, uint8_t axis)
 {
     NodeWidget::setNode(node);
-
-    _node = node;
-    if (_node == nullptr)
+    if (node == nullptr)
     {
         return;
     }
@@ -78,15 +70,15 @@ void MotorWidget::setNode(Node *node, uint8_t axis)
 
 void MotorWidget::setINode()
 {
-    if (_node == nullptr || !_created)
+    if (node() == nullptr || !_created)
     {
         return;
     }
 
-    connect(_node, &Node::statusChanged, this, &MotorWidget::updateNodeStatus);
-    if (!_node->profiles().isEmpty())
+    connect(node(), &Node::statusChanged, this, &MotorWidget::updateNodeStatus);
+    if (!node()->profiles().isEmpty())
     {
-        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(_node->profiles()[_axis]);
+        _nodeProfile402 = dynamic_cast<NodeProfile402 *>(node()->profiles()[_axis]);
         connect(_nodeProfile402, &NodeProfile402::stateChanged, this, &MotorWidget::updateState);
     }
 
@@ -100,45 +92,24 @@ void MotorWidget::setINode()
     _maxVelocitySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_MAX_VELOCITY, _axis));
     _velocityConstantSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_VELOCITY_CONSTANT, _axis));
     _reverseMotorPolarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_FLAGS, _axis));
-    _motorTypeComboBox->setNode(_node);
-    _peakCurrentSpinBox->setNode(_node);
-    _burstCurrentSpinBox->setNode(_node);
-    _burstDurationSpinBox->setNode(_node);
-    _sustainedCurrentSpinBox->setNode(_node);
-    _currentConstantSpinBox->setNode(_node);
-    _maxVelocitySpinBox->setNode(_node);
-    _velocityConstantSpinBox->setNode(_node);
-    _reverseMotorPolarityCheckBox->setNode(_node);
 
     // motor status
     _bridgeTemp1Label->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_DRIVER_TEMPERATURE, _axis, 0));
     _bridgeTemp2Label->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_DRIVER_TEMPERATURE, _axis, 1));
-    _bridgeTemp1Label->setNode(_node);
-    _bridgeTemp2Label->setNode(_node);
     _bridgeCommandBar->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_COMMAND, _axis));
     _motorCurrentLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_CURRENT, _axis));
     _motorTorqueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_TORQUE, _axis));
     _motorVelocityLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_VELOCITY, _axis));
     _motorPositionLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_STATUS_POSITION, _axis));
-    _bridgeCommandBar->setNode(_node);
-    _motorCurrentLabel->setNode(_node);
-    _motorTorqueLabel->setNode(_node);
-    _motorVelocityLabel->setNode(_node);
-    _motorPositionLabel->setNode(_node);
 
     // BLDC config
     _polePairSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_CONFIG_POLE_PAIR, _axis));
     _reverseHallPolarityCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_MOTOR_CONFIG_FLAGS, _axis));
-    _polePairSpinBox->setNode(_node);
-    _reverseHallPolarityCheckBox->setNode(_node);
 
     // BLDC status
     _hallRawValueLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_STATUS_HALL_RAW, _axis));
     _hallPhaseLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_STATUS_HALL_PHASE, _axis));
     _electricalAngleLabel->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BLDC_STATUS_ELECTRICAL_ANGLE, _axis));
-    _hallRawValueLabel->setNode(_node);
-    _hallPhaseLabel->setNode(_node);
-    _electricalAngleLabel->setNode(_node);
 
     // Brake config
     _brakeModeComboBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_MODE, _axis));
@@ -150,17 +121,9 @@ void MotorWidget::setINode()
     _brakeClosingDelaySpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_CLOSING_DELAY, _axis));
     _brakeClosingToIdleSpinBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_MS_BRAKE_CLOSING_TO_IDLE, _axis));
     _brakeBypassCheckBox->setObjId(IndexDb402::getObjectId(IndexDb402::OD_DIGITAL_OUTPUTS_PHYSICAL_OUTPUTS, _axis));
-    _brakeModeComboBox->setNode(_node);
-    _brakeExitationTimeSpinBox->setNode(_node);
-    _brakeExitationDutySpinBox->setNode(_node);
-    _brakeDutySpinBox->setNode(_node);
-    _brakeReleaseDelaySpinBox->setNode(_node);
-    _brakeReleaseToOESpinBox->setNode(_node);
-    _brakeClosingDelaySpinBox->setNode(_node);
-    _brakeClosingToIdleSpinBox->setNode(_node);
-    _brakeBypassCheckBox->setNode(_node);
 
-    updateNodeStatus(_node->status());
+    NodeWidget::setNode(node());
+    updateNodeStatus(node()->status());
     updateState();
 }
 
@@ -476,12 +439,12 @@ void MotorWidget::mapCurrents()
     QList<NodeObjectId> currentsHLObjectsList;
     for (int i = 1; i <= 4; i++)
     {
-        currentsHLObjectsList.append(NodeObjectId(_node->busId(), _node->nodeId(), 0x2802, i));
+        currentsHLObjectsList.append(NodeObjectId(node()->busId(), node()->nodeId(), 0x2802, i));
     }
     QList<NodeObjectId> currentsLLObjectsList;
     for (int i = 1; i <= 4; i++)
     {
-        currentsLLObjectsList.append(NodeObjectId(_node->busId(), _node->nodeId(), 0x2803, i));
+        currentsLLObjectsList.append(NodeObjectId(node()->busId(), node()->nodeId(), 0x2803, i));
     }
 
     _nodeProfile402->node()->tpdos().at(2)->writeMapping(currentsHLObjectsList);
@@ -493,12 +456,12 @@ void MotorWidget::monitorCurrents()
     QList<NodeObjectId> currentsHLObjectsList;
     for (int i = 1; i <= 4; i++)
     {
-        currentsHLObjectsList.append(NodeObjectId(_node->busId(), _node->nodeId(), 0x2802, i));
+        currentsHLObjectsList.append(NodeObjectId(node()->busId(), node()->nodeId(), 0x2802, i));
     }
     QList<NodeObjectId> currentsLLObjectsList;
     for (int i = 1; i <= 4; i++)
     {
-        currentsLLObjectsList.append(NodeObjectId(_node->busId(), _node->nodeId(), 0x2803, i));
+        currentsLLObjectsList.append(NodeObjectId(node()->busId(), node()->nodeId(), 0x2803, i));
     }
 
     DataLogger *dataLoggerHL = new DataLogger();
