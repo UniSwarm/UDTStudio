@@ -62,6 +62,7 @@ class CanBusSocketCANNotifierThead : public QThread
     Q_OBJECT
 public:
     CanBusSocketCANNotifierThead(CanBusSocketCAN *driver);
+    ~CanBusSocketCANNotifierThead();
 
     // QThread interface
 protected:

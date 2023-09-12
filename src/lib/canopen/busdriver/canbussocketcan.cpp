@@ -195,6 +195,11 @@ CanBusSocketCANNotifierThead::CanBusSocketCANNotifierThead(CanBusSocketCAN *driv
     _driver = driver;
 }
 
+CanBusSocketCANNotifierThead::~CanBusSocketCANNotifierThead()
+{
+    terminate();
+}
+
 void CanBusSocketCANNotifierThead::run()
 {
     fd_set rdfs;
