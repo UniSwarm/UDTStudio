@@ -385,9 +385,13 @@ QString DeviceIniWriter::accessToString(int access) const
  */
 QString DeviceIniWriter::dataToString(const QVariant &value) const
 {
-    if (value.type() == QVariant::String)
+    if (value.typeId() == QMetaType::QString)
     {
         return "\"" + value.toString() + "\"";
+    }
+    if (value.typeId() == QMetaType::SChar || value.typeId() == QMetaType::UChar || value.typeId() == QMetaType::Char)
+    {
+        return QString::number(value.toInt());
     }
     return value.toString();
 }
