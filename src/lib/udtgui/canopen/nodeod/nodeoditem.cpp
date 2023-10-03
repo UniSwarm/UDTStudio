@@ -177,7 +177,11 @@ QVariant NodeOdItem::data(int column, int role) const
                             if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
                             {
                                 QVariant value = formatValue(_index->subIndex(0), EditValue);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+                                value.convert(QMetaType::QString);
+#else
                                 value.convert(QMetaType(QMetaType::QString));
+#endif
                                 return value;
                             }
                             break;
@@ -186,7 +190,11 @@ QVariant NodeOdItem::data(int column, int role) const
                             if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
                             {
                                 QVariant value = formatValue(_index->subIndex(0), EditRawValue);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+                                value.convert(QMetaType::QString);
+#else
                                 value.convert(QMetaType(QMetaType::QString));
+#endif
                                 return value;
                             }
                             break;
@@ -195,7 +203,11 @@ QVariant NodeOdItem::data(int column, int role) const
                             if (_index->objectType() == NodeIndex::VAR && _index->subIndexesCount() == 1 && _index->subIndexExist(0))
                             {
                                 QVariant value = formatValue(_index->subIndex(0), EditHex);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+                                value.convert(QMetaType::QString);
+#else
                                 value.convert(QMetaType(QMetaType::QString));
+#endif
                                 return value;
                             }
                             break;
@@ -286,21 +298,33 @@ QVariant NodeOdItem::data(int column, int role) const
                         case NodeOdItemModel::Value:
                         {
                             QVariant value = formatValue(_subIndex, EditValue);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+                            value.convert(QMetaType::QString);
+#else
                             value.convert(QMetaType(QMetaType::QString));
+#endif
                             return value;
                         }
 
                         case NodeOdItemModel::RawValue:
                         {
                             QVariant value = formatValue(_subIndex, EditRawValue);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+                            value.convert(QMetaType::QString);
+#else
                             value.convert(QMetaType(QMetaType::QString));
+#endif
                             return value;
                         }
 
                         case NodeOdItemModel::HexValue:
                         {
                             QVariant value = formatValue(_subIndex, EditHex);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+                            value.convert(QMetaType::QString);
+#else
                             value.convert(QMetaType(QMetaType::QString));
+#endif
                             return value;
                         }
                     }
@@ -450,7 +474,11 @@ bool NodeOdItem::setData(int column, const QVariant &value, int role, Node *node
         }
         else
         {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            valueToWrite.convert(QMetaType::QReal);
+#else
             valueToWrite.convert(QMetaType(QMetaType::QReal));
+#endif
         }
     }
 

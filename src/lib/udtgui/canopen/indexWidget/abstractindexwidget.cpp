@@ -99,7 +99,11 @@ void AbstractIndexWidget::requestWriteValue(const QVariant &value)
             break;
     }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    if (_scale != 0 && _pendingValue.canConvert(QMetaType::Double))
+#else
     if (_scale != 0 && _pendingValue.canConvert(QMetaType(QMetaType::Double)))
+#endif
     {
         _pendingValue = _pendingValue.toDouble() / _scale;
     }

@@ -385,11 +385,20 @@ QString DeviceIniWriter::accessToString(int access) const
  */
 QString DeviceIniWriter::dataToString(const QVariant &value) const
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    if (value.type() == QVariant::String)
+#else
     if (value.typeId() == QMetaType::QString)
+#endif
     {
         return "\"" + value.toString() + "\"";
     }
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    if (value.type() == QVariant::Char)
+#else
     if (value.typeId() == QMetaType::SChar || value.typeId() == QMetaType::UChar || value.typeId() == QMetaType::Char)
+#endif
     {
         return QString::number(value.toInt());
     }
