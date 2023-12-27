@@ -24,6 +24,11 @@
 
 void NodeProfileFactory::profileFactory(Node *node)
 {
+    if (node->profilesCount() > 0)
+    {
+        return;
+    }
+
     if (node->profileNumber() == 0x192)
     {
         for (uint8_t i = 0; i < 8; i++)

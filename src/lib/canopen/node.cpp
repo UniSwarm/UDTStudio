@@ -73,7 +73,6 @@ Node::Node(quint8 nodeId, const QString &name, const QString &edsFileName)
     if (!edsFileName.isEmpty())
     {
         loadEds(edsFileName);
-        NodeProfileFactory::profileFactory(this);
     }
 }
 
@@ -283,6 +282,7 @@ void Node::writeObject(quint16 index, quint8 subindex, const QVariant &data)
 void Node::loadEds(const QString &fileName)
 {
     _nodeOd->loadEds(fileName);
+    NodeProfileFactory::profileFactory(this);
     emit edsFileChanged(fileName);
 }
 
