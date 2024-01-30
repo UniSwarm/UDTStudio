@@ -56,8 +56,11 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
     {
         return;
     }
-    quint8 offset = 0;
 
+    QDateTime dateTime = QDateTime::fromMSecsSinceEpoch(frame.timeStamp().seconds() * 1000 + frame.timeStamp().microSeconds() / 1000);
+    _lastFrameDateTime = dateTime;
+
+    quint8 offset = 0;
     for (const NodeObjectId &mappedObjectId : _currentMappedObjectsId)
     {
         QByteArray data = frame.payload().mid(offset, QMetaType::sizeOf(mappedObjectId.dataType()));
@@ -67,7 +70,7 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
                                                 mappedObjectId.subIndex(),
                                                 vata,
                                                 NodeOd::FlagsRequest::Pdo,
-                                                QDateTime::fromMSecsSinceEpoch(frame.timeStamp().seconds() * 1000 + frame.timeStamp().microSeconds() / 1000));
+                                                dateTime);
         offset += QMetaType::sizeOf(mappedObjectId.dataType());
     }
 
@@ -147,6 +150,11 @@ quint8 TPDO::syncStartValue()
 {
     NodeObjectId object(_objectCommId, PDO_COMM_SYNC_START_VALUE);
     return static_cast<quint8>(_node->nodeOd()->value(object).toUInt());
+}
+
+const QDateTime &TPDO::lastFrameDateTime() const
+{
+    return _lastFrameDateTime;
 }
 
 void TPDO::receiveSync()

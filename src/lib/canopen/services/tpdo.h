@@ -50,6 +50,9 @@ public:
 signals:
     void tpdoReceived(quint8);
 
+protected:
+    QDateTime _lastFrameDateTime;
+
 protected slots:
     void receiveSync();
 
@@ -70,6 +73,7 @@ public:
     // NodeOdSubscriber interface
 public:
     void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;
+    const QDateTime &lastFrameDateTime() const;
 };
 
 #endif  // TPDO_H
