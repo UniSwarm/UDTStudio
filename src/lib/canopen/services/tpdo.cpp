@@ -70,6 +70,8 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
                                                 QDateTime::fromMSecsSinceEpoch(frame.timeStamp().seconds() * 1000 + frame.timeStamp().microSeconds() / 1000));
         offset += QMetaType::sizeOf(mappedObjectId.dataType());
     }
+
+    emit tpdoReceived(_pdoNumber);
 }
 
 void TPDO::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)

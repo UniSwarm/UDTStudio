@@ -47,6 +47,9 @@ public:
     void setSyncStartValue(quint8 syncStartValue);
     quint8 syncStartValue();
 
+signals:
+    void tpdoReceived(quint8);
+
 protected slots:
     void receiveSync();
 
