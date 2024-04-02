@@ -27,6 +27,7 @@
 NodePDOMappingWidget::NodePDOMappingWidget(QWidget *parent)
     : QScrollArea(parent)
 {
+    _node = nullptr;
     setWidgetResizable(true);
     createWidgets();
 }
