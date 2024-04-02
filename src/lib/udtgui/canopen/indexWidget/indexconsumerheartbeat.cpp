@@ -18,7 +18,9 @@
 
 #include "indexconsumerheartbeat.h"
 
+#include <QContextMenuEvent>
 #include <QHBoxLayout>
+#include <QMenu>
 
 IndexConsumerHeartBeat::IndexConsumerHeartBeat(const NodeObjectId &objId)
     : AbstractIndexWidget(objId)
@@ -87,4 +89,14 @@ bool IndexConsumerHeartBeat::isEditing() const
 
 void IndexConsumerHeartBeat::updateHint()
 {
+}
+
+void IndexConsumerHeartBeat::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu *menu = createStandardContextMenu();
+
+    menu->exec(event->globalPos());
+    delete menu;
+
+    event->accept();
 }

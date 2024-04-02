@@ -44,6 +44,10 @@ protected:
     void setDisplayValue(const QVariant &value, DisplayAttribute flags) override;
     bool isEditing() const override;
     void updateHint() override;
+
+    // QWidget interface
+protected:
+    void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
 #endif  // INDEXCONSUMERHEARTBEAT_H
