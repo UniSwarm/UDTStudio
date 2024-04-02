@@ -52,28 +52,33 @@ void DataLogger::addData(const NodeObjectId &objId)
     }
 
     QList<NodeObjectId> objToAdd;
-    if (objId.isAnIndex())
+    NodeIndex *nodeIndex = objId.nodeIndex();
+    if (nodeIndex == nullptr)
     {
-        NodeIndex *nodeIndex = objId.nodeIndex();
-        if (nodeIndex == nullptr)
-        {
-            return;
-        }
-        for (NodeSubIndex *nodeSubIndex : nodeIndex->subIndexes())
-        {
-            if (nodeSubIndex->subIndex() != 0 && nodeSubIndex->isReadable())
-            {
-                NodeObjectId objectId = nodeSubIndex->objectId();
-                if (!_dataMap.contains(objectId.key()))
-                {
-                    objToAdd.append(objectId);
-                }
-            }
-        }
+        return;
     }
-    else
+
+    if (nodeIndex->subIndexesCount() == 1)
     {
-        objToAdd.append(objId);
+        addDlData(objId);
+        return;
+    }
+    for (NodeSubIndex *nodeSubIndex : nodeIndex->subIndexes())
+    {
+        if (!nodeSubIndex->isReadable())
+        {
+            continue;
+        }
+        if (nodeSubIndex->subIndex() == 0 && !nodeSubIndex->isWritable())
+        {
+            continue;
+        }
+
+        NodeObjectId objectId = nodeSubIndex->objectId();
+        if (!_dataMap.contains(objectId.key()))
+        {
+            objToAdd.append(objectId);
+        }
     }
 
     for (const NodeObjectId &mobjId : objToAdd)
