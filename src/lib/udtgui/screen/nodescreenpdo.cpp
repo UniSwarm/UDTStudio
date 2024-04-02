@@ -58,7 +58,9 @@ void NodeScreenPDO::setNodeInternal(Node *node, uint8_t axis)
     Q_UNUSED(axis)
 
     _nodeOdWidget->setNode(node);
-    _nodePdoMappingWidget->setNode(node);
     _nodeOdWidget->nodeOdTreeView()->hideColumn(NodeOdItemModel::RawValue);
     _nodeOdWidget->nodeOdTreeView()->hideColumn(NodeOdItemModel::HexValue);
+
+    _nodePdoMappingWidget->setNode(node);
+    _nodePdoMappingWidget->readAllMapping();
 }
