@@ -147,7 +147,7 @@ void PDOMappingView::updateMapping()
             NodeSubIndex *nodeSubIndex = objId.nodeSubIndex();
             if (nodeSubIndex != nullptr)
             {
-                objName = nodeSubIndex->name();
+                objName = nodeSubIndex->fullName();
                 if (nodeSubIndex->isWritable())
                 {
                     color = Qt::green;

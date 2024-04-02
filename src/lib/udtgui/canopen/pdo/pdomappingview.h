@@ -26,7 +26,6 @@
 #include "nodeobjectid.h"
 
 class PDO;
-class PDOMappingPainter;
 
 class UDTGUI_EXPORT PDOMappingView : public QWidget
 {
