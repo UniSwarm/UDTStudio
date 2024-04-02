@@ -50,6 +50,7 @@ public:
 
     const QString &name() const;
     void setName(const QString &name);
+    QString fullName() const;
 
     // ============== Access type =================
     enum AccessType

@@ -154,6 +154,25 @@ void NodeSubIndex::setName(const QString &name)
 }
 
 /**
+ * @brief full name helper
+ * @return index name + sub-index name
+ */
+QString NodeSubIndex::fullName() const
+{
+    if (_nodeIndex == nullptr)
+    {
+        return _name;
+    }
+
+    if (_nodeIndex->name() == _name)
+    {
+        return _name;
+    }
+
+    return _nodeIndex->name() + '.' + _name;
+}
+
+/**
  * @brief access type getter
  * @return 8 bits access type code
  */
