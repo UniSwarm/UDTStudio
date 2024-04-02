@@ -131,7 +131,7 @@ void PDOMappingPainter::drawMapping(const QRect &objRect, const NodeObjectId &no
 
     QRectF textRext = objRect.adjusted(1, 1, -1, -1);
     QString objName = nodeName;
-    objName = fontMetrics.elidedText(objName, Qt::ElideRight, static_cast<int>(textRext.width()));
+    objName = fontMetrics.elidedText(objName, Qt::ElideLeft, static_cast<int>(textRext.width()));
 
     if (objName.isEmpty() || textRext.height() < fontMetrics.height() * 2)
     {
