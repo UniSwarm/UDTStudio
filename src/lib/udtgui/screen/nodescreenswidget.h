@@ -25,7 +25,8 @@
 
 #include "nodescreen.h"
 
-#include <QTabWidget>
+class QStackedWidget;
+class QTabWidget;
 
 class UDTGUI_EXPORT NodeScreensWidget : public QWidget
 {
@@ -45,13 +46,15 @@ protected:
     void addNode(Node *node);
 
     void createWidgets();
-    QTabWidget *_tabWidget;
+    QStackedWidget *_stackedWidget;
 
     struct NodeScreens
     {
         Node *node;
+        QTabWidget *tabWidget;
         QList<NodeScreen *> screens;
     };
+    void addScreen(NodeScreens *nodeScreens, NodeScreen *screen);
 
     QMap<Node *, NodeScreens> _nodesMap;
 };

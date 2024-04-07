@@ -31,6 +31,8 @@
 
 #include <QApplication>
 #include <QHBoxLayout>
+#include <QStackedWidget>
+#include <QTabWidget>
 
 NodeScreensWidget::NodeScreensWidget(QWidget *parent)
     : QWidget(parent)
@@ -48,12 +50,11 @@ Node *NodeScreensWidget::activeNode() const
 
 void NodeScreensWidget::setActiveNode(Node *node)
 {
-    int currentIndex = _tabWidget->currentIndex();
-
-    // remove all screens from QTabWidget
-    while (_tabWidget->count() > 0)
+    int currentIndex = 0;
+    QTabWidget *tabWidget = dynamic_cast<QTabWidget *>(_stackedWidget->currentWidget());
+    if (tabWidget != nullptr)
     {
-        _tabWidget->removeTab(0);
+        currentIndex = tabWidget->currentIndex();
     }
 
     _activeNode = node;
@@ -62,30 +63,37 @@ void NodeScreensWidget::setActiveNode(Node *node)
     {
         addNode(node);
 
-        // add all screens from nodeScreens to QTabWidget and set node
         NodeScreens nodeScreens = _nodesMap.value(_activeNode);
-        for (NodeScreen *screen : qAsConst(nodeScreens.screens))
-        {
-            _tabWidget->addTab(screen, screen->icon(), " " + screen->title() + " ");
-        }
-
-        _tabWidget->setCurrentIndex(currentIndex);
+        _stackedWidget->setCurrentWidget(nodeScreens.tabWidget);
+        QTabWidget *tabWidget = dynamic_cast<QTabWidget *>(_stackedWidget->currentWidget());
+        tabWidget->setCurrentIndex(currentIndex);
     }
 }
 
 void NodeScreensWidget::setActiveTab(int id)
 {
-    _tabWidget->setCurrentIndex(id);
+    QTabWidget *tabWidget = dynamic_cast<QTabWidget *>(_stackedWidget->currentWidget());
+    if (tabWidget == nullptr)
+    {
+        return;
+    }
+    tabWidget->setCurrentIndex(id);
 }
 
 void NodeScreensWidget::setActiveTab(const QString &name)
 {
-    for (int tabIndex = 0; tabIndex < _tabWidget->count(); tabIndex++)
+    QTabWidget *tabWidget = dynamic_cast<QTabWidget *>(_stackedWidget->currentWidget());
+    if (tabWidget == nullptr)
     {
-        const QString &tabName = _tabWidget->tabText(tabIndex).trimmed();
+        return;
+    }
+
+    for (int tabIndex = 0; tabIndex < tabWidget->count(); tabIndex++)
+    {
+        const QString &tabName = tabWidget->tabText(tabIndex).trimmed();
         if (tabName.compare(name, Qt::CaseInsensitive) == 0)
         {
-            _tabWidget->setCurrentIndex(tabIndex);
+            tabWidget->setCurrentIndex(tabIndex);
             return;
         }
     }
@@ -103,36 +111,30 @@ void NodeScreensWidget::addNode(Node *node)
     NodeScreens nodeScreens;
     nodeScreens.node = node;
 
+    QTabWidget *tabWidget = new QTabWidget(_stackedWidget);
+    nodeScreens.tabWidget = tabWidget;
+
     NodeScreen *screen;
 
     screen = new NodeScreenHome();
     screen->setNode(node);
-    screen->setScreenWidget(this);
-    nodeScreens.screens.append(screen);
+    addScreen(&nodeScreens, screen);
 
-    QApplication::processEvents();
     screen = new NodeScreenOD();
     screen->setNode(node);
-    screen->setScreenWidget(this);
-    nodeScreens.screens.append(screen);
+    addScreen(&nodeScreens, screen);
 
-    QApplication::processEvents();
     screen = new NodeScreenPDO();
     screen->setNode(node);
-    screen->setScreenWidget(this);
-    nodeScreens.screens.append(screen);
+    addScreen(&nodeScreens, screen);
 
-    QApplication::processEvents();
     screen = new NodeScreenNMT();
     screen->setNode(node);
-    screen->setScreenWidget(this);
-    nodeScreens.screens.append(screen);
+    addScreen(&nodeScreens, screen);
 
-    QApplication::processEvents();
     screen = new NodeScreenError();
     screen->setNode(node);
-    screen->setScreenWidget(this);
-    nodeScreens.screens.append(screen);
+    addScreen(&nodeScreens, screen);
 
     // add specific screens node
     switch (node->profileNumber())
@@ -140,10 +142,10 @@ void NodeScreensWidget::addNode(Node *node)
         case 401:  // UIO, P401
         {
             QApplication::processEvents();
+
             screen = new NodeScreenUio();
             screen->setNode(node);
-            screen->setScreenWidget(this);
-            nodeScreens.screens.append(screen);
+            addScreen(&nodeScreens, screen);
             break;
         }
         case 402:  // UMC, P402
@@ -151,31 +153,30 @@ void NodeScreensWidget::addNode(Node *node)
             for (int i = 0; i < node->profilesCount(); i++)
             {
                 QApplication::processEvents();
+
                 screen = new NodeScreenUmcMotor();
                 screen->setNode(node, i);
-                screen->setScreenWidget(this);
-                nodeScreens.screens.append(screen);
+                addScreen(&nodeScreens, screen);
             }
             if (node->profilesCount() > 1)
             {
-                QApplication::processEvents();
                 screen = new NodeScreenSynchro();
                 screen->setNode(node, 12);
-                screen->setScreenWidget(this);
-                nodeScreens.screens.append(screen);
+                addScreen(&nodeScreens, screen);
             }
             break;
         }
         case 428:  // UIOled, P428
         {
             QApplication::processEvents();
+
             screen = new NodeScreenUIOLed();
             screen->setNode(node);
-            screen->setScreenWidget(this);
-            nodeScreens.screens.append(screen);
+            addScreen(&nodeScreens, screen);
             break;
         }
     }
+    _stackedWidget->addWidget(tabWidget);
 
     // add NodeScreensStruct to nodeIt
     _nodesMap.insert(node, nodeScreens);
@@ -186,8 +187,15 @@ void NodeScreensWidget::createWidgets()
     QLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(2, 2, 2, 2);
 
-    _tabWidget = new QTabWidget();
-    layout->addWidget(_tabWidget);
+    _stackedWidget = new QStackedWidget();
+    layout->addWidget(_stackedWidget);
 
     setLayout(layout);
+}
+
+void NodeScreensWidget::addScreen(NodeScreens *nodeScreens, NodeScreen *screen)
+{
+    screen->setScreenWidget(this);
+    nodeScreens->screens.append(screen);
+    nodeScreens->tabWidget->addTab(screen, screen->icon(), " " + screen->title() + " ");
 }
