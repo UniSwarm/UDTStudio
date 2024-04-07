@@ -33,6 +33,7 @@
 NodeScreenSynchro::NodeScreenSynchro(QWidget *parent)
     : NodeScreen(parent)
 {
+    _dataLogger = new DataLogger(this);
     createWidgets();
 }
 
@@ -46,8 +47,6 @@ void NodeScreenSynchro::setLogTimer(int ms)
 
 void NodeScreenSynchro::createWidgets()
 {
-    _dataLogger = new DataLogger();
-
     QWidget *widget = new QWidget(this);
     QVBoxLayout *syncroBoxesLayout = new QVBoxLayout(widget);
     syncroBoxesLayout->setContentsMargins(0, 0, 4, 0);

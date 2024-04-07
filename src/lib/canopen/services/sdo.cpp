@@ -121,6 +121,7 @@ SDO::SDO(Node *node)
 SDO::~SDO()
 {
     delete _timeoutTimer;
+    qDeleteAll(_requestQueue);
 }
 
 QString SDO::type() const
@@ -1095,6 +1096,11 @@ void SDO::nextRequest()
     if (_status != SDO_STATE_FREE)
     {
         return;
+    }
+
+    if (_currentRequest != nullptr)
+    {
+        delete _currentRequest;
     }
 
     if (!_requestQueue.isEmpty())

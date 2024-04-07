@@ -29,8 +29,8 @@ ErrorControl::ErrorControl(Node *node)
     _cobIds.append(_cobId + node->nodeId());
     _oldToggleBit = false;
 
-    _guardTimeTimer = new QTimer();
-    _lifeTimeTimer = new QTimer();
+    _guardTimeTimer = new QTimer(this);
+    _lifeTimeTimer = new QTimer(this);
     connect(_guardTimeTimer, &QTimer::timeout, this, &ErrorControl::sendNodeGuarding);
     connect(_lifeTimeTimer, &QTimer::timeout, this, &ErrorControl::lifeGuardingEvent);
 

@@ -43,7 +43,7 @@ CanOpenBus::CanOpenBus(CanBusDriver *canBusDriver)
 
     // can frame logger
     _canFrameLogId = 0;
-    _canFramesLogTimer = new QTimer();
+    _canFramesLogTimer = new QTimer(this);
     connect(_canFramesLogTimer, &QTimer::timeout, this, &CanOpenBus::notifyForNewFrames);
     _canFramesLogTimer->start(100);
 }

@@ -63,10 +63,10 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
     setChart(_chart);
 
     // axis
-    _axisX = new QDateTimeAxis();
+    _axisX = new QDateTimeAxis(this);
     _axisX->setTickCount(11);
     _axisX->setFormat("hh:mm:ss");
-    _axisY = new QValueAxis();
+    _axisY = new QValueAxis(this);
     _axisY->setLabelFormat("%g");
 
     setDataLogger(dataLogger);

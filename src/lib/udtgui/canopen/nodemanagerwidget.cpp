@@ -250,19 +250,19 @@ void NodeManagerWidget::createWidgets()
     _toolBar->addActions(_groupNmt->actions());
 
     // Remove node
-    _actionRemoveNode = new QAction(tr("Remove node"));
+    _actionRemoveNode = new QAction(tr("Remove node"), this);
     _actionRemoveNode->setIcon(QIcon(":/icons/img/icons8-delete.png"));
     _actionRemoveNode->setStatusTip(tr("Remove the current node from the bus"));
     connect(_actionRemoveNode, &QAction::triggered, this, &NodeManagerWidget::removeNode);
 
     // Update firmware
-    _actionUpdateFirmware = new QAction(tr("Update firmware"));
+    _actionUpdateFirmware = new QAction(tr("Update firmware"), this);
     _actionUpdateFirmware->setIcon(QIcon(":/icons/img/icons8-restore-page.png"));
     _actionUpdateFirmware->setStatusTip(tr("Launch a firmware update to the node"));
     connect(_actionUpdateFirmware, &QAction::triggered, this, &NodeManagerWidget::updateNodeFirmware);
 
     // EDS actions
-    _actionLoadEds = new QAction(tr("Load eds"));
+    _actionLoadEds = new QAction(tr("Load eds"), this);
     _actionLoadEds->setIcon(QIcon(":/icons/img/icons8-import-file.png"));
     _actionLoadEds->setStatusTip(tr("Load an eds file as object dictionary description"));
     connect(_actionLoadEds,
@@ -273,7 +273,7 @@ void NodeManagerWidget::createWidgets()
                 loadEds();
             });
 
-    _actionReLoadEds = new QAction(tr("Reload eds"));
+    _actionReLoadEds = new QAction(tr("Reload eds"), this);
     _actionReLoadEds->setIcon(QIcon(":/icons/img/icons8-restore-page.png"));
     _actionReLoadEds->setStatusTip(tr("Reload the current eds file"));
     connect(_actionReLoadEds, &QAction::triggered, this, &NodeManagerWidget::reloadEds);

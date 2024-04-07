@@ -41,7 +41,7 @@ MotionSensorWidget::MotionSensorWidget(QWidget *parent)
     : NodeWidget(parent)
 {
     _nodeProfile402 = nullptr;
-    _dataLogger = new DataLogger();
+    _dataLogger = new DataLogger(this);
 
     _created = false;
     _state = NONE;

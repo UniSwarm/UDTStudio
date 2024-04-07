@@ -94,7 +94,7 @@ void NodeScreenUio::createWidgets()
     toolBar->addWidget(_logTimerSpinBox);
     toolBar->addSeparator();
 
-    QAction *settingsAction = new QAction();
+    QAction *settingsAction = new QAction(this);
     settingsAction->setCheckable(true);
     settingsAction->setIcon(QIcon(":/icons/img/icons8-settings.png"));
     settingsAction->setToolTip(tr("Settings"));
@@ -110,7 +110,7 @@ void NodeScreenUio::createWidgets()
     toolBar->addAction(readAllObjectAction);
     toolBar->addSeparator();
 
-    QAction *_dataLoggerAction = new QAction();
+    QAction *_dataLoggerAction = new QAction(this);
     _dataLoggerAction->setIcon(QIcon(":/icons/img/icons8-line-chart.png"));
     _dataLoggerAction->setToolTip(tr("Data logger"));
     connect(_dataLoggerAction, &QAction::triggered, _p401Widget, &P401Widget::dataLogger);
