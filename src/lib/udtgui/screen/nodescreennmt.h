@@ -29,7 +29,7 @@ class UDTGUI_EXPORT NodeScreenNMT : public NodeScreen
 {
     Q_OBJECT
 public:
-    NodeScreenNMT();
+    NodeScreenNMT(QWidget *parent = nullptr);
 
 protected:
     void createWidgets();

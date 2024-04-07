@@ -116,23 +116,23 @@ void NodeScreensWidget::addNode(Node *node)
 
     NodeScreen *screen;
 
-    screen = new NodeScreenHome();
+    screen = new NodeScreenHome(tabWidget);
     screen->setNode(node);
     addScreen(&nodeScreens, screen);
 
-    screen = new NodeScreenOD();
+    screen = new NodeScreenOD(tabWidget);
     screen->setNode(node);
     addScreen(&nodeScreens, screen);
 
-    screen = new NodeScreenPDO();
+    screen = new NodeScreenPDO(tabWidget);
     screen->setNode(node);
     addScreen(&nodeScreens, screen);
 
-    screen = new NodeScreenNMT();
+    screen = new NodeScreenNMT(tabWidget);
     screen->setNode(node);
     addScreen(&nodeScreens, screen);
 
-    screen = new NodeScreenError();
+    screen = new NodeScreenError(tabWidget);
     screen->setNode(node);
     addScreen(&nodeScreens, screen);
 
@@ -143,7 +143,7 @@ void NodeScreensWidget::addNode(Node *node)
         {
             QApplication::processEvents();
 
-            screen = new NodeScreenUio();
+            screen = new NodeScreenUio(tabWidget);
             screen->setNode(node);
             addScreen(&nodeScreens, screen);
             break;
@@ -154,13 +154,13 @@ void NodeScreensWidget::addNode(Node *node)
             {
                 QApplication::processEvents();
 
-                screen = new NodeScreenUmcMotor();
+                screen = new NodeScreenUmcMotor(tabWidget);
                 screen->setNode(node, i);
                 addScreen(&nodeScreens, screen);
             }
             if (node->profilesCount() > 1)
             {
-                screen = new NodeScreenSynchro();
+                screen = new NodeScreenSynchro(tabWidget);
                 screen->setNode(node, 12);
                 addScreen(&nodeScreens, screen);
             }
@@ -170,7 +170,7 @@ void NodeScreensWidget::addNode(Node *node)
         {
             QApplication::processEvents();
 
-            screen = new NodeScreenUIOLed();
+            screen = new NodeScreenUIOLed(tabWidget);
             screen->setNode(node);
             addScreen(&nodeScreens, screen);
             break;

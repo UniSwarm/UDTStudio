@@ -27,7 +27,7 @@ class UDTGUI_EXPORT NodeScreenError : public NodeScreen
 {
     Q_OBJECT
 public:
-    NodeScreenError();
+    NodeScreenError(QWidget *parent = nullptr);
 
     // NodeScreen interface
 public:

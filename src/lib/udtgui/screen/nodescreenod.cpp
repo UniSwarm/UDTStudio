@@ -26,7 +26,8 @@
 
 #include "udtguimanager.h"
 
-NodeScreenOD::NodeScreenOD()
+NodeScreenOD::NodeScreenOD(QWidget *parent)
+    : NodeScreen(parent)
 {
     createWidgets();
 }

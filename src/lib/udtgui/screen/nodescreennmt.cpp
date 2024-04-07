@@ -28,7 +28,8 @@
 #include "canopen/indexWidget/indexconsumerheartbeat.h"
 #include "canopen/indexWidget/indexspinbox.h"
 
-NodeScreenNMT::NodeScreenNMT()
+NodeScreenNMT::NodeScreenNMT(QWidget *parent)
+    : NodeScreen(parent)
 {
     createWidgets();
 }

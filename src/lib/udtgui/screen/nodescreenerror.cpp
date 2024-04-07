@@ -18,7 +18,8 @@
 
 #include "nodescreenerror.h"
 
-NodeScreenError::NodeScreenError()
+NodeScreenError::NodeScreenError(QWidget *parent)
+    : NodeScreen(parent)
 {
 }
 

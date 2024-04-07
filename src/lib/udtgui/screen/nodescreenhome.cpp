@@ -33,7 +33,8 @@
 
 #include "canopen/bootloaderWidget/bootloaderwidget.h"
 
-NodeScreenHome::NodeScreenHome()
+NodeScreenHome::NodeScreenHome(QWidget *parent)
+    : NodeScreen(parent)
 {
     createWidgets();
 }

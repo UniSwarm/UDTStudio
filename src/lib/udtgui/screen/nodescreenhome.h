@@ -34,7 +34,7 @@ class UDTGUI_EXPORT NodeScreenHome : public NodeScreen
 {
     Q_OBJECT
 public:
-    NodeScreenHome();
+    NodeScreenHome(QWidget *parent = nullptr);
 
 public:
     void updateFirmware();

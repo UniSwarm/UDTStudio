@@ -31,7 +31,7 @@ class UDTGUI_EXPORT NodeScreenOD : public NodeScreen
 {
     Q_OBJECT
 public:
-    NodeScreenOD();
+    NodeScreenOD(QWidget *parent = nullptr);
 
 protected:
     void createWidgets();
