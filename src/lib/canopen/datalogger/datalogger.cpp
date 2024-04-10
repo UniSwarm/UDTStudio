@@ -22,8 +22,6 @@
 #include <QFile>
 #include <QTextStream>
 
-#include "db/odindexdb.h"
-
 DataLogger::DataLogger(QObject *parent)
     : QObject(parent)
 {
@@ -58,7 +56,7 @@ void DataLogger::addData(const NodeObjectId &objId)
         return;
     }
 
-    if (nodeIndex->subIndexesCount() == 1)
+    if (nodeIndex->subIndexesCount() == 1 || objId.nodeSubIndex() != nullptr)
     {
         addDlData(objId);
         return;
