@@ -41,7 +41,7 @@ Generator::~Generator()
  */
 Generator *Generator::getGenerator(const QString &type)
 {
-    if (type == "c")
+    if (type == QStringLiteral("c"))
     {
         return new CGenerator();
     }

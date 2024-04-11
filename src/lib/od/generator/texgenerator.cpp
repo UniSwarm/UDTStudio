@@ -61,22 +61,22 @@ bool TexGenerator::generate(DeviceDescription *deviceDescription, const QString 
 {
     _profile = deviceDescription->index(0x1000)->subIndex(0)->value().toUInt();
 
-    QString filePathBaseName = QFileInfo(filePath).path() + "/" + QFileInfo(filePath).baseName();
-    QString outCom = filePathBaseName + "Communication." + QFileInfo(filePath).suffix();
+    QString filePathBaseName = QFileInfo(filePath).path() + QStringLiteral("/") + QFileInfo(filePath).baseName();
+    QString outCom = filePathBaseName + QStringLiteral("Communication.") + QFileInfo(filePath).suffix();
     QFile texComFile(outCom);
     if (!texComFile.open(QIODevice::WriteOnly))
     {
         return false;
     }
 
-    QString outManu = filePathBaseName + "Manufacturer." + QFileInfo(filePath).suffix();
+    QString outManu = filePathBaseName + QStringLiteral("Manufacturer.") + QFileInfo(filePath).suffix();
     QFile texManuFile(outManu);
     if (!texManuFile.open(QIODevice::WriteOnly))
     {
         return false;
     }
 
-    QString outStandard = filePathBaseName + "Standardized." + QFileInfo(filePath).suffix();
+    QString outStandard = filePathBaseName + QStringLiteral("Standardized.") + QFileInfo(filePath).suffix();
     QFile texStandardFile(outStandard);
     if (!texStandardFile.open(QIODevice::WriteOnly))
     {
@@ -231,19 +231,19 @@ void TexGenerator::writeVar(Index *index, QTextStream *out, bool generic)
     *out << "\n";
 
     QString nameCommand = nameForTex;
-    nameCommand.prepend("\\name");
+    nameCommand.prepend(QStringLiteral("\\name"));
     QString indexCommand = nameForTex;
-    indexCommand.prepend("\\index");
+    indexCommand.prepend(QStringLiteral("\\index"));
     QString subIndexCommand = nameForTex;
-    subIndexCommand.prepend("\\subIndex");
+    subIndexCommand.prepend(QStringLiteral("\\subIndex"));
     QString sectionCommand = nameForTex;
-    sectionCommand.prepend("\\section");
+    sectionCommand.prepend(QStringLiteral("\\section"));
     QString dispIndexSubCommand = nameForTex;
-    dispIndexSubCommand.prepend("\\dispIndexSub");
+    dispIndexSubCommand.prepend(QStringLiteral("\\dispIndexSub"));
     QString dispIndexNameCommand = nameForTex;
-    dispIndexNameCommand.prepend("\\dispIndexName");
+    dispIndexNameCommand.prepend(QStringLiteral("\\dispIndexName"));
     QString dispTabCommand = nameForTex;
-    dispTabCommand.prepend("\\dispTab");
+    dispTabCommand.prepend(QStringLiteral("\\dispTab"));
 
     // Line 2 : \newcommand{\nameDeviceType}{Device Type}%
     *out << "\\newcommand{" << nameCommand << "}";
@@ -328,17 +328,17 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
     *out << "\n";
 
     QString nameCommand = nameForTex;
-    nameCommand.prepend("\\name");
+    nameCommand.prepend(QStringLiteral("\\name"));
     QString indexCommand = nameForTex;
-    indexCommand.prepend("\\index");
+    indexCommand.prepend(QStringLiteral("\\index"));
     QString subIndexCommand = nameForTex;
-    subIndexCommand.prepend("\\subIndex");
+    subIndexCommand.prepend(QStringLiteral("\\subIndex"));
     QString sectionCommand = nameForTex;
-    sectionCommand.prepend("\\section");
+    sectionCommand.prepend(QStringLiteral("\\section"));
     QString dispIndexSubCommand = nameForTex;
-    dispIndexSubCommand.prepend("\\dispIndexSub");
+    dispIndexSubCommand.prepend(QStringLiteral("\\dispIndexSub"));
     QString dispIndexNameCommand = nameForTex;
-    dispIndexNameCommand.prepend("\\dispIndexName");
+    dispIndexNameCommand.prepend(QStringLiteral("\\dispIndexName"));
 
     // Line 2 : \newcommand{\nameMotorstatusX}{a@\_Motor\_status}%
     *out << "\\newcommand{" << nameCommand << "}";
@@ -379,7 +379,7 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
     // Line 8 :\newcommand{\dispTabMotionstatusXError}{\displayTabRecord{\indexMotionstatusX}{\subIndexMotionstatusXError}{\nameMotionstatusXError}%
     //          {UINT16}{RO,TPDO}{-}{-}{-}{\dispTabLineArraySubIndexMotionstatusX}}%
     QString dispTabCommand = nameForTex;
-    dispTabCommand.prepend("\\dispTab");
+    dispTabCommand.prepend(QStringLiteral("\\dispTab"));
 
     *out << "\\newcommand{" << dispTabCommand << "}";
     *out << "{\\displayTabRecord";
@@ -404,38 +404,39 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
         QString nameSubForTex = formatNameSubIndexForTex(subIndex->name());
 
         QString nameFull = subIndex->name();
-        nameFull.replace("_", "\\_");
+        nameFull.replace(QStringLiteral("_"), QStringLiteral("\\_"));
 
         QString subIndexSubCommand = nameSubForTex;
         subIndexSubCommand.prepend(nameForTex);
-        subIndexSubCommand.prepend("\\subIndex");
+        subIndexSubCommand.prepend(QStringLiteral("\\subIndex"));
 
         QString nameSubCommand = nameSubForTex;
         nameSubCommand.prepend(nameForTex);
-        nameSubCommand.prepend("\\name");
+        nameSubCommand.prepend(QStringLiteral("\\name"));
 
         QString indexSubCommand = nameSubForTex;
         indexSubCommand.prepend(nameForTex);
-        indexSubCommand.prepend("\\index");
+        indexSubCommand.prepend(QStringLiteral("\\index"));
 
         QString paraCommand = nameSubForTex;
         paraCommand.prepend(nameForTex);
-        paraCommand.prepend("\\para");
+        paraCommand.prepend(QStringLiteral("\\para"));
 
-        lineRecordSubIndex.append("\\displayLineRecordSubIndex{" + subIndexSubCommand + "}" + "{\\hyperref[" + indexCommand + subIndexSubCommand + "]{"
-                                  + nameSubCommand + "}}" + "{" + dataTypeStr(subIndex) + "}%\n");
+        lineRecordSubIndex.append(QStringLiteral("\\displayLineRecordSubIndex{") + subIndexSubCommand + QStringLiteral("}") + QStringLiteral("{\\hyperref[")
+                                  + indexCommand + subIndexSubCommand + QStringLiteral("]{") + nameSubCommand + QStringLiteral("}}") + QStringLiteral("{")
+                                  + dataTypeStr(subIndex) + QStringLiteral("}%\n"));
 
         QString dispIndexSubSubCommand = nameSubForTex;
         dispIndexSubSubCommand.prepend(nameForTex);
-        dispIndexSubSubCommand.prepend("\\dispIndexSub");
+        dispIndexSubSubCommand.prepend(QStringLiteral("\\dispIndexSub"));
 
         QString dispIndexNameSubCommand = nameSubForTex;
         dispIndexNameSubCommand.prepend(nameForTex);
-        dispIndexNameSubCommand.prepend("\\dispIndexSubName");
+        dispIndexNameSubCommand.prepend(QStringLiteral("\\dispIndexSubName"));
 
         QString dispTabCommand = nameSubForTex;
         dispTabCommand.prepend(nameForTex);
-        dispTabCommand.prepend("\\dispTab");
+        dispTabCommand.prepend(QStringLiteral("\\dispTab"));
 
         // Line 2 : \newcommand{\subIndexMotorstatusXCommand}{1}%
         *out << "\\newcommand{" << subIndexSubCommand << "}";
@@ -507,9 +508,9 @@ void TexGenerator::writeRecord(Index *index, QTextStream *out, bool generic)
     //              }%
     *out << "%List subindex\n";
     *out << "\\newcommand{\\dispTabLineRecordSubIndex" << nameForTex << "}{%\n";
-    for (int i = 0; i < lineRecordSubIndex.size(); ++i)
+    for (const QString &line : lineRecordSubIndex)
     {
-        *out << lineRecordSubIndex.at(i);
+        *out << line;
     }
     *out << "}%\n";
     *out << "\n";
@@ -536,17 +537,17 @@ void TexGenerator::writeArray(Index *index, QTextStream *out, bool generic)
     *out << "\n";
 
     QString nameCommand = nameForTex;
-    nameCommand.prepend("\\name");
+    nameCommand.prepend(QStringLiteral("\\name"));
     QString indexCommand = nameForTex;
-    indexCommand.prepend("\\index");
+    indexCommand.prepend(QStringLiteral("\\index"));
     QString subIndexCommand = nameForTex;
-    subIndexCommand.prepend("\\subIndex");
+    subIndexCommand.prepend(QStringLiteral("\\subIndex"));
     QString sectionCommand = nameForTex;
-    sectionCommand.prepend("\\section");
+    sectionCommand.prepend(QStringLiteral("\\section"));
     QString dispIndexSubCommand = nameForTex;
-    dispIndexSubCommand.prepend("\\dispIndexSub");
+    dispIndexSubCommand.prepend(QStringLiteral("\\dispIndexSub"));
     QString dispIndexNameCommand = nameForTex;
-    dispIndexNameCommand.prepend("\\dispIndexName");
+    dispIndexNameCommand.prepend(QStringLiteral("\\dispIndexName"));
 
     // Line 2 : \newcommand{\nameMotionstatusX}{a@\_Motion\_status}%
     *out << "\\newcommand{" << nameCommand << "}";
@@ -588,7 +589,7 @@ void TexGenerator::writeArray(Index *index, QTextStream *out, bool generic)
     //          {UINT16}{RO,TPDO}{-}{-}{-}{\dispTabLineArraySubIndexMotionstatusX}}%
     SubIndex *subIndex = index->subIndex(1);
     QString dispTabCommand = nameForTex;
-    dispTabCommand.prepend("\\dispTab");
+    dispTabCommand.prepend(QStringLiteral("\\dispTab"));
 
     *out << "\\newcommand{" << dispTabCommand << "}";
     *out << "{\\displayTabArray";
@@ -628,37 +629,38 @@ void TexGenerator::writeArray(Index *index, QTextStream *out, bool generic)
         QString nameSubForTex = formatNameSubIndexForTex(subIndex->name());
 
         QString nameFull = subIndex->name();
-        nameFull.replace("_", "\\_");
+        nameFull.replace(QStringLiteral("_"), QStringLiteral("\\_"));
 
         QString subIndexSubCommand = nameSubForTex;
         subIndexSubCommand.prepend(nameForTex);
-        subIndexSubCommand.prepend("\\subIndex");
+        subIndexSubCommand.prepend(QStringLiteral("\\subIndex"));
 
         QString nameSubCommand = nameSubForTex;
         nameSubCommand.prepend(nameForTex);
-        nameSubCommand.prepend("\\name");
+        nameSubCommand.prepend(QStringLiteral("\\name"));
 
         QString indexSubCommand = nameSubForTex;
         indexSubCommand.prepend(nameForTex);
-        indexSubCommand.prepend("\\index");
+        indexSubCommand.prepend(QStringLiteral("\\index"));
 
-        lineArraySubIndex.append("\\displayLineArraySubIndex{" + subIndexSubCommand + "}{" + nameSubCommand + "}%\n");
+        lineArraySubIndex.append(QStringLiteral("\\displayLineArraySubIndex{") + subIndexSubCommand + QStringLiteral("}{") + nameSubCommand
+                                 + QStringLiteral("}%\n"));
 
         QString paraCommand = nameSubForTex;
         paraCommand.prepend(nameForTex);
-        paraCommand.prepend("\\para");
+        paraCommand.prepend(QStringLiteral("\\para"));
 
         QString dispIndexSubSubCommand = nameSubForTex;
         dispIndexSubSubCommand.prepend(nameForTex);
-        dispIndexSubSubCommand.prepend("\\dispIndexSub");
+        dispIndexSubSubCommand.prepend(QStringLiteral("\\dispIndexSub"));
 
         QString dispIndexNameSubCommand = nameSubForTex;
         dispIndexNameSubCommand.prepend(nameForTex);
-        dispIndexNameSubCommand.prepend("\\dispIndexSubName");
+        dispIndexNameSubCommand.prepend(QStringLiteral("\\dispIndexSubName"));
 
         QString dispTabCommand = nameSubForTex;
         dispTabCommand.prepend(nameForTex);
-        dispTabCommand.prepend("\\dispTab");
+        dispTabCommand.prepend(QStringLiteral("\\dispTab"));
 
         // Line 2 : \newcommand{\subIndexMotionstatusXError}{1}%
         *out << "\\newcommand{" << subIndexSubCommand << "}";
@@ -700,16 +702,16 @@ void TexGenerator::writeUnit(const SubIndex *subIndex, QTextStream *out) const
     }
 
     QString unit = ODIndexDb::unit(subIndex->index()->index(), subIndex->subIndex(), static_cast<quint16>(_profile));
-    unit.replace("°", "$^{\\circ}$");
-    unit.replace("µ", "$\\mu$");
-    unit.replace("%", "\\%");
+    unit.replace(QStringLiteral("°"), QStringLiteral("$^{\\circ}$"));
+    unit.replace(QStringLiteral("µ"), QStringLiteral("$\\mu$"));
+    unit.replace(QStringLiteral("%"), QStringLiteral("\\%"));
     unit = unit.trimmed();
 
     if (unit.isEmpty() && scaleDiv.isEmpty())
     {
-        unit = "-";
+        unit = QStringLiteral("-");
     }
-    *out << (scaleDiv + " " + unit).trimmed();
+    *out << (scaleDiv + QStringLiteral(" ") + unit).trimmed();
 }
 
 /**
@@ -740,7 +742,7 @@ void TexGenerator::writeLimit(const SubIndex *subIndex, QTextStream *out)
 void TexGenerator::writeAccessType(const SubIndex *subIndex, QTextStream *out)
 {
     *out << "{" << accessStr(subIndex->accessType());
-    if (pdoAccessStr(subIndex->accessType()) != "")
+    if (pdoAccessStr(subIndex->accessType()) != QStringLiteral(""))
     {
         *out << "," << pdoAccessStr(subIndex->accessType()) << "}";
     }
@@ -752,13 +754,13 @@ void TexGenerator::writeAccessType(const SubIndex *subIndex, QTextStream *out)
 
 void TexGenerator::writeDefaultValue(const SubIndex *subIndex, QTextStream *out)
 {
-    if (subIndex->value().toString().isEmpty() || subIndex->value().toString().startsWith("__"))
+    if (subIndex->value().toString().isEmpty() || subIndex->value().toString().startsWith(QStringLiteral("__")))
     {
         *out << "{-}";
     }
     else
     {
-        *out << "{" << subIndex->value().toString().replace("_", "\\_") << "}";
+        *out << "{" << subIndex->value().toString().replace(QStringLiteral("_"), QStringLiteral("\\_")) << QStringLiteral("}");
     }
 }
 
@@ -770,15 +772,15 @@ QString TexGenerator::formatNameIndex(Index *index, bool generic)
     {
         if (index->index() >= 0x1400 && index->index() < 0x1A04)
         {
-            nameIndex.replace(QRegularExpression("[0-9]"), "X");
+            nameIndex.replace(QRegularExpression(QStringLiteral("[0-9]")), QStringLiteral("X"));
         }
         else
         {
-            nameIndex.replace("a1", "a@");
+            nameIndex.replace(QStringLiteral("a1"), QStringLiteral("a@"));
         }
     }
 
-    nameIndex.replace("_", "\\_");
+    nameIndex.replace(QStringLiteral("_"), QStringLiteral("\\_"));
     return nameIndex;
 }
 
@@ -788,11 +790,11 @@ QString TexGenerator::formatNameIndexForTex(Index *index, bool generic)
 
     if (generic)
     {
-        nameForTex.append("X");
+        nameForTex.append(QStringLiteral("X"));
     }
     nameForTex = toCamelCase(nameForTex);
 
-    nameForTex.remove(QRegularExpression("^[a][0-9]"));
+    nameForTex.remove(QRegularExpression(QStringLiteral("^[a][0-9]")));
     nameForTex = formatNameSubIndexForTex(nameForTex);
     return nameForTex;
 }
@@ -801,19 +803,19 @@ QString TexGenerator::formatNameSubIndexForTex(QString nameSubIndex)
 {
     nameSubIndex = toCamelCase(nameSubIndex);
 
-    nameSubIndex.remove("_");
-    nameSubIndex.remove(" ");
-    nameSubIndex.remove("-");
-    nameSubIndex.replace("0", "A");
-    nameSubIndex.replace("1", "B");
-    nameSubIndex.replace("2", "C");
-    nameSubIndex.replace("3", "D");
-    nameSubIndex.replace("4", "E");
-    nameSubIndex.replace("5", "F");
-    nameSubIndex.replace("6", "G");
-    nameSubIndex.replace("7", "H");
-    nameSubIndex.replace("8", "I");
-    nameSubIndex.replace("9", "J");
+    nameSubIndex.remove(QStringLiteral("_"));
+    nameSubIndex.remove(QStringLiteral(" "));
+    nameSubIndex.remove(QStringLiteral("-"));
+    nameSubIndex.replace(QStringLiteral("0"), QStringLiteral("A"));
+    nameSubIndex.replace(QStringLiteral("1"), QStringLiteral("B"));
+    nameSubIndex.replace(QStringLiteral("2"), QStringLiteral("C"));
+    nameSubIndex.replace(QStringLiteral("3"), QStringLiteral("D"));
+    nameSubIndex.replace(QStringLiteral("4"), QStringLiteral("E"));
+    nameSubIndex.replace(QStringLiteral("5"), QStringLiteral("F"));
+    nameSubIndex.replace(QStringLiteral("6"), QStringLiteral("G"));
+    nameSubIndex.replace(QStringLiteral("7"), QStringLiteral("H"));
+    nameSubIndex.replace(QStringLiteral("8"), QStringLiteral("I"));
+    nameSubIndex.replace(QStringLiteral("9"), QStringLiteral("J"));
 
     return nameSubIndex;
 }
@@ -827,11 +829,11 @@ QString TexGenerator::formatIndex(Index *index, bool generic)
     {
         if (index->index() >= 0x1400 && index->index() < 0x1A04)
         {
-            str = QString::number(index->index(), base).toUpper().replace(3, 1, "n");
+            str = QString::number(index->index(), base).toUpper().replace(3, 1, QStringLiteral("n"));
         }
         else
         {
-            str = QString::number(index->index(), base).toUpper().replace(1, 1, "n");
+            str = QString::number(index->index(), base).toUpper().replace(1, 1, QStringLiteral("n"));
         }
     }
     else
@@ -854,14 +856,14 @@ QString TexGenerator::toCamelCase(QString &name)
     {
         parts[i].replace(0, 1, parts[i][0].toUpper());
     }
-    return parts.join("");
+    return parts.join(QStringLiteral(""));
 }
 
 QString TexGenerator::dataTypeStr(SubIndex *subIndex) const
 {
     if (ODIndexDb::isQ1516(subIndex->index()->index(), subIndex->subIndex(), _profile))
     {
-        return "Q15.16";
+        return QStringLiteral("Q15.16");
     }
     return SubIndex::dataTypeStr(subIndex->dataType());
 }
@@ -877,24 +879,24 @@ QString TexGenerator::accessStr(int access) const
     {
         case SubIndex::READ:
         case SubIndex::READ + SubIndex::TPDO:
-            return QString("RO");
+            return QString(QStringLiteral("RO"));
 
         case SubIndex::WRITE:
         case SubIndex::WRITE + SubIndex::RPDO:
-            return QString("WO");
+            return QString(QStringLiteral("WO"));
 
         case SubIndex::READ + SubIndex::WRITE:
         case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO + SubIndex::RPDO:
-            return QString("RW");
+            return QString(QStringLiteral("RW"));
 
         case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO:
-            return QString("RW");
+            return QString(QStringLiteral("RW"));
 
         case SubIndex::READ + SubIndex::WRITE + SubIndex::RPDO:
-            return QString("RW");
+            return QString(QStringLiteral("RW"));
     }
 
-    return "";
+    return QStringLiteral("");
 }
 
 /**
@@ -906,13 +908,13 @@ QString TexGenerator::pdoAccessStr(uint8_t accessType) const
 {
     if ((accessType & SubIndex::TPDO) == SubIndex::TPDO)
     {
-        return "TPDO";
+        return QStringLiteral("TPDO");
     }
 
     if ((accessType & SubIndex::RPDO) == SubIndex::RPDO)
     {
-        return "RPDO";
+        return QStringLiteral("RPDO");
     }
 
-    return "";
+    return QStringLiteral("");
 }
