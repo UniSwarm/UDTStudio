@@ -242,59 +242,59 @@ QString SubIndex::dataTypeStr(DataType dataType)
     switch (dataType)
     {
         case INVALID:
-            return QString("INVALID");
+            return QStringLiteral("INVALID");
         case BOOLEAN:
-            return QString("BOOLEAN");
+            return QStringLiteral("BOOLEAN");
         case INTEGER8:
-            return QString("INT8");
+            return QStringLiteral("INT8");
         case INTEGER16:
-            return QString("INT16");
+            return QStringLiteral("INT16");
         case INTEGER32:
-            return QString("INT32");
+            return QStringLiteral("INT32");
         case UNSIGNED8:
-            return QString("UINT8");
+            return QStringLiteral("UINT8");
         case UNSIGNED16:
-            return QString("UINT16");
+            return QStringLiteral("UINT16");
         case UNSIGNED32:
-            return QString("UINT32");
+            return QStringLiteral("UINT32");
         case REAL32:
-            return QString("REAL32");
+            return QStringLiteral("REAL32");
         case VISIBLE_STRING:
-            return QString("VSTRING");
+            return QStringLiteral("VSTRING");
         case OCTET_STRING:
-            return QString("OSTRING");
+            return QStringLiteral("OSTRING");
         case UNICODE_STRING:
-            return QString("USTRING");
+            return QStringLiteral("USTRING");
         case TIME_OF_DAY:
-            return QString("DAYTIME");
+            return QStringLiteral("DAYTIME");
         case TIME_DIFFERENCE:
-            return QString("TIMEDIFF");
+            return QStringLiteral("TIMEDIFF");
         case DDOMAIN:
-            return QString("DOMAIN");
+            return QStringLiteral("DOMAIN");
         case INTEGER24:
-            return QString("INT24");
+            return QStringLiteral("INT24");
         case REAL64:
-            return QString("REAL64");
+            return QStringLiteral("REAL64");
         case INTEGER40:
-            return QString("INT40");
+            return QStringLiteral("INT40");
         case INTEGER48:
-            return QString("INT48");
+            return QStringLiteral("INT48");
         case INTEGER56:
-            return QString("INT56");
+            return QStringLiteral("INT56");
         case INTEGER64:
-            return QString("INT64");
+            return QStringLiteral("INT64");
         case UNSIGNED24:
-            return QString("UINT24");
+            return QStringLiteral("UINT24");
         case UNSIGNED40:
-            return QString("UINT40");
+            return QStringLiteral("UINT40");
         case UNSIGNED48:
-            return QString("UINT48");
+            return QStringLiteral("UINT48");
         case UNSIGNED56:
-            return QString("UINT56");
+            return QStringLiteral("UINT56");
         case UNSIGNED64:
-            return QString("UINT64");
+            return QStringLiteral("UINT64");
     }
-    return QString();
+    return QStringLiteral();
 }
 
 /**
@@ -365,7 +365,7 @@ uint32_t SubIndex::objFlags() const
     return _objFlags;
 }
 
-void SubIndex::setObjFlags(const uint32_t &objFlags)
+void SubIndex::setObjFlags(uint32_t objFlags)
 {
     _objFlags = objFlags;
 }

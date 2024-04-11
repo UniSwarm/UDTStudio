@@ -63,7 +63,7 @@ void DeviceConfiguration::addDeviceComissioning(const QString &key, const QStrin
 
 QString DeviceConfiguration::nodeId() const
 {
-    return _deviceComissionings.value("NodeID");
+    return _deviceComissionings.value(QStringLiteral("NodeID"));
 }
 
 /**
@@ -72,7 +72,7 @@ QString DeviceConfiguration::nodeId() const
  */
 void DeviceConfiguration::setNodeId(const QString &nodeId)
 {
-    _deviceComissionings.insert("NodeID", nodeId);
+    _deviceComissionings.insert(QStringLiteral("NodeID"), nodeId);
 }
 
 /**
@@ -81,7 +81,7 @@ void DeviceConfiguration::setNodeId(const QString &nodeId)
  */
 void DeviceConfiguration::setNodeName(const QString &nodeName)
 {
-    _deviceComissionings.insert("NodeName", nodeName);
+    _deviceComissionings.insert(QStringLiteral("NodeName"), nodeName);
 }
 
 /**
@@ -90,7 +90,7 @@ void DeviceConfiguration::setNodeName(const QString &nodeName)
  */
 void DeviceConfiguration::setBaudrate(const QString &baudrate)
 {
-    _deviceComissionings.insert("Baudrate", baudrate);
+    _deviceComissionings.insert(QStringLiteral("Baudrate"), baudrate);
 }
 
 /**
@@ -99,7 +99,7 @@ void DeviceConfiguration::setBaudrate(const QString &baudrate)
  */
 void DeviceConfiguration::setNetNumber(const QString &netNumber)
 {
-    _deviceComissionings.insert("NetNumber", netNumber);
+    _deviceComissionings.insert(QStringLiteral("NetNumber"), netNumber);
 }
 
 /**
@@ -108,7 +108,7 @@ void DeviceConfiguration::setNetNumber(const QString &netNumber)
  */
 void DeviceConfiguration::setNetworkName(const QString &networkName)
 {
-    _deviceComissionings.insert("NetworkName", networkName);
+    _deviceComissionings.insert(QStringLiteral("NetworkName"), networkName);
 }
 
 /**
@@ -117,7 +117,7 @@ void DeviceConfiguration::setNetworkName(const QString &networkName)
  */
 void DeviceConfiguration::setLssSerialNumber(const QString &lssSerialNumber)
 {
-    _deviceComissionings.insert("LssSerialNumber", lssSerialNumber);
+    _deviceComissionings.insert(QStringLiteral("LssSerialNumber"), lssSerialNumber);
 }
 
 /**
@@ -131,9 +131,9 @@ DeviceConfiguration *DeviceConfiguration::fromDeviceDescription(const DeviceDesc
     DeviceConfiguration *deviceConfiguration = new DeviceConfiguration();
 
     deviceConfiguration->setFileInfos(deviceDescription->fileInfos());
-    QString lastName = deviceConfiguration->fileInfos().value("FileName");
-    deviceConfiguration->setFileInfo("LastEDS", lastName);
-    deviceConfiguration->setFileInfo("FileName", lastName.replace(".eds", ".dcf"));
+    QString lastName = deviceConfiguration->fileInfos().value(QStringLiteral("FileName"));
+    deviceConfiguration->setFileInfo(QStringLiteral("LastEDS"), lastName);
+    deviceConfiguration->setFileInfo(QStringLiteral("FileName"), lastName.replace(QStringLiteral(".eds"), QStringLiteral(".dcf")));
 
     deviceConfiguration->setNodeId(QString::number(nodeId));
     deviceConfiguration->setDummyUsages(deviceDescription->dummyUsages());
@@ -143,7 +143,7 @@ DeviceConfiguration *DeviceConfiguration::fromDeviceDescription(const DeviceDesc
         deviceConfiguration->addIndex(new Index(*index));
     }
 
-    for (Index *index : deviceConfiguration->indexes())
+    for (Index *index : qAsConst(deviceConfiguration->indexes()))
     {
         for (SubIndex *subIndex : index->subIndexes())
         {
@@ -152,13 +152,11 @@ DeviceConfiguration *DeviceConfiguration::fromDeviceDescription(const DeviceDesc
                 QString value = subIndex->value().toString();
 
                 uint8_t base = 10;
-                if (value.startsWith("0x"))
+                if (value.startsWith(QStringLiteral("0x")))
                 {
                     base = 16;
                 }
-
-                bool ok = false;
-                subIndex->setValue(value.toUInt(&ok, base) + nodeId);
+                subIndex->setValue(value.toUInt(nullptr, base) + nodeId);
             }
         }
     }

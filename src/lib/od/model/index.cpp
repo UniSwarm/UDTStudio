@@ -216,21 +216,21 @@ QString Index::objectTypeStr(Object objectType)
     switch (objectType)
     {
         case OBJECT_NULL:
-            return QString("NULL");
+            return QStringLiteral("NULL");
         case OBJECT_DOMAIN:
-            return QString("DOMAIN");
+            return QStringLiteral("DOMAIN");
         case DEFTYPE:
-            return QString("DEFTYPE");
+            return QStringLiteral("DEFTYPE");
         case DEFSTRUCT:
-            return QString("DEFSTRUCT");
+            return QStringLiteral("DEFSTRUCT");
         case VAR:
-            return QString("VAR");
+            return QStringLiteral("VAR");
         case ARRAY:
-            return QString("ARRAY");
+            return QStringLiteral("ARRAY");
         case RECORD:
-            return QString("RECORD");
+            return QStringLiteral("RECORD");
     }
-    return QString();
+    return QStringLiteral();
 }
 
 /**

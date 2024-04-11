@@ -107,7 +107,7 @@ public:
     int length() const;
 
     uint32_t objFlags() const;
-    void setObjFlags(const uint32_t &objFlags);
+    void setObjFlags(uint32_t objFlags);
 
     Index *index() const;
 

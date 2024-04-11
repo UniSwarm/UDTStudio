@@ -102,7 +102,7 @@ void DeviceModel::setComments(const QMap<QString, QString> &comments)
 
 void DeviceModel::setComment(const QString &key, const QString &value)
 {
-    if (key != "Lines")
+    if (key != QStringLiteral("Lines"))
     {
         _comments.insert(key, value);
     }
@@ -255,7 +255,7 @@ QVariant DeviceModel::subIndexValue(uint16_t index, uint8_t subIndex, const QVar
  */
 QString DeviceModel::fileName() const
 {
-    return _fileInfos.value("FileName");
+    return _fileInfos.value(QStringLiteral("FileName"));
 }
 
 /**
@@ -264,5 +264,5 @@ QString DeviceModel::fileName() const
  */
 void DeviceModel::setFileName(const QString &name)
 {
-    _fileInfos.insert("FileName", name);
+    _fileInfos.insert(QStringLiteral("FileName"), name);
 }
