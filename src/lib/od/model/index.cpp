@@ -67,7 +67,7 @@ uint16_t Index::index() const
  * @brief index number setter
  * @param 16 bits index number
  */
-void Index::setIndex(const uint16_t &index)
+void Index::setIndex(uint16_t index)
 {
     _index = index;
 }
@@ -81,7 +81,7 @@ uint8_t Index::maxSubIndex() const
     return _maxSubIndex;
 }
 
-void Index::setMaxSubIndex(const uint8_t &maxSubIndex)
+void Index::setMaxSubIndex(uint8_t maxSubIndex)
 {
     _maxSubIndex = maxSubIndex;
 }

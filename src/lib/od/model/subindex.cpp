@@ -90,7 +90,7 @@ uint8_t SubIndex::subIndex() const
  * @brief sub-index number setter
  * @param 8 bits sub-index number
  */
-void SubIndex::setSubIndex(const uint8_t &subIndex)
+void SubIndex::setSubIndex(uint8_t subIndex)
 {
     _subIndex = subIndex;
 }

@@ -36,10 +36,10 @@ public:
     ~Index();
 
     uint16_t index() const;
-    void setIndex(const uint16_t &index);
+    void setIndex(uint16_t index);
 
     uint8_t maxSubIndex() const;
-    void setMaxSubIndex(const uint8_t &maxSubIndex);
+    void setMaxSubIndex(uint8_t maxSubIndex);
 
     const QMap<uint8_t, SubIndex *> &subIndexes() const;
 

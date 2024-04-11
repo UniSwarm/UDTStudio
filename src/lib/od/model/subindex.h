@@ -48,7 +48,7 @@ public:
     void setAccessType(AccessType accessType);
 
     uint8_t subIndex() const;
-    void setSubIndex(const uint8_t &subIndex);
+    void setSubIndex(uint8_t subIndex);
 
     const QString &name() const;
     void setName(const QString &name);
