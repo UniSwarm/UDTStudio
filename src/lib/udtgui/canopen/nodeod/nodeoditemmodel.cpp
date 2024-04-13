@@ -388,7 +388,7 @@ void NodeOdItemModel::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest f
 QStringList NodeOdItemModel::mimeTypes() const
 {
     QStringList types;
-    types << "index/subindex";
+    types << QStringLiteral("index/subindex");
     return types;
 }
 
@@ -408,7 +408,7 @@ QMimeData *NodeOdItemModel::mimeData(const QModelIndexList &indexes) const
             }
         }
     }
-    mimeData->setData("index/subindex", encodedData);
+    mimeData->setData(QStringLiteral("index/subindex"), encodedData);
     return mimeData;
 }
 
@@ -418,7 +418,7 @@ bool NodeOdItemModel::canDropMimeData(const QMimeData *mimeData, Qt::DropAction 
     Q_UNUSED(row)
     Q_UNUSED(column)
     Q_UNUSED(parent)
-    return mimeData->hasFormat("index/subindex");
+    return mimeData->hasFormat(QStringLiteral("index/subindex"));
 }
 
 bool NodeOdItemModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction action, int row, int column, const QModelIndex &parent)
@@ -430,7 +430,7 @@ bool NodeOdItemModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction act
     {
         return true;
     }
-    if (!mimeData->hasFormat("index/subindex"))
+    if (!mimeData->hasFormat(QStringLiteral("index/subindex")))
     {
         return false;
     }

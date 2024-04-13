@@ -41,7 +41,7 @@ void PDOMappingWidget::setPdo(PDO *pdo)
     if (_pdo != nullptr)
     {
         _pdoNameLabel->setText(_pdo->type());
-        _pdoIndexLabel->setText(QString("0x%1").arg(QString::number(_pdo->cobId(), 16).toUpper()));
+        _pdoIndexLabel->setText(QStringLiteral("0x%1").arg(QString::number(_pdo->cobId(), 16).toUpper()));
         updateEnabled(pdo->isEnabled());
         connect(_pdo, &PDO::enabledChanged, this, &PDOMappingWidget::updateEnabled);
     }
@@ -93,18 +93,18 @@ void PDOMappingWidget::createWidget()
 
     _toolBar = new QToolBar(tr("Mapping commands"));
     _toolBar->setIconSize(QSize(12, 12));
-    _toolBar->setStyleSheet("QToolBar {background: none}");
+    _toolBar->setStyleSheet(QStringLiteral("QToolBar {background: none}"));
     QAction *action;
 
     action = _toolBar->addAction(tr("Clear"));
-    action->setIcon(QIcon(":/icons/img/icons8-broom.png"));
+    action->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-broom.png")));
     action->setStatusTip(tr("Clear mapping"));
     connect(action, &QAction::triggered, this, &PDOMappingWidget::clearMapping);
 
     _enableAction = _toolBar->addAction(tr("Enable"));
     QIcon iconCheck;
-    iconCheck.addFile(":/icons/img/icons8-checked-checkbox.png", QSize(), QIcon::Normal, QIcon::On);
-    iconCheck.addFile(":/icons/img/icons8-unchecked-checkbox.png", QSize(), QIcon::Normal, QIcon::Off);
+    iconCheck.addFile(QStringLiteral(":/icons/img/icons8-checked-checkbox.png"), QSize(), QIcon::Normal, QIcon::On);
+    iconCheck.addFile(QStringLiteral(":/icons/img/icons8-unchecked-checkbox.png"), QSize(), QIcon::Normal, QIcon::Off);
     _enableAction->setIcon(iconCheck);
     _enableAction->setStatusTip(tr("Enable pdo"));
     _enableAction->setCheckable(true);

@@ -211,7 +211,7 @@ void MotionSensorWidget::fillSensorSelect()
     _sensorSelectComboBox->insertSeparator(_sensorSelectComboBox->count());
 
     _sensorSelectComboBox->addItem(tr("Motor data"));
-    dynamic_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
+    qobject_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
     if (_mode == MODE_SENSOR_TORQUE)
     {
         _sensorSelectComboBox->addItem(tr("Motor torque"), QVariant(static_cast<uint16_t>(0x1100)));
@@ -232,7 +232,7 @@ void MotionSensorWidget::fillSensorSelect()
     if (_mode == MODE_SENSOR_VELOCITY)
     {
         _sensorSelectComboBox->addItem(tr("From another sensor"));
-        dynamic_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
+        qobject_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
         // _sensorSelectComboBox->addItem(tr("Position from velocity"), QVariant(static_cast<uint16_t>(0x2200)));
         // _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Velocity derived from the position sensor"), Qt::StatusTipRole);
         _sensorSelectComboBox->addItem(tr("Velocity from position"), QVariant(static_cast<uint16_t>(0x2300)));
@@ -243,7 +243,7 @@ void MotionSensorWidget::fillSensorSelect()
     if (_mode == MODE_SENSOR_POSITION)
     {
         _sensorSelectComboBox->addItem(tr("Encoders"));
-        dynamic_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
+        qobject_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
         _sensorSelectComboBox->addItem(tr("QEI CH1"), QVariant(static_cast<uint16_t>(0x3101)));
         _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Quadrature incremental encoder channel 1"), Qt::StatusTipRole);
         _sensorSelectComboBox->addItem(tr("QEI CH2"), QVariant(static_cast<uint16_t>(0x3102)));
@@ -256,7 +256,7 @@ void MotionSensorWidget::fillSensorSelect()
     }
 
     _sensorSelectComboBox->addItem(tr("Analog inputs"));
-    dynamic_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
+    qobject_cast<QStandardItemModel *>(_sensorSelectComboBox->model())->item(_sensorSelectComboBox->count() - 1)->setEnabled(false);
     _sensorSelectComboBox->addItem(tr("AN1"), QVariant(static_cast<uint16_t>(0x4001)));
     _sensorSelectComboBox->setItemData(_sensorSelectComboBox->count() - 1, tr("Analog input channel 1"), Qt::StatusTipRole);
     _sensorSelectComboBox->addItem(tr("AN2"), QVariant(static_cast<uint16_t>(0x4002)));
@@ -284,7 +284,7 @@ void MotionSensorWidget::createWidgets()
     motionSensorScrollArea->setWidgetResizable(true);
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
-    splitter->setStyleSheet("QSplitter {background: #19232D;}");
+    splitter->setStyleSheet(QStringLiteral("QSplitter {background: #19232D;}"));
     splitter->addWidget(motionSensorScrollArea);
 
     QWidget *widgetLogger = new QWidget();
@@ -324,7 +324,7 @@ QToolBar *MotionSensorWidget::createToolBarWidgets()
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
     _logTimerSpinBox->setValue(100);
-    _logTimerSpinBox->setSuffix(" ms");
+    _logTimerSpinBox->setSuffix(QStringLiteral(" ms"));
     _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
     toolBar->addWidget(_logTimerSpinBox);
     connect(_logTimerSpinBox,
@@ -338,7 +338,7 @@ QToolBar *MotionSensorWidget::createToolBarWidgets()
     // clear
     QAction *action;
     action = toolBar->addAction(tr("Clear"));
-    action->setIcon(QIcon(":/icons/img/icons8-broom.png"));
+    action->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-broom.png")));
     action->setStatusTip(tr("Clear all data"));
     connect(action, &QAction::triggered, _dataLogger, &DataLogger::clear);
 
@@ -346,8 +346,8 @@ QToolBar *MotionSensorWidget::createToolBarWidgets()
 
     // read all action
     QAction *readAllAction = toolBar->addAction(tr("Read all objects"));
-    readAllAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
-    readAllAction->setShortcut(QKeySequence("Ctrl+R"));
+    readAllAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-update.png")));
+    readAllAction->setShortcut(QKeySequence(QStringLiteral("Ctrl+R")));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));
     connect(readAllAction, &QAction::triggered, this, &MotionSensorWidget::readAll);
 
@@ -358,17 +358,17 @@ QToolBar *MotionSensorWidget::createToolBarWidgets()
     _lockAction->setEnabled(false);
     _lockAction->setCheckable(true);
     QIcon iconLockUnlock;
-    iconLockUnlock.addFile(":/icons/img/icons8-lock.png", QSize(), QIcon::Normal, QIcon::On);
-    iconLockUnlock.addFile(":/icons/img/icons8-unlock.png", QSize(), QIcon::Normal, QIcon::Off);
+    iconLockUnlock.addFile(QStringLiteral(":/icons/img/icons8-lock.png"), QSize(), QIcon::Normal, QIcon::On);
+    iconLockUnlock.addFile(QStringLiteral(":/icons/img/icons8-unlock.png"), QSize(), QIcon::Normal, QIcon::Off);
     _lockAction->setIcon(iconLockUnlock);
-    _lockAction->setShortcut(QKeySequence("Ctrl+L"));
+    _lockAction->setShortcut(QKeySequence(QStringLiteral("Ctrl+L")));
     _lockAction->setStatusTip(tr("Editing of config parameters is not possible in OE mode, go to SO to unlock"));
     connect(_lockAction, &QAction::triggered, this, &MotionSensorWidget::lockUnlockConfig);
 
     /*
     QWidget *spacerWidget = new QLabel(this);
     spacerWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    spacerWidget->setStyleSheet("QLabel {background: none}");
+    spacerWidget->setStyleSheet(QStringLiteral("QLabel {background: none}"));
     spacerWidget->setVisible(true);
     toolBar->addWidget(spacerWidget);
 
@@ -536,7 +536,7 @@ QGroupBox *MotionSensorWidget::createSensorConditioningWidgets()
     _thresholdMaxSpinBox = new IndexSpinBox();
     _thresholdMaxSpinBox->setEnabled(false);
     addIndexWidget(_thresholdMaxSpinBox);
-    formLayout->addDualRow("", _thresholdMinSpinBox, _thresholdMaxSpinBox, tr("-"));
+    formLayout->addDualRow(QStringLiteral(""), _thresholdMinSpinBox, _thresholdMaxSpinBox, tr("-"));
 
     groupBox->setLayout(formLayout);
     return groupBox;

@@ -100,7 +100,7 @@ QMenu *DataLoggerSingleton::createAddToLoggerMenu(const QList<NodeObjectId> &obj
 
 DataLoggerSingleton::DataLoggerSingleton()
 {
-    _loggersMenu = new QMenu(tr("Data loggers"));
+    _loggersMenu = new QMenu(tr("Data &loggers"));
     connect(_loggersMenu, &QMenu::aboutToShow, this, &DataLoggerSingleton::updateLoggersMenu);
     _loggerWindowCount = 0;
 }
@@ -112,14 +112,14 @@ DataLoggerSingleton::~DataLoggerSingleton()
 
 void DataLoggerSingleton::showWidgetRecursive(QWidget *widget)
 {
-    if (widget->parentWidget())
+    if (widget->parentWidget() != nullptr)
     {
         DataLoggerSingleton::showWidgetRecursive(widget->parentWidget());
         QStackedWidget *stackWidget = qobject_cast<QStackedWidget *>(widget->parentWidget());
         if (stackWidget != nullptr)
         {
             QTabWidget *tabWidget = qobject_cast<QTabWidget *>(stackWidget->parentWidget());
-            if (tabWidget)
+            if (tabWidget != nullptr)
             {
                 tabWidget->setCurrentWidget(widget);
             }

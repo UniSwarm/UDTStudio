@@ -116,7 +116,7 @@ QVariant NodeOdItem::data(int column, int role) const
                     switch (column)
                     {
                         case NodeOdItemModel::OdIndex:
-                            return QVariant(QLatin1String("0x") + QString::number(_index->index(), 16).toUpper().rightJustified(4, '0'));
+                            return QVariant(QStringLiteral("0x") + QString::number(_index->index(), 16).toUpper().rightJustified(4, '0'));
 
                         case NodeOdItemModel::Name:
                             return QVariant(_index->name());
@@ -126,13 +126,14 @@ QVariant NodeOdItem::data(int column, int role) const
                             {
                                 if (_index->subIndex(0)->isQ1516())
                                 {
-                                    return QVariant(QString("Q1516"));
+                                    return QVariant(QStringLiteral("Q1516"));
                                 }
                                 return QVariant(NodeSubIndex::dataTypeStr(_index->subIndex(0)->dataType()));
                             }
                             else
                             {
-                                return QVariant(QString("%1[%2]").arg(NodeIndex::objectTypeStr(_index->objectType())).arg(_index->subIndexesCount() - 1));
+                                return QVariant(
+                                    QStringLiteral("%1[%2]").arg(NodeIndex::objectTypeStr(_index->objectType())).arg(_index->subIndexesCount() - 1));
                             }
 
                         case NodeOdItemModel::Access:
@@ -256,7 +257,7 @@ QVariant NodeOdItem::data(int column, int role) const
                     switch (column)
                     {
                         case NodeOdItemModel::OdIndex:
-                            return QVariant(QLatin1String("0x") + QString::number(_subIndex->subIndex(), 16).toUpper().rightJustified(2, '0'));
+                            return QVariant(QStringLiteral("0x") + QString::number(_subIndex->subIndex(), 16).toUpper().rightJustified(2, '0'));
 
                         case NodeOdItemModel::Name:
                             return QVariant(_subIndex->name());
@@ -264,7 +265,7 @@ QVariant NodeOdItem::data(int column, int role) const
                         case NodeOdItemModel::Type:
                             if (_subIndex->isQ1516())
                             {
-                                return QVariant("  " + QString("Q1516"));
+                                return QVariant("  " + QStringLiteral("Q1516"));
                             }
                             else
                             {
@@ -376,7 +377,7 @@ bool NodeOdItem::setData(int column, const QVariant &value, int role, Node *node
             break;
 
         case NodeOdItemModel::HexValue:
-            if (!value.toString().startsWith("0x"))
+            if (!value.toString().startsWith(QStringLiteral("0x")))
             {
                 valueToWrite = QVariant("0x" + value.toString());
             }
@@ -426,7 +427,7 @@ bool NodeOdItem::setData(int column, const QVariant &value, int role, Node *node
     if (subIndex->isNumeric())
     {
         QString valueStr = valueToWrite.toString();
-        if (valueStr.startsWith("0x", Qt::CaseInsensitive))
+        if (valueStr.startsWith(QStringLiteral("0x"), Qt::CaseInsensitive))
         {
             bool ok;
             valueStr = valueStr.mid(2);
@@ -834,7 +835,7 @@ QVariant NodeOdItem::formatValue(NodeSubIndex *subIndex, NodeOdItem::ViewType vi
             return QVariant(hexStr);
 
         case NodeOdItem::ViewHybrid:
-            return QVariant(QString("%1 (%2)").arg(valueStr, hexStr));
+            return QVariant(QStringLiteral("%1 (%2)").arg(valueStr, hexStr));
     }
     return QVariant();
 }
@@ -844,7 +845,7 @@ QString NodeOdItem::formatDouble(double value) const
     QString str = QString::number(value, 'g', 10);
     if (!str.contains('.'))
     {
-        str.append(".0");
+        str.append(QStringLiteral(".0"));
     }
     return str;
 }

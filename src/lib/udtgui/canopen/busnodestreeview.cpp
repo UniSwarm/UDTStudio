@@ -93,12 +93,12 @@ void BusNodesTreeView::addNodeAction(QAction *action)
 
 void BusNodesTreeView::saveState(QSettings &settings)
 {
-    settings.setValue("header", header()->saveState());
+    settings.setValue(QStringLiteral("header"), header()->saveState());
 }
 
 void BusNodesTreeView::restoreState(QSettings &settings)
 {
-    header()->restoreState(settings.value("header").toByteArray());
+    header()->restoreState(settings.value(QStringLiteral("header")).toByteArray());
 }
 
 void BusNodesTreeView::updateSelection()
@@ -165,9 +165,9 @@ void BusNodesTreeView::createHeader()
     headerView->addMandatorySection(BusNodesModel::Name);
     headerView->setStretchLastSection(true);
 #if QT_VERSION >= 0x050B00
-    int w0 = QFontMetrics(font()).horizontalAdvance("0");
+    int w0 = QFontMetrics(font()).horizontalAdvance(QStringLiteral("0"));
 #else
-    int w0 = QFontMetrics(font()).width("0");
+    int w0 = QFontMetrics(font()).width(QStringLiteral("0"));
 #endif
     headerView->resizeSection(BusNodesModel::NodeId, 12 * w0);
     headerView->resizeSection(BusNodesModel::Name, 14 * w0);

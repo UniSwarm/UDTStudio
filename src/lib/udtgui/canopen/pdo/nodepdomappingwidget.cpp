@@ -112,14 +112,14 @@ void NodePDOMappingWidget::createWidgets()
 
     // read all action
     _actionReadMappings = _toolBar->addAction(tr("Read all"));
-    _actionReadMappings->setIcon(QIcon(":/icons/img/icons8-update.png"));
-    _actionReadMappings->setShortcut(QKeySequence("Ctrl+R"));
+    _actionReadMappings->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-update.png")));
+    _actionReadMappings->setShortcut(QKeySequence(QStringLiteral("Ctrl+R")));
     _actionReadMappings->setStatusTip(tr("Read all PDO mapping from device"));
     connect(_actionReadMappings, &QAction::triggered, this, &NodePDOMappingWidget::readAllMapping);
 
     // read all action
     _actionClearMappings = _toolBar->addAction(tr("Clear all"));
-    _actionClearMappings->setIcon(QIcon(":/icons/img/icons8-broom.png"));
+    _actionClearMappings->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-broom.png")));
     _actionClearMappings->setStatusTip(tr("Clear all PDO mappings"));
     connect(_actionClearMappings, &QAction::triggered, this, &NodePDOMappingWidget::clearAllMapping);
 

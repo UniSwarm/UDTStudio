@@ -463,7 +463,7 @@ void PidWidget::createWidgets()
     pidScrollArea->setWidgetResizable(true);
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
-    splitter->setStyleSheet("QSplitter {background: #19232D;}");
+    splitter->setStyleSheet(QStringLiteral("QSplitter {background: #19232D;}"));
     splitter->addWidget(pidScrollArea);
 
     QWidget *widgetLogger = new QWidget();
@@ -507,7 +507,7 @@ QToolBar *PidWidget::createToolBarWidgets()
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
     _logTimerSpinBox->setValue(100);
-    _logTimerSpinBox->setSuffix(" ms");
+    _logTimerSpinBox->setSuffix(QStringLiteral(" ms"));
     _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
     toolBar->addWidget(_logTimerSpinBox);
     connect(_logTimerSpinBox,
@@ -521,7 +521,7 @@ QToolBar *PidWidget::createToolBarWidgets()
     // clear
     QAction *action;
     action = toolBar->addAction(tr("Clear"));
-    action->setIcon(QIcon(":/icons/img/icons8-broom.png"));
+    action->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-broom.png")));
     action->setStatusTip(tr("Clear all data"));
     connect(action, &QAction::triggered, _dataLogger, &DataLogger::clear);
 
@@ -529,8 +529,8 @@ QToolBar *PidWidget::createToolBarWidgets()
 
     // read all action
     QAction *readAllAction = toolBar->addAction(tr("Read all objects"));
-    readAllAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
-    readAllAction->setShortcut(QKeySequence("Ctrl+R"));
+    readAllAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-update.png")));
+    readAllAction->setShortcut(QKeySequence(QStringLiteral("Ctrl+R")));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));
     connect(readAllAction, &QAction::triggered, this, &PidWidget::readAll);
 
@@ -541,10 +541,10 @@ QToolBar *PidWidget::createToolBarWidgets()
     _lockAction->setEnabled(false);
     _lockAction->setCheckable(true);
     QIcon iconLockUnlock;
-    iconLockUnlock.addFile(":/icons/img/icons8-lock.png", QSize(), QIcon::Normal, QIcon::On);
-    iconLockUnlock.addFile(":/icons/img/icons8-unlock.png", QSize(), QIcon::Normal, QIcon::Off);
+    iconLockUnlock.addFile(QStringLiteral(":/icons/img/icons8-lock.png"), QSize(), QIcon::Normal, QIcon::On);
+    iconLockUnlock.addFile(QStringLiteral(":/icons/img/icons8-unlock.png"), QSize(), QIcon::Normal, QIcon::Off);
     _lockAction->setIcon(iconLockUnlock);
-    _lockAction->setShortcut(QKeySequence("Ctrl+L"));
+    _lockAction->setShortcut(QKeySequence(QStringLiteral("Ctrl+L")));
     _lockAction->setStatusTip(tr("Editing of config parameters is not possible in OE mode, go to SO to unlock"));
     connect(_lockAction, &QAction::triggered, this, &PidWidget::lockUnlockConfig);
 
@@ -647,7 +647,7 @@ QGroupBox *PidWidget::createPIDTestWidgets()
     _windowFirstTargetSpinBox = new QSpinBox();
     _windowFirstTargetSpinBox->setRange(10, 5000);
     _windowFirstTargetSpinBox->setValue(2000);
-    _windowFirstTargetSpinBox->setSuffix(" ms");
+    _windowFirstTargetSpinBox->setSuffix(QStringLiteral(" ms"));
     firstTargetLayout->addWidget(_firstTargetSpinBox);
     firstTargetLayout->addWidget(_windowFirstTargetSpinBox);
     formLayout->addRow(tr("First Target:"), firstTargetLayout);
@@ -660,7 +660,7 @@ QGroupBox *PidWidget::createPIDTestWidgets()
     _windowSecondTargetSpinBox = new QSpinBox();
     _windowSecondTargetSpinBox->setRange(10, 5000);
     _windowSecondTargetSpinBox->setValue(2000);
-    _windowSecondTargetSpinBox->setSuffix(" ms");
+    _windowSecondTargetSpinBox->setSuffix(QStringLiteral(" ms"));
     secondTargetLayout->addWidget(_secondTargetSpinBox);
     secondTargetLayout->addWidget(_windowSecondTargetSpinBox);
     formLayout->addRow(tr("Second Target:"), secondTargetLayout);
@@ -668,7 +668,7 @@ QGroupBox *PidWidget::createPIDTestWidgets()
     _stopDataLoggerSpinBox = new QSpinBox();
     _stopDataLoggerSpinBox->setRange(10, 5000);
     _stopDataLoggerSpinBox->setValue(100);
-    _stopDataLoggerSpinBox->setSuffix(" ms");
+    _stopDataLoggerSpinBox->setSuffix(QStringLiteral(" ms"));
     formLayout->addRow(tr("&End time:"), _stopDataLoggerSpinBox);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();

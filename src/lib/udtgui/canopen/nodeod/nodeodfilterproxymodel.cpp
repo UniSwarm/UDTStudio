@@ -35,7 +35,7 @@ NodeOdFilterProxyModel::~NodeOdFilterProxyModel()
 
 Node *NodeOdFilterProxyModel::node() const
 {
-    NodeOdItemModel *smodel = dynamic_cast<NodeOdItemModel *>(sourceModel());
+    NodeOdItemModel *smodel = qobject_cast<NodeOdItemModel *>(sourceModel());
     if (smodel == nullptr)
     {
         return nullptr;
@@ -45,7 +45,7 @@ Node *NodeOdFilterProxyModel::node() const
 
 NodeIndex *NodeOdFilterProxyModel::nodeIndex(const QModelIndex &index) const
 {
-    NodeOdItemModel *smodel = dynamic_cast<NodeOdItemModel *>(sourceModel());
+    NodeOdItemModel *smodel = qobject_cast<NodeOdItemModel *>(sourceModel());
     if (smodel == nullptr)
     {
         return nullptr;
@@ -55,7 +55,7 @@ NodeIndex *NodeOdFilterProxyModel::nodeIndex(const QModelIndex &index) const
 
 NodeSubIndex *NodeOdFilterProxyModel::nodeSubIndex(const QModelIndex &index) const
 {
-    NodeOdItemModel *smodel = dynamic_cast<NodeOdItemModel *>(sourceModel());
+    NodeOdItemModel *smodel = qobject_cast<NodeOdItemModel *>(sourceModel());
     if (smodel == nullptr)
     {
         return nullptr;
@@ -76,7 +76,7 @@ void NodeOdFilterProxyModel::setPdoFilter(NodeOdFilterProxyModel::PDOFilter pdoF
 
 bool NodeOdFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
-    NodeOdItemModel *smodel = dynamic_cast<NodeOdItemModel *>(sourceModel());
+    NodeOdItemModel *smodel = qobject_cast<NodeOdItemModel *>(sourceModel());
     if (smodel == nullptr)
     {
         return false;
@@ -145,7 +145,7 @@ bool NodeOdFilterProxyModel::filterAcceptsColumn(int source_column, const QModel
 
 bool NodeOdFilterProxyModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const
 {
-    NodeOdItemModel *smodel = dynamic_cast<NodeOdItemModel *>(sourceModel());
+    NodeOdItemModel *smodel = qobject_cast<NodeOdItemModel *>(sourceModel());
     if (smodel == nullptr)
     {
         return false;

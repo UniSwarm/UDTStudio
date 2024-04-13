@@ -194,8 +194,8 @@ QToolBar *MotorWidget::createToolBarWidgets()
 
     // read all action
     QAction *readAllAction = toolBar->addAction(tr("Read all objects"));
-    readAllAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
-    readAllAction->setShortcut(QKeySequence("Ctrl+R"));
+    readAllAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-update.png")));
+    readAllAction->setShortcut(QKeySequence(QStringLiteral("Ctrl+R")));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));
     connect(readAllAction, &QAction::triggered, this, &MotorWidget::readAll);
 
@@ -206,10 +206,10 @@ QToolBar *MotorWidget::createToolBarWidgets()
     _lockAction->setEnabled(false);
     _lockAction->setCheckable(true);
     QIcon iconLockUnlock;
-    iconLockUnlock.addFile(":/icons/img/icons8-lock.png", QSize(), QIcon::Normal, QIcon::On);
-    iconLockUnlock.addFile(":/icons/img/icons8-unlock.png", QSize(), QIcon::Normal, QIcon::Off);
+    iconLockUnlock.addFile(QStringLiteral(":/icons/img/icons8-lock.png"), QSize(), QIcon::Normal, QIcon::On);
+    iconLockUnlock.addFile(QStringLiteral(":/icons/img/icons8-unlock.png"), QSize(), QIcon::Normal, QIcon::Off);
     _lockAction->setIcon(iconLockUnlock);
-    _lockAction->setShortcut(QKeySequence("Ctrl+L"));
+    _lockAction->setShortcut(QKeySequence(QStringLiteral("Ctrl+L")));
     _lockAction->setStatusTip(tr("Editing of config parameters is not possible in OE mode, go to SO to unlock"));
     connect(_lockAction, &QAction::triggered, this, &MotorWidget::lockUnlockConfig);
 
@@ -217,11 +217,11 @@ QToolBar *MotorWidget::createToolBarWidgets()
 
     // currents actions
     QAction *mapCurrentsAction = toolBar->addAction(tr("Map currents"));
-    mapCurrentsAction->setShortcut(QKeySequence("Ctrl+M"));
+    mapCurrentsAction->setShortcut(QKeySequence(QStringLiteral("Ctrl+M")));
     connect(mapCurrentsAction, &QAction::triggered, this, &MotorWidget::mapCurrents);
 
     QAction *monitorCurrentsAction = toolBar->addAction(tr("Logger currents"));
-    monitorCurrentsAction->setShortcut(QKeySequence("Ctrl+D"));
+    monitorCurrentsAction->setShortcut(QKeySequence(QStringLiteral("Ctrl+D")));
     connect(monitorCurrentsAction, &QAction::triggered, this, &MotorWidget::monitorCurrents);
 
     return toolBar;
@@ -237,12 +237,12 @@ QGroupBox *MotorWidget::createMotorConfigWidgets()
     _motorTypeComboBox->insertSeparator(_motorTypeComboBox->count());
 
     _motorTypeComboBox->addItem(tr("DC brushed"));
-    dynamic_cast<QStandardItemModel *>(_motorTypeComboBox->model())->item(_motorTypeComboBox->count() - 1)->setEnabled(false);
+    qobject_cast<QStandardItemModel *>(_motorTypeComboBox->model())->item(_motorTypeComboBox->count() - 1)->setEnabled(false);
     _motorTypeComboBox->addItem(tr("DC motor"), QVariant(static_cast<uint16_t>(0x0101)));
     _motorTypeComboBox->insertSeparator(_motorTypeComboBox->count());
 
     _motorTypeComboBox->addItem(tr("BLDC brushless"));
-    dynamic_cast<QStandardItemModel *>(_motorTypeComboBox->model())->item(_motorTypeComboBox->count() - 1)->setEnabled(false);
+    qobject_cast<QStandardItemModel *>(_motorTypeComboBox->model())->item(_motorTypeComboBox->count() - 1)->setEnabled(false);
     _motorTypeComboBox->addItem(tr("BLDC trapezoidal with hall"), QVariant(static_cast<uint16_t>(0x0201)));
     _motorTypeComboBox->addItem(tr("BLDC sinusoidal with hall"), QVariant(static_cast<uint16_t>(0x0202)));
     _motorTypeComboBox->addItem(tr("BLDC sinusoidal with incremental encoder"), QVariant(static_cast<uint16_t>(0x0203)));
@@ -297,7 +297,7 @@ QGroupBox *MotorWidget::createMotorStatusWidgets()
 
     _bridgeCommandBar = new IndexBar();
     statusLayout->addRow(tr("Command duty cycle:"), _bridgeCommandBar);
-    _bridgeCommandBar->setUnit("%");
+    _bridgeCommandBar->setUnit(QStringLiteral("%"));
     _bridgeCommandBar->setScale(100.0 / 32768.0);
     _bridgeCommandBar->setRange(-100, 100);
     adddynamicIndexWidget(_bridgeCommandBar);

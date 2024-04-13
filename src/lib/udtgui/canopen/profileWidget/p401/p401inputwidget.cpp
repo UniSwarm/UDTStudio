@@ -71,7 +71,8 @@ void P401InputWidget::createWidgets()
     _digitalLabel = new QLabel();
     _digitalLabel->setMinimumWidth(44);
     _digitalLabel->setAlignment(Qt::AlignHCenter);
-    _digitalLabel->setStyleSheet(QStringLiteral("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px"));
+    _digitalLabel->setStyleSheet(
+        QStringLiteral("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px"));
     _digitalLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     hlayout->addWidget(_digitalLabel);
 
@@ -108,12 +109,14 @@ void P401InputWidget::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest f
         if (act)
         {
             _digitalLabel->setText(tr("High"));
-            _digitalLabel->setStyleSheet(QStringLiteral("background-color: #1464A0;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px"));
+            _digitalLabel->setStyleSheet(
+                QStringLiteral("background-color: #1464A0;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px"));
         }
         else
         {
             _digitalLabel->setText(tr("Low"));
-            _digitalLabel->setStyleSheet(QStringLiteral("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px"));
+            _digitalLabel->setStyleSheet(
+                QStringLiteral("background-color: #19232D;border: 1px solid #32414B;color: #F0F0F0;border-radius: 4px;padding: 0px; margin: 2px"));
         }
     }
 }

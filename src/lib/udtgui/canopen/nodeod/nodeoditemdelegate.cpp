@@ -59,7 +59,7 @@ QWidget *NodeOdItemDelegate::createEditor(QWidget *parent, const QStyleOptionVie
     QWidget *editor = QItemDelegate::createEditor(parent, option, index);
     if (index.column() == NodeOdItemModel::Value)
     {
-        const NodeOdFilterProxyModel *itemModel = dynamic_cast<const NodeOdFilterProxyModel *>(index.model());
+        const NodeOdFilterProxyModel *itemModel = qobject_cast<const NodeOdFilterProxyModel *>(index.model());
         NodeSubIndex *subIndex = itemModel->nodeSubIndex(index);
         _currentEditUnit = subIndex->unit();
 

@@ -101,7 +101,7 @@ void IndexBar::contextMenuEvent(QContextMenuEvent *event)
 
 QString IndexBar::text() const
 {
-    return QString("%1%2").arg(AbstractIndexWidget::indexValue().toDouble(), 0, 'g', 2).arg(_unit);
+    return QStringLiteral("%1%2").arg(AbstractIndexWidget::indexValue().toDouble(), 0, 'g', 2).arg(_unit);
 }
 
 void IndexBar::setDisplayValue(const QVariant &value, DisplayAttribute flags)

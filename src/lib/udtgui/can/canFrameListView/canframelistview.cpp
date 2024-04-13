@@ -39,9 +39,9 @@ CanFrameListView::CanFrameListView(QWidget *parent)
 
     // columns width
 #if QT_VERSION >= 0x050B00
-    int w0 = QFontMetrics(font()).horizontalAdvance("0");
+    int w0 = QFontMetrics(font()).horizontalAdvance(QStringLiteral("0"));
 #else
-    int w0 = QFontMetrics(font()).width("0");
+    int w0 = QFontMetrics(font()).width(QStringLiteral("0"));
 #endif
     horizontalHeader()->resizeSection(CanFrameModel::Time, 10 * w0);
     horizontalHeader()->resizeSection(CanFrameModel::CanId, 12 * w0);
@@ -50,9 +50,9 @@ CanFrameListView::CanFrameListView(QWidget *parent)
     QFont fontMono = QApplication::font();
     fontMono.setStyleHint(QFont::Monospace);
 #if QT_VERSION >= 0x050B00
-    int w1 = QFontMetrics(fontMono).horizontalAdvance("00 ");
+    int w1 = QFontMetrics(fontMono).horizontalAdvance(QStringLiteral("00 "));
 #else
-    int w1 = QFontMetrics(fontMono).width("00 ");
+    int w1 = QFontMetrics(fontMono).width(QStringLiteral("00 "));
 #endif
     horizontalHeader()->resizeSection(CanFrameModel::DataByte, 9 * w1);
 
@@ -97,8 +97,8 @@ void CanFrameListView::copy()
         {
             rowContents << model()->index(i, j).data().toString();
         }
-        text += rowContents.join("\t");
-        text += "\n";
+        text += rowContents.join(QStringLiteral("\t"));
+        text += QStringLiteral("\n");
     }
     QApplication::clipboard()->setText(text);
 }

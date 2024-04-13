@@ -75,9 +75,9 @@ void NodeOdTreeView::setNode(Node *node)
     _odModelSorter->setSourceModel(_odModel);
 
 #if QT_VERSION >= 0x050B00
-    int w0 = QFontMetrics(font()).horizontalAdvance("0");
+    int w0 = QFontMetrics(font()).horizontalAdvance(QStringLiteral("0"));
 #else
-    int w0 = QFontMetrics(font()).width("0");
+    int w0 = QFontMetrics(font()).width(QStringLiteral("0"));
 #endif
     header()->resizeSection(0, 12 * w0);
     header()->resizeSection(1, 40 * w0);
@@ -147,11 +147,11 @@ void NodeOdTreeView::selectNodeObjectId(const NodeObjectId &objId)
 
 void NodeOdTreeView::setFilter(const QString &filterText)
 {
-    static QRegularExpression filterRegExp("(?:pdo:(?<pdo>[^ ]*) *|type:(?<type>[^ ]*) *)*(.*)");
+    static QRegularExpression filterRegExp(QStringLiteral("(?:pdo:(?<pdo>[^ ]*) *|type:(?<type>[^ ]*) *)*(.*)"));
     QRegularExpressionMatch match = filterRegExp.match(filterText);
 
     // pdo
-    QString pdoFilter = match.captured("pdo");
+    QString pdoFilter = match.captured(QStringLiteral("pdo"));
     QStringList pdoMatch = {"all", "pdo", "rpdo", "tpdo"};
     int idMatch = pdoMatch.indexOf(pdoFilter);
     if (idMatch != -1)
@@ -164,7 +164,7 @@ void NodeOdTreeView::setFilter(const QString &filterText)
     }
 
     QString textFilter = match.capturedTexts().at(match.lastCapturedIndex());
-    if (textFilter.startsWith("0x", Qt::CaseInsensitive))
+    if (textFilter.startsWith(QStringLiteral("0x"), Qt::CaseInsensitive))
     {
         _odModelSorter->setFilterKeyColumn(NodeOdItemModel::OdIndex);
     }
@@ -253,7 +253,7 @@ void NodeOdTreeView::createActions()
     _readAction->setText(tr("&Read"));
     _readAction->setShortcut(Qt::Key_F5);
     _readAction->setShortcutContext(Qt::WidgetShortcut);
-    _readAction->setIcon(QIcon(":/icons/img/icons8-import.png"));
+    _readAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-import.png")));
     _readAction->setEnabled(false);
 #if QT_VERSION >= 0x050A00
     _readAction->setShortcutVisibleInContextMenu(true);
@@ -271,7 +271,7 @@ void NodeOdTreeView::createActions()
 #endif
 
     _readAllAction->setShortcutContext(Qt::WidgetShortcut);
-    _readAllAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
+    _readAllAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-update.png")));
 #if QT_VERSION >= 0x050A00
     _readAllAction->setShortcutVisibleInContextMenu(true);
 #endif
@@ -282,7 +282,7 @@ void NodeOdTreeView::createActions()
     _copyAction->setText(tr("&Copy"));
     _copyAction->setShortcut(QKeySequence::Copy);
     _copyAction->setShortcutContext(Qt::WidgetShortcut);
-    _copyAction->setIcon(QIcon(":/icons/img/icons8-copy"));
+    _copyAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-copy")));
 #if QT_VERSION >= 0x050A00
     _copyAction->setShortcutVisibleInContextMenu(true);
 #endif

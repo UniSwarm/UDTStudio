@@ -79,7 +79,7 @@ void DataLoggerWidget::createWidgets(Qt::Orientation orientation)
     layout->setContentsMargins(2, 2, 2, 2);
 
     QSplitter *splitter = new QSplitter();
-    splitter->setStyleSheet("QSplitter {background: #19232D;}");
+    splitter->setStyleSheet(QStringLiteral("QSplitter {background: #19232D;}"));
 
     QWidget *widgetLogger = new QWidget();
     QVBoxLayout *layoutLogger = new QVBoxLayout();

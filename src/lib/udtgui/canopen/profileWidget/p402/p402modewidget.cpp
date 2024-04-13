@@ -109,17 +109,17 @@ void P402ModeWidget::createDefaultActions()
     QAction *action;
 
     action = new QAction(tr("Datalogger"), this);
-    action->setIcon(QIcon(":/icons/img/icons8-statistics.png"));
+    action->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-statistics.png")));
     connect(action, &QAction::triggered, this, &P402ModeWidget::createDataLogger);
     _modeActions.append(action);
 
     action = new QAction(tr("Map to PDOs"), this);
-    action->setIcon(QIcon(":/icons/img/icons8-pdo-transfer.png"));
+    action->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-pdo-transfer.png")));
     connect(action, &QAction::triggered, this, &P402ModeWidget::mapDefaultObjects);
     _modeActions.append(action);
 
     action = new QAction(tr("Diagram"), this);
-    action->setIcon(QIcon(":/icons/img/icons8-diagram.png"));
+    action->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-diagram.png")));
     connect(action, &QAction::triggered, this, &P402ModeWidget::showDiagram);
     _modeActions.append(action);
 }

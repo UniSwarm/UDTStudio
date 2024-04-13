@@ -177,8 +177,8 @@ void BusManagerWidget::createWidgets()
     // connect
     _actionTogleConnect = _toolBar->addAction(tr("Connect"));
     QIcon iconConnect;
-    iconConnect.addFile(":/icons/img/icons8-disconnected.png", QSize(), QIcon::Normal, QIcon::Off);
-    iconConnect.addFile(":/icons/img/icons8-connected.png", QSize(), QIcon::Normal, QIcon::On);
+    iconConnect.addFile(QStringLiteral(":/icons/img/icons8-disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
+    iconConnect.addFile(QStringLiteral(":/icons/img/icons8-connected.png"), QSize(), QIcon::Normal, QIcon::On);
     _actionTogleConnect->setIcon(iconConnect);
     _actionTogleConnect->setCheckable(true);
     _actionTogleConnect->setStatusTip(tr("Connect/disconnect bus"));
@@ -186,8 +186,8 @@ void BusManagerWidget::createWidgets()
 
     // explore
     _actionExplore = _toolBar->addAction(tr("Explore"));
-    _actionExplore->setIcon(QIcon(":/icons/img/icons8-search-database.png"));
-    _actionExplore->setShortcut(QKeySequence("Ctrl+E"));
+    _actionExplore->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-search-database.png")));
+    _actionExplore->setShortcut(QKeySequence(QStringLiteral("Ctrl+E")));
     _actionExplore->setStatusTip(tr("Explore bus for new nodes"));
     connect(_actionExplore,
             &QAction::triggered,
@@ -200,7 +200,7 @@ void BusManagerWidget::createWidgets()
 
     // Sync one
     _actionSyncOne = _toolBar->addAction(tr("Sync one"));
-    _actionSyncOne->setIcon(QIcon(":/icons/img/icons8-sync1.png"));
+    _actionSyncOne->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-sync1.png")));
     _actionSyncOne->setStatusTip(tr("Send one sync command"));
     connect(_actionSyncOne, &QAction::triggered, this, &BusManagerWidget::sendSyncOne);
 
@@ -208,7 +208,7 @@ void BusManagerWidget::createWidgets()
     _syncTimerSpinBox = new QSpinBox();
     _syncTimerSpinBox->setRange(1, 5000);
     _syncTimerSpinBox->setValue(100);
-    _syncTimerSpinBox->setSuffix(" ms");
+    _syncTimerSpinBox->setSuffix(QStringLiteral(" ms"));
     _syncTimerSpinBox->setStatusTip(tr("Sets the interval of sync timer in ms"));
     _toolBar->addWidget(_syncTimerSpinBox);
     connect(_syncTimerSpinBox,
@@ -220,7 +220,7 @@ void BusManagerWidget::createWidgets()
             });
 
     _actionSyncStart = _toolBar->addAction(tr("Start / stop sync"));
-    _actionSyncStart->setIcon(QIcon(":/icons/img/icons8-sync.png"));
+    _actionSyncStart->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-sync.png")));
     _actionSyncStart->setCheckable(true);
     _actionSyncStart->setStatusTip(tr("Start / stop sync timer"));
     connect(_actionSyncStart, &QAction::triggered, this, &BusManagerWidget::toggleSync);

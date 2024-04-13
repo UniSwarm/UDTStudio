@@ -82,19 +82,19 @@ void P428ChannelWidget::createWidgets()
     _effectComboBox = new IndexComboBox();
     _effectComboBox->setObjId(NodeObjectId(0x6020 + 0x100 * _channel, 0));
     _effectComboBox->addItem(tr("Fixed"));
-    dynamic_cast<QStandardItemModel *>(_effectComboBox->model())->item(_effectComboBox->count() - 1)->setEnabled(false);
+    qobject_cast<QStandardItemModel *>(_effectComboBox->model())->item(_effectComboBox->count() - 1)->setEnabled(false);
     _effectComboBox->addItem(tr("OFF"), QVariant(static_cast<uint16_t>(0x0000)));
     _effectComboBox->addItem(tr("Fixed color"), QVariant(static_cast<uint16_t>(0x0001)));
     _effectComboBox->insertSeparator(_effectComboBox->count());
 
     _effectComboBox->addItem(tr("Time based"));
-    dynamic_cast<QStandardItemModel *>(_effectComboBox->model())->item(_effectComboBox->count() - 1)->setEnabled(false);
+    qobject_cast<QStandardItemModel *>(_effectComboBox->model())->item(_effectComboBox->count() - 1)->setEnabled(false);
     _effectComboBox->addItem(tr("Flash"), QVariant(static_cast<uint16_t>(0x0101)));
     _effectComboBox->addItem(tr("Breathing"), QVariant(static_cast<uint16_t>(0x0102)));
     _effectComboBox->insertSeparator(_effectComboBox->count());
 
     _effectComboBox->addItem(tr("Movement"));
-    dynamic_cast<QStandardItemModel *>(_effectComboBox->model())->item(_effectComboBox->count() - 1)->setEnabled(false);
+    qobject_cast<QStandardItemModel *>(_effectComboBox->model())->item(_effectComboBox->count() - 1)->setEnabled(false);
     _effectComboBox->addItem(tr("Flow"), QVariant(static_cast<uint16_t>(0x0300)));
     _effectComboBox->addItem(tr("Reverse flow"), QVariant(static_cast<uint16_t>(0x0301)));
     formLayout->addRow(tr("Effect:"), _effectComboBox);

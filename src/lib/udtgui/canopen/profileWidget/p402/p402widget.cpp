@@ -53,7 +53,7 @@ Node *P402Widget::node() const
 
 QString P402Widget::title() const
 {
-    return QString("Motion control");
+    return QStringLiteral("Motion control");
 }
 
 void P402Widget::setProfile(NodeProfile402 *profile)
@@ -226,7 +226,7 @@ void P402Widget::setModeIndex(int id)
         return;
     }
     _modeComboBox->setEnabled(false);
-    _modeLabel->setText("Mode change in progress");
+    _modeLabel->setText(tr("Mode change in progress"));
     NodeProfile402::OperationMode mode = static_cast<NodeProfile402::OperationMode>(_modeComboBox->currentData().toInt());
     _nodeProfile402->setMode(mode);
 }
@@ -331,7 +331,7 @@ void P402Widget::setEvent(quint8 event)
     {
         if (!informationText.isEmpty())
         {
-            informationText.append(",\n");
+            informationText.append(QStringLiteral(",\n"));
         }
         informationText.append(_nodeProfile402->event402Str(NodeProfile402::Remote));
     }
@@ -339,7 +339,7 @@ void P402Widget::setEvent(quint8 event)
     {
         if (!informationText.isEmpty())
         {
-            informationText.append(",\n");
+            informationText.append(QStringLiteral(",\n"));
         }
         informationText.append(_nodeProfile402->event402Str(NodeProfile402::TargetReached));
     }
@@ -347,7 +347,7 @@ void P402Widget::setEvent(quint8 event)
     {
         if (!informationText.isEmpty())
         {
-            informationText.append(",\n");
+            informationText.append(QStringLiteral(",\n"));
         }
         informationText.append(_nodeProfile402->event402Str(NodeProfile402::ModeSpecific));
     }
@@ -362,7 +362,7 @@ void P402Widget::setEvent(quint8 event)
     {
         if (!warningText.isEmpty())
         {
-            warningText.append(",\n");
+            warningText.append(QStringLiteral(",\n"));
         }
         warningText.append(_nodeProfile402->event402Str(NodeProfile402::Warning));
     }
@@ -373,7 +373,7 @@ void P402Widget::setEvent(quint8 event)
         {
             if (!warningText.isEmpty())
             {
-                warningText.append(",\n");
+                warningText.append(QStringLiteral(",\n"));
             }
             warningText.append(_nodeProfile402->event402Str(NodeProfile402::FollowingError));
         }
@@ -390,7 +390,7 @@ void P402Widget::updateModeComboBox()
     if (!otherSupportedModes.isEmpty())
     {
         _modeComboBox->addItem(tr("OTHER"));
-        dynamic_cast<QStandardItemModel *>(_modeComboBox->model())->item(_modeComboBox->count() - 1)->setEnabled(false);
+        qobject_cast<QStandardItemModel *>(_modeComboBox->model())->item(_modeComboBox->count() - 1)->setEnabled(false);
         for (NodeProfile402::OperationMode mode : otherSupportedModes)
         {
             _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
@@ -402,7 +402,7 @@ void P402Widget::updateModeComboBox()
     if (!torqueSupportedModes.isEmpty())
     {
         _modeComboBox->addItem(tr("TORQUE"));
-        dynamic_cast<QStandardItemModel *>(_modeComboBox->model())->item(_modeComboBox->count() - 1)->setEnabled(false);
+        qobject_cast<QStandardItemModel *>(_modeComboBox->model())->item(_modeComboBox->count() - 1)->setEnabled(false);
         for (NodeProfile402::OperationMode mode : torqueSupportedModes)
         {
             _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
@@ -414,7 +414,7 @@ void P402Widget::updateModeComboBox()
     if (!velocitySupportedModes.isEmpty())
     {
         _modeComboBox->addItem(tr("VELOCITY"));
-        dynamic_cast<QStandardItemModel *>(_modeComboBox->model())->item(_modeComboBox->count() - 1)->setEnabled(false);
+        qobject_cast<QStandardItemModel *>(_modeComboBox->model())->item(_modeComboBox->count() - 1)->setEnabled(false);
         for (NodeProfile402::OperationMode mode : velocitySupportedModes)
         {
             _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
@@ -426,7 +426,7 @@ void P402Widget::updateModeComboBox()
     if (!positionSupportedModes.isEmpty())
     {
         _modeComboBox->addItem(tr("POSITION"));
-        dynamic_cast<QStandardItemModel *>(_modeComboBox->model())->item(_modeComboBox->count() - 1)->setEnabled(false);
+        qobject_cast<QStandardItemModel *>(_modeComboBox->model())->item(_modeComboBox->count() - 1)->setEnabled(false);
         for (NodeProfile402::OperationMode mode : positionSupportedModes)
         {
             _modeComboBox->addItem(_nodeProfile402->modeStr(mode), QVariant(static_cast<int>(mode)));
@@ -492,7 +492,7 @@ void P402Widget::createWidgets()
     {
         _stackedWidget->addWidget(mode);
     }
-    _stackedWidget->setStyleSheet("QStackedWidget {padding: 0 0 0 3px;}");
+    _stackedWidget->setStyleSheet(QStringLiteral("QStackedWidget {padding: 0 0 0 3px;}"));
     _stackedWidget->setMinimumWidth(450);
 
     // Create interface
@@ -546,8 +546,8 @@ QToolBar *P402Widget::createToolBarWidgets()
     _startStopAction = toolBar->addAction(tr("Start / stop"));
     _startStopAction->setCheckable(true);
     QIcon iconStartStop;
-    iconStartStop.addFile(":/icons/img/icons8-stop.png", QSize(), QIcon::Normal, QIcon::On);
-    iconStartStop.addFile(":/icons/img/icons8-play.png", QSize(), QIcon::Normal, QIcon::Off);
+    iconStartStop.addFile(QStringLiteral(":/icons/img/icons8-stop.png"), QSize(), QIcon::Normal, QIcon::On);
+    iconStartStop.addFile(QStringLiteral(":/icons/img/icons8-play.png"), QSize(), QIcon::Normal, QIcon::Off);
     _startStopAction->setIcon(iconStartStop);
     _startStopAction->setStatusTip(tr("Start or stop the data logger"));
     connect(_startStopAction, &QAction::triggered, this, &P402Widget::setStartLogger);
@@ -555,7 +555,7 @@ QToolBar *P402Widget::createToolBarWidgets()
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
     _logTimerSpinBox->setValue(100);
-    _logTimerSpinBox->setSuffix(" ms");
+    _logTimerSpinBox->setSuffix(QStringLiteral(" ms"));
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
     toolBar->addWidget(_logTimerSpinBox);
     connect(_logTimerSpinBox,
@@ -570,7 +570,7 @@ QToolBar *P402Widget::createToolBarWidgets()
 
     _option402Action = toolBar->addAction(tr("Options code"));
     _option402Action->setCheckable(true);
-    _option402Action->setIcon(QIcon(":/icons/img/icons8-settings.png"));
+    _option402Action->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-settings.png")));
     _option402Action->setStatusTip(tr("Show options code settings"));
     connect(_option402Action, &QAction::triggered, this, &P402Widget::displayOption402);
 
@@ -578,8 +578,8 @@ QToolBar *P402Widget::createToolBarWidgets()
 
     // read all action
     QAction *readAllObjectAction = toolBar->addAction(tr("Read all objects"));
-    readAllObjectAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
-    readAllObjectAction->setShortcut(QKeySequence("Ctrl+R"));
+    readAllObjectAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-update.png")));
+    readAllObjectAction->setShortcut(QKeySequence(QStringLiteral("Ctrl+R")));
     readAllObjectAction->setStatusTip(tr("Read all the objects of the current window"));
     connect(readAllObjectAction, &QAction::triggered, this, &P402Widget::readAllObjects);
 
@@ -619,45 +619,45 @@ QGroupBox *P402Widget::createStateMachineWidgets()
     _stateMachineButtonGroup->addButton(stateNotReadyToSwitchOnPushButton, NodeProfile402::STATE_NotReadyToSwitchOn);
 
     QPushButton *stateSwitchOnDisabledPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_SwitchOnDisabled));
-    stateSwitchOnDisabledPushButton->setStyleSheet("QPushButton:checked { background-color : #ffa500; }"
-                                                   "QPushButton:checked:hover { border: 1px solid #7f5200; }");
+    stateSwitchOnDisabledPushButton->setStyleSheet(QStringLiteral("QPushButton:checked { background-color : #ffa500; }"
+                                                                  "QPushButton:checked:hover { border: 1px solid #7f5200; }"));
     layout->addRow(stateSwitchOnDisabledPushButton);
     _stateMachineButtonGroup->addButton(stateSwitchOnDisabledPushButton, NodeProfile402::STATE_SwitchOnDisabled);
 
     QPushButton *stateReadyToSwitchOnPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_ReadyToSwitchOn));
-    stateReadyToSwitchOnPushButton->setStyleSheet("QPushButton:checked { background-color : #ffa500; }"
-                                                  "QPushButton:checked:hover { border: 1px solid #7f5200; }");
+    stateReadyToSwitchOnPushButton->setStyleSheet(QStringLiteral("QPushButton:checked { background-color : #ffa500; }"
+                                                                 "QPushButton:checked:hover { border: 1px solid #7f5200; }"));
     layout->addRow(stateReadyToSwitchOnPushButton);
     _stateMachineButtonGroup->addButton(stateReadyToSwitchOnPushButton, NodeProfile402::STATE_ReadyToSwitchOn);
 
     QPushButton *stateSwitchedOnPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_SwitchedOn));
-    stateSwitchedOnPushButton->setStyleSheet("QPushButton:checked { background-color : #ffa500; }"
-                                             "QPushButton:checked:hover { border: 1px solid #7f5200; }");
+    stateSwitchedOnPushButton->setStyleSheet(QStringLiteral("QPushButton:checked { background-color : #ffa500; }"
+                                                            "QPushButton:checked:hover { border: 1px solid #7f5200; }"));
     layout->addRow(stateSwitchedOnPushButton);
     _stateMachineButtonGroup->addButton(stateSwitchedOnPushButton, NodeProfile402::STATE_SwitchedOn);
 
     QPushButton *stateOperationEnabledPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_OperationEnabled));
-    stateOperationEnabledPushButton->setStyleSheet("QPushButton:checked { background-color : #008000; }"
-                                                   "QPushButton:checked:hover { border: 1px solid #004000; }");
+    stateOperationEnabledPushButton->setStyleSheet(QStringLiteral("QPushButton:checked { background-color : #008000; }"
+                                                                  "QPushButton:checked:hover { border: 1px solid #004000; }"));
     layout->addRow(stateOperationEnabledPushButton);
     _stateMachineButtonGroup->addButton(stateOperationEnabledPushButton, NodeProfile402::STATE_OperationEnabled);
 
     QPushButton *stateQuickStopActivePushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_QuickStopActive));
-    stateQuickStopActivePushButton->setStyleSheet("QPushButton:checked { background-color : #148CD2; }"
-                                                  "QPushButton:checked:hover { border: 1px solid #094669; }");
+    stateQuickStopActivePushButton->setStyleSheet(QStringLiteral("QPushButton:checked { background-color : #148CD2; }"
+                                                                 "QPushButton:checked:hover { border: 1px solid #094669; }"));
     layout->addRow(stateQuickStopActivePushButton);
     _stateMachineButtonGroup->addButton(stateQuickStopActivePushButton, NodeProfile402::STATE_QuickStopActive);
 
     QPushButton *stateFaultReactionActivePushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_FaultReactionActive));
-    stateFaultReactionActivePushButton->setStyleSheet("QPushButton:checked { background-color : #ff0000; }"
-                                                      "QPushButton:checked:hover { border: 1px solid #7f0000; }");
+    stateFaultReactionActivePushButton->setStyleSheet(QStringLiteral("QPushButton:checked { background-color : #ff0000; }"
+                                                                     "QPushButton:checked:hover { border: 1px solid #7f0000; }"));
     stateFaultReactionActivePushButton->setEnabled(false);
     layout->addRow(stateFaultReactionActivePushButton);
     _stateMachineButtonGroup->addButton(stateFaultReactionActivePushButton, NodeProfile402::STATE_FaultReactionActive);
 
     QPushButton *stateFaultPushButton = new QPushButton(_nodeProfile402->stateStr(NodeProfile402::STATE_Fault));
-    stateFaultPushButton->setStyleSheet("QPushButton:checked { background-color : #ff0000; }"
-                                        "QPushButton:checked:hover { border: 1px solid #7f0000; }");
+    stateFaultPushButton->setStyleSheet(QStringLiteral("QPushButton:checked { background-color : #ff0000; }"
+                                                       "QPushButton:checked:hover { border: 1px solid #7f0000; }"));
     stateFaultPushButton->setEnabled(false);
     layout->addRow(stateFaultPushButton);
     _stateMachineButtonGroup->addButton(stateFaultPushButton, NodeProfile402::STATE_Fault);
@@ -690,7 +690,7 @@ QGroupBox *P402Widget::createControlWordWidgets()
     QFormLayout *layout = new QFormLayout();
 
     _haltPushButton = new QPushButton(tr("Halt"));
-    _haltPushButton->setStyleSheet("QPushButton:checked { background-color : #148CD2; }");
+    _haltPushButton->setStyleSheet(QStringLiteral("QPushButton:checked { background-color : #148CD2; }"));
     _haltPushButton->setEnabled(false);
     layout->addRow(_haltPushButton);
     groupBox->setLayout(layout);
@@ -724,7 +724,7 @@ QGroupBox *P402Widget::createStatusWordWidgets()
     layout->addRow(tr("Information:"), _informationLabel);
 
     _warningLabel = new QLabel();
-    _warningLabel->setStyleSheet("QLabel { color : red; }");
+    _warningLabel->setStyleSheet(QStringLiteral("QLabel { color : red; }"));
     layout->addRow(tr("Warning:"), _warningLabel);
 
     groupBox->setLayout(layout);

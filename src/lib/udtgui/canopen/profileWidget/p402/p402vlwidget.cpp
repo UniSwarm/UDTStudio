@@ -172,7 +172,7 @@ void P402VlWidget::updateInformationLabel()
     {
         if (!text.isEmpty())
         {
-            text.append(" & ");
+            text.append(QStringLiteral(" & "));
         }
         text += QStringLiteral("Ramp is locked");
     }
@@ -180,7 +180,7 @@ void P402VlWidget::updateInformationLabel()
     {
         if (!text.isEmpty())
         {
-            text.append(" & ");
+            text.append(QStringLiteral(" & "));
         }
         text += QStringLiteral("Ramp set to 0");
     }

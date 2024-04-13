@@ -234,7 +234,7 @@ QString AbstractIndexWidget::pstringValue(const QVariant &value, const AbstractI
             str = QString::number(value.toDouble(), 'g', 10);
             if (!str.contains('.'))
             {
-                str.append(".0");
+                str.append(QStringLiteral(".0"));
             }
             break;
     }
@@ -287,7 +287,7 @@ void AbstractIndexWidget::indexWidgetMouseMove(QMouseEvent *event)
 
     QByteArray encodedData;
     encodedData.append(objId().mimeData().toUtf8());
-    mimeData->setData("index/subindex", encodedData);
+    mimeData->setData(QStringLiteral("index/subindex"), encodedData);
     drag->setMimeData(mimeData);
 
     drag->exec();
@@ -365,7 +365,7 @@ uint64_t AbstractIndexWidget::bitMask() const
     return _bitMask;
 }
 
-void AbstractIndexWidget::setBitMask(const uint64_t &bitMask)
+void AbstractIndexWidget::setBitMask(uint64_t bitMask)
 {
     _bitMask = bitMask;
 }
@@ -544,7 +544,7 @@ QMenu *AbstractIndexWidget::createStandardContextMenu(QMenu *menu)
     QAction *readAction = new QAction(QObject::tr("Read"));
     readAction->setShortcut(Qt::Key_F5);
     readAction->setShortcutContext(Qt::WidgetShortcut);
-    readAction->setIcon(QIcon(":/icons/img/icons8-import.png"));
+    readAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-import.png")));
 #if QT_VERSION >= 0x050A00
     readAction->setShortcutVisibleInContextMenu(true);
 #endif

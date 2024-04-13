@@ -101,7 +101,7 @@ void NodeManagerWidget::updateData()
     }
     else
     {
-        _nodeNameEdit->setText("");
+        _nodeNameEdit->setText(QStringLiteral(""));
     }
 }
 
@@ -219,31 +219,31 @@ void NodeManagerWidget::createWidgets()
 
     _actionPreop = _groupNmt->addAction(tr("Pre operationnal"));
     _actionPreop->setCheckable(true);
-    _actionPreop->setIcon(QIcon(":/icons/img/icons8-connection-status-on.png"));
+    _actionPreop->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-connection-status-on.png")));
     _actionPreop->setStatusTip(tr("Request node to go in preop mode"));
     connect(_actionPreop, &QAction::triggered, this, &NodeManagerWidget::preop);
 
     _actionStart = _groupNmt->addAction(tr("Start"));
     _actionStart->setCheckable(true);
-    _actionStart->setIcon(QIcon(":/icons/img/icons8-play.png"));
+    _actionStart->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-play.png")));
     _actionStart->setStatusTip(tr("Request node to go in started mode"));
     connect(_actionStart, &QAction::triggered, this, &NodeManagerWidget::start);
 
     _actionStop = _groupNmt->addAction(tr("Stop"));
     _actionStop->setCheckable(true);
-    _actionStop->setIcon(QIcon(":/icons/img/icons8-stop.png"));
+    _actionStop->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-stop.png")));
     _actionStop->setStatusTip(tr("Request node to go in stop mode"));
     connect(_actionStop, &QAction::triggered, this, &NodeManagerWidget::stop);
 
     _actionResetCom = _groupNmt->addAction(tr("Reset communication"));
     _actionResetCom->setCheckable(true);
-    _actionResetCom->setIcon(QIcon(":/icons/img/icons8-process.png"));
+    _actionResetCom->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-process.png")));
     _actionResetCom->setStatusTip(tr("Request node to reset com. parameters"));
     connect(_actionResetCom, &QAction::triggered, this, &NodeManagerWidget::resetCom);
 
     _actionReset = _groupNmt->addAction(tr("Reset node"));
     _actionReset->setCheckable(true);
-    _actionReset->setIcon(QIcon(":/icons/img/icons8-reset.png"));
+    _actionReset->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-reset.png")));
     _actionReset->setStatusTip(tr("Request node to reset all values"));
     connect(_actionReset, &QAction::triggered, this, &NodeManagerWidget::resetNode);
 
@@ -251,19 +251,19 @@ void NodeManagerWidget::createWidgets()
 
     // Remove node
     _actionRemoveNode = new QAction(tr("Remove node"), this);
-    _actionRemoveNode->setIcon(QIcon(":/icons/img/icons8-delete.png"));
+    _actionRemoveNode->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-delete.png")));
     _actionRemoveNode->setStatusTip(tr("Remove the current node from the bus"));
     connect(_actionRemoveNode, &QAction::triggered, this, &NodeManagerWidget::removeNode);
 
     // Update firmware
     _actionUpdateFirmware = new QAction(tr("Update firmware"), this);
-    _actionUpdateFirmware->setIcon(QIcon(":/icons/img/icons8-restore-page.png"));
+    _actionUpdateFirmware->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-restore-page.png")));
     _actionUpdateFirmware->setStatusTip(tr("Launch a firmware update to the node"));
     connect(_actionUpdateFirmware, &QAction::triggered, this, &NodeManagerWidget::updateNodeFirmware);
 
     // EDS actions
     _actionLoadEds = new QAction(tr("Load eds"), this);
-    _actionLoadEds->setIcon(QIcon(":/icons/img/icons8-import-file.png"));
+    _actionLoadEds->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-import-file.png")));
     _actionLoadEds->setStatusTip(tr("Load an eds file as object dictionary description"));
     connect(_actionLoadEds,
             &QAction::triggered,
@@ -274,7 +274,7 @@ void NodeManagerWidget::createWidgets()
             });
 
     _actionReLoadEds = new QAction(tr("Reload eds"), this);
-    _actionReLoadEds->setIcon(QIcon(":/icons/img/icons8-restore-page.png"));
+    _actionReLoadEds->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-restore-page.png")));
     _actionReLoadEds->setStatusTip(tr("Reload the current eds file"));
     connect(_actionReLoadEds, &QAction::triggered, this, &NodeManagerWidget::reloadEds);
 

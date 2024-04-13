@@ -37,7 +37,7 @@ void NodeScreenUmcMotor::createWidgets()
     layout->setContentsMargins(0, 0, 0, 0);
 
     _tabWidget = new QTabWidget();
-    _tabWidget->setStyleSheet("\
+    _tabWidget->setStyleSheet(QStringLiteral("\
       QTabWidget > QTabBar::tab:top {\
           color: palette(foreground);\
       }\
@@ -45,7 +45,7 @@ void NodeScreenUmcMotor::createWidgets()
       {\
           color: palette(foreground);\
       }\
-    ");
+    "));
     layout->addWidget(_tabWidget);
 
     _p402Widget = new P402Widget();

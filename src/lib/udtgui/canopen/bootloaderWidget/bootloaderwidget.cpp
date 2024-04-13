@@ -34,7 +34,7 @@
 BootloaderWidget::BootloaderWidget(QWidget *parent)
     : QDialog(parent)
 {
-    setWindowTitle("UniSwarm UDTStudio - Update Node");
+    setWindowTitle(tr("UniSwarm UDTStudio - Update Node"));
     createWidgets();
     connect(&_progressTimer,
             &QTimer::timeout,
@@ -109,12 +109,12 @@ void BootloaderWidget::updateStatus()
 
     if (status >= 0)
     {
-        _statusLabel->setStyleSheet("QLabel { color : green;font-weight: bold; }");
+        _statusLabel->setStyleSheet(QStringLiteral("QLabel { color : green;font-weight: bold; }"));
         _statusLabel->setText(_node->bootloader()->statusStr(status));
     }
     else
     {
-        _statusLabel->setStyleSheet("QLabel { color : red;font-weight: bold; }");
+        _statusLabel->setStyleSheet(QStringLiteral("QLabel { color : red;font-weight: bold; }"));
         _statusLabel->setText(_node->bootloader()->statusStr(status) + " (0x" + QString::number(_node->bootloader()->error(), 16) + ")");
     }
 
@@ -144,7 +144,7 @@ void BootloaderWidget::updateStatus()
 
 void BootloaderWidget::openFile()
 {
-    _fileName = QFileDialog::getOpenFileName(this, tr("Open firmware"), "", tr("Firmware File (*.ufw)"));
+    _fileName = QFileDialog::getOpenFileName(this, tr("Open firmware"), QStringLiteral(""), tr("Firmware File (*.ufw)"));
     if (_fileName.isEmpty())
     {
         return;
@@ -171,7 +171,7 @@ void BootloaderWidget::createWidgets()
     QLabel *iconLabel = new QLabel();
     iconLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     iconLabel->setAlignment(Qt::AlignTop | Qt::AlignCenter);
-    iconLabel->setPixmap(QPixmap(":/icons/img/icons8-sort-desc.png"));
+    iconLabel->setPixmap(QPixmap(QStringLiteral(":/icons/img/icons8-sort-desc.png")));
     hLayout->addWidget(iconLabel);
 
     hLayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
@@ -181,7 +181,7 @@ void BootloaderWidget::createWidgets()
 
     QFormLayout *layout = new QFormLayout();
     _statusLabel = new QLabel();
-    layout->addRow("Status:", _statusLabel);
+    layout->addRow(tr("Status:"), _statusLabel);
     vLayout->addLayout(layout);
 
     _updateButton = new QPushButton(tr("Start update"));

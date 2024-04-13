@@ -181,13 +181,13 @@ QVariant DataLoggerModel::data(const QModelIndex &index, int role) const
                     node = dlData->node();
                     if (node != nullptr)
                     {
-                        return QVariant(QString("%1.%2 %3").arg(node->busId()).arg(node->nodeId()).arg(node->name()));
+                        return QVariant(QStringLiteral("%1.%2 %3").arg(node->busId()).arg(node->nodeId()).arg(node->name()));
                     }
                     return QVariant(tr("Unknown"));
 
                 case Index:
-                    return QVariant(QString("0x%1.%2").arg(QString::number(dlData->objectId().index(), 16).toUpper(),
-                                                           QString::number(dlData->objectId().subIndex(), 16).toUpper()));
+                    return QVariant(QStringLiteral("0x%1.%2").arg(QString::number(dlData->objectId().index(), 16).toUpper(),
+                                                                  QString::number(dlData->objectId().subIndex(), 16).toUpper()));
 
                 case Name:
                     return QVariant(dlData->name());
@@ -321,7 +321,7 @@ Qt::ItemFlags DataLoggerModel::flags(const QModelIndex &index) const
 QStringList DataLoggerModel::mimeTypes() const
 {
     QStringList types;
-    types << "index/subindex";
+    types << QStringLiteral("index/subindex");
     return types;
 }
 
@@ -338,7 +338,7 @@ QMimeData *DataLoggerModel::mimeData(const QModelIndexList &indexes) const
             encodedData.append((dlData->objectId().mimeData() + ":").toUtf8());
         }
     }
-    mimeData->setData("index/subindex", encodedData);
+    mimeData->setData(QStringLiteral("index/subindex"), encodedData);
     return mimeData;
 }
 
@@ -348,7 +348,7 @@ bool DataLoggerModel::canDropMimeData(const QMimeData *mimeData, Qt::DropAction 
     Q_UNUSED(row)
     Q_UNUSED(column)
     Q_UNUSED(parent)
-    return mimeData->hasFormat("index/subindex");
+    return mimeData->hasFormat(QStringLiteral("index/subindex"));
 }
 
 bool DataLoggerModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction action, int row, int column, const QModelIndex &parent)
@@ -360,12 +360,12 @@ bool DataLoggerModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction act
     {
         return true;
     }
-    if (mimeData->hasFormat("index/subindex"))
+    if (mimeData->hasFormat(QStringLiteral("index/subindex")))
     {
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-        const QStringList &stringListObjId = QString(mimeData->data("index/subindex")).split(':', QString::SkipEmptyParts);
+        const QStringList &stringListObjId = QString(mimeData->data(QStringLiteral("index/subindex"))).split(':', QString::SkipEmptyParts);
 #else
-        const QStringList &stringListObjId = QString(mimeData->data("index/subindex")).split(':', Qt::SkipEmptyParts);
+        const QStringList &stringListObjId = QString(mimeData->data(QStringLiteral("index/subindex"))).split(':', Qt::SkipEmptyParts);
 #endif
         for (const QString &stringObjId : stringListObjId)
         {

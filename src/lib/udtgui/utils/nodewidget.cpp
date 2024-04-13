@@ -82,8 +82,7 @@ void NodeWidget::updateObjects()
     NodeSubIndex *subIndex = _node->nodeOd()->subIndex(_indexWidgets.first()->objId());
     if (subIndex != nullptr)
     {
-        if (subIndex->lastModification().isNull()
-            && (_node->status() == Node::Status::PREOP || _node->status() == Node::Status::STARTED) && isVisible())
+        if (subIndex->lastModification().isNull() && (_node->status() == Node::Status::PREOP || _node->status() == Node::Status::STARTED) && isVisible())
         {
             QTimer::singleShot(100, this, &NodeWidget::readAll);
         }

@@ -277,11 +277,11 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
                 {
                     QPixmap pixmap;
 
-                    pixmap = QPixmap(":/uBoards/usb.png");
+                    pixmap = QPixmap(QStringLiteral(":/uBoards/usb.png"));
 
                     if (pixmap.isNull())
                     {
-                        pixmap = QPixmap(":/uBoards/unknown.png");
+                        pixmap = QPixmap(QStringLiteral(":/uBoards/unknown.png"));
                     }
 
                     QPainter painter(&pixmap);
@@ -340,18 +340,18 @@ QVariant BusNodesModel::data(const QModelIndex &index, int role) const
                         {
                             case 401:
                             case 428:
-                                pixmap = QPixmap(":/uBoards/uio.png");
+                                pixmap = QPixmap(QStringLiteral(":/uBoards/uio.png"));
                                 break;
 
                             case 402:
-                                pixmap = QPixmap(":/uBoards/umc.png");
+                                pixmap = QPixmap(QStringLiteral(":/uBoards/umc.png"));
                                 break;
                         }
                     }
 
                     if (pixmap.isNull())
                     {
-                        pixmap = QPixmap(":/uBoards/unknown.png");
+                        pixmap = QPixmap(QStringLiteral(":/uBoards/unknown.png"));
                     }
 
                     QPainter painter(&pixmap);

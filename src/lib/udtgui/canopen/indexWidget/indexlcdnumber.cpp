@@ -36,9 +36,9 @@ IndexLCDNumber::IndexLCDNumber(const NodeObjectId &objId)
     hlayout->setSpacing(0);
 
     _lcdNumber = new QLCDNumber();
-    _lcdNumber->setStyleSheet("margin-right: 0; padding-right: 0;");
+    _lcdNumber->setStyleSheet(QStringLiteral("margin-right: 0; padding-right: 0;"));
     _label = new QLabel();
-    _label->setStyleSheet("margin-left: 0; padding-left: 0;font: italic;");
+    _label->setStyleSheet(QStringLiteral("margin-left: 0; padding-left: 0;font: italic;"));
 
     hlayout->addWidget(_lcdNumber);
     hlayout->addWidget(_label);

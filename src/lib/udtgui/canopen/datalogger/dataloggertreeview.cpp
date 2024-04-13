@@ -44,9 +44,9 @@ DataLoggerTreeView::DataLoggerTreeView(QWidget *parent)
     setModel(_sortProxy);
 
 #if QT_VERSION >= 0x050B00
-    int w0 = QFontMetrics(font()).horizontalAdvance("0");
+    int w0 = QFontMetrics(font()).horizontalAdvance(QStringLiteral("0"));
 #else
-    int w0 = QFontMetrics(font()).width("0");
+    int w0 = QFontMetrics(font()).width(QStringLiteral("0"));
 #endif
     header()->resizeSection(DataLoggerModel::NodeName, 22 * w0);
     header()->resizeSection(DataLoggerModel::Index, 10 * w0);
@@ -154,7 +154,7 @@ void DataLoggerTreeView::exportOneCurrent() const
     QString path = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/UDTStudio/";
     QDir().mkdir(path);
 
-    dlData->exportCSVData(path + QString("export_%1.csv").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss.zzz")));
+    dlData->exportCSVData(path + QStringLiteral("export_%1.csv").arg(QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd_hh:mm:ss.zzz"))));
 }
 
 void DataLoggerTreeView::locateODCurrent()
@@ -186,7 +186,7 @@ void DataLoggerTreeView::createActions()
     _removeAction->setText(tr("&Remove"));
     _removeAction->setShortcut(QKeySequence::Delete);
     _removeAction->setShortcutContext(Qt::WidgetShortcut);
-    _removeAction->setIcon(QIcon(":/icons/img/icons8-delete.png"));
+    _removeAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-delete.png")));
     _removeAction->setEnabled(false);
 #if QT_VERSION >= 0x050A00
     _removeAction->setShortcutVisibleInContextMenu(true);
@@ -196,7 +196,7 @@ void DataLoggerTreeView::createActions()
 
     _setColorAction = new QAction(this);
     _setColorAction->setText(tr("&Set color"));
-    _setColorAction->setIcon(QIcon(":/icons/img/icons8-paint-palette.png"));
+    _setColorAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-paint-palette.png")));
     _setColorAction->setEnabled(false);
     connect(_setColorAction, &QAction::triggered, this, &DataLoggerTreeView::setColorCurrent);
     addAction(_setColorAction);
@@ -205,7 +205,7 @@ void DataLoggerTreeView::createActions()
     _exportOneAction->setText(tr("&Export"));
     _exportOneAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
     _exportOneAction->setShortcutContext(Qt::WidgetShortcut);
-    _exportOneAction->setIcon(QIcon(":/icons/img/icons8-export.png"));
+    _exportOneAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-export.png")));
     _exportOneAction->setStatusTip(
         tr("Exports CSV data in '%1' directory").arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/UDTStudio/"));
     _exportOneAction->setEnabled(false);

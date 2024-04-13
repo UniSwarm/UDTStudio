@@ -42,7 +42,7 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
     _useOpenGL = false;
     _viewCross = false;
 
-    setStyleSheet("QAbstractScrollArea {padding: 0px;}");
+    setStyleSheet(QStringLiteral("QAbstractScrollArea {padding: 0px;}"));
 
     _chart = new QChart();
 
@@ -65,9 +65,9 @@ DataLoggerChartsWidget::DataLoggerChartsWidget(DataLogger *dataLogger, QWidget *
     // axis
     _axisX = new QDateTimeAxis(this);
     _axisX->setTickCount(11);
-    _axisX->setFormat("hh:mm:ss");
+    _axisX->setFormat(QStringLiteral("hh:mm:ss"));
     _axisY = new QValueAxis(this);
-    _axisY->setLabelFormat("%g");
+    _axisY->setLabelFormat(QStringLiteral("%g"));
 
     setDataLogger(dataLogger);
     _idPending = -1;
@@ -296,9 +296,9 @@ void DataLoggerChartsWidget::updateYaxis()
 void DataLoggerChartsWidget::tooltip(QPointF point, bool state)
 {
     Q_UNUSED(state)
-    QLineSeries *serie = dynamic_cast<QLineSeries *>(sender());
+    QLineSeries *serie = qobject_cast<QLineSeries *>(sender());
 
-    QToolTip::showText(QCursor::pos(), QString("%1\n%2").arg(serie->name()).arg(point.y()), this, QRect());
+    QToolTip::showText(QCursor::pos(), QString(QStringLiteral("%1\n%2")).arg(serie->name()).arg(point.y()), this, QRect());
 }
 
 void DataLoggerChartsWidget::updateSeries()
@@ -356,12 +356,12 @@ void DataLoggerChartsWidget::updateSeries()
 void DataLoggerChartsWidget::dropEvent(QDropEvent *event)
 {
     QChartView::dropEvent(event);
-    if (event->mimeData()->hasFormat("index/subindex"))
+    if (event->mimeData()->hasFormat(QStringLiteral("index/subindex")))
     {
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-        const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', QString::SkipEmptyParts);
+        const QStringList &stringListObjId = QString(event->mimeData()->data(QStringLiteral("index/subindex"))).split(':', QString::SkipEmptyParts);
 #else
-        const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', Qt::SkipEmptyParts);
+        const QStringList &stringListObjId = QString(event->mimeData()->data(QStringLiteral("index/subindex"))).split(':', Qt::SkipEmptyParts);
 #endif
         for (const QString &stringObjId : stringListObjId)
         {
@@ -375,7 +375,7 @@ void DataLoggerChartsWidget::dropEvent(QDropEvent *event)
 void DataLoggerChartsWidget::dragEnterEvent(QDragEnterEvent *event)
 {
     QChartView::dragEnterEvent(event);
-    if (event->mimeData()->hasFormat("index/subindex"))
+    if (event->mimeData()->hasFormat(QStringLiteral("index/subindex")))
     {
         event->accept();
         event->acceptProposedAction();

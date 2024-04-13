@@ -73,8 +73,8 @@ void P402TqWidget::updateMaxTorque()
     int max = _nodeProfile402->node()->nodeOd()->value(_maxTorqueSpinBox->objId()).toInt();
     _targetTorqueSlider->setRange(-max, max);
     _targetTorqueSlider->setTickInterval(max / 10);
-    _sliderMinLabel->setText(QString("[-%1").arg(max));
-    _sliderMaxLabel->setText(QString("%1]").arg(max));
+    _sliderMinLabel->setText(QStringLiteral("[-%1").arg(max));
+    _sliderMaxLabel->setText(QStringLiteral("%1]").arg(max));
 }
 
 void P402TqWidget::setTargetZero()
@@ -122,9 +122,9 @@ void P402TqWidget::showDiagram()
     QLabel *tqModeLabel;
     tqModeLabel = new QLabel();
     tqModeLabel->setAttribute(Qt::WA_DeleteOnClose);
-    tqModePixmap.load(":/diagram/img/diagrams/402TQDiagram.png");
+    tqModePixmap.load(QStringLiteral(":/diagram/img/diagrams/402TQDiagram.png"));
     tqModeLabel->setPixmap(tqModePixmap);
-    tqModeLabel->setWindowTitle("402 TQ Diagram");
+    tqModeLabel->setWindowTitle(QStringLiteral("402 TQ Diagram"));
     tqModeLabel->show();
 }
 
@@ -170,13 +170,13 @@ void P402TqWidget::createTargetWidgets(IndexFormLayout *indexLayout)
 
     QLayout *labelSliderLayout = new QHBoxLayout();
 
-    _sliderMinLabel = new QLabel("min");
+    _sliderMinLabel = new QLabel(QStringLiteral("min"));
     labelSliderLayout->addWidget(_sliderMinLabel);
     labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
-    labelSliderLayout->addWidget(new QLabel("0"));
+    labelSliderLayout->addWidget(new QLabel(QStringLiteral("0")));
     labelSliderLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum));
 
-    _sliderMaxLabel = new QLabel("max");
+    _sliderMaxLabel = new QLabel(QStringLiteral("max"));
     labelSliderLayout->addWidget(_sliderMaxLabel);
     indexLayout->addRow(labelSliderLayout);
 

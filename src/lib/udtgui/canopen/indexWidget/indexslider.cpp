@@ -56,8 +56,8 @@ IndexSlider::IndexSlider(const NodeObjectId &objId)
 
 void IndexSlider::initStyle()
 {
-    setStyleSheet("QSlider{background: none;}"
-                  "QSlider::sub-page:horizontal {background: none; border: 0;}");
+    setStyleSheet(QStringLiteral("QSlider{background: none;}"
+                                 "QSlider::sub-page:horizontal {background: none; border: 0;}"));
 }
 
 void IndexSlider::applyValue(int value)
@@ -131,12 +131,12 @@ void IndexSlider::paintEvent(QPaintEvent *event)
     }
 
     QRect barRect = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderGroove, this);
-    p.setBrush(QColor("#32414B"));  // TODO get color from theme
+    p.setBrush(QColor(0x32, 0x41, 0x4B));  // TODO get color from theme
     p.setPen(QPen(Qt::NoPen));
     p.drawRect(barRect);
 
     QRect handleRect = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderHandle, this);
-    p.setBrush(QColor("#1464A0"));  // TODO get color from theme
+    p.setBrush(QColor(0x14, 0x64, 0xA0));  // TODO get color from theme
     p.setPen(QPen(Qt::NoPen));
 
     double feedbackValue = _hasFeedBack ? _feedBackValue : value();

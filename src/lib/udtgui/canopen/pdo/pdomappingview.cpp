@@ -201,12 +201,12 @@ void PDOMappingView::dropEvent(QDropEvent *event)
 
 void PDOMappingView::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasFormat("index/subindex") && (_pdo != nullptr))
+    if (event->mimeData()->hasFormat(QStringLiteral("index/subindex")) && (_pdo != nullptr))
     {
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-        const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', QString::SkipEmptyParts);
+        const QStringList &stringListObjId = QString(event->mimeData()->data(QStringLiteral("index/subindex"))).split(':', QString::SkipEmptyParts);
 #else
-        const QStringList &stringListObjId = QString(event->mimeData()->data("index/subindex")).split(':', Qt::SkipEmptyParts);
+        const QStringList &stringListObjId = QString(event->mimeData()->data(QStringLiteral("index/subindex"))).split(':', Qt::SkipEmptyParts);
 #endif
         for (const QString &stringObjId : stringListObjId)
         {
@@ -272,8 +272,8 @@ bool PDOMappingView::event(QEvent *event)
             objName = _nodeListName.at(objId);
         }
         NodeObjectId nodeObjectId = _nodeListMapping.at(objId);
-        QString toolTipText =
-            QString("0x%1.%2\n%3").arg(QString::number(nodeObjectId.index(), 16).toUpper(), QString::number(nodeObjectId.subIndex(), 16).toUpper(), objName);
+        QString toolTipText = QStringLiteral("0x%1.%2\n%3")
+                                  .arg(QString::number(nodeObjectId.index(), 16).toUpper(), QString::number(nodeObjectId.subIndex(), 16).toUpper(), objName);
         QToolTip::showText(helpEvent->globalPos(), toolTipText);
         return true;
     }

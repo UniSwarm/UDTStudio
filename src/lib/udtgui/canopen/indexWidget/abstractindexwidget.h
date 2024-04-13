@@ -66,7 +66,7 @@ public:
     // tooltip
 
     uint64_t bitMask() const;
-    void setBitMask(const uint64_t &bitMask);
+    void setBitMask(uint64_t bitMask);
 
     double offset() const;
     void setOffset(double offset);
