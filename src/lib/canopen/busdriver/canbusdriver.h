@@ -52,7 +52,7 @@ signals:
 
 protected:
     QString _adress;
-    void setState(const State &state);
+    void setState(State state);
 
 private:
     State _state;

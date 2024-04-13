@@ -49,8 +49,8 @@ int UfwWriter::create(uint16_t type, const QString &version, const QString &date
     bool ok;
     for (int i = 0; i < segment.size(); i++)
     {
-        uint32_t start = segment.at(i).split(":").at(0).toUInt(&ok, 16);
-        uint32_t end = segment.at(i).split(":").at(1).toUInt(&ok, 16);
+        uint32_t start = segment.at(i).split(':').at(0).toUInt(&ok, 16);
+        uint32_t end = segment.at(i).split(':').at(1).toUInt(&ok, 16);
 
         qToLittleEndian(start, buffer);
         _ufwByteArray.append(buffer, sizeof(start));
@@ -89,8 +89,8 @@ int UfwWriter::append(const QByteArray &app, QStringList addresses)
 
     for (i = 0; i < addresses.size(); i++)
     {
-        int adrStart = addresses.at(i).split(QLatin1Char(':')).at(0).toInt(&ok, 16);
-        int adrEnd = addresses.at(i).split(QLatin1Char(':')).at(1).toInt(&ok, 16);
+        int adrStart = addresses.at(i).split(':').at(0).toInt(&ok, 16);
+        int adrEnd = addresses.at(i).split(':').at(1).toInt(&ok, 16);
         _ufwByteArray.append(app.mid(adrStart, adrEnd - adrStart));
     }
     return 0;
@@ -101,7 +101,7 @@ int UfwWriter::checkAddresses(const QStringList &addresses)
     int i = 0;
     for (i = 0; i < addresses.size(); i++)
     {
-        if (!addresses.at(i).contains(QLatin1Char(':')))
+        if (!addresses.at(i).contains(':'))
         {
             return -1;
         }

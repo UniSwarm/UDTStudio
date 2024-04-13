@@ -59,7 +59,7 @@ public:
         RECORD = 0x09
     };
     ObjectType objectType() const;
-    void setObjectType(const ObjectType &objectType);
+    void setObjectType(ObjectType objectType);
     static QString objectTypeStr(const ObjectType &objectType);
 
     // =========== Sub indexes ====================

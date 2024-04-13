@@ -118,7 +118,7 @@ NodeIndex::ObjectType NodeIndex::objectType() const
  * @brief object type setter
  * @param 8 bits objects type code
  */
-void NodeIndex::setObjectType(const ObjectType &objectType)
+void NodeIndex::setObjectType(ObjectType objectType)
 {
     _objectType = objectType;
 }

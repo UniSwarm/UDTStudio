@@ -126,7 +126,7 @@ SDO::~SDO()
 
 QString SDO::type() const
 {
-    return QLatin1String("SDO");
+    return QStringLiteral("SDO");
 }
 
 quint32 SDO::cobIdClientToServer() const

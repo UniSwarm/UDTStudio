@@ -44,7 +44,7 @@ RPDO::RPDO(Node *node, quint8 number)
 
 QString RPDO::type() const
 {
-    return QLatin1String("RPDO") + QString::number(_pdoNumber + 1, 10);
+    return QStringLiteral("RPDO") + QString::number(_pdoNumber + 1, 10);
 }
 
 void RPDO::parseFrame(const QCanBusFrame &frame)

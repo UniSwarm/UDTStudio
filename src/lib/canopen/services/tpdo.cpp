@@ -47,7 +47,7 @@ TPDO::TPDO(Node *node, quint8 number)
 
 QString TPDO::type() const
 {
-    return QLatin1String("TPDO") + QString::number(_pdoNumber + 1, 10);
+    return QStringLiteral("TPDO") + QString::number(_pdoNumber + 1, 10);
 }
 
 void TPDO::parseFrame(const QCanBusFrame &frame)
@@ -66,11 +66,7 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
         QByteArray data = frame.payload().mid(offset, QMetaType::sizeOf(mappedObjectId.dataType()));
         QVariant vata = convertQByteArrayToQVariant(data, mappedObjectId.dataType());
 
-        _node->nodeOd()->updateObjectFromDevice(mappedObjectId.index(),
-                                                mappedObjectId.subIndex(),
-                                                vata,
-                                                NodeOd::FlagsRequest::Pdo,
-                                                dateTime);
+        _node->nodeOd()->updateObjectFromDevice(mappedObjectId.index(), mappedObjectId.subIndex(), vata, NodeOd::FlagsRequest::Pdo, dateTime);
         offset += QMetaType::sizeOf(mappedObjectId.dataType());
     }
 

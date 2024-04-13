@@ -38,7 +38,7 @@ uint32_t Emergency::cobId() const
 
 QString Emergency::type() const
 {
-    return QLatin1String("Emergency");
+    return QStringLiteral("Emergency");
 }
 
 void Emergency::parseFrame(const QCanBusFrame &frame)

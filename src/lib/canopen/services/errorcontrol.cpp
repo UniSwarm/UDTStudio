@@ -43,7 +43,7 @@ ErrorControl::ErrorControl(Node *node)
 
 QString ErrorControl::type() const
 {
-    return QLatin1String("ErrorControl");
+    return QStringLiteral("ErrorControl");
 }
 
 void ErrorControl::parseFrame(const QCanBusFrame &frame)

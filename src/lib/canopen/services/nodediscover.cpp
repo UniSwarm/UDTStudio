@@ -49,7 +49,7 @@ NodeDiscover::~NodeDiscover()
 
 QString NodeDiscover::type() const
 {
-    return QLatin1String("NodeDiscover");
+    return QStringLiteral("NodeDiscover");
 }
 
 void NodeDiscover::parseFrame(const QCanBusFrame &frame)

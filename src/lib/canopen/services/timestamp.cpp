@@ -25,7 +25,7 @@ TimeStamp::TimeStamp(CanOpenBus *bus)
 
 QString TimeStamp::type() const
 {
-    return QLatin1String("Emergency");
+    return QStringLiteral("Emergency");
 }
 
 void TimeStamp::parseFrame(const QCanBusFrame &frame)

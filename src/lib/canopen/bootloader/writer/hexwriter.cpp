@@ -43,11 +43,11 @@ int HexWriter::write(const QByteArray &prog, const QString &filePath, Optimizati
         int mod = prog.size() % dataCount;
         if (mod != 0 && index >= (prog.size() - mod))
         {
-            QString line(QString(":%1").arg(QString::number(mod, 16).rightJustified(2, '0').toUpper()));
+            QString line(QStringLiteral(":%1").arg(QString::number(mod, 16).rightJustified(2, '0').toUpper()));
             // address
             line.append(QString::number(index & 0xFFFF, 16).rightJustified(4, '0').toUpper());
             // type
-            line.append("00");
+            line.append(QStringLiteral("00"));
             // Data
             line.append(prog.mid(prog.size() - mod, mod).toHex().rightJustified(2 * mod, '0').toUpper());
             // Checksum
@@ -57,18 +57,18 @@ int HexWriter::write(const QByteArray &prog, const QString &filePath, Optimizati
         else
         {
             // Number octet
-            QString line(QString(":%1").arg(QString::number(dataCount, 16).rightJustified(2, '0').toUpper().toUpper()));
+            QString line(QStringLiteral(":%1").arg(QString::number(dataCount, 16).rightJustified(2, '0').toUpper().toUpper()));
             // address
             line.append(QString::number(index & 0xFFFF, 16).rightJustified(4, '0').toUpper().toUpper());
             // type
-            line.append("00");
+            line.append(QStringLiteral("00"));
             // Data
             line.append(prog.mid(index, dataCount).toHex().rightJustified(16, '0').toUpper());
             // Checksum
             line.append(QString::number(checksum(line), 16).rightJustified(2, '0').toUpper());
             if (optimization == ON)
             {
-                if (!line.contains("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"))
+                if (!line.contains(QStringLiteral("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")))
                 {
                     stream << line << "\n";
                 }
@@ -80,7 +80,7 @@ int HexWriter::write(const QByteArray &prog, const QString &filePath, Optimizati
 
             if ((index & 0xFFFF) == 0xFFF0)
             {
-                QString extended(":02000004");
+                QString extended(QStringLiteral(":02000004"));
                 extended.append(QString::number(offset, 16).rightJustified(4, '0').toUpper());
                 // Checksum
                 extended.append(QString::number(checksum(extended), 16).rightJustified(2, '0').toUpper());

@@ -493,7 +493,7 @@ void PDO::managementRespProcessMapping(const NodeObjectId &objId, NodeOd::FlagsR
             if (flags == NodeOd::FlagsRequest::Error)
             {
                 // ERROR so cobId is invalid and mapping is disable
-                qDebug() << ">TPDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index(), 16)) << ":" << objId.subIndex()
+                qDebug() << ">TPDO::odNotify : Index:SubIndex" << QStringLiteral("0x%1").arg(QString::number(objId.index(), 16)) << ":" << objId.subIndex()
                          << ", Error : " << _node->nodeOd()->errorObject(objId);
                 setError(ERROR_MODIFY_MAPPING);
                 _stateMapping = STATE_FREE;
@@ -511,7 +511,7 @@ void PDO::managementRespProcessMapping(const NodeObjectId &objId, NodeOd::FlagsR
             if (flags == NodeOd::FlagsRequest::Error)
             {
                 // ERROR so cobId is invalid and mapping is disable
-                qDebug() << ">TPDO::odNotify : Index:SubIndex" << QString("0x%1").arg(QString::number(objId.index(), 16)) << ":" << objId.subIndex()
+                qDebug() << ">TPDO::odNotify : Index:SubIndex" << QStringLiteral("0x%1").arg(QString::number(objId.index(), 16)) << ":" << objId.subIndex()
                          << ", Error : " << _node->nodeOd()->errorObject(objId);
                 setError(ERROR_GENERAL_ERROR);
                 _stateMapping = STATE_FREE;

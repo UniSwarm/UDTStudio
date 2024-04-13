@@ -946,7 +946,7 @@ quint16 NodeProfile402::profileNumber() const
 
 QString NodeProfile402::profileNumberStr() const
 {
-    return QString("402");
+    return QStringLiteral("402");
 }
 
 void NodeProfile402::reset()

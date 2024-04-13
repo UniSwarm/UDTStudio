@@ -51,7 +51,7 @@ bool CanBusDriver::writeFrame(const QCanBusFrame &qtframe)
     return false;
 }
 
-void CanBusDriver::setState(const State &state)
+void CanBusDriver::setState(State state)
 {
     bool stateChange = (_state != state);
     _state = state;

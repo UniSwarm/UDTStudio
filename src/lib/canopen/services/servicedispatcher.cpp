@@ -33,7 +33,7 @@ ServiceDispatcher::~ServiceDispatcher()
 
 QString ServiceDispatcher::type() const
 {
-    return QLatin1String("Emergency");
+    return QStringLiteral("Emergency");
 }
 
 void ServiceDispatcher::addService(Service *service)

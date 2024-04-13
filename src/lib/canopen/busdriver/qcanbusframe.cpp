@@ -205,13 +205,13 @@ QString QCanBusFrame::toString() const
 
     if (type == RemoteRequestFrame)
     {
-        result.append(QLatin1String("  Remote Request"));
+        result.append(QStringLiteral("  Remote Request"));
     }
     else if (!payload().isEmpty())
     {
         const QByteArray data = payload().toHex(' ').toUpper();
-        result.append(QLatin1String("  "));
-        result.append(QLatin1String(data));
+        result.append(QStringLiteral("  "));
+        result.append(QString(data));
     }
 
     return result;

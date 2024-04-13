@@ -140,7 +140,7 @@ bool NodeOd::exportDcf(const QString &fileName) const
     }
     if (!mfileName.endsWith(QStringLiteral(".dcf")))
     {
-        mfileName.append(".dcf");
+        mfileName.append(QStringLiteral(".dcf"));
     }
 
     DeviceConfiguration deviceConfiguration;
@@ -186,7 +186,7 @@ bool NodeOd::exportConf(const QString &fileName) const
     }
     if (!mfileName.endsWith(QStringLiteral(".conf")))
     {
-        mfileName.append(".conf");
+        mfileName.append(QStringLiteral(".conf"));
     }
 
     QFile file(mfileName);
@@ -628,7 +628,7 @@ void NodeOd::createBootloaderObjects()
     addIndex(programControl);
 
     NodeIndex *date = new NodeIndex(0x2003);
-    date->setName("Firmware_build_date");
+    date->setName(QStringLiteral("Firmware_build_date"));
     date->setObjectType(NodeIndex::VAR);
     date->addSubIndex(new NodeSubIndex(0));
     date->subIndex(0)->setDataType(NodeSubIndex::VISIBLE_STRING);

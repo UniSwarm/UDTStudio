@@ -46,7 +46,7 @@ Sync::~Sync()
 
 QString Sync::type() const
 {
-    return QLatin1String("Sync");
+    return QStringLiteral("Sync");
 }
 
 void Sync::startSync(int ms)

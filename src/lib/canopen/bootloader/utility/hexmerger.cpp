@@ -83,8 +83,8 @@ int HexMerger::append(const QByteArray &a, const QStringList &addresses)
 
     for (i = 0; i < addresses.size(); i++)
     {
-        int adrStart = addresses.at(i).split(QLatin1Char(':')).at(0).toInt(&ok, 16);
-        int adrEnd = addresses.at(i).split(QLatin1Char(':')).at(1).toInt(&ok, 16);
+        int adrStart = addresses.at(i).split(':').at(0).toInt(&ok, 16);
+        int adrEnd = addresses.at(i).split(':').at(1).toInt(&ok, 16);
         if (adrEnd > _prog.size())
         {
             _prog.append(QByteArray(adrEnd - _prog.size(), static_cast<char>(0xFF)));
@@ -104,7 +104,7 @@ int HexMerger::checkAddresses(const QStringList &addresses)
     int i = 0;
     for (i = 0; i < addresses.size(); i++)
     {
-        if (!addresses.at(i).contains(QLatin1Char(':')))
+        if (!addresses.at(i).contains(':'))
         {
             return -1;
         }
