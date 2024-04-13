@@ -60,14 +60,14 @@ void ProfileDuplicate::duplicate(DeviceModel *deviceModel, uint8_t profileCount)
             }
         }
 
-        QRegularExpression reg("^[a][0-9]_");
+        QRegularExpression reg(QStringLiteral("^[a][0-9]_"));
         for (uint16_t count = 0; count < profileCount; count++)
         {
             for (const Index *index : manufactureIndex)
             {
                 Index *newIndex = new Index(*index);
                 newIndex->setIndex(index->index() + (0x200 * count));
-                renameIndex(newIndex, reg, QString("a%1_").arg(count + 1));
+                renameIndex(newIndex, reg, QString(QStringLiteral("a%1_")).arg(count + 1));
                 deviceModel->addIndex(newIndex);
             }
         }
@@ -78,7 +78,7 @@ void ProfileDuplicate::duplicate(DeviceModel *deviceModel, uint8_t profileCount)
             {
                 Index *newIndex = new Index(*index);
                 newIndex->setIndex(index->index() + (0x800 * count));
-                renameIndex(newIndex, reg, QString("a%1_").arg(count + 1));
+                renameIndex(newIndex, reg, QString(QStringLiteral("a%1_")).arg(count + 1));
                 deviceModel->addIndex(newIndex);
             }
         }
@@ -107,14 +107,14 @@ void ProfileDuplicate::duplicate(DeviceModel *deviceModel, uint8_t profileCount)
             }
         }
 
-        QRegularExpression reg("^[s][0-9]+_");
+        QRegularExpression reg(QStringLiteral("^[s][0-9]+_"));
         for (uint16_t count = 0; count < profileCount; count++)
         {
             for (const Index *index : standardizedIndex)
             {
                 Index *newIndex = new Index(*index);
                 newIndex->setIndex(newIndex->index() + (0x100 * count));
-                renameIndex(newIndex, reg, QString("s") + QString::number(count + 1).rightJustified(2, '0') + QString("_"));
+                renameIndex(newIndex, reg, QStringLiteral("s") + QString::number(count + 1).rightJustified(2, '0') + QStringLiteral("_"));
                 deviceModel->addIndex(newIndex);
             }
         }

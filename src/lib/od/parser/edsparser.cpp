@@ -58,7 +58,7 @@ DeviceDescription *EdsParser::parse(const QString &path) const
     // infos
     for (const QString &group : iniFile.childGroups())
     {
-        if (group == "DeviceInfo")
+        if (group == QStringLiteral("DeviceInfo"))
         {
             iniFile.beginGroup(group);
             parser.readDeviceInfo(deviceDescription);
@@ -66,7 +66,7 @@ DeviceDescription *EdsParser::parse(const QString &path) const
             continue;
         }
 
-        if (group == "FileInfo")
+        if (group == QStringLiteral("FileInfo"))
         {
             iniFile.beginGroup(group);
             parser.readFileInfo(deviceDescription);
@@ -74,7 +74,7 @@ DeviceDescription *EdsParser::parse(const QString &path) const
             continue;
         }
 
-        if (group == "DummyUsage")
+        if (group == QStringLiteral("DummyUsage"))
         {
             iniFile.beginGroup(group);
             parser.readDummyUsage(deviceDescription);
@@ -82,7 +82,7 @@ DeviceDescription *EdsParser::parse(const QString &path) const
             continue;
         }
 
-        if (group == "Comments")
+        if (group == QStringLiteral("Comments"))
         {
             iniFile.beginGroup(group);
             parser.readComments(deviceDescription);

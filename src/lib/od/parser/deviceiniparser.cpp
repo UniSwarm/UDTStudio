@@ -47,7 +47,7 @@ void DeviceIniParser::readObjects(DeviceModel *deviceModel) const
  */
 void DeviceIniParser::readIndexes(DeviceModel *deviceModel) const
 {
-    QRegularExpression reIndex("^[0-9A-F]{1,4}$");
+    QRegularExpression reIndex(QStringLiteral("^[0-9A-F]{1,4}$"));
     for (const QString &group : _file->childGroups())
     {
         bool ok = false;
@@ -75,7 +75,7 @@ void DeviceIniParser::readIndexes(DeviceModel *deviceModel) const
  */
 void DeviceIniParser::readSubIndexes(DeviceModel *deviceModel) const
 {
-    QRegularExpression reSub("^([0-9A-F]{4})sub([0-9A-F]+)");
+    QRegularExpression reSub(QStringLiteral("^([0-9A-F]{4})sub([0-9A-F]+)"));
     for (const QString &group : _file->childGroups())
     {
         bool ok = false;
@@ -125,22 +125,22 @@ void DeviceIniParser::readIndex(Index *index) const
         QString value = _file->value(key).toString();
 
         uint8_t base = 10;
-        if (value.startsWith("0x", Qt::CaseInsensitive))
+        if (value.startsWith(QStringLiteral("0x"), Qt::CaseInsensitive))
         {
             base = 16;
         }
 
-        if (key == "ObjectType")
+        if (key == QStringLiteral("ObjectType"))
         {
             objectType = static_cast<uint8_t>(value.toInt(&ok, base));
         }
 
-        else if (key == "ParameterName")
+        else if (key == QStringLiteral("ParameterName"))
         {
             name = value;
         }
 
-        else if (key == "SubNumber")
+        else if (key == QStringLiteral("SubNumber"))
         {
             maxSubIndex = static_cast<uint8_t>(value.toInt(&ok, base));
         }
@@ -175,49 +175,49 @@ void DeviceIniParser::readSubIndex(SubIndex *subIndex) const
     {
         QString value = _file->value(key).toString();
 
-        if (key == "AccessType")
+        if (key == QStringLiteral("AccessType"))
         {
             QString accessString = _file->value(key).toString();
 
-            if (accessString == "rw" || accessString == "rwr" || accessString == "rww")
+            if (accessString == QStringLiteral("rw") || accessString == QStringLiteral("rwr") || accessString == QStringLiteral("rww"))
             {
                 accessType += SubIndex::READ + SubIndex::WRITE;
             }
-            else if (accessString == "wo")
+            else if (accessString == QStringLiteral("wo"))
             {
                 accessType += SubIndex::WRITE;
             }
-            else if (accessString == "ro")
+            else if (accessString == QStringLiteral("ro"))
             {
                 accessType += SubIndex::READ;
             }
-            else if (accessString == "const")
+            else if (accessString == QStringLiteral("const"))
             {
                 accessType += SubIndex::READ;
                 accessType += SubIndex::CONST;
             }
         }
-        else if (key == "PDOMapping")
+        else if (key == QStringLiteral("PDOMapping"))
         {
             accessType += readPdoMapping();
         }
-        else if (key == "ParameterName")
+        else if (key == QStringLiteral("ParameterName"))
         {
             name = value;
         }
-        else if (key == "LowLimit")
+        else if (key == QStringLiteral("LowLimit"))
         {
             lowLimit = readLowLimit();
         }
-        else if (key == "HighLimit")
+        else if (key == QStringLiteral("HighLimit"))
         {
             highLimit = readHighLimit();
         }
-        else if (key == "DataType")
+        else if (key == QStringLiteral("DataType"))
         {
             dataType = readDataType();
         }
-        else if (key == "ObjFlags")
+        else if (key == QStringLiteral("ObjFlags"))
         {
             objFlags = readObjFlags();
         }
@@ -245,28 +245,28 @@ QVariant DeviceIniParser::readData(bool *nodeId, bool *isHexValue) const
 {
     QString stringValue;
 
-    if (_file->value("DefaultValue").isNull())
+    if (_file->value(QStringLiteral("DefaultValue")).isNull())
     {
-        stringValue = "";
+        stringValue = QStringLiteral("");
     }
-    else if (_file->value("DefaultValue").toString().startsWith("$NODEID"))
+    else if (_file->value(QStringLiteral("DefaultValue")).toString().startsWith(QStringLiteral("$NODEID")))
     {
-        stringValue = _file->value("DefaultValue").toString().mid(8);
+        stringValue = _file->value(QStringLiteral("DefaultValue")).toString().mid(8);
         if (stringValue.isEmpty())
         {
-            stringValue = "0";
+            stringValue = QStringLiteral("0");
         }
         *nodeId = true;
     }
     else
     {
-        stringValue = _file->value("DefaultValue").toString();
+        stringValue = _file->value(QStringLiteral("DefaultValue")).toString();
     }
 
     uint16_t dataType = readDataType();
 
     int base = 0;
-    if (stringValue.startsWith("0x"))
+    if (stringValue.startsWith(QStringLiteral("0x")))
     {
         base = 16;
         *isHexValue = true;
@@ -379,19 +379,19 @@ void DeviceIniParser::readDeviceComissioning(DeviceConfiguration *deviceConfigur
  */
 uint8_t DeviceIniParser::readPdoMapping() const
 {
-    if (_file->value("PDOMapping") == 0)
+    if (_file->value(QStringLiteral("PDOMapping")) == 0)
     {
         return 0;
     }
 
-    QString accessString = _file->value("AccessType").toString();
+    QString accessString = _file->value(QStringLiteral("AccessType")).toString();
 
-    if (accessString == "rwr" || accessString == "ro" || accessString == "const")
+    if (accessString == QStringLiteral("rwr") || accessString == QStringLiteral("ro") || accessString == QStringLiteral("const"))
     {
         return SubIndex::TPDO;
     }
 
-    if (accessString == "rww" || accessString == "wo")
+    if (accessString == QStringLiteral("rww") || accessString == QStringLiteral("wo"))
     {
         return SubIndex::RPDO;
     }
@@ -405,7 +405,7 @@ uint8_t DeviceIniParser::readPdoMapping() const
  */
 QVariant DeviceIniParser::readLowLimit() const
 {
-    return QVariant(_file->value("LowLimit"));
+    return QVariant(_file->value(QStringLiteral("LowLimit")));
 }
 
 /**
@@ -414,7 +414,7 @@ QVariant DeviceIniParser::readLowLimit() const
  */
 QVariant DeviceIniParser::readHighLimit() const
 {
-    return QVariant(_file->value("HighLimit"));
+    return QVariant(_file->value(QStringLiteral("HighLimit")));
 }
 
 /**
@@ -423,10 +423,10 @@ QVariant DeviceIniParser::readHighLimit() const
  */
 uint16_t DeviceIniParser::readDataType() const
 {
-    QString dataType = _file->value("DataType").toString();
+    QString dataType = _file->value(QStringLiteral("DataType")).toString();
 
     int base = 10;
-    if (dataType.startsWith("0x"))
+    if (dataType.startsWith(QStringLiteral("0x")))
     {
         base = 16;
     }
@@ -437,10 +437,10 @@ uint16_t DeviceIniParser::readDataType() const
 
 uint32_t DeviceIniParser::readObjFlags() const
 {
-    QString objFlags = _file->value("ObjFlags").toString();
+    QString objFlags = _file->value(QStringLiteral("ObjFlags")).toString();
 
     int base = 10;
-    if (objFlags.startsWith("0x"))
+    if (objFlags.startsWith(QStringLiteral("0x")))
     {
         base = 16;
     }

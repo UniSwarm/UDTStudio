@@ -102,11 +102,11 @@ void DeviceIniWriter::writeFileInfo(QMap<QString, QString> fileInfos) const
     *_file << "[FileInfo]"
            << "\r\n";
 
-    QString date = QDateTime::currentDateTime().toString("MM-dd-yyyy");
-    QString time = QDateTime::currentDateTime().toString("hh:mmAP");
+    QString date = QDateTime::currentDateTime().toString(QStringLiteral("MM-dd-yyyy"));
+    QString time = QDateTime::currentDateTime().toString(QStringLiteral("hh:mmAP"));
 
-    fileInfos.insert("ModificationDate", date);
-    fileInfos.insert("ModificationTime", time);
+    fileInfos.insert(QStringLiteral("ModificationDate"), date);
+    fileInfos.insert(QStringLiteral("ModificationTime"), time);
 
     writeStringMap(fileInfos);
 }
@@ -355,27 +355,27 @@ QString DeviceIniWriter::accessToString(int access) const
     {
         case SubIndex::READ:
         case SubIndex::READ + SubIndex::TPDO:
-            return QString("ro");
+            return QStringLiteral("ro");
 
         case SubIndex::READ + SubIndex::CONST:
-            return QString("const");
+            return QStringLiteral("const");
 
         case SubIndex::WRITE:
         case SubIndex::WRITE + SubIndex::RPDO:
-            return QString("wo");
+            return QStringLiteral("wo");
 
         case SubIndex::READ + SubIndex::WRITE:
         case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO + SubIndex::RPDO:
-            return QString("rw");
+            return QStringLiteral("rw");
 
         case SubIndex::READ + SubIndex::WRITE + SubIndex::TPDO:
-            return QString("rwr");
+            return QStringLiteral("rwr");
 
         case SubIndex::READ + SubIndex::WRITE + SubIndex::RPDO:
-            return QString("rww");
+            return QStringLiteral("rww");
     }
 
-    return "";
+    return QStringLiteral("");
 }
 
 /**
@@ -434,7 +434,7 @@ QString DeviceIniWriter::defaultValue(const SubIndex *subIndex) const
 {
     if (subIndex->hasNodeId() && _isDescription)
     {
-        QString string = "$NODEID";
+        QString string = QStringLiteral("$NODEID");
         if (subIndex->value().toInt() != 0)
         {
             string += "+" + valueToString(subIndex->value().toInt(), 16, subIndex->length() * 2);

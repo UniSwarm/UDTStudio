@@ -41,7 +41,7 @@ bool ConfigurationApply::apply(DeviceModel *deviceModel, const QString &fileIniP
         return false;
     }
 
-    settings.beginGroup("Default");
+    settings.beginGroup(QStringLiteral("Default"));
 
     const QStringList &childKeys = settings.childKeys();
     for (const QString &childKey : childKeys)
@@ -82,15 +82,15 @@ bool ConfigurationApply::apply(DeviceModel *deviceModel, const QString &fileIniP
 SubIndex *ConfigurationApply::getSubIndex(DeviceModel *deviceDescription, const QString &childKey)
 {
     bool ok = false;
-    if (childKey.contains(QRegularExpression("^[0-9]")))
+    if (childKey.contains(QRegularExpression(QStringLiteral("^[0-9]"))))
     {
         uint16_t indexId = 0;
         uint8_t subIndexId = 0;
 
         // Find by id
-        if (childKey.contains("sub"))
+        if (childKey.contains(QStringLiteral("sub")))
         {
-            QStringList keys = childKey.split("sub");
+            QStringList keys = childKey.split(QStringLiteral("sub"));
             indexId = static_cast<uint16_t>(keys[0].toUInt(&ok, 16));
             subIndexId = static_cast<uint8_t>(keys[1].toUInt(&ok, 16));
         }
@@ -116,9 +116,9 @@ SubIndex *ConfigurationApply::getSubIndex(DeviceModel *deviceDescription, const 
         QString indexName;
         QString subIndexName;
 
-        if (childKey.contains("."))
+        if (childKey.contains(QStringLiteral(".")))
         {
-            QStringList keys = childKey.split(".");
+            QStringList keys = childKey.split(QStringLiteral("."));
             indexName = keys[0];
             subIndexName = keys[1];
 
@@ -126,7 +126,7 @@ SubIndex *ConfigurationApply::getSubIndex(DeviceModel *deviceDescription, const 
             if (index != nullptr)
             {
                 SubIndex *sub = nullptr;
-                if (subIndexName.startsWith("sub"))
+                if (subIndexName.startsWith(QStringLiteral("sub")))
                 {
                     uint subIndexNumber = subIndexName.mid(3).toUInt();
                     sub = index->subIndex(subIndexNumber);
@@ -187,7 +187,7 @@ void ConfigurationApply::resizeArray(Index *index, int newSize)
 QString ConfigurationApply::renameItem(const QString &name, int value)
 {
     QString newName = name;
-    QRegularExpression reg("%([0-9]*)([z]*)([cCd])");
+    QRegularExpression reg(QStringLiteral("%([0-9]*)([z]*)([cCd])"));
     QRegularExpressionMatch match = reg.match(name);
     QString modifier = match.captured(2);
     QString type = match.captured(3);
@@ -201,14 +201,14 @@ QString ConfigurationApply::renameItem(const QString &name, int value)
         newName.replace(reg, QString::number(value).rightJustified(length, '0'));
         return newName;
     }
-    if (type == "C")
+    if (type == QStringLiteral("C"))
     {
-        newName.replace("%C", QChar('A' + value - 1));
+        newName.replace(QStringLiteral("%C"), QChar('A' + value - 1));
         return newName;
     }
-    if (type == "c")
+    if (type == QStringLiteral("c"))
     {
-        newName.replace("%c", QChar('a' + value - 1));
+        newName.replace(QStringLiteral("%c"), QChar('a' + value - 1));
         return newName;
     }
     return newName;
@@ -222,7 +222,7 @@ QString ConfigurationApply::renameItem(const QString &name, int value)
 QVariant ConfigurationApply::readData(SubIndex::DataType dataType, const QString &stringValue)
 {
     int base = 10;
-    if (stringValue.startsWith("0x"))
+    if (stringValue.startsWith(QStringLiteral("0x")))
     {
         base = 16;
     }
@@ -287,7 +287,7 @@ QString ConfigurationApply::objectFileDetail(const QString &filePath, const QStr
         QString text(stream.readLine());
         if (text.contains(childKey))
         {
-            return QString("%1:%2: ").arg(filePath).arg(line);
+            return QStringLiteral("%1:%2: ").arg(filePath).arg(line);
         }
         line++;
     }

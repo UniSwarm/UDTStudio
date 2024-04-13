@@ -89,7 +89,7 @@ bool CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
 
     if (!hFile.open(QIODevice::WriteOnly))
     {
-        appendError(QString("Cannot open file %1\n").arg(filePath));
+        appendError(QStringLiteral("Cannot open file %1\n").arg(filePath));
         return false;
     }
 
@@ -98,8 +98,8 @@ bool CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
     out << "/**\n";
     out << " * Generated od_data.h file\n";
 
-    QString date = QDateTime::currentDateTime().toString("dd-MM-yyyy");
-    QString time = QDateTime::currentDateTime().toString("hh:mm AP");
+    QString date = QDateTime::currentDateTime().toString(QStringLiteral("dd-MM-yyyy"));
+    QString time = QDateTime::currentDateTime().toString(QStringLiteral("hh:mm AP"));
     out << " * Creation date: " << date << "\n";
     out << " * Creation time: " << time << "\n";
 
@@ -205,7 +205,7 @@ bool CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
 
     if (!cFile.open(QIODevice::WriteOnly))
     {
-        appendError(QString("Cannot open file %1\n").arg(filePath));
+        appendError(QStringLiteral("Cannot open file %1\n").arg(filePath));
         return false;
     }
 
@@ -214,8 +214,8 @@ bool CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
     out << "/**\n";
     out << " * Generated od_data.c file\n";
 
-    QString date = QDateTime::currentDateTime().toString("dd-MM-yyyy");
-    QString time = QDateTime::currentDateTime().toString("hh:mm AP");
+    QString date = QDateTime::currentDateTime().toString(QStringLiteral("dd-MM-yyyy"));
+    QString time = QDateTime::currentDateTime().toString(QStringLiteral("hh:mm AP"));
     out << " * Creation date: " << date << "\n";
     out << " * Creation time: " << time << "\n";
 
@@ -352,7 +352,7 @@ bool CGenerator::generateHStruct(DeviceConfiguration *deviceConfiguration, const
 
     if (!hFile.open(QIODevice::WriteOnly))
     {
-        appendError(QString("Cannot open file %1\n").arg(filePath));
+        appendError(QStringLiteral("Cannot open file %1\n").arg(filePath));
         return false;
     }
 
@@ -361,8 +361,8 @@ bool CGenerator::generateHStruct(DeviceConfiguration *deviceConfiguration, const
     out << "/**\n";
     out << " * Generated partial OD struct file\n";
 
-    QString date = QDateTime::currentDateTime().toString("dd-MM-yyyy");
-    QString time = QDateTime::currentDateTime().toString("hh:mm AP");
+    QString date = QDateTime::currentDateTime().toString(QStringLiteral("dd-MM-yyyy"));
+    QString time = QDateTime::currentDateTime().toString(QStringLiteral("hh:mm AP"));
     out << " * Creation date: " << date << "\n";
     out << " * Creation time: " << time << "\n";
 
@@ -413,47 +413,47 @@ QString CGenerator::typeToString(SubIndex::DataType type)
     switch (type)
     {
         case SubIndex::INTEGER8:
-            return QLatin1String("int8_t");
+            return QStringLiteral("int8_t");
 
         case SubIndex::INTEGER16:
-            return QLatin1String("int16_t");
+            return QStringLiteral("int16_t");
 
         case SubIndex::INTEGER32:
-            return QLatin1String("int32_t");
+            return QStringLiteral("int32_t");
 
         case SubIndex::INTEGER64:
-            return QLatin1String("int64_t");
+            return QStringLiteral("int64_t");
 
         case SubIndex::BOOLEAN:
         case SubIndex::UNSIGNED8:
-            return QLatin1String("uint8_t");
+            return QStringLiteral("uint8_t");
 
         case SubIndex::UNSIGNED16:
-            return QLatin1String("uint16_t");
+            return QStringLiteral("uint16_t");
 
         case SubIndex::UNSIGNED32:
-            return QLatin1String("uint32_t");
+            return QStringLiteral("uint32_t");
 
         case SubIndex::UNSIGNED64:
-            return QLatin1String("uint64_t");
+            return QStringLiteral("uint64_t");
 
         case SubIndex::REAL32:
-            return QLatin1String("float32_t");
+            return QStringLiteral("float32_t");
 
         case SubIndex::REAL64:
-            return QLatin1String("float64_t");
+            return QStringLiteral("float64_t");
 
         case SubIndex::VISIBLE_STRING:
-            return QLatin1String("vstring_t");
+            return QStringLiteral("vstring_t");
 
         case SubIndex::OCTET_STRING:
-            return QLatin1String("ostring_t");
+            return QStringLiteral("ostring_t");
 
         case SubIndex::DDOMAIN:
-            return QLatin1String("OD_domain_t");
+            return QStringLiteral("OD_domain_t");
 
         default:
-            return QLatin1String("");
+            return QStringLiteral("");
     }
 }
 
@@ -495,7 +495,7 @@ QString CGenerator::structNameToString(const QString &name)
     QString modified;
     modified = name.toLower();
     modified = modified.replace(QChar(' '), QChar('_'));
-    modified = modified.append("_t");
+    modified = modified.append(QStringLiteral("_t"));
     return modified;
 }
 
@@ -653,31 +653,31 @@ QString CGenerator::accessToEnumString(uint8_t acces)
 
     if ((acces & SubIndex::READ) != 0)
     {
-        accessToEnumString += "OD_ACCESS_READ";
+        accessToEnumString += QStringLiteral("OD_ACCESS_READ");
     }
     if ((acces & SubIndex::WRITE) != 0)
     {
         if (!accessToEnumString.isEmpty())
         {
-            accessToEnumString += " | ";
+            accessToEnumString += QStringLiteral(" | ");
         }
-        accessToEnumString += "OD_ACCESS_WRITE";
+        accessToEnumString += QStringLiteral("OD_ACCESS_WRITE");
     }
     if ((acces & SubIndex::TPDO) != 0)
     {
         if (!accessToEnumString.isEmpty())
         {
-            accessToEnumString += " | ";
+            accessToEnumString += QStringLiteral(" | ");
         }
-        accessToEnumString += "OD_ACCESS_TPDO";
+        accessToEnumString += QStringLiteral("OD_ACCESS_TPDO");
     }
     if ((acces & SubIndex::RPDO) != 0)
     {
         if (!accessToEnumString.isEmpty())
         {
-            accessToEnumString += " | ";
+            accessToEnumString += QStringLiteral(" | ");
         }
-        accessToEnumString += "OD_ACCESS_RPDO";
+        accessToEnumString += QStringLiteral("OD_ACCESS_RPDO");
     }
 
     return accessToEnumString;
@@ -693,10 +693,10 @@ QString CGenerator::stringNameToString(const SubIndex *subIndex)
 {
     if (subIndex->subIndex() == 0)
     {
-        return varNameToString(subIndex->name()) + "Str";
+        return varNameToString(subIndex->name()) + QStringLiteral("Str");
     }
 
-    return varNameToString(subIndex->name()) + "Str" + QString::number(subIndex->subIndex());
+    return varNameToString(subIndex->name()) + QStringLiteral("Str") + QString::number(subIndex->subIndex());
 }
 
 /**
@@ -1046,7 +1046,7 @@ void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile)
             cFile << "static const char " << stringNameToString(subIndex) << "[]"
                   << " = ";
             value = subIndex->value().toString();
-            if (value.startsWith("__") && value.endsWith("__") && value.size() > 4)  // value contain preprocessor value
+            if (value.startsWith(QStringLiteral("__")) && value.endsWith(QStringLiteral("__")) && value.size() > 4)  // value contain preprocessor value
             {
                 value = "STRINGIZE_VALUE_OF(" + value + ")";
             }
@@ -1148,7 +1148,7 @@ void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextS
     cFile << "void od_setNodeId(uint8_t nodeId)\n";
     cFile << "{\n";
 
-    for (Index *index : deviceConfiguration->indexes())
+    for (Index *index : qAsConst(deviceConfiguration->indexes()))
     {
         if (index->index() == 0x2040)  // Communication_config
         {

@@ -46,22 +46,21 @@ void DcfWriter::write(DeviceConfiguration *deviceConfiguration, const QString &f
 {
     QFile dcfFile(filePath);
 
-    if (!dcfFile.open(QIODevice::WriteOnly))
+    if (!dcfFile.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         return;
     }
 
-    QTextStream out(&dcfFile);
-    DeviceIniWriter writer(&out);
-
     QString name = QFileInfo(filePath).fileName();
     deviceConfiguration->setFileName(name);
 
-    writer.writeFileInfo(deviceConfiguration->fileInfos());
-    writer.writeDeviceComissioning(deviceConfiguration->deviceComissionings());
-    writer.writeDummyUsage(deviceConfiguration->dummyUsages());
+    QTextStream outStream(&dcfFile);
+    DeviceIniWriter intWriter(&outStream);
+    intWriter.writeFileInfo(deviceConfiguration->fileInfos());
+    intWriter.writeDeviceComissioning(deviceConfiguration->deviceComissionings());
+    intWriter.writeDummyUsage(deviceConfiguration->dummyUsages());
 
-    writer.writeObjects(deviceConfiguration);
+    intWriter.writeObjects(deviceConfiguration);
 
     dcfFile.close();
 }

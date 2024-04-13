@@ -209,49 +209,49 @@ QString ODIndexDb::unit(quint16 index, quint8 subIndex, quint16 profileNumber)
     {
         if (subIndex == 0)
         {
-            return QString(" ms");
+            return QStringLiteral(" ms");
         }
     }
     if (index == 0x1017)  // Producer heartbeat time
     {
         if (subIndex == 0)
         {
-            return QString(" ms");
+            return QStringLiteral(" ms");
         }
     }
     if ((index >= 0x1400 && index <= 0x15FF) || (index >= 0x1800 && index <= 0x19FF))  // RPDO TPDO
     {
         if (subIndex == 3 || subIndex == 5)  // Inhibit Time and Event Timer
         {
-            return QString(" ms");
+            return QStringLiteral(" ms");
         }
     }
     if (index == 0x2000)  // board voltages
     {
         if (subIndex > 0)
         {
-            return QString(" V");
+            return QStringLiteral(" V");
         }
     }
     if (index == 0x2020)  // cpu temps
     {
         if (subIndex > 0)
         {
-            return QString(" °C");
+            return QStringLiteral(" °C");
         }
     }
     if (index == 0x2023 || index == 0x2024 || index == 0x2025)  // cpu stats us
     {
         if (subIndex > 0)
         {
-            return QString(" µs");
+            return QStringLiteral(" µs");
         }
     }
     if (index == 0x2041)  // Board under/overvoltage
     {
         if (subIndex > 0)
         {
-            return QString(" V");
+            return QStringLiteral(" V");
         }
     }
 
@@ -261,87 +261,87 @@ QString ODIndexDb::unit(quint16 index, quint8 subIndex, quint16 profileNumber)
         {
             if (subIndex > 0)
             {
-                return QString(" °C");
+                return QStringLiteral(" °C");
             }
         }
         if (index == 0x2802 || index == 0x2803)  // bridge currents
         {
             if (subIndex > 0)
             {
-                return QString(" A");
+                return QStringLiteral(" A");
             }
         }
         if (index == 0x2805)  // bridge bemf voltages
         {
             if (subIndex > 0)
             {
-                return QString(" V");
+                return QStringLiteral(" V");
             }
         }
         if (index == 0x2810)  // driver temperature protection
         {
             if (subIndex == 1 || subIndex == 2)
             {
-                return QString(" °C");
+                return QStringLiteral(" °C");
             }
         }
         if ((index & (quint16)0xF1FF) == 0x4006)  // Motor status
         {
             if (subIndex == 2)  // motor current
             {
-                return QString(" A");
+                return QStringLiteral(" A");
             }
             if (subIndex == 7)  // motor temperature
             {
-                return QString(" °C");
+                return QStringLiteral(" °C");
             }
         }
         if ((index & (quint16)0xF1FF) == 0x4007)  // Motor config
         {
             if (subIndex == 2 || subIndex == 3 || subIndex == 5)  // motor current limits
             {
-                return QString(" A");
+                return QStringLiteral(" A");
             }
             if (subIndex == 4)  // motor current limits
             {
-                return QString(" ms");
+                return QStringLiteral(" ms");
             }
             if (subIndex == 6)  // current constant
             {
-                return QString(" Nm/A");
+                return QStringLiteral(" Nm/A");
             }
             if (subIndex == 7)  // maximum velocity
             {
-                return QString(" rpm");
+                return QStringLiteral(" rpm");
             }
             if (subIndex == 8)  // velocity constant
             {
-                return QString(" rpm/V");
+                return QStringLiteral(" rpm/V");
             }
         }
         if ((index & (quint16)0xF1FF) == 0x4008)  // BLDC status
         {
             if (subIndex == 3)  // electrical angle
             {
-                return QString(" °");
+                return QStringLiteral(" °");
             }
         }
         if ((index & (quint16)0xF1FF) == 0x4081)
         {
             if (subIndex == 3 || subIndex == 4)  // motor temperature protection ST
             {
-                return QString(" °C");
+                return QStringLiteral(" °C");
             }
         }
         if ((index & (quint16)0xF1FF) == 0x4082)
         {
             if (subIndex == 2 || (subIndex >= 5 && subIndex <= 8))  // Brake_excitation_time_ms and delays
             {
-                return QString(" ms");
+                return QStringLiteral(" ms");
             }
             if (subIndex == 3 || subIndex == 4)  // Brake_duty
             {
-                return QString("%");
+                return QStringLiteral("%");
             }
         }
 
@@ -352,7 +352,7 @@ QString ODIndexDb::unit(quint16 index, quint8 subIndex, quint16 profileNumber)
             {
                 if (subIndex == 2)  // Delta_time
                 {
-                    return QString(" ms");
+                    return QStringLiteral(" ms");
                 }
             }
         }

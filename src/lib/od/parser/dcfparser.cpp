@@ -52,7 +52,7 @@ DeviceConfiguration *DcfParser::parse(const QString &path) const
     // infos
     for (const QString &group : file.childGroups())
     {
-        if (group == "DeviceComissioning")
+        if (group == QStringLiteral("DeviceComissioning"))
         {
             file.beginGroup(group);
             parser.readDeviceComissioning(deviceConfiguration);
@@ -60,7 +60,7 @@ DeviceConfiguration *DcfParser::parse(const QString &path) const
             continue;
         }
 
-        if (group == "FileInfo")
+        if (group == QStringLiteral("FileInfo"))
         {
             file.beginGroup(group);
             parser.readFileInfo(deviceConfiguration);
@@ -68,7 +68,7 @@ DeviceConfiguration *DcfParser::parse(const QString &path) const
             continue;
         }
 
-        if (group == "DummyUsage")
+        if (group == QStringLiteral("DummyUsage"))
         {
             file.beginGroup(group);
             parser.readDummyUsage(deviceConfiguration);

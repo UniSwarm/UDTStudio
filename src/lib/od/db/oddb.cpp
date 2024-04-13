@@ -34,7 +34,7 @@ OdDb::OdDb()
 
 void OdDb::init()
 {
-    addDirectory(QProcessEnvironment::systemEnvironment().value("EDS_PATH").split(QDir::listSeparator()));
+    addDirectory(QProcessEnvironment::systemEnvironment().value(QStringLiteral("EDS_PATH")).split(QDir::listSeparator()));
 
     QString edsPath = QCoreApplication::applicationDirPath() + "/../eds";
     if (QDir(edsPath).exists())
@@ -64,7 +64,7 @@ void OdDb::addDirectory(const QStringList &directories)
 
 void OdDb::searchFile(const QString &directory)
 {
-    QDirIterator it(directory, QStringList() << "*.eds", QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+    QDirIterator it(directory, QStringList() << QStringLiteral("*.eds"), QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
 
     while (it.hasNext())
     {

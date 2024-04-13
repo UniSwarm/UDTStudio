@@ -30,7 +30,7 @@ void ODMerger::merge(DeviceDescription *deviceDescription, DeviceDescription *se
     }
     deviceDescription->setDeviceInfos(deviceInfos);
 
-    merge(dynamic_cast<DeviceModel *>(deviceDescription), dynamic_cast<DeviceModel *>(secondDeviceDescription));
+    merge(deviceDescription, secondDeviceDescription);
 }
 
 void ODMerger::merge(DeviceModel *deviceModel, DeviceModel *secondDeviceModel)
@@ -56,7 +56,7 @@ void ODMerger::merge(DeviceModel *deviceModel, DeviceModel *secondDeviceModel)
     }
     deviceModel->setComments(comments);
 
-    for (Index *index2 : secondDeviceModel->indexes())
+    for (Index *index2 : qAsConst(secondDeviceModel->indexes()))
     {
         Index *index = deviceModel->index(index2->index());
         if (index == nullptr)
@@ -80,7 +80,7 @@ void ODMerger::merge(DeviceModel *deviceModel, DeviceModel *secondDeviceModel)
         }
     }
 
-    for (Index *index : deviceModel->indexes())
+    for (Index *index : qAsConst(deviceModel->indexes()))
     {
         if (!secondDeviceModel->indexExist(index->index()))
         {
