@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     setWindowTitle(tr("UniSwarm UDTStudio"));
-    setWindowIcon(QIcon(":/icons/img/udtstudio.ico"));
+    setWindowIcon(QIcon(QStringLiteral(":/icons/img/udtstudio.ico")));
     statusBar()->setVisible(true);
 
     createDocks();
@@ -58,30 +58,31 @@ MainWindow::MainWindow(QWidget *parent)
 
     CanOpenBus *bus = nullptr;
 #ifdef Q_OS_UNIX
-    bus = new CanOpenBus(new CanBusSocketCAN("can0"));
+    bus = new CanOpenBus(new CanBusSocketCAN(QStringLiteral("can0")));
     if (bus != nullptr)
     {
-        bus->setBusName("Bus can0");
+        bus->setBusName(QStringLiteral("Bus can0"));
         CanOpen::addBus(bus);
         _canFrameListView->setBus(bus);
     }
     QTimer::singleShot(100, bus, &CanOpenBus::exploreBus);
 
-    bus = new CanOpenBus(new CanBusSocketCAN("can1"));
+    bus = new CanOpenBus(new CanBusSocketCAN(QStringLiteral("can1")));
     if (bus != nullptr)
     {
-        bus->setBusName("Bus can1");
+        bus->setBusName(QStringLiteral("Bus can1"));
         CanOpen::addBus(bus);
     }
     QTimer::singleShot(100, bus, &CanOpenBus::exploreBus);
 #endif
 
-    /*bus = new CanOpenBus(new CanBusTcpUDT("192.168.1.80"));
-    bus->setBusName("Bus net");
-    CanOpen::addBus(bus);*/
+    /*bus = new CanOpenBus(new CanBusTcpUDT(QStringLiteral("192.168.1.111")));
+    bus->setBusName(QStringLiteral("Bus net"));
+    CanOpen::addBus(bus);
+    QTimer::singleShot(100, bus, &CanOpenBus::exploreBus);*/
 
-    bus = new CanOpenBus(new CanBusDriver(""));
-    bus->setBusName("VBus eds");
+    bus = new CanOpenBus(new CanBusDriver(QStringLiteral("")));
+    bus->setBusName(QStringLiteral("VBus eds"));
     CanOpen::addBus(bus);
     int id = 1;
     for (const QString &edsFile : qAsConst(OdDb::edsFiles()))
@@ -109,7 +110,7 @@ void MainWindow::exportCfgFile()
         return;
     }
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save configuration file"), "", tr("Configuration file (*.conf)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save configuration file"), QStringLiteral(""), tr("Configuration file (*.cfg)"));
 
     node->nodeOd()->exportConf(fileName);
 }
@@ -122,7 +123,7 @@ void MainWindow::exportDCF()
         return;
     }
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save DCF File"), "", tr("Device File Configuration (*.dcf)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save DCF File"), QStringLiteral(""), tr("Device File Configuration (*.dcf)"));
 
     node->nodeOd()->exportDcf(fileName);
 }
@@ -134,20 +135,20 @@ void MainWindow::createDocks()
     setTabPosition(Qt::LeftDockWidgetArea, QTabWidget::North);
 
     _busNodesManagerDock = new QDockWidget(tr("Bus nodes"), this);
-    _busNodesManagerDock->setObjectName("busNodesManagerDock");
+    _busNodesManagerDock->setObjectName(QStringLiteral("busNodesManagerDock"));
     _busNodesManagerView = new BusNodesManagerView(CanOpen::instance());
     _busNodesManagerDock->setWidget(_busNodesManagerView);
     addDockWidget(Qt::LeftDockWidgetArea, _busNodesManagerDock);
 
     _canFrameListDock = new QDockWidget(tr("Can frames"), this);
-    _canFrameListDock->setObjectName("canFrameListDock");
+    _canFrameListDock->setObjectName(QStringLiteral("canFrameListDock"));
     _canFrameListView = new CanFrameListView();
     _canFrameListDock->setWidget(_canFrameListView);
     addDockWidget(Qt::LeftDockWidgetArea, _canFrameListDock);
     tabifyDockWidget(_busNodesManagerDock, _canFrameListDock);
 
     _dataLoggerDock = new QDockWidget(tr("Data logger"), this);
-    _dataLoggerDock->setObjectName("dataLoggerDock");
+    _dataLoggerDock->setObjectName(QStringLiteral("dataLoggerDock"));
     _dataLoggerWidget = new DataLoggerWidget();
     _dataLoggerWidget->setTitle(tr("Dockable data logger"));
     _dataLoggerWidget->chartView()->setRollingTimeMs(10000);
@@ -170,16 +171,17 @@ void MainWindow::createMenus()
     QAction *action;
     // ============= file =============
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+    // menuBar()->setContextMenuPolicy()
 
     action = new QAction(tr("&Stop all"), this);
-    action->setIcon(QIcon(":/icons/img/icons8-cancel.png"));
+    action->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-cancel.png")));
     action->setStatusTip(tr("Stop all nodes in all buses"));
     action->setShortcut(QKeySequence::Cancel);
     fileMenu->addAction(action);
     connect(action, &QAction::triggered, CanOpen::instance(), &CanOpen::stopAll);
 
     action = new QAction(tr("E&xit"), this);
-    action->setIcon(QIcon(":/icons/img/icons8-exit.png"));
+    action->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-exit.png")));
     action->setStatusTip(tr("Exits UDTStudio"));
     action->setShortcut(QKeySequence::Quit);
     fileMenu->addAction(action);
@@ -245,12 +247,12 @@ void MainWindow::createMenus()
     QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
 
     QAction *aboutAction = new QAction(tr("&About"), this);
-    aboutAction->setIcon(QIcon(":/icons/img/icons8-about.png"));
+    aboutAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-about.png")));
     connect(aboutAction, &QAction::triggered, this, &MainWindow::about);
     helpMenu->addAction(aboutAction);
 
     QAction *aboutQtAction = new QAction(tr("About &Qt"), this);
-    aboutQtAction->setIcon(QIcon(":/icons/img/icons8-system-information.png"));
+    aboutQtAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-system-information.png")));
     connect(aboutQtAction, &QAction::triggered, qApp, &QApplication::aboutQt);
     helpMenu->addAction(aboutQtAction);
 }
@@ -260,12 +262,12 @@ void MainWindow::writeSettings()
     QSettings settings(QApplication::organizationName(), QApplication::applicationName());
 
     // MainWindow position/size/maximized
-    settings.beginGroup("MainWindow");
-    settings.setValue("geometry", saveGeometry());
-    settings.setValue("windowState", saveState());
+    settings.beginGroup(QStringLiteral("MainWindow"));
+    settings.setValue(QStringLiteral("geometry"), saveGeometry());
+    settings.setValue(QStringLiteral("windowState"), saveState());
     settings.endGroup();
 
-    settings.beginGroup("BusNodeManager");
+    settings.beginGroup(QStringLiteral("BusNodeManager"));
     _busNodesManagerView->saveState(settings);
     settings.endGroup();
 }
@@ -275,12 +277,12 @@ void MainWindow::readSettings()
     QSettings settings(QApplication::organizationName(), QApplication::applicationName());
 
     // MainWindow position/size/maximized
-    settings.beginGroup("MainWindow");
-    restoreGeometry(settings.value("geometry").toByteArray());
-    restoreState(settings.value("windowState").toByteArray());
+    settings.beginGroup(QStringLiteral("MainWindow"));
+    restoreGeometry(settings.value(QStringLiteral("geometry")).toByteArray());
+    restoreState(settings.value(QStringLiteral("windowState")).toByteArray());
     settings.endGroup();
 
-    settings.beginGroup("BusNodeManager");
+    settings.beginGroup(QStringLiteral("BusNodeManager"));
     _busNodesManagerView->restoreState(settings);
     settings.endGroup();
 }
@@ -298,8 +300,8 @@ bool MainWindow::event(QEvent *event)
 void MainWindow::about()
 {
     QMessageBox::about(this,
-                       "UDTStudio v0",
-                       QString("Copyright (C) 2019-2021 UniSwarm (<a href=\"https://uniswarm.eu\">uniswarm.eu</a>)<br>\
+                       QStringLiteral("UDTStudio v0"),
+                       QStringLiteral("Copyright (C) 2019-2024 UniSwarm (<a href=\"https://uniswarm.eu\">uniswarm.eu</a>)<br>\
 <br>\
 This sofware is part of uDevkit distribution. To check for new version, please visit <a href=\"https://github.com/UniSwarm/UDTStudio\">github.com/UniSwarm/UDTStudio</a><br>\
 <br>\
@@ -318,8 +320,8 @@ GNU General Public License for more details.<br>\
 You should have received a copy of the GNU General Public License \
 along with this program. If not, see <a href=\"http://www.gnu.org/licenses/\">www.gnu.org/licenses</a><br>\
 <br>\
-Build date: ") + __DATE__ + QString(" time: ")
-                           + __TIME__ + QString("<br>\
+Build date: ") + __DATE__ + QStringLiteral(" time: ")
+                           + __TIME__ + QStringLiteral("<br>\
 <br>\
 UDTStudio use others open libraries :<br>\
 - QDarkStyleSheet, a nice dark theme for Qt (dark theme) <a href=\"https://github.com/ColinDuquesnoy/QDarkStyleSheet\">github.com/ColinDuquesnoy/QDarkStyleSheet</a> [MIT]<br>\
