@@ -62,8 +62,8 @@ void NodeScreenHome::createWidgets()
 
     // read all action
     QAction *actionReadMappings = toolBar->addAction(tr("Read all"));
-    actionReadMappings->setIcon(QIcon(":/icons/img/icons8-update.png"));
-    actionReadMappings->setShortcut(QKeySequence("Ctrl+R"));
+    actionReadMappings->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-update.png")));
+    actionReadMappings->setShortcut(QKeySequence(QStringLiteral("Ctrl+R")));
     actionReadMappings->setStatusTip(tr("Read all the objects of the current window"));
     connect(actionReadMappings, &QAction::triggered, this, &NodeScreenHome::readAll);
 
@@ -171,14 +171,14 @@ QWidget *NodeScreenHome::createStatusWidget()
     indexLabel = new IndexLabel(NodeObjectId(0x2000, 1));
     indexLabel->setDisplayHint(AbstractIndexWidget::DisplayFloat);
     indexLabel->setScale(1.0 / 100.0);
-    indexLabel->setUnit(" V");
+    indexLabel->setUnit(QStringLiteral(" V"));
     sumaryLayout->addRow(tr("Board voltage:"), indexLabel);
     addIndexWidget(indexLabel);
 
     indexLabel = new IndexLabel(NodeObjectId(0x2020, 1));
     indexLabel->setDisplayHint(AbstractIndexWidget::DisplayFloat);
     indexLabel->setScale(1.0 / 10.0);
-    indexLabel->setUnit(" °C");
+    indexLabel->setUnit(QStringLiteral(" °C"));
     sumaryLayout->addRow(tr("CPU temperature:"), indexLabel);
     addIndexWidget(indexLabel);
 
@@ -218,7 +218,7 @@ QWidget *NodeScreenHome::createOdWidget()
             this,
             [=]()
             {
-                screenWidget()->setActiveTab("od");
+                screenWidget()->setActiveTab(QStringLiteral("od"));
             });
     buttonlayout->addWidget(goODButton);
     buttonlayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
@@ -244,7 +244,7 @@ void NodeScreenHome::updateInfos()
         return;
     }
 
-    _summaryProfileLabel->setText(QString("DS%1").arg(node()->profileNumber()));
+    _summaryProfileLabel->setText(QStringLiteral("DS%1").arg(node()->profileNumber()));
     if (node()->vendorId() == 0x04A2)  // UniSwarm
     {
         _statusWidget->setEnabled(true);
@@ -252,11 +252,11 @@ void NodeScreenHome::updateInfos()
         {
             case 401:
             case 428:
-                _summaryIconLabel->setPixmap(QPixmap(":/uBoards/uio.png"));
+                _summaryIconLabel->setPixmap(QPixmap(QStringLiteral(":/uBoards/uio.png")));
                 break;
 
             case 402:
-                _summaryIconLabel->setPixmap(QPixmap(":/uBoards/umc.png"));
+                _summaryIconLabel->setPixmap(QPixmap(QStringLiteral(":/uBoards/umc.png")));
                 break;
         }
     }
@@ -275,14 +275,14 @@ void NodeScreenHome::updateInfos()
     }
 
     QString fileInfos;
-    fileInfos.append("<table><tbody>");
+    fileInfos.append(QStringLiteral("<table><tbody>"));
     QMapIterator<QString, QString> i(node()->nodeOd()->edsFileInfos());
     while (i.hasNext())
     {
         i.next();
         fileInfos.append("<tr><td>" + i.key() + ": </td><td>" + i.value() + "</td></tr>");
     }
-    fileInfos.append("</tbody></table>");
+    fileInfos.append(QStringLiteral("</tbody></table>"));
     _odFileInfosLabel->setText(fileInfos);
 
     _odCountLabel->setNum(node()->nodeOd()->indexCount());
@@ -291,7 +291,7 @@ void NodeScreenHome::updateInfos()
 
 QString NodeScreenHome::title() const
 {
-    return QString(tr("Node"));
+    return tr("Node");
 }
 
 void NodeScreenHome::setNodeInternal(Node *node, uint8_t axis)

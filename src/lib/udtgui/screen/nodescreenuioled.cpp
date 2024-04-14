@@ -39,8 +39,8 @@ void NodeScreenUIOLed::createWidgets()
 
     // read all action
     QAction *readAllObjectAction = toolBar->addAction(tr("Read all objects"));
-    readAllObjectAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
-    readAllObjectAction->setShortcut(QKeySequence("Ctrl+R"));
+    readAllObjectAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-update.png")));
+    readAllObjectAction->setShortcut(QKeySequence(QStringLiteral("Ctrl+R")));
     readAllObjectAction->setStatusTip(tr("Read all the objects of the current window"));
     toolBar->addAction(readAllObjectAction);
 
@@ -55,7 +55,7 @@ void NodeScreenUIOLed::createWidgets()
 
 QString NodeScreenUIOLed::title() const
 {
-    return QString(tr("UIO led"));
+    return tr("UIO led");
 }
 
 QIcon NodeScreenUIOLed::icon() const

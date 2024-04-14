@@ -46,8 +46,8 @@ void NodeScreenNMT::createWidgets()
 
     // read all action
     QAction *actionReadMappings = toolBar->addAction(tr("Read all"));
-    actionReadMappings->setIcon(QIcon(":/icons/img/icons8-update.png"));
-    actionReadMappings->setShortcut(QKeySequence("Ctrl+R"));
+    actionReadMappings->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-update.png")));
+    actionReadMappings->setShortcut(QKeySequence(QStringLiteral("Ctrl+R")));
     actionReadMappings->setStatusTip(tr("Read all the objects of the current window"));
     connect(actionReadMappings, &QAction::triggered, this, &NodeScreenNMT::readAll);
 
@@ -111,7 +111,7 @@ QWidget *NodeScreenNMT::createConsumerHeartBeatWidget()
 
     for (int row = 1; row <= 10; row++)
     {
-        gridLayout->addWidget(new QLabel(QString("%1").arg(row)), row, 0);
+        gridLayout->addWidget(new QLabel(QStringLiteral("%1").arg(row)), row, 0);
 
         IndexConsumerHeartBeat *indexConsumerSpinBox = new IndexConsumerHeartBeat(NodeObjectId(0x1016, row));
         gridLayout->addWidget(indexConsumerSpinBox, row, 1, 1, 2);
@@ -128,5 +128,6 @@ QString NodeScreenNMT::title() const
 
 void NodeScreenNMT::setNodeInternal(Node *node, uint8_t axis)
 {
+    Q_UNUSED(node)
     Q_UNUSED(axis)
 }

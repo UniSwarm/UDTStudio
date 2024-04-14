@@ -72,7 +72,7 @@ QIcon NodeScreenUmcMotor::icon() const
 {
     if (node()->vendorId() == 0x04A2)  // UniSwarm
     {
-        return QIcon(":/uBoards/umc.png");
+        return QIcon(QStringLiteral(":/uBoards/umc.png"));
     }
     return QIcon();
 }

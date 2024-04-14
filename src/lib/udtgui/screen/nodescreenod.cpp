@@ -61,11 +61,11 @@ QWidget *NodeScreenOD::createStoreWidget()
     _storeComboBox->addItem(tr("Save manufacturer parameters"), QVariant(Node::StoreMan));
     storeLayout->addWidget(_storeComboBox);
 
-    QPushButton *storeButon = new QPushButton("Store");
+    QPushButton *storeButon = new QPushButton(tr("Store"));
     connect(storeButon, &QPushButton::clicked, this, &NodeScreenOD::store);
     storeLayout->addWidget(storeButon);
 
-    layout->addRow("Store:", storeLayout);
+    layout->addRow(tr("Store:"), storeLayout);
 
     QHBoxLayout *restoreLayout = new QHBoxLayout();
     _restoreComboBox = new QComboBox();
@@ -79,11 +79,11 @@ QWidget *NodeScreenOD::createStoreWidget()
     _restoreComboBox->addItem(tr("Restore saved manufacturer parameters"), QVariant(Node::RestoreSavedMan));
     restoreLayout->addWidget(_restoreComboBox);
 
-    QPushButton *restoreButon = new QPushButton("Restore");
+    QPushButton *restoreButon = new QPushButton(tr("Restore"));
     connect(restoreButon, &QPushButton::clicked, this, &NodeScreenOD::restore);
     restoreLayout->addWidget(restoreButon);
 
-    layout->addRow("Restore:", restoreLayout);
+    layout->addRow(tr("Restore:"), restoreLayout);
 
     _storeRestoreGroupBox->setLayout(layout);
     return _storeRestoreGroupBox;
@@ -118,7 +118,7 @@ void NodeScreenOD::updateStatusNode()
 
 QString NodeScreenOD::title() const
 {
-    return QString(tr("OD"));
+    return tr("OD");
 }
 
 void NodeScreenOD::setNodeInternal(Node *node, uint8_t axis)

@@ -34,7 +34,7 @@ void NodeScreenPDO::createWidgets()
     layout->setContentsMargins(0, 0, 0, 0);
 
     QSplitter *splitter = new QSplitter();
-    splitter->setStyleSheet("QSplitter {background: #19232D;}");
+    splitter->setStyleSheet(QStringLiteral("QSplitter {background: #19232D;}"));
     layout->addWidget(splitter);
 
     _nodeOdWidget = new NodeOdWidget();
@@ -50,7 +50,7 @@ void NodeScreenPDO::createWidgets()
 
 QString NodeScreenPDO::title() const
 {
-    return QString(tr("PDO"));
+    return tr("PDO");
 }
 
 void NodeScreenPDO::setNodeInternal(Node *node, uint8_t axis)

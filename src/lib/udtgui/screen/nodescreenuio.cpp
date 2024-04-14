@@ -73,8 +73,8 @@ void NodeScreenUio::createWidgets()
     _startStopAction = toolBar->addAction(tr("Start / stop"));
     _startStopAction->setCheckable(true);
     QIcon iconStartStop;
-    iconStartStop.addFile(":/icons/img/icons8-stop.png", QSize(), QIcon::Normal, QIcon::On);
-    iconStartStop.addFile(":/icons/img/icons8-play.png", QSize(), QIcon::Normal, QIcon::Off);
+    iconStartStop.addFile(QStringLiteral(":/icons/img/icons8-stop.png"), QSize(), QIcon::Normal, QIcon::On);
+    iconStartStop.addFile(QStringLiteral(":/icons/img/icons8-play.png"), QSize(), QIcon::Normal, QIcon::Off);
     _startStopAction->setIcon(iconStartStop);
     _startStopAction->setStatusTip(tr("Start or stop reading input objects "));
     connect(_startStopAction, &QAction::triggered, this, &NodeScreenUio::toggleStartLogger);
@@ -82,7 +82,7 @@ void NodeScreenUio::createWidgets()
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
     _logTimerSpinBox->setValue(100);
-    _logTimerSpinBox->setSuffix(" ms");
+    _logTimerSpinBox->setSuffix(QStringLiteral(" ms"));
     _logTimerSpinBox->setToolTip(tr("Sets the interval of timer in ms"));
     connect(_logTimerSpinBox,
             QOverload<int>::of(&QSpinBox::valueChanged),
@@ -96,22 +96,22 @@ void NodeScreenUio::createWidgets()
 
     QAction *settingsAction = new QAction(this);
     settingsAction->setCheckable(true);
-    settingsAction->setIcon(QIcon(":/icons/img/icons8-settings.png"));
+    settingsAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-settings.png")));
     settingsAction->setToolTip(tr("Settings"));
     connect(settingsAction, &QAction::triggered, _p401Widget, &P401Widget::setSettings);
     toolBar->addAction(settingsAction);
 
     // read all action
     QAction *readAllObjectAction = toolBar->addAction(tr("Read all objects"));
-    readAllObjectAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
-    readAllObjectAction->setShortcut(QKeySequence("Ctrl+R"));
+    readAllObjectAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-update.png")));
+    readAllObjectAction->setShortcut(QKeySequence(QStringLiteral("Ctrl+R")));
     readAllObjectAction->setStatusTip(tr("Read all the objects of the current window"));
     connect(readAllObjectAction, &QAction::triggered, _p401Widget, &P401Widget::readAllObject);
     toolBar->addAction(readAllObjectAction);
     toolBar->addSeparator();
 
     QAction *_dataLoggerAction = new QAction(this);
-    _dataLoggerAction->setIcon(QIcon(":/icons/img/icons8-line-chart.png"));
+    _dataLoggerAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-line-chart.png")));
     _dataLoggerAction->setToolTip(tr("Data logger"));
     connect(_dataLoggerAction, &QAction::triggered, _p401Widget, &P401Widget::dataLogger);
     toolBar->addAction(_dataLoggerAction);
@@ -124,7 +124,7 @@ void NodeScreenUio::createWidgets()
 
 QString NodeScreenUio::title() const
 {
-    return QString(tr("UIO"));
+    return tr("UIO");
 }
 
 QIcon NodeScreenUio::icon() const

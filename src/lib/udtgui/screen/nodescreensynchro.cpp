@@ -98,7 +98,7 @@ QToolBar *NodeScreenSynchro::createToolBarWidgets()
     _logTimerSpinBox = new QSpinBox();
     _logTimerSpinBox->setRange(10, 5000);
     _logTimerSpinBox->setValue(100);
-    _logTimerSpinBox->setSuffix(" ms");
+    _logTimerSpinBox->setSuffix(QStringLiteral(" ms"));
     _logTimerSpinBox->setStatusTip(tr("Sets the interval of log timer in ms"));
     toolBar->addWidget(_logTimerSpinBox);
     connect(_logTimerSpinBox,
@@ -112,7 +112,7 @@ QToolBar *NodeScreenSynchro::createToolBarWidgets()
     // clear
     QAction *action;
     action = toolBar->addAction(tr("Clear"));
-    action->setIcon(QIcon(":/icons/img/icons8-broom.png"));
+    action->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-broom.png")));
     action->setStatusTip(tr("Clear all data"));
     connect(action, &QAction::triggered, _dataLogger, &DataLogger::clear);
 
@@ -120,8 +120,8 @@ QToolBar *NodeScreenSynchro::createToolBarWidgets()
 
     // read all action
     QAction *readAllAction = toolBar->addAction(tr("Read all objects"));
-    readAllAction->setIcon(QIcon(":/icons/img/icons8-update.png"));
-    readAllAction->setShortcut(QKeySequence("Ctrl+R"));
+    readAllAction->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-update.png")));
+    readAllAction->setShortcut(QKeySequence(QStringLiteral("Ctrl+R")));
     readAllAction->setStatusTip(tr("Read all the objects of the current window"));
     connect(readAllAction, &QAction::triggered, this, &NodeScreenSynchro::readAll);
 
@@ -136,8 +136,8 @@ QGroupBox *NodeScreenSynchro::createSynchroConfigurationWidgets()
     layout->setHorizontalSpacing(3);
 
     _modeSynchroComboBox = new IndexComboBox();
-    _modeSynchroComboBox->addItem("OFF", QVariant(static_cast<uint16_t>(0x0000)));
-    _modeSynchroComboBox->addItem("Position", QVariant(static_cast<uint16_t>(0x0001)));
+    _modeSynchroComboBox->addItem(tr("OFF"), QVariant(static_cast<uint16_t>(0x0000)));
+    _modeSynchroComboBox->addItem(tr("Position"), QVariant(static_cast<uint16_t>(0x0001)));
     layout->addRow(tr("&Mode:"), _modeSynchroComboBox);
     addIndexWidget(_modeSynchroComboBox);
 
