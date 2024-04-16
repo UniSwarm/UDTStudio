@@ -30,7 +30,7 @@ void ODMerger::merge(DeviceDescription *deviceDescription, DeviceDescription *se
     }
     deviceDescription->setDeviceInfos(deviceInfos);
 
-    merge(deviceDescription, secondDeviceDescription);
+    merge(static_cast<DeviceModel *>(deviceDescription), static_cast<DeviceModel *>(secondDeviceDescription));
 }
 
 void ODMerger::merge(DeviceModel *deviceModel, DeviceModel *secondDeviceModel)
