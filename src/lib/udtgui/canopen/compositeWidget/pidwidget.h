@@ -122,7 +122,6 @@ protected:
     QSpinBox *_stopDataLoggerSpinBox;
     QPushButton *_stopTargetPushButton;
     QPushButton *_startTargetPushButton;
-    QPushButton *_savePushButton;
 
     enum State
     {

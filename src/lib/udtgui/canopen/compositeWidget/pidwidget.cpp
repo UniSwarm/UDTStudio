@@ -270,7 +270,6 @@ void PidWidget::changeMode402()
             break;
     }
 
-    _savePushButton->setEnabled(true);
     _startTargetPushButton->setEnabled(false);
 }
 
@@ -425,7 +424,6 @@ void PidWidget::stopDataLogger()
     _timerTest.stop();
     _state = NONE;
     _dataLogger->stop();
-    _savePushButton->setEnabled(true);
     _startTargetPushButton->setEnabled(true);
     disconnect(_nodeProfile402, &NodeProfile402::modeChanged, this, &PidWidget::updateMode);
 }
