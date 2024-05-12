@@ -327,24 +327,29 @@ void PidWidget::manageMeasurement()
     {
         case PidWidget::NONE:
             _dataLogger->clear();
-            _dataLogger->start(10);
             _timerTest.start(10);
             _readStatusTimer.start(10);
-            _state = LAUCH_DATALOGGER;
+            _state = LAUNCH_DATALOGGER;
             break;
 
-        case PidWidget::LAUCH_DATALOGGER:
+        case PidWidget::LAUNCH_DATALOGGER:
+            _dataLogger->start(25);
+            _timerTest.start(500);
+            _state = WAIT_TO_LAUNCH;
+            break;
+
+        case PidWidget::WAIT_TO_LAUNCH:
             _timerTest.stop();
             changeMode402();
-            _state = LAUCH_FIRST_TARGET;
+            _state = LAUNCH_FIRST_TARGET;
             break;
 
-        case PidWidget::LAUCH_FIRST_TARGET:
+        case PidWidget::LAUNCH_FIRST_TARGET:
             stopFirstMeasurement();
-            _state = LAUCH_SECOND_TARGET;
+            _state = LAUNCH_SECOND_TARGET;
             break;
 
-        case PidWidget::LAUCH_SECOND_TARGET:
+        case PidWidget::LAUNCH_SECOND_TARGET:
             stopSecondMeasurement();
             _timerTest.start(_stopDataLoggerSpinBox->value());
             _state = STOP_DATALOGGER;

@@ -126,9 +126,10 @@ protected:
     enum State
     {
         NONE,
-        LAUCH_DATALOGGER,
-        LAUCH_FIRST_TARGET,
-        LAUCH_SECOND_TARGET,
+        LAUNCH_DATALOGGER,
+        WAIT_TO_LAUNCH,
+        LAUNCH_FIRST_TARGET,
+        LAUNCH_SECOND_TARGET,
         STOP_DATALOGGER,
     };
     State _state;
