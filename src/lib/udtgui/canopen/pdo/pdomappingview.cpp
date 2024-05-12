@@ -216,11 +216,11 @@ void PDOMappingView::dragEnterEvent(QDragEnterEvent *event)
             {
                 return;
             }
-            if (_pdo->isTPDO() != nodeSubIndex->hasTPDOAccess())
+            if (_pdo->isTPDO() && !nodeSubIndex->hasTPDOAccess())
             {
                 return;
             }
-            if (_pdo->isRPDO() != nodeSubIndex->hasRPDOAccess())
+            if (_pdo->isRPDO() && !nodeSubIndex->hasRPDOAccess())
             {
                 return;
             }
