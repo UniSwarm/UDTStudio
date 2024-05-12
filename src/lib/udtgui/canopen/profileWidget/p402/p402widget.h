@@ -92,7 +92,6 @@ private:
     QGroupBox *_modeGroupBox;
     QComboBox *_modeComboBox;
     QLabel *_modeLabel;
-    QLabel *_modeOfOperationLabel;
 
     QGroupBox *createStateMachineWidgets();
     QGroupBox *_stateMachineGroupBox;

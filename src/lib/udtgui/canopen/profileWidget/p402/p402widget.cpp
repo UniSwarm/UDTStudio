@@ -94,7 +94,7 @@ void P402Widget::setProfile(NodeProfile402 *profile)
     updateMode(_nodeProfile402->actualMode());
     updateState();
 
-    _modeOfOperationLabel->setText(tr("Modes of operation (0x%1):").arg(QString::number(_nodeProfile402->modesOfOperationObjectId().index(), 16)));
+    _modeGroupBox->setTitle(tr("Modes of operation (0x%1):").arg(QString::number(_nodeProfile402->modesOfOperationObjectId().index(), 16)));
     _controlWordGroupBox->setTitle(tr("Control word (0x%1)").arg(QString::number(_nodeProfile402->controlWordObjectId().index(), 16)));
     _statusWordGroupBox->setTitle(tr("Status word (0x%1)").arg(QString::number(_nodeProfile402->statusWordObjectId().index(), 16)));
 }
@@ -594,8 +594,6 @@ QGroupBox *P402Widget::createModeWidgets()
     QFormLayout *layout = new QFormLayout();
 
     _modeComboBox = new QComboBox();
-    _modeOfOperationLabel = new QLabel();
-    layout->addRow(_modeOfOperationLabel);
     layout->addRow(_modeComboBox);
 
     _modeLabel = new QLabel();

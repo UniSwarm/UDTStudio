@@ -255,7 +255,7 @@ QString NodeProfile402::modeStr(NodeProfile402::OperationMode mode) const
             return tr("Cyclic sync torque (CST)");
 
         case OperationMode::CSTCA:
-            return tr("Cyclic sync torque with angle (CSTCA)");
+            return tr("Cyclic sync torque angle (CSTCA)");
 
         default:
             if (_modeCurrent < -1)
