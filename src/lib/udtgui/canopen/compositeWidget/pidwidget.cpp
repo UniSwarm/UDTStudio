@@ -577,7 +577,7 @@ QGroupBox *PidWidget::createPIDConfigWidgets()
     addIndexWidget(_minSpinBox);
     _maxSpinBox = new IndexSpinBox();
     addIndexWidget(_maxSpinBox);
-    formLayout->addDualRow(tr("&Min - max:"), _minSpinBox, _maxSpinBox, tr("-"));
+    formLayout->addDualRow(tr("Min - ma&x:"), _minSpinBox, _maxSpinBox, tr("-"));
 
     _thresholdSpinBox = new IndexSpinBox();
     _thresholdSpinBox->setMinValue(0);
@@ -640,10 +640,8 @@ QGroupBox *PidWidget::createPIDTestWidgets()
     IndexFormLayout *formLayout = new IndexFormLayout();
 
     _modeComboBox = new QComboBox();
-    formLayout->addRow(new QLabel(tr("Mode:")), _modeComboBox);
+    formLayout->addRow(tr("&Mode:"), _modeComboBox);
 
-    QHBoxLayout *firstTargetLayout = new QHBoxLayout();
-    firstTargetLayout->setSpacing(3);
     _firstTargetSpinBox = new QSpinBox();
     _firstTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
     _firstTargetSpinBox->setValue(50);
@@ -651,12 +649,8 @@ QGroupBox *PidWidget::createPIDTestWidgets()
     _windowFirstTargetSpinBox->setRange(10, 5000);
     _windowFirstTargetSpinBox->setValue(2000);
     _windowFirstTargetSpinBox->setSuffix(QStringLiteral(" ms"));
-    firstTargetLayout->addWidget(_firstTargetSpinBox);
-    firstTargetLayout->addWidget(_windowFirstTargetSpinBox);
-    formLayout->addRow(tr("First Target:"), firstTargetLayout);
+    formLayout->addDualRow(tr("Target &1:"), _firstTargetSpinBox, _windowFirstTargetSpinBox);
 
-    QHBoxLayout *secondTargetLayout = new QHBoxLayout();
-    secondTargetLayout->setSpacing(3);
     _secondTargetSpinBox = new QSpinBox();
     _secondTargetSpinBox->setRange(std::numeric_limits<qint16>::min(), std::numeric_limits<qint16>::max());
     _secondTargetSpinBox->setValue(50);
@@ -664,13 +658,11 @@ QGroupBox *PidWidget::createPIDTestWidgets()
     _windowSecondTargetSpinBox->setRange(10, 5000);
     _windowSecondTargetSpinBox->setValue(2000);
     _windowSecondTargetSpinBox->setSuffix(QStringLiteral(" ms"));
-    secondTargetLayout->addWidget(_secondTargetSpinBox);
-    secondTargetLayout->addWidget(_windowSecondTargetSpinBox);
-    formLayout->addRow(tr("Second Target:"), secondTargetLayout);
+    formLayout->addDualRow(tr("Target &2:"), _secondTargetSpinBox, _windowSecondTargetSpinBox);
 
     _stopDataLoggerSpinBox = new QSpinBox();
     _stopDataLoggerSpinBox->setRange(10, 5000);
-    _stopDataLoggerSpinBox->setValue(100);
+    _stopDataLoggerSpinBox->setValue(1000);
     _stopDataLoggerSpinBox->setSuffix(QStringLiteral(" ms"));
     formLayout->addRow(tr("&End time:"), _stopDataLoggerSpinBox);
 
