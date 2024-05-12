@@ -28,6 +28,7 @@ class NodeProfile402;
 
 class CANOPEN_EXPORT ModePc : public ModeHm
 {
+    Q_OBJECT
 public:
     ModePc(NodeProfile402 *nodeProfile402);
 

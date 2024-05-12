@@ -28,6 +28,7 @@
 
 class CANOPEN_EXPORT Mode : public QObject, public NodeOdSubscriber
 {
+    Q_OBJECT
 public:
     Mode(NodeProfile402 *nodeProfile402);
 

@@ -29,6 +29,7 @@ class Node;
 
 class CANOPEN_EXPORT NodeProfile : public QObject, public NodeOdSubscriber
 {
+    Q_OBJECT
 public:
     NodeProfile(Node *node, quint8 axis = 0);
 
