@@ -44,6 +44,7 @@ public slots:
 
 protected slots:
     void updateEnabled(bool enabled);
+    void updateCobId(quint32 cobIb);
 
 protected:
     PDO *_pdo;

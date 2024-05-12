@@ -36,14 +36,16 @@ void PDOMappingWidget::setPdo(PDO *pdo)
     if (_pdo != nullptr)
     {
         disconnect(_pdo, &PDO::enabledChanged, this, &PDOMappingWidget::updateEnabled);
+        disconnect(_pdo, &PDO::cobIdChanged, this, &PDOMappingWidget::updateCobId);
     }
     _pdo = pdo;
     if (_pdo != nullptr)
     {
         _pdoNameLabel->setText(_pdo->type());
-        _pdoIndexLabel->setText(QStringLiteral("0x%1").arg(QString::number(_pdo->cobId(), 16).toUpper()));
         updateEnabled(pdo->isEnabled());
+        updateCobId(pdo->cobId());
         connect(_pdo, &PDO::enabledChanged, this, &PDOMappingWidget::updateEnabled);
+        connect(_pdo, &PDO::cobIdChanged, this, &PDOMappingWidget::updateCobId);
     }
 }
 
@@ -74,6 +76,11 @@ void PDOMappingWidget::updateEnabled(bool enabled)
     _enableAction->setChecked(enabled);
 }
 
+void PDOMappingWidget::updateCobId(quint32 cobIb)
+{
+    _pdoIndexLabel->setText(QStringLiteral("0x%1").arg(QString::number(cobIb, 16).toUpper()));
+}
+
 PDO *PDOMappingWidget::pdo() const
 {
     return _pdo;
@@ -94,8 +101,8 @@ void PDOMappingWidget::createWidget()
     _toolBar = new QToolBar(tr("Mapping commands"));
     _toolBar->setIconSize(QSize(12, 12));
     _toolBar->setStyleSheet(QStringLiteral("QToolBar {background: none}"));
-    QAction *action;
 
+    QAction *action;
     action = _toolBar->addAction(tr("Clear"));
     action->setIcon(QIcon(QStringLiteral(":/icons/img/icons8-broom.png")));
     action->setStatusTip(tr("Clear mapping"));
