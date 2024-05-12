@@ -47,6 +47,8 @@ public:
     void setSyncStartValue(quint8 syncStartValue);
     quint8 syncStartValue();
 
+    const QDateTime &lastFrameDateTime() const;
+
 signals:
     void tpdoReceived(quint8);
 
@@ -69,11 +71,6 @@ public:
 public:
     bool isTPDO() const override;
     bool isRPDO() const override;
-
-    // NodeOdSubscriber interface
-public:
-    void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;
-    const QDateTime &lastFrameDateTime() const;
 };
 
 #endif  // TPDO_H

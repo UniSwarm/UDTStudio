@@ -22,7 +22,7 @@
 #include <QIODevice>
 
 #include "canopenbus.h"
-#include "sdo.h"
+
 #include <QDataStream>
 
 TPDO::TPDO(Node *node, quint8 number)
@@ -71,32 +71,6 @@ void TPDO::parseFrame(const QCanBusFrame &frame)
     }
 
     emit tpdoReceived(_pdoNumber);
-}
-
-void TPDO::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
-{
-    if ((objId.index() == _objectCommId) && (objId.subIndex() == 0x01))
-    {
-        emit enabledChanged(isEnabled());
-    }
-
-    if (_statusPdo == STATE_NONE && objId.index() == _objectMappingId)
-    {
-        if (!_objectCommList.empty())
-        {
-            createListObjectMapped();
-        }
-    }
-
-    if (_statusPdo == STATE_READ)
-    {
-        managementRespReadCommAndMapping(objId, flags);
-    }
-
-    if (_statusPdo == STATE_WRITE)
-    {
-        managementRespProcessMapping(objId, flags);
-    }
 }
 
 void TPDO::setBus(CanOpenBus *bus)

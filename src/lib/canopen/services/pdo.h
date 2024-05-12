@@ -164,6 +164,10 @@ private:
     // Service interface
 public:
     void reset() override;
+
+    // NodeOdSubscriber interface
+protected:
+    void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;
 };
 
 #endif  // PDO_H

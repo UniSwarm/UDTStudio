@@ -52,32 +52,6 @@ void RPDO::parseFrame(const QCanBusFrame &frame)
     Q_UNUSED(frame)
 }
 
-void RPDO::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
-{
-    if ((objId.index() == _objectCommId) && (objId.subIndex() == 0x01))
-    {
-        emit enabledChanged(isEnabled());
-    }
-
-    if (_statusPdo == STATE_NONE && objId.index() == _objectMappingId)
-    {
-        if (!_objectCommList.empty())
-        {
-            createListObjectMapped();
-        }
-    }
-
-    if (_statusPdo == STATE_READ)
-    {
-        managementRespReadCommAndMapping(objId, flags);
-    }
-
-    if (_statusPdo == STATE_WRITE)
-    {
-        managementRespProcessMapping(objId, flags);
-    }
-}
-
 void RPDO::setBus(CanOpenBus *bus)
 {
     _bus = bus;

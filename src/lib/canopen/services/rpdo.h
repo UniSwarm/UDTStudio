@@ -66,10 +66,6 @@ public:
 public:
     bool isTPDO() const override;
     bool isRPDO() const override;
-
-    // NodeOdSubscriber interface
-public:
-    void odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags) override;
 };
 
 #endif  // RPDO_H
