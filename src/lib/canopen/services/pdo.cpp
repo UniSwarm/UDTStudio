@@ -609,6 +609,14 @@ void PDO::odNotify(const NodeObjectId &objId, NodeOd::FlagsRequest flags)
     if ((objId.index() == _objectCommId) && (objId.subIndex() == 0x01))
     {
         emit enabledChanged(isEnabled());
+
+        NodeObjectId object(_objectCommId, PDO_COMM_COB_ID);
+        quint32 cobIb = _node->nodeOd()->value(object).toUInt() & 0x1FFFFFFF;
+        if (cobIb != _cobId)
+        {
+            _cobId = cobIb;
+            emit cobIdChanged(_cobId);
+        }
     }
 
     if (_statusPdo == STATE_NONE && objId.index() == _objectMappingId)

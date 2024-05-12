@@ -91,6 +91,7 @@ public:
 signals:
     void mappingChanged();
     void enabledChanged(bool enabled);
+    void cobIdChanged(quint32 cobId);
     void errorOccurred(PDO::ErrorPdo error);
 
 protected:
