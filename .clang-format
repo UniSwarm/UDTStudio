@@ -49,7 +49,6 @@ BreakBeforeInheritanceComma: false
 BreakInheritanceList: BeforeColon
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializers: BeforeColon
-BreakInheritanceList: BeforeColon
 BreakAfterJavaFieldAnnotations: false
 BreakStringLiterals: true
 ColumnLimit:     160
