@@ -105,20 +105,15 @@ bool CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
 
     out << " */\n";
     out << "\n";
-    out << "#ifndef OD_DATA_H"
-        << "\n";
-    out << "#define OD_DATA_H"
-        << "\n";
+    out << "#ifndef OD_DATA_H" << "\n";
+    out << "#define OD_DATA_H" << "\n";
     out << "\n";
-    out << "#include \"co_od.h\""
-        << "\n";
+    out << "#include \"co_od.h\"" << "\n";
     out << "\n";
-    out << "// == Number of entries in object dictionary =="
-        << "\n";
+    out << "// == Number of entries in object dictionary ==" << "\n";
     out << "#define OD_OBJECTS_COUNT " << deviceConfiguration->indexCount() << "\n";
     out << "\n";
-    out << "// ===== struct definitions for records ======="
-        << "\n";
+    out << "// ===== struct definitions for records =======" << "\n";
 
     QMap<uint16_t, Index *> indexes = deviceConfiguration->indexes();
 
@@ -134,36 +129,27 @@ bool CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
         }
     }
 
-    out << "// === struct definitions for memory types ==="
-        << "\n";
+    out << "// === struct definitions for memory types ===" << "\n";
 
     // TODO test read access to know wich memory to use (FLASH/RAM)
-    out << "struct sOD_RAM"
-        << "\n";
-    out << "{"
-        << "\n";
+    out << "struct sOD_RAM" << "\n";
+    out << "{" << "\n";
 
     for (Index *index : indexes)
     {
         writeIndexH(index, out);
     }
 
-    out << "};"
-        << "\n";
+    out << "};" << "\n";
     out << "\n";
 
     // TODO declararion of FLASH memory
-    out << "// extern declaration for RAM and FLASH struct"
-        << "\n";
-    out << "extern const struct sOD_FLASH OD_FLASH;"
-        << "\n";
+    out << "// extern declaration for RAM and FLASH struct" << "\n";
+    out << "extern const struct sOD_FLASH OD_FLASH;" << "\n";
     out << "\n";
-    out << "// ======== extern declaration of OD ========"
-        << "\n";
-    out << "extern const OD_entry_t OD[OD_OBJECTS_COUNT];"
-        << "\n";
-    out << "extern struct sOD_RAM OD_RAM;"
-        << "\n";
+    out << "// ======== extern declaration of OD ========" << "\n";
+    out << "extern const OD_entry_t OD[OD_OBJECTS_COUNT];" << "\n";
+    out << "extern struct sOD_RAM OD_RAM;" << "\n";
     out << "\n";
 
     for (Index *index : indexes)
@@ -171,16 +157,11 @@ bool CGenerator::generateH(DeviceConfiguration *deviceConfiguration, const QStri
         writeDefineH(index, out);
     }
 
-    out << "// ============== function =================="
-        << "\n";
-    out << "void od_initCommIndexes(void);"
-        << "\n";
-    out << "void od_initMSIndexes(void);"
-        << "\n";
-    out << "void od_initAppIndexes(void);"
-        << "\n";
-    out << "void od_setNodeId(uint8_t nodeId);"
-        << "\n";
+    out << "// ============== function ==================" << "\n";
+    out << "void od_initCommIndexes(void);" << "\n";
+    out << "void od_initMSIndexes(void);" << "\n";
+    out << "void od_initAppIndexes(void);" << "\n";
+    out << "void od_setNodeId(uint8_t nodeId);" << "\n";
     out << "\n";
     out << "#endif // OD_DATA_H";
     out << "\n";
@@ -221,20 +202,15 @@ bool CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
 
     out << " */\n";
     out << "\n";
-    out << "#include \"od_data.h\""
-        << "\n"
+    out << "#include \"od_data.h\"" << "\n"
         << "\n";
 
-    out << "#define STRINGIZE(x) #x"
-        << "\n";
-    out << "#define STRINGIZE_VALUE_OF(x) STRINGIZE(x)"
-        << "\n";
+    out << "#define STRINGIZE(x) #x" << "\n";
+    out << "#define STRINGIZE_VALUE_OF(x) STRINGIZE(x)" << "\n";
 
     out << "\n";
-    out << "// ==================== initialization ====================="
-        << "\n";
-    out << "struct sOD_RAM OD_RAM;"
-        << "\n";
+    out << "// ==================== initialization =====================" << "\n";
+    out << "struct sOD_RAM OD_RAM;" << "\n";
     out << "\n";
 
     QMap<uint16_t, Index *> indexes = deviceConfiguration->indexes();
@@ -282,51 +258,37 @@ bool CGenerator::generateC(DeviceConfiguration *deviceConfiguration, const QStri
         }
     }
 
-    out << "// Communication profile area, Indexes 0x1000 to 0x1FFF"
-        << "\n";
-    out << "void od_initCommIndexes(void)"
-        << "\n";
+    out << "// Communication profile area, Indexes 0x1000 to 0x1FFF" << "\n";
+    out << "void od_initCommIndexes(void)" << "\n";
     out << "{";
     writeInitRamC(commIndexes, out);
-    out << "}"
-        << "\n";
+    out << "}" << "\n";
     out << "\n";
-    out << "// Manufacturer-specific profile area, Indexes 0x2000 to 0x5FFF"
-        << "\n";
-    out << "void od_initMSIndexes(void)"
-        << "\n";
+    out << "// Manufacturer-specific profile area, Indexes 0x2000 to 0x5FFF" << "\n";
+    out << "void od_initMSIndexes(void)" << "\n";
     out << "{";
     writeInitRamC(msIndexes, out);
-    out << "}"
-        << "\n";
+    out << "}" << "\n";
     out << "\n";
-    out << "// Standardized profile area, Indexes 0x6000 to 0x9FFF"
-        << "\n";
-    out << "void od_initAppIndexes(void)"
-        << "\n";
+    out << "// Standardized profile area, Indexes 0x6000 to 0x9FFF" << "\n";
+    out << "void od_initAppIndexes(void)" << "\n";
     out << "{";
     writeInitRamC(appIndexes, out);
-    out << "}"
-        << "\n";
+    out << "}" << "\n";
     out << "\n";
 
     // TODO initialize struct for FLASH memory
-    out << "// ==================== record completion ================="
-        << "\n";
+    out << "// ==================== record completion =================" << "\n";
 
     for (Index *index : indexes)
     {
         writeSubentriesList(index, out);
     }
 
-    out << "// ============ object dictionary completion =============="
-        << "\n";
-    out << "const OD_entry_t OD[OD_OBJECTS_COUNT] = "
-        << "\n";
-    out << "{"
-        << "\n";
-    out << "//  {index, typeObject, nbSubIndex, subEntries}"
-        << "\n";
+    out << "// ============ object dictionary completion ==============" << "\n";
+    out << "const OD_entry_t OD[OD_OBJECTS_COUNT] = " << "\n";
+    out << "{" << "\n";
+    out << "//  {index, typeObject, nbSubIndex, subEntries}" << "\n";
     for (Index *index : indexes)
     {
         writeOdCompletionC(index, out);
@@ -372,13 +334,11 @@ bool CGenerator::generateHStruct(DeviceConfiguration *deviceConfiguration, const
     out << "#ifndef " << defineName << "\n";
     out << "#define " << defineName << "\n";
     out << "\n";
-    out << "#include \"od_data.h\""
-        << "\n";
+    out << "#include \"od_data.h\"" << "\n";
     out << "\n";
 
     out << "struct " << structName << "\n";
-    out << "{"
-        << "\n";
+    out << "{" << "\n";
 
     QMap<uint16_t, Index *> indexes = deviceConfiguration->indexes();
     for (Index *index : indexes)
@@ -389,8 +349,7 @@ bool CGenerator::generateHStruct(DeviceConfiguration *deviceConfiguration, const
         }
     }
 
-    out << "};"
-        << "\n";
+    out << "};" << "\n";
     out << "\n";
     out << "#endif  // " << defineName << "\n";
 
@@ -717,8 +676,7 @@ void CGenerator::writeRecordDefinitionH(Index *index, QTextStream &hFile)
         return;
     }
 
-    hFile << "typedef struct"
-          << "  // 0x" << toUHex(index->index()) << "\n{\n";
+    hFile << "typedef struct" << "  // 0x" << toUHex(index->index()) << "\n{\n";
 
     QList<SubIndex *> recordFields;
     for (SubIndex *subIndex : index->subIndexes())
@@ -759,12 +717,9 @@ void CGenerator::writeArrayDefinitionH(Index *index, QTextStream &hFile)
         return;
     }
 
-    hFile << "typedef struct"
-          << "  // 0x" << toUHex(index->index()) << "\n{\n";
-    hFile << "    _od_align uint8_t sub0;"
-          << "\n";
-    hFile << "    _od_align " << typeToString(index->subIndex(1)->dataType()) << " data[" << index->subIndexesCount() - 1 << "];"
-          << "\n";
+    hFile << "typedef struct" << "  // 0x" << toUHex(index->index()) << "\n{\n";
+    hFile << "    _od_align uint8_t sub0;" << "\n";
+    hFile << "    _od_align " << typeToString(index->subIndex(1)->dataType()) << " data[" << index->subIndexesCount() - 1 << "];" << "\n";
     hFile << "} " << structName << ";\n\n";
 }
 
@@ -995,8 +950,7 @@ void CGenerator::writeSubentry(const SubIndex *subIndex, QTextStream &cFile)
             break;
     }
 
-    cFile << "},"
-          << "\n";
+    cFile << "}," << "\n";
 }
 
 /**
@@ -1011,8 +965,7 @@ void CGenerator::writeOdCompletionC(Index *index, QTextStream &cFile)
         return;
     }
 
-    cFile << "    "
-          << "{";
+    cFile << "    " << "{";
 
     // OD_entry_t.index
     cFile << "0x" << toUHex(index->index()) << ", ";
@@ -1043,8 +996,7 @@ void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile)
     {
         case SubIndex::VISIBLE_STRING:
         case SubIndex::OCTET_STRING:
-            cFile << "static const char " << stringNameToString(subIndex) << "[]"
-                  << " = ";
+            cFile << "static const char " << stringNameToString(subIndex) << "[]" << " = ";
             value = subIndex->value().toString();
             if (value.startsWith(QStringLiteral("__")) && value.endsWith(QStringLiteral("__")) && value.size() > 4)  // value contain preprocessor value
             {
@@ -1058,8 +1010,7 @@ void CGenerator::writeCharLineC(const SubIndex *subIndex, QTextStream &cFile)
             break;
 
         case SubIndex::UNICODE_STRING:
-            cFile << "static char " << stringNameToString(subIndex) << "[]"
-                  << " = ";
+            cFile << "static char " << stringNameToString(subIndex) << "[]" << " = ";
             value = subIndex->value().toString();
             value = "\"" + value + "\"";
             cFile << value << ";\n";
@@ -1120,8 +1071,7 @@ void CGenerator::writeDefineH(Index *index, QTextStream &hFile)
                 }
 
                 hFile << "#define OD_INDEX" << toUHex(index->index()) << "_" << toUHex(numSubIndex);
-                hFile << " OD_INDEX" << toUHex(index->index()) << "[0x" << toUHex(numSubIndex - 1) << "]"
-                      << "\n";
+                hFile << " OD_INDEX" << toUHex(index->index()) << "[0x" << toUHex(numSubIndex - 1) << "]" << "\n";
             }
             break;
 
@@ -1177,8 +1127,7 @@ void CGenerator::writeSetNodeId(DeviceConfiguration *deviceConfiguration, QTextS
                 }
 
                 uint value = subIndex->value().toUInt() - deviceConfiguration->nodeId().toUInt();
-                cFile << " = 0x" << toUHex(value) << "u + "
-                      << "nodeId";
+                cFile << " = 0x" << toUHex(value) << "u + " << "nodeId";
 
                 cFile << ";  // " << index->name() << " : " << subIndex->name() << "\n";
             }
