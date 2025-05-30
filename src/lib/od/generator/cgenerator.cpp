@@ -412,7 +412,7 @@ QString CGenerator::typeToString(SubIndex::DataType type)
             return QStringLiteral("OD_domain_t");
 
         default:
-            return QStringLiteral("");
+            return QString();
     }
 }
 
@@ -426,19 +426,15 @@ QString CGenerator::varNameToString(const QString &name)
     QString modified;
     modified = name;
 
-    for (int i = 0; i < modified.count(); i++)
+    for (int i = 0; i < modified.size(); i++)
     {
-        if (modified[i] == QChar('-'))
-        {
-            modified[i] = QChar(' ');
-        }
-
         if (modified[i] == QChar(' '))
         {
             modified[i + 1] = modified[i + 1].toUpper();
         }
     }
 
+    modified = modified.remove(QChar('-'));
     modified = modified.remove(QChar(' '));
 
     return modified;
@@ -1049,16 +1045,18 @@ void CGenerator::writeInitRamC(const QList<Index *> &indexes, QTextStream &cFile
  */
 void CGenerator::writeDefineH(Index *index, QTextStream &hFile)
 {
+    hFile << "// Index 0x" << toUHex(index->index()) << " '" << index->name() << "'" << "\n";
     switch (index->objectType())
     {
         case Index::VAR:
-            hFile << "#define OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << "\n";
+            hFile << "#define OD_" << varNameToString(index->name()).toUpper();
+            hFile << " OD_RAM." << varNameToString(index->name()) << "  // " << typeToString(index->subIndex(0)->dataType()) << "\n";
             hFile << "#define OD_INDEX" << toUHex(index->index()) << " OD_RAM." << varNameToString(index->name()) << "\n";
             break;
 
         case Index::ARRAY:
-            hFile << "#define OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << ".data\n";
-            hFile << "#define OD_INDEX" << toUHex(index->index()) << " OD_RAM." << varNameToString(index->name()) << ".data\n";
+            hFile << "#define OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << ".data" << "\n";
+            hFile << "#define OD_INDEX" << toUHex(index->index()) << " OD_RAM." << varNameToString(index->name()) << ".data" << "\n";
 
             hFile << "#define OD_" << varNameToString(index->name()).toUpper() << "_COUNT " << index->subIndexesCount() - 1 << "\n";
             hFile << "#define OD_INDEX" << toUHex(index->index()) << "_COUNT " << index->subIndexesCount() - 1 << "\n";
@@ -1071,7 +1069,11 @@ void CGenerator::writeDefineH(Index *index, QTextStream &hFile)
                 }
 
                 hFile << "#define OD_INDEX" << toUHex(index->index()) << "_" << toUHex(numSubIndex);
-                hFile << " OD_INDEX" << toUHex(index->index()) << "[0x" << toUHex(numSubIndex - 1) << "]" << "\n";
+                hFile << " OD_" << varNameToString(index->name()).toUpper() << "[0x" << toUHex(numSubIndex - 1) << "]" << "  // "
+                      << typeToString(subIndex->dataType()) << "\n";
+
+                hFile << "#define OD_" << varNameToString(index->name()).toUpper() << "_" << varNameToString(subIndex->name()).toUpper();
+                hFile << " OD_" << varNameToString(index->name()).toUpper() << "[0x" << toUHex(numSubIndex - 1) << "]" << "\n";
             }
             break;
 
@@ -1081,8 +1083,12 @@ void CGenerator::writeDefineH(Index *index, QTextStream &hFile)
 
             for (SubIndex *subIndex : index->subIndexes())
             {
-                hFile << "#define OD_INDEX" << toUHex(index->index()) << "_" << toUHex(subIndex->subIndex()) << " OD_INDEX" << toUHex(index->index()) << "."
-                      << varNameToString(subIndex->name()) << "\n";
+                hFile << "#define OD_INDEX" << toUHex(index->index()) << "_" << toUHex(subIndex->subIndex());
+                hFile << " OD_INDEX" << toUHex(index->index()) << "." << varNameToString(subIndex->name()) << "  // " << typeToString(subIndex->dataType())
+                      << "\n";
+
+                hFile << "#define OD_" << varNameToString(index->name()).toUpper() << "_" << varNameToString(subIndex->name()).toUpper();
+                hFile << " OD_INDEX" << toUHex(index->index()) << "." << varNameToString(subIndex->name()) << "\n";
             }
             break;
 

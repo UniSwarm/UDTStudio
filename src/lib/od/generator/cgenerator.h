@@ -45,7 +45,7 @@ public:
 
     bool generateHStruct(DeviceConfiguration *deviceConfiguration, const QString &filePath, uint16_t min, uint16_t max, const QString &structName);
 
-private:
+public:
     static QString typeToString(SubIndex::DataType type);
     static QString varNameToString(const QString &name);
     static QString structNameToString(const QString &name);
@@ -55,6 +55,7 @@ private:
     static QString accessToEnumString(uint8_t acces);
     static QString stringNameToString(const SubIndex *subIndex);
 
+private:
     template <typename T>
     static QString toUHex(T value);
 
