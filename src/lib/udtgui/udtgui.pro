@@ -72,6 +72,7 @@ HEADERS += \
     $$PWD/canopen/profileWidget/p428/p428widget.h \
     $$PWD/screen/nodescreenswidget.h \
     $$PWD/screen/nodescreen.h \
+    $$PWD/screen/nodescreenadamp.h \
     $$PWD/screen/nodescreenerror.h \
     $$PWD/screen/nodescreenhome.h \
     $$PWD/screen/nodescreennmt.h \
@@ -146,8 +147,9 @@ SOURCES += \
     $$PWD/canopen/profileWidget/p428/p428channelwidget.cpp \
     $$PWD/canopen/profileWidget/p428/p428widget.cpp \
     $$PWD/screen/nodescreenswidget.cpp \
-    $$PWD/screen/nodescreenerror.cpp \
     $$PWD/screen/nodescreen.cpp \
+    $$PWD/screen/nodescreenadamp.cpp \
+    $$PWD/screen/nodescreenerror.cpp \
     $$PWD/screen/nodescreennmt.cpp \
     $$PWD/screen/nodescreenhome.cpp \
     $$PWD/screen/nodescreenod.cpp \

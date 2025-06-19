@@ -24,6 +24,7 @@
 #include "nodescreenod.h"
 #include "nodescreenpdo.h"
 
+#include "nodescreenadamp.h"
 #include "nodescreensynchro.h"
 #include "nodescreenuio.h"
 #include "nodescreenuioled.h"
@@ -171,6 +172,15 @@ void NodeScreensWidget::addNode(Node *node)
             QApplication::processEvents();
 
             screen = new NodeScreenUIOLed(tabWidget);
+            screen->setNode(node);
+            addScreen(&nodeScreens, screen);
+            break;
+        }
+        case 199:  // ADAMP
+        {
+            QApplication::processEvents();
+
+            screen = new NodeScreenAdamp(tabWidget);
             screen->setNode(node);
             addScreen(&nodeScreens, screen);
             break;
