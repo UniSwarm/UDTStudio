@@ -36,12 +36,17 @@ public:
     int feedBackValue() const;
     void setFeedBackValue(int feedBackValue);
 
+    bool hasVisualFeedBack() const;
+    void setVisualFeedBack(bool visualFeedBack);
+
 protected:
     bool _internalUpdate;
     void applyValue(int value);
 
     int _feedBackValue;
     bool _hasFeedBack;
+
+    bool _hasVisualFeedBack;
 
     void initStyle();
     int _pressedControl;

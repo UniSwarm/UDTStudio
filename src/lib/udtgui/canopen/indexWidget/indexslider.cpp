@@ -33,6 +33,7 @@ IndexSlider::IndexSlider(Qt::Orientation orientation, QWidget *parent, const Nod
     _internalUpdate = false;
     _feedBackValue = 0;
     _hasFeedBack = false;
+    _hasVisualFeedBack = true;
 
     _pressedControl = 0;
     _hoverControl = 0;
@@ -82,6 +83,16 @@ void IndexSlider::setFeedBackValue(int feedBackValue)
         _feedBackValue = feedBackValue;
         update();
     }
+}
+
+bool IndexSlider::hasVisualFeedBack() const
+{
+    return _hasVisualFeedBack;
+}
+
+void IndexSlider::setVisualFeedBack(bool visualFeedBack)
+{
+    _hasVisualFeedBack = visualFeedBack;
 }
 
 void IndexSlider::setDisplayValue(const QVariant &value, AbstractIndexWidget::DisplayAttribute flags)
@@ -139,17 +150,29 @@ void IndexSlider::paintEvent(QPaintEvent *event)
     p.setBrush(QColor(0x14, 0x64, 0xA0));  // TODO get color from theme
     p.setPen(QPen(Qt::NoPen));
 
-    double feedbackValue = _hasFeedBack ? _feedBackValue : value();
-
-    // TODO add vertical management
-    double width = barRect.width() - handleRect.width();
-    double range = maximum() - minimum();
-    double centerX = (-minimum() / range) * barRect.width();
-    double valueX = ((feedbackValue - minimum()) / range) * width + handleRect.width() / 2;
-    barRect.adjust(centerX, 0, 0, 0);
-    barRect.setRight(valueX);
-
-    p.drawRect(barRect.normalized());
+    if (_hasVisualFeedBack)
+    {
+        double feedbackValue = _hasFeedBack ? _feedBackValue : value();
+        if (orientation() == Qt::Horizontal)
+        {
+            double width = barRect.width() - handleRect.width();
+            double range = maximum() - minimum();
+            double centerX = (-minimum() / range) * barRect.width();
+            double valueX = (((feedbackValue - minimum()) / range) * width) + (handleRect.width() / 2);
+            barRect.adjust(centerX, 0, 0, 0);
+            barRect.setRight(valueX);
+        }
+        else
+        {
+            double height = barRect.height() - handleRect.height();
+            double range = maximum() - minimum();
+            double centerY = (-minimum() / range) * barRect.height();
+            double valueY = (((feedbackValue - minimum()) / range) * height) + (handleRect.height() / 2);
+            barRect.adjust(0, 0, 0, -centerY);
+            barRect.setTop(valueY);
+        }
+        p.drawRect(barRect.normalized());
+    }
 
     opt.subControls = QStyle::SC_SliderHandle;
     style()->drawComplexControl(QStyle::CC_Slider, &opt, &p, this);
