@@ -7,8 +7,8 @@ EDSVersion=4.0
 FileName=adamp4.eds
 FileRevision=3
 FileVersion=1
-ModificationDate=06-19-2025
-ModificationTime=06:31PM
+ModificationDate=07-18-2025
+ModificationTime=06:04PM
 ModifiedBy=UniSwarm SASU
 
 [DeviceInfo]
@@ -115,7 +115,7 @@ AccessType=ro
 PDOMapping=0
 
 [OptionalObjects]
-SupportedObjects=59
+SupportedObjects=60
 1=0x1003
 2=0x1005
 3=0x1008
@@ -174,7 +174,8 @@ SupportedObjects=59
 56=0x6125
 57=0x6130
 58=0x6131
-59=0x6201
+59=0x6200
+60=0x6201
 
 [1003]
 ParameterName=Predefined_error_field
@@ -2640,6 +2641,51 @@ AccessType=ro
 DefaultValue=0
 PDOMapping=1
 
+[6200]
+ParameterName=Mute
+ObjectType=0x8
+SubNumber=5
+
+[6200sub0]
+ParameterName=Number_of_entries
+ObjectType=0x7
+DataType=0x0005
+AccessType=ro
+DefaultValue=4
+PDOMapping=0
+
+[6200sub1]
+ParameterName=CH1
+ObjectType=0x7
+DataType=0x0003
+AccessType=rw
+DefaultValue=0
+PDOMapping=1
+
+[6200sub2]
+ParameterName=CH2
+ObjectType=0x7
+DataType=0x0003
+AccessType=rw
+DefaultValue=0
+PDOMapping=1
+
+[6200sub3]
+ParameterName=CH3
+ObjectType=0x7
+DataType=0x0003
+AccessType=rw
+DefaultValue=0
+PDOMapping=1
+
+[6200sub4]
+ParameterName=CH4
+ObjectType=0x7
+DataType=0x0003
+AccessType=rw
+DefaultValue=0
+PDOMapping=1
+
 [6201]
 ParameterName=Gain
 ObjectType=0x8
@@ -2768,7 +2814,7 @@ DefaultValue=1
 PDOMapping=0
 
 [2020sub1]
-ParameterName=CPU%d_temperature
+ParameterName=CPU1_temperature
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro
@@ -2788,7 +2834,7 @@ DefaultValue=1
 PDOMapping=0
 
 [2021sub1]
-ParameterName=CPU%d_life_cycle
+ParameterName=CPU1_life_cycle
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
@@ -2808,7 +2854,7 @@ DefaultValue=1
 PDOMapping=0
 
 [2022sub1]
-ParameterName=CPU%d_error
+ParameterName=CPU1_error
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
@@ -2828,7 +2874,7 @@ DefaultValue=1
 PDOMapping=0
 
 [2023sub1]
-ParameterName=CPU%d_min_cycle_us
+ParameterName=CPU1_min_cycle_us
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
@@ -2848,7 +2894,7 @@ DefaultValue=1
 PDOMapping=0
 
 [2024sub1]
-ParameterName=CPU%d_max_cycle_us
+ParameterName=CPU1_max_cycle_us
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro
@@ -2868,7 +2914,7 @@ DefaultValue=1
 PDOMapping=0
 
 [2025sub1]
-ParameterName=CPU%d_mean_cycle_us
+ParameterName=CPU1_mean_cycle_us
 ObjectType=0x7
 DataType=0x0006
 AccessType=ro

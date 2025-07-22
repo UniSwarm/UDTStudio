@@ -22,6 +22,7 @@
 #include <QScrollArea>
 #include <QToolBar>
 
+#include <canopen/indexWidget/indexcheckbox.h>
 #include <canopen/indexWidget/indexlabel.h>
 #include <canopen/indexWidget/indexslider.h>
 
@@ -137,6 +138,7 @@ void NodeScreenAdamp::createWidgets()
         int row = 4;
         layout->addWidget(new QLabel(QString("Gain preamp")), row++, 0, Qt::AlignHCenter);
         row++;
+        layout->addWidget(new QLabel(QString("Sourdine")), row++, 0, Qt::AlignHCenter);
         layout->addWidget(new QLabel(QString("Température puissance")), row++, 0, Qt::AlignHCenter);
         layout->addWidget(new QLabel(QString("Entrée preamp RMS")), row++, 0, Qt::AlignHCenter);
         layout->addWidget(new QLabel(QString("Tension sortie RMS")), row++, 0, Qt::AlignHCenter);
@@ -170,6 +172,12 @@ void NodeScreenAdamp::createWidgets()
         indexLabel->setUnit(" dB");
         layout->addWidget(indexLabel, row++, col, Qt::AlignHCenter);
         addIndexWidget(indexLabel);
+
+        IndexCheckBox *indexCheckBox = new IndexCheckBox(NodeObjectId(0x6200, i + 1));
+        indexCheckBox->setText("Activée");
+        indexCheckBox->setBitMask(1);
+        layout->addWidget(indexCheckBox, row++, col, Qt::AlignHCenter);
+        addIndexWidget(indexCheckBox);
 
         indexLabel = new IndexLabel(NodeObjectId(0x6003, i / 2 + 1));
         indexLabel->setUnit(" °C");
