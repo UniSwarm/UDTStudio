@@ -1058,6 +1058,9 @@ void CGenerator::writeDefineH(Index *index, QTextStream &hFile)
             hFile << "#define OD_" << varNameToString(index->name()).toUpper() << " OD_RAM." << varNameToString(index->name()) << ".data" << "\n";
             hFile << "#define OD_INDEX" << toUHex(index->index()) << " OD_RAM." << varNameToString(index->name()) << ".data" << "\n";
 
+            hFile << "#define OD_" << varNameToString(index->name()).toUpper() << "_SUB0 " << " OD_RAM." << varNameToString(index->name()) << ".sub0" << "\n";
+            hFile << "#define OD_INDEX" << toUHex(index->index()) << "_SUB0 " << " OD_RAM." << varNameToString(index->name()) << ".sub0" << "\n";
+
             hFile << "#define OD_" << varNameToString(index->name()).toUpper() << "_COUNT " << index->subIndexesCount() - 1 << "\n";
             hFile << "#define OD_INDEX" << toUHex(index->index()) << "_COUNT " << index->subIndexesCount() - 1 << "\n";
             for (SubIndex *subIndex : index->subIndexes())
