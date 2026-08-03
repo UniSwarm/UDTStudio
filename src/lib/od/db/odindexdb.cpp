@@ -110,11 +110,6 @@ double ODIndexDb::scale(quint16 index, quint8 subIndex, quint16 profileNumber)
         }
     }
 
-    if (index < 0x2000 || index >= 0x6000)
-    {
-        return 1.0;
-    }
-
     if (index == 0x2000)  // board voltages
     {
         if (subIndex > 0)
@@ -197,6 +192,45 @@ double ODIndexDb::scale(quint16 index, quint8 subIndex, quint16 profileNumber)
             if (subIndex == 3 || subIndex == 4)  // Brake_duty
             {
                 return 1 / 655.36;
+            }
+        }
+    }
+
+    if (profileNumber == 199)
+    {
+        if (index == 0x6003)  // PowerAmpTemp
+        {
+            if (subIndex > 0)
+            {
+                return 1 / 10.0;
+            }
+        }
+        if (index >= 0x6100 && index < 0x6120)  // PreampV, PowerAmpV
+        {
+            if (subIndex > 0)
+            {
+                return 1 / 1000.0;
+            }
+        }
+        if (index >= 0x6120 && index < 0x6130)  // PowerAmpI
+        {
+            if (subIndex > 0)
+            {
+                return 1 / 1000.0;
+            }
+        }
+        if (index == 0x6130)  // Impedence
+        {
+            if (subIndex > 0)
+            {
+                return 1 / 10.0;
+            }
+        }
+        if (index == 0x6131)  // RMSPower
+        {
+            if (subIndex > 0)
+            {
+                return 1 / 10.0;
             }
         }
     }
@@ -291,6 +325,10 @@ QString ODIndexDb::unit(quint16 index, quint8 subIndex, quint16 profileNumber)
             {
                 return QStringLiteral(" A");
             }
+            if (subIndex == 3)  // motor torque
+            {
+                return QStringLiteral(" Nm");
+            }
             if (subIndex == 7)  // motor temperature
             {
                 return QStringLiteral(" °C");
@@ -354,6 +392,53 @@ QString ODIndexDb::unit(quint16 index, quint8 subIndex, quint16 profileNumber)
                 {
                     return QStringLiteral(" ms");
                 }
+            }
+        }
+    }
+
+    if (profileNumber == 199)
+    {
+
+        if (index == 0x6003)  // PowerAmpTemp
+        {
+            if (subIndex > 0)
+            {
+                return QStringLiteral(" °C");
+            }
+        }
+        if (index >= 0x6100 && index < 0x6120)  // PreampV, PowerAmpV
+        {
+            if (subIndex > 0)
+            {
+                return QStringLiteral(" V");
+            }
+        }
+        if (index >= 0x6120 && index < 0x6130)  // PowerAmpI
+        {
+            if (subIndex > 0)
+            {
+                return QStringLiteral(" A");
+            }
+        }
+        if (index == 0x6130)  // Impedence
+        {
+            if (subIndex > 0)
+            {
+                return QStringLiteral(" Ω");
+            }
+        }
+        if (index == 0x6131)  // RMSPower
+        {
+            if (subIndex > 0)
+            {
+                return QStringLiteral(" W");
+            }
+        }
+        if (index == 0x6201)  // Gain
+        {
+            if (subIndex > 0)
+            {
+                return QStringLiteral(" db");
             }
         }
     }
