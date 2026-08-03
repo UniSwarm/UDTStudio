@@ -169,7 +169,6 @@ void NodeScreenAdamp::createWidgets()
 
         indexLabel = new IndexLabel(NodeObjectId(0x6201, i + 1));
         indexLabel->setMinimumWidth(60);
-        indexLabel->setUnit(" dB");
         layout->addWidget(indexLabel, row++, col, Qt::AlignHCenter);
         addIndexWidget(indexLabel);
 
@@ -180,38 +179,26 @@ void NodeScreenAdamp::createWidgets()
         addIndexWidget(indexCheckBox);
 
         indexLabel = new IndexLabel(NodeObjectId(0x6003, i / 2 + 1));
-        indexLabel->setUnit(" °C");
-        indexLabel->setScale(1/10.);
         layout->addWidget(indexLabel, row++, col, Qt::AlignHCenter);
         addIndexWidget(indexLabel);
 
         indexLabel = new IndexLabel(NodeObjectId(0x6102, i + 1));
-        indexLabel->setUnit(" V");
-        indexLabel->setScale(1/1000.);
         layout->addWidget(indexLabel, row++, col, Qt::AlignHCenter);
         addIndexWidget(indexLabel);
 
         indexLabel = new IndexLabel(NodeObjectId(0x6112, i + 1));
-        indexLabel->setUnit(" V");
-        indexLabel->setScale(1/1000.);
         layout->addWidget(indexLabel, row++, col, Qt::AlignHCenter);
         addIndexWidget(indexLabel);
 
         indexLabel = new IndexLabel(NodeObjectId(0x6122, i + 1));
-        indexLabel->setUnit(" A");
-        indexLabel->setScale(1/1000.);
         layout->addWidget(indexLabel, row++, col, Qt::AlignHCenter);
         addIndexWidget(indexLabel);
 
         indexLabel = new IndexLabel(NodeObjectId(0x6130, i + 1));
-        indexLabel->setUnit(" Ω");
-        indexLabel->setScale(1/10.);
         layout->addWidget(indexLabel, row++, col, Qt::AlignHCenter);
         addIndexWidget(indexLabel);
 
         indexLabel = new IndexLabel(NodeObjectId(0x6131, i + 1));
-        indexLabel->setUnit(" W");
-        indexLabel->setScale(1/10.);
         layout->addWidget(indexLabel, row++, col, Qt::AlignHCenter);
         addIndexWidget(indexLabel);
     }
