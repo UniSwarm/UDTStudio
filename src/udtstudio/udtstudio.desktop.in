@@ -5,3 +5,4 @@ Comment=UniSwarm UDTStudio
 Exec=$$target.path/udtstudio
 Icon=$$icons.path/udtstudio.ico
 Categories=IDE;
+StartupWMClass=UniSwarm.udtstudio
